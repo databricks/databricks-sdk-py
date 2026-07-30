@@ -17,7 +17,7 @@
 
     .. py:method:: enforce_compliance(job_id: int [, validate_only: Optional[bool]]) -> EnforcePolicyComplianceResponse
 
-        Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)
+        Updates a job so the job clusters that are created when running the job (specified in ``new_cluster``)
         are compliant with the current versions of their respective cluster policies. All-purpose clusters
         used in the job will not be updated.
 
@@ -54,7 +54,7 @@
           further constrain the maximum number of results returned in a single page.
         :param page_token: str (optional)
           A page token that can be used to navigate to the next page or previous page as returned by
-          `next_page_token` or `prev_page_token`.
+          ``next_page_token`` or ``prev_page_token``.
 
         :returns: Iterator over :class:`JobCompliance`
         

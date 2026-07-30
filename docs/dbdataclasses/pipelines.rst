@@ -4,6 +4,18 @@ Spark Declarative Pipelines
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.pipelines`` module.
 
 .. py:currentmodule:: databricks.sdk.service.pipelines
+.. autoclass:: AkamaiOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: ApiSourceConnectorConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: ApiSourceConnectorOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: ApplyEnvironmentRequestResponse
    :members:
    :undoc-members:
@@ -11,6 +23,167 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: AutoFullRefreshPolicy
    :members:
    :undoc-members:
+
+.. autoclass:: AvroTransformerOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: BingAdsOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: BingAdsOptionsBingCustomReportOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: BingAdsOptionsBingCustomReportOptionsBingAdsGranularity
+
+   Time granularity for Bing Ads report aggregation.
+
+   .. py:attribute:: DAILY
+      :value: "DAILY"
+
+   .. py:attribute:: HOURLY
+      :value: "HOURLY"
+
+   .. py:attribute:: MONTHLY
+      :value: "MONTHLY"
+
+   .. py:attribute:: SUMMARY
+      :value: "SUMMARY"
+
+   .. py:attribute:: WEEKLY
+      :value: "WEEKLY"
+
+   .. py:attribute:: YEARLY
+      :value: "YEARLY"
+
+.. py:class:: BingAdsOptionsBingCustomReportOptionsBingAdsReportType
+
+   Supported Microsoft Advertising report types for custom reports.
+
+   .. py:attribute:: ACCOUNT_PERFORMANCE
+      :value: "ACCOUNT_PERFORMANCE"
+
+   .. py:attribute:: AD_DYNAMIC_TEXT_PERFORMANCE
+      :value: "AD_DYNAMIC_TEXT_PERFORMANCE"
+
+   .. py:attribute:: AD_EXTENSION_BY_AD
+      :value: "AD_EXTENSION_BY_AD"
+
+   .. py:attribute:: AD_EXTENSION_BY_KEYWORD
+      :value: "AD_EXTENSION_BY_KEYWORD"
+
+   .. py:attribute:: AD_EXTENSION_DETAIL
+      :value: "AD_EXTENSION_DETAIL"
+
+   .. py:attribute:: AD_GROUP_PERFORMANCE
+      :value: "AD_GROUP_PERFORMANCE"
+
+   .. py:attribute:: AD_PERFORMANCE
+      :value: "AD_PERFORMANCE"
+
+   .. py:attribute:: AGE_GENDER_AUDIENCE
+      :value: "AGE_GENDER_AUDIENCE"
+
+   .. py:attribute:: APPS_PERFORMANCE
+      :value: "APPS_PERFORMANCE"
+
+   .. py:attribute:: ASSET_GROUP_PERFORMANCE
+      :value: "ASSET_GROUP_PERFORMANCE"
+
+   .. py:attribute:: ASSET_PERFORMANCE
+      :value: "ASSET_PERFORMANCE"
+
+   .. py:attribute:: AUDIENCE_PERFORMANCE
+      :value: "AUDIENCE_PERFORMANCE"
+
+   .. py:attribute:: BID_STRATEGY
+      :value: "BID_STRATEGY"
+
+   .. py:attribute:: BUDGET_SUMMARY
+      :value: "BUDGET_SUMMARY"
+
+   .. py:attribute:: CALL_DETAIL
+      :value: "CALL_DETAIL"
+
+   .. py:attribute:: CAMPAIGN_PERFORMANCE
+      :value: "CAMPAIGN_PERFORMANCE"
+
+   .. py:attribute:: COMBINATION_PERFORMANCE
+      :value: "COMBINATION_PERFORMANCE"
+
+   .. py:attribute:: CONVERSION_PERFORMANCE
+      :value: "CONVERSION_PERFORMANCE"
+
+   .. py:attribute:: DESTINATION_URL_PERFORMANCE
+      :value: "DESTINATION_URL_PERFORMANCE"
+
+   .. py:attribute:: DSA_AUTO_TARGET_PERFORMANCE
+      :value: "DSA_AUTO_TARGET_PERFORMANCE"
+
+   .. py:attribute:: DSA_CATEGORY_PERFORMANCE
+      :value: "DSA_CATEGORY_PERFORMANCE"
+
+   .. py:attribute:: DSA_SEARCH_QUERY_PERFORMANCE
+      :value: "DSA_SEARCH_QUERY_PERFORMANCE"
+
+   .. py:attribute:: GEOGRAPHIC_PERFORMANCE
+      :value: "GEOGRAPHIC_PERFORMANCE"
+
+   .. py:attribute:: GOALS_AND_FUNNELS
+      :value: "GOALS_AND_FUNNELS"
+
+   .. py:attribute:: HOTEL_DIMENSION_PERFORMANCE
+      :value: "HOTEL_DIMENSION_PERFORMANCE"
+
+   .. py:attribute:: HOTEL_GROUP_PERFORMANCE
+      :value: "HOTEL_GROUP_PERFORMANCE"
+
+   .. py:attribute:: KEYWORD_PERFORMANCE
+      :value: "KEYWORD_PERFORMANCE"
+
+   .. py:attribute:: MS_CLICK_ID_PERFORMANCE
+      :value: "MS_CLICK_ID_PERFORMANCE"
+
+   .. py:attribute:: NEGATIVE_KEYWORD_CONFLICT
+      :value: "NEGATIVE_KEYWORD_CONFLICT"
+
+   .. py:attribute:: PRODUCT_DIMENSION_PERFORMANCE
+      :value: "PRODUCT_DIMENSION_PERFORMANCE"
+
+   .. py:attribute:: PRODUCT_MATCH_COUNT
+      :value: "PRODUCT_MATCH_COUNT"
+
+   .. py:attribute:: PRODUCT_PARTITION_PERFORMANCE
+      :value: "PRODUCT_PARTITION_PERFORMANCE"
+
+   .. py:attribute:: PRODUCT_PARTITION_UNIT_PERFORMANCE
+      :value: "PRODUCT_PARTITION_UNIT_PERFORMANCE"
+
+   .. py:attribute:: PRODUCT_SEARCH_QUERY_PERFORMANCE
+      :value: "PRODUCT_SEARCH_QUERY_PERFORMANCE"
+
+   .. py:attribute:: PROFESSIONAL_DEMOGRAPHICS_AUDIENCE
+      :value: "PROFESSIONAL_DEMOGRAPHICS_AUDIENCE"
+
+   .. py:attribute:: PUBLISHER_USAGE_PERFORMANCE
+      :value: "PUBLISHER_USAGE_PERFORMANCE"
+
+   .. py:attribute:: SEARCH_CAMPAIGN_CHANGE_HISTORY
+      :value: "SEARCH_CAMPAIGN_CHANGE_HISTORY"
+
+   .. py:attribute:: SEARCH_INSIGHT_PERFORMANCE
+      :value: "SEARCH_INSIGHT_PERFORMANCE"
+
+   .. py:attribute:: SEARCH_QUERY_PERFORMANCE
+      :value: "SEARCH_QUERY_PERFORMANCE"
+
+   .. py:attribute:: SHARE_OF_VOICE
+      :value: "SHARE_OF_VOICE"
+
+   .. py:attribute:: USER_LOCATION_PERFORMANCE
+      :value: "USER_LOCATION_PERFORMANCE"
 
 .. py:class:: CloneMode
 
@@ -23,7 +196,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CommunityConnectorOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: ConfluenceConnectorOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: ConfluentSchemaRegistryOptions
    :members:
    :undoc-members:
 
@@ -92,7 +273,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DeploymentKind
 
-   The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a Databricks Asset Bundle.
+   The deployment method that manages the pipeline:
+   - BUNDLE: The pipeline is managed by a Databricks Asset Bundle.
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
@@ -146,6 +328,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: EXCEL
       :value: "EXCEL"
+
+   .. py:attribute:: FILE
+      :value: "FILE"
 
    .. py:attribute:: JSON
       :value: "JSON"
@@ -208,7 +393,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GitHubConnectorOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: GitHubConnectorOptionsRepositoryBranchSelection
+   :members:
+   :undoc-members:
+
 .. autoclass:: GoogleAdsConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: GoogleAdsCustomReportOptions
    :members:
    :undoc-members:
 
@@ -228,8 +425,31 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FILE_METADATA
       :value: "FILE_METADATA"
 
+   .. py:attribute:: FILE_PERMISSION
+      :value: "FILE_PERMISSION"
+
+   .. py:attribute:: GROUP_MEMBERSHIP
+      :value: "GROUP_MEMBERSHIP"
+
    .. py:attribute:: PERMISSION
       :value: "PERMISSION"
+
+.. py:class:: GoogleDriveOptionsGoogleDriveIngestionScope
+
+   .. py:attribute:: DOMAIN_ALL
+      :value: "DOMAIN_ALL"
+
+   .. py:attribute:: DOMAIN_SHARED_DRIVES
+      :value: "DOMAIN_SHARED_DRIVES"
+
+   .. py:attribute:: DOMAIN_USER_DRIVES
+      :value: "DOMAIN_USER_DRIVES"
+
+   .. py:attribute:: USER_ACCESSIBLE
+      :value: "USER_ACCESSIBLE"
+
+   .. py:attribute:: USER_DRIVE
+      :value: "USER_DRIVE"
 
 .. autoclass:: IngestionConfig
    :members:
@@ -240,6 +460,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: IngestionPipelineDefinition
+   :members:
+   :undoc-members:
+
+.. autoclass:: IngestionPipelineDefinitionConfluenceOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: IngestionPipelineDefinitionFanoutOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: IngestionPipelineDefinitionJiraOptions
    :members:
    :undoc-members:
 
@@ -257,47 +489,245 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: IngestionSourceType
 
+   .. py:attribute:: ADOBE_CAMPAIGNS
+      :value: "ADOBE_CAMPAIGNS"
+
+   .. py:attribute:: ADOBE_COMMERCE
+      :value: "ADOBE_COMMERCE"
+
+   .. py:attribute:: ADP_WORKFORCE_NOW
+      :value: "ADP_WORKFORCE_NOW"
+
+   .. py:attribute:: AHA
+      :value: "AHA"
+
+   .. py:attribute:: AIRTABLE
+      :value: "AIRTABLE"
+
+   .. py:attribute:: AKAMAI_WAF
+      :value: "AKAMAI_WAF"
+
+   .. py:attribute:: AMPLITUDE
+      :value: "AMPLITUDE"
+
+   .. py:attribute:: API_SOURCE
+      :value: "API_SOURCE"
+
+   .. py:attribute:: APPFIGURES
+      :value: "APPFIGURES"
+
+   .. py:attribute:: APPLE_APP_STORE
+      :value: "APPLE_APP_STORE"
+
+   .. py:attribute:: APPLE_SEARCH_ADS
+      :value: "APPLE_SEARCH_ADS"
+
+   .. py:attribute:: ATLASSIAN_ORGANIZATION
+      :value: "ATLASSIAN_ORGANIZATION"
+
+   .. py:attribute:: AWIN
+      :value: "AWIN"
+
+   .. py:attribute:: AZURE_MONITOR_LOGS
+      :value: "AZURE_MONITOR_LOGS"
+
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
+
+   .. py:attribute:: BING_ADS
+      :value: "BING_ADS"
+
+   .. py:attribute:: CERIDIAN_DAYFORCE
+      :value: "CERIDIAN_DAYFORCE"
+
+   .. py:attribute:: COMMUNITY
+      :value: "COMMUNITY"
 
    .. py:attribute:: CONFLUENCE
       :value: "CONFLUENCE"
 
+   .. py:attribute:: CROWDSTRIKE_EVENT_STREAM
+      :value: "CROWDSTRIKE_EVENT_STREAM"
+
+   .. py:attribute:: DELIGHTED
+      :value: "DELIGHTED"
+
    .. py:attribute:: DYNAMICS365
       :value: "DYNAMICS365"
+
+   .. py:attribute:: EPIC_CLARITY
+      :value: "EPIC_CLARITY"
 
    .. py:attribute:: FOREIGN_CATALOG
       :value: "FOREIGN_CATALOG"
 
+   .. py:attribute:: FRESHSERVICE
+      :value: "FRESHSERVICE"
+
+   .. py:attribute:: FRONT
+      :value: "FRONT"
+
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
+
+   .. py:attribute:: GENESYS
+      :value: "GENESYS"
+
+   .. py:attribute:: GITHUB
+      :value: "GITHUB"
+
+   .. py:attribute:: GITLAB
+      :value: "GITLAB"
+
+   .. py:attribute:: GMAIL
+      :value: "GMAIL"
+
+   .. py:attribute:: GONG
+      :value: "GONG"
+
+   .. py:attribute:: GOOGLE_ADS
+      :value: "GOOGLE_ADS"
+
+   .. py:attribute:: GOOGLE_ANALYTICS
+      :value: "GOOGLE_ANALYTICS"
+
+   .. py:attribute:: GOOGLE_CALENDAR
+      :value: "GOOGLE_CALENDAR"
 
    .. py:attribute:: GOOGLE_DRIVE
       :value: "GOOGLE_DRIVE"
 
+   .. py:attribute:: GOOGLE_SEARCH_CONSOLE
+      :value: "GOOGLE_SEARCH_CONSOLE"
+
+   .. py:attribute:: GOOGLE_WORKSPACE
+      :value: "GOOGLE_WORKSPACE"
+
+   .. py:attribute:: GUIDEWIRE
+      :value: "GUIDEWIRE"
+
+   .. py:attribute:: GURU
+      :value: "GURU"
+
+   .. py:attribute:: HIBOB
+      :value: "HIBOB"
+
+   .. py:attribute:: HUBSPOT
+      :value: "HUBSPOT"
+
+   .. py:attribute:: IRONCLAD
+      :value: "IRONCLAD"
+
    .. py:attribute:: JIRA
       :value: "JIRA"
+
+   .. py:attribute:: KAFKA
+      :value: "KAFKA"
+
+   .. py:attribute:: LINEAR
+      :value: "LINEAR"
+
+   .. py:attribute:: LINKEDIN_ADS
+      :value: "LINKEDIN_ADS"
+
+   .. py:attribute:: M365_AUDIT_LOGS
+      :value: "M365_AUDIT_LOGS"
 
    .. py:attribute:: MANAGED_POSTGRESQL
       :value: "MANAGED_POSTGRESQL"
 
+   .. py:attribute:: MARKETO
+      :value: "MARKETO"
+
    .. py:attribute:: META_MARKETING
       :value: "META_MARKETING"
+
+   .. py:attribute:: MICROSOFT_ENTRA_ID
+      :value: "MICROSOFT_ENTRA_ID"
+
+   .. py:attribute:: MICROSOFT_TEAMS
+      :value: "MICROSOFT_TEAMS"
+
+   .. py:attribute:: MONDAY_COM
+      :value: "MONDAY_COM"
 
    .. py:attribute:: MYSQL
       :value: "MYSQL"
 
+   .. py:attribute:: NETSKOPE_LOGS
+      :value: "NETSKOPE_LOGS"
+
    .. py:attribute:: NETSUITE
       :value: "NETSUITE"
+
+   .. py:attribute:: NOTION
+      :value: "NOTION"
+
+   .. py:attribute:: OKTA_SYSTEM_LOGS
+      :value: "OKTA_SYSTEM_LOGS"
+
+   .. py:attribute:: ONE_PASSWORD_EVENT_LOGS
+      :value: "ONE_PASSWORD_EVENT_LOGS"
 
    .. py:attribute:: ORACLE
       :value: "ORACLE"
 
+   .. py:attribute:: ORACLE_ELOQUA
+      :value: "ORACLE_ELOQUA"
+
+   .. py:attribute:: ORACLE_FUSION_CLOUD
+      :value: "ORACLE_FUSION_CLOUD"
+
+   .. py:attribute:: OUTLOOK
+      :value: "OUTLOOK"
+
+   .. py:attribute:: PAGERDUTY
+      :value: "PAGERDUTY"
+
+   .. py:attribute:: PARTNERSTACK
+      :value: "PARTNERSTACK"
+
+   .. py:attribute:: PENDO
+      :value: "PENDO"
+
+   .. py:attribute:: PINTEREST_ADS
+      :value: "PINTEREST_ADS"
+
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
 
+   .. py:attribute:: PROOFPOINT_SIEM
+      :value: "PROOFPOINT_SIEM"
+
+   .. py:attribute:: QUICKBOOKS
+      :value: "QUICKBOOKS"
+
+   .. py:attribute:: RABBITMQ
+      :value: "RABBITMQ"
+
+   .. py:attribute:: REDDIT_ADS
+      :value: "REDDIT_ADS"
+
+   .. py:attribute:: REDSHIFT
+      :value: "REDSHIFT"
+
    .. py:attribute:: SALESFORCE
       :value: "SALESFORCE"
+
+   .. py:attribute:: SALESFORCE_MARKETING_CLOUD
+      :value: "SALESFORCE_MARKETING_CLOUD"
+
+   .. py:attribute:: SALESLOFT
+      :value: "SALESLOFT"
+
+   .. py:attribute:: SAP_SUCCESSFACTORS
+      :value: "SAP_SUCCESSFACTORS"
+
+   .. py:attribute:: SAS
+      :value: "SAS"
+
+   .. py:attribute:: SENDGRID
+      :value: "SENDGRID"
 
    .. py:attribute:: SERVICENOW
       :value: "SERVICENOW"
@@ -305,17 +735,80 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SHAREPOINT
       :value: "SHAREPOINT"
 
+   .. py:attribute:: SHOPIFY
+      :value: "SHOPIFY"
+
+   .. py:attribute:: SLACK_ACCESS_AND_INTEGRATION_LOGS
+      :value: "SLACK_ACCESS_AND_INTEGRATION_LOGS"
+
+   .. py:attribute:: SLACK_AUDIT_LOGS
+      :value: "SLACK_AUDIT_LOGS"
+
+   .. py:attribute:: SMARTSHEET
+      :value: "SMARTSHEET"
+
+   .. py:attribute:: SNAPCHAT_ADS
+      :value: "SNAPCHAT_ADS"
+
+   .. py:attribute:: SPLUNK
+      :value: "SPLUNK"
+
+   .. py:attribute:: SQLDW
+      :value: "SQLDW"
+
    .. py:attribute:: SQLSERVER
       :value: "SQLSERVER"
+
+   .. py:attribute:: SQUARE
+      :value: "SQUARE"
 
    .. py:attribute:: TERADATA
       :value: "TERADATA"
 
+   .. py:attribute:: TIKTOK_ADS
+      :value: "TIKTOK_ADS"
+
+   .. py:attribute:: VEEVA
+      :value: "VEEVA"
+
+   .. py:attribute:: VEEVA_VAULT
+      :value: "VEEVA_VAULT"
+
+   .. py:attribute:: VERKADA
+      :value: "VERKADA"
+
+   .. py:attribute:: WIZ_AUDIT_LOGS
+      :value: "WIZ_AUDIT_LOGS"
+
+   .. py:attribute:: WORKDAY_ACTIVITY_LOGGING
+      :value: "WORKDAY_ACTIVITY_LOGGING"
+
+   .. py:attribute:: WORKDAY_HCM
+      :value: "WORKDAY_HCM"
+
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
 
+   .. py:attribute:: X_ADS
+      :value: "X_ADS"
+
+   .. py:attribute:: YOUTUBE_ANALYTICS
+      :value: "YOUTUBE_ANALYTICS"
+
    .. py:attribute:: ZENDESK
       :value: "ZENDESK"
+
+   .. py:attribute:: ZIP
+      :value: "ZIP"
+
+   .. py:attribute:: ZOHO_BOOKS
+      :value: "ZOHO_BOOKS"
+
+   .. py:attribute:: ZOOM
+      :value: "ZOOM"
+
+   .. py:attribute:: ZOOM_LOGS
+      :value: "ZOOM_LOGS"
 
 .. autoclass:: JiraConnectorOptions
    :members:
@@ -328,6 +821,56 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: KafkaOptions
    :members:
    :undoc-members:
+
+.. autoclass:: LinkedInAdsOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: LinkedInAdsOptionsLinkedInAdsCustomReportOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsEntityGranularity
+
+   Entity pivot to group by.
+
+   .. py:attribute:: CAMPAIGN
+      :value: "CAMPAIGN"
+
+   .. py:attribute:: CAMPAIGN_GROUP
+      :value: "CAMPAIGN_GROUP"
+
+   .. py:attribute:: CREATIVE
+      :value: "CREATIVE"
+
+.. py:class:: LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsFinder
+
+   adAnalytics finder. Determines call shape, valid pivots, and metric requirements.
+
+   .. py:attribute:: ANALYTICS
+      :value: "ANALYTICS"
+
+   .. py:attribute:: ATTRIBUTED_REVENUE_METRICS
+      :value: "ATTRIBUTED_REVENUE_METRICS"
+
+   .. py:attribute:: STATISTICS
+      :value: "STATISTICS"
+
+.. py:class:: LinkedInAdsOptionsLinkedInAdsCustomReportOptionsLinkedInAdsTimeGranularity
+
+   Time aggregation. Used by analytics/statistics; ignored for attributedRevenueMetrics. Defaults to DAILY when unspecified.
+
+   .. py:attribute:: ALL
+      :value: "ALL"
+
+   .. py:attribute:: DAILY
+      :value: "DAILY"
+
+   .. py:attribute:: MONTHLY
+      :value: "MONTHLY"
+
+   .. py:attribute:: YEARLY
+      :value: "YEARLY"
 
 .. autoclass:: ListPipelineEventsResponse
    :members:
@@ -345,6 +888,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MarketoOptions
+   :members:
+   :undoc-members:
+
 .. py:class:: MaturityLevel
 
    Maturity level for EventDetails.
@@ -359,6 +906,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STABLE"
 
 .. autoclass:: MetaMarketingOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetaMarketingOptionsMetaMarketingCustomReportOptions
    :members:
    :undoc-members:
 
@@ -408,9 +959,36 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ParseMode
+
+   Determines how errors encountered while deserializing records are handled.
+
+   .. py:attribute:: FAILFAST
+      :value: "FAILFAST"
+
+   .. py:attribute:: PERMISSIVE
+      :value: "PERMISSIVE"
+
 .. autoclass:: PathPattern
    :members:
    :undoc-members:
+
+.. autoclass:: PeriodicTrigger
+   :members:
+   :undoc-members:
+
+.. py:class:: PeriodicTriggerTimeUnit
+
+   Time unit enums for different time units.
+
+   .. py:attribute:: DAYS
+      :value: "DAYS"
+
+   .. py:attribute:: HOURS
+      :value: "HOURS"
+
+   .. py:attribute:: WEEKS
+      :value: "WEEKS"
 
 .. autoclass:: PipelineAccessControlRequest
    :members:
@@ -430,7 +1008,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PipelineClusterAutoscaleMode
 
-   Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact to the data processing latency of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy autoscaling feature is used for `maintenance` clusters.
+   Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact to the data processing latency of your pipelines. Enhanced Autoscaling is available for ``updates`` clusters only. The legacy autoscaling feature is used for ``maintenance`` clusters.
 
    .. py:attribute:: ENHANCED
       :value: "ENHANCED"
@@ -543,6 +1121,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ProtobufTransformerOptions
+   :members:
+   :undoc-members:
+
 .. py:class:: PublishingMode
 
    Enum representing the publishing mode of a pipeline.
@@ -552,6 +1134,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: LEGACY_PUBLISHING_MODE
       :value: "LEGACY_PUBLISHING_MODE"
+
+.. autoclass:: RabbitmqOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: RedditAdsOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: RedditAdsOptionsRedditAdsCustomReportOptions
+   :members:
+   :undoc-members:
 
 .. autoclass:: ReplaceWhereOverride
    :members:
@@ -565,6 +1159,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RestorePipelineRequestResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: RewindDatasetSpec
    :members:
    :undoc-members:
@@ -574,6 +1172,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RunAs
+   :members:
+   :undoc-members:
+
+.. autoclass:: SchemaRegistryConfig
    :members:
    :undoc-members:
 
@@ -600,6 +1202,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: FILE_METADATA
       :value: "FILE_METADATA"
+
+   .. py:attribute:: FILE_PERMISSION
+      :value: "FILE_PERMISSION"
+
+   .. py:attribute:: GROUP_MEMBERSHIP
+      :value: "GROUP_MEMBERSHIP"
 
    .. py:attribute:: LIST
       :value: "LIST"
@@ -656,6 +1264,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: StorageMode
+
+   Defines how ingested data is written and maintained in the destination table.
+
+   .. py:attribute:: APPEND_ONLY
+      :value: "APPEND_ONLY"
+
+   .. py:attribute:: SCD_TYPE_1
+      :value: "SCD_TYPE_1"
+
+   .. py:attribute:: SCD_TYPE_2
+      :value: "SCD_TYPE_2"
+
 .. autoclass:: TableSpec
    :members:
    :undoc-members:
@@ -678,6 +1299,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SCD_TYPE_2"
 
 .. autoclass:: TikTokAdsOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: TikTokAdsOptionsTikTokAdsCustomReportOptions
    :members:
    :undoc-members:
 
@@ -725,8 +1350,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TransformerFormat
 
+   .. py:attribute:: AVRO
+      :value: "AVRO"
+
    .. py:attribute:: JSON
       :value: "JSON"
+
+   .. py:attribute:: PROTOBUF
+      :value: "PROTOBUF"
 
    .. py:attribute:: STRING
       :value: "STRING"
@@ -804,6 +1435,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WAITING_FOR_RESOURCES
       :value: "WAITING_FOR_RESOURCES"
+
+.. py:class:: UpdateMode
+
+   .. py:attribute:: CONTINUOUS
+      :value: "CONTINUOUS"
+
+   .. py:attribute:: DEFAULT
+      :value: "DEFAULT"
 
 .. autoclass:: UpdateStateInfo
    :members:

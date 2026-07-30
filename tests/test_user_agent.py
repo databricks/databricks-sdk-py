@@ -68,11 +68,12 @@ def clean_useragent_env():
     original_env = os.environ.copy()
     os.environ.clear()
 
-    # Clear cached CICD and agent providers.
+    # Clear cached CICD, agent, and meta-harness providers.
     from databricks.sdk import useragent
 
     useragent._cicd_provider = None
     useragent._agent_provider = None
+    useragent._meta_harness_provider = None
 
     yield
 
@@ -81,6 +82,7 @@ def clean_useragent_env():
     os.environ.update(original_env)
     useragent._cicd_provider = None
     useragent._agent_provider = None
+    useragent._meta_harness_provider = None
 
 
 def test_user_agent_cicd_no_provider(clean_useragent_env):
@@ -493,3 +495,64 @@ def test_agent_provider_cached(clean_useragent_env):
     os.environ["CLAUDECODE"] = "1"
 
     assert useragent.agent_provider() == "cursor"
+
+
+def test_meta_harness_provider_no_meta_harness(clean_useragent_env):
+    from databricks.sdk import useragent
+
+    assert useragent.meta_harness_provider() == ""
+
+
+def test_meta_harness_provider_omnigent(clean_useragent_env):
+    os.environ["OMNIGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.meta_harness_provider() == "omnigent"
+
+
+def test_meta_harness_provider_omnigent_empty_value_still_counts_as_set(clean_useragent_env):
+    # Presence-only matcher: an empty value still fires.
+    os.environ["OMNIGENT"] = ""
+    from databricks.sdk import useragent
+
+    assert useragent.meta_harness_provider() == "omnigent"
+
+
+def test_meta_harness_provider_cached(clean_useragent_env):
+    os.environ["OMNIGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.meta_harness_provider() == "omnigent"
+
+    # Change the environment: the cached result should persist.
+    del os.environ["OMNIGENT"]
+
+    assert useragent.meta_harness_provider() == "omnigent"
+
+
+def test_user_agent_string_includes_meta_harness(clean_useragent_env):
+    os.environ["OMNIGENT"] = "1"
+    from databricks.sdk import useragent
+
+    ua = useragent.to_string()
+    assert "meta-harness/omnigent" in ua
+
+
+def test_user_agent_string_no_meta_harness(clean_useragent_env):
+    from databricks.sdk import useragent
+
+    ua = useragent.to_string()
+    assert "meta-harness/" not in ua
+
+
+def test_meta_harness_independent_of_agent(clean_useragent_env):
+    # omnigent spawns the real agent CLI, so both env vars are set: the UA must
+    # carry both dimensions and omnigent must not trip the agent "multiple" signal.
+    os.environ["CLAUDECODE"] = "1"
+    os.environ["OMNIGENT"] = "1"
+    from databricks.sdk import useragent
+
+    ua = useragent.to_string()
+    assert "agent/claude-code" in ua
+    assert "meta-harness/omnigent" in ua
+    assert useragent.agent_provider() == "claude-code"

@@ -137,8 +137,8 @@
           The maximum number of examples to return. If unspecified, at most 100 examples will be returned. The
           maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListExamples` call. Provide this to retrieve the subsequent
-          page. If unspecified, the first page will be returned.
+          A page token, received from a previous ``ListExamples`` call. Provide this to retrieve the
+          subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`Example`
         
@@ -151,8 +151,8 @@
           The maximum number of knowledge assistants to return. If unspecified, at most 100 knowledge
           assistants will be returned. The maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListKnowledgeAssistants` call. Provide this to retrieve the
-          subsequent page. If unspecified, the first page will be returned.
+          A page token, received from a previous ``ListKnowledgeAssistants`` call. Provide this to retrieve
+          the subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`KnowledgeAssistant`
         
@@ -200,8 +200,11 @@
           knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
         :param example: :class:`Example`
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the example. Allowed values: `question`, `guidelines`.
-          Examples: - `question` - `question,guidelines`
+          Comma-delimited list of fields to update on the example. Allowed values: ``question``,
+          ``guidelines``. Examples:
+
+          - ``question``
+          - ``question,guidelines``
 
         :returns: :class:`Example`
         
@@ -217,8 +220,11 @@
           annotations on Knowledge Assistant fields describe create-time requirements and do not mean all
           those fields are required for update.
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the Knowledge Assistant. Allowed values: `display_name`,
-          `description`, `instructions`. Examples: - `display_name` - `description,instructions`
+          Comma-delimited list of fields to update on the Knowledge Assistant. Allowed values:
+          ``display_name``, ``description``, ``instructions``. Examples:
+
+          - ``display_name``
+          - ``description,instructions``
 
         :returns: :class:`KnowledgeAssistant`
         
@@ -235,8 +241,11 @@
           annotations on Knowledge Source fields describe create-time requirements and do not mean all those
           fields are required for update.
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the Knowledge Source. Allowed values: `display_name`,
-          `description`. Examples: - `display_name` - `display_name,description`
+          Comma-delimited list of fields to update on the Knowledge Source. Allowed values: ``display_name``,
+          ``description``. Examples:
+
+          - ``display_name``
+          - ``display_name,description``
 
         :returns: :class:`KnowledgeSource`
         

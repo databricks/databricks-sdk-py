@@ -10,9 +10,12 @@
 
         Marks a version as complete and releases the deployment lock.
 
-        The server atomically: 1. Sets the version status to the provided terminal status. 2. Sets
-        `complete_time` to the current server timestamp. 3. Releases the lock on the parent deployment. 4.
-        Updates the parent deployment's `status` and `last_version_id`.
+        The server atomically:
+
+        1. Sets the version status to the provided terminal status.
+        2. Sets ``complete_time`` to the current server timestamp.
+        3. Releases the lock on the parent deployment.
+        4. Updates the parent deployment's ``status`` and ``last_version_id``.
 
         :param name: str
           The name of the version to complete. Format: deployments/{deployment_id}/versions/{version_id}
@@ -26,18 +29,13 @@
         :returns: :class:`Version`
         
 
-    .. py:method:: create_deployment(deployment: Deployment, deployment_id: str) -> Deployment
+    .. py:method:: create_deployment(deployment: Deployment) -> Deployment
 
         Creates a new deployment in the workspace.
 
-        The caller must provide a `deployment_id` which becomes the final component of the deployment's
-        resource name. If a deployment with the same ID already exists, the server returns `ALREADY_EXISTS`.
-
         :param deployment: :class:`Deployment`
-          The deployment to create.
-        :param deployment_id: str
-          The ID to use for the deployment, which will become the final component of the deployment's resource
-          name (i.e. `deployments/{deployment_id}`).
+          The deployment to create. The caller must set ``initial_parent_path``. Other fields are ignored on
+          input and populated by the service.
 
         :returns: :class:`Deployment`
         
@@ -46,8 +44,9 @@
 
         Creates a resource operation under a version.
 
-        The caller must provide a `resource_key` which becomes the final component of the operation's name. If
-        an operation with the same key already exists under the version, the server returns `ALREADY_EXISTS`.
+        The caller must provide a ``resource_key`` which becomes the final component of the operation's name.
+        If an operation with the same key already exists under the version, the server returns
+        ``ALREADY_EXISTS``.
 
         On success the server also updates the corresponding deployment-level Resource (creating it if this is
         the first operation for that resource_key, or removing it if action_type is DELETE).
@@ -69,16 +68,21 @@
         Creates a new version under a deployment.
 
         Creating a version acquires an exclusive lock on the deployment, preventing concurrent deploys. The
-        caller provides a `version_id` which the server validates equals `last_version_id + 1` on the
-        deployment.
+        caller provides a ``version_id``, a numeric string that must be numerically greater than the
+        deployment's most recent version, and sets the version's ``previous_version_id`` to the deployment's
+        most recent version (leaving it unset for the first version), which the server validates to detect
+        concurrent deploys.
 
         :param parent: str
           The parent deployment where this version will be created. Format: deployments/{deployment_id}
         :param version: :class:`Version`
           The version to create.
         :param version_id: str
-          The version ID the caller expects to create. The server validates this equals `last_version_id + 1`
-          on the deployment. If it doesn't match, the server returns `ABORTED`.
+          The ID to use for the version, which becomes the final component of the version's resource name. A
+          numeric string (base-10, fits in a signed 64-bit integer) chosen by the caller; must be greater than
+          or equal to 1. Must be numerically greater than the deployment's most recent version (see
+          ``version.previous_version_id``); it does not need to start at 1 or increase by exactly 1. If the
+          value is not numerically greater, the server returns ``INVALID_PARAMETER_VALUE``.
 
         :returns: :class:`Version`
         
@@ -86,10 +90,6 @@
     .. py:method:: delete_deployment(name: str)
 
         Deletes a deployment.
-
-        The deployment is marked as deleted. It and all its children (versions and their operations) will be
-        permanently deleted after the retention policy expires. If the deployment has an in-progress version,
-        the server returns `RESOURCE_CONFLICT`.
 
         :param name: str
           Resource name of the deployment to delete. Format: deployments/{deployment_id}
@@ -144,7 +144,7 @@
 
         The server validates that the version is the active (non-terminal) version on the parent deployment
         and resets the lock expiry. If the lock has already expired or the version is no longer active, the
-        server returns `ABORTED`.
+        server returns ``ABORTED``.
 
         :param name: str
           The version whose lock to renew. Format: deployments/{deployment_id}/versions/{version_id}
@@ -152,16 +152,36 @@
         :returns: :class:`HeartbeatResponse`
         
 
-    .. py:method:: list_deployments( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Deployment]
+    .. py:method:: list_deployments( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Deployment]
 
         Lists deployments in the workspace.
 
+        :param filter: str (optional)
+          A filter expression restricting which deployments are returned, in the style of AIP-160
+          (https://google.aip.dev/160). The expression is a conjunction of one or more ``field operator
+          value`` terms joined by ``AND`` (case-insensitive); a deployment is returned only when it matches
+          every term. Whitespace around terms is ignored, and a value containing spaces must be wrapped in
+          double quotes. An unset or empty filter returns all deployments. Filtering applies only to live
+          deployments; deleted deployments are never returned regardless of the filter.
+
+          Supported terms:
+
+          - ``status = <STATUS>``: exact match on the deployment status. The value is a ``DeploymentStatus``
+            enum value, with or without the ``DEPLOYMENT_STATUS_`` prefix and case-insensitive (e.g. ``status
+            = ACTIVE``).
+          - ``deployment_mode = <MODE>``: exact match on the deployment mode. The value is a
+            ``DeploymentMode`` enum value, with or without the ``DEPLOYMENT_MODE_`` prefix and
+            case-insensitive (e.g. ``deployment_mode = DEVELOPMENT``).
+          - ``display_name = "<name>"``: exact match on the display name.
+          - ``display_name : "<substring>"``: case-insensitive substring match on the display name.
+
+          For example: ``status = ACTIVE AND display_name : "etl"``.
         :param page_size: int (optional)
           The maximum number of deployments to return. The service may return fewer than this value. If
-          unspecified, at most 50 deployments will be returned. The maximum value is 1000; values above 1000
-          will be coerced to 1000.
+          unspecified, at most 20 deployments will be returned. The maximum value is 100; values above 100
+          will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListDeployments` call. Provide this to retrieve the
+          A page token, received from a previous ``ListDeployments`` call. Provide this to retrieve the
           subsequent page.
 
         :returns: Iterator over :class:`Deployment`
@@ -178,7 +198,7 @@
           unspecified, at most 50 operations will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListOperations` call. Provide this to retrieve the
+          A page token, received from a previous ``ListOperations`` call. Provide this to retrieve the
           subsequent page.
 
         :returns: Iterator over :class:`Operation`
@@ -195,25 +215,53 @@
           unspecified, at most 50 resources will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListResources` call. Provide this to retrieve the subsequent
-          page.
+          A page token, received from a previous ``ListResources`` call. Provide this to retrieve the
+          subsequent page.
 
         :returns: Iterator over :class:`Resource`
         
 
     .. py:method:: list_versions(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Version]
 
-        Lists versions under a deployment, ordered by version_id descending (most recent first).
+        Lists versions under a deployment, ordered numerically by version_id descending (most recent first).
 
         :param parent: str
           The parent deployment. Format: deployments/{deployment_id}
         :param page_size: int (optional)
           The maximum number of versions to return. The service may return fewer than this value. If
-          unspecified, at most 50 versions will be returned. The maximum value is 1000; values above 1000 will
-          be coerced to 1000.
+          unspecified, at most 20 versions will be returned. The maximum value is 100; values above 100 will
+          be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListVersions` call. Provide this to retrieve the subsequent
-          page.
+          A page token, received from a previous ``ListVersions`` call. Provide this to retrieve the
+          subsequent page.
 
         :returns: Iterator over :class:`Version`
+        
+
+    .. py:method:: update_operation(name: str, operation: Operation, update_mask: FieldMask) -> Operation
+
+        Updates a resource operation's mutable fields.
+
+        ``state``, ``error_message``, ``resource_id``, and ``status`` may be updated, independently;
+        ``update_mask`` must contain only those paths. All other fields are immutable. The update is guarded
+        by an optimistic-concurrency check: the caller sets ``operation.sequence_id`` to the value it last
+        observed, and the server rejects the update with ``ABORTED`` if the operation has been modified since.
+        On success the server increments ``sequence_id``; updates to ``state`` and ``resource_id`` are
+        mirrored onto the corresponding deployment-level Resource projection. The parent version must be in
+        progress, delete operations cannot be updated, and after the update is applied a succeeded operation
+        cannot carry an ``error_message``.
+
+        :param name: str
+          Resource name of the operation. Format:
+          deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}
+        :param operation: :class:`Operation`
+          The operation to update. Its ``name`` selects the operation; the fields named in ``update_mask``
+          carry the new values; and ``sequence_id`` carries the optimistic-concurrency precondition (see the
+          field docs on Operation). All other fields are ignored.
+        :param update_mask: FieldMask
+          The set of fields to update. Required; supported paths are ``state``, ``error_message``,
+          ``resource_id``, and ``status``. An empty mask or any other path is rejected with
+          INVALID_PARAMETER_VALUE.
+
+        :returns: :class:`Operation`
         

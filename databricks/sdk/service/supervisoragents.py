@@ -4,21 +4,22 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common.types.fieldmask import FieldMask
+import logging
+
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
     _timestamp,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -50,6 +51,35 @@ class App:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> App:
         """Deserializes the App from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class Catalog:
+    """UC catalog asset_search scope. One tool authorizes asset_search over one catalog. Multiple
+    catalog tools widen the scope; the backend merges them into a single CATALOG entry in
+    asset_search's scoped_assets."""
+
+    name: str
+    """Bare UC catalog name this tool is authorized to search (no ``.``)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Catalog into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Catalog into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Catalog:
+        """Deserializes the Catalog from a dictionary."""
         return cls(name=d.get("name", None))
 
 
@@ -113,11 +143,16 @@ class GenieSpace:
     """Deprecated: use space_id instead. Still REQUIRED for backward compatibility until a future API
     version removes it."""
 
+    space_id: Optional[str] = None
+    """The ID of the genie space."""
+
     def as_dict(self) -> dict:
         """Serializes the GenieSpace into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
             body["id"] = self.id
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -125,12 +160,14 @@ class GenieSpace:
         body = {}
         if self.id is not None:
             body["id"] = self.id
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieSpace:
         """Deserializes the GenieSpace from a dictionary."""
-        return cls(id=d.get("id", None))
+        return cls(id=d.get("id", None), space_id=d.get("space_id", None))
 
 
 @dataclass
@@ -194,6 +231,33 @@ class KnowledgeAssistant:
 
 
 @dataclass
+class LakeviewDashboard:
+    """Lakeview Dashboard tool scoped to a specific published dashboard."""
+
+    dashboard_id: str
+    """The unique identifier of the Lakeview dashboard."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LakeviewDashboard into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LakeviewDashboard into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LakeviewDashboard:
+        """Deserializes the LakeviewDashboard from a dictionary."""
+        return cls(dashboard_id=d.get("dashboard_id", None))
+
+
+@dataclass
 class ListExamplesResponse:
     """A list of Supervisor Agent examples."""
 
@@ -228,7 +292,7 @@ class ListExamplesResponse:
 @dataclass
 class ListSupervisorAgentsResponse:
     next_page_token: Optional[str] = None
-    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    """A token that can be sent as ``page_token`` to retrieve the next page. If this field is omitted,
     there are no subsequent pages."""
 
     supervisor_agents: Optional[List[SupervisorAgent]] = None
@@ -288,6 +352,89 @@ class ListToolsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListToolsResponse:
         """Deserializes the ListToolsResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), tools=_repeated_dict(d, "tools", Tool))
+
+
+@dataclass
+class Schema:
+    """UC schema asset_search scope. One tool authorizes asset_search over one schema. Multiple schema
+    tools widen the scope."""
+
+    name: str
+    """Full UC schema name (catalog.schema) this tool is authorized to search."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Schema into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Schema into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Schema:
+        """Deserializes the Schema from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class ServingEndpoint:
+    name: str
+
+    def as_dict(self) -> dict:
+        """Serializes the ServingEndpoint into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServingEndpoint into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpoint:
+        """Deserializes the ServingEndpoint from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class Skill:
+    """Skill tool. Points to a folder containing skill subdirectories with SKILL.md files (YAML
+    frontmatter with name + description, followed by markdown instructions). Skills are discovered
+    from the folder at runtime and loaded on demand via a read_skill tool registered by the
+    supervisor."""
+
+    path: str
+    """Absolute WSFS path to a folder containing skill subdirectories. Example:
+    /Workspace/Users/creator@company.com/.assistant/skills"""
+
+    def as_dict(self) -> dict:
+        """Serializes the Skill into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.path is not None:
+            body["path"] = self.path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Skill into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.path is not None:
+            body["path"] = self.path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Skill:
+        """Deserializes the Skill from a dictionary."""
+        return cls(path=d.get("path", None))
 
 
 @dataclass
@@ -619,15 +766,49 @@ class SupervisorAgentPermissionsDescription:
 
 
 @dataclass
+class SupervisorAgentTool:
+    """Nested Supervisor Agent tool."""
+
+    supervisor_agent_id: str
+    """The ID of the supervisor agent (tile ID)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SupervisorAgentTool into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.supervisor_agent_id is not None:
+            body["supervisor_agent_id"] = self.supervisor_agent_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SupervisorAgentTool into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.supervisor_agent_id is not None:
+            body["supervisor_agent_id"] = self.supervisor_agent_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SupervisorAgentTool:
+        """Deserializes the SupervisorAgentTool from a dictionary."""
+        return cls(supervisor_agent_id=d.get("supervisor_agent_id", None))
+
+
+@dataclass
 class Tool:
     tool_type: str
     """Tool type. Must be one of: "genie_space", "knowledge_assistant", "uc_function", "uc_connection",
     "uc_mcp", "app", "volume", "dashboard", "serving_endpoint", "table", "vector_search_index",
-    "catalog", "schema", "supervisor_agent", "web_search", "skill". The legacy values
-    "lakeview_dashboard" and "uc_table" are also accepted and remain equivalent to "dashboard" and
-    "table" respectively."""
+    "catalog", "schema", "supervisor_agent", "databricks_web_search", "skill". The legacy values
+    "lakeview_dashboard", "uc_table", and "web_search" are also accepted and remain equivalent to
+    "dashboard", "table", and "databricks_web_search" respectively. The "databricks_web_search"
+    tool_type maps to the ``web_search`` spec field."""
 
     app: Optional[App] = None
+
+    catalog: Optional[Catalog] = None
+    """Configuration for a UC catalog asset_search scope tool."""
+
+    dashboard: Optional[LakeviewDashboard] = None
+    """Lakeview dashboard tool. Replaces the deprecated ``lakeview_dashboard`` field."""
 
     description: Optional[str] = None
     """Description of what this tool does (user-facing)."""
@@ -639,8 +820,25 @@ class Tool:
 
     knowledge_assistant: Optional[KnowledgeAssistant] = None
 
+    lakeview_dashboard: Optional[LakeviewDashboard] = None
+    """Deprecated: use ``dashboard`` instead."""
+
     name: Optional[str] = None
     """Full resource name: supervisor-agents/{supervisor_agent_id}/tools/{tool_id}"""
+
+    schema: Optional[Schema] = None
+    """Configuration for a UC schema asset_search scope tool."""
+
+    serving_endpoint: Optional[ServingEndpoint] = None
+
+    skill: Optional[Skill] = None
+    """Skill tool. Points to a folder containing skill subdirectories with SKILL.md files. Skills are
+    discovered from the folder at runtime and loaded on demand via a read_skill tool."""
+
+    supervisor_agent: Optional[SupervisorAgentTool] = None
+
+    table: Optional[UcTable] = None
+    """Unity Catalog table tool. Replaces the deprecated ``uc_table`` field."""
 
     tool_id: Optional[str] = None
     """User specified id of the Tool."""
@@ -649,13 +847,33 @@ class Tool:
 
     uc_function: Optional[UcFunction] = None
 
+    uc_mcp: Optional[UcMcpService] = None
+    """UC-registered MCP service tool. The ``name`` field on UcMcpService is the three-level UC FQN
+    (catalog.schema.mcp_service); the supervisor resolves it at request build time, calls
+    ``tools/list`` against the AI Gateway mcp-services proxy, and dynamically registers every
+    discovered MCP sub-tool as a separately-callable tool."""
+
+    uc_table: Optional[UcTable] = None
+    """Deprecated: use ``table`` instead."""
+
+    vector_search_index: Optional[VectorSearchIndex] = None
+    """Configuration for a Vector Search index tool."""
+
     volume: Optional[Volume] = None
+
+    web_search: Optional[WebSearch] = None
+    """Configuration for a public-web search tool. The supervisor collapses multiple web_search tools
+    on the same agent into a single registered ``web_search`` tool at runtime."""
 
     def as_dict(self) -> dict:
         """Serializes the Tool into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.app:
             body["app"] = self.app.as_dict()
+        if self.catalog:
+            body["catalog"] = self.catalog.as_dict()
+        if self.dashboard:
+            body["dashboard"] = self.dashboard.as_dict()
         if self.description is not None:
             body["description"] = self.description
         if self.genie_space:
@@ -664,8 +882,20 @@ class Tool:
             body["id"] = self.id
         if self.knowledge_assistant:
             body["knowledge_assistant"] = self.knowledge_assistant.as_dict()
+        if self.lakeview_dashboard:
+            body["lakeview_dashboard"] = self.lakeview_dashboard.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.schema:
+            body["schema"] = self.schema.as_dict()
+        if self.serving_endpoint:
+            body["serving_endpoint"] = self.serving_endpoint.as_dict()
+        if self.skill:
+            body["skill"] = self.skill.as_dict()
+        if self.supervisor_agent:
+            body["supervisor_agent"] = self.supervisor_agent.as_dict()
+        if self.table:
+            body["table"] = self.table.as_dict()
         if self.tool_id is not None:
             body["tool_id"] = self.tool_id
         if self.tool_type is not None:
@@ -674,8 +904,16 @@ class Tool:
             body["uc_connection"] = self.uc_connection.as_dict()
         if self.uc_function:
             body["uc_function"] = self.uc_function.as_dict()
+        if self.uc_mcp:
+            body["uc_mcp"] = self.uc_mcp.as_dict()
+        if self.uc_table:
+            body["uc_table"] = self.uc_table.as_dict()
+        if self.vector_search_index:
+            body["vector_search_index"] = self.vector_search_index.as_dict()
         if self.volume:
             body["volume"] = self.volume.as_dict()
+        if self.web_search:
+            body["web_search"] = self.web_search.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -683,6 +921,10 @@ class Tool:
         body = {}
         if self.app:
             body["app"] = self.app
+        if self.catalog:
+            body["catalog"] = self.catalog
+        if self.dashboard:
+            body["dashboard"] = self.dashboard
         if self.description is not None:
             body["description"] = self.description
         if self.genie_space:
@@ -691,8 +933,20 @@ class Tool:
             body["id"] = self.id
         if self.knowledge_assistant:
             body["knowledge_assistant"] = self.knowledge_assistant
+        if self.lakeview_dashboard:
+            body["lakeview_dashboard"] = self.lakeview_dashboard
         if self.name is not None:
             body["name"] = self.name
+        if self.schema:
+            body["schema"] = self.schema
+        if self.serving_endpoint:
+            body["serving_endpoint"] = self.serving_endpoint
+        if self.skill:
+            body["skill"] = self.skill
+        if self.supervisor_agent:
+            body["supervisor_agent"] = self.supervisor_agent
+        if self.table:
+            body["table"] = self.table
         if self.tool_id is not None:
             body["tool_id"] = self.tool_id
         if self.tool_type is not None:
@@ -701,8 +955,16 @@ class Tool:
             body["uc_connection"] = self.uc_connection
         if self.uc_function:
             body["uc_function"] = self.uc_function
+        if self.uc_mcp:
+            body["uc_mcp"] = self.uc_mcp
+        if self.uc_table:
+            body["uc_table"] = self.uc_table
+        if self.vector_search_index:
+            body["vector_search_index"] = self.vector_search_index
         if self.volume:
             body["volume"] = self.volume
+        if self.web_search:
+            body["web_search"] = self.web_search
         return body
 
     @classmethod
@@ -710,16 +972,28 @@ class Tool:
         """Deserializes the Tool from a dictionary."""
         return cls(
             app=_from_dict(d, "app", App),
+            catalog=_from_dict(d, "catalog", Catalog),
+            dashboard=_from_dict(d, "dashboard", LakeviewDashboard),
             description=d.get("description", None),
             genie_space=_from_dict(d, "genie_space", GenieSpace),
             id=d.get("id", None),
             knowledge_assistant=_from_dict(d, "knowledge_assistant", KnowledgeAssistant),
+            lakeview_dashboard=_from_dict(d, "lakeview_dashboard", LakeviewDashboard),
             name=d.get("name", None),
+            schema=_from_dict(d, "schema", Schema),
+            serving_endpoint=_from_dict(d, "serving_endpoint", ServingEndpoint),
+            skill=_from_dict(d, "skill", Skill),
+            supervisor_agent=_from_dict(d, "supervisor_agent", SupervisorAgentTool),
+            table=_from_dict(d, "table", UcTable),
             tool_id=d.get("tool_id", None),
             tool_type=d.get("tool_type", None),
             uc_connection=_from_dict(d, "uc_connection", UcConnection),
             uc_function=_from_dict(d, "uc_function", UcFunction),
+            uc_mcp=_from_dict(d, "uc_mcp", UcMcpService),
+            uc_table=_from_dict(d, "uc_table", UcTable),
+            vector_search_index=_from_dict(d, "vector_search_index", VectorSearchIndex),
             volume=_from_dict(d, "volume", Volume),
+            web_search=_from_dict(d, "web_search", WebSearch),
         )
 
 
@@ -775,6 +1049,100 @@ class UcFunction:
 
 
 @dataclass
+class UcMcpService:
+    """UC-registered MCP service tool. The ``name`` field is the three-level UC FQN of the MCP service
+    (``catalog.schema.mcp_service``). At request build time the supervisor calls ``tools/list``
+    against the AI Gateway mcp-services proxy and dynamically registers every discovered MCP
+    sub-tool as a separately-callable tool. Per-sub-tool config is not stored here — discovery is
+    dynamic so newly published MCP functions are picked up without redeploying the agent."""
+
+    name: str
+    """Three-level UC FQN of the registered MCP service (catalog.schema.mcp_service)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UcMcpService into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UcMcpService into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UcMcpService:
+        """Deserializes the UcMcpService from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class UcTable:
+    """Unity Catalog table. One tool represents one authorized table; the backend collapses all
+    uc_table tools on a supervisor agent into a single subagent that can access the union of their
+    tables."""
+
+    name: str
+    """Full UC table name (catalog.schema.table) this tool is authorized to access."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UcTable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UcTable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UcTable:
+        """Deserializes the UcTable from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class VectorSearchIndex:
+    """Vector Search index tool authorizing access to a single index."""
+
+    name: str
+    """Full Vector Search index name (catalog.schema.index)."""
+
+    columns: Optional[List[str]] = None
+    """Optional columns to return from the index. If unset, discovered from index schema at query time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the VectorSearchIndex into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns:
+            body["columns"] = [v for v in self.columns]
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VectorSearchIndex into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns:
+            body["columns"] = self.columns
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchIndex:
+        """Deserializes the VectorSearchIndex from a dictionary."""
+        return cls(columns=d.get("columns", None), name=d.get("name", None))
+
+
+@dataclass
 class Volume:
     name: str
     """Full uc volume name"""
@@ -797,6 +1165,29 @@ class Volume:
     def from_dict(cls, d: Dict[str, Any]) -> Volume:
         """Deserializes the Volume from a dictionary."""
         return cls(name=d.get("name", None))
+
+
+@dataclass
+class WebSearch:
+    """Public-web search tool. Empty body — backend, model registration, and client_id are not
+    customer-tunable. The display name and description for this tool come from the parent
+    ``Tool.name`` / ``Tool.description`` fields. Reserved for future scoping (allowed domains,
+    region overrides)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the WebSearch into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WebSearch into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> WebSearch:
+        """Deserializes the WebSearch from a dictionary."""
+        return cls()
 
 
 class SupervisorAgentsAPI:
@@ -856,9 +1247,10 @@ class SupervisorAgentsAPI:
     def create_tool(self, parent: str, tool: Tool, tool_id: str) -> Tool:
         """Creates a Tool under a Supervisor Agent. Specify one of "genie_space", "knowledge_assistant",
         "uc_function", "uc_connection", "app", "volume", "dashboard", "table", "vector_search_index",
-        "catalog", "schema", "supervisor_agent", "web_search", "skill" in the request body. The legacy values
-        "lakeview_dashboard" and "uc_table" are also accepted and remain equivalent to "dashboard" and "table"
-        respectively.
+        "catalog", "schema", "supervisor_agent", "databricks_web_search", "skill" in the request body. The
+        legacy values "lakeview_dashboard", "uc_table", and "web_search" are also accepted and remain
+        equivalent to "dashboard", "table", and "databricks_web_search" respectively. The
+        "databricks_web_search" tool_type maps to the ``web_search`` spec field.
 
         :param parent: str
           Parent resource where this tool will be created. Format: supervisor-agents/{supervisor_agent_id}
@@ -1058,8 +1450,8 @@ class SupervisorAgentsAPI:
           The maximum number of examples to return. If unspecified, at most 100 examples will be returned. The
           maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListExamples` call. Provide this to retrieve the subsequent
-          page. If unspecified, the first page will be returned.
+          A page token, received from a previous ``ListExamples`` call. Provide this to retrieve the
+          subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`Example`
         """
@@ -1095,7 +1487,7 @@ class SupervisorAgentsAPI:
           The maximum number of supervisor agents to return. If unspecified, at most 100 supervisor agents
           will be returned. The maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListSupervisorAgents` call. Provide this to retrieve the
+          A page token, received from a previous ``ListSupervisorAgents`` call. Provide this to retrieve the
           subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`SupervisorAgent`
@@ -1199,8 +1591,11 @@ class SupervisorAgentsAPI:
           supervisor-agents/{supervisor_agent_id}/examples/{example_id}
         :param example: :class:`Example`
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the example. Allowed values: `question`, `guidelines`.
-          Examples: - `question` - `question,guidelines`
+          Comma-delimited list of fields to update on the example. Allowed values: ``question``,
+          ``guidelines``. Examples:
+
+          - ``question``
+          - ``question,guidelines``
 
         :returns: :class:`Example`
         """
@@ -1258,7 +1653,7 @@ class SupervisorAgentsAPI:
         self, name: str, supervisor_agent: SupervisorAgent, update_mask: FieldMask
     ) -> SupervisorAgent:
         """Updates a Supervisor Agent. The fields that are required depend on the paths specified in
-        `update_mask`. Only fields included in the mask will be updated.
+        ``update_mask``. Only fields included in the mask will be updated.
 
         :param name: str
           The resource name of the SupervisorAgent. Format: supervisor-agents/{supervisor_agent_id}
@@ -1287,7 +1682,7 @@ class SupervisorAgentsAPI:
         return SupervisorAgent.from_dict(res)
 
     def update_tool(self, name: str, tool: Tool, update_mask: FieldMask) -> Tool:
-        """Updates a Tool. Only the `description` field can be updated. To change immutable fields such as tool
+        """Updates a Tool. Only the ``description`` field can be updated. To change immutable fields such as tool
         type, spec, or tool ID, delete the tool and recreate it.
 
         :param name: str

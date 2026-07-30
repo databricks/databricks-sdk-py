@@ -12,7 +12,7 @@
     on cloud storage. You can create different types of connections, and each connection has a unique set of
     configuration options to support credential management and other settings.
 
-    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], environment_settings: Optional[EnvironmentSettings], properties: Optional[Dict[str, str]], read_only: Optional[bool]]) -> ConnectionInfo
+    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], environment_settings: Optional[EnvironmentSettings], parent: Optional[str], properties: Optional[Dict[str, str]], read_only: Optional[bool], secrets: Optional[Dict[str, str]]]) -> ConnectionInfo
 
 
         Usage:
@@ -55,10 +55,16 @@
           User-provided free-form text description.
         :param environment_settings: :class:`EnvironmentSettings` (optional)
           [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
+        :param parent: str (optional)
+          Parent schema for schema-level connections, in format "schemas/{catalog}.{schema}". Absent for
+          metastore-level (L1) connections.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
           If the connection is read only.
+        :param secrets: Dict[str,str] (optional)
+          A map of option names to UC Secret references. Keys are connection option names (same as in
+          OptionsKVPairs) and values are UC Secret fully qualified names.
 
         :returns: :class:`ConnectionInfo`
         
@@ -120,7 +126,7 @@
         :returns: :class:`ConnectionInfo`
         
 
-    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ConnectionInfo]
+    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[ConnectionInfo]
 
 
         Usage:
@@ -144,17 +150,23 @@
         absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
-          Maximum number of connections to return. - If not set, all connections are returned (not
-          recommended). - when set to a value greater than 0, the page length is the minimum of this value and
-          a server configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of connections to return.
+
+          - If not set, all connections are returned (not recommended).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param parent: str (optional)
+          Optional. Parent schema filter for listing schema-level connections, in format
+          "schemas/{catalog}.{schema}".
 
         :returns: Iterator over :class:`ConnectionInfo`
         
 
-    .. py:method:: update(name: str, options: Dict[str, str] [, environment_settings: Optional[EnvironmentSettings], new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
+    .. py:method:: update(name: str, options: Dict[str, str] [, environment_settings: Optional[EnvironmentSettings], new_name: Optional[str], owner: Optional[str], secrets: Optional[Dict[str, str]]]) -> ConnectionInfo
 
 
         Usage:
@@ -203,6 +215,9 @@
           New name for the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
+        :param secrets: Dict[str,str] (optional)
+          A map of option names to UC Secret references. Keys are connection option names (same as in
+          OptionsKVPairs) and values are UC Secret fully qualified names.
 
         :returns: :class:`ConnectionInfo`
         

@@ -4,21 +4,22 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common.types.fieldmask import FieldMask
+import logging
+
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
     _timestamp,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -28,7 +29,7 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class ColumnInfo:
-    """Column information (name and data type) for an index column. Surfaced on `Index.column_info`."""
+    """Column information (name and data type) for an index column. Surfaced on ``Index.column_info``."""
 
     name: Optional[str] = None
     """Name of the column."""
@@ -133,7 +134,7 @@ class DataModificationResult:
 
 class DataModificationStatus(Enum):
     """Overall outcome of a data-plane upsert or delete. Mirrors the legacy
-    `databricks.brickindexscheduler.UpsertDeleteDataStatus` value-for-value."""
+    ``databricks.brickindexscheduler.UpsertDeleteDataStatus`` value-for-value."""
 
     FAILURE = "FAILURE"
     PARTIAL_SUCCESS = "PARTIAL_SUCCESS"
@@ -146,10 +147,10 @@ class DeltaSyncIndexSpec:
 
     pipeline_type: PipelineType
     """Pipeline execution mode. Required on create — the backend rejects an unset value. Storage
-    Optimized endpoints accept only `TRIGGERED`; Standard endpoints accept both. No explicit `stage`
-    — a REQUIRED field staged below its service would be dropped from combined specs while
-    remaining in `required`, tripping the OpenAPI required-vs-properties consistency check. The
-    field inherits the service's launch stage."""
+    Optimized endpoints accept only ``TRIGGERED``; Standard endpoints accept both. No explicit
+    ``stage`` — a REQUIRED field staged below its service would be dropped from combined specs
+    while remaining in ``required``, tripping the OpenAPI required-vs-properties consistency check.
+    The field inherits the service's launch stage."""
 
     columns_to_sync: Optional[List[str]] = None
     """[Optional] Select the columns to sync with the index. If left blank, all columns from the source
@@ -233,10 +234,15 @@ class DirectAccessIndexSpec:
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
     """The columns that contain the embedding vectors."""
 
+    requested_schema_json: Optional[str] = None
+    """The index schema exactly as the user supplied it on create, preserving the original type
+    spellings (e.g. ``integer``) rather than Unity Catalog's canonical names (e.g. ``int``) that
+    ``schema_json`` returns."""
+
     schema_json: Optional[str] = None
-    """The schema of the index in JSON format. Supported types are `integer`, `long`, `float`,
-    `double`, `boolean`, `string`, `date`, `timestamp`. Supported types for vector columns:
-    `array<float>`, `array<double>`."""
+    """The schema of the index in JSON format. Supported types are ``integer``, ``long``, ``float``,
+    ``double``, ``boolean``, ``string``, ``date``, ``timestamp``. Supported types for vector
+    columns: ``array<float>``, ``array<double>``."""
 
     def as_dict(self) -> dict:
         """Serializes the DirectAccessIndexSpec into a dictionary suitable for use as a JSON request body."""
@@ -245,6 +251,8 @@ class DirectAccessIndexSpec:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
             body["embedding_vector_columns"] = [v.as_dict() for v in self.embedding_vector_columns]
+        if self.requested_schema_json is not None:
+            body["requested_schema_json"] = self.requested_schema_json
         if self.schema_json is not None:
             body["schema_json"] = self.schema_json
         return body
@@ -256,6 +264,8 @@ class DirectAccessIndexSpec:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
             body["embedding_vector_columns"] = self.embedding_vector_columns
+        if self.requested_schema_json is not None:
+            body["requested_schema_json"] = self.requested_schema_json
         if self.schema_json is not None:
             body["schema_json"] = self.schema_json
         return body
@@ -266,6 +276,7 @@ class DirectAccessIndexSpec:
         return cls(
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
+            requested_schema_json=d.get("requested_schema_json", None),
             schema_json=d.get("schema_json", None),
         )
 
@@ -387,19 +398,19 @@ class Endpoint:
 
     name: Optional[str] = None
     """Name of the AI Search endpoint. Server-assigned full resource path
-    (`workspaces/{workspace}/endpoints/{endpoint}`) on output. On create, the user-supplied short
-    name is conveyed via `CreateEndpointRequest.endpoint_id`; the server composes the full `name`
-    and returns it on the response."""
+    (``workspaces/{workspace}/endpoints/{endpoint}``) on output. On create, the user-supplied short
+    name is conveyed via ``CreateEndpointRequest.endpoint_id``; the server composes the full
+    ``name`` and returns it on the response."""
 
     replica_count: Optional[int] = None
     """The client-supplied desired number of replicas for the endpoint, applied at create/update time.
-    Mutually exclusive with `target_qps`."""
+    Mutually exclusive with ``target_qps``."""
 
     scaling_info: Optional[EndpointScalingInfo] = None
     """Scaling information for the endpoint"""
 
     target_qps: Optional[int] = None
-    """Target QPS for the endpoint. Mutually exclusive with `replica_count`. Best-effort; the system
+    """Target QPS for the endpoint. Mutually exclusive with ``replica_count``. Best-effort; the system
     does not guarantee this QPS will be achieved."""
 
     throughput_info: Optional[EndpointThroughputInfo] = None
@@ -410,6 +421,9 @@ class Endpoint:
 
     usage_policy_id: Optional[str] = None
     """The usage policy id applied to the endpoint."""
+
+    warnings: Optional[List[Warning]] = None
+    """Advisory warnings surfaced when target_qps is set on a Standard endpoint."""
 
     def as_dict(self) -> dict:
         """Serializes the Endpoint into a dictionary suitable for use as a JSON request body."""
@@ -448,6 +462,8 @@ class Endpoint:
             body["update_time"] = self.update_time.ToJsonString()
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
+        if self.warnings:
+            body["warnings"] = [v.as_dict() for v in self.warnings]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -487,6 +503,8 @@ class Endpoint:
             body["update_time"] = self.update_time
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
+        if self.warnings:
+            body["warnings"] = self.warnings
         return body
 
     @classmethod
@@ -510,6 +528,7 @@ class Endpoint:
             throughput_info=_from_dict(d, "throughput_info", EndpointThroughputInfo),
             update_time=_timestamp(d, "update_time"),
             usage_policy_id=d.get("usage_policy_id", None),
+            warnings=_repeated_dict(d, "warnings", Warning),
         )
 
 
@@ -560,7 +579,7 @@ class EndpointStatus:
     """Human-readable detail about the endpoint's current state or the reason for a state transition."""
 
     state: Optional[EndpointStatusState] = None
-    """Current lifecycle state of the endpoint. See `State` for the meaning of each value."""
+    """Current lifecycle state of the endpoint. See ``State`` for the meaning of each value."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointStatus into a dictionary suitable for use as a JSON request body."""
@@ -703,7 +722,7 @@ class FacetResultData:
     """Facet aggregation rows returned by a query."""
 
     facet_array: Optional[List[List[any]]] = None
-    """Facet rows; each row is `[facet_column_name, value_or_range, count]`."""
+    """Facet rows; each row is ``[facet_column_name, value_or_range, count]``."""
 
     facet_row_count: Optional[int] = None
     """Number of facet rows returned."""
@@ -736,7 +755,7 @@ class FacetResultData:
 class Index:
     """An AI Search index — a searchable collection of vectors and metadata hosted on an AI Search
     endpoint. Indexes are children of endpoints; customers create, get, list, and delete them. The
-    `{index}` segment of the resource name is the index's Unity Catalog table name."""
+    ``{index}`` segment of the resource name is the index's Unity Catalog table name."""
 
     primary_key: str
     """Primary key of the index. Set on create and immutable thereafter."""
@@ -748,23 +767,23 @@ class Index:
     """Creator of the index."""
 
     delta_sync_index_spec: Optional[DeltaSyncIndexSpec] = None
-    """Specification for a Delta Sync index. Set when `index_type` is `DELTA_SYNC`."""
+    """Specification for a Delta Sync index. Set when ``index_type`` is ``DELTA_SYNC``."""
 
     direct_access_index_spec: Optional[DirectAccessIndexSpec] = None
-    """Specification for a Direct Access index. Set when `index_type` is `DIRECT_ACCESS`."""
+    """Specification for a Direct Access index. Set when ``index_type`` is ``DIRECT_ACCESS``."""
 
     endpoint: Optional[str] = None
     """Name of the endpoint associated with the index. Ignored on create — the endpoint is taken from
-    `CreateIndexRequest.parent`; populated only on output."""
+    ``CreateIndexRequest.parent``; populated only on output."""
 
     index_subtype: Optional[IndexSubtype] = None
     """The subtype of the index. Set on create and immutable thereafter."""
 
     name: Optional[str] = None
     """Name of the AI Search index. Server-assigned full resource path
-    (`workspaces/{workspace}/endpoints/{endpoint}/indexes/{index}`) on output, where `{index}` is
-    the index's Unity Catalog table name. On create, the user-supplied UC table name is conveyed via
-    `CreateIndexRequest.index_id`; the server composes the full `name` and returns it on the
+    (``workspaces/{workspace}/endpoints/{endpoint}/indexes/{index}``) on output, where ``{index}``
+    is the index's Unity Catalog table name. On create, the user-supplied UC table name is conveyed
+    via ``CreateIndexRequest.index_id``; the server composes the full ``name`` and returns it on the
     response."""
 
     status: Optional[IndexStatus] = None
@@ -887,12 +906,13 @@ class IndexStatus:
 
 
 class IndexSubtype(Enum):
-    """The subtype of the AI Search index, determining the indexing and retrieval strategy. - `VECTOR`:
-    Not a supported create value — do not select it. Use `HYBRID` (vector + hybrid search) or
-    `FULL_TEXT` (full-text only). It is the proto2 default (`= 0`) solely to mirror the legacy
-    `index_v2.proto` enum value-for-value; it is not an offered index subtype. - `FULL_TEXT`: An
-    index that uses full-text search without vector embeddings. - `HYBRID`: An index that uses
-    vector embeddings for similarity search and hybrid search."""
+    """The subtype of the AI Search index, determining the indexing and retrieval strategy.
+
+    - ``VECTOR``: Not a supported create value — do not select it. Use ``HYBRID`` (vector + hybrid
+      search) or ``FULL_TEXT`` (full-text only). It is the proto2 default (``= 0``) solely to mirror
+      the legacy ``index_v2.proto`` enum value-for-value; it is not an offered index subtype.
+    - ``FULL_TEXT``: An index that uses full-text search without vector embeddings.
+    - ``HYBRID``: An index that uses vector embeddings for similarity search and hybrid search."""
 
     FULL_TEXT = "FULL_TEXT"
     HYBRID = "HYBRID"
@@ -900,11 +920,12 @@ class IndexSubtype(Enum):
 
 
 class IndexType(Enum):
-    """There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a
-    source Delta Table, automatically and incrementally updating the index as the underlying data in
-    the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of
-    vectors and metadata through our REST and SDK APIs. With this model, the user manages index
-    updates."""
+    """There are 2 types of AI Search indexes:
+
+    - ``DELTA_SYNC``: An index that automatically syncs with a source Delta Table, automatically and
+      incrementally updating the index as the underlying data in the Delta Table changes.
+    - ``DIRECT_ACCESS``: An index that supports direct read and write of vectors and metadata
+      through our REST and SDK APIs. With this model, the user manages index updates."""
 
     DELTA_SYNC = "DELTA_SYNC"
     DIRECT_ACCESS = "DIRECT_ACCESS"
@@ -949,10 +970,10 @@ class ListIndexesResponse:
     """Response for ListIndexes carrying the page of indexes and an optional continuation token."""
 
     indexes: Optional[List[Index]] = None
-    """The indexes on the endpoint. The field is named `indexes` (not the irregular plural `indices`)
-    to satisfy core::0132, which derives the response field name from the ListIndexes method.
-    core::0158::response-plural-first-field independently computes the resource plural as `indices`
-    and is satisfied via a scoped field exception below."""
+    """The indexes on the endpoint. The field is named ``indexes`` (not the irregular plural
+    ``indices``) to satisfy core::0132, which derives the response field name from the ListIndexes
+    method. core::0158::response-plural-first-field independently computes the resource plural as
+    ``indices`` and is satisfied via a scoped field exception below."""
 
     next_page_token: Optional[str] = None
     """A token that can be used to get the next page of results. Empty when there are no more results."""
@@ -983,10 +1004,12 @@ class ListIndexesResponse:
 
 class PipelineType(Enum):
     """Pipeline execution mode for a Delta Sync index. Required on create for Delta Sync indexes; the
-    legacy backend rejects an unset value with INVALID_PARAMETER_VALUE. - `TRIGGERED`: the pipeline
-    stops after refreshing the source table once, using the data available when the update started.
-    - `CONTINUOUS`: the pipeline processes new data as it arrives in the source table to keep the
-    index fresh."""
+    legacy backend rejects an unset value with INVALID_PARAMETER_VALUE.
+
+    - ``TRIGGERED``: the pipeline stops after refreshing the source table once, using the data
+      available when the update started.
+    - ``CONTINUOUS``: the pipeline processes new data as it arrives in the source table to keep the
+      index fresh."""
 
     CONTINUOUS = "CONTINUOUS"
     TRIGGERED = "TRIGGERED"
@@ -1079,10 +1102,10 @@ class RerankerConfig:
 
     model: Optional[str] = None
     """Reranker identifier: "databricks_reranker" for the base model, or a Model Serving endpoint name
-    when `model_type` is MODEL_TYPE_FINETUNED."""
+    when ``model_type`` is MODEL_TYPE_FINETUNED."""
 
     model_type: Optional[RerankerConfigModelType] = None
-    """Discriminator for how `model` is interpreted."""
+    """Discriminator for how ``model`` is interpreted."""
 
     parameters: Optional[RerankerConfigRerankerParameters] = None
     """Parameters controlling reranking."""
@@ -1120,7 +1143,7 @@ class RerankerConfig:
 
 
 class RerankerConfigModelType(Enum):
-    """How the `model` field is interpreted."""
+    """How the ``model`` field is interpreted."""
 
     MODEL_TYPE_BASE = "MODEL_TYPE_BASE"
     MODEL_TYPE_FINETUNED = "MODEL_TYPE_FINETUNED"
@@ -1305,7 +1328,7 @@ class SyncIndexResponse:
 
 class ThroughputChangeRequestState(Enum):
     """State of the most recent throughput change request issued against a Storage Optimized endpoint.
-    Surfaced on `EndpointThroughputInfo.change_request_state`."""
+    Surfaced on ``EndpointThroughputInfo.change_request_state``."""
 
     CHANGE_ADJUSTED = "CHANGE_ADJUSTED"
     CHANGE_FAILED = "CHANGE_FAILED"
@@ -1351,6 +1374,61 @@ class UpsertDataResponse:
         )
 
 
+@dataclass
+class Warning:
+    """Advisory warning surfaced on an AI Search endpoint — a non-fatal condition the customer should
+    be aware of (for example, a temporarily unavailable reranker or an index without an optimized
+    query route)."""
+
+    index_names: Optional[List[str]] = None
+    """Indexes affected by this warning."""
+
+    message: Optional[str] = None
+    """Human-readable detail about the warning."""
+
+    status_code: Optional[WarningStatusCode] = None
+    """Status code categorizing the warning."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Warning into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.index_names:
+            body["index_names"] = [v for v in self.index_names]
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status_code is not None:
+            body["status_code"] = self.status_code.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Warning into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.index_names:
+            body["index_names"] = self.index_names
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status_code is not None:
+            body["status_code"] = self.status_code
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Warning:
+        """Deserializes the Warning from a dictionary."""
+        return cls(
+            index_names=d.get("index_names", None),
+            message=d.get("message", None),
+            status_code=_enum(d, "status_code", WarningStatusCode),
+        )
+
+
+class WarningStatusCode(Enum):
+    """Status code categorizing an advisory warning surfaced on an AI Search endpoint."""
+
+    ENDPOINT_HAS_INDEX_WITHOUT_OPTIMIZED_ROUTE = "ENDPOINT_HAS_INDEX_WITHOUT_OPTIMIZED_ROUTE"
+    ENDPOINT_HAS_MANAGED_INDEX = "ENDPOINT_HAS_MANAGED_INDEX"
+    RERANKER_TEMPORARILY_UNAVAILABLE = "RERANKER_TEMPORARILY_UNAVAILABLE"
+
+
 class AiSearchAPI:
     """**AI Search Endpoint**: Represents the compute resources to host AI Search indexes. AIP-conformant
     replacement for the legacy VectorSearchEndpoints API; functionally equivalent."""
@@ -1362,15 +1440,15 @@ class AiSearchAPI:
         """Create a new AI Search endpoint.
 
         :param parent: str
-          The Workspace where this Endpoint will be created. Format: `workspaces/{workspace_id}`
+          The Workspace where this Endpoint will be created. Format: ``workspaces/{workspace_id}``
         :param endpoint: :class:`Endpoint`
-          The Endpoint resource to create. Fields other than `endpoint.name` carry the desired configuration;
-          `endpoint.name` is server-assigned from `parent` and `endpoint_id`.
+          The Endpoint resource to create. Fields other than ``endpoint.name`` carry the desired
+          configuration; ``endpoint.name`` is server-assigned from ``parent`` and ``endpoint_id``.
         :param endpoint_id: str (optional)
           The user-supplied short name for the Endpoint, per AIP-133. The server composes the full
-          `Endpoint.name` as `{parent}/endpoints/{endpoint_id}`. AIP-133 does not list `endpoint_id` as a
-          fields-may-be-required entry, so we annotate it OPTIONAL on the wire; the server still rejects empty
-          values with INVALID_PARAMETER_VALUE.
+          ``Endpoint.name`` as ``{parent}/endpoints/{endpoint_id}``. AIP-133 does not list ``endpoint_id`` as
+          a fields-may-be-required entry, so we annotate it OPTIONAL on the wire; the server still rejects
+          empty values with INVALID_PARAMETER_VALUE.
 
         :returns: :class:`Endpoint`
         """
@@ -1396,13 +1474,13 @@ class AiSearchAPI:
 
         :param parent: str
           The Endpoint where this Index will be created. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}``
         :param index: :class:`Index`
-          The Index resource to create. Fields other than `index.name` carry the desired configuration;
-          `index.name` is server-assigned from `parent` and `index_id`.
+          The Index resource to create. Fields other than ``index.name`` carry the desired configuration;
+          ``index.name`` is server-assigned from ``parent`` and ``index_id``.
         :param index_id: str (optional)
           The user-supplied Unity Catalog table name for the Index, per AIP-133. The server composes the full
-          `Index.name` as `{parent}/indexes/{index_id}`. AIP-133 does not list `index_id` as a
+          ``Index.name`` as ``{parent}/indexes/{index_id}``. AIP-133 does not list ``index_id`` as a
           fields-may-be-required entry, so we annotate it OPTIONAL on the wire; the server still rejects empty
           values with INVALID_PARAMETER_VALUE.
 
@@ -1430,7 +1508,7 @@ class AiSearchAPI:
 
         :param name: str
           Full resource name of the endpoint to delete. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}``
 
 
         """
@@ -1450,7 +1528,7 @@ class AiSearchAPI:
 
         :param name: str
           Full resource name of the index to delete. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
 
 
         """
@@ -1465,15 +1543,22 @@ class AiSearchAPI:
 
         self._api.do("DELETE", f"/api/2.0/ai-search/{name}", headers=headers)
 
-    def get_endpoint(self, name: str) -> Endpoint:
+    def get_endpoint(self, name: str, *, debug_level: Optional[int] = None) -> Endpoint:
         """Get details for a single AI Search endpoint.
 
         :param name: str
-          Full resource name of the endpoint. Format: `workspaces/{workspace_id}/endpoints/{endpoint_id}`
+          Full resource name of the endpoint. Format: ``workspaces/{workspace_id}/endpoints/{endpoint_id}``
+        :param debug_level: int (optional)
+          Opt-in debug level. When set to 1 or higher, the backend computes and returns advisory high-QPS
+          warnings (subject to the existing target_qps + Standard gate). When unset (0), no warnings are
+          computed or returned. Matches the ``debug_level`` convention on the query path.
 
         :returns: :class:`Endpoint`
         """
 
+        query = {}
+        if debug_level is not None:
+            query["debug_level"] = debug_level
         headers = {
             "Accept": "application/json",
         }
@@ -1482,7 +1567,7 @@ class AiSearchAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.0/ai-search/{name}", headers=headers)
+        res = self._api.do("GET", f"/api/2.0/ai-search/{name}", query=query, headers=headers)
         return Endpoint.from_dict(res)
 
     def get_index(self, name: str) -> Index:
@@ -1490,7 +1575,7 @@ class AiSearchAPI:
 
         :param name: str
           Full resource name of the index. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
 
         :returns: :class:`Index`
         """
@@ -1512,11 +1597,11 @@ class AiSearchAPI:
         """List AI Search endpoints in a workspace.
 
         :param parent: str
-          The Workspace that owns this collection of endpoints. Format: `workspaces/{workspace_id}`
+          The Workspace that owns this collection of endpoints. Format: ``workspaces/{workspace_id}``
         :param page_size: int (optional)
           Best-effort upper bound on the number of results to return. Honored as an upper bound by the shim:
-          `page_size` only narrows the legacy backend's response, never widens it, so the practical cap is
-          `min(page_size, legacy_fixed_page_size)`.
+          ``page_size`` only narrows the legacy backend's response, never widens it, so the practical cap is
+          ``min(page_size, legacy_fixed_page_size)``.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -1546,17 +1631,27 @@ class AiSearchAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_indexes(
-        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+        self,
+        parent: str,
+        *,
+        debug_level: Optional[int] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
     ) -> Iterator[Index]:
         """List AI Search indexes on an endpoint.
 
         :param parent: str
           The Endpoint that owns this collection of indexes. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}``
+        :param debug_level: int (optional)
+          Opt-in debug level. When set to 1 or higher, the backend computes per-index routing eligibility and
+          populates ``can_use_optimized_route`` on each returned index. When unset (0), that field is left
+          unpopulated and the eligibility computation is skipped. Matches the ``debug_level`` convention on
+          the query path.
         :param page_size: int (optional)
           Best-effort upper bound on the number of results to return. Honored as an upper bound by the shim:
-          `page_size` only narrows the legacy backend's response, never widens it, so the practical cap is
-          `min(page_size, legacy_fixed_page_size)`.
+          ``page_size`` only narrows the legacy backend's response, never widens it, so the practical cap is
+          ``min(page_size, legacy_fixed_page_size)``.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -1564,6 +1659,8 @@ class AiSearchAPI:
         """
 
         query = {}
+        if debug_level is not None:
+            query["debug_level"] = debug_level
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -1606,23 +1703,23 @@ class AiSearchAPI:
 
         :param name: str
           Full resource name of the index to query. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
         :param columns: List[str]
           Column names to include in each result row.
         :param columns_to_rerank: List[str] (optional)
           Columns whose values are sent to the reranker.
         :param facets: List[str] (optional)
-          Facets to compute over the matched results (e.g. `"category TOP 5"`).
+          Facets to compute over the matched results (e.g. ``"category TOP 5"``).
         :param filters_json: str (optional)
-          JSON string describing query filters (e.g. `{"id >": 5}`).
+          JSON string describing query filters (e.g. ``{"id >": 5}``).
         :param max_results: int (optional)
-          Maximum number of results to return (the legacy `num_results`). Defaults to 10.
+          Maximum number of results to return (the legacy ``num_results``). Defaults to 10.
         :param query_columns: List[str] (optional)
-          Text columns to search for `query_text`. When empty, all text columns are searched.
+          Text columns to search for ``query_text``. When empty, all text columns are searched.
         :param query_text: str (optional)
           Query text. Required for Delta Sync indexes that compute embeddings from a model endpoint.
         :param query_type: str (optional)
-          Query type: `ANN`, `HYBRID`, or `FULL_TEXT`. Defaults to `ANN`.
+          Query type: ``ANN``, ``HYBRID``, or ``FULL_TEXT``. Defaults to ``ANN``.
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Access indexes and Delta Sync indexes with self-managed vectors.
         :param reranker: :class:`RerankerConfig` (optional)
@@ -1630,7 +1727,7 @@ class AiSearchAPI:
         :param score_threshold: float (optional)
           Score threshold for the approximate nearest-neighbor search. Defaults to 0.0.
         :param sort_columns: List[str] (optional)
-          Sort clauses, e.g. `["rating DESC", "price ASC"]`. Overrides relevance ordering.
+          Sort clauses, e.g. ``["rating DESC", "price ASC"]``. Overrides relevance ordering.
 
         :returns: :class:`QueryIndexResponse`
         """
@@ -1677,7 +1774,7 @@ class AiSearchAPI:
 
         :param name: str
           Full resource name of the index. Must be a Direct Access index. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
         :param primary_keys: List[str]
           Primary keys of the rows to remove.
 
@@ -1706,7 +1803,7 @@ class AiSearchAPI:
 
         :param name: str
           Full resource name of the index to scan. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
         :param page_size: int (optional)
           Maximum number of rows to return in this page.
         :param page_token: str (optional)
@@ -1738,11 +1835,12 @@ class AiSearchAPI:
 
         :param name: str
           Full resource name of the index to synchronize. Must be a Delta Sync index. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
 
         :returns: :class:`SyncIndexResponse`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1752,7 +1850,7 @@ class AiSearchAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/ai-search/{name}:sync", headers=headers)
+        res = self._api.do("POST", f"/api/2.0/ai-search/{name}:sync", body=body, headers=headers)
         return SyncIndexResponse.from_dict(res)
 
     def update_endpoint(self, name: str, endpoint: Endpoint, update_mask: FieldMask) -> Endpoint:
@@ -1763,11 +1861,11 @@ class AiSearchAPI:
 
         :param name: str
           Name of the AI Search endpoint. Server-assigned full resource path
-          (`workspaces/{workspace}/endpoints/{endpoint}`) on output. On create, the user-supplied short name
-          is conveyed via `CreateEndpointRequest.endpoint_id`; the server composes the full `name` and returns
-          it on the response.
+          (``workspaces/{workspace}/endpoints/{endpoint}``) on output. On create, the user-supplied short name
+          is conveyed via ``CreateEndpointRequest.endpoint_id``; the server composes the full ``name`` and
+          returns it on the response.
         :param endpoint: :class:`Endpoint`
-          The Endpoint resource to update. `endpoint.name` carries the full resource path.
+          The Endpoint resource to update. ``endpoint.name`` carries the full resource path.
         :param update_mask: FieldMask
           The list of fields to update.
 
@@ -1795,7 +1893,7 @@ class AiSearchAPI:
 
         :param name: str
           Full resource name of the index. Must be a Direct Access index. Format:
-          `workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}`
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
         :param inputs_json: str
           JSON document describing the rows to upsert.
 

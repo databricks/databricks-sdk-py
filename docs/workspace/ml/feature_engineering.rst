@@ -247,7 +247,7 @@
 
     .. py:method:: update_stream(name: str, stream: Stream, update_mask: FieldMask) -> Stream
 
-        Update a Stream. Only fields listed in `update_mask` are mutated.
+        Update a Stream. Only fields listed in ``update_mask`` are mutated.
 
         :param name: str
           Full three-part (catalog.schema.stream) name of the stream.

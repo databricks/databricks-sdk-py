@@ -9,16 +9,16 @@
     has access to a Databricks workspace that is enabled for Unity Catalog:
 
     - For recipients with access to a Databricks workspace that is enabled for Unity Catalog, you can create a
-    recipient object along with a unique sharing identifier you get from the recipient. The sharing identifier
-    is the key identifier that enables the secure connection. This sharing mode is called
-    **Databricks-to-Databricks sharing**.
-
+      recipient object along with a unique sharing identifier you get from the recipient. The sharing
+      identifier is the key identifier that enables the secure connection. This sharing mode is called
+      **Databricks-to-Databricks sharing**.
     - For recipients without access to a Databricks workspace that is enabled for Unity Catalog, when you
-    create a recipient object, Databricks generates an activation link you can send to the recipient. The
-    recipient follows the activation link to download the credential file, and then uses the credential file
-    to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**.
+      create a recipient object, Databricks generates an activation link you can send to the recipient. The
+      recipient follows the activation link to download the credential file, and then uses the credential file
+      to establish a secure connection to receive the shared data. This sharing mode is called **open
+      sharing**.
 
-    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], data_recipient_global_metastore_id: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs], sharing_code: Optional[str]]) -> RecipientInfo
+    .. py:method:: create(name: str, authentication_type: AuthenticationType [, allowed_acceptance_types: Optional[List[AuthenticationType]], allowed_data_recipient_global_metastore_ids: Optional[List[str]], comment: Optional[str], data_recipient_global_metastore_id: Optional[str], email: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs], sharing_code: Optional[str]]) -> RecipientInfo
 
 
         Usage:
@@ -42,12 +42,24 @@
         :param name: str
           Name of Recipient.
         :param authentication_type: :class:`AuthenticationType`
+        :param allowed_acceptance_types: List[:class:`AuthenticationType`] (optional)
+          Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+          DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+          **authentication_type** is **EMAIL**.
+        :param allowed_data_recipient_global_metastore_ids: List[str] (optional)
+          Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite with
+          the DATABRICKS acceptance type. Each ID is of the form **cloud**:**region**:**metastore-uuid**.
+          Empty means any metastore is allowed. If non-empty, **allowed_acceptance_types** must include
+          **DATABRICKS**. This field is only present when the **authentication_type** is **EMAIL**.
         :param comment: str (optional)
           Description about the recipient.
         :param data_recipient_global_metastore_id: str (optional)
           The global Unity Catalog metastore id provided by the data recipient. This field is only present
-          when the __authentication_type__ is **DATABRICKS**. The identifier is of format
-          __cloud__:__region__:__metastore-uuid__.
+          when the **authentication_type** is **DATABRICKS**. The identifier is of format
+          **cloud**:**region**:**metastore-uuid**.
+        :param email: str (optional)
+          The invited email address. This field is only present when the **authentication_type** is **EMAIL**.
+          The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet domain).
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param id: str (optional)
@@ -62,7 +74,7 @@
           need to perform a read-modify-write.
         :param sharing_code: str (optional)
           The one-time sharing code provided by the data recipient. This field is only present when the
-          __authentication_type__ is **DATABRICKS**.
+          **authentication_type** is **DATABRICKS**.
 
         :returns: :class:`RecipientInfo`
         
@@ -97,8 +109,11 @@
             # cleanup
             w.recipients.delete(name=created.name)
 
-        Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**
-        privilege on the metastore * The owner of the share recipient * A metastore admin
+        Gets a share recipient from the metastore. The caller must be one of:
+
+        - A user with **USE_RECIPIENT** privilege on the metastore
+        - The owner of the share recipient
+        - A metastore admin
 
         :param name: str
           Name of the recipient.
@@ -106,7 +121,7 @@
         :returns: :class:`RecipientInfo`
         
 
-    .. py:method:: list( [, data_recipient_global_metastore_id: Optional[str], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[RecipientInfo]
+    .. py:method:: list( [, data_recipient_global_metastore_id: Optional[str], max_results: Optional[int], page_token: Optional[str], parent_recipient_name: Optional[str]]) -> Iterator[RecipientInfo]
 
 
         Usage:
@@ -122,22 +137,29 @@
 
         Gets an array of all share recipients within the current metastore where:
 
-        * the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific
-        ordering of the elements in the array.
+        - the caller is a metastore admin, or
+        - the caller is the owner. There is no guarantee of a specific ordering of the elements in the array.
 
         :param data_recipient_global_metastore_id: str (optional)
           If not provided, all recipients will be returned. If no recipients exist with this ID, no results
           will be returned.
         :param max_results: int (optional)
-          Maximum number of recipients to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid recipients are returned (not recommended). - Note: The
-          number of returned recipients might be less than the specified max_results size, even zero. The only
-          definitive indication that no further recipients can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of recipients to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid recipients are returned (not recommended).
+          - Note: The number of returned recipients might be less than the specified max_results size, even
+            zero. The only definitive indication that no further recipients can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param parent_recipient_name: str (optional)
+          If set, the response is scoped to the child recipients of the named parent recipient. Child
+          recipients are otherwise hidden from the default list response. Only applicable to email recipient
+          parents — non-email recipients have no children to scope to.
 
         :returns: Iterator over :class:`RecipientInfo`
         
@@ -201,20 +223,23 @@
         :param name: str
           The name of the Recipient.
         :param max_results: int (optional)
-          Maximum number of permissions to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
-          number of returned permissions might be less than the specified max_results size, even zero. The
-          only definitive indication that no further permissions can be fetched is when the next_page_token is
-          unset from the response.
+          Maximum number of permissions to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid permissions are returned (not recommended).
+          - Note: The number of returned permissions might be less than the specified max_results size, even
+            zero. The only definitive indication that no further permissions can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
         :returns: :class:`GetRecipientSharePermissionsResponse`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]]) -> RecipientInfo
+    .. py:method:: update(name: str [, allowed_acceptance_types: Optional[List[AuthenticationType]], allowed_data_recipient_global_metastore_ids: Optional[List[str]], comment: Optional[str], email: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]]) -> RecipientInfo
 
 
         Usage:
@@ -240,8 +265,20 @@
 
         :param name: str
           Name of the recipient.
+        :param allowed_acceptance_types: List[:class:`AuthenticationType`] (optional)
+          Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+          DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+          **authentication_type** is **EMAIL**.
+        :param allowed_data_recipient_global_metastore_ids: List[str] (optional)
+          Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite with
+          the DATABRICKS acceptance type. Each ID is of the form **cloud**:**region**:**metastore-uuid**.
+          Empty means any metastore is allowed. If non-empty, **allowed_acceptance_types** must include
+          **DATABRICKS**. This field is only present when the **authentication_type** is **EMAIL**.
         :param comment: str (optional)
           Description about the recipient.
+        :param email: str (optional)
+          The invited email address. This field is only present when the **authentication_type** is **EMAIL**.
+          The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet domain).
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param id: str (optional)

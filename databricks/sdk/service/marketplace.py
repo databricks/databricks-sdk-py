@@ -4,11 +4,12 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
+
+
+import logging
 
 from databricks.sdk.service._internal import (
     _enum,
@@ -16,6 +17,7 @@ from databricks.sdk.service._internal import (
     _repeated_dict,
     _repeated_enum,
 )
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -121,6 +123,7 @@ class Category(Enum):
     LOOKUP_TABLES = "LOOKUP_TABLES"
     MANUFACTURING = "MANUFACTURING"
     MEDIA = "MEDIA"
+    OPEN_SOURCE = "OPEN_SOURCE"
     OTHER = "OTHER"
     PUBLIC_SECTOR = "PUBLIC_SECTOR"
     RETAIL = "RETAIL"
@@ -879,6 +882,7 @@ class FileParentType(Enum):
 
 
 class FileStatus(Enum):
+    FILE_STATUS_COMMIT_DRAWDOWN = "FILE_STATUS_COMMIT_DRAWDOWN"
     FILE_STATUS_PUBLISHED = "FILE_STATUS_PUBLISHED"
     FILE_STATUS_SANITIZATION_FAILED = "FILE_STATUS_SANITIZATION_FAILED"
     FILE_STATUS_SANITIZING = "FILE_STATUS_SANITIZING"
@@ -1096,6 +1100,120 @@ class GetProviderResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetProviderResponse:
         """Deserializes the GetProviderResponse from a dictionary."""
         return cls(provider=_from_dict(d, "provider", ProviderInfo))
+
+
+@dataclass
+class InstallListingMcpConnectionDetail:
+    """Consumer-supplied details for creating the Unity Catalog HTTP connection when installing an MCP
+    listing. Values the provider configures on the listing (port, credential type, OAuth
+    token/authorization endpoints, scope, exchange method) are not repeated here."""
+
+    connection_name: str
+    """Name of the Unity Catalog connection to create for the MCP server."""
+
+    base_path: Optional[str] = None
+    """Optional override of the MCP server base path. Defaults to the base path on the listing."""
+
+    bearer_token: Optional[str] = None
+    """Bearer token supplied by the consumer, for bearer-token authentication."""
+
+    catalog: Optional[str] = None
+    """Catalog the MCP service (and its schema-scoped UC connection) is created under. The consumer
+    must hold the privileges to create a service and connection in this catalog/schema."""
+
+    host: Optional[str] = None
+    """Optional override of the MCP server host. Defaults to the host configured on the listing."""
+
+    oauth_credentials: Optional[InstallListingMcpConnectionDetailOauthCredentials] = None
+    """OAuth client credentials supplied by the consumer, for OAuth (U2M/M2M) authentication."""
+
+    schema: Optional[str] = None
+    """Schema (within ``catalog``) the MCP service and its UC connection are created under."""
+
+    def as_dict(self) -> dict:
+        """Serializes the InstallListingMcpConnectionDetail into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.base_path is not None:
+            body["base_path"] = self.base_path
+        if self.bearer_token is not None:
+            body["bearer_token"] = self.bearer_token
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.connection_name is not None:
+            body["connection_name"] = self.connection_name
+        if self.host is not None:
+            body["host"] = self.host
+        if self.oauth_credentials:
+            body["oauth_credentials"] = self.oauth_credentials.as_dict()
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstallListingMcpConnectionDetail into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.base_path is not None:
+            body["base_path"] = self.base_path
+        if self.bearer_token is not None:
+            body["bearer_token"] = self.bearer_token
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.connection_name is not None:
+            body["connection_name"] = self.connection_name
+        if self.host is not None:
+            body["host"] = self.host
+        if self.oauth_credentials:
+            body["oauth_credentials"] = self.oauth_credentials
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InstallListingMcpConnectionDetail:
+        """Deserializes the InstallListingMcpConnectionDetail from a dictionary."""
+        return cls(
+            base_path=d.get("base_path", None),
+            bearer_token=d.get("bearer_token", None),
+            catalog=d.get("catalog", None),
+            connection_name=d.get("connection_name", None),
+            host=d.get("host", None),
+            oauth_credentials=_from_dict(d, "oauth_credentials", InstallListingMcpConnectionDetailOauthCredentials),
+            schema=d.get("schema", None),
+        )
+
+
+@dataclass
+class InstallListingMcpConnectionDetailOauthCredentials:
+    """OAuth client credentials supplied by the consumer for an MCP connection."""
+
+    client_id: str
+    """OAuth client id. Identifies the credential; not the secret itself."""
+
+    client_secret: str
+    """OAuth client secret supplied by the consumer."""
+
+    def as_dict(self) -> dict:
+        """Serializes the InstallListingMcpConnectionDetailOauthCredentials into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.client_id is not None:
+            body["client_id"] = self.client_id
+        if self.client_secret is not None:
+            body["client_secret"] = self.client_secret
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstallListingMcpConnectionDetailOauthCredentials into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.client_id is not None:
+            body["client_id"] = self.client_id
+        if self.client_secret is not None:
+            body["client_secret"] = self.client_secret
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InstallListingMcpConnectionDetailOauthCredentials:
+        """Deserializes the InstallListingMcpConnectionDetailOauthCredentials from a dictionary."""
+        return cls(client_id=d.get("client_id", None), client_secret=d.get("client_secret", None))
 
 
 @dataclass
@@ -1714,9 +1832,10 @@ class ListingDetail:
     """Listing tags - Simple key value pair to annotate listings. When should I use tags vs dedicated
     fields? Using tags avoids the need to add new columns in the database for new annotations.
     However, this should be used sparingly since tags are stored as key value pair. Use tags only:
-    1. If the field is optional and won't need to have NOT NULL integrity check 2. The value is
-    fairly fixed, static and low cardinality (eg. enums). 3. The value won't be used in filters or
-    joins with other tables."""
+    
+    1. If the field is optional and won't need to have NOT NULL integrity check
+    2. The value is fairly fixed, static and low cardinality (eg. enums).
+    3. The value won't be used in filters or joins with other tables."""
 
     terms_of_service: Optional[str] = None
 
@@ -2125,8 +2244,11 @@ class ListingType(Enum):
 
 class MarketplaceFileType(Enum):
     APP = "APP"
+    COMMIT_DRAWDOWN_REQUEST_ATTACHMENT = "COMMIT_DRAWDOWN_REQUEST_ATTACHMENT"
+    EMBEDDED_MARKDOWN = "EMBEDDED_MARKDOWN"
     EMBEDDED_NOTEBOOK = "EMBEDDED_NOTEBOOK"
     PROVIDER_ICON = "PROVIDER_ICON"
+    SCREENSHOT = "SCREENSHOT"
 
 
 @dataclass
@@ -2967,7 +3089,7 @@ class ConsumerFulfillmentsAPI:
     def list(
         self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListingFulfillment]:
-        """Get all listings fulfillments associated with a listing. A _fulfillment_ is a potential installation.
+        """Get all listings fulfillments associated with a listing. A *fulfillment* is a potential installation.
         Standard installations contain metadata about the attached share or git repo. Only one of these fields
         will be present. Personalized installations contain metadata about the attached share or git repo, as
         well as the Delta Sharing recipient type.
@@ -3016,6 +3138,7 @@ class ConsumerInstallationsAPI:
         *,
         accepted_consumer_terms: Optional[ConsumerTerms] = None,
         catalog_name: Optional[str] = None,
+        mcp_connection_detail: Optional[InstallListingMcpConnectionDetail] = None,
         recipient_type: Optional[DeltaSharingRecipientType] = None,
         repo_detail: Optional[RepoInstallation] = None,
         share_name: Optional[str] = None,
@@ -3025,6 +3148,7 @@ class ConsumerInstallationsAPI:
         :param listing_id: str
         :param accepted_consumer_terms: :class:`ConsumerTerms` (optional)
         :param catalog_name: str (optional)
+        :param mcp_connection_detail: :class:`InstallListingMcpConnectionDetail` (optional)
         :param recipient_type: :class:`DeltaSharingRecipientType` (optional)
         :param repo_detail: :class:`RepoInstallation` (optional)
           for git repo installations
@@ -3038,6 +3162,8 @@ class ConsumerInstallationsAPI:
             body["accepted_consumer_terms"] = accepted_consumer_terms.as_dict()
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
+        if mcp_connection_detail is not None:
+            body["mcp_connection_detail"] = mcp_connection_detail.as_dict()
         if recipient_type is not None:
             body["recipient_type"] = recipient_type.value
         if repo_detail is not None:
@@ -3162,9 +3288,10 @@ class ConsumerInstallationsAPI:
         rotate_token: Optional[bool] = None,
     ) -> UpdateInstallationResponse:
         """This is a update API that will update the part of the fields defined in the installation table as well
-        as interact with external services according to the fields not included in the installation table 1.
-        the token will be rotate if the rotateToken flag is true 2. the token will be forcibly rotate if the
-        rotateToken flag is true and the tokenInfo field is empty
+        as interact with external services according to the fields not included in the installation table
+
+        1. the token will be rotate if the rotateToken flag is true
+        2. the token will be forcibly rotate if the rotateToken flag is true and the tokenInfo field is empty
 
         :param listing_id: str
         :param installation_id: str
@@ -4279,13 +4406,14 @@ class ProviderProviderAnalyticsDashboardsAPI:
         self._api = api_client
 
     def create(self) -> ProviderAnalyticsDashboard:
-        """Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
+        """Create provider analytics dashboard. Returns Marketplace specific ``id``. Not to be confused with the
         Lakeview dashboard id.
 
 
         :returns: :class:`ProviderAnalyticsDashboard`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -4295,7 +4423,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
+        res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", body=body, headers=headers)
         return ProviderAnalyticsDashboard.from_dict(res)
 
     def get(self) -> ListProviderAnalyticsDashboardResponse:

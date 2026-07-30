@@ -4,19 +4,25 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
 
-from databricks.sdk.service import catalog
+from google.protobuf.duration_pb2 import Duration
+
+import logging
+
 from databricks.sdk.service._internal import (
+    _duration,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
 )
+
+
+from databricks.sdk.service import catalog
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -28,6 +34,7 @@ class AuthenticationType(Enum):
     """The delta sharing authentication type."""
 
     DATABRICKS = "DATABRICKS"
+    EMAIL = "EMAIL"
     OAUTH_CLIENT_CREDENTIALS = "OAUTH_CLIENT_CREDENTIALS"
     OIDC_FEDERATION = "OIDC_FEDERATION"
     TOKEN = "TOKEN"
@@ -46,6 +53,8 @@ class ColumnTypeName(Enum):
     DECIMAL = "DECIMAL"
     DOUBLE = "DOUBLE"
     FLOAT = "FLOAT"
+    GEOGRAPHY = "GEOGRAPHY"
+    GEOMETRY = "GEOMETRY"
     INT = "INT"
     INTERVAL = "INTERVAL"
     LONG = "LONG"
@@ -578,7 +587,7 @@ class GetActivationUrlInfoResponse:
 class GetRecipientSharePermissionsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     permissions_out: Optional[List[ShareToPrivilegeAssignment]] = None
     """An array of data share permissions for a recipient."""
@@ -614,7 +623,7 @@ class GetRecipientSharePermissionsResponse:
 class GetSharePermissionsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     privilege_assignments: Optional[List[PrivilegeAssignment]] = None
     """The privileges assigned to each principal"""
@@ -644,6 +653,45 @@ class GetSharePermissionsResponse:
             next_page_token=d.get("next_page_token", None),
             privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
         )
+
+
+@dataclass
+class GlobalDistributionStatus:
+    """Status of Global Distribution for a shared asset."""
+
+    eligible: Optional[bool] = None
+    """Whether this asset meets the structural requirements for global distribution (e.g. asset type,
+    history sharing mode, storage scheme)."""
+
+    status: Optional[GlobalDistributionStatusStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GlobalDistributionStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.eligible is not None:
+            body["eligible"] = self.eligible
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GlobalDistributionStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.eligible is not None:
+            body["eligible"] = self.eligible
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GlobalDistributionStatus:
+        """Deserializes the GlobalDistributionStatus from a dictionary."""
+        return cls(eligible=d.get("eligible", None), status=_enum(d, "status", GlobalDistributionStatusStatus))
+
+
+class GlobalDistributionStatusStatus(Enum):
+    DISABLED = "DISABLED"
+    ENABLED = "ENABLED"
 
 
 @dataclass
@@ -768,7 +816,7 @@ class ListProviderShareAssetsResponse:
 class ListProviderSharesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     shares: Optional[List[ProviderShare]] = None
     """An array of provider shares."""
@@ -801,7 +849,7 @@ class ListProviderSharesResponse:
 class ListProvidersResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     providers: Optional[List[ProviderInfo]] = None
     """An array of provider information objects."""
@@ -836,7 +884,7 @@ class ListProvidersResponse:
 class ListRecipientsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     recipients: Optional[List[RecipientInfo]] = None
     """An array of recipient information objects."""
@@ -871,7 +919,7 @@ class ListRecipientsResponse:
 class ListSharesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     shares: Optional[List[ShareInfo]] = None
     """An array of data share information objects."""
@@ -978,20 +1026,34 @@ class OidcFederationPolicy:
 
     subject_claim: str
     """The claim that contains the subject of the token. Depending on the identity provider and the use
-    case (U2M or M2M), this can vary: - For Entra ID (AAD): * U2M flow (group access): Use `groups`.
-    * U2M flow (user access): Use `oid`. * M2M flow (OAuth App access): Use `azp`. - For other IdPs,
-    refer to the specific IdP documentation.
+    case (U2M or M2M), this can vary:
     
-    Supported `subject_claim` values are: - `oid`: Object ID of the user. - `azp`: Client ID of the
-    OAuth app. - `groups`: Object ID of the group. - `sub`: Subject identifier for other use cases."""
+    - For Entra ID (AAD):
+    
+    - U2M flow (group access): Use ``groups``.
+    - U2M flow (user access): Use ``oid``.
+    - M2M flow (OAuth App access): Use ``azp``.
+    
+    - For other IdPs, refer to the specific IdP documentation.
+    
+    Supported ``subject_claim`` values are:
+    
+    - ``oid``: Object ID of the user.
+    - ``azp``: Client ID of the OAuth app.
+    - ``groups``: Object ID of the group.
+    - ``sub``: Subject identifier for other use cases."""
 
     subject: str
     """The required token subject, as specified in the subject claim of federated tokens. The subject
     claim identifies the identity of the user or machine accessing the resource. Examples for Entra
-    ID (AAD): - U2M flow (group access): If the subject claim is `groups`, this must be the Object
-    ID of the group in Entra ID. - U2M flow (user access): If the subject claim is `oid`, this must
-    be the Object ID of the user in Entra ID. - M2M flow (OAuth App access): If the subject claim is
-    `azp`, this must be the client ID of the OAuth app registered in Entra ID."""
+    ID (AAD):
+    
+    - U2M flow (group access): If the subject claim is ``groups``, this must be the Object ID of the
+      group in Entra ID.
+    - U2M flow (user access): If the subject claim is ``oid``, this must be the Object ID of the
+      user in Entra ID.
+    - M2M flow (OAuth App access): If the subject claim is ``azp``, this must be the client ID of
+      the OAuth app registered in Entra ID."""
 
     audiences: Optional[List[str]] = None
     """The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience
@@ -1070,11 +1132,11 @@ class PartitionValue:
 
     recipient_property_key: Optional[str] = None
     """The key of a Delta Sharing recipient's property. For example "databricks-account-id". When this
-    field is set, field `value` can not be set."""
+    field is set, field ``value`` can not be set."""
 
     value: Optional[str] = None
-    """The value of the partition column. When this value is not set, it means `null` value. When this
-    field is set, field `recipient_property_key` can not be set."""
+    """The value of the partition column. When this value is not set, it means ``null`` value. When
+    this field is set, field ``recipient_property_key`` can not be set."""
 
     def as_dict(self) -> dict:
         """Serializes the PartitionValue into a dictionary suitable for use as a JSON request body."""
@@ -1127,6 +1189,15 @@ class PermissionsChange:
     """The principal whose privileges we are changing. Only one of principal or principal_id should be
     specified, never both at the same time."""
 
+    principal_id: Optional[int] = None
+    """An opaque internal ID that identifies the principal whose privileges should be removed.
+    
+    This field is intended for removing privileges associated with a deleted user. When set, only
+    the entries specified in the remove field are processed; any entries in the add field will be
+    rejected.
+    
+    Only one of principal or principal_id should be specified, never both at the same time."""
+
     remove: Optional[List[str]] = None
     """The set of privileges to remove."""
 
@@ -1137,6 +1208,8 @@ class PermissionsChange:
             body["add"] = [v for v in self.add]
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = [v for v in self.remove]
         return body
@@ -1148,6 +1221,8 @@ class PermissionsChange:
             body["add"] = self.add
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = self.remove
         return body
@@ -1155,7 +1230,12 @@ class PermissionsChange:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionsChange:
         """Deserializes the PermissionsChange from a dictionary."""
-        return cls(add=d.get("add", None), principal=d.get("principal", None), remove=d.get("remove", None))
+        return cls(
+            add=d.get("add", None),
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            remove=d.get("remove", None),
+        )
 
 
 class Privilege(Enum):
@@ -1209,8 +1289,12 @@ class Privilege(Enum):
 @dataclass
 class PrivilegeAssignment:
     principal: Optional[str] = None
-    """The principal (user email address or group name). For deleted principals, `principal` is empty
-    while `principal_id` is populated."""
+    """The principal (user email address or group name). For deleted principals, ``principal`` is empty
+    while ``principal_id`` is populated."""
+
+    principal_id: Optional[int] = None
+    """Unique identifier of the principal. For active principals, both ``principal`` and
+    ``principal_id`` are present."""
 
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
@@ -1220,6 +1304,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = [v.value for v in self.privileges]
         return body
@@ -1229,6 +1315,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = self.privileges
         return body
@@ -1236,7 +1324,11 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
+        return cls(
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            privileges=_repeated_enum(d, "privileges", Privilege),
+        )
 
 
 @dataclass
@@ -1245,7 +1337,7 @@ class ProviderInfo:
 
     cloud: Optional[str] = None
     """Cloud vendor of the provider's UC metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     comment: Optional[str] = None
     """Description about the provider."""
@@ -1258,11 +1350,15 @@ class ProviderInfo:
 
     data_provider_global_metastore_id: Optional[str] = None
     """The global UC metastore id of the data provider. This field is only present when the
-    __authentication_type__ is **DATABRICKS**. The identifier is of format
-    __cloud__:__region__:__metastore-uuid__."""
+    **authentication_type** is **DATABRICKS**. The identifier is of format
+    **cloud**:**region**:**metastore-uuid**."""
+
+    email_recipient_id: Optional[str] = None
+    """The ID of the email recipient this provider is being created to accept. Only valid on DATABRICKS
+    CreateProvider when accepting an email invite."""
 
     metastore_id: Optional[str] = None
-    """UUID of the provider's UC metastore. This field is only present when the __authentication_type__
+    """UUID of the provider's UC metastore. This field is only present when the **authentication_type**
     is **DATABRICKS**."""
 
     name: Optional[str] = None
@@ -1272,16 +1368,16 @@ class ProviderInfo:
     """Username of Provider owner."""
 
     recipient_profile: Optional[RecipientProfile] = None
-    """The recipient profile. This field is only present when the authentication_type is `TOKEN` or
-    `OAUTH_CLIENT_CREDENTIALS`."""
+    """The recipient profile. This field is only present when the authentication_type is ``TOKEN`` or
+    ``OAUTH_CLIENT_CREDENTIALS``."""
 
     recipient_profile_str: Optional[str] = None
-    """This field is required when the __authentication_type__ is **TOKEN**,
+    """This field is required when the **authentication_type** is **TOKEN**,
     **OAUTH_CLIENT_CREDENTIALS** or not provided."""
 
     region: Optional[str] = None
     """Cloud region of the provider's UC metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     updated_at: Optional[int] = None
     """Time at which this Provider was created, in epoch milliseconds."""
@@ -1304,6 +1400,8 @@ class ProviderInfo:
             body["created_by"] = self.created_by
         if self.data_provider_global_metastore_id is not None:
             body["data_provider_global_metastore_id"] = self.data_provider_global_metastore_id
+        if self.email_recipient_id is not None:
+            body["email_recipient_id"] = self.email_recipient_id
         if self.metastore_id is not None:
             body["metastore_id"] = self.metastore_id
         if self.name is not None:
@@ -1337,6 +1435,8 @@ class ProviderInfo:
             body["created_by"] = self.created_by
         if self.data_provider_global_metastore_id is not None:
             body["data_provider_global_metastore_id"] = self.data_provider_global_metastore_id
+        if self.email_recipient_id is not None:
+            body["email_recipient_id"] = self.email_recipient_id
         if self.metastore_id is not None:
             body["metastore_id"] = self.metastore_id
         if self.name is not None:
@@ -1365,6 +1465,7 @@ class ProviderInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             data_provider_global_metastore_id=d.get("data_provider_global_metastore_id", None),
+            email_recipient_id=d.get("email_recipient_id", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
             owner=d.get("owner", None),
@@ -1410,11 +1511,23 @@ class RecipientInfo:
     """Full activation url to retrieve the access token. It will be empty if the token is already
     retrieved."""
 
+    allowed_acceptance_types: Optional[List[AuthenticationType]] = None
+    """Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+    DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+    **authentication_type** is **EMAIL**."""
+
+    allowed_data_recipient_global_metastore_ids: Optional[List[str]] = None
+    """Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite
+    with the DATABRICKS acceptance type. Each ID is of the form
+    **cloud**:**region**:**metastore-uuid**. Empty means any metastore is allowed. If non-empty,
+    **allowed_acceptance_types** must include **DATABRICKS**. This field is only present when the
+    **authentication_type** is **EMAIL**."""
+
     authentication_type: Optional[AuthenticationType] = None
 
     cloud: Optional[str] = None
     """Cloud vendor of the recipient's Unity Catalog Metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     comment: Optional[str] = None
     """Description about the recipient."""
@@ -1427,8 +1540,13 @@ class RecipientInfo:
 
     data_recipient_global_metastore_id: Optional[str] = None
     """The global Unity Catalog metastore id provided by the data recipient. This field is only present
-    when the __authentication_type__ is **DATABRICKS**. The identifier is of format
-    __cloud__:__region__:__metastore-uuid__."""
+    when the **authentication_type** is **DATABRICKS**. The identifier is of format
+    **cloud**:**region**:**metastore-uuid**."""
+
+    email: Optional[str] = None
+    """The invited email address. This field is only present when the **authentication_type** is
+    **EMAIL**. The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet
+    domain)."""
 
     expiration_time: Optional[int] = None
     """Expiration timestamp of the token, in epoch milliseconds."""
@@ -1441,7 +1559,7 @@ class RecipientInfo:
 
     metastore_id: Optional[str] = None
     """Unique identifier of recipient's Unity Catalog Metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     name: Optional[str] = None
     """Name of Recipient."""
@@ -1456,14 +1574,14 @@ class RecipientInfo:
 
     region: Optional[str] = None
     """Cloud region of the recipient's Unity Catalog Metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     sharing_code: Optional[str] = None
     """The one-time sharing code provided by the data recipient. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     tokens: Optional[List[RecipientTokenInfo]] = None
-    """This field is only present when the __authentication_type__ is **TOKEN**."""
+    """This field is only present when the **authentication_type** is **TOKEN**."""
 
     updated_at: Optional[int] = None
     """Time at which the recipient was updated, in epoch milliseconds."""
@@ -1478,6 +1596,12 @@ class RecipientInfo:
             body["activated"] = self.activated
         if self.activation_url is not None:
             body["activation_url"] = self.activation_url
+        if self.allowed_acceptance_types:
+            body["allowed_acceptance_types"] = [v.value for v in self.allowed_acceptance_types]
+        if self.allowed_data_recipient_global_metastore_ids:
+            body["allowed_data_recipient_global_metastore_ids"] = [
+                v for v in self.allowed_data_recipient_global_metastore_ids
+            ]
         if self.authentication_type is not None:
             body["authentication_type"] = self.authentication_type.value
         if self.cloud is not None:
@@ -1490,6 +1614,8 @@ class RecipientInfo:
             body["created_by"] = self.created_by
         if self.data_recipient_global_metastore_id is not None:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
+        if self.email is not None:
+            body["email"] = self.email
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
         if self.id is not None:
@@ -1523,6 +1649,10 @@ class RecipientInfo:
             body["activated"] = self.activated
         if self.activation_url is not None:
             body["activation_url"] = self.activation_url
+        if self.allowed_acceptance_types:
+            body["allowed_acceptance_types"] = self.allowed_acceptance_types
+        if self.allowed_data_recipient_global_metastore_ids:
+            body["allowed_data_recipient_global_metastore_ids"] = self.allowed_data_recipient_global_metastore_ids
         if self.authentication_type is not None:
             body["authentication_type"] = self.authentication_type
         if self.cloud is not None:
@@ -1535,6 +1665,8 @@ class RecipientInfo:
             body["created_by"] = self.created_by
         if self.data_recipient_global_metastore_id is not None:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
+        if self.email is not None:
+            body["email"] = self.email
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
         if self.id is not None:
@@ -1567,12 +1699,15 @@ class RecipientInfo:
         return cls(
             activated=d.get("activated", None),
             activation_url=d.get("activation_url", None),
+            allowed_acceptance_types=_repeated_enum(d, "allowed_acceptance_types", AuthenticationType),
+            allowed_data_recipient_global_metastore_ids=d.get("allowed_data_recipient_global_metastore_ids", None),
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
             cloud=d.get("cloud", None),
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             data_recipient_global_metastore_id=d.get("data_recipient_global_metastore_id", None),
+            email=d.get("email", None),
             expiration_time=d.get("expiration_time", None),
             id=d.get("id", None),
             ip_access_list=_from_dict(d, "ip_access_list", IpAccessList),
@@ -1740,6 +1875,100 @@ class RegisteredModelAlias:
 
 
 @dataclass
+class ReplicationConfig:
+    """Configuration for Delta Sharing replication on a share. When enabled, the share's data is copied
+    into each recipient's region so recipients can query the share locally."""
+
+    enabled: Optional[bool] = None
+    """Whether replication is enabled for the share."""
+
+    schedule: Optional[ReplicationSchedule] = None
+    """Optional schedule describing how often replication runs for this share. When unset, replication
+    runs on a service-default schedule."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.schedule:
+            body["schedule"] = self.schedule.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.schedule:
+            body["schedule"] = self.schedule
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationConfig:
+        """Deserializes the ReplicationConfig from a dictionary."""
+        return cls(enabled=d.get("enabled", None), schedule=_from_dict(d, "schedule", ReplicationSchedule))
+
+
+@dataclass
+class ReplicationInterval:
+    """Fixed-interval replication schedule variant. The duration must be between 30 minutes and 24
+    hours; values outside that range are rejected at the API boundary."""
+
+    duration: Optional[Duration] = None
+    """How often the share's data should be replicated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationInterval into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.duration is not None:
+            body["duration"] = self.duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationInterval into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.duration is not None:
+            body["duration"] = self.duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationInterval:
+        """Deserializes the ReplicationInterval from a dictionary."""
+        return cls(duration=_duration(d, "duration"))
+
+
+@dataclass
+class ReplicationSchedule:
+    """Schedule for share replication. Today only a fixed ``interval`` variant is supported; the
+    ``variant`` oneof leaves room for future variants (e.g. cron) without API churn. Each arm is
+    wrapped in a sub-message so variant-specific metadata (e.g. jitter, drift tolerance, timezone)
+    can be added later without breaking the wire format."""
+
+    interval: Optional[ReplicationInterval] = None
+    """Fixed-interval replication schedule."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationSchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.interval:
+            body["interval"] = self.interval.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.interval:
+            body["interval"] = self.interval
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationSchedule:
+        """Deserializes the ReplicationSchedule from a dictionary."""
+        return cls(interval=_from_dict(d, "interval", ReplicationInterval))
+
+
+@dataclass
 class RetrieveTokenResponse:
     bearer_token: Optional[str] = None
     """The token used to authorize the recipient."""
@@ -1792,7 +2021,7 @@ class RetrieveTokenResponse:
 
 @dataclass
 class SecurablePropertiesKvPairs:
-    """An object with __properties__ containing map of key-value properties attached to the securable."""
+    """An object with **properties** containing map of key-value properties attached to the securable."""
 
     properties: Dict[str, str]
     """A map of key-value properties attached to the securable."""
@@ -1867,6 +2096,13 @@ class ShareInfo:
     owner: Optional[str] = None
     """Username of current owner of share."""
 
+    replication_config: Optional[ReplicationConfig] = None
+    """Configuration for share replication."""
+
+    serverless_budget_policy_id: Optional[str] = None
+    """Serverless budget policy id (can only be created/updated when calling data-sharing service)
+    [Create,Update:IGN]"""
+
     storage_location: Optional[str] = None
     """Storage Location URL (full path) for the share."""
 
@@ -1894,6 +2130,10 @@ class ShareInfo:
             body["objects"] = [v.as_dict() for v in self.objects]
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.replication_config:
+            body["replication_config"] = self.replication_config.as_dict()
+        if self.serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = self.serverless_budget_policy_id
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1919,6 +2159,10 @@ class ShareInfo:
             body["objects"] = self.objects
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.replication_config:
+            body["replication_config"] = self.replication_config
+        if self.serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = self.serverless_budget_policy_id
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1939,6 +2183,8 @@ class ShareInfo:
             name=d.get("name", None),
             objects=_repeated_dict(d, "objects", SharedDataObject),
             owner=d.get("owner", None),
+            replication_config=_from_dict(d, "replication_config", ReplicationConfig),
+            serverless_budget_policy_id=d.get("serverless_budget_policy_id", None),
             storage_location=d.get("storage_location", None),
             storage_root=d.get("storage_root", None),
             updated_at=d.get("updated_at", None),
@@ -1985,7 +2231,7 @@ class ShareToPrivilegeAssignment:
 class SharedDataObject:
     name: str
     """A fully qualified name that uniquely identifies a data object. For example, a table's fully
-    qualified name is in the format of `<catalog>.<schema>.<table>`,"""
+    qualified name is in the format of ``<catalog>.<schema>.<table>``,"""
 
     added_at: Optional[int] = None
     """The time when this data object is added to the share, in epoch milliseconds."""
@@ -2007,6 +2253,10 @@ class SharedDataObject:
     data_object_type: Optional[SharedDataObjectDataObjectType] = None
     """The type of the data object."""
 
+    global_distribution_status: Optional[GlobalDistributionStatus] = None
+    """Global Distribution status for the shared asset. Output only. Only set for TABLE objects; absent
+    for all other data object types."""
+
     history_data_sharing_status: Optional[SharedDataObjectHistoryDataSharingStatus] = None
     """Whether to enable or disable sharing of data history. If not specified, the default is
     **DISABLED**."""
@@ -2019,22 +2269,29 @@ class SharedDataObject:
     
     Use this field for table-like objects (for example: TABLE, VIEW, MATERIALIZED_VIEW,
     STREAMING_TABLE, FOREIGN_TABLE). For non-table objects (for example: VOLUME, MODEL,
-    NOTEBOOK_FILE, FUNCTION), use `string_shared_as` instead.
+    NOTEBOOK_FILE, FUNCTION), use ``string_shared_as`` instead.
     
     Important: For non-table objects, this field must be omitted entirely.
     
-    Format: Must be a 2-part name `<schema_name>.<table_name>` (e.g., "sales_schema.orders_table") -
-    Both schema and table names must contain only alphanumeric characters and underscores - No
-    periods, spaces, forward slashes, or control characters are allowed within each part - Do not
-    include the catalog name (use 2 parts, not 3)
+    Format: Must be a 2-part name ``<schema_name>.<table_name>`` (e.g., "sales_schema.orders_table")
     
-    Behavior: - If not provided, the service automatically generates the alias as `<schema>.<table>`
-    from the object's original name - If you don't want to specify this field, omit it entirely from
-    the request (do not pass an empty string) - The `shared_as` name must be unique within the share
+    - Both schema and table names must contain only alphanumeric characters and underscores
+    - No periods, spaces, forward slashes, or control characters are allowed within each part
+    - Do not include the catalog name (use 2 parts, not 3)
     
-    Examples: - Valid: "analytics_schema.customer_view" - Invalid:
-    "catalog.analytics_schema.customer_view" (3 parts not allowed) - Invalid:
-    "analytics-schema.customer-view" (hyphens not allowed)"""
+    Behavior:
+    
+    - If not provided, the service automatically generates the alias as ``<schema>.<table>`` from
+      the object's original name
+    - If you don't want to specify this field, omit it entirely from the request (do not pass an
+      empty string)
+    - The ``shared_as`` name must be unique within the share
+    
+    Examples:
+    
+    - Valid: "analytics_schema.customer_view"
+    - Invalid: "catalog.analytics_schema.customer_view" (3 parts not allowed)
+    - Invalid: "analytics-schema.customer-view" (hyphens not allowed)"""
 
     start_version: Optional[int] = None
     """The start version associated with the object. This allows data providers to control the lowest
@@ -2042,7 +2299,7 @@ class SharedDataObject:
     changes for versions >= start_version. If not specified, clients can only query starting from
     the version of the object at the time it was added to the share.
     
-    NOTE: The start_version should be <= the `current` version of the object."""
+    NOTE: The start_version should be <= the ``current`` version of the object."""
 
     status: Optional[SharedDataObjectStatus] = None
     """One of: **ACTIVE**, **PERMISSION_DENIED**."""
@@ -2052,26 +2309,35 @@ class SharedDataObject:
     
     Use this field for non-table objects (for example: VOLUME, MODEL, NOTEBOOK_FILE, FUNCTION). For
     table-like objects (for example: TABLE, VIEW, MATERIALIZED_VIEW, STREAMING_TABLE,
-    FOREIGN_TABLE), use `shared_as` instead.
+    FOREIGN_TABLE), use ``shared_as`` instead.
     
     Important: For table-like objects, this field must be omitted entirely.
     
-    Format: - For VOLUME: Must be a 2-part name `<schema_name>.<volume_name>` (e.g.,
-    "data_schema.ml_models") - For FUNCTION: Must be a 2-part name `<schema_name>.<function_name>`
-    (e.g., "udf_schema.calculate_tax") - For MODEL: Must be a 2-part name
-    `<schema_name>.<model_name>` (e.g., "models.prediction_model") - For NOTEBOOK_FILE: Should be
-    the notebook file name (e.g., "analysis_notebook.py") - All names must contain only alphanumeric
-    characters and underscores - No periods, spaces, forward slashes, or control characters are
-    allowed within each part
+    Format:
     
-    Behavior: - If not provided, the service automatically generates the alias from the object's
-    original name - If you don't want to specify this field, omit it entirely from the request (do
-    not pass an empty string) - The `string_shared_as` name must be unique for objects of the same
-    type within the share
+    - For VOLUME: Must be a 2-part name ``<schema_name>.<volume_name>`` (e.g.,
+      "data_schema.ml_models")
+    - For FUNCTION: Must be a 2-part name ``<schema_name>.<function_name>`` (e.g.,
+      "udf_schema.calculate_tax")
+    - For MODEL: Must be a 2-part name ``<schema_name>.<model_name>`` (e.g.,
+      "models.prediction_model")
+    - For NOTEBOOK_FILE: Should be the notebook file name (e.g., "analysis_notebook.py")
+    - All names must contain only alphanumeric characters and underscores
+    - No periods, spaces, forward slashes, or control characters are allowed within each part
     
-    Examples: - Valid for VOLUME: "data_schema.training_data" - Valid for FUNCTION:
-    "analytics.calculate_revenue" - Invalid: "catalog.data_schema.training_data" (3 parts not
-    allowed for volumes) - Invalid: "data-schema.training-data" (hyphens not allowed)"""
+    Behavior:
+    
+    - If not provided, the service automatically generates the alias from the object's original name
+    - If you don't want to specify this field, omit it entirely from the request (do not pass an
+      empty string)
+    - The ``string_shared_as`` name must be unique for objects of the same type within the share
+    
+    Examples:
+    
+    - Valid for VOLUME: "data_schema.training_data"
+    - Valid for FUNCTION: "analytics.calculate_revenue"
+    - Invalid: "catalog.data_schema.training_data" (3 parts not allowed for volumes)
+    - Invalid: "data-schema.training-data" (hyphens not allowed)"""
 
     def as_dict(self) -> dict:
         """Serializes the SharedDataObject into a dictionary suitable for use as a JSON request body."""
@@ -2088,6 +2354,8 @@ class SharedDataObject:
             body["content"] = self.content
         if self.data_object_type is not None:
             body["data_object_type"] = self.data_object_type.value
+        if self.global_distribution_status:
+            body["global_distribution_status"] = self.global_distribution_status.as_dict()
         if self.history_data_sharing_status is not None:
             body["history_data_sharing_status"] = self.history_data_sharing_status.value
         if self.name is not None:
@@ -2119,6 +2387,8 @@ class SharedDataObject:
             body["content"] = self.content
         if self.data_object_type is not None:
             body["data_object_type"] = self.data_object_type
+        if self.global_distribution_status:
+            body["global_distribution_status"] = self.global_distribution_status
         if self.history_data_sharing_status is not None:
             body["history_data_sharing_status"] = self.history_data_sharing_status
         if self.name is not None:
@@ -2145,6 +2415,7 @@ class SharedDataObject:
             comment=d.get("comment", None),
             content=d.get("content", None),
             data_object_type=_enum(d, "data_object_type", SharedDataObjectDataObjectType),
+            global_distribution_status=_from_dict(d, "global_distribution_status", GlobalDistributionStatus),
             history_data_sharing_status=_enum(
                 d, "history_data_sharing_status", SharedDataObjectHistoryDataSharingStatus
             ),
@@ -2233,11 +2504,18 @@ class SharedSecurableKind(Enum):
 
 @dataclass
 class Table:
+    access_modes: Optional[List[str]] = None
+    """The access modes supported for this table (e.g., "url", "dir"). Used for open sharing to
+    indicate how the table can be accessed."""
+
     comment: Optional[str] = None
     """The comment of the table."""
 
     id: Optional[str] = None
     """The id of the table."""
+
+    location: Optional[str] = None
+    """The cloud storage location of the table for open sharing."""
 
     materialization_namespace: Optional[str] = None
     """The catalog and schema of the materialized table"""
@@ -2263,10 +2541,14 @@ class Table:
     def as_dict(self) -> dict:
         """Serializes the Table into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.access_modes:
+            body["accessModes"] = [v for v in self.access_modes]
         if self.comment is not None:
             body["comment"] = self.comment
         if self.id is not None:
             body["id"] = self.id
+        if self.location is not None:
+            body["location"] = self.location
         if self.materialization_namespace is not None:
             body["materialization_namespace"] = self.materialization_namespace
         if self.materialized_table_name is not None:
@@ -2286,10 +2568,14 @@ class Table:
     def as_shallow_dict(self) -> dict:
         """Serializes the Table into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.access_modes:
+            body["accessModes"] = self.access_modes
         if self.comment is not None:
             body["comment"] = self.comment
         if self.id is not None:
             body["id"] = self.id
+        if self.location is not None:
+            body["location"] = self.location
         if self.materialization_namespace is not None:
             body["materialization_namespace"] = self.materialization_namespace
         if self.materialized_table_name is not None:
@@ -2310,8 +2596,10 @@ class Table:
     def from_dict(cls, d: Dict[str, Any]) -> Table:
         """Deserializes the Table from a dictionary."""
         return cls(
+            access_modes=d.get("accessModes", None),
             comment=d.get("comment", None),
             id=d.get("id", None),
+            location=d.get("location", None),
             materialization_namespace=d.get("materialization_namespace", None),
             materialized_table_name=d.get("materialized_table_name", None),
             name=d.get("name", None),
@@ -2436,6 +2724,7 @@ class ProvidersAPI:
         authentication_type: AuthenticationType,
         *,
         comment: Optional[str] = None,
+        email_recipient_id: Optional[str] = None,
         recipient_profile_str: Optional[str] = None,
     ) -> ProviderInfo:
         """Creates a new authentication provider minimally based on a name and authentication type. The caller
@@ -2446,8 +2735,11 @@ class ProvidersAPI:
         :param authentication_type: :class:`AuthenticationType`
         :param comment: str (optional)
           Description about the provider.
+        :param email_recipient_id: str (optional)
+          The ID of the email recipient this provider is being created to accept. Only valid on DATABRICKS
+          CreateProvider when accepting an email invite.
         :param recipient_profile_str: str (optional)
-          This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
+          This field is required when the **authentication_type** is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
 
         :returns: :class:`ProviderInfo`
@@ -2458,6 +2750,8 @@ class ProvidersAPI:
             body["authentication_type"] = authentication_type.value
         if comment is not None:
             body["comment"] = comment
+        if email_recipient_id is not None:
+            body["email_recipient_id"] = email_recipient_id
         if name is not None:
             body["name"] = name
         if recipient_profile_str is not None:
@@ -2529,13 +2823,16 @@ class ProvidersAPI:
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
           be returned.
         :param max_results: int (optional)
-          Maximum number of providers to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid providers are returned (not recommended). - Note: The
-          number of returned providers might be less than the specified max_results size, even zero. The only
-          definitive indication that no further providers can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of providers to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid providers are returned (not recommended).
+          - Note: The number of returned providers might be less than the specified max_results size, even
+            zero. The only definitive indication that no further providers can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -2624,18 +2921,22 @@ class ProvidersAPI:
     ) -> Iterator[ProviderShare]:
         """Gets an array of a specified provider's shares within the metastore where:
 
-        * the caller is a metastore admin, or * the caller is the owner.
+        - the caller is a metastore admin, or
+        - the caller is the owner.
 
         :param name: str
           Name of the provider in which to list shares.
         :param max_results: int (optional)
-          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
-          returned shares might be less than the specified max_results size, even zero. The only definitive
-          indication that no further shares can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of shares to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid shares are returned (not recommended).
+          - Note: The number of returned shares might be less than the specified max_results size, even zero.
+            The only definitive indication that no further shares can be fetched is when the next_page_token
+            is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -2688,7 +2989,7 @@ class ProvidersAPI:
         :param owner: str (optional)
           Username of Provider owner.
         :param recipient_profile_str: str (optional)
-          This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
+          This field is required when the **authentication_type** is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
 
         :returns: :class:`ProviderInfo`
@@ -2718,7 +3019,7 @@ class ProvidersAPI:
 
 class RecipientActivationAPI:
     """The Recipient Activation API is only applicable in the open sharing model where the recipient object has
-    the authentication type of `TOKEN`. The data recipient follows the activation link shared by the data
+    the authentication type of ``TOKEN``. The data recipient follows the activation link shared by the data
     provider to download the credential file that includes the access token. The recipient will then use the
     credential file to establish a secure connection with the provider to receive the shared data.
 
@@ -2728,15 +3029,21 @@ class RecipientActivationAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_activation_url_info(self, activation_url: str):
+    def get_activation_url_info(self, activation_url: str, *, metastore_id: Optional[str] = None):
         """Gets an activation URL for a share.
 
         :param activation_url: str
           The one time activation url. It also accepts activation token.
+        :param metastore_id: str (optional)
+          The provider metastore ID. Optional for now; used as a routing hint when present and principal
+          context
 
 
         """
 
+        query = {}
+        if metastore_id is not None:
+            query["metastore_id"] = metastore_id
         headers = {
             "Accept": "application/json",
         }
@@ -2746,18 +3053,27 @@ class RecipientActivationAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
-            "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}", headers=headers
+            "GET",
+            f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}",
+            query=query,
+            headers=headers,
         )
 
-    def retrieve_token(self, activation_url: str) -> RetrieveTokenResponse:
+    def retrieve_token(self, activation_url: str, *, metastore_id: Optional[str] = None) -> RetrieveTokenResponse:
         """Retrieve access token with an activation url. This is a public API without any authentication.
 
         :param activation_url: str
           The one time activation url. It also accepts activation token.
+        :param metastore_id: str (optional)
+          The provider metastore ID. Optional for now; used as a routing hint when present and principal
+          context
 
         :returns: :class:`RetrieveTokenResponse`
         """
 
+        query = {}
+        if metastore_id is not None:
+            query["metastore_id"] = metastore_id
         headers = {
             "Accept": "application/json",
         }
@@ -2767,27 +3083,33 @@ class RecipientActivationAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}", headers=headers
+            "GET",
+            f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}",
+            query=query,
+            headers=headers,
         )
         return RetrieveTokenResponse.from_dict(res)
 
 
 class RecipientFederationPoliciesAPI:
     """The Recipient Federation Policies APIs are only applicable in the open sharing model where the recipient
-    object has the authentication type of `OIDC_RECIPIENT`, enabling data sharing from Databricks to
+    object has the authentication type of ``OIDC_RECIPIENT``, enabling data sharing from Databricks to
     non-Databricks recipients. OIDC Token Federation enables secure, secret-less authentication for accessing
     Delta Sharing servers. Users and applications authenticate using short-lived OIDC tokens issued by their
     own Identity Provider (IdP), such as Azure Entra ID or Okta, without the need for managing static
     credentials or client secrets. A federation policy defines how non-Databricks recipients authenticate
     using OIDC tokens. It validates the OIDC claims in federated tokens and is set at the recipient level. The
     caller must be the owner of the recipient to create or manage a federation policy. Federation policies
-    support the following scenarios: - User-to-Machine (U2M) flow: A user accesses Delta Shares using their
-    own identity, such as connecting through PowerBI Delta Sharing Client. - Machine-to-Machine (M2M) flow: An
-    application accesses Delta Shares using its own identity, typically for automation tasks like nightly jobs
-    through Python Delta Sharing Client. OIDC Token Federation enables fine-grained access control, supports
-    Multi-Factor Authentication (MFA), and enhances security by minimizing the risk of credential leakage
-    through the use of short-lived, expiring tokens. It is designed for strong identity governance, secure
-    cross-platform data sharing, and reduced operational overhead for credential management.
+    support the following scenarios:
+
+    - User-to-Machine (U2M) flow: A user accesses Delta Shares using their own identity, such as connecting
+      through PowerBI Delta Sharing Client.
+    - Machine-to-Machine (M2M) flow: An application accesses Delta Shares using its own identity, typically
+      for automation tasks like nightly jobs through Python Delta Sharing Client. OIDC Token Federation
+      enables fine-grained access control, supports Multi-Factor Authentication (MFA), and enhances security
+      by minimizing the risk of credential leakage through the use of short-lived, expiring tokens. It is
+      designed for strong identity governance, secure cross-platform data sharing, and reduced operational
+      overhead for credential management.
 
     For more information, see
     https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security and
@@ -2804,20 +3126,26 @@ class RecipientFederationPoliciesAPI:
         defined at the recipient level. This enables secretless sharing clients to authenticate using OIDC
         tokens.
 
-        Supported scenarios for federation policies: 1. **User-to-Machine (U2M) flow** (e.g., PowerBI): A user
-        accesses a resource using their own identity. 2. **Machine-to-Machine (M2M) flow** (e.g., OAuth App):
-        An OAuth App accesses a resource using its own identity, typically for tasks like running nightly
-        jobs.
+        Supported scenarios for federation policies:
 
-        For an overview, refer to: - Blog post: Overview of feature:
-        https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
+        1. **User-to-Machine (U2M) flow** (e.g., PowerBI): A user accesses a resource using their own
+           identity.
+        2. **Machine-to-Machine (M2M) flow** (e.g., OAuth App): An OAuth App accesses a resource using its own
+           identity, typically for tasks like running nightly jobs.
 
-        For detailed configuration guides based on your use case: - Creating a Federation Policy as a
-        provider: https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed - Configuration and
-        usage for Machine-to-Machine (M2M) applications (e.g., Python Delta Sharing Client):
-        https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m - Configuration and usage for
-        User-to-Machine (U2M) applications (e.g., PowerBI):
-        https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m
+        For an overview, refer to:
+
+        - Blog post: Overview of feature:
+          https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
+
+        For detailed configuration guides based on your use case:
+
+        - Creating a Federation Policy as a provider:
+          https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed
+        - Configuration and usage for Machine-to-Machine (M2M) applications (e.g., Python Delta Sharing
+          Client): https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m
+        - Configuration and usage for User-to-Machine (U2M) applications (e.g., PowerBI):
+          https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m
 
         :param recipient_name: str
           Name of the recipient. This is the name of the recipient for which the policy is being created.
@@ -2933,6 +3261,49 @@ class RecipientFederationPoliciesAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def update(
+        self, recipient_name: str, name: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
+    ) -> FederationPolicy:
+        """Updates an existing federation policy for an OIDC_RECIPIENT. The caller must be the owner of the
+        recipient.
+
+        :param recipient_name: str
+          Name of the recipient. This is the name of the recipient for which the policy is being updated.
+        :param name: str
+          Name of the policy. This is the name of the current name of the policy.
+        :param policy: :class:`FederationPolicy`
+        :param update_mask: str (optional)
+          The field mask specifies which fields of the policy to update. To specify multiple fields in the
+          field mask, use comma as the separator (no space). The special value '*' indicates that all fields
+          should be updated (full replacement). If unspecified, all fields that are set in the policy provided
+          in the update request will overwrite the corresponding fields in the existing policy. Example value:
+          'comment,oidc_policy.audiences'.
+
+        :returns: :class:`FederationPolicy`
+        """
+
+        body = policy.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return FederationPolicy.from_dict(res)
+
 
 class RecipientsAPI:
     """A recipient is an object you create using :method:recipients/create to represent an organization which you
@@ -2940,14 +3311,14 @@ class RecipientsAPI:
     has access to a Databricks workspace that is enabled for Unity Catalog:
 
     - For recipients with access to a Databricks workspace that is enabled for Unity Catalog, you can create a
-    recipient object along with a unique sharing identifier you get from the recipient. The sharing identifier
-    is the key identifier that enables the secure connection. This sharing mode is called
-    **Databricks-to-Databricks sharing**.
-
+      recipient object along with a unique sharing identifier you get from the recipient. The sharing
+      identifier is the key identifier that enables the secure connection. This sharing mode is called
+      **Databricks-to-Databricks sharing**.
     - For recipients without access to a Databricks workspace that is enabled for Unity Catalog, when you
-    create a recipient object, Databricks generates an activation link you can send to the recipient. The
-    recipient follows the activation link to download the credential file, and then uses the credential file
-    to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**."""
+      create a recipient object, Databricks generates an activation link you can send to the recipient. The
+      recipient follows the activation link to download the credential file, and then uses the credential file
+      to establish a secure connection to receive the shared data. This sharing mode is called **open
+      sharing**."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2957,8 +3328,11 @@ class RecipientsAPI:
         name: str,
         authentication_type: AuthenticationType,
         *,
+        allowed_acceptance_types: Optional[List[AuthenticationType]] = None,
+        allowed_data_recipient_global_metastore_ids: Optional[List[str]] = None,
         comment: Optional[str] = None,
         data_recipient_global_metastore_id: Optional[str] = None,
+        email: Optional[str] = None,
         expiration_time: Optional[int] = None,
         id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
@@ -2972,12 +3346,24 @@ class RecipientsAPI:
         :param name: str
           Name of Recipient.
         :param authentication_type: :class:`AuthenticationType`
+        :param allowed_acceptance_types: List[:class:`AuthenticationType`] (optional)
+          Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+          DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+          **authentication_type** is **EMAIL**.
+        :param allowed_data_recipient_global_metastore_ids: List[str] (optional)
+          Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite with
+          the DATABRICKS acceptance type. Each ID is of the form **cloud**:**region**:**metastore-uuid**.
+          Empty means any metastore is allowed. If non-empty, **allowed_acceptance_types** must include
+          **DATABRICKS**. This field is only present when the **authentication_type** is **EMAIL**.
         :param comment: str (optional)
           Description about the recipient.
         :param data_recipient_global_metastore_id: str (optional)
           The global Unity Catalog metastore id provided by the data recipient. This field is only present
-          when the __authentication_type__ is **DATABRICKS**. The identifier is of format
-          __cloud__:__region__:__metastore-uuid__.
+          when the **authentication_type** is **DATABRICKS**. The identifier is of format
+          **cloud**:**region**:**metastore-uuid**.
+        :param email: str (optional)
+          The invited email address. This field is only present when the **authentication_type** is **EMAIL**.
+          The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet domain).
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param id: str (optional)
@@ -2992,18 +3378,26 @@ class RecipientsAPI:
           need to perform a read-modify-write.
         :param sharing_code: str (optional)
           The one-time sharing code provided by the data recipient. This field is only present when the
-          __authentication_type__ is **DATABRICKS**.
+          **authentication_type** is **DATABRICKS**.
 
         :returns: :class:`RecipientInfo`
         """
 
         body = {}
+        if allowed_acceptance_types is not None:
+            body["allowed_acceptance_types"] = [v.value for v in allowed_acceptance_types]
+        if allowed_data_recipient_global_metastore_ids is not None:
+            body["allowed_data_recipient_global_metastore_ids"] = [
+                v for v in allowed_data_recipient_global_metastore_ids
+            ]
         if authentication_type is not None:
             body["authentication_type"] = authentication_type.value
         if comment is not None:
             body["comment"] = comment
         if data_recipient_global_metastore_id is not None:
             body["data_recipient_global_metastore_id"] = data_recipient_global_metastore_id
+        if email is not None:
+            body["email"] = email
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
         if id is not None:
@@ -3048,8 +3442,11 @@ class RecipientsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
 
     def get(self, name: str) -> RecipientInfo:
-        """Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**
-        privilege on the metastore * The owner of the share recipient * A metastore admin
+        """Gets a share recipient from the metastore. The caller must be one of:
+
+        - A user with **USE_RECIPIENT** privilege on the metastore
+        - The owner of the share recipient
+        - A metastore admin
 
         :param name: str
           Name of the recipient.
@@ -3074,25 +3471,33 @@ class RecipientsAPI:
         data_recipient_global_metastore_id: Optional[str] = None,
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
+        parent_recipient_name: Optional[str] = None,
     ) -> Iterator[RecipientInfo]:
         """Gets an array of all share recipients within the current metastore where:
 
-        * the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific
-        ordering of the elements in the array.
+        - the caller is a metastore admin, or
+        - the caller is the owner. There is no guarantee of a specific ordering of the elements in the array.
 
         :param data_recipient_global_metastore_id: str (optional)
           If not provided, all recipients will be returned. If no recipients exist with this ID, no results
           will be returned.
         :param max_results: int (optional)
-          Maximum number of recipients to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid recipients are returned (not recommended). - Note: The
-          number of returned recipients might be less than the specified max_results size, even zero. The only
-          definitive indication that no further recipients can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of recipients to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid recipients are returned (not recommended).
+          - Note: The number of returned recipients might be less than the specified max_results size, even
+            zero. The only definitive indication that no further recipients can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param parent_recipient_name: str (optional)
+          If set, the response is scoped to the child recipients of the named parent recipient. Child
+          recipients are otherwise hidden from the default list response. Only applicable to email recipient
+          parents — non-email recipients have no children to scope to.
 
         :returns: Iterator over :class:`RecipientInfo`
         """
@@ -3104,6 +3509,8 @@ class RecipientsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
+        if parent_recipient_name is not None:
+            query["parent_recipient_name"] = parent_recipient_name
         headers = {
             "Accept": "application/json",
         }
@@ -3161,13 +3568,16 @@ class RecipientsAPI:
         :param name: str
           The name of the Recipient.
         :param max_results: int (optional)
-          Maximum number of permissions to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
-          number of returned permissions might be less than the specified max_results size, even zero. The
-          only definitive indication that no further permissions can be fetched is when the next_page_token is
-          unset from the response.
+          Maximum number of permissions to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid permissions are returned (not recommended).
+          - Note: The number of returned permissions might be less than the specified max_results size, even
+            zero. The only definitive indication that no further permissions can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -3196,7 +3606,10 @@ class RecipientsAPI:
         self,
         name: str,
         *,
+        allowed_acceptance_types: Optional[List[AuthenticationType]] = None,
+        allowed_data_recipient_global_metastore_ids: Optional[List[str]] = None,
         comment: Optional[str] = None,
+        email: Optional[str] = None,
         expiration_time: Optional[int] = None,
         id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
@@ -3210,8 +3623,20 @@ class RecipientsAPI:
 
         :param name: str
           Name of the recipient.
+        :param allowed_acceptance_types: List[:class:`AuthenticationType`] (optional)
+          Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+          DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+          **authentication_type** is **EMAIL**.
+        :param allowed_data_recipient_global_metastore_ids: List[str] (optional)
+          Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite with
+          the DATABRICKS acceptance type. Each ID is of the form **cloud**:**region**:**metastore-uuid**.
+          Empty means any metastore is allowed. If non-empty, **allowed_acceptance_types** must include
+          **DATABRICKS**. This field is only present when the **authentication_type** is **EMAIL**.
         :param comment: str (optional)
           Description about the recipient.
+        :param email: str (optional)
+          The invited email address. This field is only present when the **authentication_type** is **EMAIL**.
+          The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet domain).
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param id: str (optional)
@@ -3231,8 +3656,16 @@ class RecipientsAPI:
         """
 
         body = {}
+        if allowed_acceptance_types is not None:
+            body["allowed_acceptance_types"] = [v.value for v in allowed_acceptance_types]
+        if allowed_data_recipient_global_metastore_ids is not None:
+            body["allowed_data_recipient_global_metastore_ids"] = [
+                v for v in allowed_data_recipient_global_metastore_ids
+            ]
         if comment is not None:
             body["comment"] = comment
+        if email is not None:
+            body["email"] = email
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
         if id is not None:
@@ -3267,7 +3700,15 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, *, comment: Optional[str] = None, storage_root: Optional[str] = None) -> ShareInfo:
+    def create(
+        self,
+        name: str,
+        *,
+        comment: Optional[str] = None,
+        replication_config: Optional[ReplicationConfig] = None,
+        serverless_budget_policy_id: Optional[str] = None,
+        storage_root: Optional[str] = None,
+    ) -> ShareInfo:
         """Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
 
@@ -3275,6 +3716,11 @@ class SharesAPI:
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param replication_config: :class:`ReplicationConfig` (optional)
+          Configuration for share replication.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
 
@@ -3286,6 +3732,10 @@ class SharesAPI:
             body["comment"] = comment
         if name is not None:
             body["name"] = name
+        if replication_config is not None:
+            body["replication_config"] = replication_config.as_dict()
+        if serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = serverless_budget_policy_id
         if storage_root is not None:
             body["storage_root"] = storage_root
         headers = {
@@ -3344,20 +3794,32 @@ class SharesAPI:
         return ShareInfo.from_dict(res)
 
     def list_shares(
-        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+        self,
+        *,
+        filter_by_genie_space_id: Optional[str] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
     ) -> Iterator[ShareInfo]:
         """Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on
         the metastore, all shares are returned. Otherwise, only shares owned by the caller are returned. There
         is no guarantee of a specific ordering of the elements in the array.
 
+        :param filter_by_genie_space_id: str (optional)
+          When set, only shares that contain the Genie space with this id are returned. The filter is applied
+          at the data-sharing layer after MC returns the page, so the resulting page may be smaller than
+          ``max_results``. Intended for the provider Genie space page's "Shared with N recipients" lookup; not
+          optimized for providers with many shares.
         :param max_results: int (optional)
-          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
-          returned shares might be less than the specified max_results size, even zero. The only definitive
-          indication that no further shares can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of shares to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid shares are returned (not recommended).
+          - Note: The number of returned shares might be less than the specified max_results size, even zero.
+            The only definitive indication that no further shares can be fetched is when the next_page_token
+            is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -3365,6 +3827,8 @@ class SharesAPI:
         """
 
         query = {}
+        if filter_by_genie_space_id is not None:
+            query["filter_by_genie_space_id"] = filter_by_genie_space_id
         if max_results is not None:
             query["max_results"] = max_results
         if page_token is not None:
@@ -3397,13 +3861,16 @@ class SharesAPI:
         :param name: str
           The name of the Recipient.
         :param max_results: int (optional)
-          Maximum number of permissions to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
-          number of returned permissions might be less than the specified max_results size, even zero. The
-          only definitive indication that no further permissions can be fetched is when the next_page_token is
-          unset from the response.
+          Maximum number of permissions to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid permissions are returned (not recommended).
+          - Note: The number of returned permissions might be less than the specified max_results size, even
+            zero. The only definitive indication that no further permissions can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -3433,18 +3900,19 @@ class SharesAPI:
         comment: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
+        serverless_budget_policy_id: Optional[str] = None,
         storage_root: Optional[str] = None,
         updates: Optional[List[SharedDataObjectUpdate]] = None,
     ) -> ShareInfo:
         """Updates the share with the changes and data objects in the request. The caller must be the owner of
         the share or a metastore admin.
 
-        When the caller is a metastore admin, only the __owner__ field can be updated.
+        When the caller is a metastore admin, only the **owner** field can be updated.
 
         In the case the share name is changed, **updateShare** requires that the caller is the owner of the
         share and has the CREATE_SHARE privilege.
 
-        If there are notebook files in the share, the __storage_root__ field cannot be updated.
+        If there are notebook files in the share, the **storage_root** field cannot be updated.
 
         For each table that is added through this method, the share owner must also have **SELECT** privilege
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the
@@ -3460,6 +3928,9 @@ class SharesAPI:
           New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
@@ -3475,6 +3946,8 @@ class SharesAPI:
             body["new_name"] = new_name
         if owner is not None:
             body["owner"] = owner
+        if serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = serverless_budget_policy_id
         if storage_root is not None:
             body["storage_root"] = storage_root
         if updates is not None:

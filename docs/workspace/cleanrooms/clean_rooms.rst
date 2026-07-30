@@ -12,9 +12,9 @@
 
         Create a new clean room with the specified collaborators. This method is asynchronous; the returned
         name field inside the clean_room field can be used to poll the clean room status, using the
-        :method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING
-        state, with only name, owner, comment, created_at and status populated. The clean room will be usable
-        once it enters an ACTIVE state.
+        `cleanrooms/get <https://docs.databricks.com/api/workspace/cleanrooms/get>`__ method. When this method
+        returns, the clean room will be in a PROVISIONING state, with only name, owner, comment, created_at
+        and status populated. The clean room will be usable once it enters an ACTIVE state.
 
         The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the metastore.
 
@@ -78,7 +78,7 @@
         Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
         privilege, or be metastore admin.
 
-        When the caller is a metastore admin, only the __owner__ field can be updated.
+        When the caller is a metastore admin, only the **owner** field can be updated.
 
         :param name: str
           Name of the clean room.

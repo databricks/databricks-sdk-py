@@ -4,21 +4,22 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common.types.fieldmask import FieldMask
+import logging
+
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
     _timestamp,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -264,6 +265,9 @@ class KnowledgeAssistant:
     """Additional global instructions on how the agent should generate answers. Optional on create and
     update. When updating a Knowledge Assistant, include this field in update_mask to modify it."""
 
+    knowledge_assistant_id: Optional[str] = None
+    """The universally unique identifier (UUID) of the Knowledge Assistant."""
+
     name: Optional[str] = None
     """The resource name of the Knowledge Assistant. Format:
     knowledge-assistants/{knowledge_assistant_id}"""
@@ -292,6 +296,8 @@ class KnowledgeAssistant:
             body["id"] = self.id
         if self.instructions is not None:
             body["instructions"] = self.instructions
+        if self.knowledge_assistant_id is not None:
+            body["knowledge_assistant_id"] = self.knowledge_assistant_id
         if self.name is not None:
             body["name"] = self.name
         if self.state is not None:
@@ -319,6 +325,8 @@ class KnowledgeAssistant:
             body["id"] = self.id
         if self.instructions is not None:
             body["instructions"] = self.instructions
+        if self.knowledge_assistant_id is not None:
+            body["knowledge_assistant_id"] = self.knowledge_assistant_id
         if self.name is not None:
             body["name"] = self.name
         if self.state is not None:
@@ -338,6 +346,7 @@ class KnowledgeAssistant:
             experiment_id=d.get("experiment_id", None),
             id=d.get("id", None),
             instructions=d.get("instructions", None),
+            knowledge_assistant_id=d.get("knowledge_assistant_id", None),
             name=d.get("name", None),
             state=_enum(d, "state", KnowledgeAssistantState),
         )
@@ -735,7 +744,7 @@ class ListKnowledgeAssistantsResponse:
     knowledge_assistants: Optional[List[KnowledgeAssistant]] = None
 
     next_page_token: Optional[str] = None
-    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    """A token that can be sent as ``page_token`` to retrieve the next page. If this field is omitted,
     there are no subsequent pages."""
 
     def as_dict(self) -> dict:
@@ -1058,8 +1067,8 @@ class KnowledgeAssistantsAPI:
           The maximum number of examples to return. If unspecified, at most 100 examples will be returned. The
           maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListExamples` call. Provide this to retrieve the subsequent
-          page. If unspecified, the first page will be returned.
+          A page token, received from a previous ``ListExamples`` call. Provide this to retrieve the
+          subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`Example`
         """
@@ -1095,8 +1104,8 @@ class KnowledgeAssistantsAPI:
           The maximum number of knowledge assistants to return. If unspecified, at most 100 knowledge
           assistants will be returned. The maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListKnowledgeAssistants` call. Provide this to retrieve the
-          subsequent page. If unspecified, the first page will be returned.
+          A page token, received from a previous ``ListKnowledgeAssistants`` call. Provide this to retrieve
+          the subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`KnowledgeAssistant`
         """
@@ -1200,6 +1209,7 @@ class KnowledgeAssistantsAPI:
 
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1209,7 +1219,7 @@ class KnowledgeAssistantsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.1/{name}/knowledge-sources:sync", headers=headers)
+        self._api.do("POST", f"/api/2.1/{name}/knowledge-sources:sync", body=body, headers=headers)
 
     def update_example(self, name: str, example: Example, update_mask: FieldMask) -> Example:
         """Updates an example in a Knowledge Assistant.
@@ -1219,8 +1229,11 @@ class KnowledgeAssistantsAPI:
           knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
         :param example: :class:`Example`
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the example. Allowed values: `question`, `guidelines`.
-          Examples: - `question` - `question,guidelines`
+          Comma-delimited list of fields to update on the example. Allowed values: ``question``,
+          ``guidelines``. Examples:
+
+          - ``question``
+          - ``question,guidelines``
 
         :returns: :class:`Example`
         """
@@ -1253,8 +1266,11 @@ class KnowledgeAssistantsAPI:
           annotations on Knowledge Assistant fields describe create-time requirements and do not mean all
           those fields are required for update.
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the Knowledge Assistant. Allowed values: `display_name`,
-          `description`, `instructions`. Examples: - `display_name` - `description,instructions`
+          Comma-delimited list of fields to update on the Knowledge Assistant. Allowed values:
+          ``display_name``, ``description``, ``instructions``. Examples:
+
+          - ``display_name``
+          - ``description,instructions``
 
         :returns: :class:`KnowledgeAssistant`
         """
@@ -1288,8 +1304,11 @@ class KnowledgeAssistantsAPI:
           annotations on Knowledge Source fields describe create-time requirements and do not mean all those
           fields are required for update.
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the Knowledge Source. Allowed values: `display_name`,
-          `description`. Examples: - `display_name` - `display_name,description`
+          Comma-delimited list of fields to update on the Knowledge Source. Allowed values: ``display_name``,
+          ``description``. Examples:
+
+          - ``display_name``
+          - ``display_name,description``
 
         :returns: :class:`KnowledgeSource`
         """

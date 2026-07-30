@@ -4,28 +4,30 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
+from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common.types.fieldmask import FieldMask
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
+    _duration,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
     _timestamp,
+    Wait,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
 
-from ..errors import OperationFailed
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -408,6 +410,265 @@ class AccountsUpdateStorageCredentialResponse:
     def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateStorageCredentialResponse:
         """Deserializes the AccountsUpdateStorageCredentialResponse from a dictionary."""
         return cls(credential_info=_from_dict(d, "credential_info", StorageCredentialInfo))
+
+
+@dataclass
+class AgentService:
+    """An agent service represents a governed registration of an external AI agent (Bedrock Agents,
+    Snowflake Cortex Agents, Foundry, etc) in Unity Catalog. It acts as a schema-scoped securable
+    that references a UC Connection holding the agent platform's auth + endpoint, and exposes the
+    agent for discovery, authorization, and audit logging. Initial kind: AGENT_SERVICE_STANDARD.
+    Future kinds (INTERNAL, GENIE, APP) can be added as separate enum values."""
+
+    agent_service_type: Optional[AgentServiceAgentServiceType] = None
+    """Type of agent service. Required on create. Immutable after creation. For future internal / genie
+    / app kinds, determines how the backing agent surface is provisioned."""
+
+    browse_only: Optional[bool] = None
+    """Whether the caller sees only metadata available through the BROWSE privilege."""
+
+    comment: Optional[str] = None
+    """User-provided description."""
+
+    config: Optional[AgentServiceConfig] = None
+    """Operational configuration: connection, base_path, system_prompt, model_service, optional
+    inference table, optional rate limits. Required on CreateAgentService; on UpdateAgentService it
+    is required only when ``config`` (or a ``config.*`` subpath) appears in ``update_mask``."""
+
+    create_time: Optional[Timestamp] = None
+    """When the agent service was created."""
+
+    created_by: Optional[str] = None
+    """Creator identity."""
+
+    effective_owner: Optional[str] = None
+    """The resolved owner of the agent service. Falls back to the caller's identity when ``owner`` is
+    not explicitly set on creation."""
+
+    etag: Optional[str] = None
+    """Optimistic concurrency control token. Server-generated from the entity's state and returned on
+    every read. To use it as an if-match precondition on a mutation, echo the last-read value back
+    via the dedicated ``etag`` field on the Update / Delete request; the server rejects the mutation
+    if the stored etag differs."""
+
+    metastore_id: Optional[str] = None
+    """Metastore hosting the agent service."""
+
+    name: Optional[str] = None
+    """Resource name of the agent service. Format:
+    ``agent-services/{catalog}.{schema}.{agent_service}``. Each ``{...}`` component is capped at 255
+    characters individually. Server-derived on Create from ``parent`` + ``agent_service_id``;
+    required and immutable on Update/Get/Delete."""
+
+    owner: Optional[str] = None
+    """The owner of the agent service. Write-only; read owner via effective_owner."""
+
+    update_time: Optional[Timestamp] = None
+    """When the agent service was last modified."""
+
+    updated_by: Optional[str] = None
+    """Identity of the last updater."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AgentService into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.agent_service_type is not None:
+            body["agent_service_type"] = self.agent_service_type.value
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.config:
+            body["config"] = self.config.as_dict()
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AgentService into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.agent_service_type is not None:
+            body["agent_service_type"] = self.agent_service_type
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.config:
+            body["config"] = self.config
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AgentService:
+        """Deserializes the AgentService from a dictionary."""
+        return cls(
+            agent_service_type=_enum(d, "agent_service_type", AgentServiceAgentServiceType),
+            browse_only=d.get("browse_only", None),
+            comment=d.get("comment", None),
+            config=_from_dict(d, "config", AgentServiceConfig),
+            create_time=_timestamp(d, "create_time"),
+            created_by=d.get("created_by", None),
+            effective_owner=d.get("effective_owner", None),
+            etag=d.get("etag", None),
+            metastore_id=d.get("metastore_id", None),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
+        )
+
+
+class AgentServiceAgentServiceType(Enum):
+    """Type of agent service. Determines how the backing agent surface is provisioned and how
+    invocation routes to the runtime. Nested to scope enum values (guardrail:
+    avoid-generic-enum-names)."""
+
+    AGENT_SERVICE_TYPE_EXTERNAL = "AGENT_SERVICE_TYPE_EXTERNAL"
+
+
+@dataclass
+class AgentServiceConfig:
+    """Operational configuration for an agent service. Groups the source connection, base path, system
+    prompt, model service reference, optional inference table, and optional rate limits. The
+    ``source_connection.name`` is supplied on create."""
+
+    base_path: Optional[str] = None
+    """Vendor base path appended to the connection url at invocation time. Bedrock example:
+    ``/agents/AGENT123/agentAliases/ALIAS1/sessions``. Empty when the agent platform does not
+    require a per-agent suffix."""
+
+    inference_table: Optional[InferenceTableConfig] = None
+    """Inference table config for invocation payload logging. Reuses the shared InferenceTableConfig
+    (same as ModelServiceConfig.inference_table)."""
+
+    model_service: Optional[str] = None
+    """Resource name of the model service backing this agent. Empty when the agent platform manages its
+    own model selection (e.g. Bedrock Agents). Format:
+    ``model-services/{catalog}.{schema}.{model_service}``."""
+
+    rate_limits: Optional[List[RateLimit]] = None
+    """Per-principal rate limits applied to invocations routed through this agent service. Repeated to
+    support per-USER / USER_GROUP / SERVICE_PRINCIPAL / SERVICE / USER_DEFAULT scopes
+    simultaneously, mirroring McpServiceConfig.rate_limits. Empty when no rate limit is configured."""
+
+    source_connection: Optional[AgentServiceConfigSourceConnection] = None
+    """External agent referenced via a UC Connection."""
+
+    system_prompt: Optional[str] = None
+    """System prompt prepended to invocations. Max 8 KB."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AgentServiceConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.base_path is not None:
+            body["base_path"] = self.base_path
+        if self.inference_table:
+            body["inference_table"] = self.inference_table.as_dict()
+        if self.model_service is not None:
+            body["model_service"] = self.model_service
+        if self.rate_limits:
+            body["rate_limits"] = [v.as_dict() for v in self.rate_limits]
+        if self.source_connection:
+            body["source_connection"] = self.source_connection.as_dict()
+        if self.system_prompt is not None:
+            body["system_prompt"] = self.system_prompt
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AgentServiceConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.base_path is not None:
+            body["base_path"] = self.base_path
+        if self.inference_table:
+            body["inference_table"] = self.inference_table
+        if self.model_service is not None:
+            body["model_service"] = self.model_service
+        if self.rate_limits:
+            body["rate_limits"] = self.rate_limits
+        if self.source_connection:
+            body["source_connection"] = self.source_connection
+        if self.system_prompt is not None:
+            body["system_prompt"] = self.system_prompt
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AgentServiceConfig:
+        """Deserializes the AgentServiceConfig from a dictionary."""
+        return cls(
+            base_path=d.get("base_path", None),
+            inference_table=_from_dict(d, "inference_table", InferenceTableConfig),
+            model_service=d.get("model_service", None),
+            rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
+            source_connection=_from_dict(d, "source_connection", AgentServiceConfigSourceConnection),
+            system_prompt=d.get("system_prompt", None),
+        )
+
+
+@dataclass
+class AgentServiceConfigSourceConnection:
+    """UC Connection for the agent platform, such as Bedrock Agents, Snowflake Cortex Agents, or
+    Foundry. On create, provide ``name`` in the schema-scoped form
+    ``connections/{catalog}.{schema}.{connection}``. On read, the service returns ``name``."""
+
+    name: str
+
+    is_deleted: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AgentServiceConfigSourceConnection into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AgentServiceConfigSourceConnection into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AgentServiceConfigSourceConnection:
+        """Deserializes the AgentServiceConfigSourceConnection from a dictionary."""
+        return cls(is_deleted=d.get("is_deleted", None), name=d.get("name", None))
 
 
 @dataclass
@@ -802,14 +1063,14 @@ class AzureManagedIdentity:
 
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     credential_id: Optional[str] = None
     """The Databricks internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}``
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
     assume the AzureManagedIdentity is using the system-assigned identity."""
@@ -852,11 +1113,11 @@ class AzureManagedIdentityRequest:
 
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}``
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
     assume the AzureManagedIdentity is using the system-assigned identity."""
@@ -894,14 +1155,14 @@ class AzureManagedIdentityResponse:
 
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     credential_id: Optional[str] = None
     """The Databricks internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}``
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
     assume the AzureManagedIdentity is using the system-assigned identity."""
@@ -1109,10 +1370,40 @@ class CancelRefreshResponse:
 
 
 @dataclass
+class CatalogFederationConfig:
+    """Federation-only configuration for a FOREIGN catalog."""
+
+    schema_filter_type: Optional[SchemaFilterType] = None
+    """Controls how the catalog's schema filter items are treated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CatalogFederationConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.schema_filter_type is not None:
+            body["schema_filter_type"] = self.schema_filter_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CatalogFederationConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.schema_filter_type is not None:
+            body["schema_filter_type"] = self.schema_filter_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CatalogFederationConfig:
+        """Deserializes the CatalogFederationConfig from a dictionary."""
+        return cls(schema_filter_type=_enum(d, "schema_filter_type", SchemaFilterType))
+
+
+@dataclass
 class CatalogInfo:
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
+
+    catalog_federation_config: Optional[CatalogFederationConfig] = None
+    """Federation-only configuration, present only for FOREIGN catalogs."""
 
     catalog_type: Optional[CatalogType] = None
 
@@ -1122,6 +1413,9 @@ class CatalogInfo:
     connection_name: Optional[str] = None
     """The name of the connection to an external data source."""
 
+    conversion_info: Optional[ConversionInfo] = None
+    """Status of conversion of FOREIGN catalog to UC Native catalog."""
+
     created_at: Optional[int] = None
     """Time at which this catalog was created, in epoch milliseconds."""
 
@@ -1130,6 +1424,9 @@ class CatalogInfo:
 
     custom_max_retention_hours: Optional[int] = None
     """Custom maximum retention period in hours for the catalog"""
+
+    dr_replication_info: Optional[DrReplicationInfo] = None
+    """Disaster Recovery replication state snapshot."""
 
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
@@ -1189,18 +1486,24 @@ class CatalogInfo:
         body = {}
         if self.browse_only is not None:
             body["browse_only"] = self.browse_only
+        if self.catalog_federation_config:
+            body["catalog_federation_config"] = self.catalog_federation_config.as_dict()
         if self.catalog_type is not None:
             body["catalog_type"] = self.catalog_type.value
         if self.comment is not None:
             body["comment"] = self.comment
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.conversion_info:
+            body["conversion_info"] = self.conversion_info.as_dict()
         if self.created_at is not None:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
         if self.custom_max_retention_hours is not None:
             body["custom_max_retention_hours"] = self.custom_max_retention_hours
+        if self.dr_replication_info:
+            body["dr_replication_info"] = self.dr_replication_info.as_dict()
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag.as_dict()
         if self.enable_predictive_optimization is not None:
@@ -1244,18 +1547,24 @@ class CatalogInfo:
         body = {}
         if self.browse_only is not None:
             body["browse_only"] = self.browse_only
+        if self.catalog_federation_config:
+            body["catalog_federation_config"] = self.catalog_federation_config
         if self.catalog_type is not None:
             body["catalog_type"] = self.catalog_type
         if self.comment is not None:
             body["comment"] = self.comment
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.conversion_info:
+            body["conversion_info"] = self.conversion_info
         if self.created_at is not None:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
         if self.custom_max_retention_hours is not None:
             body["custom_max_retention_hours"] = self.custom_max_retention_hours
+        if self.dr_replication_info:
+            body["dr_replication_info"] = self.dr_replication_info
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag
         if self.enable_predictive_optimization is not None:
@@ -1299,12 +1608,15 @@ class CatalogInfo:
         """Deserializes the CatalogInfo from a dictionary."""
         return cls(
             browse_only=d.get("browse_only", None),
+            catalog_federation_config=_from_dict(d, "catalog_federation_config", CatalogFederationConfig),
             catalog_type=_enum(d, "catalog_type", CatalogType),
             comment=d.get("comment", None),
             connection_name=d.get("connection_name", None),
+            conversion_info=_from_dict(d, "conversion_info", ConversionInfo),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             custom_max_retention_hours=d.get("custom_max_retention_hours", None),
+            dr_replication_info=_from_dict(d, "dr_replication_info", DrReplicationInfo),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
@@ -1331,6 +1643,7 @@ class CatalogInfo:
 class CatalogIsolationMode(Enum):
     ISOLATED = "ISOLATED"
     OPEN = "OPEN"
+    OPEN_IN_ACCOUNT = "OPEN_IN_ACCOUNT"
 
 
 class CatalogType(Enum):
@@ -1629,6 +1942,40 @@ class ColumnRelationship:
         return cls(source=d.get("source", None), target=d.get("target", None))
 
 
+@dataclass
+class ColumnTagValueExtraction:
+    """Extracts the value of a column-level tag: get_column_tag_value(col, "tagKey")."""
+
+    column_alias: str
+    """The alias from MATCH COLUMNS that identifies the column."""
+
+    tag_key: str
+    """1024 matches the max_length on FunctionArgument.constant above."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnTagValueExtraction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_alias is not None:
+            body["column_alias"] = self.column_alias
+        if self.tag_key is not None:
+            body["tag_key"] = self.tag_key
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnTagValueExtraction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_alias is not None:
+            body["column_alias"] = self.column_alias
+        if self.tag_key is not None:
+            body["tag_key"] = self.tag_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnTagValueExtraction:
+        """Deserializes the ColumnTagValueExtraction from a dictionary."""
+        return cls(column_alias=d.get("column_alias", None), tag_key=d.get("tag_key", None))
+
+
 class ColumnTypeName(Enum):
     ARRAY = "ARRAY"
     BINARY = "BINARY"
@@ -1638,6 +1985,7 @@ class ColumnTypeName(Enum):
     DATE = "DATE"
     DECIMAL = "DECIMAL"
     DOUBLE = "DOUBLE"
+    FILE = "FILE"
     FLOAT = "FLOAT"
     GEOGRAPHY = "GEOGRAPHY"
     GEOMETRY = "GEOMETRY"
@@ -1649,7 +1997,9 @@ class ColumnTypeName(Enum):
     SHORT = "SHORT"
     STRING = "STRING"
     STRUCT = "STRUCT"
+    TABLEREF_TYPE = "TABLEREF_TYPE"
     TABLE_TYPE = "TABLE_TYPE"
+    TIME = "TIME"
     TIMESTAMP = "TIMESTAMP"
     TIMESTAMP_NTZ = "TIMESTAMP_NTZ"
     USER_DEFINED_TYPE = "USER_DEFINED_TYPE"
@@ -1657,11 +2007,56 @@ class ColumnTypeName(Enum):
 
 
 @dataclass
+class ConditionalDisplay:
+    """Defines when an option should be hidden based on another option's value. For example, for
+    pre-created OAuth connections, some options are conditionally hidden. This field works in
+    conjunction with OptionSpec.is_hidden:
+
+    - If OptionSpec.is_hidden is true, the option is always hidden regardless of ConditionalDisplay.
+    - If OptionSpec.is_hidden is false (or unset), ConditionalDisplay determines visibility:
+    - If depends_on_option matches any value in hidden_when_values, hide this option.
+    - Otherwise, show this option."""
+
+    depends_on_option: Optional[str] = None
+    """The name of the option whose value determines visibility of this option."""
+
+    hidden_when_values: Optional[List[str]] = None
+    """The values of the depends_on_option that will hide this option. If empty or not set, this option
+    follows default visibility (shown unless is_hidden is true). If depends_on_option has any of
+    these values, this option is hidden."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConditionalDisplay into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.depends_on_option is not None:
+            body["depends_on_option"] = self.depends_on_option
+        if self.hidden_when_values:
+            body["hidden_when_values"] = [v for v in self.hidden_when_values]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConditionalDisplay into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.depends_on_option is not None:
+            body["depends_on_option"] = self.depends_on_option
+        if self.hidden_when_values:
+            body["hidden_when_values"] = self.hidden_when_values
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConditionalDisplay:
+        """Deserializes the ConditionalDisplay from a dictionary."""
+        return cls(
+            depends_on_option=d.get("depends_on_option", None), hidden_when_values=d.get("hidden_when_values", None)
+        )
+
+
+@dataclass
 class ConnectionDependency:
     """A connection that is dependent on a SQL object."""
 
     connection_name: Optional[str] = None
-    """Full name of the dependent connection, in the form of __connection_name__."""
+    """Full name of the dependent connection, in the form of **connection_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the ConnectionDependency into a dictionary suitable for use as a JSON request body."""
@@ -1729,6 +2124,10 @@ class ConnectionInfo:
     read_only: Optional[bool] = None
     """If the connection is read only."""
 
+    secrets: Optional[Dict[str, str]] = None
+    """A map of option names to UC Secret references. Keys are connection option names (same as in
+    OptionsKVPairs) and values are UC Secret fully qualified names."""
+
     securable_type: Optional[SecurableType] = None
 
     updated_at: Optional[int] = None
@@ -1773,6 +2172,8 @@ class ConnectionInfo:
             body["provisioning_info"] = self.provisioning_info.as_dict()
         if self.read_only is not None:
             body["read_only"] = self.read_only
+        if self.secrets:
+            body["secrets"] = self.secrets
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type.value
         if self.updated_at is not None:
@@ -1816,6 +2217,8 @@ class ConnectionInfo:
             body["provisioning_info"] = self.provisioning_info
         if self.read_only is not None:
             body["read_only"] = self.read_only
+        if self.secrets:
+            body["secrets"] = self.secrets
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type
         if self.updated_at is not None:
@@ -1845,6 +2248,7 @@ class ConnectionInfo:
             properties=d.get("properties", None),
             provisioning_info=_from_dict(d, "provisioning_info", ProvisioningInfo),
             read_only=d.get("read_only", None),
+            secrets=d.get("secrets", None),
             securable_type=_enum(d, "securable_type", SecurableType),
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
@@ -1853,36 +2257,94 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 127"""
-
+    ADOBE_COMMERCE = "ADOBE_COMMERCE"
+    ADP_WORKFORCE_NOW = "ADP_WORKFORCE_NOW"
+    AHA = "AHA"
+    AIRTABLE = "AIRTABLE"
+    AMPLITUDE = "AMPLITUDE"
+    APPFIGURES = "APPFIGURES"
+    APPLE_APP_STORE = "APPLE_APP_STORE"
+    APPLE_SEARCH_ADS = "APPLE_SEARCH_ADS"
+    ATLASSIAN_ORGANIZATION = "ATLASSIAN_ORGANIZATION"
+    AWIN = "AWIN"
+    AZURE_MONITOR_LOGS = "AZURE_MONITOR_LOGS"
+    BIGLAKE = "BIGLAKE"
     BIGQUERY = "BIGQUERY"
+    CERIDIAN_DAYFORCE = "CERIDIAN_DAYFORCE"
     CONFLUENCE = "CONFLUENCE"
     DATABRICKS = "DATABRICKS"
+    DELIGHTED = "DELIGHTED"
     DYNAMICS365 = "DYNAMICS365"
+    EPIC_CLARITY = "EPIC_CLARITY"
+    FRESHSERVICE = "FRESHSERVICE"
+    FRONT = "FRONT"
     GA4_RAW_DATA = "GA4_RAW_DATA"
+    GENESYS = "GENESYS"
     GITHUB = "GITHUB"
+    GITLAB = "GITLAB"
     GLUE = "GLUE"
+    GMAIL = "GMAIL"
+    GONG = "GONG"
+    GOOGLE_ANALYTICS = "GOOGLE_ANALYTICS"
+    GOOGLE_CALENDAR = "GOOGLE_CALENDAR"
+    GOOGLE_CLOUD_LAKEHOUSE = "GOOGLE_CLOUD_LAKEHOUSE"
+    GOOGLE_WORKSPACE = "GOOGLE_WORKSPACE"
+    GURU = "GURU"
+    HIBOB = "HIBOB"
     HIVE_METASTORE = "HIVE_METASTORE"
     HTTP = "HTTP"
     HUBSPOT = "HUBSPOT"
+    ICEBERG_REST = "ICEBERG_REST"
+    IRONCLAD = "IRONCLAD"
+    JDBC = "JDBC"
+    KINESIS = "KINESIS"
+    LINEAR = "LINEAR"
+    MARKETO = "MARKETO"
     META_MARKETING = "META_MARKETING"
+    MICROSOFT_ENTRA_ID = "MICROSOFT_ENTRA_ID"
+    MONDAY_COM = "MONDAY_COM"
     MYSQL = "MYSQL"
+    NETSKOPE_LOGS = "NETSKOPE_LOGS"
+    NOTION = "NOTION"
     ORACLE = "ORACLE"
+    ORACLE_ELOQUA = "ORACLE_ELOQUA"
+    ORACLE_FUSION_CLOUD = "ORACLE_FUSION_CLOUD"
     OUTLOOK = "OUTLOOK"
+    PAGERDUTY = "PAGERDUTY"
+    PALANTIR = "PALANTIR"
+    PARTNERSTACK = "PARTNERSTACK"
+    PENDO = "PENDO"
     POSTGRESQL = "POSTGRESQL"
     POWER_BI = "POWER_BI"
+    PUBSUB = "PUBSUB"
+    QUICKBOOKS = "QUICKBOOKS"
     REDSHIFT = "REDSHIFT"
     SALESFORCE = "SALESFORCE"
     SALESFORCE_DATA_CLOUD = "SALESFORCE_DATA_CLOUD"
+    SALESLOFT = "SALESLOFT"
+    SAP_SUCCESSFACTORS = "SAP_SUCCESSFACTORS"
+    SAS = "SAS"
+    SENDGRID = "SENDGRID"
     SERVICENOW = "SERVICENOW"
+    SHOPIFY = "SHOPIFY"
+    SLACK_ACCESS_AND_INTEGRATION_LOGS = "SLACK_ACCESS_AND_INTEGRATION_LOGS"
     SMARTSHEET = "SMARTSHEET"
+    SNAPCHAT_ADS = "SNAPCHAT_ADS"
     SNOWFLAKE = "SNOWFLAKE"
+    SPLUNK = "SPLUNK"
     SQLDW = "SQLDW"
     SQLSERVER = "SQLSERVER"
+    SQUARE = "SQUARE"
     TERADATA = "TERADATA"
     UNKNOWN_CONNECTION_TYPE = "UNKNOWN_CONNECTION_TYPE"
+    VERKADA = "VERKADA"
     WORKDAY_RAAS = "WORKDAY_RAAS"
+    YOUTUBE_ANALYTICS = "YOUTUBE_ANALYTICS"
     ZENDESK = "ZENDESK"
+    ZIP = "ZIP"
+    ZOHO_BOOKS = "ZOHO_BOOKS"
+    ZOOM = "ZOOM"
+    ZOOM_LOGS = "ZOOM_LOGS"
 
 
 @dataclass
@@ -1934,9 +2396,41 @@ class ContinuousUpdateStatus:
 
 
 @dataclass
+class ConversionInfo:
+    """Status of conversion of FOREIGN entity into UC Native entity."""
+
+    state: Optional[ConversionInfoState] = None
+    """The conversion state of the resource."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConversionInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConversionInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConversionInfo:
+        """Deserializes the ConversionInfo from a dictionary."""
+        return cls(state=_enum(d, "state", ConversionInfoState))
+
+
+class ConversionInfoState(Enum):
+    COMPLETED = "COMPLETED"
+    IN_PROGRESS = "IN_PROGRESS"
+
+
+@dataclass
 class CreateAccessRequest:
     behalf_of: Optional[Principal] = None
-    """Optional. The principal this request is for. Empty `behalf_of` defaults to the requester's
+    """Optional. The principal this request is for. Empty ``behalf_of`` defaults to the requester's
     identity.
     
     Principals must be unique across the API call."""
@@ -2029,7 +2523,7 @@ class CreateAccountsMetastore:
     """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+    """Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -2475,7 +2969,7 @@ class CredentialDependency:
     """A credential that is dependent on a SQL object."""
 
     credential_name: Optional[str] = None
-    """Full name of the dependent credential, in the form of __credential_name__."""
+    """Full name of the dependent credential, in the form of **credential_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the CredentialDependency into a dictionary suitable for use as a JSON request body."""
@@ -2669,12 +3163,14 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 20"""
-
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
     EDGEGRID_AKAMAI = "EDGEGRID_AKAMAI"
+    GENERIC_TOKEN_EXCHANGE = "GENERIC_TOKEN_EXCHANGE"
+    INLINE_YAML = "INLINE_YAML"
     OAUTH_ACCESS_TOKEN = "OAUTH_ACCESS_TOKEN"
+    OAUTH_DCR = "OAUTH_DCR"
+    OAUTH_GOOGLE_SERVICE_ACCOUNT = "OAUTH_GOOGLE_SERVICE_ACCOUNT"
     OAUTH_M2M = "OAUTH_M2M"
     OAUTH_MTLS = "OAUTH_MTLS"
     OAUTH_REFRESH_TOKEN = "OAUTH_REFRESH_TOKEN"
@@ -2991,7 +3487,7 @@ class DeleteTableConstraintResponse:
 @dataclass
 class DeltaRuntimePropertiesKvPairs:
     """Properties pertaining to the current state of the delta table as given by the commit server.
-    This does not contain **delta.*** (input) properties in __TableInfo.properties__."""
+    This does not contain **delta.*** (input) properties in **TableInfo.properties**."""
 
     delta_runtime_properties: Dict[str, str]
     """A map of key-value properties attached to the securable."""
@@ -3022,9 +3518,35 @@ class DeltaSharingScopeEnum(Enum):
 
 
 @dataclass
+class DenyOptions:
+    privileges: List[str]
+    """List of privileges to deny. When any of these privileges are requested, the policy will deny
+    access if the principal and condition match. Required on create and update."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DenyOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.privileges:
+            body["privileges"] = [v for v in self.privileges]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DenyOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.privileges:
+            body["privileges"] = self.privileges
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DenyOptions:
+        """Deserializes the DenyOptions from a dictionary."""
+        return cls(privileges=d.get("privileges", None))
+
+
+@dataclass
 class Dependency:
-    """A dependency of a SQL object. One of the following fields must be defined: __table__,
-    __function__, __connection__, __credential__, __volume__, or __secret__."""
+    """A dependency of a SQL object. One of the following fields must be defined: **table**,
+    **function**, **connection**, **credential**, **volume**, or **secret**."""
 
     connection: Optional[ConnectionDependency] = None
 
@@ -3032,7 +3554,18 @@ class Dependency:
 
     function: Optional[FunctionDependency] = None
 
+    metastore_name: Optional[str] = None
+    """Metastore context for the dependency. Global UC server responses currently populate this with
+    the metastore UUID string so clients can disambiguate dependencies with identical names across
+    metastores."""
+
+    secret: Optional[SecretDependency] = None
+    """A dependency on a Unity Catalog secret."""
+
     table: Optional[TableDependency] = None
+
+    volume: Optional[VolumeDependency] = None
+    """A dependency on a Unity Catalog volume."""
 
     def as_dict(self) -> dict:
         """Serializes the Dependency into a dictionary suitable for use as a JSON request body."""
@@ -3043,8 +3576,14 @@ class Dependency:
             body["credential"] = self.credential.as_dict()
         if self.function:
             body["function"] = self.function.as_dict()
+        if self.metastore_name is not None:
+            body["metastore_name"] = self.metastore_name
+        if self.secret:
+            body["secret"] = self.secret.as_dict()
         if self.table:
             body["table"] = self.table.as_dict()
+        if self.volume:
+            body["volume"] = self.volume.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3056,8 +3595,14 @@ class Dependency:
             body["credential"] = self.credential
         if self.function:
             body["function"] = self.function
+        if self.metastore_name is not None:
+            body["metastore_name"] = self.metastore_name
+        if self.secret:
+            body["secret"] = self.secret
         if self.table:
             body["table"] = self.table
+        if self.volume:
+            body["volume"] = self.volume
         return body
 
     @classmethod
@@ -3067,7 +3612,10 @@ class Dependency:
             connection=_from_dict(d, "connection", ConnectionDependency),
             credential=_from_dict(d, "credential", CredentialDependency),
             function=_from_dict(d, "function", FunctionDependency),
+            metastore_name=d.get("metastore_name", None),
+            secret=_from_dict(d, "secret", SecretDependency),
             table=_from_dict(d, "table", TableDependency),
+            volume=_from_dict(d, "volume", VolumeDependency),
         )
 
 
@@ -3125,10 +3673,61 @@ class DisableResponse:
 
 
 @dataclass
+class DrReplicationInfo:
+    """Metadata related to Disaster Recovery."""
+
+    last_failover_time_ms: Optional[int] = None
+    """Wall-clock epoch milliseconds when this catalog was last promoted to primary via failover or
+    failback. Set by DR Manager. Used by Predictive Optimization to suppress operations until
+    sufficient workload history accumulates."""
+
+    replicated_entities: Optional[str] = None
+    """See https://docs.google.com/document/d/1X0A_3hMhzuS2V1E3zB0x5wxPsFx70bVYK5rHep2AjW8."""
+
+    status: Optional[DrReplicationStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DrReplicationInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_failover_time_ms is not None:
+            body["last_failover_time_ms"] = self.last_failover_time_ms
+        if self.replicated_entities is not None:
+            body["replicated_entities"] = self.replicated_entities
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DrReplicationInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.last_failover_time_ms is not None:
+            body["last_failover_time_ms"] = self.last_failover_time_ms
+        if self.replicated_entities is not None:
+            body["replicated_entities"] = self.replicated_entities
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DrReplicationInfo:
+        """Deserializes the DrReplicationInfo from a dictionary."""
+        return cls(
+            last_failover_time_ms=d.get("last_failover_time_ms", None),
+            replicated_entities=d.get("replicated_entities", None),
+            status=_enum(d, "status", DrReplicationStatus),
+        )
+
+
+class DrReplicationStatus(Enum):
+    DR_REPLICATION_STATUS_PRIMARY = "DR_REPLICATION_STATUS_PRIMARY"
+    DR_REPLICATION_STATUS_SECONDARY = "DR_REPLICATION_STATUS_SECONDARY"
+
+
+@dataclass
 class EffectivePermissionsList:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     privilege_assignments: Optional[List[EffectivePrivilegeAssignment]] = None
     """The privileges conveyed to each principal (either directly or via inheritance)"""
@@ -3397,6 +3996,9 @@ class EntityTagAssignment:
     entity_type: str
     """The type of the entity to which the tag is assigned."""
 
+    inherited: Optional[bool] = None
+    """Boolean which indicates whether this tag is inherited."""
+
     source_type: Optional[TagAssignmentSourceType] = None
     """The source type of the tag assignment, e.g., user-assigned or system-assigned"""
 
@@ -3416,6 +4018,8 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
+        if self.inherited is not None:
+            body["inherited"] = self.inherited
         if self.source_type is not None:
             body["source_type"] = self.source_type.value
         if self.tag_key is not None:
@@ -3435,6 +4039,8 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
+        if self.inherited is not None:
+            body["inherited"] = self.inherited
         if self.source_type is not None:
             body["source_type"] = self.source_type
         if self.tag_key is not None:
@@ -3453,6 +4059,7 @@ class EntityTagAssignment:
         return cls(
             entity_name=d.get("entity_name", None),
             entity_type=d.get("entity_type", None),
+            inherited=d.get("inherited", None),
             source_type=_enum(d, "source_type", TagAssignmentSourceType),
             tag_key=d.get("tag_key", None),
             tag_value=d.get("tag_value", None),
@@ -3650,6 +4257,9 @@ class ExternalLineageInfo:
     table_info: Optional[ExternalLineageTableInfo] = None
     """Information about the table involved in the lineage relationship."""
 
+    volume_info: Optional[ExternalLineageVolumeInfo] = None
+    """Information about the volume involved in the lineage relationship."""
+
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3663,6 +4273,8 @@ class ExternalLineageInfo:
             body["model_info"] = self.model_info.as_dict()
         if self.table_info:
             body["table_info"] = self.table_info.as_dict()
+        if self.volume_info:
+            body["volume_info"] = self.volume_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3678,6 +4290,8 @@ class ExternalLineageInfo:
             body["model_info"] = self.model_info
         if self.table_info:
             body["table_info"] = self.table_info
+        if self.volume_info:
+            body["volume_info"] = self.volume_info
         return body
 
     @classmethod
@@ -3689,6 +4303,7 @@ class ExternalLineageInfo:
             file_info=_from_dict(d, "file_info", ExternalLineageFileInfo),
             model_info=_from_dict(d, "model_info", ExternalLineageModelVersionInfo),
             table_info=_from_dict(d, "table_info", ExternalLineageTableInfo),
+            volume_info=_from_dict(d, "volume_info", ExternalLineageVolumeInfo),
         )
 
 
@@ -3775,6 +4390,8 @@ class ExternalLineageObject:
 
     table: Optional[ExternalLineageTable] = None
 
+    volume: Optional[ExternalLineageVolume] = None
+
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageObject into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3786,6 +4403,8 @@ class ExternalLineageObject:
             body["path"] = self.path.as_dict()
         if self.table:
             body["table"] = self.table.as_dict()
+        if self.volume:
+            body["volume"] = self.volume.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3799,6 +4418,8 @@ class ExternalLineageObject:
             body["path"] = self.path
         if self.table:
             body["table"] = self.table
+        if self.volume:
+            body["volume"] = self.volume
         return body
 
     @classmethod
@@ -3809,6 +4430,7 @@ class ExternalLineageObject:
             model_version=_from_dict(d, "model_version", ExternalLineageModelVersion),
             path=_from_dict(d, "path", ExternalLineagePath),
             table=_from_dict(d, "table", ExternalLineageTable),
+            volume=_from_dict(d, "volume", ExternalLineageVolume),
         )
 
 
@@ -4032,6 +4654,81 @@ class ExternalLineageTableInfo:
 
 
 @dataclass
+class ExternalLineageVolume:
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageVolume into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageVolume into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageVolume:
+        """Deserializes the ExternalLineageVolume from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class ExternalLineageVolumeInfo:
+    catalog_name: Optional[str] = None
+    """Name of the catalog."""
+
+    event_time: Optional[Timestamp] = None
+    """Timestamp of the lineage event."""
+
+    name: Optional[str] = None
+    """Name of the volume."""
+
+    schema_name: Optional[str] = None
+    """Name of the schema."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageVolumeInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.event_time is not None:
+            body["event_time"] = self.event_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageVolumeInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.event_time is not None:
+            body["event_time"] = self.event_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageVolumeInfo:
+        """Deserializes the ExternalLineageVolumeInfo from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            event_time=_timestamp(d, "event_time"),
+            name=d.get("name", None),
+            schema_name=d.get("schema_name", None),
+        )
+
+
+@dataclass
 class ExternalLocationInfo:
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
@@ -4053,18 +4750,18 @@ class ExternalLocationInfo:
     """Name of the storage credential used with this location."""
 
     effective_enable_file_events: Optional[bool] = None
-    """The effective value of `enable_file_events` after applying server-side defaults."""
+    """The effective value of ``enable_file_events`` after applying server-side defaults."""
 
     effective_file_event_queue: Optional[FileEventQueue] = None
     """The effective file event queue configuration after applying server-side defaults. Always
     populated when a queue is provisioned, regardless of whether the user explicitly set
-    `enable_file_events`. Use this field instead of `file_event_queue` for reading the actual queue
-    state."""
+    ``enable_file_events``. Use this field instead of ``file_event_queue`` for reading the actual
+    queue state."""
 
     enable_file_events: Optional[bool] = None
-    """Whether to enable file events on this external location. Default to `true`. Set to `false` to
-    disable file events. The actual applied value may differ due to server-side defaults; check
-    `effective_enable_file_events` for the effective state."""
+    """Whether to enable file events on this external location. Default to ``true``. Set to ``false``
+    to disable file events. The actual applied value may differ due to server-side defaults; check
+    ``effective_enable_file_events`` for the effective state."""
 
     encryption_details: Optional[EncryptionDetails] = None
 
@@ -4074,7 +4771,7 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings. If `enable_file_events` is not `false`, must be defined and have
+    """File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
     exactly one of the documented properties."""
 
     isolation_mode: Optional[IsolationMode] = None
@@ -4393,11 +5090,15 @@ class FailedStatus:
 class FileEventQueue:
     managed_aqs: Optional[AzureQueueStorage] = None
 
+    managed_onelake: Optional[OneLakeEventQueue] = None
+
     managed_pubsub: Optional[GcpPubsub] = None
 
     managed_sqs: Optional[AwsSqsQueue] = None
 
     provided_aqs: Optional[AzureQueueStorage] = None
+
+    provided_onelake: Optional[OneLakeEventQueue] = None
 
     provided_pubsub: Optional[GcpPubsub] = None
 
@@ -4408,12 +5109,16 @@ class FileEventQueue:
         body = {}
         if self.managed_aqs:
             body["managed_aqs"] = self.managed_aqs.as_dict()
+        if self.managed_onelake:
+            body["managed_onelake"] = self.managed_onelake.as_dict()
         if self.managed_pubsub:
             body["managed_pubsub"] = self.managed_pubsub.as_dict()
         if self.managed_sqs:
             body["managed_sqs"] = self.managed_sqs.as_dict()
         if self.provided_aqs:
             body["provided_aqs"] = self.provided_aqs.as_dict()
+        if self.provided_onelake:
+            body["provided_onelake"] = self.provided_onelake.as_dict()
         if self.provided_pubsub:
             body["provided_pubsub"] = self.provided_pubsub.as_dict()
         if self.provided_sqs:
@@ -4425,12 +5130,16 @@ class FileEventQueue:
         body = {}
         if self.managed_aqs:
             body["managed_aqs"] = self.managed_aqs
+        if self.managed_onelake:
+            body["managed_onelake"] = self.managed_onelake
         if self.managed_pubsub:
             body["managed_pubsub"] = self.managed_pubsub
         if self.managed_sqs:
             body["managed_sqs"] = self.managed_sqs
         if self.provided_aqs:
             body["provided_aqs"] = self.provided_aqs
+        if self.provided_onelake:
+            body["provided_onelake"] = self.provided_onelake
         if self.provided_pubsub:
             body["provided_pubsub"] = self.provided_pubsub
         if self.provided_sqs:
@@ -4442,9 +5151,11 @@ class FileEventQueue:
         """Deserializes the FileEventQueue from a dictionary."""
         return cls(
             managed_aqs=_from_dict(d, "managed_aqs", AzureQueueStorage),
+            managed_onelake=_from_dict(d, "managed_onelake", OneLakeEventQueue),
             managed_pubsub=_from_dict(d, "managed_pubsub", GcpPubsub),
             managed_sqs=_from_dict(d, "managed_sqs", AwsSqsQueue),
             provided_aqs=_from_dict(d, "provided_aqs", AzureQueueStorage),
+            provided_onelake=_from_dict(d, "provided_onelake", OneLakeEventQueue),
             provided_pubsub=_from_dict(d, "provided_pubsub", GcpPubsub),
             provided_sqs=_from_dict(d, "provided_sqs", AwsSqsQueue),
         )
@@ -4510,12 +5221,44 @@ class ForeignKeyConstraint:
 
 
 @dataclass
+class FunctionArgExpression:
+    """An expression that is evaluated at query time against per-request context. New variants (e.g.,
+    identity attributes) are added as additional oneof cases."""
+
+    tag_introspection: Optional[TagIntrospectionExpression] = None
+    """An expression that introspects tags at query time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FunctionArgExpression into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.tag_introspection:
+            body["tag_introspection"] = self.tag_introspection.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FunctionArgExpression into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.tag_introspection:
+            body["tag_introspection"] = self.tag_introspection
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionArgExpression:
+        """Deserializes the FunctionArgExpression from a dictionary."""
+        return cls(tag_introspection=_from_dict(d, "tag_introspection", TagIntrospectionExpression))
+
+
+@dataclass
 class FunctionArgument:
     alias: Optional[str] = None
     """The alias of a matched column."""
 
     constant: Optional[str] = None
     """A constant literal."""
+
+    function_arg_expression: Optional[FunctionArgExpression] = None
+    """An expression evaluated at query time. Wraps per-request expression variants (e.g., tag
+    introspection) so new variants can be added without extending the FunctionArgument oneof."""
 
     def as_dict(self) -> dict:
         """Serializes the FunctionArgument into a dictionary suitable for use as a JSON request body."""
@@ -4524,6 +5267,8 @@ class FunctionArgument:
             body["alias"] = self.alias
         if self.constant is not None:
             body["constant"] = self.constant
+        if self.function_arg_expression:
+            body["function_arg_expression"] = self.function_arg_expression.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4533,12 +5278,18 @@ class FunctionArgument:
             body["alias"] = self.alias
         if self.constant is not None:
             body["constant"] = self.constant
+        if self.function_arg_expression:
+            body["function_arg_expression"] = self.function_arg_expression
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FunctionArgument:
         """Deserializes the FunctionArgument from a dictionary."""
-        return cls(alias=d.get("alias", None), constant=d.get("constant", None))
+        return cls(
+            alias=d.get("alias", None),
+            constant=d.get("constant", None),
+            function_arg_expression=_from_dict(d, "function_arg_expression", FunctionArgExpression),
+        )
 
 
 @dataclass
@@ -4547,7 +5298,7 @@ class FunctionDependency:
 
     function_full_name: str
     """Full name of the dependent function, in the form of
-    __catalog_name__.__schema_name__.__function_name__."""
+    **catalog_name**.**schema_name**.**function_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the FunctionDependency into a dictionary suitable for use as a JSON request body."""
@@ -5077,6 +5828,8 @@ class GenerateTemporaryPathCredentialResponse:
 
     r2_temp_credentials: Optional[R2Credentials] = None
 
+    uc_encrypted_token: Optional[UcEncryptedToken] = None
+
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
 
@@ -5095,6 +5848,8 @@ class GenerateTemporaryPathCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token.as_dict()
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5114,6 +5869,8 @@ class GenerateTemporaryPathCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5128,6 +5885,7 @@ class GenerateTemporaryPathCredentialResponse:
             expiration_time=d.get("expiration_time", None),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
+            uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
             url=d.get("url", None),
         )
 
@@ -5206,6 +5964,8 @@ class GenerateTemporaryTableCredentialResponse:
 
     r2_temp_credentials: Optional[R2Credentials] = None
 
+    uc_encrypted_token: Optional[UcEncryptedToken] = None
+
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
 
@@ -5224,6 +5984,8 @@ class GenerateTemporaryTableCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token.as_dict()
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5243,6 +6005,8 @@ class GenerateTemporaryTableCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5257,6 +6021,7 @@ class GenerateTemporaryTableCredentialResponse:
             expiration_time=d.get("expiration_time", None),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
+            uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
             url=d.get("url", None),
         )
 
@@ -5277,6 +6042,8 @@ class GenerateTemporaryVolumeCredentialResponse:
 
     r2_temp_credentials: Optional[R2Credentials] = None
 
+    uc_encrypted_token: Optional[UcEncryptedToken] = None
+
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
 
@@ -5295,6 +6062,8 @@ class GenerateTemporaryVolumeCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token.as_dict()
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5314,6 +6083,8 @@ class GenerateTemporaryVolumeCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5328,6 +6099,7 @@ class GenerateTemporaryVolumeCredentialResponse:
             expiration_time=d.get("expiration_time", None),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
+            uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
             url=d.get("url", None),
         )
 
@@ -5360,7 +6132,7 @@ class GetCatalogWorkspaceBindingsResponse:
 @dataclass
 class GetMetastoreSummaryResponse:
     cloud: Optional[str] = None
-    """Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`)."""
+    """Cloud vendor of the metastore home shard (e.g., ``aws``, ``azure``, ``gcp``)."""
 
     created_at: Optional[int] = None
     """Time at which this metastore was created, in epoch milliseconds."""
@@ -5385,7 +6157,8 @@ class GetMetastoreSummaryResponse:
     """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     global_metastore_id: Optional[str] = None
-    """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
+    """Globally unique metastore ID across clouds and regions, of the form
+    ``cloud:region:metastore_id``."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of metastore."""
@@ -5397,10 +6170,10 @@ class GetMetastoreSummaryResponse:
     """The owner of the metastore."""
 
     privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+    """Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``)."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+    """Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -5539,7 +6312,7 @@ class GetMetastoreSummaryResponse:
 class GetPermissionsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     privilege_assignments: Optional[List[PrivilegeAssignment]] = None
     """The privileges assigned to each principal"""
@@ -5603,7 +6376,7 @@ class GetWorkspaceBindingsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the GetWorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5631,9 +6404,113 @@ class GetWorkspaceBindingsResponse:
         )
 
 
+@dataclass
+class GrantOptions:
+    privileges: List[str]
+    """List of privileges to grant. When any of these privileges are requested, the policy will grant
+    access if the principal and condition match. Required on create and update."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GrantOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.privileges:
+            body["privileges"] = [v for v in self.privileges]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GrantOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.privileges:
+            body["privileges"] = self.privileges
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GrantOptions:
+        """Deserializes the GrantOptions from a dictionary."""
+        return cls(privileges=d.get("privileges", None))
+
+
+@dataclass
+class InferenceTableConfig:
+    """Inference table configuration for payload logging on a model service.
+
+    ``parent`` is always REQUIRED when the sub-message is set; the destination UC schema is needed
+    to construct or rebind the payload TABLE regardless of whether payload logging is currently
+    active. Payload logging is active by default; set ``disabled = true`` to pause runtime logging
+    without dropping the table or the binding."""
+
+    parent: str
+    """Parent UC schema where the inference table is created. Format: ``schemas/{catalog}.{schema}``.
+    Set at create time and immutable thereafter; changing it on an existing service is rejected."""
+
+    disabled: Optional[bool] = None
+    """Indicates whether payload logging is disabled (opt-out). Unset means that payload logging is
+    active (the on-by-default state coincides with the proto zero-value, so the server never fills
+    this field for a client that leaves it unset). Set ``disabled = true`` to pause runtime logging
+    while keeping the sub-message attached (preserving ``parent`` and ``table_name_prefix`` for a
+    later flip back to active). ``parent`` remains required either way."""
+
+    is_deleted: Optional[bool] = None
+    """True when the bound inference TABLE has been deleted but the parent service still references it.
+    The dangling reference is surfaced (not silently dropped) so callers can see the broken
+    dependency. AI Gateway payload logging fails closed in this state."""
+
+    table: Optional[str] = None
+    """Resolved UC table for payload logs. Format: ``tables/{catalog}.{schema}.{table}``."""
+
+    table_name_prefix: Optional[str] = None
+    """Prefix for the inference-table's UC-registered name. The actual leaf name UC stores is
+    ``<table_name_prefix>_payload``; the ``_payload`` suffix is appended automatically. To find the
+    actual UC table after Create, read the ``table`` field on the response. Defaults to
+    ``<model_service_name>_payload`` when unset. Set at create time and immutable thereafter;
+    changing it on an existing service is rejected."""
+
+    def as_dict(self) -> dict:
+        """Serializes the InferenceTableConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.parent is not None:
+            body["parent"] = self.parent
+        if self.table is not None:
+            body["table"] = self.table
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InferenceTableConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.parent is not None:
+            body["parent"] = self.parent
+        if self.table is not None:
+            body["table"] = self.table
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InferenceTableConfig:
+        """Deserializes the InferenceTableConfig from a dictionary."""
+        return cls(
+            disabled=d.get("disabled", None),
+            is_deleted=d.get("is_deleted", None),
+            parent=d.get("parent", None),
+            table=d.get("table", None),
+            table_name_prefix=d.get("table_name_prefix", None),
+        )
+
+
 class IsolationMode(Enum):
     ISOLATION_MODE_ISOLATED = "ISOLATION_MODE_ISOLATED"
     ISOLATION_MODE_OPEN = "ISOLATION_MODE_OPEN"
+    ISOLATION_MODE_OPEN_IN_ACCOUNT = "ISOLATION_MODE_OPEN_IN_ACCOUNT"
 
 
 class LineageDirection(Enum):
@@ -5695,13 +6572,50 @@ class ListAccountStorageCredentialsResponse:
 
 
 @dataclass
+class ListAgentServicesResponse:
+    """Response for listing agent services."""
+
+    agent_services: Optional[List[AgentService]] = None
+    """The list of agent services."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token for retrieving the next page of results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAgentServicesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.agent_services:
+            body["agent_services"] = [v.as_dict() for v in self.agent_services]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAgentServicesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.agent_services:
+            body["agent_services"] = self.agent_services
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListAgentServicesResponse:
+        """Deserializes the ListAgentServicesResponse from a dictionary."""
+        return cls(
+            agent_services=_repeated_dict(d, "agent_services", AgentService),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListCatalogsResponse:
     catalogs: Optional[List[CatalogInfo]] = None
     """An array of catalog information objects."""
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListCatalogsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5734,7 +6648,7 @@ class ListConnectionsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListConnectionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5768,7 +6682,7 @@ class ListCredentialsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5793,6 +6707,44 @@ class ListCredentialsResponse:
         """Deserializes the ListCredentialsResponse from a dictionary."""
         return cls(
             credentials=_repeated_dict(d, "credentials", CredentialInfo), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
+class ListEffectivePrivilegeAssignmentsResponse:
+    effective_privilege_assignments: Optional[List[EffectivePrivilegeAssignment]] = None
+    """The effective privilege assignments for the securable (and optional principal)."""
+
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    **page_token** should be set to this value for the next request (for the next page of results)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListEffectivePrivilegeAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.effective_privilege_assignments:
+            body["effective_privilege_assignments"] = [v.as_dict() for v in self.effective_privilege_assignments]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListEffectivePrivilegeAssignmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.effective_privilege_assignments:
+            body["effective_privilege_assignments"] = self.effective_privilege_assignments
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListEffectivePrivilegeAssignmentsResponse:
+        """Deserializes the ListEffectivePrivilegeAssignmentsResponse from a dictionary."""
+        return cls(
+            effective_privilege_assignments=_repeated_dict(
+                d, "effective_privilege_assignments", EffectivePrivilegeAssignment
+            ),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -5871,7 +6823,7 @@ class ListExternalLocationsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListExternalLocationsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5940,7 +6892,7 @@ class ListFunctionsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListFunctionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5968,6 +6920,51 @@ class ListFunctionsResponse:
         )
 
 
+class ListMcpServicesRequestView(Enum):
+    """Controls which fields are populated on each McpService in the response. The server treats unset
+    / VIEW_UNSPECIFIED as BASIC. Callers needing the full configuration must request it explicitly
+    with ``view = FULL``."""
+
+    BASIC = "BASIC"
+    FULL = "FULL"
+
+
+@dataclass
+class ListMcpServicesResponse:
+    """Response for listing MCP services."""
+
+    mcp_services: Optional[List[McpService]] = None
+    """The list of MCP services."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token for retrieving the next page of results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListMcpServicesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.mcp_services:
+            body["mcp_services"] = [v.as_dict() for v in self.mcp_services]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListMcpServicesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.mcp_services:
+            body["mcp_services"] = self.mcp_services
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListMcpServicesResponse:
+        """Deserializes the ListMcpServicesResponse from a dictionary."""
+        return cls(
+            mcp_services=_repeated_dict(d, "mcp_services", McpService), next_page_token=d.get("next_page_token", None)
+        )
+
+
 @dataclass
 class ListMetastoresResponse:
     metastores: Optional[List[MetastoreInfo]] = None
@@ -5975,7 +6972,7 @@ class ListMetastoresResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListMetastoresResponse into a dictionary suitable for use as a JSON request body."""
@@ -6003,13 +7000,105 @@ class ListMetastoresResponse:
         )
 
 
+class ListModelProviderServicesRequestView(Enum):
+    """Controls which fields are populated on each ModelProviderService in the response. The server
+    treats unset / VIEW_UNSPECIFIED as BASIC. Callers needing the full configuration must request it
+    explicitly with ``view = FULL``."""
+
+    BASIC = "BASIC"
+    FULL = "FULL"
+
+
+@dataclass
+class ListModelProviderServicesResponse:
+    """Response for listing model provider services."""
+
+    model_provider_services: Optional[List[ModelProviderService]] = None
+    """The list of model provider services."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token for retrieving the next page of results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListModelProviderServicesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_provider_services:
+            body["model_provider_services"] = [v.as_dict() for v in self.model_provider_services]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListModelProviderServicesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_provider_services:
+            body["model_provider_services"] = self.model_provider_services
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListModelProviderServicesResponse:
+        """Deserializes the ListModelProviderServicesResponse from a dictionary."""
+        return cls(
+            model_provider_services=_repeated_dict(d, "model_provider_services", ModelProviderService),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+class ListModelServicesRequestView(Enum):
+    """Controls which fields are populated on each ModelService in the response. The server treats
+    unset / VIEW_UNSPECIFIED as BASIC. Callers needing the full configuration must request it
+    explicitly with ``view = FULL``."""
+
+    BASIC = "BASIC"
+    FULL = "FULL"
+
+
+@dataclass
+class ListModelServicesResponse:
+    """Response for listing model services."""
+
+    model_services: Optional[List[ModelService]] = None
+    """The list of model services."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token for retrieving the next page of results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListModelServicesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_services:
+            body["model_services"] = [v.as_dict() for v in self.model_services]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListModelServicesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_services:
+            body["model_services"] = self.model_services
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListModelServicesResponse:
+        """Deserializes the ListModelServicesResponse from a dictionary."""
+        return cls(
+            model_services=_repeated_dict(d, "model_services", ModelService),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
 @dataclass
 class ListModelVersionsResponse:
     model_versions: Optional[List[ModelVersionInfo]] = None
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListModelVersionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -6041,7 +7130,7 @@ class ListModelVersionsResponse:
 @dataclass
 class ListPoliciesResponse:
     next_page_token: Optional[str] = None
-    """Optional opaque token for continuing pagination. `page_token` should be set to this value for
+    """Optional opaque token for continuing pagination. ``page_token`` should be set to this value for
     the next request to retrieve the next page of results."""
 
     policies: Optional[List[PolicyInfo]] = None
@@ -6072,10 +7161,45 @@ class ListPoliciesResponse:
 
 
 @dataclass
+class ListPrivilegeAssignmentsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    **page_token** should be set to this value for the next request (for the next page of results)."""
+
+    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListPrivilegeAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListPrivilegeAssignmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = self.privilege_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListPrivilegeAssignmentsResponse:
+        """Deserializes the ListPrivilegeAssignmentsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
+        )
+
+
+@dataclass
 class ListQuotasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request."""
+    **page_token** should be set to this value for the next request."""
 
     quotas: Optional[List[QuotaInfo]] = None
     """An array of returned QuotaInfos."""
@@ -6143,7 +7267,7 @@ class ListRegisteredModelsResponse:
 class ListSchemasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     schemas: Optional[List[SchemaInfo]] = None
     """An array of schema information objects."""
@@ -6211,7 +7335,7 @@ class ListSecretsResponse:
 class ListStorageCredentialsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     storage_credentials: Optional[List[StorageCredentialInfo]] = None
 
@@ -6246,7 +7370,7 @@ class ListStorageCredentialsResponse:
 class ListSystemSchemasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     schemas: Optional[List[SystemSchemaInfo]] = None
     """An array of system schema information objects."""
@@ -6281,7 +7405,7 @@ class ListSystemSchemasResponse:
 class ListTableSummariesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableSummary]] = None
     """List of table summaries."""
@@ -6314,7 +7438,7 @@ class ListTableSummariesResponse:
 class ListTablesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableInfo]] = None
     """An array of table information objects."""
@@ -6347,7 +7471,7 @@ class ListTablesResponse:
 class ListVolumesResponseContent:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request to retrieve the next page of
+    **page_token** should be set to this value for the next request to retrieve the next page of
     results."""
 
     volumes: Optional[List[VolumeInfo]] = None
@@ -6415,6 +7539,219 @@ class MatchType(Enum):
 
 
 @dataclass
+class McpService:
+    """A governed MCP server registration in Unity Catalog. Acts as a container securable that
+    references an MCP server -- customer-external via a UC Connection, or Databricks-hosted via an
+    internal server -- and exposes its tools for discovery, authorization, and invocation."""
+
+    browse_only: Optional[bool] = None
+    """Whether the caller sees only metadata available through the BROWSE privilege."""
+
+    comment: Optional[str] = None
+    """User-provided description."""
+
+    config: Optional[McpServiceConfig] = None
+    """Operational configuration: connection, tool selectors, rate limit. Required on CreateMcpService;
+    on UpdateMcpService it is required only when ``config`` (or a ``config.*`` subpath) appears in
+    ``update_mask``."""
+
+    create_time: Optional[Timestamp] = None
+    """When the MCP service was created."""
+
+    created_by: Optional[str] = None
+    """Creator identity."""
+
+    effective_owner: Optional[str] = None
+    """The resolved owner of the MCP service. Falls back to the caller's identity when ``owner`` is not
+    explicitly set on creation."""
+
+    etag: Optional[str] = None
+    """Optimistic concurrency control token. Server-generated from the entity's state and returned on
+    every read. To use it as an if-match precondition on a mutation, echo the last-read value back
+    via the dedicated ``etag`` field on the Update / Delete request; the server rejects the mutation
+    if the stored etag differs."""
+
+    metastore_id: Optional[str] = None
+    """Metastore hosting the MCP service."""
+
+    name: Optional[str] = None
+    """Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+    Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
+    ``parent`` + ``mcp_service_id``; required and immutable on Update/Get/Delete."""
+
+    owner: Optional[str] = None
+    """The owner of the MCP service. Write-only; read owner via effective_owner."""
+
+    update_time: Optional[Timestamp] = None
+    """When the MCP service was last modified."""
+
+    updated_by: Optional[str] = None
+    """Identity of the last updater."""
+
+    def as_dict(self) -> dict:
+        """Serializes the McpService into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.config:
+            body["config"] = self.config.as_dict()
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the McpService into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.config:
+            body["config"] = self.config
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> McpService:
+        """Deserializes the McpService from a dictionary."""
+        return cls(
+            browse_only=d.get("browse_only", None),
+            comment=d.get("comment", None),
+            config=_from_dict(d, "config", McpServiceConfig),
+            create_time=_timestamp(d, "create_time"),
+            created_by=d.get("created_by", None),
+            effective_owner=d.get("effective_owner", None),
+            etag=d.get("etag", None),
+            metastore_id=d.get("metastore_id", None),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
+        )
+
+
+@dataclass
+class McpServiceConfig:
+    """Operational configuration for an MCP service. Groups the source reference, tool selectors, and
+    rate limit -- the fields that configure how the MCP service behaves at invocation time."""
+
+    include_tool_selectors: Optional[List[str]] = None
+    """Glob or exact-match patterns selecting which tools from the MCP server to expose. Prefix match
+    for patterns with ``*``, exact match otherwise. An empty list means all tools are included.
+    Per-element max 256 chars."""
+
+    rate_limits: Optional[List[RateLimit]] = None
+    """Per-principal rate limits applied to tool invocations routed through this MCP service. Repeated
+    to support per-USER / USER_GROUP / SERVICE_PRINCIPAL / SERVICE / USER_DEFAULT scopes
+    simultaneously, mirroring the ``ModelServiceConfig.rate_limits`` shape. Empty when no rate limit
+    is configured."""
+
+    source_connection: Optional[McpServiceConfigSourceConnection] = None
+    """UC Connection referencing the MCP server."""
+
+    def as_dict(self) -> dict:
+        """Serializes the McpServiceConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.include_tool_selectors:
+            body["include_tool_selectors"] = [v for v in self.include_tool_selectors]
+        if self.rate_limits:
+            body["rate_limits"] = [v.as_dict() for v in self.rate_limits]
+        if self.source_connection:
+            body["source_connection"] = self.source_connection.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the McpServiceConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.include_tool_selectors:
+            body["include_tool_selectors"] = self.include_tool_selectors
+        if self.rate_limits:
+            body["rate_limits"] = self.rate_limits
+        if self.source_connection:
+            body["source_connection"] = self.source_connection
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> McpServiceConfig:
+        """Deserializes the McpServiceConfig from a dictionary."""
+        return cls(
+            include_tool_selectors=d.get("include_tool_selectors", None),
+            rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
+            source_connection=_from_dict(d, "source_connection", McpServiceConfigSourceConnection),
+        )
+
+
+@dataclass
+class McpServiceConfigSourceConnection:
+    """UC Connection that hosts the MCP server. On create, provide ``name`` in the schema-scoped form
+    ``connections/{catalog}.{schema}.{connection}``. On read, the service populates the resolved
+    connection metadata and preserves a dangling source so callers can diagnose a deleted backing
+    connection."""
+
+    name: str
+
+    is_deleted: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the McpServiceConfigSourceConnection into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the McpServiceConfigSourceConnection into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> McpServiceConfigSourceConnection:
+        """Deserializes the McpServiceConfigSourceConnection from a dictionary."""
+        return cls(is_deleted=d.get("is_deleted", None), name=d.get("name", None))
+
+
+@dataclass
 class MetastoreAssignment:
     workspace_id: int
     """The unique ID of the Databricks workspace."""
@@ -6461,7 +7798,7 @@ class MetastoreAssignment:
 @dataclass
 class MetastoreInfo:
     cloud: Optional[str] = None
-    """Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`)."""
+    """Cloud vendor of the metastore home shard (e.g., ``aws``, ``azure``, ``gcp``)."""
 
     created_at: Optional[int] = None
     """Time at which this metastore was created, in epoch milliseconds."""
@@ -6486,7 +7823,8 @@ class MetastoreInfo:
     """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     global_metastore_id: Optional[str] = None
-    """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
+    """Globally unique metastore ID across clouds and regions, of the form
+    ``cloud:region:metastore_id``."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of metastore."""
@@ -6498,10 +7836,10 @@ class MetastoreInfo:
     """The owner of the metastore."""
 
     privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+    """Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``)."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+    """Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -6634,6 +7972,1696 @@ class MetastoreInfo:
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
         )
+
+
+@dataclass
+class ModelProviderService:
+    """A governed external model-provider connection stored in Unity Catalog (e.g. an OpenAI API
+    account, an Azure OpenAI deployment, an Amazon Bedrock account). Owns the provider type and the
+    auth/configuration the platform needs to invoke that provider, and is referenced from
+    ``ExternalModelConfig.model_provider_service`` on a ModelService.
+
+    One ModelProviderService can back many ModelServices (e.g. an ``openai_prod`` provider serving
+    multiple models); a single ModelService can fan out across multiple ModelProviderServices for
+    traffic split or failover."""
+
+    browse_only: Optional[bool] = None
+    """Whether the caller sees only metadata available through the BROWSE privilege."""
+
+    comment: Optional[str] = None
+    """User-provided description."""
+
+    config: Optional[ModelProviderServiceConfig] = None
+    """Behavioral configuration: provider connection, model catalog, and passthrough policy. See
+    ``ModelProviderServiceConfig`` for the per-field contract. Required on
+    CreateModelProviderService; on Update it is required only when ``config`` (or a ``config.*``
+    subpath) appears in ``update_mask``."""
+
+    create_time: Optional[Timestamp] = None
+    """When the provider service was created."""
+
+    created_by: Optional[str] = None
+    """Creator identity."""
+
+    effective_owner: Optional[str] = None
+    """The resolved owner of the model provider service. Falls back to the caller's identity when
+    ``owner`` is not explicitly set on creation."""
+
+    etag: Optional[str] = None
+    """Optimistic concurrency control token. Server-generated from the entity's state and returned on
+    every read. To use it as an if-match precondition on a mutation, echo the last-read value back
+    via the dedicated ``etag`` field on the Update / Delete request; the server rejects the mutation
+    if the stored etag differs."""
+
+    metastore_id: Optional[str] = None
+    """Metastore hosting the provider service."""
+
+    name: Optional[str] = None
+    """Resource name of the provider service. Format:
+    ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}``
+    component is capped at 255 characters individually. Server-derived on Create from ``parent`` +
+    ``model_provider_service_id``; required and immutable on Update/Get/Delete."""
+
+    owner: Optional[str] = None
+    """The owner of the model provider service. Write-only; read owner via effective_owner."""
+
+    update_time: Optional[Timestamp] = None
+    """When the provider service was last modified."""
+
+    updated_by: Optional[str] = None
+    """Identity of the last updater."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderService into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.config:
+            body["config"] = self.config.as_dict()
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderService into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.config:
+            body["config"] = self.config
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderService:
+        """Deserializes the ModelProviderService from a dictionary."""
+        return cls(
+            browse_only=d.get("browse_only", None),
+            comment=d.get("comment", None),
+            config=_from_dict(d, "config", ModelProviderServiceConfig),
+            create_time=_timestamp(d, "create_time"),
+            created_by=d.get("created_by", None),
+            effective_owner=d.get("effective_owner", None),
+            etag=d.get("etag", None),
+            metastore_id=d.get("metastore_id", None),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfig:
+    """Behavioral configuration for a ModelProviderService: provider connection (auth +
+    provider-specific fields), the catalog of models this provider service can route to, and the
+    passthrough policy that governs how request headers, query parameters, and unmanaged subpaths
+    cross the trust boundary to the upstream provider."""
+
+    allow_all_targets: Optional[bool] = None
+    """When true, accepts any model exposed by the upstream provider; ``targets`` is not required and
+    does not restrict routability. When false, only models listed in ``targets`` are routable."""
+
+    amazon_bedrock: Optional[ModelProviderServiceConfigAmazonBedrockProviderConfig] = None
+
+    anthropic: Optional[ModelProviderServiceConfigAnthropicProviderConfig] = None
+
+    azure_openai: Optional[ModelProviderServiceConfigAzureOpenAiProviderConfig] = None
+
+    custom: Optional[ModelProviderServiceConfigCustomProviderConfig] = None
+
+    forward_headers: Optional[bool] = None
+    """Whether to forward incoming request headers to the upstream provider. Applies to managed
+    (multi-model) requests as well as passthrough requests served by this provider service.
+    Governance-level decision by the provider service owner; not selectable per inference call."""
+
+    forward_query_parameters: Optional[bool] = None
+    """Whether to forward incoming request query parameters to the upstream provider. Same
+    trust-boundary semantics as ``forward_headers``."""
+
+    forward_unmanaged_paths: Optional[bool] = None
+    """Whether to forward request paths that fall outside this service's managed API set to the
+    upstream provider as opaque passthrough. When true, requests addressed to subpaths not
+    recognized by the managed API surface are proxied to the upstream provider over the same
+    provider connection. When false, only managed-API paths are served. Governance-level decision by
+    the provider service owner; expanding this expands the trust boundary that the
+    ModelProviderService exposes."""
+
+    gemini_enterprise: Optional[ModelProviderServiceConfigGeminiEnterpriseProviderConfig] = None
+
+    inference_table: Optional[InferenceTableConfig] = None
+    """Inference table configuration for payload logging when this provider service is invoked
+    directly. When it is invoked through a model service, the model service's own inference table
+    captures the invocation instead. Mirrors ``ModelServiceConfig.inference_table`` /
+    ``AgentServiceConfig.inference_table``."""
+
+    microsoft_foundry: Optional[ModelProviderServiceConfigMicrosoftFoundryProviderConfig] = None
+
+    openai: Optional[ModelProviderServiceConfigOpenAiProviderConfig] = None
+
+    provider_type: Optional[ModelProviderServiceConfigExternalModelProviderType] = None
+    """Provider type discriminator. Required at create time; immutable after. Determines which variant
+    of the ``provider`` oneof must be set. May not be changed via Update; attempts to include
+    ``config.provider_type`` in ``UpdateModelProviderServiceRequest.update_mask`` are rejected.
+    
+    Required on CreateModelProviderService and immutable thereafter."""
+
+    rate_limits: Optional[List[RateLimit]] = None
+    """Rate limits applied when this provider service is invoked directly. When it is invoked through a
+    model service, the model service's own ``rate_limits`` apply instead. Mirrors
+    ``ModelServiceConfig.rate_limits`` / ``McpServiceConfig.rate_limits``."""
+
+    targets: Optional[List[ModelProviderServiceConfigModelTargetConfig]] = None
+    """Routing targets this provider service exposes (provider-side model identifier + unified API
+    types per entry). Required (>=1) when ``allow_all_targets = false``; optional and additive when
+    ``allow_all_targets = true``. References from ``ExternalModelConfig.target`` must match an entry
+    here unless ``allow_all_targets = true``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_all_targets is not None:
+            body["allow_all_targets"] = self.allow_all_targets
+        if self.amazon_bedrock:
+            body["amazon_bedrock"] = self.amazon_bedrock.as_dict()
+        if self.anthropic:
+            body["anthropic"] = self.anthropic.as_dict()
+        if self.azure_openai:
+            body["azure_openai"] = self.azure_openai.as_dict()
+        if self.custom:
+            body["custom"] = self.custom.as_dict()
+        if self.forward_headers is not None:
+            body["forward_headers"] = self.forward_headers
+        if self.forward_query_parameters is not None:
+            body["forward_query_parameters"] = self.forward_query_parameters
+        if self.forward_unmanaged_paths is not None:
+            body["forward_unmanaged_paths"] = self.forward_unmanaged_paths
+        if self.gemini_enterprise:
+            body["gemini_enterprise"] = self.gemini_enterprise.as_dict()
+        if self.inference_table:
+            body["inference_table"] = self.inference_table.as_dict()
+        if self.microsoft_foundry:
+            body["microsoft_foundry"] = self.microsoft_foundry.as_dict()
+        if self.openai:
+            body["openai"] = self.openai.as_dict()
+        if self.provider_type is not None:
+            body["provider_type"] = self.provider_type.value
+        if self.rate_limits:
+            body["rate_limits"] = [v.as_dict() for v in self.rate_limits]
+        if self.targets:
+            body["targets"] = [v.as_dict() for v in self.targets]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_all_targets is not None:
+            body["allow_all_targets"] = self.allow_all_targets
+        if self.amazon_bedrock:
+            body["amazon_bedrock"] = self.amazon_bedrock
+        if self.anthropic:
+            body["anthropic"] = self.anthropic
+        if self.azure_openai:
+            body["azure_openai"] = self.azure_openai
+        if self.custom:
+            body["custom"] = self.custom
+        if self.forward_headers is not None:
+            body["forward_headers"] = self.forward_headers
+        if self.forward_query_parameters is not None:
+            body["forward_query_parameters"] = self.forward_query_parameters
+        if self.forward_unmanaged_paths is not None:
+            body["forward_unmanaged_paths"] = self.forward_unmanaged_paths
+        if self.gemini_enterprise:
+            body["gemini_enterprise"] = self.gemini_enterprise
+        if self.inference_table:
+            body["inference_table"] = self.inference_table
+        if self.microsoft_foundry:
+            body["microsoft_foundry"] = self.microsoft_foundry
+        if self.openai:
+            body["openai"] = self.openai
+        if self.provider_type is not None:
+            body["provider_type"] = self.provider_type
+        if self.rate_limits:
+            body["rate_limits"] = self.rate_limits
+        if self.targets:
+            body["targets"] = self.targets
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfig:
+        """Deserializes the ModelProviderServiceConfig from a dictionary."""
+        return cls(
+            allow_all_targets=d.get("allow_all_targets", None),
+            amazon_bedrock=_from_dict(d, "amazon_bedrock", ModelProviderServiceConfigAmazonBedrockProviderConfig),
+            anthropic=_from_dict(d, "anthropic", ModelProviderServiceConfigAnthropicProviderConfig),
+            azure_openai=_from_dict(d, "azure_openai", ModelProviderServiceConfigAzureOpenAiProviderConfig),
+            custom=_from_dict(d, "custom", ModelProviderServiceConfigCustomProviderConfig),
+            forward_headers=d.get("forward_headers", None),
+            forward_query_parameters=d.get("forward_query_parameters", None),
+            forward_unmanaged_paths=d.get("forward_unmanaged_paths", None),
+            gemini_enterprise=_from_dict(
+                d, "gemini_enterprise", ModelProviderServiceConfigGeminiEnterpriseProviderConfig
+            ),
+            inference_table=_from_dict(d, "inference_table", InferenceTableConfig),
+            microsoft_foundry=_from_dict(
+                d, "microsoft_foundry", ModelProviderServiceConfigMicrosoftFoundryProviderConfig
+            ),
+            openai=_from_dict(d, "openai", ModelProviderServiceConfigOpenAiProviderConfig),
+            provider_type=_enum(d, "provider_type", ModelProviderServiceConfigExternalModelProviderType),
+            rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
+            targets=_repeated_dict(d, "targets", ModelProviderServiceConfigModelTargetConfig),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigAmazonBedrockProviderConfig:
+    """Amazon Bedrock provider configuration."""
+
+    direct: Optional[ModelProviderServiceConfigAmazonBedrockProviderDirectConfig] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAmazonBedrockProviderConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAmazonBedrockProviderConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigAmazonBedrockProviderConfig:
+        """Deserializes the ModelProviderServiceConfigAmazonBedrockProviderConfig from a dictionary."""
+        return cls(direct=_from_dict(d, "direct", ModelProviderServiceConfigAmazonBedrockProviderDirectConfig))
+
+
+@dataclass
+class ModelProviderServiceConfigAmazonBedrockProviderDirectConfig:
+    """Direct form of Amazon Bedrock provider config.
+
+    Authentication is one of two mutually exclusive modes, exactly one of which must be supplied on
+    Create:
+
+    - Access keys: set ``aws_access_key``, leave ``service_credential`` unset.
+    - UC service credential: set ``service_credential.name`` to the AIP-122 resource-name form
+      ``credentials/{name}``, leave ``aws_access_key`` unset. The credential value lives in UC and
+      is referenced by name, not held on this message. Setting more than one mode is rejected."""
+
+    aws_access_key: Optional[ModelProviderServiceConfigAwsAccessKey] = None
+    """AWS access-key-pair auth. Mutually exclusive with ``service_credential``. Supersedes the flat
+    ``aws_access_key_id`` / ``aws_secret_access_key`` fields."""
+
+    aws_access_key_id: Optional[str] = None
+    """Deprecated flat AWS access key ID. Superseded by ``aws_access_key.access_key_id``. Kept for one
+    migration cycle; the handler mirrors it to/from ``aws_access_key``. Treated as
+    username-equivalent (not a secret value): round-trips on reads and is scrubbed from audit logs."""
+
+    aws_secret_access_key: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Deprecated flat AWS secret access key. Superseded by ``aws_access_key.secret_access_key``. Kept
+    for one migration cycle; the handler mirrors it to/from ``aws_access_key``. Supplied as inline
+    plaintext via ``ProviderSecret.plaintext``."""
+
+    region: Optional[str] = None
+    """AWS region where the Bedrock endpoint is hosted (e.g., ``us-east-1``). Required on Create."""
+
+    service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
+    """Reference to a UC service credential authorizing Bedrock requests. On Create the caller supplies
+    ``service_credential.name`` in the AIP-122 resource-name form ``credentials/{name}``. Required
+    on Create when using UC-service-credential auth; mutually exclusive with ``aws_access_key``. The
+    credential is referenced by name; its value is not carried here. On read the resolved ``id`` and
+    ``is_deleted`` are also populated. Only supported on AWS-hosted workspaces; Create requests from
+    other clouds are rejected with INVALID_PARAMETER_VALUE."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAmazonBedrockProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_access_key:
+            body["aws_access_key"] = self.aws_access_key.as_dict()
+        if self.aws_access_key_id is not None:
+            body["aws_access_key_id"] = self.aws_access_key_id
+        if self.aws_secret_access_key:
+            body["aws_secret_access_key"] = self.aws_secret_access_key.as_dict()
+        if self.region is not None:
+            body["region"] = self.region
+        if self.service_credential:
+            body["service_credential"] = self.service_credential.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAmazonBedrockProviderDirectConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_access_key:
+            body["aws_access_key"] = self.aws_access_key
+        if self.aws_access_key_id is not None:
+            body["aws_access_key_id"] = self.aws_access_key_id
+        if self.aws_secret_access_key:
+            body["aws_secret_access_key"] = self.aws_secret_access_key
+        if self.region is not None:
+            body["region"] = self.region
+        if self.service_credential:
+            body["service_credential"] = self.service_credential
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigAmazonBedrockProviderDirectConfig:
+        """Deserializes the ModelProviderServiceConfigAmazonBedrockProviderDirectConfig from a dictionary."""
+        return cls(
+            aws_access_key=_from_dict(d, "aws_access_key", ModelProviderServiceConfigAwsAccessKey),
+            aws_access_key_id=d.get("aws_access_key_id", None),
+            aws_secret_access_key=_from_dict(d, "aws_secret_access_key", ModelProviderServiceConfigProviderSecret),
+            region=d.get("region", None),
+            service_credential=_from_dict(d, "service_credential", ModelProviderServiceConfigServiceCredential),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigAnthropicProviderConfig:
+    """Anthropic provider configuration. Exactly one of ``direct`` or ``relayed`` must be set on
+    Create; the two are mutually exclusive."""
+
+    direct: Optional[ModelProviderServiceConfigAnthropicProviderDirectConfig] = None
+    """Direct (inline-credentials) form: caller supplies the API key in the request body. Required on
+    Create unless ``relayed`` is set."""
+
+    relayed: Optional[ModelProviderServiceConfigAnthropicProviderRelayedConfig] = None
+    """Relayed (credential-less) form: no Anthropic credential is stored. Each inference request
+    instead carries the caller's own OAuth token, which the platform forwards to Anthropic on
+    outbound requests. Mutually exclusive with ``direct``; no ``api_key`` is required or persisted."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAnthropicProviderConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct.as_dict()
+        if self.relayed:
+            body["relayed"] = self.relayed.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAnthropicProviderConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct
+        if self.relayed:
+            body["relayed"] = self.relayed
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigAnthropicProviderConfig:
+        """Deserializes the ModelProviderServiceConfigAnthropicProviderConfig from a dictionary."""
+        return cls(
+            direct=_from_dict(d, "direct", ModelProviderServiceConfigAnthropicProviderDirectConfig),
+            relayed=_from_dict(d, "relayed", ModelProviderServiceConfigAnthropicProviderRelayedConfig),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigAnthropicProviderDirectConfig:
+    """Direct form of Anthropic provider config."""
+
+    api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Anthropic API key. Required on Create. Sent as the ``x-api-key`` header on outbound requests.
+    Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAnthropicProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAnthropicProviderDirectConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigAnthropicProviderDirectConfig:
+        """Deserializes the ModelProviderServiceConfigAnthropicProviderDirectConfig from a dictionary."""
+        return cls(api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret))
+
+
+@dataclass
+class ModelProviderServiceConfigAnthropicProviderRelayedConfig:
+    """Relayed form of Anthropic provider config: no credential is stored. Authentication is the
+    caller's own OAuth token, forwarded to Anthropic on outbound requests, so there is no persisted
+    secret. Presence of this variant is the signal that the provider service uses relayed auth;
+    ``plan_type`` further distinguishes which Anthropic subscription tier the token belongs to."""
+
+    plan_type: Optional[ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType] = None
+    """Which Anthropic subscription tier the relayed token belongs to. Optional; when unset the MPS
+    gets the full governance surface (see TEAM_ENTERPRISE). Immutable after Create, so the tier
+    cannot be flipped in place."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAnthropicProviderRelayedConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.plan_type is not None:
+            body["plan_type"] = self.plan_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAnthropicProviderRelayedConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.plan_type is not None:
+            body["plan_type"] = self.plan_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigAnthropicProviderRelayedConfig:
+        """Deserializes the ModelProviderServiceConfigAnthropicProviderRelayedConfig from a dictionary."""
+        return cls(
+            plan_type=_enum(
+                d, "plan_type", ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType
+            )
+        )
+
+
+class ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType(Enum):
+    """Which Anthropic subscription tier the relayed OAuth token belongs to. Immutable after Create
+    (switching tiers changes which governance controls the platform enforces). Only MAX and
+    TEAM_ENTERPRISE differ in the governance surface the gateway can enforce, not in how the token
+    is relayed."""
+
+    ANTHROPIC_RELAYED_PLAN_TYPE_MAX = "ANTHROPIC_RELAYED_PLAN_TYPE_MAX"
+    ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE = "ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE"
+
+
+@dataclass
+class ModelProviderServiceConfigAwsAccessKey:
+    """AWS access-key-pair auth for Amazon Bedrock: a SigV4-signing key pair."""
+
+    access_key_id: Optional[str] = None
+    """AWS access key ID. Required on Create when using access-key auth. Treated as username-equivalent
+    (not a secret value): round-trips on reads and is scrubbed from audit logs."""
+
+    secret_access_key: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """AWS secret access key paired with ``access_key_id``. Required on Create when using access-key
+    auth. Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAwsAccessKey into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_key_id is not None:
+            body["access_key_id"] = self.access_key_id
+        if self.secret_access_key:
+            body["secret_access_key"] = self.secret_access_key.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAwsAccessKey into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_key_id is not None:
+            body["access_key_id"] = self.access_key_id
+        if self.secret_access_key:
+            body["secret_access_key"] = self.secret_access_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigAwsAccessKey:
+        """Deserializes the ModelProviderServiceConfigAwsAccessKey from a dictionary."""
+        return cls(
+            access_key_id=d.get("access_key_id", None),
+            secret_access_key=_from_dict(d, "secret_access_key", ModelProviderServiceConfigProviderSecret),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigAzureOpenAiProviderConfig:
+    """Azure OpenAI provider configuration."""
+
+    direct: Optional[ModelProviderServiceConfigAzureOpenAiProviderDirectConfig] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAzureOpenAiProviderConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAzureOpenAiProviderConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigAzureOpenAiProviderConfig:
+        """Deserializes the ModelProviderServiceConfigAzureOpenAiProviderConfig from a dictionary."""
+        return cls(direct=_from_dict(d, "direct", ModelProviderServiceConfigAzureOpenAiProviderDirectConfig))
+
+
+@dataclass
+class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
+    """Direct form of Azure OpenAI provider config. Exactly one of three mutually-exclusive auth modes
+    must be supplied on Create:
+
+    - API key: set ``api_key``, leave ``entra_service_principal`` and ``service_credential`` unset.
+    - Entra ID (service principal): set ``entra_service_principal``, leave ``api_key`` and
+      ``service_credential`` unset.
+    - UC service credential: set ``service_credential.name`` to the AIP-122 resource-name form
+      ``credentials/{name}``, leave ``api_key`` and ``entra_service_principal`` unset. The
+      credential value lives in UC and is referenced by name, not held on this message. Only
+      supported on Azure-hosted workspaces. Setting more than one mode is rejected."""
+
+    api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Azure OpenAI API key. Mutually exclusive with the Entra and service-credential modes. Supplied
+    as inline plaintext via ``ProviderSecret.plaintext``."""
+
+    base_url: Optional[str] = None
+    """Full Azure OpenAI endpoint base URL, e.g. ``https://myresource.openai.azure.com``. Required on
+    Create."""
+
+    client_id: Optional[str] = None
+    """Deprecated flat Entra client ID. Superseded by ``entra_service_principal.client_id``. Kept for
+    one migration cycle; the handler mirrors it to/from ``entra_service_principal``."""
+
+    client_secret: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Deprecated flat Entra client secret. Superseded by ``entra_service_principal.client_secret``.
+    Kept for one migration cycle; the handler mirrors it to/from ``entra_service_principal``.
+    Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+
+    entra_service_principal: Optional[ModelProviderServiceConfigEntraServicePrincipal] = None
+    """Entra ID (service principal) auth. Mutually exclusive with ``api_key`` and
+    ``service_credential``. Supersedes the flat ``tenant_id`` / ``client_id`` / ``client_secret``
+    fields."""
+
+    service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
+    """Reference to a UC service credential authorizing Azure OpenAI requests. On Create the caller
+    supplies ``service_credential.name`` in the AIP-122 resource-name form ``credentials/{name}``.
+    Required on Create when using UC-service-credential auth; mutually exclusive with ``api_key``
+    and ``entra_service_principal``. The credential is referenced by name; its value is not carried
+    here. On read the resolved ``id`` and ``is_deleted`` are also populated. Only supported on
+    Azure-hosted workspaces; Create requests from other clouds are rejected with
+    INVALID_PARAMETER_VALUE."""
+
+    tenant_id: Optional[str] = None
+    """Deprecated flat Entra tenant ID. Superseded by ``entra_service_principal.tenant_id``. Kept for
+    one migration cycle; the handler mirrors it to/from ``entra_service_principal``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAzureOpenAiProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key.as_dict()
+        if self.base_url is not None:
+            body["base_url"] = self.base_url
+        if self.client_id is not None:
+            body["client_id"] = self.client_id
+        if self.client_secret:
+            body["client_secret"] = self.client_secret.as_dict()
+        if self.entra_service_principal:
+            body["entra_service_principal"] = self.entra_service_principal.as_dict()
+        if self.service_credential:
+            body["service_credential"] = self.service_credential.as_dict()
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigAzureOpenAiProviderDirectConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key
+        if self.base_url is not None:
+            body["base_url"] = self.base_url
+        if self.client_id is not None:
+            body["client_id"] = self.client_id
+        if self.client_secret:
+            body["client_secret"] = self.client_secret
+        if self.entra_service_principal:
+            body["entra_service_principal"] = self.entra_service_principal
+        if self.service_credential:
+            body["service_credential"] = self.service_credential
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
+        """Deserializes the ModelProviderServiceConfigAzureOpenAiProviderDirectConfig from a dictionary."""
+        return cls(
+            api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
+            base_url=d.get("base_url", None),
+            client_id=d.get("client_id", None),
+            client_secret=_from_dict(d, "client_secret", ModelProviderServiceConfigProviderSecret),
+            entra_service_principal=_from_dict(
+                d, "entra_service_principal", ModelProviderServiceConfigEntraServicePrincipal
+            ),
+            service_credential=_from_dict(d, "service_credential", ModelProviderServiceConfigServiceCredential),
+            tenant_id=d.get("tenant_id", None),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigCustomProviderConfig:
+    """Custom provider configuration: arbitrary HTTP endpoint with bearer-token auth."""
+
+    direct: Optional[ModelProviderServiceConfigCustomProviderDirectConfig] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigCustomProviderConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigCustomProviderConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigCustomProviderConfig:
+        """Deserializes the ModelProviderServiceConfigCustomProviderConfig from a dictionary."""
+        return cls(direct=_from_dict(d, "direct", ModelProviderServiceConfigCustomProviderDirectConfig))
+
+
+@dataclass
+class ModelProviderServiceConfigCustomProviderDirectConfig:
+    """Direct form of custom provider config.
+
+    Authentication is one of two mutually exclusive modes, exactly one of which must be supplied on
+    Create:
+
+    - Bearer: set ``api_key``, leave ``header_auth`` unset. The secret is forwarded as
+      ``Authorization: Bearer <secret>``.
+    - Header: set ``header_auth``, leave ``api_key`` unset. The secret is forwarded as
+      ``<api_key_name>: <api_key_value>``. Setting both modes or neither mode is rejected."""
+
+    api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Bearer token forwarded as the ``Authorization: Bearer ...`` header on outbound requests.
+    Supplied as inline plaintext via ``ProviderSecret.plaintext``. Set this for bearer-token auth."""
+
+    base_url: Optional[str] = None
+    """Endpoint URL of the OpenAI-compatible service (e.g., ``https://api.example.com/v1``). Required
+    on Create."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigCustomProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key.as_dict()
+        if self.base_url is not None:
+            body["base_url"] = self.base_url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigCustomProviderDirectConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key
+        if self.base_url is not None:
+            body["base_url"] = self.base_url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigCustomProviderDirectConfig:
+        """Deserializes the ModelProviderServiceConfigCustomProviderDirectConfig from a dictionary."""
+        return cls(
+            api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret), base_url=d.get("base_url", None)
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigEntraServicePrincipal:
+    """Entra ID (Azure AD) service-principal auth: AI Gateway exchanges the ``tenant_id`` +
+    ``client_id`` identify the service principal, and the ``credential`` oneof proves that identity,
+    exchanged for an Entra bearer token on outbound requests via the OAuth2 client-credentials
+    grant. Shared by the Azure OpenAI and Microsoft Foundry provider configs."""
+
+    client_id: Optional[str] = None
+    """Entra ID client (application) ID. Required on Create."""
+
+    client_secret: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Entra ID client secret. Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+
+    tenant_id: Optional[str] = None
+    """Entra ID (Azure AD) tenant ID. Required on Create."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigEntraServicePrincipal into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.client_id is not None:
+            body["client_id"] = self.client_id
+        if self.client_secret:
+            body["client_secret"] = self.client_secret.as_dict()
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigEntraServicePrincipal into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.client_id is not None:
+            body["client_id"] = self.client_id
+        if self.client_secret:
+            body["client_secret"] = self.client_secret
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigEntraServicePrincipal:
+        """Deserializes the ModelProviderServiceConfigEntraServicePrincipal from a dictionary."""
+        return cls(
+            client_id=d.get("client_id", None),
+            client_secret=_from_dict(d, "client_secret", ModelProviderServiceConfigProviderSecret),
+            tenant_id=d.get("tenant_id", None),
+        )
+
+
+class ModelProviderServiceConfigExternalModelProviderType(Enum):
+    """External LLM provider for an EXTERNAL_FOUNDATION_MODEL destination."""
+
+    EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK = "EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK"
+    EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC = "EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC"
+    EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI = "EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI"
+    EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM = "EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM"
+    EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE = "EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE"
+    EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY = "EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY"
+    EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI = "EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI"
+
+
+@dataclass
+class ModelProviderServiceConfigGeminiEnterpriseProviderConfig:
+    """Gemini Enterprise provider configuration."""
+
+    direct: Optional[ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigGeminiEnterpriseProviderConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigGeminiEnterpriseProviderConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigGeminiEnterpriseProviderConfig:
+        """Deserializes the ModelProviderServiceConfigGeminiEnterpriseProviderConfig from a dictionary."""
+        return cls(direct=_from_dict(d, "direct", ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig))
+
+
+@dataclass
+class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
+    """Direct form of Gemini Enterprise provider config."""
+
+    api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Google Gemini Enterprise API key. Required on Create. Supplied as inline plaintext via
+    ``ProviderSecret.plaintext``."""
+
+    project_id: Optional[str] = None
+    """GCP project ID hosting the Gemini Enterprise endpoint. Required on Create."""
+
+    region: Optional[str] = None
+    """GCP region of the Gemini Enterprise endpoint (e.g., ``us-central1``). Required on Create."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key.as_dict()
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
+        if self.region is not None:
+            body["region"] = self.region
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
+        if self.region is not None:
+            body["region"] = self.region
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
+        """Deserializes the ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig from a dictionary."""
+        return cls(
+            api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
+            project_id=d.get("project_id", None),
+            region=d.get("region", None),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigMicrosoftFoundryProviderConfig:
+    """Microsoft Foundry provider configuration."""
+
+    direct: Optional[ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigMicrosoftFoundryProviderConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigMicrosoftFoundryProviderConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigMicrosoftFoundryProviderConfig:
+        """Deserializes the ModelProviderServiceConfigMicrosoftFoundryProviderConfig from a dictionary."""
+        return cls(direct=_from_dict(d, "direct", ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig))
+
+
+@dataclass
+class ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig:
+    """Direct form of Microsoft Foundry provider config.
+
+    Authentication is one of three mutually exclusive modes, exactly one of which must be supplied
+    on Create:
+
+    - API key: set ``api_key``, leave ``entra_service_principal`` and ``service_credential`` unset.
+    - Entra ID (service principal): set ``entra_service_principal``, leave ``api_key`` and
+      ``service_credential`` unset. AI Gateway exchanges these for an Entra bearer token on outbound
+      requests via the OAuth2 client-credentials grant.
+    - UC service credential: set ``service_credential.name`` to the AIP-122 resource-name form
+      ``credentials/{name}``, leave ``api_key`` and ``entra_service_principal`` unset. The
+      credential value lives in UC and is referenced by name, not held on this message. Only
+      supported on Azure-hosted workspaces. Setting more than one mode is rejected."""
+
+    api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Microsoft AI Foundry API key. Mutually exclusive with the Entra and service-credential modes.
+    Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+
+    base_url: Optional[str] = None
+    """Microsoft AI Foundry endpoint URL. Required on Create."""
+
+    client_id: Optional[str] = None
+    """Deprecated flat Entra client ID. Superseded by ``entra_service_principal.client_id``. Kept for
+    one migration cycle; the handler mirrors it to/from ``entra_service_principal``."""
+
+    client_secret: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Deprecated flat Entra client secret. Superseded by ``entra_service_principal.client_secret``.
+    Kept for one migration cycle; the handler mirrors it to/from ``entra_service_principal``.
+    Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+
+    entra_service_principal: Optional[ModelProviderServiceConfigEntraServicePrincipal] = None
+    """Entra ID (service principal) auth. Mutually exclusive with ``api_key`` and
+    ``service_credential``. Supersedes the flat ``tenant_id`` / ``client_id`` / ``client_secret``
+    fields."""
+
+    service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
+    """Reference to a UC service credential authorizing Microsoft Foundry requests. On Create the
+    caller supplies ``service_credential.name`` in the AIP-122 resource-name form
+    ``credentials/{name}``. Required on Create when using UC-service-credential auth; mutually
+    exclusive with ``api_key`` and ``entra_service_principal``. The credential is referenced by
+    name; its value is not carried here. On read the resolved ``id`` and ``is_deleted`` are also
+    populated. Only supported on Azure-hosted workspaces; Create requests from other clouds are
+    rejected with INVALID_PARAMETER_VALUE."""
+
+    tenant_id: Optional[str] = None
+    """Deprecated flat Entra tenant ID. Superseded by ``entra_service_principal.tenant_id``. Kept for
+    one migration cycle; the handler mirrors it to/from ``entra_service_principal``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key.as_dict()
+        if self.base_url is not None:
+            body["base_url"] = self.base_url
+        if self.client_id is not None:
+            body["client_id"] = self.client_id
+        if self.client_secret:
+            body["client_secret"] = self.client_secret.as_dict()
+        if self.entra_service_principal:
+            body["entra_service_principal"] = self.entra_service_principal.as_dict()
+        if self.service_credential:
+            body["service_credential"] = self.service_credential.as_dict()
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key
+        if self.base_url is not None:
+            body["base_url"] = self.base_url
+        if self.client_id is not None:
+            body["client_id"] = self.client_id
+        if self.client_secret:
+            body["client_secret"] = self.client_secret
+        if self.entra_service_principal:
+            body["entra_service_principal"] = self.entra_service_principal
+        if self.service_credential:
+            body["service_credential"] = self.service_credential
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig:
+        """Deserializes the ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig from a dictionary."""
+        return cls(
+            api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
+            base_url=d.get("base_url", None),
+            client_id=d.get("client_id", None),
+            client_secret=_from_dict(d, "client_secret", ModelProviderServiceConfigProviderSecret),
+            entra_service_principal=_from_dict(
+                d, "entra_service_principal", ModelProviderServiceConfigEntraServicePrincipal
+            ),
+            service_credential=_from_dict(d, "service_credential", ModelProviderServiceConfigServiceCredential),
+            tenant_id=d.get("tenant_id", None),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigModelTargetConfig:
+    """Model target configuration for an external model destination."""
+
+    model: str
+    """Provider-side model identifier (e.g. "gpt-5", "claude-opus-4-7"). This is a string on the LLM
+    provider's side, not a UC entity. The UC governance hook for external destinations is the
+    ModelProviderService referenced by ``ExternalModelConfig.model_provider_service``, not the model
+    itself."""
+
+    native_api_types: Optional[List[str]] = None
+    """Provider-native API types the model supports (e.g. "openai/v1/chat/completions"). Used by the
+    platform for request/response translation from the unified API type. At most 64 entries of at
+    most 256 characters each; the list is persisted into the destination binding's bounded storage
+    envelope."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigModelTargetConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        if self.native_api_types:
+            body["native_api_types"] = [v for v in self.native_api_types]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigModelTargetConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        if self.native_api_types:
+            body["native_api_types"] = self.native_api_types
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigModelTargetConfig:
+        """Deserializes the ModelProviderServiceConfigModelTargetConfig from a dictionary."""
+        return cls(model=d.get("model", None), native_api_types=d.get("native_api_types", None))
+
+
+@dataclass
+class ModelProviderServiceConfigOpenAiProviderConfig:
+    """OpenAI provider configuration."""
+
+    direct: Optional[ModelProviderServiceConfigOpenAiProviderDirectConfig] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigOpenAiProviderConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigOpenAiProviderConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct:
+            body["direct"] = self.direct
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigOpenAiProviderConfig:
+        """Deserializes the ModelProviderServiceConfigOpenAiProviderConfig from a dictionary."""
+        return cls(direct=_from_dict(d, "direct", ModelProviderServiceConfigOpenAiProviderDirectConfig))
+
+
+@dataclass
+class ModelProviderServiceConfigOpenAiProviderDirectConfig:
+    """Direct (inline-credentials) form of the OpenAI provider config."""
+
+    api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """OpenAI API key. Required on Create. Supplied as inline plaintext via
+    ``ProviderSecret.plaintext``."""
+
+    base_url: Optional[str] = None
+    """Optional custom base URL. Defaults to ``https://api.openai.com/v1``. Use for
+    OpenAI-API-compatible third-party endpoints or in-network proxies."""
+
+    organization: Optional[str] = None
+    """Optional OpenAI organization ID. When set, the platform forwards it as the
+    ``OpenAI-Organization`` header."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigOpenAiProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key.as_dict()
+        if self.base_url is not None:
+            body["base_url"] = self.base_url
+        if self.organization is not None:
+            body["organization"] = self.organization
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigOpenAiProviderDirectConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.api_key:
+            body["api_key"] = self.api_key
+        if self.base_url is not None:
+            body["base_url"] = self.base_url
+        if self.organization is not None:
+            body["organization"] = self.organization
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigOpenAiProviderDirectConfig:
+        """Deserializes the ModelProviderServiceConfigOpenAiProviderDirectConfig from a dictionary."""
+        return cls(
+            api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
+            base_url=d.get("base_url", None),
+            organization=d.get("organization", None),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigProviderSecret:
+    """A secret value supplied as part of an inline provider config. The caller supplies the value as
+    inline ``plaintext`` on writes; the platform stores it encrypted. The ``plaintext`` field is
+    ``INPUT_ONLY`` and never round-trips on reads."""
+
+    plaintext: Optional[str] = None
+    """Inline plaintext credential. INPUT_ONLY: the value never round-trips on reads. Get and List
+    responses omit ``plaintext``; the field's presence in the read shape only indicates that a
+    secret is configured."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigProviderSecret into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.plaintext is not None:
+            body["plaintext"] = self.plaintext
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigProviderSecret into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.plaintext is not None:
+            body["plaintext"] = self.plaintext
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigProviderSecret:
+        """Deserializes the ModelProviderServiceConfigProviderSecret from a dictionary."""
+        return cls(plaintext=d.get("plaintext", None))
+
+
+@dataclass
+class ModelProviderServiceConfigServiceCredential:
+    """---- Provider configuration (nested; see the ``provider`` oneof below) ---- The customer-owned
+    UC service credential a ModelProviderService uses to authenticate to its provider, referenced by
+    name."""
+
+    name: str
+    """Resource name of the bound UC service credential, in the AIP-122 form ``credentials/{name}`` (a
+    metastore-level single-part credential name). On create the caller supplies the name here. On
+    read it reflects the credential's current name at read time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigServiceCredential into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigServiceCredential into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigServiceCredential:
+        """Deserializes the ModelProviderServiceConfigServiceCredential from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class ModelService:
+    """A governed AI Gateway endpoint in Unity Catalog that routes inference requests to one or more
+    model destinations (for example a foundation model or an external LLM reached through a
+    ModelProviderService). Applies centralized access control, rate limits, guardrails, and auditing
+    to the traffic it serves."""
+
+    browse_only: Optional[bool] = None
+    """Whether the caller sees only metadata available through the BROWSE privilege."""
+
+    comment: Optional[str] = None
+    """User-provided description."""
+
+    config: Optional[ModelServiceConfig] = None
+    """Operational configuration: destinations, routing, rate limits, inference table. Required on
+    CreateModelService; on UpdateModelService it is required only when ``config`` (or a ``config.*``
+    subpath) appears in ``update_mask``."""
+
+    create_time: Optional[Timestamp] = None
+    """When the model service was created."""
+
+    created_by: Optional[str] = None
+    """Creator identity."""
+
+    effective_owner: Optional[str] = None
+    """The resolved owner of the ModelService. Falls back to the caller's identity when ``owner`` is
+    not explicitly set on creation."""
+
+    etag: Optional[str] = None
+    """Optimistic concurrency control token. Server-generated from the entity's state and returned on
+    every read. To use it as an if-match precondition on a mutation, echo the last-read value back
+    via the dedicated ``etag`` field on the Update / Delete request; the server rejects the mutation
+    if the stored etag differs."""
+
+    metastore_id: Optional[str] = None
+    """Metastore hosting the model service."""
+
+    name: Optional[str] = None
+    """Resource name of the model service. Format:
+    ``model-services/{catalog}.{schema}.{model_service}``. Each ``{...}`` component is capped at 255
+    characters individually. Server-derived on Create from ``parent`` + ``model_service_id``;
+    required and immutable on Update/Get/Delete."""
+
+    owner: Optional[str] = None
+    """The owner of the model service. Write-only; read owner via effective_owner."""
+
+    supported_api_types: Optional[List[str]] = None
+    """Unified API types this endpoint supports (e.g. "chat", "embeddings", "completions"). Derived
+    from the destinations' backing models / providers at read time."""
+
+    update_time: Optional[Timestamp] = None
+    """When the model service was last modified."""
+
+    updated_by: Optional[str] = None
+    """Identity of the last updater."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelService into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.config:
+            body["config"] = self.config.as_dict()
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.supported_api_types:
+            body["supported_api_types"] = [v for v in self.supported_api_types]
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelService into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.config:
+            body["config"] = self.config
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.supported_api_types:
+            body["supported_api_types"] = self.supported_api_types
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelService:
+        """Deserializes the ModelService from a dictionary."""
+        return cls(
+            browse_only=d.get("browse_only", None),
+            comment=d.get("comment", None),
+            config=_from_dict(d, "config", ModelServiceConfig),
+            create_time=_timestamp(d, "create_time"),
+            created_by=d.get("created_by", None),
+            effective_owner=d.get("effective_owner", None),
+            etag=d.get("etag", None),
+            metastore_id=d.get("metastore_id", None),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            supported_api_types=d.get("supported_api_types", None),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
+        )
+
+
+@dataclass
+class ModelServiceConfig:
+    """Operational configuration wrapped around the ModelService resource."""
+
+    inference_table: Optional[InferenceTableConfig] = None
+    """Inference table config for payload logging."""
+
+    rate_limits: Optional[List[RateLimit]] = None
+    """Rate limits applied to requests routed through this model service."""
+
+    routing: Optional[ModelServiceConfigRoutingConfig] = None
+    """Routing configuration: destinations, routing strategy, and fallback."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelServiceConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.inference_table:
+            body["inference_table"] = self.inference_table.as_dict()
+        if self.rate_limits:
+            body["rate_limits"] = [v.as_dict() for v in self.rate_limits]
+        if self.routing:
+            body["routing"] = self.routing.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelServiceConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inference_table:
+            body["inference_table"] = self.inference_table
+        if self.rate_limits:
+            body["rate_limits"] = self.rate_limits
+        if self.routing:
+            body["routing"] = self.routing
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelServiceConfig:
+        """Deserializes the ModelServiceConfig from a dictionary."""
+        return cls(
+            inference_table=_from_dict(d, "inference_table", InferenceTableConfig),
+            rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
+            routing=_from_dict(d, "routing", ModelServiceConfigRoutingConfig),
+        )
+
+
+@dataclass
+class ModelServiceConfigDestinationConfig:
+    """A destination the model service can route traffic to. Exactly one of the per-type configs inside
+    ``type_config`` must be set, and it must match ``destination_type``."""
+
+    name: str
+    """User-facing label for this destination, used in routing references."""
+
+    destination_type: ModelServiceConfigDestinationConfigDestinationType
+    """Backing-model category. Determines which oneof variant is populated."""
+
+    external_model_config: Optional[ModelServiceConfigExternalModelConfig] = None
+
+    is_deleted: Optional[bool] = None
+    """True when the destination's backing UC entity (MODEL for foundation-model destinations,
+    MODEL_PROVIDER_SERVICE for external destinations) has been deleted but the destination row still
+    references it. The dangling destination is surfaced (not silently dropped) so callers can see
+    the broken routing. Inference traffic through this destination fails closed (BAD_REQUEST /
+    FAILED_PRECONDITION)."""
+
+    pay_per_token_config: Optional[ModelServiceConfigPayPerTokenConfig] = None
+
+    provisioned_throughput_config: Optional[ModelServiceConfigProvisionedThroughputConfig] = None
+
+    traffic_percentage: Optional[int] = None
+    """Share of traffic sent to this destination, 0-100. Optional on fallback destinations; see
+    FallbackConfig."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelServiceConfigDestinationConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_type is not None:
+            body["destination_type"] = self.destination_type.value
+        if self.external_model_config:
+            body["external_model_config"] = self.external_model_config.as_dict()
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.name is not None:
+            body["name"] = self.name
+        if self.pay_per_token_config:
+            body["pay_per_token_config"] = self.pay_per_token_config.as_dict()
+        if self.provisioned_throughput_config:
+            body["provisioned_throughput_config"] = self.provisioned_throughput_config.as_dict()
+        if self.traffic_percentage is not None:
+            body["traffic_percentage"] = self.traffic_percentage
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelServiceConfigDestinationConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_type is not None:
+            body["destination_type"] = self.destination_type
+        if self.external_model_config:
+            body["external_model_config"] = self.external_model_config
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.name is not None:
+            body["name"] = self.name
+        if self.pay_per_token_config:
+            body["pay_per_token_config"] = self.pay_per_token_config
+        if self.provisioned_throughput_config:
+            body["provisioned_throughput_config"] = self.provisioned_throughput_config
+        if self.traffic_percentage is not None:
+            body["traffic_percentage"] = self.traffic_percentage
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelServiceConfigDestinationConfig:
+        """Deserializes the ModelServiceConfigDestinationConfig from a dictionary."""
+        return cls(
+            destination_type=_enum(d, "destination_type", ModelServiceConfigDestinationConfigDestinationType),
+            external_model_config=_from_dict(d, "external_model_config", ModelServiceConfigExternalModelConfig),
+            is_deleted=d.get("is_deleted", None),
+            name=d.get("name", None),
+            pay_per_token_config=_from_dict(d, "pay_per_token_config", ModelServiceConfigPayPerTokenConfig),
+            provisioned_throughput_config=_from_dict(
+                d, "provisioned_throughput_config", ModelServiceConfigProvisionedThroughputConfig
+            ),
+            traffic_percentage=d.get("traffic_percentage", None),
+        )
+
+
+class ModelServiceConfigDestinationConfigDestinationType(Enum):
+    """Backing-model category for a model service destination."""
+
+    DESTINATION_TYPE_EXTERNAL_FOUNDATION_MODEL = "DESTINATION_TYPE_EXTERNAL_FOUNDATION_MODEL"
+    DESTINATION_TYPE_PAY_PER_TOKEN_FOUNDATION_MODEL = "DESTINATION_TYPE_PAY_PER_TOKEN_FOUNDATION_MODEL"
+    DESTINATION_TYPE_PROVISIONED_THROUGHPUT_FOUNDATION_MODEL = (
+        "DESTINATION_TYPE_PROVISIONED_THROUGHPUT_FOUNDATION_MODEL"
+    )
+
+
+@dataclass
+class ModelServiceConfigExternalModelConfig:
+    """Configuration for an external-foundation-model destination. Provider auth and provider-specific
+    cloud configuration are owned by a separate, governed ModelProviderService entity referenced via
+    ``model_provider_service``; the platform resolves the provider at invocation time."""
+
+    model_provider_service: str
+    """Resource name of the governed ModelProviderService that owns provider auth and provider-specific
+    configuration. The referenced ModelProviderService also carries the provider type, so this
+    message does not surface it directly. Format:
+    ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}``
+    component is capped at 255 characters individually."""
+
+    target: ModelProviderServiceConfigModelTargetConfig
+    """Routing target for the destination: the provider-side model selected from the referenced
+    ModelProviderService's ``targets`` catalog, plus the unified API types the platform should
+    translate to/from at request time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelServiceConfigExternalModelConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_provider_service is not None:
+            body["model_provider_service"] = self.model_provider_service
+        if self.target:
+            body["target"] = self.target.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelServiceConfigExternalModelConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_provider_service is not None:
+            body["model_provider_service"] = self.model_provider_service
+        if self.target:
+            body["target"] = self.target
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelServiceConfigExternalModelConfig:
+        """Deserializes the ModelServiceConfigExternalModelConfig from a dictionary."""
+        return cls(
+            model_provider_service=d.get("model_provider_service", None),
+            target=_from_dict(d, "target", ModelProviderServiceConfigModelTargetConfig),
+        )
+
+
+@dataclass
+class ModelServiceConfigFallbackConfig:
+    """Fallback routing, applied after the primary destination returns a retryable error. Traversal is
+    in list order; the attempt count is the length of the list."""
+
+    destinations: Optional[List[ModelServiceConfigDestinationConfig]] = None
+    """Ordered list of fallback destinations. Traversal is in list order; the attempt count is the
+    length of the list. At most 5 are allowed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelServiceConfigFallbackConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destinations:
+            body["destinations"] = [v.as_dict() for v in self.destinations]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelServiceConfigFallbackConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destinations:
+            body["destinations"] = self.destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelServiceConfigFallbackConfig:
+        """Deserializes the ModelServiceConfigFallbackConfig from a dictionary."""
+        return cls(destinations=_repeated_dict(d, "destinations", ModelServiceConfigDestinationConfig))
+
+
+@dataclass
+class ModelServiceConfigPayPerTokenConfig:
+    """Configuration for a pay-per-token foundation-model destination. Identifies the foundation model
+    by its UC resource name; the platform resolves it to a Model Serving endpoint at request time."""
+
+    model: str
+    """Resource name of the UC model. Format: ``models/{catalog}.{schema}.{model}``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelServiceConfigPayPerTokenConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelServiceConfigPayPerTokenConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelServiceConfigPayPerTokenConfig:
+        """Deserializes the ModelServiceConfigPayPerTokenConfig from a dictionary."""
+        return cls(model=d.get("model", None))
+
+
+@dataclass
+class ModelServiceConfigProvisionedThroughputConfig:
+    """Configuration for a provisioned-throughput foundation-model destination. References a
+    pre-existing Model Serving endpoint that serves the model; sizing (provisioned throughput, burst
+    scaling, model version) is owned by the Model Serving endpoint itself, not by this message."""
+
+    model_serving_endpoint: str
+    """Name of the backing Model Serving endpoint serving the provisioned- throughput foundation model,
+    as the AIP-122 typed resource name ``serving-endpoints/{name}``. The same UC model can be served
+    on multiple Model Serving endpoints (different throughput / region / config); the caller picks
+    which one this destination routes to. The endpoint must exist at create time."""
+
+    model: Optional[str] = None
+    """UC model FQN of the model served by the backing endpoint (e.g.,
+    ``system.ai.databricks-claude-opus-4-6``). Resolved from Model Serving at Create/Update time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelServiceConfigProvisionedThroughputConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        if self.model_serving_endpoint is not None:
+            body["model_serving_endpoint"] = self.model_serving_endpoint
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelServiceConfigProvisionedThroughputConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        if self.model_serving_endpoint is not None:
+            body["model_serving_endpoint"] = self.model_serving_endpoint
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelServiceConfigProvisionedThroughputConfig:
+        """Deserializes the ModelServiceConfigProvisionedThroughputConfig from a dictionary."""
+        return cls(model=d.get("model", None), model_serving_endpoint=d.get("model_serving_endpoint", None))
+
+
+@dataclass
+class ModelServiceConfigRoutingConfig:
+    """Routing configuration for a model service, nesting destinations, routing strategy, and fallback
+    under a single sub-message."""
+
+    destinations: Optional[List[ModelServiceConfigDestinationConfig]] = None
+    """Primary routing destinations. At most 10 are allowed. At least one is required on
+    CreateModelService; on UpdateModelService it is required only when ``config.routing`` (or a
+    ``config.routing.*`` subpath) appears in ``update_mask``."""
+
+    fallback: Optional[ModelServiceConfigFallbackConfig] = None
+    """Fallback routing config, applied after primary destinations fail."""
+
+    first_token_timeout: Optional[Duration] = None
+    """Timeout for the first token of a streaming response. If a destination does not return its first
+    token within this duration, AI Gateway aborts the attempt and fails over to the next
+    destination. Applies to streaming requests only. Leave unset for no first-token timeout."""
+
+    traffic_splitting: Optional[ModelServiceConfigRoutingConfigTrafficSplitting] = None
+    """Marker message selecting request-based traffic splitting. Traffic is distributed according to
+    each destination's traffic_percentage value; no configuration lives on this message itself."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelServiceConfigRoutingConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destinations:
+            body["destinations"] = [v.as_dict() for v in self.destinations]
+        if self.fallback:
+            body["fallback"] = self.fallback.as_dict()
+        if self.first_token_timeout is not None:
+            body["first_token_timeout"] = self.first_token_timeout.ToJsonString()
+        if self.traffic_splitting:
+            body["traffic_splitting"] = self.traffic_splitting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelServiceConfigRoutingConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destinations:
+            body["destinations"] = self.destinations
+        if self.fallback:
+            body["fallback"] = self.fallback
+        if self.first_token_timeout is not None:
+            body["first_token_timeout"] = self.first_token_timeout
+        if self.traffic_splitting:
+            body["traffic_splitting"] = self.traffic_splitting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelServiceConfigRoutingConfig:
+        """Deserializes the ModelServiceConfigRoutingConfig from a dictionary."""
+        return cls(
+            destinations=_repeated_dict(d, "destinations", ModelServiceConfigDestinationConfig),
+            fallback=_from_dict(d, "fallback", ModelServiceConfigFallbackConfig),
+            first_token_timeout=_duration(d, "first_token_timeout"),
+            traffic_splitting=_from_dict(d, "traffic_splitting", ModelServiceConfigRoutingConfigTrafficSplitting),
+        )
+
+
+@dataclass
+class ModelServiceConfigRoutingConfigTrafficSplitting:
+    """Marker message selecting request-based traffic splitting across primary destinations. Split
+    weights are read from each DestinationConfig.traffic_percentage."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelServiceConfigRoutingConfigTrafficSplitting into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelServiceConfigRoutingConfigTrafficSplitting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelServiceConfigRoutingConfigTrafficSplitting:
+        """Deserializes the ModelServiceConfigRoutingConfigTrafficSplitting from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -6811,9 +9839,8 @@ class ModelVersionInfoStatus(Enum):
 @dataclass
 class MonitorCronSchedule:
     quartz_cron_expression: str
-    """The expression that determines when to run the monitor. See [examples].
-    
-    [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"""
+    """The expression that determines when to run the monitor. See `examples
+    <https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html>`__."""
 
     timezone_id: str
     """The timezone id (e.g., ``PST``) in which to evaluate the quartz expression."""
@@ -7003,18 +10030,18 @@ class MonitorInfo:
     {catalog}.{schema}"""
 
     table_name: str
-    """[Create:ERR Update:IGN] UC table to monitor. Format: `catalog.schema.table_name`"""
+    """[Create:ERR Update:IGN] UC table to monitor. Format: ``catalog.schema.table_name``"""
 
     status: MonitorInfoStatus
     """[Create:ERR Update:IGN] The monitor status."""
 
     profile_metrics_table_name: str
     """[Create:ERR Update:IGN] Table that stores profile metrics data. Format:
-    `catalog.schema.table_name`."""
+    ``catalog.schema.table_name``."""
 
     drift_metrics_table_name: str
     """[Create:ERR Update:IGN] Table that stores drift metrics data. Format:
-    `catalog.schema.table_name`."""
+    ``catalog.schema.table_name``."""
 
     monitor_version: int
     """[Create:ERR Update:IGN] Represents the current monitor configuration version in use. The version
@@ -7027,7 +10054,7 @@ class MonitorInfo:
 
     baseline_table_name: Optional[str] = None
     """[Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the
-    data in the monitored `table_name`. The baseline table and the monitored table shall have the
+    data in the monitored ``table_name``. The baseline table and the monitored table shall have the
     same schema."""
 
     custom_metrics: Optional[List[MonitorMetric]] = None
@@ -7054,10 +10081,10 @@ class MonitorInfo:
     slicing_exprs: Optional[List[str]] = None
     """[Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
     data is grouped by each expression independently, resulting in a separate slice for each
-    predicate and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will
-    generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per
-    unique value in `col1`. For high-cardinality columns, only the top 100 unique values by
-    frequency will generate slices."""
+    predicate and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]``
+    will generate the following slices: two slices for ``col_2 > 10`` (True and False), and one
+    slice per unique value in ``col1``. For high-cardinality columns, only the top 100 unique values
+    by frequency will generate slices."""
 
     snapshot: Optional[MonitorSnapshot] = None
     """Configuration for monitoring snapshot tables."""
@@ -7188,10 +10215,9 @@ class MonitorMetric:
     """Name of the metric in the output tables."""
 
     definition: str
-    """Jinja template for a SQL expression that specifies how to compute the metric. See [create metric
-    definition].
-    
-    [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition"""
+    """Jinja template for a SQL expression that specifies how to compute the metric. See `create metric
+    definition
+    <https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition>`__."""
 
     input_columns: List[str]
     """A list of column names in the input table the metric should be computed for. Can use
@@ -7205,9 +10231,11 @@ class MonitorMetric:
     ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and
     ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the
     ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the
-    two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing
-    columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
-    metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
+    two consecutive time windows.
+    
+    - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table
+    - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics
+    - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorMetric into a dictionary suitable for use as a JSON request body."""
@@ -7256,9 +10284,11 @@ class MonitorMetricType(Enum):
     ``\"CUSTOM_METRIC_TYPE_DRIFT\"``. The ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"`` and
     ``\"CUSTOM_METRIC_TYPE_DERIVED\"`` metrics are computed on a single table, whereas the
     ``\"CUSTOM_METRIC_TYPE_DRIFT\"`` compare metrics across baseline and input table, or across the
-    two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing
-    columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
-    metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
+    two consecutive time windows.
+
+    - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table
+    - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics
+    - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
 
     CUSTOM_METRIC_TYPE_AGGREGATE = "CUSTOM_METRIC_TYPE_AGGREGATE"
     CUSTOM_METRIC_TYPE_DERIVED = "CUSTOM_METRIC_TYPE_DERIVED"
@@ -7540,6 +10570,73 @@ class NotificationDestination:
 
 
 @dataclass
+class OneLakeEventQueue:
+    """File event queue for OneLake (Microsoft Fabric) locations. Events flow through Fabric
+    Eventstream in both arms; CSMS consumes from a user-provided Azure Event Hub (provided_onelake)
+    or from a Fabric Eventstream that CSMS provisions in the user's workspace (managed_onelake)."""
+
+    consumer_group: Optional[str] = None
+    """Event Hubs consumer group used to consume file events. Defaults to "$Default" when unset.
+    Recommended for provided_onelake: create a dedicated consumer group on the Event Hub for file
+    events to avoid contending with the customer's other consumers."""
+
+    event_hub_name: Optional[str] = None
+    """Event Hub entity name within the namespace. Only required for provided_onelake."""
+
+    event_hub_url: Optional[str] = None
+    """The Event Hub URL in the format https://{namespace}.servicebus.windows.net/{event_hub_name}.
+    Deprecated: use fully_qualified_namespace + event_hub_name instead."""
+
+    fully_qualified_namespace: Optional[str] = None
+    """The fully qualified domain name of the Event Hubs namespace, e.g.
+    {yournamespace}.servicebus.windows.net. Only required for provided_onelake."""
+
+    managed_resource_id: Optional[str] = None
+    """Unique identifier included in the name of the file events managed resources."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OneLakeEventQueue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.consumer_group is not None:
+            body["consumer_group"] = self.consumer_group
+        if self.event_hub_name is not None:
+            body["event_hub_name"] = self.event_hub_name
+        if self.event_hub_url is not None:
+            body["event_hub_url"] = self.event_hub_url
+        if self.fully_qualified_namespace is not None:
+            body["fully_qualified_namespace"] = self.fully_qualified_namespace
+        if self.managed_resource_id is not None:
+            body["managed_resource_id"] = self.managed_resource_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OneLakeEventQueue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.consumer_group is not None:
+            body["consumer_group"] = self.consumer_group
+        if self.event_hub_name is not None:
+            body["event_hub_name"] = self.event_hub_name
+        if self.event_hub_url is not None:
+            body["event_hub_url"] = self.event_hub_url
+        if self.fully_qualified_namespace is not None:
+            body["fully_qualified_namespace"] = self.fully_qualified_namespace
+        if self.managed_resource_id is not None:
+            body["managed_resource_id"] = self.managed_resource_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OneLakeEventQueue:
+        """Deserializes the OneLakeEventQueue from a dictionary."""
+        return cls(
+            consumer_group=d.get("consumer_group", None),
+            event_hub_name=d.get("event_hub_name", None),
+            event_hub_url=d.get("event_hub_url", None),
+            fully_qualified_namespace=d.get("fully_qualified_namespace", None),
+            managed_resource_id=d.get("managed_resource_id", None),
+        )
+
+
+@dataclass
 class OnlineTable:
     """Online Table information."""
 
@@ -7812,6 +10909,10 @@ class OptionSpec:
     """For drop down / radio button selections, UI will want to know the possible input values, it can
     also be used by other option types to limit input selections."""
 
+    conditional_display: Optional[ConditionalDisplay] = None
+    """Conditional display configuration. Specifies when this option should be hidden based on another
+    option's value."""
+
     default_value: Optional[str] = None
     """The default value of the option, for example, value '443' for 'port' option."""
 
@@ -7858,6 +10959,8 @@ class OptionSpec:
         body = {}
         if self.allowed_values:
             body["allowed_values"] = [v for v in self.allowed_values]
+        if self.conditional_display:
+            body["conditional_display"] = self.conditional_display.as_dict()
         if self.default_value is not None:
             body["default_value"] = self.default_value
         if self.description is not None:
@@ -7891,6 +10994,8 @@ class OptionSpec:
         body = {}
         if self.allowed_values:
             body["allowed_values"] = self.allowed_values
+        if self.conditional_display:
+            body["conditional_display"] = self.conditional_display
         if self.default_value is not None:
             body["default_value"] = self.default_value
         if self.description is not None:
@@ -7924,6 +11029,7 @@ class OptionSpec:
         """Deserializes the OptionSpec from a dictionary."""
         return cls(
             allowed_values=d.get("allowed_values", None),
+            conditional_display=_from_dict(d, "conditional_display", ConditionalDisplay),
             default_value=d.get("default_value", None),
             description=d.get("description", None),
             hint=d.get("hint", None),
@@ -7962,6 +11068,7 @@ class OptionSpecOptionType(Enum):
     OPTION_MULTILINE_STRING = "OPTION_MULTILINE_STRING"
     OPTION_NUMBER = "OPTION_NUMBER"
     OPTION_SERVICE_CREDENTIAL = "OPTION_SERVICE_CREDENTIAL"
+    OPTION_STORAGE_CREDENTIAL = "OPTION_STORAGE_CREDENTIAL"
     OPTION_STRING = "OPTION_STRING"
 
 
@@ -7980,6 +11087,15 @@ class PermissionsChange:
     """The principal whose privileges we are changing. Only one of principal or principal_id should be
     specified, never both at the same time."""
 
+    principal_id: Optional[int] = None
+    """An opaque internal ID that identifies the principal whose privileges should be removed.
+    
+    This field is intended for removing privileges associated with a deleted user. When set, only
+    the entries specified in the remove field are processed; any entries in the add field will be
+    rejected.
+    
+    Only one of principal or principal_id should be specified, never both at the same time."""
+
     remove: Optional[List[Privilege]] = None
     """The set of privileges to remove."""
 
@@ -7990,6 +11106,8 @@ class PermissionsChange:
             body["add"] = [v.value for v in self.add]
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = [v.value for v in self.remove]
         return body
@@ -8001,6 +11119,8 @@ class PermissionsChange:
             body["add"] = self.add
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = self.remove
         return body
@@ -8011,6 +11131,7 @@ class PermissionsChange:
         return cls(
             add=_repeated_enum(d, "add", Privilege),
             principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
             remove=_repeated_enum(d, "remove", Privilege),
         )
 
@@ -8119,14 +11240,14 @@ class PolicyInfo:
     update."""
 
     for_securable_type: SecurableType
-    """Type of securables that the policy should take effect on. Only `TABLE` is supported at this
+    """Type of securables that the policy should take effect on. Only ``TABLE`` is supported at this
     moment. Required on create and optional on update."""
 
     policy_type: PolicyType
     """Type of the policy. Required on create."""
 
     column_mask: Optional[ColumnMaskOptions] = None
-    """Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`.
+    """Options for column mask policies. Valid only if ``policy_type`` is ``POLICY_TYPE_COLUMN_MASK``.
     Required on create and optional on update. When specified on update, the new options will
     replace the existing options as a whole."""
 
@@ -8139,30 +11260,40 @@ class PolicyInfo:
     created_by: Optional[str] = None
     """Username of the user who created the policy. Output only."""
 
+    deny: Optional[DenyOptions] = None
+    """Options for deny policies. Valid only if ``policy_type`` is ``POLICY_TYPE_DENY``. Required on
+    create and optional on update. When specified on update, the new options will replace the
+    existing options as a whole."""
+
     except_principals: Optional[List[str]] = None
     """Optional list of user or group names that should be excluded from the policy."""
+
+    grant: Optional[GrantOptions] = None
+    """Options for grant policies. Valid only if ``policy_type`` is ``POLICY_TYPE_GRANT``. Required on
+    create and optional on update. When specified on update, the new options will replace the
+    existing options as a whole."""
 
     id: Optional[str] = None
     """Unique identifier of the policy. This field is output only and is generated by the system."""
 
     match_columns: Optional[List[MatchColumn]] = None
     """Optional list of condition expressions used to match table columns. Only valid when
-    `for_securable_type` is `TABLE`. When specified, the policy only applies to tables whose columns
-    satisfy all match conditions."""
+    ``for_securable_type`` is ``TABLE``. When specified, the policy only applies to tables whose
+    columns satisfy all match conditions."""
 
     name: Optional[str] = None
-    """Name of the policy. Required on create and optional on update. To rename the policy, set `name`
-    to a different value on update."""
+    """Name of the policy. Required on create and optional on update. To rename the policy, set
+    ``name`` to a different value on update."""
 
     on_securable_fullname: Optional[str] = None
     """Full name of the securable on which the policy is defined. Required on create."""
 
     on_securable_type: Optional[SecurableType] = None
-    """Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are
-    supported at this moment. Required on create."""
+    """Type of the securable on which the policy is defined. Only ``CATALOG``, ``SCHEMA`` and ``TABLE``
+    are supported at this moment. Required on create."""
 
     row_filter: Optional[RowFilterOptions] = None
-    """Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`.
+    """Options for row filter policies. Valid only if ``policy_type`` is ``POLICY_TYPE_ROW_FILTER``.
     Required on create and optional on update. When specified on update, the new options will
     replace the existing options as a whole."""
 
@@ -8171,6 +11302,13 @@ class PolicyInfo:
 
     updated_by: Optional[str] = None
     """Username of the user who last modified the policy. Output only."""
+
+    use_session_identity: Optional[bool] = None
+    """Temporary for migrating customers to session identity. Customers not currently using ABAC will
+    not be able to set this field to false and all new policies will have this field default to
+    true. Existing customers will have this field default to false, but can set it to true to opt in
+    to session identity. after a grace period, this field will be removed and all policies will use
+    session identity. Only for row filter and column mask policies. Not applicable to deny policies."""
 
     when_condition: Optional[str] = None
     """Optional condition when the policy should take effect."""
@@ -8186,10 +11324,14 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deny:
+            body["deny"] = self.deny.as_dict()
         if self.except_principals:
             body["except_principals"] = [v for v in self.except_principals]
         if self.for_securable_type is not None:
             body["for_securable_type"] = self.for_securable_type.value
+        if self.grant:
+            body["grant"] = self.grant.as_dict()
         if self.id is not None:
             body["id"] = self.id
         if self.match_columns:
@@ -8210,6 +11352,8 @@ class PolicyInfo:
             body["updated_at"] = self.updated_at
         if self.updated_by is not None:
             body["updated_by"] = self.updated_by
+        if self.use_session_identity is not None:
+            body["use_session_identity"] = self.use_session_identity
         if self.when_condition is not None:
             body["when_condition"] = self.when_condition
         return body
@@ -8225,10 +11369,14 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deny:
+            body["deny"] = self.deny
         if self.except_principals:
             body["except_principals"] = self.except_principals
         if self.for_securable_type is not None:
             body["for_securable_type"] = self.for_securable_type
+        if self.grant:
+            body["grant"] = self.grant
         if self.id is not None:
             body["id"] = self.id
         if self.match_columns:
@@ -8249,6 +11397,8 @@ class PolicyInfo:
             body["updated_at"] = self.updated_at
         if self.updated_by is not None:
             body["updated_by"] = self.updated_by
+        if self.use_session_identity is not None:
+            body["use_session_identity"] = self.use_session_identity
         if self.when_condition is not None:
             body["when_condition"] = self.when_condition
         return body
@@ -8261,8 +11411,10 @@ class PolicyInfo:
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
+            deny=_from_dict(d, "deny", DenyOptions),
             except_principals=d.get("except_principals", None),
             for_securable_type=_enum(d, "for_securable_type", SecurableType),
+            grant=_from_dict(d, "grant", GrantOptions),
             id=d.get("id", None),
             match_columns=_repeated_dict(d, "match_columns", MatchColumn),
             name=d.get("name", None),
@@ -8273,12 +11425,15 @@ class PolicyInfo:
             to_principals=d.get("to_principals", None),
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
+            use_session_identity=d.get("use_session_identity", None),
             when_condition=d.get("when_condition", None),
         )
 
 
 class PolicyType(Enum):
     POLICY_TYPE_COLUMN_MASK = "POLICY_TYPE_COLUMN_MASK"
+    POLICY_TYPE_DENY = "POLICY_TYPE_DENY"
+    POLICY_TYPE_GRANT = "POLICY_TYPE_GRANT"
     POLICY_TYPE_ROW_FILTER = "POLICY_TYPE_ROW_FILTER"
 
 
@@ -8376,40 +11531,70 @@ class Privilege(Enum):
     APPLY_TAG = "APPLY_TAG"
     BROWSE = "BROWSE"
     CREATE = "CREATE"
+    CREATE_CASE_COLLECTION = "CREATE_CASE_COLLECTION"
     CREATE_CATALOG = "CREATE_CATALOG"
     CREATE_CLEAN_ROOM = "CREATE_CLEAN_ROOM"
     CREATE_CONNECTION = "CREATE_CONNECTION"
+    CREATE_DATASOURCE = "CREATE_DATASOURCE"
     CREATE_EXTERNAL_LOCATION = "CREATE_EXTERNAL_LOCATION"
     CREATE_EXTERNAL_TABLE = "CREATE_EXTERNAL_TABLE"
     CREATE_EXTERNAL_VOLUME = "CREATE_EXTERNAL_VOLUME"
+    CREATE_FEATURE = "CREATE_FEATURE"
+    CREATE_FLOW = "CREATE_FLOW"
     CREATE_FOREIGN_CATALOG = "CREATE_FOREIGN_CATALOG"
     CREATE_FOREIGN_SECURABLE = "CREATE_FOREIGN_SECURABLE"
     CREATE_FUNCTION = "CREATE_FUNCTION"
     CREATE_MANAGED_STORAGE = "CREATE_MANAGED_STORAGE"
     CREATE_MATERIALIZED_VIEW = "CREATE_MATERIALIZED_VIEW"
+    CREATE_MEMORY_STORE = "CREATE_MEMORY_STORE"
     CREATE_MODEL = "CREATE_MODEL"
     CREATE_PROVIDER = "CREATE_PROVIDER"
     CREATE_RECIPIENT = "CREATE_RECIPIENT"
+    CREATE_RULE = "CREATE_RULE"
     CREATE_SCHEMA = "CREATE_SCHEMA"
+    CREATE_SEMANTIC_GRAPH = "CREATE_SEMANTIC_GRAPH"
+    CREATE_SERVICE = "CREATE_SERVICE"
     CREATE_SERVICE_CREDENTIAL = "CREATE_SERVICE_CREDENTIAL"
     CREATE_SHARE = "CREATE_SHARE"
+    CREATE_SKILL = "CREATE_SKILL"
     CREATE_STORAGE_CREDENTIAL = "CREATE_STORAGE_CREDENTIAL"
+    CREATE_STREAM = "CREATE_STREAM"
     CREATE_TABLE = "CREATE_TABLE"
     CREATE_VIEW = "CREATE_VIEW"
     CREATE_VOLUME = "CREATE_VOLUME"
+    DELETE = "DELETE"
+    DELETE_EVENTS = "DELETE_EVENTS"
+    DELETE_SECURITY_DATA = "DELETE_SECURITY_DATA"
     EXECUTE = "EXECUTE"
     EXECUTE_CLEAN_ROOM_TASK = "EXECUTE_CLEAN_ROOM_TASK"
     EXTERNAL_USE_SCHEMA = "EXTERNAL_USE_SCHEMA"
+    INSERT = "INSERT"
+    INSERT_SECURITY_DATA = "INSERT_SECURITY_DATA"
     MANAGE = "MANAGE"
+    MANAGE_ACCESS = "MANAGE_ACCESS"
+    MANAGE_ACCESS_CONTROL = "MANAGE_ACCESS_CONTROL"
     MANAGE_ALLOWLIST = "MANAGE_ALLOWLIST"
+    MANAGE_GRANTS = "MANAGE_GRANTS"
     MODIFY = "MODIFY"
     MODIFY_CLEAN_ROOM = "MODIFY_CLEAN_ROOM"
+    READ_EVENTS = "READ_EVENTS"
+    READ_FEATURE = "READ_FEATURE"
     READ_FILES = "READ_FILES"
+    READ_FLOW = "READ_FLOW"
+    READ_MEMORY_STORE = "READ_MEMORY_STORE"
+    READ_METADATA = "READ_METADATA"
     READ_PRIVATE_FILES = "READ_PRIVATE_FILES"
+    READ_SECURITY_DATA = "READ_SECURITY_DATA"
+    READ_SEMANTIC_GRAPH = "READ_SEMANTIC_GRAPH"
+    READ_SKILL = "READ_SKILL"
+    READ_STREAM = "READ_STREAM"
     READ_VOLUME = "READ_VOLUME"
     REFRESH = "REFRESH"
     SELECT = "SELECT"
     SET_SHARE_PERMISSION = "SET_SHARE_PERMISSION"
+    UPDATE = "UPDATE"
+    UPDATE_EVENTS = "UPDATE_EVENTS"
+    UPDATE_SECURITY_DATA = "UPDATE_SECURITY_DATA"
     USAGE = "USAGE"
     USE_CATALOG = "USE_CATALOG"
     USE_CONNECTION = "USE_CONNECTION"
@@ -8418,16 +11603,28 @@ class Privilege(Enum):
     USE_RECIPIENT = "USE_RECIPIENT"
     USE_SCHEMA = "USE_SCHEMA"
     USE_SHARE = "USE_SHARE"
+    USE_VOLUME = "USE_VOLUME"
+    VIEW_ADMIN_METADATA = "VIEW_ADMIN_METADATA"
+    VIEW_METADATA = "VIEW_METADATA"
+    VIEW_OBJECT = "VIEW_OBJECT"
     WRITE_FILES = "WRITE_FILES"
+    WRITE_FLOW = "WRITE_FLOW"
+    WRITE_MEMORY_STORE = "WRITE_MEMORY_STORE"
     WRITE_PRIVATE_FILES = "WRITE_PRIVATE_FILES"
+    WRITE_SEMANTIC_GRAPH = "WRITE_SEMANTIC_GRAPH"
+    WRITE_SKILL = "WRITE_SKILL"
     WRITE_VOLUME = "WRITE_VOLUME"
 
 
 @dataclass
 class PrivilegeAssignment:
     principal: Optional[str] = None
-    """The principal (user email address or group name). For deleted principals, `principal` is empty
-    while `principal_id` is populated."""
+    """The principal (user email address or group name). For deleted principals, ``principal`` is empty
+    while ``principal_id`` is populated."""
+
+    principal_id: Optional[int] = None
+    """Unique identifier of the principal. For active principals, both ``principal`` and
+    ``principal_id`` are present."""
 
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
@@ -8437,6 +11634,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = [v.value for v in self.privileges]
         return body
@@ -8446,6 +11645,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = self.privileges
         return body
@@ -8453,7 +11654,11 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
+        return cls(
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            privileges=_repeated_enum(d, "privileges", Privilege),
+        )
 
 
 @dataclass
@@ -8632,6 +11837,107 @@ class R2Credentials:
             secret_access_key=d.get("secret_access_key", None),
             session_token=d.get("session_token", None),
         )
+
+
+@dataclass
+class RateLimit:
+    """A rate limit applied to service requests. Leave ``requests`` or ``tokens`` unset to impose no
+    limit on that dimension; set a value to cap that dimension within the renewal period."""
+
+    key: RateLimitRateLimitKey
+    """Scope key. Determines whether ``principal`` is required."""
+
+    renewal_period: RateLimitRateLimitRenewalPeriod
+    """Renewal period."""
+
+    principal: Optional[str] = None
+    """Principal this limit applies to: user email, group name, or service principal application ID.
+    Required unless ``key`` is ``RATE_LIMIT_KEY_SERVICE``, ``RATE_LIMIT_KEY_USER_DEFAULT``, or
+    ``RATE_LIMIT_KEY_REQUEST_TAG`` (which must not set a principal)."""
+
+    request_tag_key: Optional[str] = None
+    """Request tag key this limit applies to. Required when ``key`` is ``RATE_LIMIT_KEY_REQUEST_TAG``,
+    forbidden otherwise."""
+
+    request_tag_value: Optional[str] = None
+    """Request tag value this limit applies to. Only valid when ``key`` is
+    ``RATE_LIMIT_KEY_REQUEST_TAG``. Leave unset to apply the limit to every value of
+    ``request_tag_key`` (an any-value default); a set value is a specific override for that value."""
+
+    requests: Optional[int] = None
+    """Max requests allowed within a renewal period. Leave unset for no request limit."""
+
+    tokens: Optional[int] = None
+    """Max tokens allowed within a renewal period. Leave unset for no token limit."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RateLimit into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key.value
+        if self.principal is not None:
+            body["principal"] = self.principal
+        if self.renewal_period is not None:
+            body["renewal_period"] = self.renewal_period.value
+        if self.request_tag_key is not None:
+            body["request_tag_key"] = self.request_tag_key
+        if self.request_tag_value is not None:
+            body["request_tag_value"] = self.request_tag_value
+        if self.requests is not None:
+            body["requests"] = self.requests
+        if self.tokens is not None:
+            body["tokens"] = self.tokens
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RateLimit into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.principal is not None:
+            body["principal"] = self.principal
+        if self.renewal_period is not None:
+            body["renewal_period"] = self.renewal_period
+        if self.request_tag_key is not None:
+            body["request_tag_key"] = self.request_tag_key
+        if self.request_tag_value is not None:
+            body["request_tag_value"] = self.request_tag_value
+        if self.requests is not None:
+            body["requests"] = self.requests
+        if self.tokens is not None:
+            body["tokens"] = self.tokens
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RateLimit:
+        """Deserializes the RateLimit from a dictionary."""
+        return cls(
+            key=_enum(d, "key", RateLimitRateLimitKey),
+            principal=d.get("principal", None),
+            renewal_period=_enum(d, "renewal_period", RateLimitRateLimitRenewalPeriod),
+            request_tag_key=d.get("request_tag_key", None),
+            request_tag_value=d.get("request_tag_value", None),
+            requests=d.get("requests", None),
+            tokens=d.get("tokens", None),
+        )
+
+
+class RateLimitRateLimitKey(Enum):
+    """Scope key for a rate limit."""
+
+    RATE_LIMIT_KEY_REQUEST_TAG = "RATE_LIMIT_KEY_REQUEST_TAG"
+    RATE_LIMIT_KEY_SERVICE = "RATE_LIMIT_KEY_SERVICE"
+    RATE_LIMIT_KEY_SERVICE_PRINCIPAL = "RATE_LIMIT_KEY_SERVICE_PRINCIPAL"
+    RATE_LIMIT_KEY_USER = "RATE_LIMIT_KEY_USER"
+    RATE_LIMIT_KEY_USER_DEFAULT = "RATE_LIMIT_KEY_USER_DEFAULT"
+    RATE_LIMIT_KEY_USER_GROUP = "RATE_LIMIT_KEY_USER_GROUP"
+
+
+class RateLimitRateLimitRenewalPeriod(Enum):
+    """Renewal period for a rate limit."""
+
+    RATE_LIMIT_RENEWAL_PERIOD_HOUR = "RATE_LIMIT_RENEWAL_PERIOD_HOUR"
+    RATE_LIMIT_RENEWAL_PERIOD_MINUTE = "RATE_LIMIT_RENEWAL_PERIOD_MINUTE"
 
 
 @dataclass
@@ -8900,10 +12206,16 @@ class RowFilterOptions:
         return cls(function_name=d.get("function_name", None), using=_repeated_dict(d, "using", FunctionArgument))
 
 
+class SchemaFilterType(Enum):
+    """Determines how a FOREIGN catalog's schema filter items are interpreted."""
+
+    SCHEMA_FILTER_TYPE_EXCLUDE = "SCHEMA_FILTER_TYPE_EXCLUDE"
+    SCHEMA_FILTER_TYPE_INCLUDE = "SCHEMA_FILTER_TYPE_INCLUDE"
+    SCHEMA_FILTER_TYPE_INCLUDE_ALL = "SCHEMA_FILTER_TYPE_INCLUDE_ALL"
+
+
 @dataclass
 class SchemaInfo:
-    """Next ID: 45"""
-
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -8932,7 +12244,7 @@ class SchemaInfo:
     """Whether predictive optimization should be enabled for this object and objects under it."""
 
     full_name: Optional[str] = None
-    """Full name of schema, in form of __catalog_name__.__schema_name__."""
+    """Full name of schema, in form of **catalog_name**.**schema_name**."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
@@ -9096,10 +12408,6 @@ class Secret:
     value. The maximum size is 60 KiB (pre-encryption). Accepted content includes passwords, tokens,
     keys, and other sensitive credential data."""
 
-    browse_only: Optional[bool] = None
-    """Indicates whether the principal is limited to retrieving metadata for the associated object
-    through the **BROWSE** privilege when **include_browse** is enabled in the request."""
-
     comment: Optional[str] = None
     """User-provided free-form text description of the secret."""
 
@@ -9122,8 +12430,6 @@ class Secret:
     longer be used and may be displayed as a warning in the UI. It is purely informational and does
     not trigger any automatic actions or affect the secret's lifecycle."""
 
-    external_secret_id: Optional[str] = None
-
     full_name: Optional[str] = None
     """The three-level (fully qualified) name of the secret, in the form of
     **catalog_name.schema_name.secret_name**."""
@@ -9144,8 +12450,6 @@ class Secret:
     def as_dict(self) -> dict:
         """Serializes the Secret into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.catalog_name is not None:
             body["catalog_name"] = self.catalog_name
         if self.comment is not None:
@@ -9160,8 +12464,6 @@ class Secret:
             body["effective_value"] = self.effective_value
         if self.expire_time is not None:
             body["expire_time"] = self.expire_time.ToJsonString()
-        if self.external_secret_id is not None:
-            body["external_secret_id"] = self.external_secret_id
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -9183,8 +12485,6 @@ class Secret:
     def as_shallow_dict(self) -> dict:
         """Serializes the Secret into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.catalog_name is not None:
             body["catalog_name"] = self.catalog_name
         if self.comment is not None:
@@ -9199,8 +12499,6 @@ class Secret:
             body["effective_value"] = self.effective_value
         if self.expire_time is not None:
             body["expire_time"] = self.expire_time
-        if self.external_secret_id is not None:
-            body["external_secret_id"] = self.external_secret_id
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -9223,7 +12521,6 @@ class Secret:
     def from_dict(cls, d: Dict[str, Any]) -> Secret:
         """Deserializes the Secret from a dictionary."""
         return cls(
-            browse_only=d.get("browse_only", None),
             catalog_name=d.get("catalog_name", None),
             comment=d.get("comment", None),
             create_time=_timestamp(d, "create_time"),
@@ -9231,7 +12528,6 @@ class Secret:
             effective_owner=d.get("effective_owner", None),
             effective_value=d.get("effective_value", None),
             expire_time=_timestamp(d, "expire_time"),
-            external_secret_id=d.get("external_secret_id", None),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -9241,6 +12537,34 @@ class Secret:
             updated_by=d.get("updated_by", None),
             value=d.get("value", None),
         )
+
+
+@dataclass
+class SecretDependency:
+    """A secret that is dependent on a SQL object."""
+
+    secret_full_name: str
+    """Full name of the dependent secret, in the form of
+    **catalog_name**.**schema_name**.**secret_name**."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SecretDependency into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.secret_full_name is not None:
+            body["secret_full_name"] = self.secret_full_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SecretDependency into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.secret_full_name is not None:
+            body["secret_full_name"] = self.secret_full_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SecretDependency:
+        """Deserializes the SecretDependency from a dictionary."""
+        return cls(secret_full_name=d.get("secret_full_name", None))
 
 
 @dataclass
@@ -9291,10 +12615,23 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_MARKETO_OAUTH_M2M = 347; Next id: 348. Reserved numbers: 316, 317, 327,
-    330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING,
-    MCP_SERVICE_STANDARD)."""
-
+    CATALOG_FOREIGN_BIGLAKE = "CATALOG_FOREIGN_BIGLAKE"
+    CATALOG_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE = "CATALOG_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE"
+    CATALOG_FOREIGN_ICEBERG_REST = "CATALOG_FOREIGN_ICEBERG_REST"
+    CONNECTION_BIGLAKE_SERVICE_ACCOUNT = "CONNECTION_BIGLAKE_SERVICE_ACCOUNT"
+    CONNECTION_COMMUNITY_OAUTH_M2M = "CONNECTION_COMMUNITY_OAUTH_M2M"
+    CONNECTION_COMMUNITY_OAUTH_U2M = "CONNECTION_COMMUNITY_OAUTH_U2M"
+    CONNECTION_COMMUNITY_OAUTH_U2M_MAPPING = "CONNECTION_COMMUNITY_OAUTH_U2M_MAPPING"
+    CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_OAUTH_U2M = "CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_OAUTH_U2M"
+    CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_SERVICE_ACCOUNT = "CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_SERVICE_ACCOUNT"
+    CONNECTION_ICEBERG_REST_BEARER_TOKEN = "CONNECTION_ICEBERG_REST_BEARER_TOKEN"
+    CONNECTION_ICEBERG_REST_OAUTH_M2M = "CONNECTION_ICEBERG_REST_OAUTH_M2M"
+    RECIPIENT_EMAIL = "RECIPIENT_EMAIL"
+    RECIPIENT_EMAIL_DATABRICKS = "RECIPIENT_EMAIL_DATABRICKS"
+    RECIPIENT_EMAIL_TOKEN = "RECIPIENT_EMAIL_TOKEN"
+    SCHEMA_FOREIGN_BIGLAKE = "SCHEMA_FOREIGN_BIGLAKE"
+    SCHEMA_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE = "SCHEMA_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE"
+    SCHEMA_FOREIGN_ICEBERG_REST = "SCHEMA_FOREIGN_ICEBERG_REST"
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
     TABLE_DELTASHARING = "TABLE_DELTASHARING"
@@ -9317,9 +12654,12 @@ class SecurableKind(Enum):
     TABLE_EXTERNAL = "TABLE_EXTERNAL"
     TABLE_FEATURE_STORE = "TABLE_FEATURE_STORE"
     TABLE_FEATURE_STORE_EXTERNAL = "TABLE_FEATURE_STORE_EXTERNAL"
+    TABLE_FOREIGN_BIGLAKE = "TABLE_FOREIGN_BIGLAKE"
     TABLE_FOREIGN_BIGQUERY = "TABLE_FOREIGN_BIGQUERY"
     TABLE_FOREIGN_DATABRICKS = "TABLE_FOREIGN_DATABRICKS"
     TABLE_FOREIGN_DELTASHARING = "TABLE_FOREIGN_DELTASHARING"
+    TABLE_FOREIGN_DELTA_DELTASHARING = "TABLE_FOREIGN_DELTA_DELTASHARING"
+    TABLE_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE = "TABLE_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE"
     TABLE_FOREIGN_HIVE_METASTORE = "TABLE_FOREIGN_HIVE_METASTORE"
     TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL = "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL"
     TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED = "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED"
@@ -9333,10 +12673,12 @@ class SecurableKind(Enum):
     TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL = "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL"
     TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED = "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED"
     TABLE_FOREIGN_HIVE_METASTORE_VIEW = "TABLE_FOREIGN_HIVE_METASTORE_VIEW"
+    TABLE_FOREIGN_ICEBERG_REST = "TABLE_FOREIGN_ICEBERG_REST"
     TABLE_FOREIGN_MONGODB = "TABLE_FOREIGN_MONGODB"
     TABLE_FOREIGN_MYSQL = "TABLE_FOREIGN_MYSQL"
     TABLE_FOREIGN_NETSUITE = "TABLE_FOREIGN_NETSUITE"
     TABLE_FOREIGN_ORACLE = "TABLE_FOREIGN_ORACLE"
+    TABLE_FOREIGN_PALANTIR = "TABLE_FOREIGN_PALANTIR"
     TABLE_FOREIGN_POSTGRESQL = "TABLE_FOREIGN_POSTGRESQL"
     TABLE_FOREIGN_REDSHIFT = "TABLE_FOREIGN_REDSHIFT"
     TABLE_FOREIGN_SALESFORCE = "TABLE_FOREIGN_SALESFORCE"
@@ -9487,7 +12829,12 @@ class SpecialDestination(Enum):
     SPECIAL_DESTINATION_CONNECTION_OWNER = "SPECIAL_DESTINATION_CONNECTION_OWNER"
     SPECIAL_DESTINATION_CREDENTIAL_OWNER = "SPECIAL_DESTINATION_CREDENTIAL_OWNER"
     SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER = "SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER"
+    SPECIAL_DESTINATION_FUNCTION_OWNER = "SPECIAL_DESTINATION_FUNCTION_OWNER"
     SPECIAL_DESTINATION_METASTORE_OWNER = "SPECIAL_DESTINATION_METASTORE_OWNER"
+    SPECIAL_DESTINATION_REGISTERED_MODEL_OWNER = "SPECIAL_DESTINATION_REGISTERED_MODEL_OWNER"
+    SPECIAL_DESTINATION_SCHEMA_OWNER = "SPECIAL_DESTINATION_SCHEMA_OWNER"
+    SPECIAL_DESTINATION_TABLE_OWNER = "SPECIAL_DESTINATION_TABLE_OWNER"
+    SPECIAL_DESTINATION_VOLUME_OWNER = "SPECIAL_DESTINATION_VOLUME_OWNER"
 
 
 @dataclass
@@ -9764,7 +13111,7 @@ class SystemType(Enum):
 @dataclass
 class TableConstraint:
     """A table constraint, as defined by *one* of the following fields being set:
-    __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__."""
+    **primary_key_constraint**, **foreign_key_constraint**, **named_table_constraint**."""
 
     foreign_key_constraint: Optional[ForeignKeyConstraint] = None
 
@@ -9810,7 +13157,7 @@ class TableDependency:
 
     table_full_name: str
     """Full name of the dependent table, in the form of
-    __catalog_name__.__schema_name__.__table_name__."""
+    **catalog_name**.**schema_name**.**table_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the TableDependency into a dictionary suitable for use as a JSON request body."""
@@ -9870,7 +13217,7 @@ class TableInfo:
     """Name of parent catalog."""
 
     columns: Optional[List[ColumnInfo]] = None
-    """The array of __ColumnInfo__ definitions of the table's columns."""
+    """The array of **ColumnInfo** definitions of the table's columns."""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -9900,7 +13247,7 @@ class TableInfo:
     encryption_details: Optional[EncryptionDetails] = None
 
     full_name: Optional[str] = None
-    """Full name of table, in form of __catalog_name__.__schema_name__.__table_name__"""
+    """Full name of table, in form of **catalog_name**.**schema_name**.**table_name**"""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
@@ -9936,7 +13283,7 @@ class TableInfo:
     """Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)."""
 
     table_constraints: Optional[List[TableConstraint]] = None
-    """List of table constraints. Note: this field is not set in the output of the __listTables__ API."""
+    """List of table constraints. Note: this field is not set in the output of the **listTables** API."""
 
     table_id: Optional[str] = None
     """The unique identifier of the table."""
@@ -9950,15 +13297,16 @@ class TableInfo:
     """Username of user who last modified the table."""
 
     view_definition: Optional[str] = None
-    """View definition SQL (when __table_type__ is **VIEW**, **MATERIALIZED_VIEW**, or
+    """View definition SQL (when **table_type** is **VIEW**, **MATERIALIZED_VIEW**, or
     **STREAMING_TABLE**)"""
 
     view_dependencies: Optional[DependencyList] = None
-    """View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**, **STREAMING_TABLE**) -
-    when DependencyList is None, the dependency is not provided; - when DependencyList is an empty
-    list, the dependency is provided but is empty; - when DependencyList is not an empty list,
-    dependencies are provided and recorded. Note: this field is not set in the output of the
-    __listTables__ API."""
+    """View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**, **STREAMING_TABLE**)
+    
+    - when DependencyList is None, the dependency is not provided;
+    - when DependencyList is an empty list, the dependency is provided but is empty;
+    - when DependencyList is not an empty list, dependencies are provided and recorded. Note: this
+      field is not set in the output of the **listTables** API."""
 
     def as_dict(self) -> dict:
         """Serializes the TableInfo into a dictionary suitable for use as a JSON request body."""
@@ -10258,6 +13606,43 @@ class TagAssignmentSourceType(Enum):
 
 
 @dataclass
+class TagIntrospectionExpression:
+    """An expression that introspects tags at query time."""
+
+    column_tag_value: Optional[ColumnTagValueExtraction] = None
+    """Extracts the value of a column-level tag."""
+
+    tag_value: Optional[TagValueExtraction] = None
+    """Extracts the value of a securable-level tag."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TagIntrospectionExpression into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_tag_value:
+            body["column_tag_value"] = self.column_tag_value.as_dict()
+        if self.tag_value:
+            body["tag_value"] = self.tag_value.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TagIntrospectionExpression into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_tag_value:
+            body["column_tag_value"] = self.column_tag_value
+        if self.tag_value:
+            body["tag_value"] = self.tag_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TagIntrospectionExpression:
+        """Deserializes the TagIntrospectionExpression from a dictionary."""
+        return cls(
+            column_tag_value=_from_dict(d, "column_tag_value", ColumnTagValueExtraction),
+            tag_value=_from_dict(d, "tag_value", TagValueExtraction),
+        )
+
+
+@dataclass
 class TagKeyValue:
     key: Optional[str] = None
     """name of the tag"""
@@ -10287,6 +13672,33 @@ class TagKeyValue:
     def from_dict(cls, d: Dict[str, Any]) -> TagKeyValue:
         """Deserializes the TagKeyValue from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class TagValueExtraction:
+    """Extracts the value of a securable-level tag: get_tag_value("tagKey")."""
+
+    tag_key: str
+    """1024 matches the max_length on FunctionArgument.constant above."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TagValueExtraction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.tag_key is not None:
+            body["tag_key"] = self.tag_key
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TagValueExtraction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.tag_key is not None:
+            body["tag_key"] = self.tag_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TagValueExtraction:
+        """Deserializes the TagValueExtraction from a dictionary."""
+        return cls(tag_key=d.get("tag_key", None))
 
 
 @dataclass
@@ -10394,6 +13806,34 @@ class TriggeredUpdateStatus:
 
 
 @dataclass
+class UcEncryptedToken:
+    """Encrypted token used when we cannot downscope the cloud provider token appropriately See:
+    https://docs.google.com/document/d/1hEKDnSckuU5PIS798CtfqBElrMR6OJuR2wgz_BjhMSY"""
+
+    encrypted_payload: Optional[str] = None
+    """Stores encrypted ScopedCloudToken as a base64-encoded string"""
+
+    def as_dict(self) -> dict:
+        """Serializes the UcEncryptedToken into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.encrypted_payload is not None:
+            body["encrypted_payload"] = self.encrypted_payload
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UcEncryptedToken into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.encrypted_payload is not None:
+            body["encrypted_payload"] = self.encrypted_payload
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UcEncryptedToken:
+        """Deserializes the UcEncryptedToken from a dictionary."""
+        return cls(encrypted_payload=d.get("encrypted_payload", None))
+
+
+@dataclass
 class UnassignResponse:
     def as_dict(self) -> dict:
         """Serializes the UnassignResponse into a dictionary suitable for use as a JSON request body."""
@@ -10430,7 +13870,7 @@ class UpdateAccountsMetastore:
     """The owner of the metastore."""
 
     privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+    """Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``)."""
 
     storage_root_credential_id: Optional[str] = None
     """UUID of storage credential to access the metastore storage_root."""
@@ -10939,6 +14379,34 @@ class ValidationResultResult(Enum):
 
 
 @dataclass
+class VolumeDependency:
+    """A volume that is dependent on a SQL object."""
+
+    volume_full_name: str
+    """Full name of the dependent volume, in the form of
+    **catalog_name**.**schema_name**.**volume_name**."""
+
+    def as_dict(self) -> dict:
+        """Serializes the VolumeDependency into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.volume_full_name is not None:
+            body["volume_full_name"] = self.volume_full_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VolumeDependency into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.volume_full_name is not None:
+            body["volume_full_name"] = self.volume_full_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VolumeDependency:
+        """Deserializes the VolumeDependency from a dictionary."""
+        return cls(volume_full_name=d.get("volume_full_name", None))
+
+
+@dataclass
 class VolumeInfo:
     access_point: Optional[str] = None
     """The AWS access point to use when accesing s3 for this external location."""
@@ -10989,9 +14457,8 @@ class VolumeInfo:
     volume_type: Optional[VolumeType] = None
     """The type of the volume. An external volume is located in the specified external location. A
     managed volume is located in the default location which is specified by the parent schema, or
-    the parent catalog, or the Metastore. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
+    the parent catalog, or the Metastore. `Learn more
+    <https://docs.databricks.com/aws/en/volumes/managed-vs-external>`__"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumeInfo into a dictionary suitable for use as a JSON request body."""
@@ -11140,8 +14607,8 @@ class WorkspaceBinding:
 
 
 class WorkspaceBindingBindingType(Enum):
-    """Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation` enum in
-    `credentials_common.proto`."""
+    """Using ``BINDING_TYPE_`` prefix here to avoid conflict with ``TableOperation`` enum in
+    ``credentials_common.proto``."""
 
     BINDING_TYPE_READ_ONLY = "BINDING_TYPE_READ_ONLY"
     BINDING_TYPE_READ_WRITE = "BINDING_TYPE_READ_WRITE"
@@ -11401,11 +14868,13 @@ class AccountStorageCredentialsAPI:
         credential_info: Optional[CreateAccountsStorageCredential] = None,
         skip_validation: Optional[bool] = None,
     ) -> AccountsCreateStorageCredentialInfo:
-        """Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for
-        AWS credentials - **AzureServicePrincipal** for Azure credentials - **GcpServiceAccountKey** for GCP
-        credentials
+        """Creates a new storage credential. The request object is specific to the cloud:
 
-        The caller must be a metastore admin and have the `CREATE_STORAGE_CREDENTIAL` privilege on the
+        - **AwsIamRole** for AWS credentials
+        - **AzureServicePrincipal** for Azure credentials
+        - **GcpServiceAccountKey** for GCP credentials
+
+        The caller must be a metastore admin and have the ``CREATE_STORAGE_CREDENTIAL`` privilege on the
         metastore.
 
         :param metastore_id: str
@@ -11552,8 +15021,848 @@ class AccountStorageCredentialsAPI:
         return AccountsUpdateStorageCredentialResponse.from_dict(res)
 
 
+class AiGatewayAPI:
+    """Govern AI workloads in Unity Catalog. This API manages the Unity Catalog securables that bring centralized
+    access control, lineage, and auditing to AI-serving entities: model services (governed access to
+    foundation models and external LLMs), model provider services (governed connections to external model
+    providers), MCP services (governed Model Context Protocol servers), and agent services (governed agents)."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_agent_service(self, agent_service: AgentService, parent: str, agent_service_id: str) -> AgentService:
+        """Creates an agent service in a Unity Catalog schema. An agent service is a governed securable that
+        registers an AI agent and exposes it for discovery, access control, and auditing. The caller supplies
+        the leaf name in ``agent_service_id`` and the agent service type, which is immutable after creation.
+
+        You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
+
+        :param agent_service: :class:`AgentService`
+          The agent service to create. The server populates ``name`` from ``parent`` + ``agent_service_id``;
+          clients should leave it unset.
+        :param parent: str
+          Resource name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component
+          is capped at 255 characters individually.
+        :param agent_service_id: str
+          Leaf identifier for the agent service (the unqualified name within the parent schema, e.g.
+          "support_agent").
+
+        :returns: :class:`AgentService`
+        """
+
+        body = agent_service.as_dict()
+        query = {}
+        if agent_service_id is not None:
+            query["agent_service_id"] = agent_service_id
+        if parent is not None:
+            query["parent"] = parent
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/agent-services", query=query, body=body, headers=headers)
+        return AgentService.from_dict(res)
+
+    def create_mcp_service(self, mcp_service: McpService, parent: str, mcp_service_id: str) -> McpService:
+        """Creates an MCP service in a Unity Catalog schema. An MCP (Model Context Protocol) service is a
+        governed securable that registers an MCP server and exposes its tools for discovery, access control,
+        and invocation. The caller supplies the leaf name in ``mcp_service_id``.
+
+        You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. You also need
+        ``USE_CONNECTION`` on the connection the MCP service references.
+
+        :param mcp_service: :class:`McpService`
+          The MCP service to create. The server populates ``name`` from ``parent`` + ``mcp_service_id``;
+          clients should leave it unset.
+        :param parent: str
+          Resource name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component
+          is capped at 255 characters individually.
+        :param mcp_service_id: str
+          Leaf identifier for the MCP service (the unqualified name within the parent schema, e.g.
+          "my_mcp_service").
+
+        :returns: :class:`McpService`
+        """
+
+        body = mcp_service.as_dict()
+        query = {}
+        if mcp_service_id is not None:
+            query["mcp_service_id"] = mcp_service_id
+        if parent is not None:
+            query["parent"] = parent
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/mcp-services", query=query, body=body, headers=headers)
+        return McpService.from_dict(res)
+
+    def create_model_provider_service(
+        self, model_provider_service: ModelProviderService, parent: str, model_provider_service_id: str
+    ) -> ModelProviderService:
+        """Creates a model provider service in a Unity Catalog schema. A model provider service is a governed
+        connection to an external model provider (for example OpenAI, Azure OpenAI, or Amazon Bedrock) that
+        model services reference to invoke that provider. The caller supplies the leaf name in
+        ``model_provider_service_id``.
+
+        You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
+
+        :param model_provider_service: :class:`ModelProviderService`
+          The model provider service to create. The server populates ``name`` from ``parent`` +
+          ``model_provider_service_id``; clients should leave it unset.
+        :param parent: str
+          Resource name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component
+          is capped at 255 characters individually.
+        :param model_provider_service_id: str
+          Leaf identifier for the provider service (the unqualified name within the parent schema, e.g.
+          "openai_prod").
+
+        :returns: :class:`ModelProviderService`
+        """
+
+        body = model_provider_service.as_dict()
+        query = {}
+        if model_provider_service_id is not None:
+            query["model_provider_service_id"] = model_provider_service_id
+        if parent is not None:
+            query["parent"] = parent
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", "/api/2.1/unity-catalog/model-provider-services", query=query, body=body, headers=headers
+        )
+        return ModelProviderService.from_dict(res)
+
+    def create_model_service(self, model_service: ModelService, parent: str, model_service_id: str) -> ModelService:
+        """Creates a model service in a Unity Catalog schema. A model service is a governed AI Gateway endpoint
+        that routes inference requests to one or more model destinations. The caller supplies the leaf name in
+        ``model_service_id``.
+
+        You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
+
+        :param model_service: :class:`ModelService`
+          The model service to create. The server populates ``name`` from ``parent`` + ``model_service_id``;
+          clients should leave it unset.
+        :param parent: str
+          Resource name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component
+          is capped at 255 characters individually.
+        :param model_service_id: str
+          Leaf identifier for the model service (the unqualified name within the parent schema, e.g.
+          "my_model_service").
+
+        :returns: :class:`ModelService`
+        """
+
+        body = model_service.as_dict()
+        query = {}
+        if model_service_id is not None:
+            query["model_service_id"] = model_service_id
+        if parent is not None:
+            query["parent"] = parent
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/model-services", query=query, body=body, headers=headers)
+        return ModelService.from_dict(res)
+
+    def delete_agent_service(self, name: str, *, etag: Optional[str] = None):
+        """Deletes the agent service identified by its resource name. Optionally supply an ``etag`` to make the
+        delete conditional on the agent service not having changed since it was read.
+
+        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
+        parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
+          Each ``{...}`` component is capped at 255 characters individually.
+        :param etag: str (optional)
+          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
+          Empty means unconditional delete.
+
+
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+
+    def delete_mcp_service(self, name: str, *, etag: Optional[str] = None):
+        """Deletes the MCP service identified by its resource name. Optionally supply an ``etag`` to make the
+        delete conditional on the MCP service not having changed since it was read.
+
+        You must be the owner of the MCP service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
+          ``{...}`` component is capped at 255 characters individually.
+        :param etag: str (optional)
+          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
+          Empty means unconditional delete.
+
+
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+
+    def delete_model_provider_service(self, name: str, *, etag: Optional[str] = None):
+        """Deletes the model provider service identified by its resource name. Optionally supply an ``etag`` to
+        make the delete conditional on the model provider service not having changed since it was read.
+
+        You must be the owner of the model provider service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on
+        the parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the model provider service. Format:
+          ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
+          capped at 255 characters individually.
+        :param etag: str (optional)
+          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
+          Empty means unconditional delete.
+
+
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+
+    def delete_model_service(self, name: str, *, etag: Optional[str] = None):
+        """Deletes the model service identified by its resource name. Optionally supply an ``etag`` to make the
+        delete conditional on the model service not having changed since it was read.
+
+        You must be the owner of the model service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
+        parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
+          Each ``{...}`` component is capped at 255 characters individually.
+        :param etag: str (optional)
+          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
+          Empty means unconditional delete.
+
+
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+
+    def get_agent_service(self, name: str, *, include_browse: Optional[bool] = None) -> AgentService:
+        """Returns the agent service identified by its resource name.
+
+        You must be the owner of the agent service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on
+        it, plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
+          Each ``{...}`` component is capped at 255 characters individually.
+        :param include_browse: bool (optional)
+          Whether to include agent services for which the principal can only access selective metadata.
+
+        :returns: :class:`AgentService`
+        """
+
+        query = {}
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+        return AgentService.from_dict(res)
+
+    def get_mcp_service(self, name: str, *, include_browse: Optional[bool] = None) -> McpService:
+        """Returns the MCP service identified by its resource name.
+
+        You must be the owner of the MCP service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on it,
+        plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
+          ``{...}`` component is capped at 255 characters individually.
+        :param include_browse: bool (optional)
+          Whether to include MCP services for which the principal can only access selective metadata.
+
+        :returns: :class:`McpService`
+        """
+
+        query = {}
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+        return McpService.from_dict(res)
+
+    def get_model_provider_service(self, name: str, *, include_browse: Optional[bool] = None) -> ModelProviderService:
+        """Returns the model provider service identified by its resource name.
+
+        You must be the owner of the model provider service or have ``EXECUTE``, ``READ_METADATA``, or
+        ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the model provider service. Format:
+          ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
+          capped at 255 characters individually.
+        :param include_browse: bool (optional)
+          Whether to include provider services for which the principal can only access selective metadata.
+
+        :returns: :class:`ModelProviderService`
+        """
+
+        query = {}
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+        return ModelProviderService.from_dict(res)
+
+    def get_model_service(self, name: str, *, include_browse: Optional[bool] = None) -> ModelService:
+        """Returns the model service identified by its resource name.
+
+        You must be the owner of the model service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on
+        it, plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
+          Each ``{...}`` component is capped at 255 characters individually.
+        :param include_browse: bool (optional)
+          Whether to include model services for which the principal can only access selective metadata.
+
+        :returns: :class:`ModelService`
+        """
+
+        query = {}
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+        return ModelService.from_dict(res)
+
+    def list_agent_services(
+        self,
+        *,
+        include_browse: Optional[bool] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        parent: Optional[str] = None,
+    ) -> Iterator[AgentService]:
+        """Lists the agent services in a Unity Catalog schema. Provide ``parent`` as
+        ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
+        subsequent pages.
+
+        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only agent
+        services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
+        returned.
+
+        :param include_browse: bool (optional)
+          Whether to include agent services for which the principal can only access selective metadata.
+        :param page_size: int (optional)
+          Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 1000.
+          Use ``next_page_token`` to retrieve additional pages.
+        :param page_token: str (optional)
+          Opaque pagination token from a previous request.
+        :param parent: str (optional)
+          Resource name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          component is capped at 255 characters individually.
+
+        :returns: Iterator over :class:`AgentService`
+        """
+
+        query = {}
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.1/unity-catalog/agent-services", query=query, headers=headers)
+            if "agent_services" in json:
+                for v in json["agent_services"]:
+                    yield AgentService.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_mcp_services(
+        self,
+        *,
+        include_browse: Optional[bool] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        parent: Optional[str] = None,
+        view: Optional[ListMcpServicesRequestView] = None,
+    ) -> Iterator[McpService]:
+        """Lists the MCP services in a Unity Catalog schema. Provide ``parent`` as
+        ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
+        subsequent pages.
+
+        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only MCP
+        services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
+        returned.
+
+        :param include_browse: bool (optional)
+          Whether to include MCP services for which the principal can only access selective metadata.
+        :param page_size: int (optional)
+          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 1000. Use
+          ``next_page_token`` to retrieve additional pages.
+        :param page_token: str (optional)
+          Opaque pagination token from a previous request.
+        :param parent: str (optional)
+          Resource name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          component is capped at 255 characters individually.
+        :param view: :class:`ListMcpServicesRequestView` (optional)
+          View selector controlling which fields are populated per row.
+
+        :returns: Iterator over :class:`McpService`
+        """
+
+        query = {}
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
+        if view is not None:
+            query["view"] = view.value
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.1/unity-catalog/mcp-services", query=query, headers=headers)
+            if "mcp_services" in json:
+                for v in json["mcp_services"]:
+                    yield McpService.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_model_provider_services(
+        self,
+        *,
+        include_browse: Optional[bool] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        parent: Optional[str] = None,
+        view: Optional[ListModelProviderServicesRequestView] = None,
+    ) -> Iterator[ModelProviderService]:
+        """Lists the model provider services in a Unity Catalog schema. Provide ``parent`` as
+        ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
+        subsequent pages.
+
+        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only model
+        provider services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or
+        ``MANAGE``) are returned.
+
+        :param include_browse: bool (optional)
+          Whether to include provider services for which the principal can only access selective metadata.
+        :param page_size: int (optional)
+          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 1000.
+          Use ``next_page_token`` to retrieve additional pages.
+        :param page_token: str (optional)
+          Opaque pagination token from a previous request.
+        :param parent: str (optional)
+          Resource name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          component is capped at 255 characters individually.
+        :param view: :class:`ListModelProviderServicesRequestView` (optional)
+          View selector controlling which fields are populated per row.
+
+        :returns: Iterator over :class:`ModelProviderService`
+        """
+
+        query = {}
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
+        if view is not None:
+            query["view"] = view.value
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.1/unity-catalog/model-provider-services", query=query, headers=headers)
+            if "model_provider_services" in json:
+                for v in json["model_provider_services"]:
+                    yield ModelProviderService.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_model_services(
+        self,
+        *,
+        include_browse: Optional[bool] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        parent: Optional[str] = None,
+        view: Optional[ListModelServicesRequestView] = None,
+    ) -> Iterator[ModelService]:
+        """Lists the model services in a Unity Catalog schema. Provide ``parent`` as
+        ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
+        subsequent pages.
+
+        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only model
+        services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
+        returned.
+
+        :param include_browse: bool (optional)
+          Whether to include model services for which the principal can only access selective metadata.
+        :param page_size: int (optional)
+          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 1000.
+          Use ``next_page_token`` to retrieve additional pages.
+        :param page_token: str (optional)
+          Opaque pagination token from a previous request.
+        :param parent: str (optional)
+          Resource name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          component is capped at 255 characters individually.
+        :param view: :class:`ListModelServicesRequestView` (optional)
+          View selector controlling which fields are populated per row.
+
+        :returns: Iterator over :class:`ModelService`
+        """
+
+        query = {}
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
+        if view is not None:
+            query["view"] = view.value
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.1/unity-catalog/model-services", query=query, headers=headers)
+            if "model_services" in json:
+                for v in json["model_services"]:
+                    yield ModelService.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_agent_service(
+        self, name: str, agent_service: AgentService, update_mask: FieldMask, *, etag: Optional[str] = None
+    ) -> AgentService:
+        """Updates an agent service. Only the fields named in ``update_mask`` are changed; the resource name and
+        agent service type are immutable. Optionally supply an ``etag`` to make the update conditional on the
+        agent service not having changed since it was read.
+
+        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
+        parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
+          Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
+          ``parent`` + ``agent_service_id``; required and immutable on Update/Get/Delete.
+        :param agent_service: :class:`AgentService`
+          The agent service with the updated field values. ``name`` identifies the resource
+          (``agent-services/{catalog}.{schema}.{agent_service}``); only fields listed in ``update_mask`` are
+          applied.
+        :param update_mask: FieldMask
+          The list of fields to update. The framework validates each path against the ``agent_service`` field
+          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
+        :param etag: str (optional)
+          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
+          Empty means an unconditional update.
+
+        :returns: :class:`AgentService`
+        """
+
+        body = agent_service.as_dict()
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/{name}", query=query, body=body, headers=headers)
+        return AgentService.from_dict(res)
+
+    def update_mcp_service(
+        self, name: str, mcp_service: McpService, update_mask: FieldMask, *, etag: Optional[str] = None
+    ) -> McpService:
+        """Updates an MCP service. Only the fields named in ``update_mask`` are changed; the resource name is
+        immutable. Optionally supply an ``etag`` to make the update conditional on the MCP service not having
+        changed since it was read.
+
+        You must be the owner of the MCP service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
+          ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
+          ``parent`` + ``mcp_service_id``; required and immutable on Update/Get/Delete.
+        :param mcp_service: :class:`McpService`
+          The MCP service with the updated field values. ``name`` identifies the resource
+          (``mcp-services/{catalog}.{schema}.{mcp_service}``); only fields listed in ``update_mask`` are
+          applied.
+        :param update_mask: FieldMask
+          The list of fields to update. The framework validates each path against the ``mcp_service`` field
+          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
+        :param etag: str (optional)
+          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
+          Empty means an unconditional update.
+
+        :returns: :class:`McpService`
+        """
+
+        body = mcp_service.as_dict()
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/{name}", query=query, body=body, headers=headers)
+        return McpService.from_dict(res)
+
+    def update_model_provider_service(
+        self,
+        name: str,
+        model_provider_service: ModelProviderService,
+        update_mask: FieldMask,
+        *,
+        etag: Optional[str] = None,
+    ) -> ModelProviderService:
+        """Updates a model provider service. Only the fields named in ``update_mask`` are changed; the resource
+        name and provider type are immutable. Optionally supply an ``etag`` to make the update conditional on
+        the model provider service not having changed since it was read.
+
+        You must be the owner of the model provider service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on
+        the parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the provider service. Format:
+          ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
+          capped at 255 characters individually. Server-derived on Create from ``parent`` +
+          ``model_provider_service_id``; required and immutable on Update/Get/Delete.
+        :param model_provider_service: :class:`ModelProviderService`
+          The model provider service with the updated field values. ``name`` identifies the resource
+          (``model-provider-services/{catalog}.{schema}.{model_provider_service}``); only fields listed in
+          ``update_mask`` are applied.
+        :param update_mask: FieldMask
+          The list of fields to update. The framework validates each path against the
+          ``model_provider_service`` field above. Wildcard paths (``paths: ["*"]``) are not supported; list
+          each field path explicitly.
+        :param etag: str (optional)
+          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
+          Empty means an unconditional update.
+
+        :returns: :class:`ModelProviderService`
+        """
+
+        body = model_provider_service.as_dict()
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/{name}", query=query, body=body, headers=headers)
+        return ModelProviderService.from_dict(res)
+
+    def update_model_service(
+        self, name: str, model_service: ModelService, update_mask: FieldMask, *, etag: Optional[str] = None
+    ) -> ModelService:
+        """Updates a model service. Only the fields named in ``update_mask`` are changed; the resource name is
+        immutable. Optionally supply an ``etag`` to make the update conditional on the model service not
+        having changed since it was read.
+
+        You must be the owner of the model service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
+        parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
+          Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
+          ``parent`` + ``model_service_id``; required and immutable on Update/Get/Delete.
+        :param model_service: :class:`ModelService`
+          The model service with the updated field values. ``name`` identifies the resource
+          (``model-services/{catalog}.{schema}.{model_service}``); only fields listed in ``update_mask`` are
+          applied.
+        :param update_mask: FieldMask
+          The list of fields to update. The framework validates each path against the ``model_service`` field
+          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
+        :param etag: str (optional)
+          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
+          Empty means an unconditional update.
+
+        :returns: :class:`ModelService`
+        """
+
+        body = model_service.as_dict()
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/{name}", query=query, body=body, headers=headers)
+        return ModelService.from_dict(res)
+
+
 class ArtifactAllowlistsAPI:
-    """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so
+    """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the ``allowlist`` in UC so
     that users can use these artifacts on compute configured with shared access mode."""
 
     def __init__(self, api_client):
@@ -11646,9 +15955,12 @@ class CatalogsAPI:
         self,
         name: str,
         *,
+        catalog_federation_config: Optional[CatalogFederationConfig] = None,
         comment: Optional[str] = None,
         connection_name: Optional[str] = None,
+        conversion_info: Optional[ConversionInfo] = None,
         custom_max_retention_hours: Optional[int] = None,
+        dr_replication_info: Optional[DrReplicationInfo] = None,
         managed_encryption_settings: Optional[EncryptionSettings] = None,
         options: Optional[Dict[str, str]] = None,
         properties: Optional[Dict[str, str]] = None,
@@ -11661,12 +15973,18 @@ class CatalogsAPI:
 
         :param name: str
           Name of catalog.
+        :param catalog_federation_config: :class:`CatalogFederationConfig` (optional)
+          Federation-only configuration, present only for FOREIGN catalogs.
         :param comment: str (optional)
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param conversion_info: :class:`ConversionInfo` (optional)
+          Status of conversion of FOREIGN catalog to UC Native catalog.
         :param custom_max_retention_hours: int (optional)
           Custom maximum retention period in hours for the catalog
+        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
+          Disaster Recovery replication state snapshot.
         :param managed_encryption_settings: :class:`EncryptionSettings` (optional)
           Control CMK encryption for managed catalog data
         :param options: Dict[str,str] (optional)
@@ -11686,12 +16004,18 @@ class CatalogsAPI:
         """
 
         body = {}
+        if catalog_federation_config is not None:
+            body["catalog_federation_config"] = catalog_federation_config.as_dict()
         if comment is not None:
             body["comment"] = comment
         if connection_name is not None:
             body["connection_name"] = connection_name
+        if conversion_info is not None:
+            body["conversion_info"] = conversion_info.as_dict()
         if custom_max_retention_hours is not None:
             body["custom_max_retention_hours"] = custom_max_retention_hours
+        if dr_replication_info is not None:
+            body["dr_replication_info"] = dr_replication_info.as_dict()
         if managed_encryption_settings is not None:
             body["managed_encryption_settings"] = managed_encryption_settings.as_dict()
         if name is not None:
@@ -11797,13 +16121,16 @@ class CatalogsAPI:
           Whether to include catalogs not bound to the workspace. Effective only if the user has permission to
           update the catalog–workspace binding.
         :param max_results: int (optional)
-          Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of
-          returned catalogs might be less than the specified max_results size, even zero. The only definitive
-          indication that no further catalogs can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of catalogs to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid catalogs are returned (not recommended).
+          - Note: The number of returned catalogs might be less than the specified max_results size, even
+            zero. The only definitive indication that no further catalogs can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -11842,8 +16169,11 @@ class CatalogsAPI:
         self,
         name: str,
         *,
+        catalog_federation_config: Optional[CatalogFederationConfig] = None,
         comment: Optional[str] = None,
+        conversion_info: Optional[ConversionInfo] = None,
         custom_max_retention_hours: Optional[int] = None,
+        dr_replication_info: Optional[DrReplicationInfo] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         isolation_mode: Optional[CatalogIsolationMode] = None,
         managed_encryption_settings: Optional[EncryptionSettings] = None,
@@ -11857,10 +16187,16 @@ class CatalogsAPI:
 
         :param name: str
           The name of the catalog.
+        :param catalog_federation_config: :class:`CatalogFederationConfig` (optional)
+          Federation-only configuration, present only for FOREIGN catalogs.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param conversion_info: :class:`ConversionInfo` (optional)
+          Status of conversion of FOREIGN catalog to UC Native catalog.
         :param custom_max_retention_hours: int (optional)
           Custom maximum retention period in hours for the catalog
+        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
+          Disaster Recovery replication state snapshot.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)
@@ -11880,10 +16216,16 @@ class CatalogsAPI:
         """
 
         body = {}
+        if catalog_federation_config is not None:
+            body["catalog_federation_config"] = catalog_federation_config.as_dict()
         if comment is not None:
             body["comment"] = comment
+        if conversion_info is not None:
+            body["conversion_info"] = conversion_info.as_dict()
         if custom_max_retention_hours is not None:
             body["custom_max_retention_hours"] = custom_max_retention_hours
+        if dr_replication_info is not None:
+            body["dr_replication_info"] = dr_replication_info.as_dict()
         if enable_predictive_optimization is not None:
             body["enable_predictive_optimization"] = enable_predictive_optimization.value
         if isolation_mode is not None:
@@ -11931,8 +16273,10 @@ class ConnectionsAPI:
         *,
         comment: Optional[str] = None,
         environment_settings: Optional[EnvironmentSettings] = None,
+        parent: Optional[str] = None,
         properties: Optional[Dict[str, str]] = None,
         read_only: Optional[bool] = None,
+        secrets: Optional[Dict[str, str]] = None,
     ) -> ConnectionInfo:
         """Creates a new connection
 
@@ -11949,10 +16293,16 @@ class ConnectionsAPI:
           User-provided free-form text description.
         :param environment_settings: :class:`EnvironmentSettings` (optional)
           [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
+        :param parent: str (optional)
+          Parent schema for schema-level connections, in format "schemas/{catalog}.{schema}". Absent for
+          metastore-level (L1) connections.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
           If the connection is read only.
+        :param secrets: Dict[str,str] (optional)
+          A map of option names to UC Secret references. Keys are connection option names (same as in
+          OptionsKVPairs) and values are UC Secret fully qualified names.
 
         :returns: :class:`ConnectionInfo`
         """
@@ -11968,10 +16318,14 @@ class ConnectionsAPI:
             body["name"] = name
         if options is not None:
             body["options"] = options
+        if parent is not None:
+            body["parent"] = parent
         if properties is not None:
             body["properties"] = properties
         if read_only is not None:
             body["read_only"] = read_only
+        if secrets is not None:
+            body["secrets"] = secrets
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12023,7 +16377,9 @@ class ConnectionsAPI:
         res = self._api.do("GET", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
         return ConnectionInfo.from_dict(res)
 
-    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ConnectionInfo]:
+    def list(
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None, parent: Optional[str] = None
+    ) -> Iterator[ConnectionInfo]:
         """List all connections.
 
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
@@ -12034,12 +16390,18 @@ class ConnectionsAPI:
         absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
-          Maximum number of connections to return. - If not set, all connections are returned (not
-          recommended). - when set to a value greater than 0, the page length is the minimum of this value and
-          a server configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of connections to return.
+
+          - If not set, all connections are returned (not recommended).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param parent: str (optional)
+          Optional. Parent schema filter for listing schema-level connections, in format
+          "schemas/{catalog}.{schema}".
 
         :returns: Iterator over :class:`ConnectionInfo`
         """
@@ -12049,6 +16411,8 @@ class ConnectionsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
         headers = {
             "Accept": "application/json",
         }
@@ -12076,6 +16440,7 @@ class ConnectionsAPI:
         environment_settings: Optional[EnvironmentSettings] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
+        secrets: Optional[Dict[str, str]] = None,
     ) -> ConnectionInfo:
         """Updates the connection that matches the supplied name.
 
@@ -12089,6 +16454,9 @@ class ConnectionsAPI:
           New name for the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
+        :param secrets: Dict[str,str] (optional)
+          A map of option names to UC Secret references. Keys are connection option names (same as in
+          OptionsKVPairs) and values are UC Secret fully qualified names.
 
         :returns: :class:`ConnectionInfo`
         """
@@ -12102,6 +16470,8 @@ class ConnectionsAPI:
             body["options"] = options
         if owner is not None:
             body["owner"] = owner
+        if secrets is not None:
+            body["secrets"] = secrets
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12120,7 +16490,7 @@ class CredentialsAPI:
     tenant. Each credential is subject to Unity Catalog access-control policies that control which users and
     groups can access the credential.
 
-    To create credentials, you must be a Databricks account admin or have the `CREATE SERVICE CREDENTIAL`
+    To create credentials, you must be a Databricks account admin or have the ``CREATE SERVICE CREDENTIAL``
     privilege. The user who creates the credential can delegate ownership to another user or group to manage
     permissions on it."""
 
@@ -12293,7 +16663,7 @@ class CredentialsAPI:
         page_token: Optional[str] = None,
         purpose: Optional[CredentialPurpose] = None,
     ) -> Iterator[CredentialInfo]:
-        """Gets an array of credentials (as __CredentialInfo__ objects).
+        """Gets an array of credentials (as **CredentialInfo** objects).
 
         The array is limited to only the credentials that the caller has permission to access. If the caller
         is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific
@@ -12307,10 +16677,13 @@ class CredentialsAPI:
           Whether to include credentials not bound to the workspace. Effective only if the user has permission
           to update the credential–workspace binding.
         :param max_results: int (optional)
-          Maximum number of credentials to return. - If not set, the default max page size is used. - When set
-          to a value greater than 0, the page length is the minimum of this value and a server-configured
-          value. - When set to 0, the page length is set to a server-configured value (recommended). - When
-          set to a value less than 0, an invalid parameter error is returned.
+          Maximum number of credentials to return.
+
+          - If not set, the default max page size is used.
+          - When set to a value greater than 0, the page length is the minimum of this value and a
+            server-configured value.
+          - When set to 0, the page length is set to a server-configured value (recommended).
+          - When set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque token to retrieve the next page of results.
         :param purpose: :class:`CredentialPurpose` (optional)
@@ -12363,8 +16736,8 @@ class CredentialsAPI:
     ) -> CredentialInfo:
         """Updates a service or storage credential on the metastore.
 
-        The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.
-        If the caller is a metastore admin, only the __owner__ field can be changed.
+        The caller must be the owner of the credential or a metastore admin or have the ``MANAGE`` permission.
+        If the caller is a metastore admin, only the **owner** field can be changed.
 
         :param name_arg: str
           Name of the credential.
@@ -12445,13 +16818,13 @@ class CredentialsAPI:
     ) -> ValidateCredentialResponse:
         """Validates a credential.
 
-        For service credentials (purpose is **SERVICE**), either the __credential_name__ or the cloud-specific
+        For service credentials (purpose is **SERVICE**), either the **credential_name** or the cloud-specific
         credential must be provided.
 
-        For storage credentials (purpose is **STORAGE**), at least one of __external_location_name__ and
-        __url__ need to be provided. If only one of them is provided, it will be used for validation. And if
-        both are provided, the __url__ will be used for validation, and __external_location_name__ will be
-        ignored when checking overlapping urls. Either the __credential_name__ or the cloud-specific
+        For storage credentials (purpose is **STORAGE**), at least one of **external_location_name** and
+        **url** need to be provided. If only one of them is provided, it will be used for validation. And if
+        both are provided, the **url** will be used for validation, and **external_location_name** will be
+        ignored when checking overlapping urls. Either the **credential_name** or the cloud-specific
         credential must be provided.
 
         The caller must be a metastore admin or the credential owner or have the required permission on the
@@ -12518,14 +16891,15 @@ class EntityTagAssignmentsAPI:
     def create(self, tag_assignment: EntityTagAssignment) -> EntityTagAssignment:
         """Creates a tag assignment for an Unity Catalog entity.
 
-        To add tags to Unity Catalog entities, you must own the entity or have the following privileges: -
-        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
-        entity's parent catalog
+        To add tags to Unity Catalog entities, you must own the entity or have the following privileges:
+
+        - **APPLY TAG** on the entity
+        - **USE SCHEMA** on the entity's parent schema
+        - **USE CATALOG** on the entity's parent catalog
 
         To add a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param tag_assignment: :class:`EntityTagAssignment`
 
@@ -12550,13 +16924,14 @@ class EntityTagAssignmentsAPI:
         """Deletes a tag assignment for an Unity Catalog entity by its key.
 
         To delete tags from Unity Catalog entities, you must own the entity or have the following privileges:
-        - **APPLY TAG** on the entity - **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the
-        entity's parent catalog
+
+        - **APPLY TAG** on the entity
+        - **USE_SCHEMA** on the entity's parent schema
+        - **USE_CATALOG** on the entity's parent catalog
 
         To delete a governed tag from Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param entity_type: str
           The type of the entity to which the tag is assigned.
@@ -12582,7 +16957,9 @@ class EntityTagAssignmentsAPI:
             headers=headers,
         )
 
-    def get(self, entity_type: str, entity_name: str, tag_key: str) -> EntityTagAssignment:
+    def get(
+        self, entity_type: str, entity_name: str, tag_key: str, *, include_inherited: Optional[bool] = None
+    ) -> EntityTagAssignment:
         """Gets a tag assignment for an Unity Catalog entity by tag key.
 
         :param entity_type: str
@@ -12591,10 +16968,15 @@ class EntityTagAssignmentsAPI:
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
           Required. The key of the tag
+        :param include_inherited: bool (optional)
+          Boolean which indicates whether this tag is inherited.
 
         :returns: :class:`EntityTagAssignment`
         """
 
+        query = {}
+        if include_inherited is not None:
+            query["include_inherited"] = include_inherited
         headers = {
             "Accept": "application/json",
         }
@@ -12606,12 +16988,19 @@ class EntityTagAssignmentsAPI:
         res = self._api.do(
             "GET",
             f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
+            query=query,
             headers=headers,
         )
         return EntityTagAssignment.from_dict(res)
 
     def list(
-        self, entity_type: str, entity_name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+        self,
+        entity_type: str,
+        entity_name: str,
+        *,
+        include_inherited: Optional[bool] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
     ) -> Iterator[EntityTagAssignment]:
         """List tag assignments for an Unity Catalog entity
 
@@ -12623,6 +17012,8 @@ class EntityTagAssignmentsAPI:
           The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
+        :param include_inherited: bool (optional)
+          Boolean which indicates whether this tag is inherited.
         :param max_results: int (optional)
           Optional. Maximum number of tag assignments to return in a single page
         :param page_token: str (optional)
@@ -12632,6 +17023,8 @@ class EntityTagAssignmentsAPI:
         """
 
         query = {}
+        if include_inherited is not None:
+            query["include_inherited"] = include_inherited
         if max_results is not None:
             query["max_results"] = max_results
         if page_token is not None:
@@ -12663,14 +17056,15 @@ class EntityTagAssignmentsAPI:
     ) -> EntityTagAssignment:
         """Updates an existing tag assignment for an Unity Catalog entity.
 
-        To update tags to Unity Catalog entities, you must own the entity or have the following privileges: -
-        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
-        entity's parent catalog
+        To update tags to Unity Catalog entities, you must own the entity or have the following privileges:
+
+        - **APPLY TAG** on the entity
+        - **USE SCHEMA** on the entity's parent schema
+        - **USE CATALOG** on the entity's parent catalog
 
         To update a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param entity_type: str
           The type of the entity to which the tag is assigned.
@@ -12681,14 +17075,14 @@ class EntityTagAssignmentsAPI:
         :param tag_assignment: :class:`EntityTagAssignment`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`EntityTagAssignment`
         """
@@ -12788,7 +17182,7 @@ class ExternalLineageAPI:
         :param object_info: :class:`ExternalLineageObject`
           The object to query external lineage relationships for. Since this field is a query parameter,
           please flatten the nested fields. For example, if the object is a table, the query parameter should
-          look like: `object_info.table.name=main.sales.customers`
+          look like: ``object_info.table.name=main.sales.customers``
         :param lineage_direction: :class:`LineageDirection`
           The lineage direction to filter on.
         :param page_size: int (optional)
@@ -12835,14 +17229,14 @@ class ExternalLineageAPI:
         :param external_lineage_relationship: :class:`UpdateRequestExternalLineage`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`ExternalLineageRelationship`
         """
@@ -12910,23 +17304,23 @@ class ExternalLocationsAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param effective_enable_file_events: bool (optional)
-          The effective value of `enable_file_events` after applying server-side defaults.
+          The effective value of ``enable_file_events`` after applying server-side defaults.
         :param effective_file_event_queue: :class:`FileEventQueue` (optional)
           The effective file event queue configuration after applying server-side defaults. Always populated
-          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
-          this field instead of `file_event_queue` for reading the actual queue state.
+          when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
+          Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
-          `effective_enable_file_events` for the effective state.
+          ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
-          one of the documented properties.
+          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
+          exactly one of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -13032,7 +17426,7 @@ class ExternalLocationsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ExternalLocationInfo]:
-        """Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
+        """Gets an array of external locations (**ExternalLocationInfo** objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
         the external location. There is no guarantee of a specific ordering of the elements in the array.
 
@@ -13051,9 +17445,12 @@ class ExternalLocationsAPI:
           permission to update the location–workspace binding.
         :param max_results: int (optional)
           Maximum number of external locations to return. If not set, all the external locations are returned
-          (not recommended). - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -13119,23 +17516,23 @@ class ExternalLocationsAPI:
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
         :param effective_enable_file_events: bool (optional)
-          The effective value of `enable_file_events` after applying server-side defaults.
+          The effective value of ``enable_file_events`` after applying server-side defaults.
         :param effective_file_event_queue: :class:`FileEventQueue` (optional)
           The effective file event queue configuration after applying server-side defaults. Always populated
-          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
-          this field instead of `file_event_queue` for reading the actual queue state.
+          when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
+          Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
-          `effective_enable_file_events` for the effective state.
+          ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
-          one of the documented properties.
+          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
+          exactly one of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -13323,14 +17720,14 @@ class ExternalMetadataAPI:
         :param external_metadata: :class:`ExternalMetadata`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`ExternalMetadata`
         """
@@ -13359,7 +17756,7 @@ class FunctionsAPI:
 
     The function implementation can be any SQL expression or Query, and it can be invoked wherever a table
     reference is allowed in a query. In Unity Catalog, a function resides at the same level as a table, so it
-    can be referenced with the form __catalog_name__.__schema_name__.__function_name__."""
+    can be referenced with the form **catalog_name**.**schema_name**.**function_name**."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -13369,12 +17766,13 @@ class FunctionsAPI:
 
         Creates a new function
 
-        The user must have the following permissions in order for the function to be created: -
-        **USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the
-        function's parent schema
+        The user must have the following permissions in order for the function to be created:
+
+        - **USE_CATALOG** on the function's parent catalog
+        - **USE_SCHEMA** and **CREATE_FUNCTION** on the function's parent schema
 
         :param function_info: :class:`CreateFunction`
-          Partial __FunctionInfo__ specifying the function to be created.
+          Partial **FunctionInfo** specifying the function to be created.
 
         :returns: :class:`FunctionInfo`
         """
@@ -13396,14 +17794,17 @@ class FunctionsAPI:
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Deletes the function that matches the supplied name. For the deletion to succeed, the user must
-        satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the
-        owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent catalog -
-        Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent catalog
-        and the **USE_SCHEMA** privilege on its parent schema
+        satisfy one of the following conditions:
+
+        - Is the owner of the function's parent catalog
+        - Is the owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent
+          catalog
+        - Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent
+          catalog and the **USE_SCHEMA** privilege on its parent schema
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__) .
+          **catalog_name**.**schema_name**.**function__name**) .
         :param force: bool (optional)
           Force deletion even if the function is notempty.
 
@@ -13423,15 +17824,17 @@ class FunctionsAPI:
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> FunctionInfo:
         """Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
-        satisfy one of the following requirements: - Is a metastore admin - Is an owner of the function's
-        parent catalog - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner
-        of the function - Have the **USE_CATALOG** privilege on the function's parent catalog, the
-        **USE_SCHEMA** privilege on the function's parent schema, and the **EXECUTE** privilege on the
-        function itself
+        satisfy one of the following requirements:
+
+        - Is a metastore admin
+        - Is an owner of the function's parent catalog
+        - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner of the function
+        - Have the **USE_CATALOG** privilege on the function's parent catalog, the **USE_SCHEMA** privilege on
+          the function's parent schema, and the **EXECUTE** privilege on the function itself
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          **catalog_name**.**schema_name**.**function__name**).
         :param include_browse: bool (optional)
           Whether to include functions in the response for which the principal can only access selective
           metadata for
@@ -13484,9 +17887,11 @@ class FunctionsAPI:
           metadata for
         :param max_results: int (optional)
           Maximum number of functions to return. If not set, all the functions are returned (not recommended).
+
           - when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -13526,14 +17931,18 @@ class FunctionsAPI:
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Updates the function that matches the supplied name. Only the owner of the function can be updated. If
         the user is not a metastore admin, the user must be a member of the group that is the new function
-        owner. - Is a metastore admin - Is the owner of the function's parent catalog - Is the owner of the
-        function's parent schema and has the **USE_CATALOG** privilege on its parent catalog - Is the owner of
-        the function itself and has the **USE_CATALOG** privilege on its parent catalog as well as the
-        **USE_SCHEMA** privilege on the function's parent schema.
+        owner.
+
+        - Is a metastore admin
+        - Is the owner of the function's parent catalog
+        - Is the owner of the function's parent schema and has the **USE_CATALOG** privilege on its parent
+          catalog
+        - Is the owner of the function itself and has the **USE_CATALOG** privilege on its parent catalog as
+          well as the **USE_SCHEMA** privilege on the function's parent schema.
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          **catalog_name**.**schema_name**.**function__name**).
         :param owner: str (optional)
           Username of current owner of the function.
 
@@ -13574,6 +17983,7 @@ class GrantsAPI:
         securable_type: str,
         full_name: str,
         *,
+        include_deleted_principals: Optional[bool] = None,
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
         principal: Optional[str] = None,
@@ -13591,16 +18001,21 @@ class GrantsAPI:
           Type of securable.
         :param full_name: str
           Full name of securable.
+        :param include_deleted_principals: bool (optional)
+          Optional. If true, also return privilege assignments whose principals have been deleted.
         :param max_results: int (optional)
           Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
           present in a single page response is guaranteed to contain all the privileges granted on the
           requested Securable for the respective principal.
 
-          If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error -
-          0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid
-          parameter error (this is to ensure that server is able to return at least one complete
-          PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the
-          minimum of this value and a server configured value
+          If not set, all the permissions are returned. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete PrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
         :param principal: str (optional)
@@ -13610,6 +18025,8 @@ class GrantsAPI:
         """
 
         query = {}
+        if include_deleted_principals is not None:
+            query["include_deleted_principals"] = include_deleted_principals
         if max_results is not None:
             query["max_results"] = max_results
         if page_token is not None:
@@ -13658,11 +18075,14 @@ class GrantsAPI:
           effective privileges granted on (or inherited by) the requested Securable for the respective
           principal.
 
-          If not set, all the effective permissions are returned. If set to - lesser than 0: invalid parameter
-          error - 0: page length is set to a server configured value - lesser than 150 but greater than 0:
-          invalid parameter error (this is to ensure that server is able to return at least one complete
-          EffectivePrivilegeAssignment in a single page response) - greater than (or equal to) 150: page
-          length is the minimum of this value and a server configured value
+          If not set, all the effective permissions are returned. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete EffectivePrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
         :param page_token: str (optional)
           Opaque token for the next page of results (pagination).
         :param principal: str (optional)
@@ -13695,8 +18115,152 @@ class GrantsAPI:
         )
         return EffectivePermissionsList.from_dict(res)
 
+    def list(
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        include_deleted_principals: Optional[bool] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        principal: Optional[str] = None,
+    ) -> Iterator[PrivilegeAssignment]:
+        """Lists the privilege assignments for a securable. Does not include inherited privileges. Paginated
+        version of Get Permissions API.
+
+        :param securable_type: str
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param include_deleted_principals: bool (optional)
+          Optional. If true, also return privilege assignments whose principals have been deleted.
+        :param page_size: int (optional)
+          Specifies the maximum number of privilege assignments to return (page length). Every
+          PrivilegeAssignment present in a single page response is guaranteed to contain all the privileges
+          granted on the requested Securable for the respective principal.
+
+          If not set, page length is the server configured value. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete PrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        :param principal: str (optional)
+          If provided, only the permissions for the specified principal (user or group) are returned.
+
+        :returns: Iterator over :class:`PrivilegeAssignment`
+        """
+
+        query = {}
+        if include_deleted_principals is not None:
+            query["include_deleted_principals"] = include_deleted_principals
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if principal is not None:
+            query["principal"] = principal
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/privilege-assignments/{securable_type}/{full_name}",
+                query=query,
+                headers=headers,
+            )
+            if "privilege_assignments" in json:
+                for v in json["privilege_assignments"]:
+                    yield PrivilegeAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_effective(
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        principal: Optional[str] = None,
+    ) -> Iterator[EffectivePrivilegeAssignment]:
+        """Lists the effective privilege assignments for a securable. Includes inherited privileges. Paginated
+        version of Get Effective Permissions API.
+
+        :param securable_type: str
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param page_size: int (optional)
+          Specifies the maximum number of privilege assignments to return (page length). Every
+          EffectivePrivilegeAssignment present in a single page response is guaranteed to contain all the
+          effective privileges granted on (or inherited by) the requested Securable for the respective
+          principal.
+
+          If not set, a server-configured default is used. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete EffectivePrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        :param principal: str (optional)
+          If provided, only the effective permissions for the specified principal (user or group) are
+          returned.
+
+        :returns: Iterator over :class:`EffectivePrivilegeAssignment`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if principal is not None:
+            query["principal"] = principal
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/effective-privilege-assignments/{securable_type}/{full_name}",
+                query=query,
+                headers=headers,
+            )
+            if "effective_privilege_assignments" in json:
+                for v in json["effective_privilege_assignments"]:
+                    yield EffectivePrivilegeAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def update(
-        self, securable_type: str, full_name: str, *, changes: Optional[List[PermissionsChange]] = None
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        changes: Optional[List[PermissionsChange]] = None,
+        omit_permissions_in_response: Optional[bool] = None,
     ) -> UpdatePermissionsResponse:
         """Updates the permissions for a securable.
 
@@ -13706,6 +18270,8 @@ class GrantsAPI:
           Full name of securable.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
+        :param omit_permissions_in_response: bool (optional)
+          Optional, default false. Specifies whether all the permissions should be returned in the response.
 
         :returns: :class:`UpdatePermissionsResponse`
         """
@@ -13713,6 +18279,8 @@ class GrantsAPI:
         body = {}
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
+        if omit_permissions_in_response is not None:
+            body["omit_permissions_in_response"] = omit_permissions_in_response
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -13745,8 +18313,8 @@ class MetastoresAPI:
         self._api = api_client
 
     def assign(self, workspace_id: int, metastore_id: str, default_catalog_name: str):
-        """Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
-        overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
+        """Creates a new metastore assignment. If an assignment for the same **workspace_id** exists, it will be
+        overwritten by the new **metastore_id** and **default_catalog_name**. The caller must be an account
         admin.
 
         :param workspace_id: int
@@ -13785,8 +18353,8 @@ class MetastoresAPI:
         storage_root: Optional[str] = None,
     ) -> MetastoreInfo:
         """Creates a new metastore based on a provided name and optional storage root path. By default (if the
-        __owner__ field is not set), the owner of the new metastore is the user calling the
-        __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
+        **owner** field is not set), the owner of the new metastore is the user calling the
+        **createMetastore** API. If the **owner** field is set to the empty string (**""**), the ownership is
         assigned to the System User instead.
 
         :param name: str
@@ -13794,7 +18362,7 @@ class MetastoresAPI:
         :param external_access_enabled: bool (optional)
           Whether to allow non-DBR clients to directly access entities under the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+          Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``).
         :param storage_root: str (optional)
           The storage root URL for metastore
 
@@ -13886,7 +18454,7 @@ class MetastoresAPI:
         return MetastoreInfo.from_dict(res)
 
     def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[MetastoreInfo]:
-        """Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
+        """Gets an array of the available metastores (as **MetastoreInfo** objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
 
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
@@ -13897,13 +18465,16 @@ class MetastoresAPI:
         absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
-          Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
-          minimum of this value and a server configured value; - when set to 0, the page length is set to a
-          server configured value (recommended); - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of
-          returned metastores might be less than the specified max_results size, even zero. The only
-          definitive indication that no further metastores can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of metastores to return.
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the metastores are returned (not recommended).
+          - Note: The number of returned metastores might be less than the specified max_results size, even
+            zero. The only definitive indication that no further metastores can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -13992,7 +18563,7 @@ class MetastoresAPI:
         privilege_model_version: Optional[str] = None,
         storage_root_credential_id: Optional[str] = None,
     ) -> MetastoreInfo:
-        """Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
+        """Updates information for a specific metastore. The caller must be a metastore admin. If the **owner**
         field is set to the empty string (**""**), the ownership is updated to the System User.
 
         :param id: str
@@ -14011,7 +18582,7 @@ class MetastoresAPI:
         :param owner: str (optional)
           The owner of the metastore.
         :param privilege_model_version: str (optional)
-          Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).
+          Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``).
         :param storage_root_credential_id: str (optional)
           UUID of storage credential to access the metastore storage_root.
 
@@ -14052,9 +18623,9 @@ class MetastoresAPI:
     def update_assignment(
         self, workspace_id: int, *, default_catalog_name: Optional[str] = None, metastore_id: Optional[str] = None
     ):
-        """Updates a metastore assignment. This operation can be used to update __metastore_id__ or
-        __default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.
-        The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
+        """Updates a metastore assignment. This operation can be used to update **metastore_id** or
+        **default_catalog_name** for a specified Workspace, if the Workspace is already assigned a metastore.
+        The caller must be an account admin to update **metastore_id**; otherwise, the caller can be a
         Workspace admin.
 
         :param workspace_id: int
@@ -14229,10 +18800,13 @@ class ModelVersionsAPI:
           metadata for
         :param max_results: int (optional)
           Maximum number of model versions to return. If not set, the page length is set to a server
-          configured value (100, as of 1/3/2024). - when set to a value greater than 0, the page length is the
-          minimum of this value and a server configured value(1000, as of 1/3/2024); - when set to 0, the page
-          length is set to a server configured value (100, as of 1/3/2024) (recommended); - when set to a
-          value less than 0, an invalid parameter error is returned;
+          configured value (100, as of 1/3/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value(1000, as of 1/3/2024);
+          - when set to 0, the page length is set to a server configured value (100, as of 1/3/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -14502,8 +19076,8 @@ class PoliciesAPI:
     in Unity Catalog. With ABAC policies, access is controlled in a hierarchical and scalable manner, based on
     data attributes rather than specific resources, enabling more flexible and comprehensive access control.
     ABAC policies in Unity Catalog support conditions on securable properties, governance tags, and
-    environment contexts. Callers must have the `MANAGE` privilege on a securable to view, create, update, or
-    delete ABAC policies."""
+    environment contexts. Callers must have the ``MANAGE`` privilege on a securable to view, create, update,
+    or delete ABAC policies."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -14611,9 +19185,11 @@ class PoliciesAPI:
           Optional. Whether to include policies defined on parent securables. By default, the inherited
           policies are not included.
         :param max_results: int (optional)
-          Optional. Maximum number of policies to return on a single page (page length). - When not set or set
-          to 0, the page length is set to a server configured value (recommended); - When set to a value
-          greater than 0, the page length is the minimum of this value and a server configured value;
+          Optional. Maximum number of policies to return on a single page (page length).
+
+          - When not set or set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
         :param page_token: str (optional)
           Optional. Opaque pagination token to go to next page based on previous query.
 
@@ -14667,12 +19243,14 @@ class PoliciesAPI:
         :param name: str
           Required. The name of the policy to update.
         :param policy_info: :class:`PolicyInfo`
-          Optional fields to update. This is the request body for updating a policy. Use `update_mask` field
-          to specify which fields in the request is to be updated. - If `update_mask` is empty or "*", all
-          specified fields will be updated. - If `update_mask` is specified, only the fields specified in the
-          `update_mask` will be updated. If a field is specified in `update_mask` and not set in the request,
-          the field will be cleared. Users can use the update mask to explicitly unset optional fields such as
-          `exception_principals` and `when_condition`.
+          Optional fields to update. This is the request body for updating a policy. Use ``update_mask`` field
+          to specify which fields in the request is to be updated.
+
+          - If ``update_mask`` is empty or "*", all specified fields will be updated.
+          - If ``update_mask`` is specified, only the fields specified in the ``update_mask`` will be updated.
+            If a field is specified in ``update_mask`` and not set in the request, the field will be cleared.
+            Users can use the update mask to explicitly unset optional fields such as ``exception_principals``
+            and ``when_condition``.
         :param update_mask: str (optional)
           Optional. The update mask field for specifying user intentions on which fields to update in the
           request.
@@ -14721,13 +19299,14 @@ class QualityMonitorsAPI:
         already-initiated refresh job.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
         :param refresh_id: int
 
 
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -14738,7 +19317,10 @@ class QualityMonitorsAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
-            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel", headers=headers
+            "POST",
+            f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel",
+            body=body,
+            headers=headers,
         )
 
     def create(
@@ -14763,16 +19345,22 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Creates a new
         monitor for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
-        table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
-        parent catalog, be an owner of the table's parent schema, and have **SELECT** access on the table. 3.
-        have the following permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on
-        the table's parent schema - be an owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the table's parent schema, and
+           have **SELECT** access on the table
+        2. have **USE_CATALOG** on the table's parent catalog, be an owner of the table's parent schema, and
+           have **SELECT** access on the table.
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
           [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
@@ -14782,7 +19370,7 @@ class QualityMonitorsAPI:
           data-monitoring assets. Normally prepopulated to a default user location via UI and Python APIs.
         :param baseline_table_name: str (optional)
           [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
-          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
+          the monitored ``table_name``. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           [Create:OPT Update:OPT] Custom metrics.
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
@@ -14799,9 +19387,9 @@ class QualityMonitorsAPI:
         :param slicing_exprs: List[str] (optional)
           [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
           data is grouped by each expression independently, resulting in a separate slice for each predicate
-          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
-          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
-          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]`` will generate the
+          following slices: two slices for ``col_2 > 10`` (True and False), and one slice per unique value in
+          ``col1``. For high-cardinality columns, only the top 100 unique values by frequency will generate
           slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
@@ -14859,10 +19447,15 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Deletes a monitor
         for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
@@ -14870,7 +19463,7 @@ class QualityMonitorsAPI:
         be manually cleaned up (if desired).
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`DeleteMonitorResponse`
@@ -14891,17 +19484,22 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets a monitor for
         the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema. 3. have the following
-        permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent
-        schema - **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema.
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         The returned information includes configuration values, as well as information on assets created by
         the monitor. Some information (e.g., dashboard) may be filtered out if the caller is in a different
         workspace than where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`MonitorInfo`
@@ -14922,10 +19520,15 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets info about a
         specific monitor refresh using the given refresh ID.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
@@ -14954,15 +19557,20 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets an array
         containing the history of the most recent refreshes (up to 25) for this table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
 
         :returns: :class:`MonitorRefreshListResponse`
@@ -14985,16 +19593,21 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Regenerates the
         monitoring dashboard for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table
 
         The call must be made from the workspace where the monitor was created. The dashboard will be
         regenerated in the assets directory that was specified when the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param warehouse_id: str (optional)
           Optional argument to specify the warehouse for dashboard regeneration. If not specified, the first
@@ -15024,20 +19637,26 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Queues a metric
         refresh on the monitor for the specified table. The refresh will execute in the background.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
 
         :returns: :class:`MonitorRefreshInfo`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -15047,7 +19666,9 @@ class QualityMonitorsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
+        res = self._api.do(
+            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", body=body, headers=headers
+        )
         return MonitorRefreshInfo.from_dict(res)
 
     def update(
@@ -15070,10 +19691,15 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Updates a monitor
         for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Additionally, the call must be made from the workspace where the monitor was created, and the caller
         must be the original creator of the monitor.
@@ -15081,14 +19707,14 @@ class QualityMonitorsAPI:
         Certain configuration fields, such as output asset identifiers, cannot be updated.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
           [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
           {catalog}.{schema}
         :param baseline_table_name: str (optional)
           [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
-          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
+          the monitored ``table_name``. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           [Create:OPT Update:OPT] Custom metrics.
         :param dashboard_id: str (optional)
@@ -15106,9 +19732,9 @@ class QualityMonitorsAPI:
         :param slicing_exprs: List[str] (optional)
           [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
           data is grouped by each expression independently, resulting in a separate slice for each predicate
-          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
-          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
-          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]`` will generate the
+          following slices: two slices for ``col_2 > 10`` (True and False), and one slice per unique value in
+          ``col1``. For high-cardinality columns, only the top 100 unique values by frequency will generate
           slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
@@ -15171,13 +19797,14 @@ class RegisteredModelsAPI:
     catalog and USE_SCHEMA permissions on the enclosing schema. In addition, the following additional
     privileges are required for various operations:
 
-    * To create a registered model, users must additionally have the CREATE_MODEL permission on the target
-    schema. * To view registered model or model version metadata, model version data files, or invoke a model
-    version, users must additionally have the EXECUTE permission on the registered model * To update
-    registered model or model version tags, users must additionally have APPLY TAG permissions on the
-    registered model * To update other registered model or model version metadata (comments, aliases) create a
-    new model version, or update permissions on the registered model, users must be owners of the registered
-    model.
+    - To create a registered model, users must additionally have the CREATE_MODEL permission on the target
+      schema.
+    - To view registered model or model version metadata, model version data files, or invoke a model version,
+      users must additionally have the EXECUTE permission on the registered model
+    - To update registered model or model version tags, users must additionally have APPLY TAG permissions on
+      the registered model
+    - To update other registered model or model version metadata (comments, aliases) create a new model
+      version, or update permissions on the registered model, users must be owners of the registered model.
 
     Note: The securable type for models is FUNCTION. When using REST APIs (for example, tagging, grants) that
     specify a securable type, use FUNCTION as the securable type."""
@@ -15208,9 +19835,11 @@ class RegisteredModelsAPI:
         File storage for model versions in the registered model will be located in the default location which
         is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For registered model creation to succeed, the user must satisfy the following conditions: - The caller
-        must be a metastore admin, or be the owner of the parent catalog and schema, or have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        For registered model creation to succeed, the user must satisfy the following conditions:
+
+        - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+          **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
+          schema.
         - The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.
 
         :param aliases: List[:class:`RegisteredModelAlias`] (optional)
@@ -15400,17 +20029,23 @@ class RegisteredModelsAPI:
         :param max_results: int (optional)
           Max number of registered models to return.
 
-          If both catalog and schema are specified: - when max_results is not specified, the page length is
-          set to a server configured value (10000, as of 4/2/2024). - when set to a value greater than 0, the
-          page length is the minimum of this value and a server configured value (10000, as of 4/2/2024); -
-          when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024); - when
-          set to a value less than 0, an invalid parameter error is returned;
+          If both catalog and schema are specified:
 
-          If neither schema nor catalog is specified: - when max_results is not specified, the page length is
-          set to a server configured value (100, as of 4/2/2024). - when set to a value greater than 0, the
-          page length is the minimum of this value and a server configured value (1000, as of 4/2/2024); -
-          when set to 0, the page length is set to a server configured value (100, as of 4/2/2024); - when set
-          to a value less than 0, an invalid parameter error is returned;
+          - when max_results is not specified, the page length is set to a server configured value (10000, as
+            of 4/2/2024).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 4/2/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024);
+          - when set to a value less than 0, an invalid parameter error is returned;
+
+          If neither schema nor catalog is specified:
+
+          - when max_results is not specified, the page length is set to a server configured value (100, as of
+            4/2/2024).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (1000, as of 4/2/2024);
+          - when set to 0, the page length is set to a server configured value (100, as of 4/2/2024);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
         :param schema_name: str (optional)
@@ -15590,9 +20225,8 @@ class ResourceQuotasAPI:
     """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that
     can be created. Quotas are expressed in terms of a resource type and a parent (for example, tables per
     metastore or schemas per catalog). The resource quota APIs enable you to monitor your current usage and
-    limits. For more information on resource quotas see the [Unity Catalog documentation].
-
-    [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas"""
+    limits. For more information on resource quotas see the `Unity Catalog documentation
+    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas>`__."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -15745,11 +20379,9 @@ class RfaAPI:
     ) -> AccessRequestDestinations:
         """Updates the access request destinations for the given securable. The caller must be a metastore admin,
         the owner of the securable, or a user that has the **MANAGE** privilege on the securable in order to
-        assign destinations. Destinations cannot be updated for securables underneath schemas (tables,
-        volumes, functions, and models). For these securable types, destinations are inherited from the parent
-        securable. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft Teams, and
-        Generic Webhook destinations) can be assigned to a securable. If a URL destination is assigned, no
-        other destinations can be set.
+        assign destinations. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft
+        Teams, and Generic Webhook destinations) can be assigned to a securable. If a URL destination is
+        assigned, no other destinations can be set.
 
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".
@@ -15759,14 +20391,14 @@ class RfaAPI:
           **destination_id** and **destination_type** must be defined.
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`AccessRequestDestinations`
         """
@@ -15929,10 +20561,12 @@ class SchemasAPI:
           Whether to include schemas in the response for which the principal can only access selective
           metadata for
         :param max_results: int (optional)
-          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -
-          when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -15979,8 +20613,8 @@ class SchemasAPI:
         properties: Optional[Dict[str, str]] = None,
     ) -> SchemaInfo:
         """Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
-        the caller is a metastore admin, only the __owner__ field can be changed in the update. If the
-        __name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
+        the caller is a metastore admin, only the **owner** field can be changed in the update. If the
+        **name** field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
         privilege on the parent catalog.
 
         :param full_name: str
@@ -16089,7 +20723,7 @@ class SecretsUcAPI:
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/secrets/{full_name}", headers=headers)
 
-    def get_secret(self, full_name: str, *, include_browse: Optional[bool] = None) -> Secret:
+    def get_secret(self, full_name: str) -> Secret:
         """Gets a secret by its three-level (fully qualified) name.
 
         You must be a metastore admin, the owner of the secret, or have the **MANAGE** privilege on the
@@ -16101,16 +20735,10 @@ class SecretsUcAPI:
         :param full_name: str
           The three-level (fully qualified) name of the secret (for example,
           **catalog_name.schema_name.secret_name**).
-        :param include_browse: bool (optional)
-          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
-          limits access to metadata.
 
         :returns: :class:`Secret`
         """
 
-        query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         headers = {
             "Accept": "application/json",
         }
@@ -16119,14 +20747,13 @@ class SecretsUcAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/secrets/{full_name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/secrets/{full_name}", headers=headers)
         return Secret.from_dict(res)
 
     def list_secrets(
         self,
         *,
         catalog_name: Optional[str] = None,
-        include_browse: Optional[bool] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         schema_name: Optional[str] = None,
@@ -16143,15 +20770,13 @@ class SecretsUcAPI:
         :param catalog_name: str (optional)
           The name of the catalog under which to list secrets. Both **catalog_name** and **schema_name** must
           be specified together.
-        :param include_browse: bool (optional)
-          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
-          limits access to metadata.
         :param page_size: int (optional)
           Maximum number of secrets to return.
 
-          - If not specified, at most 10000 secrets are returned. - If set to a value greater than 0, the page
-          length is the minimum of this value and 10000. - If set to 0, the page length is set to 10000. - If
-          set to a value less than 0, an invalid parameter error is returned.
+          - If not specified, at most 1000 secrets are returned.
+          - If set to a value greater than 0, the page length is the minimum of this value and 1000.
+          - If set to 0, the page length is set to 1000.
+          - If set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque pagination token to go to the next page based on previous query. The maximum page length is
           determined by a server configured value.
@@ -16165,8 +20790,6 @@ class SecretsUcAPI:
         query = {}
         if catalog_name is not None:
             query["catalog_name"] = catalog_name
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -16206,8 +20829,12 @@ class SecretsUcAPI:
           The secret object containing the fields to update. Only fields specified in **update_mask** will be
           updated.
         :param update_mask: FieldMask
-          The field mask specifying which fields of the secret to update. Supported fields: **value**,
-          **comment**, **owner**, **expire_time**.
+          The field mask specifying which fields of the secret to update.
+
+          - If **update_mask** is **"*"**, all fields specified in **secret** are updated.
+          - If **update_mask** specifies one or more fields, only those fields are updated. Each specified
+            field must be set in **secret**. Supported fields: **value**, **comment**, **owner**,
+            **expire_time**. To change the secret name, delete and recreate the secret.
 
         :returns: :class:`Secret`
         """
@@ -16373,7 +21000,7 @@ class StorageCredentialsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[StorageCredentialInfo]:
-        """Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
+        """Gets an array of storage credentials (as **StorageCredentialInfo** objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
         elements in the array.
@@ -16390,10 +21017,12 @@ class StorageCredentialsAPI:
           to update the credential–workspace binding.
         :param max_results: int (optional)
           Maximum number of storage credentials to return. If not set, all the storage credentials are
-          returned (not recommended). - when set to a value greater than 0, the page length is the minimum of
-          this value and a server configured value; - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value less than 0, an invalid parameter error is
-          returned;
+          returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -16529,12 +21158,12 @@ class StorageCredentialsAPI:
         storage_credential_name: Optional[str] = None,
         url: Optional[str] = None,
     ) -> ValidateStorageCredentialResponse:
-        """Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
+        """Validates a storage credential. At least one of **external_location_name** and **url** need to be
         provided. If only one of them is provided, it will be used for validation. And if both are provided,
-        the __url__ will be used for validation, and __external_location_name__ will be ignored when checking
+        the **url** will be used for validation, and **external_location_name** will be ignored when checking
         overlapping urls.
 
-        Either the __storage_credential_name__ or the cloud-specific credential must be provided.
+        Either the **storage_credential_name** or the cloud-specific credential must be provided.
 
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
@@ -16673,10 +21302,13 @@ class SystemSchemasAPI:
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
         :param max_results: int (optional)
-          Maximum number of schemas to return. - When set to 0, the page length is set to a server configured
-          value (recommended); - When set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - When set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all the schemas are returned (not recommended).
+          Maximum number of schemas to return.
+
+          - When set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - When set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the schemas are returned (not recommended).
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -16728,12 +21360,13 @@ class TableConstraintsAPI:
     def create(self, full_name_arg: str, constraint: TableConstraint) -> TableConstraint:
         """Creates a new table constraint.
 
-        For the table constraint creation to succeed, the user must satisfy both of these conditions: - the
-        user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
-        privilege on the table's parent schema, and be the owner of the table. - if the new constraint is a
-        __ForeignKeyConstraint__, the user must have the **USE_CATALOG** privilege on the referenced parent
-        table's catalog, the **USE_SCHEMA** privilege on the referenced parent table's schema, and be the
-        owner of the referenced parent table.
+        For the table constraint creation to succeed, the user must satisfy both of these conditions:
+
+        - the user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
+          privilege on the table's parent schema, and be the owner of the table.
+        - if the new constraint is a **ForeignKeyConstraint**, the user must have the **USE_CATALOG**
+          privilege on the referenced parent table's catalog, the **USE_SCHEMA** privilege on the referenced
+          parent table's schema, and be the owner of the referenced parent table.
 
         :param full_name_arg: str
           The full name of the table referenced by the constraint.
@@ -16762,12 +21395,13 @@ class TableConstraintsAPI:
     def delete(self, full_name: str, constraint_name: str, cascade: bool):
         """Deletes a table constraint.
 
-        For the table constraint deletion to succeed, the user must satisfy both of these conditions: - the
-        user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
-        privilege on the table's parent schema, and be the owner of the table. - if __cascade__ argument is
-        **true**, the user must have the following permissions on all of the child tables: the **USE_CATALOG**
-        privilege on the table's catalog, the **USE_SCHEMA** privilege on the table's schema, and be the owner
-        of the table.
+        For the table constraint deletion to succeed, the user must satisfy both of these conditions:
+
+        - the user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
+          privilege on the table's parent schema, and be the owner of the table.
+        - if **cascade** argument is **true**, the user must have the following permissions on all of the
+          child tables: the **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA** privilege on
+          the table's schema, and be the owner of the table.
 
         :param full_name: str
           Full name of the table referenced by the constraint.
@@ -16803,7 +21437,7 @@ class TablesAPI:
     permission on the table, and they must have the USE_CATALOG permission on its parent catalog and the
     USE_SCHEMA permission on its parent schema.
 
-    A table can be managed or external. From an API perspective, a __VIEW__ is a particular kind of table
+    A table can be managed or external. From an API perspective, a **VIEW** is a particular kind of table
     (rather than a managed or external table)."""
 
     def __init__(self, api_client):
@@ -16851,7 +21485,7 @@ class TablesAPI:
         :param storage_location: str
           Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
         :param columns: List[:class:`ColumnInfo`] (optional)
-          The array of __ColumnInfo__ definitions of the table's columns.
+          The array of **ColumnInfo** definitions of the table's columns.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
 
@@ -16911,11 +21545,15 @@ class TablesAPI:
 
     def exists(self, full_name: str) -> TableExistsResponse:
         """Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
-        of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
-        owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the **SELECT** privilege on the table. * Have **BROWSE**
-        privilege on the parent catalog * Have **BROWSE** privilege on the parent schema
+        of the following requirements:
+
+        - Be a metastore admin
+        - Be the owner of the parent catalog
+        - Be the owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog
+        - Have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+          parent schema, and either be the table owner or have the **SELECT** privilege on the table.
+        - Have **BROWSE** privilege on the parent catalog
+        - Have **BROWSE** privilege on the parent schema
 
         :param full_name: str
           Full name of the table.
@@ -16943,10 +21581,13 @@ class TablesAPI:
         include_manifest_capabilities: Optional[bool] = None,
     ) -> TableInfo:
         """Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
-        following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
-        the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the **SELECT** privilege on the table.
+        following requirements:
+
+        - Be a metastore admin
+        - Be the owner of the parent catalog
+        - Be the owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog
+        - Have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+          parent schema, and either be the table owner or have the **SELECT** privilege on the table.
 
         :param full_name: str
           Full name of the table.
@@ -17017,10 +21658,12 @@ class TablesAPI:
         :param include_manifest_capabilities: bool (optional)
           Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
-          Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
-          when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of tables to return. If not set, all the tables are returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param omit_columns: bool (optional)
           Whether to omit the columns of the table from the response or not.
         :param omit_properties: bool (optional)
@@ -17085,11 +21728,12 @@ class TablesAPI:
         """Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
 
-        * summaries for tables (within the current metastore and parent catalog and schema), when the user is
-        a metastore admin, or: * summaries for tables and schemas (within the current metastore and parent
-        catalog) for which the user has ownership or the **SELECT** privilege on the table and ownership or
-        **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
-        **USE_CATALOG** privilege on the parent catalog.
+        - summaries for tables (within the current metastore and parent catalog and schema), when the user is
+          a metastore admin, or:
+        - summaries for tables and schemas (within the current metastore and parent catalog) for which the
+          user has ownership or the **SELECT** privilege on the table and ownership or **USE_SCHEMA**
+          privilege on the schema, provided that the user also has ownership or the **USE_CATALOG** privilege
+          on the parent catalog.
 
         There is no guarantee of a specific ordering of the elements in the array.
 
@@ -17103,10 +21747,13 @@ class TablesAPI:
           Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
-          configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
-          the minimum of this value and a server configured value (10000, as of 1/5/2024); - when set to 0,
-          the page length is set to a server configured value (10000, as of 1/5/2024) (recommended); - when
-          set to a value less than 0, an invalid parameter error is returned;
+          configured value (10000, as of 1/5/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 1/5/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 1/5/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
         :param schema_name_pattern: str (optional)
@@ -17377,15 +22024,19 @@ class VolumesAPI:
         created in the specified external location, while a managed volume will be located in the default
         location which is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For the volume creation to succeed, the user must satisfy following conditions: - The caller must be a
-        metastore admin, or be the owner of the parent catalog and schema, or have the **USE_CATALOG**
-        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema. - The caller
-        must have **CREATE VOLUME** privilege on the parent schema.
+        For the volume creation to succeed, the user must satisfy following conditions:
 
-        For an external volume, following conditions also need to satisfy - The caller must have **CREATE
-        EXTERNAL VOLUME** privilege on the external location. - There are no other tables, nor volumes
-        existing in the specified storage location. - The specified storage location is not under the location
-        of other tables, nor volumes, or catalogs or schemas.
+        - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+          **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
+          schema.
+        - The caller must have **CREATE VOLUME** privilege on the parent schema.
+
+        For an external volume, following conditions also need to satisfy
+
+        - The caller must have **CREATE EXTERNAL VOLUME** privilege on the external location.
+        - There are no other tables, nor volumes existing in the specified storage location.
+        - The specified storage location is not under the location of other tables, nor volumes, or catalogs
+          or schemas.
 
         :param catalog_name: str
           The name of the catalog where the schema and the volume are
@@ -17396,9 +22047,8 @@ class VolumesAPI:
         :param volume_type: :class:`VolumeType`
           The type of the volume. An external volume is located in the specified external location. A managed
           volume is located in the default location which is specified by the parent schema, or the parent
-          catalog, or the Metastore. [Learn more]
-
-          [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
+          catalog, or the Metastore. `Learn more
+          <https://docs.databricks.com/aws/en/volumes/managed-vs-external>`__
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)
@@ -17486,11 +22136,13 @@ class VolumesAPI:
         :param max_results: int (optional)
           Maximum number of volumes to return (page length).
 
-          If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set
-          to a value greater than 0, the page length is the minimum of this value and a server configured
-          value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value
-          (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter
-          error is returned;
+          If not set, the page length is set to a server configured value (10000, as of 1/29/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 1/29/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 1/29/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
 
           Note: this parameter controls only the maximum number of volumes to return. The actual number of
           volumes returned in a page may be smaller than this value, including 0, even if there are more
@@ -17604,12 +22256,12 @@ class VolumesAPI:
 
 
 class WorkspaceBindingsAPI:
-    """A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An __OPEN__ securable can be
-    accessed from any workspace, while an __ISOLATED__ securable can only be accessed from a configured list
+    """A securable in Databricks can be configured as **OPEN** or **ISOLATED**. An **OPEN** securable can be
+    accessed from any workspace, while an **ISOLATED** securable can only be accessed from a configured list
     of workspaces. This API allows you to configure (bind) securables to workspaces.
 
-    NOTE: The __isolation_mode__ is configured for the securable itself (using its Update method) and the
-    workspace bindings are only consulted when the securable's __isolation_mode__ is set to __ISOLATED__.
+    NOTE: The **isolation_mode** is configured for the securable itself (using its Update method) and the
+    workspace bindings are only consulted when the securable's **isolation_mode** is set to **ISOLATED**.
 
     A securable's workspace bindings can be configured by a metastore admin or the owner of the securable.
 
@@ -17617,7 +22269,12 @@ class WorkspaceBindingsAPI:
     path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}), which introduces the ability to
     bind a securable in READ_ONLY mode (catalogs only).
 
-    Securable types that support binding: - catalog - storage_credential - credential - external_location"""
+    Securable types that support binding:
+
+    - catalog
+    - storage_credential
+    - credential
+    - external_location"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -17667,10 +22324,13 @@ class WorkspaceBindingsAPI:
         :param securable_name: str
           The name of the securable.
         :param max_results: int (optional)
-          Maximum number of workspace bindings to return. - When set to 0, the page length is set to a server
-          configured value (recommended); - When set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - When set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all the workspace bindings are returned (not recommended).
+          Maximum number of workspace bindings to return.
+
+          - When set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - When set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the workspace bindings are returned (not recommended).
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 

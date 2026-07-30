@@ -137,6 +137,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UNKNOWN
       :value: "UNKNOWN"
 
+.. autoclass:: AlertStatementParameter
+   :members:
+   :undoc-members:
+
 .. autoclass:: AlertV2
    :members:
    :undoc-members:
@@ -310,6 +314,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PRO
       :value: "PRO"
 
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
+
+   .. py:attribute:: REYDEN
+      :value: "REYDEN"
+
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
 
@@ -455,6 +465,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PRO
       :value: "PRO"
 
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
+
+   .. py:attribute:: REYDEN
+      :value: "REYDEN"
+
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
 
@@ -486,6 +502,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PRO
       :value: "PRO"
 
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
+
+   .. py:attribute:: REYDEN
+      :value: "REYDEN"
+
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
 
@@ -503,7 +525,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ExecuteStatementRequestOnWaitTimeout
 
-   When `wait_timeout > 0s`, the call will block up to the specified time. If the statement execution doesn't finish within this time, `on_wait_timeout` determines whether the execution should continue or be canceled. When set to `CONTINUE`, the statement execution continues asynchronously and the call returns a statement ID which can be used for polling with :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is canceled and the call returns with a `CANCELED` state.
+   When ``wait_timeout > 0s``, the call will block up to the specified time. If the statement execution doesn't finish within this time, ``on_wait_timeout`` determines whether the execution should continue or be canceled. When set to ``CONTINUE``, the statement execution continues asynchronously and the call returns a statement ID which can be used for polling with :method:statementexecution/getStatement. When set to ``CANCEL``, the statement execution is canceled and the call returns with a ``CANCELED`` state.
 
    .. py:attribute:: CANCEL
       :value: "CANCEL"
@@ -553,6 +575,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PRO
       :value: "PRO"
+
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
+
+   .. py:attribute:: REYDEN
+      :value: "REYDEN"
 
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
@@ -731,7 +759,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PermissionLevel
 
-   * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+   - ``CAN_VIEW``: Can view the query - ``CAN_RUN``: Can run the query - ``CAN_EDIT``: Can edit the query - ``CAN_MANAGE``: Can manage the query
 
    .. py:attribute:: CAN_EDIT
       :value: "CAN_EDIT"
@@ -806,6 +834,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ANALYZE
       :value: "ANALYZE"
+
+   .. py:attribute:: CALL
+      :value: "CALL"
 
    .. py:attribute:: COPY
       :value: "COPY"
@@ -1033,7 +1064,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: State
 
-   * State of a warehouse.
+   State of a warehouse.
 
    .. py:attribute:: DELETED
       :value: "DELETED"
@@ -1239,6 +1270,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BUDGET_POLICY_RESOLUTION_FAILURE
       :value: "BUDGET_POLICY_RESOLUTION_FAILURE"
 
+   .. py:attribute:: CERT_ROTATION
+      :value: "CERT_ROTATION"
+
    .. py:attribute:: CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED
       :value: "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
 
@@ -1293,6 +1327,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG
       :value: "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
 
+   .. py:attribute:: COST_CONTROL_ENTITLEMENT_DENIED
+      :value: "COST_CONTROL_ENTITLEMENT_DENIED"
+
    .. py:attribute:: DATABASE_CONNECTION_FAILURE
       :value: "DATABASE_CONNECTION_FAILURE"
 
@@ -1322,6 +1359,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DOCKER_INVALID_OS_EXCEPTION
       :value: "DOCKER_INVALID_OS_EXCEPTION"
+
+   .. py:attribute:: DRIVER_DNS_RESOLUTION_FAILURE
+      :value: "DRIVER_DNS_RESOLUTION_FAILURE"
 
    .. py:attribute:: DRIVER_EVICTION
       :value: "DRIVER_EVICTION"
@@ -1551,6 +1591,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NFS_MOUNT_FAILURE
       :value: "NFS_MOUNT_FAILURE"
 
+   .. py:attribute:: NO_ACTIVATED_K8S
+      :value: "NO_ACTIVATED_K8S"
+
+   .. py:attribute:: NO_ACTIVATED_K8S_TESTING_TAG
+      :value: "NO_ACTIVATED_K8S_TESTING_TAG"
+
    .. py:attribute:: NO_MATCHED_K8S
       :value: "NO_MATCHED_K8S"
 
@@ -1581,6 +1627,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: RESOURCE_USAGE_BLOCKED
       :value: "RESOURCE_USAGE_BLOCKED"
 
+   .. py:attribute:: SECRET_CREATION_ACCESS_DENIED
+      :value: "SECRET_CREATION_ACCESS_DENIED"
+
    .. py:attribute:: SECRET_CREATION_FAILURE
       :value: "SECRET_CREATION_FAILURE"
 
@@ -1589,6 +1638,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SECRET_RESOLUTION_ERROR
       :value: "SECRET_RESOLUTION_ERROR"
+
+   .. py:attribute:: SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION
+      :value: "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
 
    .. py:attribute:: SECURITY_DAEMON_REGISTRATION_EXCEPTION
       :value: "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
@@ -1682,6 +1734,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKSPACE_CONFIGURATION_ERROR
       :value: "WORKSPACE_CONFIGURATION_ERROR"
+
+   .. py:attribute:: WORKSPACE_DELEGATION_KEY_MISCONFIGURED
+      :value: "WORKSPACE_DELEGATION_KEY_MISCONFIGURED"
 
    .. py:attribute:: WORKSPACE_UPDATE
       :value: "WORKSPACE_UPDATE"
@@ -1788,6 +1843,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PRO
       :value: "PRO"
+
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
+
+   .. py:attribute:: REYDEN
+      :value: "REYDEN"
 
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"

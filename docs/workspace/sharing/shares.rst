@@ -9,7 +9,7 @@
     register data assets under their original name, qualified by their original schema, or provide alternate
     exposed names.
 
-    .. py:method:: create(name: str [, comment: Optional[str], storage_root: Optional[str]]) -> ShareInfo
+    .. py:method:: create(name: str [, comment: Optional[str], replication_config: Optional[ReplicationConfig], serverless_budget_policy_id: Optional[str], storage_root: Optional[str]]) -> ShareInfo
 
 
         Usage:
@@ -34,6 +34,11 @@
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param replication_config: :class:`ReplicationConfig` (optional)
+          Configuration for share replication.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
 
@@ -81,7 +86,7 @@
         :returns: :class:`ShareInfo`
         
 
-    .. py:method:: list_shares( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ShareInfo]
+    .. py:method:: list_shares( [, filter_by_genie_space_id: Optional[str], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ShareInfo]
 
 
         Usage:
@@ -99,14 +104,22 @@
         the metastore, all shares are returned. Otherwise, only shares owned by the caller are returned. There
         is no guarantee of a specific ordering of the elements in the array.
 
+        :param filter_by_genie_space_id: str (optional)
+          When set, only shares that contain the Genie space with this id are returned. The filter is applied
+          at the data-sharing layer after MC returns the page, so the resulting page may be smaller than
+          ``max_results``. Intended for the provider Genie space page's "Shared with N recipients" lookup; not
+          optimized for providers with many shares.
         :param max_results: int (optional)
-          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
-          returned shares might be less than the specified max_results size, even zero. The only definitive
-          indication that no further shares can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of shares to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid shares are returned (not recommended).
+          - Note: The number of returned shares might be less than the specified max_results size, even zero.
+            The only definitive indication that no further shares can be fetched is when the next_page_token
+            is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -121,20 +134,23 @@
         :param name: str
           The name of the Recipient.
         :param max_results: int (optional)
-          Maximum number of permissions to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
-          number of returned permissions might be less than the specified max_results size, even zero. The
-          only definitive indication that no further permissions can be fetched is when the next_page_token is
-          unset from the response.
+          Maximum number of permissions to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid permissions are returned (not recommended).
+          - Note: The number of returned permissions might be less than the specified max_results size, even
+            zero. The only definitive indication that no further permissions can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
         :returns: :class:`GetSharePermissionsResponse`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], storage_root: Optional[str], updates: Optional[List[SharedDataObjectUpdate]]]) -> ShareInfo
+    .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], serverless_budget_policy_id: Optional[str], storage_root: Optional[str], updates: Optional[List[SharedDataObjectUpdate]]]) -> ShareInfo
 
 
         Usage:
@@ -189,12 +205,12 @@
         Updates the share with the changes and data objects in the request. The caller must be the owner of
         the share or a metastore admin.
 
-        When the caller is a metastore admin, only the __owner__ field can be updated.
+        When the caller is a metastore admin, only the **owner** field can be updated.
 
         In the case the share name is changed, **updateShare** requires that the caller is the owner of the
         share and has the CREATE_SHARE privilege.
 
-        If there are notebook files in the share, the __storage_root__ field cannot be updated.
+        If there are notebook files in the share, the **storage_root** field cannot be updated.
 
         For each table that is added through this method, the share owner must also have **SELECT** privilege
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the
@@ -210,6 +226,9 @@
           New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)

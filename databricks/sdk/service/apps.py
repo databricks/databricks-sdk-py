@@ -4,29 +4,29 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common import lro
-from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.retries import RetryError, poll
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
     _timestamp,
+    Wait,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+from databricks.sdk.common import lro
+from databricks.sdk.retries import RetryError, poll
 
-from ..errors import OperationFailed
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -48,11 +48,16 @@ class App:
 
     budget_policy_id: Optional[str] = None
 
+    compatibility_flags: Optional[List[str]] = None
+    """Compatibility flags the customer is requesting for the app's runtime environment. On update, the
+    submitted set must be a subset of ``effective_compatibility_flags`` (flags may only be removed,
+    never added). Supported flags: "PREINSTALLED_PACKAGES_LEGACY"."""
+
     compute_max_instances: Optional[int] = None
-    """Maximum number of app instances. Must be set together with `compute_min_instances`."""
+    """Maximum number of app instances. Must be set together with ``compute_min_instances``."""
 
     compute_min_instances: Optional[int] = None
-    """Minimum number of app instances. Must be set together with `compute_max_instances`."""
+    """Minimum number of app instances. Must be set together with ``compute_max_instances``."""
 
     compute_size: Optional[ComputeSize] = None
 
@@ -64,6 +69,8 @@ class App:
     creator: Optional[str] = None
     """The email of the user that created the app."""
 
+    default_git_source: Optional[GitSource] = None
+
     default_source_code_path: Optional[str] = None
     """The default workspace file system path of the source code from which app deployment are created.
     This field tracks the workspace source code path of the last active deployment."""
@@ -72,6 +79,13 @@ class App:
     """The description of the app."""
 
     effective_budget_policy_id: Optional[str] = None
+
+    effective_compatibility_flags: Optional[List[str]] = None
+    """The compatibility flags currently applied to the app."""
+
+    effective_resources: Optional[List[AppResource]] = None
+    """Union of the app's own resources and the resources inherited from its space. Only populated when
+    the app belongs to a space that uses the group identity model."""
 
     effective_usage_policy_id: Optional[str] = None
 
@@ -82,8 +96,13 @@ class App:
     """Git repository configuration for app deployments. When specified, deployments can reference code
     from this repository by providing only the git reference (branch, tag, or commit)."""
 
+    git_source: Optional[GitSource] = None
+
     id: Optional[str] = None
     """The unique identifier of the app."""
+
+    last_deployment_id: Optional[str] = None
+    """The ID of the last deployment created for this app."""
 
     oauth2_app_client_id: Optional[str] = None
 
@@ -102,8 +121,13 @@ class App:
 
     service_principal_name: Optional[str] = None
 
+    source_code_path: Optional[str] = None
+
     space: Optional[str] = None
     """Name of the space this app belongs to."""
+
+    space_id: Optional[str] = None
+    """The ID of the app space this app belongs to. None if app does not belong to a space."""
 
     telemetry_export_destinations: Optional[List[TelemetryExportDestination]] = None
 
@@ -132,6 +156,8 @@ class App:
             body["app_status"] = self.app_status.as_dict()
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compatibility_flags:
+            body["compatibility_flags"] = [v for v in self.compatibility_flags]
         if self.compute_max_instances is not None:
             body["compute_max_instances"] = self.compute_max_instances
         if self.compute_min_instances is not None:
@@ -144,20 +170,30 @@ class App:
             body["create_time"] = self.create_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.default_git_source:
+            body["default_git_source"] = self.default_git_source.as_dict()
         if self.default_source_code_path is not None:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_compatibility_flags:
+            body["effective_compatibility_flags"] = [v for v in self.effective_compatibility_flags]
+        if self.effective_resources:
+            body["effective_resources"] = [v.as_dict() for v in self.effective_resources]
         if self.effective_usage_policy_id is not None:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = [v for v in self.effective_user_api_scopes]
         if self.git_repository:
             body["git_repository"] = self.git_repository.as_dict()
+        if self.git_source:
+            body["git_source"] = self.git_source.as_dict()
         if self.id is not None:
             body["id"] = self.id
+        if self.last_deployment_id is not None:
+            body["last_deployment_id"] = self.last_deployment_id
         if self.name is not None:
             body["name"] = self.name
         if self.oauth2_app_client_id is not None:
@@ -174,8 +210,12 @@ class App:
             body["service_principal_id"] = self.service_principal_id
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
+        if self.source_code_path is not None:
+            body["source_code_path"] = self.source_code_path
         if self.space is not None:
             body["space"] = self.space
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
         if self.telemetry_export_destinations:
             body["telemetry_export_destinations"] = [v.as_dict() for v in self.telemetry_export_destinations]
         if self.thumbnail_url is not None:
@@ -201,6 +241,8 @@ class App:
             body["app_status"] = self.app_status
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compatibility_flags:
+            body["compatibility_flags"] = self.compatibility_flags
         if self.compute_max_instances is not None:
             body["compute_max_instances"] = self.compute_max_instances
         if self.compute_min_instances is not None:
@@ -213,20 +255,30 @@ class App:
             body["create_time"] = self.create_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.default_git_source:
+            body["default_git_source"] = self.default_git_source
         if self.default_source_code_path is not None:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_compatibility_flags:
+            body["effective_compatibility_flags"] = self.effective_compatibility_flags
+        if self.effective_resources:
+            body["effective_resources"] = self.effective_resources
         if self.effective_usage_policy_id is not None:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = self.effective_user_api_scopes
         if self.git_repository:
             body["git_repository"] = self.git_repository
+        if self.git_source:
+            body["git_source"] = self.git_source
         if self.id is not None:
             body["id"] = self.id
+        if self.last_deployment_id is not None:
+            body["last_deployment_id"] = self.last_deployment_id
         if self.name is not None:
             body["name"] = self.name
         if self.oauth2_app_client_id is not None:
@@ -243,8 +295,12 @@ class App:
             body["service_principal_id"] = self.service_principal_id
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
+        if self.source_code_path is not None:
+            body["source_code_path"] = self.source_code_path
         if self.space is not None:
             body["space"] = self.space
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
         if self.telemetry_export_destinations:
             body["telemetry_export_destinations"] = self.telemetry_export_destinations
         if self.thumbnail_url is not None:
@@ -268,19 +324,25 @@ class App:
             active_deployment=_from_dict(d, "active_deployment", AppDeployment),
             app_status=_from_dict(d, "app_status", ApplicationStatus),
             budget_policy_id=d.get("budget_policy_id", None),
+            compatibility_flags=d.get("compatibility_flags", None),
             compute_max_instances=d.get("compute_max_instances", None),
             compute_min_instances=d.get("compute_min_instances", None),
             compute_size=_enum(d, "compute_size", ComputeSize),
             compute_status=_from_dict(d, "compute_status", ComputeStatus),
             create_time=d.get("create_time", None),
             creator=d.get("creator", None),
+            default_git_source=_from_dict(d, "default_git_source", GitSource),
             default_source_code_path=d.get("default_source_code_path", None),
             description=d.get("description", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_compatibility_flags=d.get("effective_compatibility_flags", None),
+            effective_resources=_repeated_dict(d, "effective_resources", AppResource),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
             git_repository=_from_dict(d, "git_repository", GitRepository),
+            git_source=_from_dict(d, "git_source", GitSource),
             id=d.get("id", None),
+            last_deployment_id=d.get("last_deployment_id", None),
             name=d.get("name", None),
             oauth2_app_client_id=d.get("oauth2_app_client_id", None),
             oauth2_app_integration_id=d.get("oauth2_app_integration_id", None),
@@ -289,7 +351,9 @@ class App:
             service_principal_client_id=d.get("service_principal_client_id", None),
             service_principal_id=d.get("service_principal_id", None),
             service_principal_name=d.get("service_principal_name", None),
+            source_code_path=d.get("source_code_path", None),
             space=d.get("space", None),
+            space_id=d.get("space_id", None),
             telemetry_export_destinations=_repeated_dict(
                 d, "telemetry_export_destinations", TelemetryExportDestination
             ),
@@ -441,7 +505,7 @@ class AppDeployment:
 
     source_code_path: Optional[str] = None
     """The workspace file system path of the source code used to create the app deployment. This is
-    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
+    different from ``deployment_artifacts.source_code_path``, which is the path used by the deployed
     app. The former refers to the original source code location of the app in the workspace during
     deployment creation, whereas the latter provides a system generated stable snapshotted source
     code path used by the deployment."""
@@ -646,6 +710,44 @@ class AppManifest:
 
 
 @dataclass
+class AppManifestAppResourceAppSpec:
+    name: Optional[str] = None
+    """Name of the target app to grant access to."""
+
+    permission: Optional[AppManifestAppResourceAppSpecAppPermission] = None
+    """Permission to grant on the app. Supported permission: "CAN_USE"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceAppSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceAppSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceAppSpec:
+        """Deserializes the AppManifestAppResourceAppSpec from a dictionary."""
+        return cls(
+            name=d.get("name", None), permission=_enum(d, "permission", AppManifestAppResourceAppSpecAppPermission)
+        )
+
+
+class AppManifestAppResourceAppSpecAppPermission(Enum):
+    CAN_USE = "CAN_USE"
+
+
+@dataclass
 class AppManifestAppResourceExperimentSpec:
     permission: AppManifestAppResourceExperimentSpecExperimentPermission
 
@@ -706,6 +808,50 @@ class AppManifestAppResourceJobSpecJobPermission(Enum):
     CAN_MANAGE_RUN = "CAN_MANAGE_RUN"
     CAN_VIEW = "CAN_VIEW"
     IS_OWNER = "IS_OWNER"
+
+
+@dataclass
+class AppManifestAppResourcePostgresSpec:
+    branch: Optional[str] = None
+
+    database: Optional[str] = None
+
+    permission: Optional[AppManifestAppResourcePostgresSpecPostgresPermission] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourcePostgresSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourcePostgresSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourcePostgresSpec:
+        """Deserializes the AppManifestAppResourcePostgresSpec from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            database=d.get("database", None),
+            permission=_enum(d, "permission", AppManifestAppResourcePostgresSpecPostgresPermission),
+        )
+
+
+class AppManifestAppResourcePostgresSpecPostgresPermission(Enum):
+    CAN_CONNECT_AND_CREATE = "CAN_CONNECT_AND_CREATE"
 
 
 @dataclass
@@ -784,12 +930,16 @@ class AppManifestAppResourceSpec:
     name: str
     """Name of the App Resource."""
 
+    app_spec: Optional[AppManifestAppResourceAppSpec] = None
+
     description: Optional[str] = None
     """Description of the App Resource."""
 
     experiment_spec: Optional[AppManifestAppResourceExperimentSpec] = None
 
     job_spec: Optional[AppManifestAppResourceJobSpec] = None
+
+    postgres_spec: Optional[AppManifestAppResourcePostgresSpec] = None
 
     secret_spec: Optional[AppManifestAppResourceSecretSpec] = None
 
@@ -802,6 +952,8 @@ class AppManifestAppResourceSpec:
     def as_dict(self) -> dict:
         """Serializes the AppManifestAppResourceSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.app_spec:
+            body["app_spec"] = self.app_spec.as_dict()
         if self.description is not None:
             body["description"] = self.description
         if self.experiment_spec:
@@ -810,6 +962,8 @@ class AppManifestAppResourceSpec:
             body["job_spec"] = self.job_spec.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.postgres_spec:
+            body["postgres_spec"] = self.postgres_spec.as_dict()
         if self.secret_spec:
             body["secret_spec"] = self.secret_spec.as_dict()
         if self.serving_endpoint_spec:
@@ -823,6 +977,8 @@ class AppManifestAppResourceSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the AppManifestAppResourceSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.app_spec:
+            body["app_spec"] = self.app_spec
         if self.description is not None:
             body["description"] = self.description
         if self.experiment_spec:
@@ -831,6 +987,8 @@ class AppManifestAppResourceSpec:
             body["job_spec"] = self.job_spec
         if self.name is not None:
             body["name"] = self.name
+        if self.postgres_spec:
+            body["postgres_spec"] = self.postgres_spec
         if self.secret_spec:
             body["secret_spec"] = self.secret_spec
         if self.serving_endpoint_spec:
@@ -845,10 +1003,12 @@ class AppManifestAppResourceSpec:
     def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceSpec:
         """Deserializes the AppManifestAppResourceSpec from a dictionary."""
         return cls(
+            app_spec=_from_dict(d, "app_spec", AppManifestAppResourceAppSpec),
             description=d.get("description", None),
             experiment_spec=_from_dict(d, "experiment_spec", AppManifestAppResourceExperimentSpec),
             job_spec=_from_dict(d, "job_spec", AppManifestAppResourceJobSpec),
             name=d.get("name", None),
+            postgres_spec=_from_dict(d, "postgres_spec", AppManifestAppResourcePostgresSpec),
             secret_spec=_from_dict(d, "secret_spec", AppManifestAppResourceSecretSpec),
             serving_endpoint_spec=_from_dict(d, "serving_endpoint_spec", AppManifestAppResourceServingEndpointSpec),
             sql_warehouse_spec=_from_dict(d, "sql_warehouse_spec", AppManifestAppResourceSqlWarehouseSpec),
@@ -924,6 +1084,7 @@ class AppManifestAppResourceUcSecurableSpec:
 class AppManifestAppResourceUcSecurableSpecUcSecurablePermission(Enum):
     EXECUTE = "EXECUTE"
     MANAGE = "MANAGE"
+    MODIFY = "MODIFY"
     READ_VOLUME = "READ_VOLUME"
     SELECT = "SELECT"
     USE_CONNECTION = "USE_CONNECTION"
@@ -1640,11 +1801,16 @@ class AppThumbnail:
 class AppUpdate:
     budget_policy_id: Optional[str] = None
 
+    compatibility_flags: Optional[List[str]] = None
+    """Echoes the compatibility flags submitted on the most recent update (the input set from
+    ``App.compatibility_flags``). To see the flags currently in effect on the app, read
+    ``App.effective_compatibility_flags`` via GetApp."""
+
     compute_max_instances: Optional[int] = None
-    """Maximum number of app instances. Must be set together with `compute_min_instances`."""
+    """Maximum number of app instances. Must be set together with ``compute_min_instances``."""
 
     compute_min_instances: Optional[int] = None
-    """Minimum number of app instances. Must be set together with `compute_max_instances`."""
+    """Minimum number of app instances. Must be set together with ``compute_max_instances``."""
 
     compute_size: Optional[ComputeSize] = None
 
@@ -1656,6 +1822,8 @@ class AppUpdate:
 
     status: Optional[AppUpdateUpdateStatus] = None
 
+    telemetry_export_destinations: Optional[List[TelemetryExportDestination]] = None
+
     usage_policy_id: Optional[str] = None
 
     user_api_scopes: Optional[List[str]] = None
@@ -1665,6 +1833,8 @@ class AppUpdate:
         body = {}
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compatibility_flags:
+            body["compatibility_flags"] = [v for v in self.compatibility_flags]
         if self.compute_max_instances is not None:
             body["compute_max_instances"] = self.compute_max_instances
         if self.compute_min_instances is not None:
@@ -1679,6 +1849,8 @@ class AppUpdate:
             body["resources"] = [v.as_dict() for v in self.resources]
         if self.status:
             body["status"] = self.status.as_dict()
+        if self.telemetry_export_destinations:
+            body["telemetry_export_destinations"] = [v.as_dict() for v in self.telemetry_export_destinations]
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
         if self.user_api_scopes:
@@ -1690,6 +1862,8 @@ class AppUpdate:
         body = {}
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compatibility_flags:
+            body["compatibility_flags"] = self.compatibility_flags
         if self.compute_max_instances is not None:
             body["compute_max_instances"] = self.compute_max_instances
         if self.compute_min_instances is not None:
@@ -1704,6 +1878,8 @@ class AppUpdate:
             body["resources"] = self.resources
         if self.status:
             body["status"] = self.status
+        if self.telemetry_export_destinations:
+            body["telemetry_export_destinations"] = self.telemetry_export_destinations
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
         if self.user_api_scopes:
@@ -1715,6 +1891,7 @@ class AppUpdate:
         """Deserializes the AppUpdate from a dictionary."""
         return cls(
             budget_policy_id=d.get("budget_policy_id", None),
+            compatibility_flags=d.get("compatibility_flags", None),
             compute_max_instances=d.get("compute_max_instances", None),
             compute_min_instances=d.get("compute_min_instances", None),
             compute_size=_enum(d, "compute_size", ComputeSize),
@@ -1722,6 +1899,9 @@ class AppUpdate:
             git_repository=_from_dict(d, "git_repository", GitRepository),
             resources=_repeated_dict(d, "resources", AppResource),
             status=_from_dict(d, "status", AppUpdateUpdateStatus),
+            telemetry_export_destinations=_repeated_dict(
+                d, "telemetry_export_destinations", TelemetryExportDestination
+            ),
             usage_policy_id=d.get("usage_policy_id", None),
             user_api_scopes=d.get("user_api_scopes", None),
         )
@@ -1816,7 +1996,9 @@ class ApplicationStatus:
 
 class ComputeSize(Enum):
     LARGE = "LARGE"
+    LIQUID = "LIQUID"
     MEDIUM = "MEDIUM"
+    XLARGE = "XLARGE"
 
 
 class ComputeState(Enum):
@@ -2159,9 +2341,21 @@ class GitRepository:
     """Git provider. Case insensitive. Supported values: gitHub, gitHubEnterprise, bitbucketCloud,
     bitbucketServer, azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit."""
 
+    auto_deploy: Optional[bool] = None
+    """When true, automatically deploys the app on push events to the branch configured in the app's
+    deployment_source.git_source."""
+
+    caller_credential_id: Optional[int] = None
+    """ID of a personal access token Git credential owned by the caller, used to grant the app's
+    service principal access to this repository."""
+
     def as_dict(self) -> dict:
         """Serializes the GitRepository into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auto_deploy is not None:
+            body["auto_deploy"] = self.auto_deploy
+        if self.caller_credential_id is not None:
+            body["caller_credential_id"] = self.caller_credential_id
         if self.provider is not None:
             body["provider"] = self.provider
         if self.url is not None:
@@ -2171,6 +2365,10 @@ class GitRepository:
     def as_shallow_dict(self) -> dict:
         """Serializes the GitRepository into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.auto_deploy is not None:
+            body["auto_deploy"] = self.auto_deploy
+        if self.caller_credential_id is not None:
+            body["caller_credential_id"] = self.caller_credential_id
         if self.provider is not None:
             body["provider"] = self.provider
         if self.url is not None:
@@ -2180,7 +2378,12 @@ class GitRepository:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GitRepository:
         """Deserializes the GitRepository from a dictionary."""
-        return cls(provider=d.get("provider", None), url=d.get("url", None))
+        return cls(
+            auto_deploy=d.get("auto_deploy", None),
+            caller_credential_id=d.get("caller_credential_id", None),
+            provider=d.get("provider", None),
+            url=d.get("url", None),
+        )
 
 
 @dataclass
@@ -2391,8 +2594,8 @@ class Operation:
     """This resource represents a long-running operation that is the result of a network API call."""
 
     done: Optional[bool] = None
-    """If the value is `false`, it means the operation is still in progress. If `true`, the operation
-    is completed, and either `error` or `response` is available."""
+    """If the value is ``false``, it means the operation is still in progress. If ``true``, the
+    operation is completed, and either ``error`` or ``response`` is available."""
 
     error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
     """The error result of the operation in case of failure or cancellation."""
@@ -2404,8 +2607,8 @@ class Operation:
 
     name: Optional[str] = None
     """The server-assigned name, which is only unique within the same service that originally returns
-    it. If you use the default HTTP mapping, the `name` should be a resource name ending with
-    `operations/{unique_id}`."""
+    it. If you use the default HTTP mapping, the ``name`` should be a resource name ending with
+    ``operations/{unique_id}``."""
 
     response: Optional[dict] = None
     """The normal, successful response of the operation."""
@@ -2473,6 +2676,11 @@ class Space:
     effective_user_api_scopes: Optional[List[str]] = None
     """The effective api scopes granted to the user access token."""
 
+    group_id: Optional[str] = None
+    """The ID of the group attached to the app space. ASPs minted for apps in this space are added as
+    members of this group at create time, so the group's resource permissions flow through to every
+    app in the space."""
+
     id: Optional[str] = None
     """The unique identifier of the app space."""
 
@@ -2491,6 +2699,10 @@ class Space:
 
     status: Optional[SpaceStatus] = None
     """The status of the app space."""
+
+    telemetry_export_destinations: Optional[List[TelemetryExportDestination]] = None
+    """Telemetry export destinations for all apps in this space. When configured, all apps in the space
+    export OTEL telemetry (logs, metrics, traces) to the specified Unity Catalog tables."""
 
     update_time: Optional[Timestamp] = None
     """The update time of the app space. Formatted timestamp in ISO 6801."""
@@ -2517,6 +2729,8 @@ class Space:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = [v for v in self.effective_user_api_scopes]
+        if self.group_id is not None:
+            body["group_id"] = self.group_id
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
@@ -2531,6 +2745,8 @@ class Space:
             body["service_principal_name"] = self.service_principal_name
         if self.status:
             body["status"] = self.status.as_dict()
+        if self.telemetry_export_destinations:
+            body["telemetry_export_destinations"] = [v.as_dict() for v in self.telemetry_export_destinations]
         if self.update_time is not None:
             body["update_time"] = self.update_time.ToJsonString()
         if self.updater is not None:
@@ -2554,6 +2770,8 @@ class Space:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = self.effective_user_api_scopes
+        if self.group_id is not None:
+            body["group_id"] = self.group_id
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
@@ -2568,6 +2786,8 @@ class Space:
             body["service_principal_name"] = self.service_principal_name
         if self.status:
             body["status"] = self.status
+        if self.telemetry_export_destinations:
+            body["telemetry_export_destinations"] = self.telemetry_export_destinations
         if self.update_time is not None:
             body["update_time"] = self.update_time
         if self.updater is not None:
@@ -2587,6 +2807,7 @@ class Space:
             description=d.get("description", None),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
+            group_id=d.get("group_id", None),
             id=d.get("id", None),
             name=d.get("name", None),
             resources=_repeated_dict(d, "resources", AppResource),
@@ -2594,6 +2815,9 @@ class Space:
             service_principal_id=d.get("service_principal_id", None),
             service_principal_name=d.get("service_principal_name", None),
             status=_from_dict(d, "status", SpaceStatus),
+            telemetry_export_destinations=_repeated_dict(
+                d, "telemetry_export_destinations", TelemetryExportDestination
+            ),
             update_time=_timestamp(d, "update_time"),
             updater=d.get("updater", None),
             usage_policy_id=d.get("usage_policy_id", None),
@@ -2648,6 +2872,8 @@ class SpaceUpdate:
 
     description: Optional[str] = None
 
+    group_id: Optional[str] = None
+
     resources: Optional[List[AppResource]] = None
 
     status: Optional[SpaceUpdateStatus] = None
@@ -2661,6 +2887,8 @@ class SpaceUpdate:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.group_id is not None:
+            body["group_id"] = self.group_id
         if self.resources:
             body["resources"] = [v.as_dict() for v in self.resources]
         if self.status:
@@ -2676,6 +2904,8 @@ class SpaceUpdate:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.group_id is not None:
+            body["group_id"] = self.group_id
         if self.resources:
             body["resources"] = self.resources
         if self.status:
@@ -2691,6 +2921,7 @@ class SpaceUpdate:
         """Deserializes the SpaceUpdate from a dictionary."""
         return cls(
             description=d.get("description", None),
+            group_id=d.get("group_id", None),
             resources=_repeated_dict(d, "resources", AppResource),
             status=_from_dict(d, "status", SpaceUpdateStatus),
             usage_policy_id=d.get("usage_policy_id", None),
@@ -3007,14 +3238,14 @@ class AppsAPI:
         :param app_name: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
         :param app: :class:`App` (optional)
 
         :returns:
@@ -3431,6 +3662,7 @@ class AppsAPI:
           See :method:wait_get_app_active for more details.
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3440,7 +3672,7 @@ class AppsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", body=body, headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
 
     def start_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
@@ -3457,6 +3689,7 @@ class AppsAPI:
           See :method:wait_get_app_stopped for more details.
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3466,7 +3699,7 @@ class AppsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", body=body, headers=headers)
         return Wait(self.wait_get_app_stopped, response=App.from_dict(op_response), name=op_response["name"])
 
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
@@ -3560,14 +3793,14 @@ class AppsAPI:
         :param space: :class:`Space`
         :param update_mask: FieldMask
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`Operation`
         """

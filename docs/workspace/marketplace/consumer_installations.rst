@@ -6,13 +6,14 @@
 
     Installations are entities that allow consumers to interact with Databricks Marketplace listings.
 
-    .. py:method:: create(listing_id: str [, accepted_consumer_terms: Optional[ConsumerTerms], catalog_name: Optional[str], recipient_type: Optional[DeltaSharingRecipientType], repo_detail: Optional[RepoInstallation], share_name: Optional[str]]) -> Installation
+    .. py:method:: create(listing_id: str [, accepted_consumer_terms: Optional[ConsumerTerms], catalog_name: Optional[str], mcp_connection_detail: Optional[InstallListingMcpConnectionDetail], recipient_type: Optional[DeltaSharingRecipientType], repo_detail: Optional[RepoInstallation], share_name: Optional[str]]) -> Installation
 
         Install payload associated with a Databricks Marketplace listing.
 
         :param listing_id: str
         :param accepted_consumer_terms: :class:`ConsumerTerms` (optional)
         :param catalog_name: str (optional)
+        :param mcp_connection_detail: :class:`InstallListingMcpConnectionDetail` (optional)
         :param recipient_type: :class:`DeltaSharingRecipientType` (optional)
         :param repo_detail: :class:`RepoInstallation` (optional)
           for git repo installations
@@ -55,9 +56,10 @@
     .. py:method:: update(listing_id: str, installation_id: str, installation: InstallationDetail [, rotate_token: Optional[bool]]) -> UpdateInstallationResponse
 
         This is a update API that will update the part of the fields defined in the installation table as well
-        as interact with external services according to the fields not included in the installation table 1.
-        the token will be rotate if the rotateToken flag is true 2. the token will be forcibly rotate if the
-        rotateToken flag is true and the tokenInfo field is empty
+        as interact with external services according to the fields not included in the installation table
+
+        1. the token will be rotate if the rotateToken flag is true
+        2. the token will be forcibly rotate if the rotateToken flag is true and the tokenInfo field is empty
 
         :param listing_id: str
         :param installation_id: str

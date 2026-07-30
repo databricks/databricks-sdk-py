@@ -7,12 +7,11 @@
     In general, there is little need to modify dashboards using the API. However, it can be useful to use
     dashboard objects to look-up a collection of related query IDs. The API can also be used to duplicate
     multiple dashboards at once since you can get a dashboard definition with a GET request and then POST it
-    to create a new one. Dashboards can be scheduled using the `sql_task` type of the Jobs API, e.g.
+    to create a new one. Dashboards can be scheduled using the ``sql_task`` type of the Jobs API, e.g.
     :method:jobs/create.
 
-    **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/en/dashboards/
+    **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+    <https://docs.databricks.com/en/dashboards/>`__
 
     .. py:method:: delete(dashboard_id: str)
 
@@ -37,9 +36,8 @@
         Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
         be shared.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param dashboard_id: str
 
@@ -68,9 +66,8 @@
 
         Returns a JSON representation of a dashboard object, including its visualization and query objects.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param dashboard_id: str
 
@@ -96,9 +93,8 @@
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param order: :class:`ListOrder` (optional)
           Name of dashboard attribute to order by.
@@ -134,9 +130,8 @@
 
         A restored dashboard appears in list views and searches and can be shared.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param dashboard_id: str
 
@@ -150,16 +145,15 @@
 
         **Note**: You cannot undo this operation.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param dashboard_id: str
         :param name: str (optional)
           The title of this dashboard that appears in list views and at the top of the dashboard page.
         :param run_as_role: :class:`RunAsRole` (optional)
-          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+          Sets the **Run as** role for the object. Must be set to one of ``"viewer"`` (signifying "run as
+          viewer" behavior) or ``"owner"`` (signifying "run as owner" behavior)
         :param tags: List[str] (optional)
 
         :returns: :class:`Dashboard`

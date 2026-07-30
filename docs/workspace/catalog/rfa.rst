@@ -48,11 +48,9 @@
 
         Updates the access request destinations for the given securable. The caller must be a metastore admin,
         the owner of the securable, or a user that has the **MANAGE** privilege on the securable in order to
-        assign destinations. Destinations cannot be updated for securables underneath schemas (tables,
-        volumes, functions, and models). For these securable types, destinations are inherited from the parent
-        securable. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft Teams, and
-        Generic Webhook destinations) can be assigned to a securable. If a URL destination is assigned, no
-        other destinations can be set.
+        assign destinations. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft
+        Teams, and Generic Webhook destinations) can be assigned to a securable. If a URL destination is
+        assigned, no other destinations can be set.
 
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".
@@ -62,14 +60,14 @@
           **destination_id** and **destination_type** must be defined.
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`AccessRequestDestinations`
         

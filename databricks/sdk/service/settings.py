@@ -4,20 +4,24 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
 
-from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service import iam
+
+import logging
+
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+
+
+from databricks.sdk.service import iam
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -690,6 +694,7 @@ class ComplianceStandard(Enum):
     """Compliance standard for SHIELD customers. See README.md for how instructions of how to add new
     standards."""
 
+    ARC_AMPE = "ARC_AMPE"
     CANADA_PROTECTED_B = "CANADA_PROTECTED_B"
     CYBER_ESSENTIAL_PLUS = "CYBER_ESSENTIAL_PLUS"
     FEDRAMP_HIGH = "FEDRAMP_HIGH"
@@ -702,6 +707,7 @@ class ComplianceStandard(Enum):
     IRAP_PROTECTED = "IRAP_PROTECTED"
     ISMAP = "ISMAP"
     ITAR_EAR = "ITAR_EAR"
+    KSA_ECC_CCC_DCC = "KSA_ECC_CCC_DCC"
     K_FSI = "K_FSI"
     NONE = "NONE"
     PCI_DSS = "PCI_DSS"
@@ -1066,14 +1072,13 @@ class CspEnablementAccountSetting:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicy:
-    """This proto is under development. The network policies applying for ingress traffic. Any changes
-    here should also be synced to estore/namespaces/lakehousenetworkmanager/latest.proto."""
+    """The network policies applying for ingress traffic."""
 
     cross_workspace_access: Optional[CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess] = None
 
     private_access: Optional[CustomerFacingIngressNetworkPolicyPrivateAccess] = None
-    """The network policy restrictions for private access to the workspace. Configures how registered
-    private endpoints are allowed or denied access."""
+    """The network policy restrictions for private access. Configures how requests arriving over
+    private connectivity are governed."""
 
     public_access: Optional[CustomerFacingIngressNetworkPolicyPublicAccess] = None
     """The network policy restrictions for public access to the workspace. Configures how public
@@ -1117,14 +1122,26 @@ class CustomerFacingIngressNetworkPolicy:
 class CustomerFacingIngressNetworkPolicyAccountApiDestination:
     """Matches account-level Databricks API endpoints for an ingress network policy rule."""
 
+    excluded_scopes: Optional[List[str]] = None
+    """Inverse of ``scopes``: matches every API scope EXCEPT those listed here ("allow all except").
+    Mutually exclusive with ``scopes`` — a single destination may set at most one of the two."""
+
+    scope_constraint: Optional[CustomerFacingIngressNetworkPolicyApiScopeConstraint] = None
+    """Deprecated: Use scope_qualifier instead."""
+
     scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
     """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
 
     scopes: Optional[List[str]] = None
+    """The API scopes to match. Use "all-apis" to match any account-level API."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyAccountApiDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = [v for v in self.excluded_scopes]
+        if self.scope_constraint is not None:
+            body["scope_constraint"] = self.scope_constraint.value
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier.value
         if self.scopes:
@@ -1134,6 +1151,10 @@ class CustomerFacingIngressNetworkPolicyAccountApiDestination:
     def as_shallow_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyAccountApiDestination into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = self.excluded_scopes
+        if self.scope_constraint is not None:
+            body["scope_constraint"] = self.scope_constraint
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier
         if self.scopes:
@@ -1144,6 +1165,8 @@ class CustomerFacingIngressNetworkPolicyAccountApiDestination:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountApiDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyAccountApiDestination from a dictionary."""
         return cls(
+            excluded_scopes=d.get("excluded_scopes", None),
+            scope_constraint=_enum(d, "scope_constraint", CustomerFacingIngressNetworkPolicyApiScopeConstraint),
             scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
             scopes=d.get("scopes", None),
         )
@@ -1176,6 +1199,8 @@ class CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyAccountUiDestination:
+    """The account console UI destination."""
+
     all_destinations: Optional[bool] = None
     """Must be set to true."""
 
@@ -1197,6 +1222,13 @@ class CustomerFacingIngressNetworkPolicyAccountUiDestination:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountUiDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyAccountUiDestination from a dictionary."""
         return cls(all_destinations=d.get("all_destinations", None))
+
+
+class CustomerFacingIngressNetworkPolicyApiScopeConstraint(Enum):
+    """Deprecated: Use ApiScopeQualifier instead."""
+
+    ALL = "ALL"
+    READ = "READ"
 
 
 class CustomerFacingIngressNetworkPolicyApiScopeQualifier(Enum):
@@ -1445,7 +1477,10 @@ class CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyEndpoints:
+    """A set of registered endpoints, identified by their endpoint IDs."""
+
     endpoint_ids: Optional[List[str]] = None
+    """The IDs of the registered endpoints. Must contain at least one endpoint ID."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyEndpoints into a dictionary suitable for use as a JSON request body."""
@@ -1518,12 +1553,59 @@ class CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
 
 
 @dataclass
+class CustomerFacingIngressNetworkPolicyManagedIpRange:
+    """A Databricks-managed IP range identified by name (e.g., "powerbi", "dbt"), optionally scoped to
+    specific partner regions. Customers reference a name instead of raw CIDRs; Databricks keeps the
+    underlying IP list current."""
+
+    name: Optional[str] = None
+    """Name of the managed IP range, e.g., "powerbi"."""
+
+    regions: Optional[List[str]] = None
+    """Partner regions to allow, e.g., ["EastUS", "WestEurope"]. Each region must belong to the partner
+    named in ``name``. Empty list means all regions of the partner. Region casing matches the
+    partner's source (e.g., Microsoft uses "EastUS"), so values are stored verbatim, not lowercased."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyManagedIpRange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.regions:
+            body["regions"] = [v for v in self.regions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyManagedIpRange into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.regions:
+            body["regions"] = self.regions
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyManagedIpRange:
+        """Deserializes the CustomerFacingIngressNetworkPolicyManagedIpRange from a dictionary."""
+        return cls(name=d.get("name", None), regions=d.get("regions", None))
+
+
+@dataclass
 class CustomerFacingIngressNetworkPolicyPrivateAccess:
+    """Configures how requests arriving over private connectivity, such as registered endpoints, are
+    allowed or denied access."""
+
     restriction_mode: CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
+    """The restriction mode for private access."""
 
     allow_rules: Optional[List[CustomerFacingIngressNetworkPolicyPrivateIngressRule]] = None
+    """Allow rules are evaluated after deny rules. A request matching any allow rule is allowed; a
+    request matching no rule is denied by default. Only applies when restriction_mode is
+    RESTRICTED_ACCESS."""
 
     deny_rules: Optional[List[CustomerFacingIngressNetworkPolicyPrivateIngressRule]] = None
+    """Deny rules are evaluated first. A request matching any deny rule is denied, regardless of allow
+    rules. Only applies when restriction_mode is RESTRICTED_ACCESS."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyPrivateAccess into a dictionary suitable for use as a JSON request body."""
@@ -1560,20 +1642,37 @@ class CustomerFacingIngressNetworkPolicyPrivateAccess:
 
 
 class CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode(Enum):
+    """The restriction mode for private access. In ALLOW_ALL_REGISTERED_ENDPOINTS mode, requests
+    arriving through any endpoint registered to the account are allowed, and deny rules and allow
+    rules cannot be set. In RESTRICTED_ACCESS mode, access is restricted based on deny rules and
+    allow rules; requests that do not match any allow rule are denied."""
+
     ALLOW_ALL_REGISTERED_ENDPOINTS = "ALLOW_ALL_REGISTERED_ENDPOINTS"
     RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
 
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyPrivateIngressRule:
+    """An ingress rule is enforced when a request satisfies all specified attributes — including
+    request origin, destination, and authentication."""
+
     authentication: Optional[CustomerFacingIngressNetworkPolicyAuthentication] = None
+    """The authenticated identity the request must match. When unset, the rule matches all users and
+    service principals. On the account-level network policy, scoping to specific identities is not
+    currently supported, so this field must be unset (the rule matches all users and service
+    principals)."""
 
     destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
+    """The destination the request must match — the resource being accessed, for example the
+    workspace UI, workspace APIs, or account-level APIs. See RequestDestination."""
 
     label: Optional[str] = None
     """The label for this ingress rule."""
 
     origin: Optional[CustomerFacingIngressNetworkPolicyPrivateRequestOrigin] = None
+    """The origin the request must match — the private connectivity the request arrives through, for
+    example a specific set of registered endpoints or any endpoint registered to the account. See
+    PrivateRequestOrigin."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyPrivateIngressRule into a dictionary suitable for use as a JSON request body."""
@@ -1614,13 +1713,25 @@ class CustomerFacingIngressNetworkPolicyPrivateIngressRule:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyPrivateRequestOrigin:
+    """The origin of a private access request, identified by the endpoint through which the request
+    arrives."""
+
     all_private_access: Optional[bool] = None
+    """Matches requests arriving over any private connectivity, including registered endpoints and the
+    workspace's Azure Private Link (ui-api) endpoints. Can only be used in deny rules of
+    workspace-level network policies. Must be set to true when specified."""
 
     all_registered_endpoints: Optional[bool] = None
+    """Matches requests arriving through any endpoint registered to the account. Must be set to true
+    when specified."""
 
     azure_workspace_private_link: Optional[bool] = None
+    """Matches requests arriving through the workspace's Azure Private Link (ui-api) endpoints. Can
+    only be used in deny rules of workspace-level network policies. Must be set to true when
+    specified."""
 
     endpoints: Optional[CustomerFacingIngressNetworkPolicyEndpoints] = None
+    """Matches requests arriving through any of the specified registered endpoints."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyPrivateRequestOrigin into a dictionary suitable for use as a JSON request body."""
@@ -1768,6 +1879,10 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
     included_ip_ranges: Optional[CustomerFacingIngressNetworkPolicyIpRanges] = None
     """Will not allow IP ranges with private IPs."""
 
+    managed_ip_range: Optional[CustomerFacingIngressNetworkPolicyManagedIpRange] = None
+    """A single Databricks-maintained IP range for a well-known partner (e.g., Power BI, dbt),
+    optionally scoped to specific partner regions. Customers create one rule per partner."""
+
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyPublicRequestOrigin into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1777,6 +1892,8 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
             body["excluded_ip_ranges"] = self.excluded_ip_ranges.as_dict()
         if self.included_ip_ranges:
             body["included_ip_ranges"] = self.included_ip_ranges.as_dict()
+        if self.managed_ip_range:
+            body["managed_ip_range"] = self.managed_ip_range.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1788,6 +1905,8 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
             body["excluded_ip_ranges"] = self.excluded_ip_ranges
         if self.included_ip_ranges:
             body["included_ip_ranges"] = self.included_ip_ranges
+        if self.managed_ip_range:
+            body["managed_ip_range"] = self.managed_ip_range
         return body
 
     @classmethod
@@ -1797,18 +1916,21 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
             all_ip_ranges=d.get("all_ip_ranges", None),
             excluded_ip_ranges=_from_dict(d, "excluded_ip_ranges", CustomerFacingIngressNetworkPolicyIpRanges),
             included_ip_ranges=_from_dict(d, "included_ip_ranges", CustomerFacingIngressNetworkPolicyIpRanges),
+            managed_ip_range=_from_dict(d, "managed_ip_range", CustomerFacingIngressNetworkPolicyManagedIpRange),
         )
 
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyRequestDestination:
     account_api: Optional[CustomerFacingIngressNetworkPolicyAccountApiDestination] = None
+    """Matches requests to account-level APIs. Can only be used in the account-level network policy."""
 
     account_databricks_one: Optional[CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination] = None
-    """Account DatabricksOne destination is not supported. DO NOT change the stage of this destination
-    past PRIVATE_PREVIEW."""
+    """Account DatabricksOne destination is not supported."""
 
     account_ui: Optional[CustomerFacingIngressNetworkPolicyAccountUiDestination] = None
+    """Matches requests to the account console UI. Can only be used in the account-level network
+    policy."""
 
     all_destinations: Optional[bool] = None
     """When true, match all destinations, no other destination fields can be set. When not set or
@@ -1887,6 +2009,13 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
 class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     """Matches workspace-level Databricks API endpoints for an ingress network policy rule."""
 
+    excluded_scopes: Optional[List[str]] = None
+    """Inverse of ``scopes``: matches every API scope EXCEPT those listed here ("allow all except").
+    Mutually exclusive with ``scopes`` — a single destination may set at most one of the two."""
+
+    scope_constraint: Optional[CustomerFacingIngressNetworkPolicyApiScopeConstraint] = None
+    """Deprecated: Use scope_qualifier instead."""
+
     scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
     """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
 
@@ -1895,6 +2024,10 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = [v for v in self.excluded_scopes]
+        if self.scope_constraint is not None:
+            body["scope_constraint"] = self.scope_constraint.value
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier.value
         if self.scopes:
@@ -1904,6 +2037,10 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def as_shallow_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = self.excluded_scopes
+        if self.scope_constraint is not None:
+            body["scope_constraint"] = self.scope_constraint
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier
         if self.scopes:
@@ -1914,6 +2051,8 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination from a dictionary."""
         return cls(
+            excluded_scopes=d.get("excluded_scopes", None),
+            scope_constraint=_enum(d, "scope_constraint", CustomerFacingIngressNetworkPolicyApiScopeConstraint),
             scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
             scopes=d.get("scopes", None),
         )
@@ -1982,12 +2121,15 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
     ] = None
     """The current status of this private endpoint. The private endpoint rules are effective only if
     the connection state is ESTABLISHED. Remember that you must approve new endpoints on your
-    resources in the AWS console before they take effect. The possible values are: - PENDING: The
-    endpoint has been created and pending approval. - ESTABLISHED: The endpoint has been approved
-    and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by
-    the private link resource owner. - DISCONNECTED: Connection was removed by the private link
-    resource owner, the private endpoint becomes informative and should be deleted for clean-up. -
-    EXPIRED: If the endpoint is created but not approved in 14 days, it is EXPIRED."""
+    resources in the AWS console before they take effect. The possible values are:
+    
+    - PENDING: The endpoint has been created and pending approval.
+    - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute
+      resources.
+    - REJECTED: Connection was rejected by the private link resource owner.
+    - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint
+      becomes informative and should be deleted for clean-up.
+    - EXPIRED: If the endpoint is created but not approved in 14 days, it is EXPIRED."""
 
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when this object was created."""
@@ -3877,6 +4019,12 @@ class FetchIpAccessListResponse:
 
 @dataclass
 class GcpEndpoint:
+    all_vpc_sc_services: Optional[bool] = None
+    """All Google APIs that support VPC Service Controls (a subset of all Google APIs)."""
+
+    google_api_endpoints: Optional[GoogleApiEndpoints] = None
+    """Selected Google API hostnames, e.g. "storage.googleapis.com", "bigquery.googleapis.com"."""
+
     psc_endpoint_uri: Optional[str] = None
     """Output only. The URI of the created PSC endpoint."""
 
@@ -3887,6 +4035,10 @@ class GcpEndpoint:
     def as_dict(self) -> dict:
         """Serializes the GcpEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.all_vpc_sc_services is not None:
+            body["all_vpc_sc_services"] = self.all_vpc_sc_services
+        if self.google_api_endpoints:
+            body["google_api_endpoints"] = self.google_api_endpoints.as_dict()
         if self.psc_endpoint_uri is not None:
             body["psc_endpoint_uri"] = self.psc_endpoint_uri
         if self.service_attachment is not None:
@@ -3896,6 +4048,10 @@ class GcpEndpoint:
     def as_shallow_dict(self) -> dict:
         """Serializes the GcpEndpoint into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.all_vpc_sc_services is not None:
+            body["all_vpc_sc_services"] = self.all_vpc_sc_services
+        if self.google_api_endpoints:
+            body["google_api_endpoints"] = self.google_api_endpoints
         if self.psc_endpoint_uri is not None:
             body["psc_endpoint_uri"] = self.psc_endpoint_uri
         if self.service_attachment is not None:
@@ -3906,12 +4062,45 @@ class GcpEndpoint:
     def from_dict(cls, d: Dict[str, Any]) -> GcpEndpoint:
         """Deserializes the GcpEndpoint from a dictionary."""
         return cls(
-            psc_endpoint_uri=d.get("psc_endpoint_uri", None), service_attachment=d.get("service_attachment", None)
+            all_vpc_sc_services=d.get("all_vpc_sc_services", None),
+            google_api_endpoints=_from_dict(d, "google_api_endpoints", GoogleApiEndpoints),
+            psc_endpoint_uri=d.get("psc_endpoint_uri", None),
+            service_attachment=d.get("service_attachment", None),
         )
 
 
 @dataclass
 class GenericWebhookConfig:
+    oauth_audience: Optional[str] = None
+    """[Input-Only][Optional] OAuth2 audience parameter (required by some IdPs, e.g. Auth0)."""
+
+    oauth_audience_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 audience is set."""
+
+    oauth_client_id: Optional[str] = None
+    """[Input-Only][Optional] OAuth2 client ID for the client_credentials grant."""
+
+    oauth_client_id_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 client ID is set."""
+
+    oauth_client_secret: Optional[str] = None
+    """[Input-Only][Optional] OAuth2 client secret for the client_credentials grant."""
+
+    oauth_client_secret_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 client secret is set."""
+
+    oauth_scopes: Optional[List[str]] = None
+    """[Input-Only][Optional] OAuth2 scopes requested at token mint (required by some IdPs)."""
+
+    oauth_scopes_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 scopes are set."""
+
+    oauth_token_url: Optional[str] = None
+    """[Input-Only][Optional] OAuth2 token endpoint URL (customer IdP) where access tokens are minted."""
+
+    oauth_token_url_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 token URL is set."""
+
     password: Optional[str] = None
     """[Input-Only][Optional] Password for webhook."""
 
@@ -3933,6 +4122,26 @@ class GenericWebhookConfig:
     def as_dict(self) -> dict:
         """Serializes the GenericWebhookConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.oauth_audience is not None:
+            body["oauth_audience"] = self.oauth_audience
+        if self.oauth_audience_set is not None:
+            body["oauth_audience_set"] = self.oauth_audience_set
+        if self.oauth_client_id is not None:
+            body["oauth_client_id"] = self.oauth_client_id
+        if self.oauth_client_id_set is not None:
+            body["oauth_client_id_set"] = self.oauth_client_id_set
+        if self.oauth_client_secret is not None:
+            body["oauth_client_secret"] = self.oauth_client_secret
+        if self.oauth_client_secret_set is not None:
+            body["oauth_client_secret_set"] = self.oauth_client_secret_set
+        if self.oauth_scopes:
+            body["oauth_scopes"] = [v for v in self.oauth_scopes]
+        if self.oauth_scopes_set is not None:
+            body["oauth_scopes_set"] = self.oauth_scopes_set
+        if self.oauth_token_url is not None:
+            body["oauth_token_url"] = self.oauth_token_url
+        if self.oauth_token_url_set is not None:
+            body["oauth_token_url_set"] = self.oauth_token_url_set
         if self.password is not None:
             body["password"] = self.password
         if self.password_set is not None:
@@ -3950,6 +4159,26 @@ class GenericWebhookConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the GenericWebhookConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.oauth_audience is not None:
+            body["oauth_audience"] = self.oauth_audience
+        if self.oauth_audience_set is not None:
+            body["oauth_audience_set"] = self.oauth_audience_set
+        if self.oauth_client_id is not None:
+            body["oauth_client_id"] = self.oauth_client_id
+        if self.oauth_client_id_set is not None:
+            body["oauth_client_id_set"] = self.oauth_client_id_set
+        if self.oauth_client_secret is not None:
+            body["oauth_client_secret"] = self.oauth_client_secret
+        if self.oauth_client_secret_set is not None:
+            body["oauth_client_secret_set"] = self.oauth_client_secret_set
+        if self.oauth_scopes:
+            body["oauth_scopes"] = self.oauth_scopes
+        if self.oauth_scopes_set is not None:
+            body["oauth_scopes_set"] = self.oauth_scopes_set
+        if self.oauth_token_url is not None:
+            body["oauth_token_url"] = self.oauth_token_url
+        if self.oauth_token_url_set is not None:
+            body["oauth_token_url_set"] = self.oauth_token_url_set
         if self.password is not None:
             body["password"] = self.password
         if self.password_set is not None:
@@ -3968,6 +4197,16 @@ class GenericWebhookConfig:
     def from_dict(cls, d: Dict[str, Any]) -> GenericWebhookConfig:
         """Deserializes the GenericWebhookConfig from a dictionary."""
         return cls(
+            oauth_audience=d.get("oauth_audience", None),
+            oauth_audience_set=d.get("oauth_audience_set", None),
+            oauth_client_id=d.get("oauth_client_id", None),
+            oauth_client_id_set=d.get("oauth_client_id_set", None),
+            oauth_client_secret=d.get("oauth_client_secret", None),
+            oauth_client_secret_set=d.get("oauth_client_secret_set", None),
+            oauth_scopes=d.get("oauth_scopes", None),
+            oauth_scopes_set=d.get("oauth_scopes_set", None),
+            oauth_token_url=d.get("oauth_token_url", None),
+            oauth_token_url_set=d.get("oauth_token_url_set", None),
             password=d.get("password", None),
             password_set=d.get("password_set", None),
             url=d.get("url", None),
@@ -4076,6 +4315,35 @@ class GetTokenResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetTokenResponse:
         """Deserializes the GetTokenResponse from a dictionary."""
         return cls(token_info=_from_dict(d, "token_info", TokenInfo))
+
+
+@dataclass
+class GoogleApiEndpoints:
+    """Wrapper for a list of Google API hostnames. Wrapped in a message because proto3 oneof does not
+    support repeated fields directly."""
+
+    endpoints: Optional[List[str]] = None
+    """Google API hostnames, e.g. "storage.googleapis.com", "bigquery.googleapis.com". Use
+    "googleapis.com" to cover all Google APIs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleApiEndpoints into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.endpoints:
+            body["endpoints"] = [v for v in self.endpoints]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleApiEndpoints into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.endpoints:
+            body["endpoints"] = self.endpoints
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleApiEndpoints:
+        """Deserializes the GoogleApiEndpoints from a dictionary."""
+        return cls(endpoints=d.get("endpoints", None))
 
 
 @dataclass
@@ -4443,8 +4711,9 @@ class ListTokensResponse:
 class ListType(Enum):
     """Type of IP access list. Valid values are as follows and are case-sensitive:
 
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list."""
+    - ``ALLOW``: An allow list. Include this IP or range.
+    - ``BLOCK``: A block list. Exclude this IP or range. IP addresses in the block list are excluded
+      even if they are included in an allow list."""
 
     ALLOW = "ALLOW"
     BLOCK = "BLOCK"
@@ -4736,13 +5005,16 @@ class NccAzurePrivateEndpointRule:
     connection_state: Optional[NccAzurePrivateEndpointRuleConnectionState] = None
     """The current status of this private endpoint. The private endpoint rules are effective only if
     the connection state is ESTABLISHED. Remember that you must approve new endpoints on your
-    resources in the Azure portal before they take effect. The possible values are: - INIT:
-    (deprecated) The endpoint has been created and pending approval. - PENDING: The endpoint has
-    been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to
-    use in your serverless compute resources. - REJECTED: Connection was rejected by the private
-    link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner,
-    the private endpoint becomes informative and should be deleted for clean-up. - EXPIRED: If the
-    endpoint was created but not approved in 14 days, it will be EXPIRED."""
+    resources in the Azure portal before they take effect. The possible values are:
+    
+    - INIT: (deprecated) The endpoint has been created and pending approval.
+    - PENDING: The endpoint has been created and pending approval.
+    - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute
+      resources.
+    - REJECTED: Connection was rejected by the private link resource owner.
+    - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint
+      becomes informative and should be deleted for clean-up.
+    - EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED."""
 
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when this object was created."""
@@ -4964,6 +5236,8 @@ class NccEgressDefaultRules:
 
     azure_service_endpoint_rule: Optional[NccAzureServiceEndpointRule] = None
 
+    gcp_project_id_rule: Optional[NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule] = None
+
     def as_dict(self) -> dict:
         """Serializes the NccEgressDefaultRules into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4971,6 +5245,8 @@ class NccEgressDefaultRules:
             body["aws_stable_ip_rule"] = self.aws_stable_ip_rule.as_dict()
         if self.azure_service_endpoint_rule:
             body["azure_service_endpoint_rule"] = self.azure_service_endpoint_rule.as_dict()
+        if self.gcp_project_id_rule:
+            body["gcp_project_id_rule"] = self.gcp_project_id_rule.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4980,6 +5256,8 @@ class NccEgressDefaultRules:
             body["aws_stable_ip_rule"] = self.aws_stable_ip_rule
         if self.azure_service_endpoint_rule:
             body["azure_service_endpoint_rule"] = self.azure_service_endpoint_rule
+        if self.gcp_project_id_rule:
+            body["gcp_project_id_rule"] = self.gcp_project_id_rule
         return body
 
     @classmethod
@@ -4988,6 +5266,9 @@ class NccEgressDefaultRules:
         return cls(
             aws_stable_ip_rule=_from_dict(d, "aws_stable_ip_rule", NccAwsStableIpRule),
             azure_service_endpoint_rule=_from_dict(d, "azure_service_endpoint_rule", NccAzureServiceEndpointRule),
+            gcp_project_id_rule=_from_dict(
+                d, "gcp_project_id_rule", NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule
+            ),
         )
 
 
@@ -5040,15 +5321,19 @@ class NccPrivateEndpointRule:
     connection_state: Optional[NccPrivateEndpointRulePrivateLinkConnectionState] = None
     """The current status of this private endpoint. The private endpoint rules are effective only if
     the connection state is ESTABLISHED. Remember that you must approve new endpoints on your
-    resources in the Cloud console before they take effect. The possible values are: - PENDING: The
-    endpoint has been created and pending approval. - ESTABLISHED: The endpoint has been approved
-    and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by
-    the private link resource owner. - DISCONNECTED: Connection was removed by the private link
-    resource owner, the private endpoint becomes informative and should be deleted for clean-up. -
-    EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED. -
-    CREATING: The endpoint creation is in progress. Once successfully created, the state will
-    transition to PENDING. - CREATE_FAILED: The endpoint creation failed. You can check the
-    error_message field for more details."""
+    resources in the Cloud console before they take effect. The possible values are:
+    
+    - PENDING: The endpoint has been created and pending approval.
+    - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute
+      resources.
+    - REJECTED: Connection was rejected by the private link resource owner.
+    - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint
+      becomes informative and should be deleted for clean-up.
+    - EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED.
+    - CREATING: The endpoint creation is in progress. Once successfully created, the state will
+      transition to PENDING.
+    - CREATE_FAILED: The endpoint creation failed. You can check the error_message field for more
+      details."""
 
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when this object was created."""
@@ -5224,6 +5509,32 @@ class NccPrivateEndpointRulePrivateLinkConnectionState(Enum):
     EXPIRED = "EXPIRED"
     PENDING = "PENDING"
     REJECTED = "REJECTED"
+
+
+@dataclass
+class NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule:
+    project_ids: Optional[List[str]] = None
+    """A list of Databricks internal project IDs from where network access originates for serverless
+    DBSQL, This list is stable and will not change once the NCC object is created."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.project_ids:
+            body["project_ids"] = [v for v in self.project_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.project_ids:
+            body["project_ids"] = self.project_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule:
+        """Deserializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule from a dictionary."""
+        return cls(project_ids=d.get("project_ids", None))
 
 
 @dataclass
@@ -5552,6 +5863,9 @@ class PublicTokenInfo:
     inferred_scopes: Optional[List[str]] = None
     """Output only. Inferred API path scopes collected for this token when autoscope is enabled."""
 
+    last_accessed_time: Optional[int] = None
+    """Server time (in epoch milliseconds) when the token was accessed most recently."""
+
     scopes: Optional[List[str]] = None
     """Scope of the token was created with, if applicable."""
 
@@ -5573,6 +5887,8 @@ class PublicTokenInfo:
             body["expiry_time"] = self.expiry_time
         if self.inferred_scopes:
             body["inferred_scopes"] = [v for v in self.inferred_scopes]
+        if self.last_accessed_time is not None:
+            body["last_accessed_time"] = self.last_accessed_time
         if self.scopes:
             body["scopes"] = [v for v in self.scopes]
         if self.token_id is not None:
@@ -5594,6 +5910,8 @@ class PublicTokenInfo:
             body["expiry_time"] = self.expiry_time
         if self.inferred_scopes:
             body["inferred_scopes"] = self.inferred_scopes
+        if self.last_accessed_time is not None:
+            body["last_accessed_time"] = self.last_accessed_time
         if self.scopes:
             body["scopes"] = self.scopes
         if self.token_id is not None:
@@ -5610,6 +5928,7 @@ class PublicTokenInfo:
             creation_time=d.get("creation_time", None),
             expiry_time=d.get("expiry_time", None),
             inferred_scopes=d.get("inferred_scopes", None),
+            last_accessed_time=d.get("last_accessed_time", None),
             scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
         )
@@ -6216,7 +6535,7 @@ class TokenPermissionsDescription:
 
 
 class TokenType(Enum):
-    """The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported."""
+    """The type of token request. As of now, only ``AZURE_ACTIVE_DIRECTORY_TOKEN`` is supported."""
 
     ARCLIGHT_AZURE_EXCHANGE_TOKEN = "ARCLIGHT_AZURE_EXCHANGE_TOKEN"
     ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY = "ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY"
@@ -6358,9 +6677,11 @@ class AccountIpAccessListsAPI:
     account APIs. If the feature is disabled for the account, all access is allowed for this account. There is
     support for allow lists (inclusion) and block lists (exclusion).
 
-    When a connection is attempted: 1. **First, all block lists are checked.** If the connection IP address
-    matches any block list, the connection is rejected. 2. **If the connection was not rejected by block
-    lists**, the IP address is compared with the allow lists.
+    When a connection is attempted:
+
+    1. **First, all block lists are checked.** If the connection IP address matches any block list, the
+       connection is rejected.
+    2. **If the connection was not rejected by block lists**, the IP address is compared with the allow lists.
 
     If there is at least one allow list for the account, the connection is allowed only if the IP address
     matches an allow list. If there are no allow lists for the account, all IP addresses are allowed.
@@ -6383,10 +6704,11 @@ class AccountIpAccessListsAPI:
 
         When creating or updating an IP access list:
 
-        * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
-        where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
-        `error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,
-        error 400 is returned with `error_code` value `INVALID_STATE`.
+        - For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
+          where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
+          ``error_code`` value ``QUOTA_EXCEEDED``.
+        - If the new list would block the calling user's current IP, error 400 is returned with ``error_code``
+          value ``INVALID_STATE``.
 
         It can take a few minutes for the changes to take effect.
 
@@ -6475,12 +6797,13 @@ class AccountIpAccessListsAPI:
         """Replaces an IP access list, specified by its ID.
 
         A list can include allow lists and block lists. See the top of this file for a description of how the
-        server treats allow lists and block lists at run time. When replacing an IP access list: * For all
-        allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one
-        CIDR counts as a single value. Attempts to exceed that number return error 400 with `error_code` value
-        `QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is
-        returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
-        effect.
+        server treats allow lists and block lists at run time. When replacing an IP access list:
+
+        - For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
+          where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
+          ``error_code`` value ``QUOTA_EXCEEDED``.
+        - If the resulting list would block the calling user's current IP, error 400 is returned with
+          ``error_code`` value ``INVALID_STATE``. It can take a few minutes for the changes to take effect.
 
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
@@ -6530,10 +6853,11 @@ class AccountIpAccessListsAPI:
 
         When updating an IP access list:
 
-        * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
-        where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
-        `error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,
-        error 400 is returned with `error_code` value `INVALID_STATE`.
+        - For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
+          where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
+          ``error_code`` value ``QUOTA_EXCEEDED``.
+        - If the updated list would block the calling user's current IP, error 400 is returned with
+          ``error_code`` value ``INVALID_STATE``.
 
         It can take a few minutes for the changes to take effect.
 
@@ -6699,14 +7023,14 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         :param setting: :class:`AibiDashboardEmbeddingAccessPolicySetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
         """
@@ -6816,14 +7140,14 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
         :param setting: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
         """
@@ -6893,23 +7217,23 @@ class AutomaticClusterUpdateAPI:
         self, allow_missing: bool, setting: AutomaticClusterUpdateSetting, field_mask: str
     ) -> AutomaticClusterUpdateSetting:
         """Updates the automatic cluster update setting for the workspace. A fresh etag needs to be provided in
-        `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET` request
-        before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
-        request must be retried by using the fresh etag in the 409 response.
+        ``PATCH`` requests (as part of the setting field). The etag can be retrieved by making a ``GET``
+        request before the ``PATCH`` request. If the setting is updated concurrently, ``PATCH`` fails with 409
+        and the request must be retried by using the fresh etag in the 409 response.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AutomaticClusterUpdateSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`AutomaticClusterUpdateSetting`
         """
@@ -6978,23 +7302,23 @@ class ComplianceSecurityProfileAPI:
         self, allow_missing: bool, setting: ComplianceSecurityProfileSetting, field_mask: str
     ) -> ComplianceSecurityProfileSetting:
         """Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
-        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
-        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
-        the request must be retried by using the fresh etag in the 409 response.
+        in ``PATCH`` requests (as part of the setting field). The etag can be retrieved by making a ``GET``
+        request before the ``PATCH`` request. If the setting is updated concurrently, ``PATCH`` fails with 409
+        and the request must be retried by using the fresh etag in the 409 response.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`ComplianceSecurityProfileSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`ComplianceSecurityProfileSetting`
         """
@@ -7034,14 +7358,14 @@ class CredentialsManagerAPI:
         """Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to
         determine token permissions.
 
-        POST /exchange-tokens/token is the documented public form, expressed via `google.api.http` below. GET
-        /exchange-tokens/$exchange is a legacy alias used by the Spark driver's OAuth refresh path
-        (DBHttpClient#get sends a body via HttpGetWithEntity) and stays on the legacy `option (rpc).endpoints`
-        annotation: its path contains a literal `$`, which `google.api.http`'s LITERAL grammar does not allow,
-        and `HttpPathParser` does not percent-decode template segments (so encoding as `%24exchange` would not
-        match the literal `$exchange` path the Spark driver sends). Per-endpoint `visibility:
-        PUBLIC_UNDOCUMENTED` preserves the DECO-7732 intent of suppressing the GET alias from the public API
-        spec.
+        POST /exchange-tokens/token is the documented public form, expressed via ``google.api.http`` below.
+        GET /exchange-tokens/$exchange is a legacy alias used by the Spark driver's OAuth refresh path
+        (DBHttpClient#get sends a body via HttpGetWithEntity) and stays on the legacy ``option
+        (rpc).endpoints`` annotation: its path contains a literal ``$``, which ``google.api.http``'s LITERAL
+        grammar does not allow, and ``HttpPathParser`` does not percent-decode template segments (so encoding
+        as ``%24exchange`` would not match the literal ``$exchange`` path the Spark driver sends).
+        Per-endpoint ``visibility: PUBLIC_UNDOCUMENTED`` preserves the DECO-7732 intent of suppressing the GET
+        alias from the public API spec.
 
         :param partition_id: :class:`PartitionId`
           The partition of Credentials store
@@ -7122,14 +7446,14 @@ class CspEnablementAccountAPI:
         :param setting: :class:`CspEnablementAccountSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`CspEnablementAccountSetting`
         """
@@ -7158,7 +7482,7 @@ class CspEnablementAccountAPI:
 class DashboardEmailSubscriptionsAPI:
     """Controls whether schedules or workload tasks for refreshing AI/BI Dashboards in the workspace can send
     subscription emails containing PDFs and/or images of the dashboard. By default, this setting is enabled
-    (set to `true`)"""
+    (set to ``true``)"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -7234,14 +7558,14 @@ class DashboardEmailSubscriptionsAPI:
         :param setting: :class:`DashboardEmailSubscriptions`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`DashboardEmailSubscriptions`
         """
@@ -7284,10 +7608,10 @@ class DefaultNamespaceAPI:
         self._api = api_client
 
     def delete(self, *, etag: Optional[str] = None) -> DeleteDefaultNamespaceSettingResponse:
-        """Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`
-        requests (as a query parameter). The etag can be retrieved by making a `GET` request before the
-        `DELETE` request. If the setting is updated/deleted concurrently, `DELETE` fails with 409 and the
-        request must be retried by using the fresh etag in the 409 response.
+        """Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in
+        ``DELETE`` requests (as a query parameter). The etag can be retrieved by making a ``GET`` request
+        before the ``DELETE`` request. If the setting is updated/deleted concurrently, ``DELETE`` fails with
+        409 and the request must be retried by using the fresh etag in the 409 response.
 
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -7345,26 +7669,26 @@ class DefaultNamespaceAPI:
         return DefaultNamespaceSetting.from_dict(res)
 
     def update(self, allow_missing: bool, setting: DefaultNamespaceSetting, field_mask: str) -> DefaultNamespaceSetting:
-        """Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`
-        requests (as part of the setting field). The etag can be retrieved by making a `GET` request before
-        the `PATCH` request. Note that if the setting does not exist, `GET` returns a NOT_FOUND error and the
-        etag is present in the error response, which should be set in the `PATCH` request. If the setting is
-        updated concurrently, `PATCH` fails with 409 and the request must be retried by using the fresh etag
-        in the 409 response.
+        """Updates the default namespace setting for the workspace. A fresh etag needs to be provided in
+        ``PATCH`` requests (as part of the setting field). The etag can be retrieved by making a ``GET``
+        request before the ``PATCH`` request. Note that if the setting does not exist, ``GET`` returns a
+        NOT_FOUND error and the etag is present in the error response, which should be set in the ``PATCH``
+        request. If the setting is updated concurrently, ``PATCH`` fails with 409 and the request must be
+        retried by using the fresh etag in the 409 response.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DefaultNamespaceSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`DefaultNamespaceSetting`
         """
@@ -7464,14 +7788,14 @@ class DefaultWarehouseIdAPI:
         :param setting: :class:`DefaultWarehouseId`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`DefaultWarehouseId`
         """
@@ -7502,8 +7826,9 @@ class DisableLegacyAccessAPI:
     """'Disabling legacy access' has the following impacts:
 
     1. Disables direct access to Hive Metastores from the workspace. However, you can still access a Hive
-    Metastore through Hive Metastore federation. 2. Disables fallback mode on external location access from
-    the workspace. 3. Disables Databricks Runtime versions prior to 13.3LTS."""
+       Metastore through Hive Metastore federation.
+    2. Disables fallback mode on external location access from the workspace.
+    3. Disables Databricks Runtime versions prior to 13.3LTS."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -7574,14 +7899,14 @@ class DisableLegacyAccessAPI:
         :param setting: :class:`DisableLegacyAccess`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`DisableLegacyAccess`
         """
@@ -7611,8 +7936,8 @@ class DisableLegacyAccessAPI:
 class DisableLegacyDbfsAPI:
     """Disabling legacy DBFS has the following implications:
 
-    1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts). 2. Disables
-    Databricks Runtime versions prior to 13.3LTS.
+    1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts).
+    2. Disables Databricks Runtime versions prior to 13.3LTS.
 
     When the setting is off, all DBFS functionality is enabled and no restrictions are imposed on Databricks
     Runtime versions. This setting can take up to 20 minutes to take effect and requires a manual restart of
@@ -7687,14 +8012,14 @@ class DisableLegacyDbfsAPI:
         :param setting: :class:`DisableLegacyDbfs`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`DisableLegacyDbfs`
         """
@@ -7724,9 +8049,12 @@ class DisableLegacyDbfsAPI:
 class DisableLegacyFeaturesAPI:
     """Disable legacy features for new Databricks workspaces.
 
-    For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2. Hive Metastore will not be
-    provisioned. 3. Disables the use of ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
-    prior to 13.3LTS."""
+    For newly created workspaces:
+
+    1. Disables the use of DBFS root and mounts.
+    2. Hive Metastore will not be provisioned.
+    3. Disables the use of ‘No-isolation clusters’.
+    4. Disables Databricks Runtime versions prior to 13.3LTS."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -7795,14 +8123,14 @@ class DisableLegacyFeaturesAPI:
         :param setting: :class:`DisableLegacyFeatures`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`DisableLegacyFeatures`
         """
@@ -7864,14 +8192,14 @@ class EnableExportNotebookAPI:
         :param setting: :class:`EnableExportNotebook`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`EnableExportNotebook`
         """
@@ -7969,14 +8297,14 @@ class EnableIpAccessListsAPI:
         :param setting: :class:`AccountIpAccessEnable`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`AccountIpAccessEnable`
         """
@@ -8040,14 +8368,14 @@ class EnableNotebookTableClipboardAPI:
         :param setting: :class:`EnableNotebookTableClipboard`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`EnableNotebookTableClipboard`
         """
@@ -8109,14 +8437,14 @@ class EnableResultsDownloadingAPI:
         :param setting: :class:`EnableResultsDownloading`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`EnableResultsDownloading`
         """
@@ -8187,23 +8515,23 @@ class EnhancedSecurityMonitoringAPI:
         self, allow_missing: bool, setting: EnhancedSecurityMonitoringSetting, field_mask: str
     ) -> EnhancedSecurityMonitoringSetting:
         """Updates the enhanced security monitoring setting for the workspace. A fresh etag needs to be provided
-        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
-        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
-        the request must be retried by using the fresh etag in the 409 response.
+        in ``PATCH`` requests (as part of the setting field). The etag can be retrieved by making a ``GET``
+        request before the ``PATCH`` request. If the setting is updated concurrently, ``PATCH`` fails with 409
+        and the request must be retried by using the fresh etag in the 409 response.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EnhancedSecurityMonitoringSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`EnhancedSecurityMonitoringSetting`
         """
@@ -8276,14 +8604,14 @@ class EsmEnablementAccountAPI:
         :param setting: :class:`EsmEnablementAccountSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`EsmEnablementAccountSetting`
         """
@@ -8316,9 +8644,11 @@ class IpAccessListsAPI:
     is disabled for a workspace, all access is allowed for this workspace. There is support for allow lists
     (inclusion) and block lists (exclusion).
 
-    When a connection is attempted: 1. **First, all block lists are checked.** If the connection IP address
-    matches any block list, the connection is rejected. 2. **If the connection was not rejected by block
-    lists**, the IP address is compared with the allow lists.
+    When a connection is attempted:
+
+    1. **First, all block lists are checked.** If the connection IP address matches any block list, the
+       connection is rejected.
+    2. **If the connection was not rejected by block lists**, the IP address is compared with the allow lists.
 
     If there is at least one allow list for the workspace, the connection is allowed only if the IP address
     matches an allow list. If there are no allow lists for the workspace, all IP addresses are allowed.
@@ -8341,13 +8671,15 @@ class IpAccessListsAPI:
 
         When creating or updating an IP access list:
 
-        * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
-        where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
-        `error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,
-        error 400 is returned with `error_code` value `INVALID_STATE`.
+        - For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
+          where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
+          ``error_code`` value ``QUOTA_EXCEEDED``.
+        - If the new list would block the calling user's current IP, error 400 is returned with ``error_code``
+          value ``INVALID_STATE``.
 
         It can take a few minutes for the changes to take effect. **Note**: Your new IP access list has no
-        effect until you enable the feature. See :method:workspaceconf/setStatus
+        effect until you enable the feature. See `workspaceconf/setStatus
+        <https://docs.databricks.com/api/workspace/workspaceconf/setstatus>`__
 
         :param label: str
           Label for the IP access list. This **cannot** be empty.
@@ -8444,13 +8776,15 @@ class IpAccessListsAPI:
         """Replaces an IP access list, specified by its ID.
 
         A list can include allow lists and block lists. See the top of this file for a description of how the
-        server treats allow lists and block lists at run time. When replacing an IP access list: * For all
-        allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one
-        CIDR counts as a single value. Attempts to exceed that number return error 400 with `error_code` value
-        `QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is
-        returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
-        effect. Note that your resulting IP access list has no effect until you enable the feature. See
-        :method:workspaceconf/setStatus.
+        server treats allow lists and block lists at run time. When replacing an IP access list:
+
+        - For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
+          where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
+          ``error_code`` value ``QUOTA_EXCEEDED``.
+        - If the resulting list would block the calling user's current IP, error 400 is returned with
+          ``error_code`` value ``INVALID_STATE``. It can take a few minutes for the changes to take effect.
+          Note that your resulting IP access list has no effect until you enable the feature. See
+          `workspaceconf/setStatus <https://docs.databricks.com/api/workspace/workspaceconf/setstatus>`__.
 
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
@@ -8499,13 +8833,15 @@ class IpAccessListsAPI:
 
         When updating an IP access list:
 
-        * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
-        where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
-        `error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,
-        error 400 is returned with `error_code` value `INVALID_STATE`.
+        - For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
+          where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
+          ``error_code`` value ``QUOTA_EXCEEDED``.
+        - If the updated list would block the calling user's current IP, error 400 is returned with
+          ``error_code`` value ``INVALID_STATE``.
 
         It can take a few minutes for the changes to take effect. Note that your resulting IP access list has
-        no effect until you enable the feature. See :method:workspaceconf/setStatus.
+        no effect until you enable the feature. See `workspaceconf/setStatus
+        <https://docs.databricks.com/api/workspace/workspaceconf/setstatus>`__.
 
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
@@ -8583,14 +8919,14 @@ class LlmProxyPartnerPoweredAccountAPI:
         :param setting: :class:`LlmProxyPartnerPoweredAccount`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`LlmProxyPartnerPoweredAccount`
         """
@@ -8661,14 +8997,14 @@ class LlmProxyPartnerPoweredEnforceAPI:
         :param setting: :class:`LlmProxyPartnerPoweredEnforce`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`LlmProxyPartnerPoweredEnforce`
         """
@@ -8768,14 +9104,14 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
         :param setting: :class:`LlmProxyPartnerPoweredWorkspace`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`LlmProxyPartnerPoweredWorkspace`
         """
@@ -8807,9 +9143,8 @@ class NetworkConnectivityAPI:
     resources. This API provides stable subnets for your workspace so that you can configure your firewalls on
     your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
     endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
-    Azure Private Link. See [configure serverless secure connectivity].
-
-    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security"""
+    Azure Private Link. See `configure serverless secure connectivity
+    <https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security>`__."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -8825,9 +9160,8 @@ class NetworkConnectivityAPI:
         **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
         workspaces to the new network connectivity configuration. You can share one network connectivity
         configuration with multiple workspaces from the same Azure region within the same Databricks account.
-        See [configure serverless secure connectivity].
-
-        [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+        See `configure serverless secure connectivity
+        <https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security>`__.
 
         :param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`
 
@@ -8854,10 +9188,9 @@ class NetworkConnectivityAPI:
         resource.
 
         **IMPORTANT**: You must use Azure portal or other Azure tools to approve the private endpoint to
-        complete the connection. To get the information of the private endpoint created, make a `GET` request
-        on the new private endpoint rule. See [serverless private link].
-
-        [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
+        complete the connection. To get the information of the private endpoint created, make a ``GET``
+        request on the new private endpoint rule. See `serverless private link
+        <https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link>`__.
 
         :param network_connectivity_config_id: str
           Your Network Connectivity Configuration ID.
@@ -8905,8 +9238,8 @@ class NetworkConnectivityAPI:
     ) -> NccPrivateEndpointRule:
         """Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
         endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted
-        after one day of deactivation. When a private endpoint is deactivated, the `deactivated` field is set
-        to `true` and the private endpoint is not available to your serverless compute resources.
+        after one day of deactivation. When a private endpoint is deactivated, the ``deactivated`` field is
+        set to ``true`` and the private endpoint is not available to your serverless compute resources.
 
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
@@ -9006,12 +9339,13 @@ class NetworkConnectivityAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_private_endpoint_rules(
-        self, network_connectivity_config_id: str, *, page_token: Optional[str] = None
+        self, network_connectivity_config_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[NccPrivateEndpointRule]:
         """Gets an array of private endpoint rules.
 
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
+        :param page_size: int (optional)
         :param page_token: str (optional)
           Pagination token to go to next page based on previous query.
 
@@ -9019,6 +9353,8 @@ class NetworkConnectivityAPI:
         """
 
         query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
@@ -9057,8 +9393,8 @@ class NetworkConnectivityAPI:
         :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
@@ -9425,14 +9761,14 @@ class PersonalComputeAPI:
         :param setting: :class:`PersonalComputeSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`PersonalComputeSetting`
         """
@@ -9474,9 +9810,9 @@ class RestrictWorkspaceAdminsAPI:
 
     def delete(self, *, etag: Optional[str] = None) -> DeleteRestrictWorkspaceAdminsSettingResponse:
         """Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be
-        provided in `DELETE` requests (as a query parameter). The etag can be retrieved by making a `GET`
-        request before the DELETE request. If the setting is updated/deleted concurrently, `DELETE` fails with
-        409 and the request must be retried by using the fresh etag in the 409 response.
+        provided in ``DELETE`` requests (as a query parameter). The etag can be retrieved by making a ``GET``
+        request before the DELETE request. If the setting is updated/deleted concurrently, ``DELETE`` fails
+        with 409 and the request must be retried by using the fresh etag in the 409 response.
 
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -9537,8 +9873,8 @@ class RestrictWorkspaceAdminsAPI:
         self, allow_missing: bool, setting: RestrictWorkspaceAdminsSetting, field_mask: str
     ) -> RestrictWorkspaceAdminsSetting:
         """Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in
-        `PATCH` requests (as part of the setting field). The etag can be retrieved by making a GET request
-        before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
+        ``PATCH`` requests (as part of the setting field). The etag can be retrieved by making a GET request
+        before the ``PATCH`` request. If the setting is updated concurrently, ``PATCH`` fails with 409 and the
         request must be retried by using the fresh etag in the 409 response.
 
         :param allow_missing: bool
@@ -9546,14 +9882,14 @@ class RestrictWorkspaceAdminsAPI:
         :param setting: :class:`RestrictWorkspaceAdminsSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`RestrictWorkspaceAdminsSetting`
         """
@@ -9686,7 +10022,7 @@ class SettingsAPI:
 
 class SqlResultsDownloadAPI:
     """Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI
-    Dashboards UIs. By default, this setting is enabled (set to `true`)"""
+    Dashboards UIs. By default, this setting is enabled (set to ``true``)"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -9757,14 +10093,14 @@ class SqlResultsDownloadAPI:
         :param setting: :class:`SqlResultsDownload`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`SqlResultsDownload`
         """
@@ -10009,14 +10345,14 @@ class TokenManagementAPI:
           A list of field name under token, For example, {"update_mask": "comment,scopes"}
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`TokenInfo`
         """
@@ -10150,14 +10486,14 @@ class TokensAPI:
           A list of field name under token, For example, {"update_mask": "comment,scopes"}
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`UpdateTokenResponse`
         """

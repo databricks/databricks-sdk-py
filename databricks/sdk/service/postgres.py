@@ -4,18 +4,16 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
 
 from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common import lro
-from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.retries import RetryError, poll
+import logging
+import uuid
+
 from databricks.sdk.service._internal import (
     _duration,
     _enum,
@@ -24,6 +22,10 @@ from databricks.sdk.service._internal import (
     _repeated_enum,
     _timestamp,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+from databricks.sdk.common import lro
+from databricks.sdk.retries import RetryError, poll
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -47,7 +49,7 @@ class Branch:
     """The project containing this branch (API resource hierarchy). Format: projects/{project_id}
     
     Note: This field indicates where the branch exists in the resource hierarchy. For point-in-time
-    branching from another branch, see `status.source_branch`."""
+    branching from another branch, see ``status.source_branch``."""
 
     spec: Optional[BranchSpec] = None
     """The spec contains the branch configuration."""
@@ -140,7 +142,7 @@ class BranchOperationMetadata:
 class BranchSpec:
     expire_time: Optional[Timestamp] = None
     """Absolute expiration timestamp. When set, the branch will expire at this time. Mutually exclusive
-    with `ttl` and `no_expiry`. When updating, use `spec.expiration` in the update_mask."""
+    with ``ttl`` and ``no_expiry``. When updating, use ``spec.expiration`` in the update_mask."""
 
     is_protected: Optional[bool] = None
     """When set to true, protects the branch from deletion and reset. Associated compute endpoints and
@@ -149,7 +151,7 @@ class BranchSpec:
     no_expiry: Optional[bool] = None
     """Explicitly disable expiration. When set to true, the branch will not expire. If set to false,
     the request is invalid; provide either ttl or expire_time instead. Mutually exclusive with
-    `expire_time` and `ttl`. When updating, use `spec.expiration` in the update_mask."""
+    ``expire_time`` and ``ttl``. When updating, use ``spec.expiration`` in the update_mask."""
 
     source_branch: Optional[str] = None
     """The name of the source branch from which this branch was created (data lineage for point-in-time
@@ -164,8 +166,8 @@ class BranchSpec:
 
     ttl: Optional[Duration] = None
     """Relative time-to-live duration. When set, the branch will expire at creation_time + ttl.
-    Mutually exclusive with `expire_time` and `no_expiry`. When updating, use `spec.expiration` in
-    the update_mask."""
+    Mutually exclusive with ``expire_time`` and ``no_expiry``. When updating, use
+    ``spec.expiration`` in the update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the BranchSpec into a dictionary suitable for use as a JSON request body."""
@@ -259,8 +261,13 @@ class BranchStatus:
     source_branch_time: Optional[Timestamp] = None
     """The point in time on the source branch from which this branch was created."""
 
+    source_recovery_branch: Optional[str] = None
+    """If this branch is a child of a recovery branch, this field identifies that recovery source. For
+    non-recovery-derived branches this is unset. Format:
+    projects/{project_id}/preview/recovery-branches/{recovery_branch_id}"""
+
     state_change_time: Optional[Timestamp] = None
-    """A timestamp indicating when the `current_state` began."""
+    """A timestamp indicating when the ``current_state`` began."""
 
     def as_dict(self) -> dict:
         """Serializes the BranchStatus into a dictionary suitable for use as a JSON request body."""
@@ -289,6 +296,8 @@ class BranchStatus:
             body["source_branch_lsn"] = self.source_branch_lsn
         if self.source_branch_time is not None:
             body["source_branch_time"] = self.source_branch_time.ToJsonString()
+        if self.source_recovery_branch is not None:
+            body["source_recovery_branch"] = self.source_recovery_branch
         if self.state_change_time is not None:
             body["state_change_time"] = self.state_change_time.ToJsonString()
         return body
@@ -320,6 +329,8 @@ class BranchStatus:
             body["source_branch_lsn"] = self.source_branch_lsn
         if self.source_branch_time is not None:
             body["source_branch_time"] = self.source_branch_time
+        if self.source_recovery_branch is not None:
+            body["source_recovery_branch"] = self.source_recovery_branch
         if self.state_change_time is not None:
             body["state_change_time"] = self.state_change_time
         return body
@@ -340,6 +351,7 @@ class BranchStatus:
             source_branch=d.get("source_branch", None),
             source_branch_lsn=d.get("source_branch_lsn", None),
             source_branch_time=_timestamp(d, "source_branch_time"),
+            source_recovery_branch=d.get("source_recovery_branch", None),
             state_change_time=_timestamp(d, "state_change_time"),
         )
 
@@ -565,6 +577,324 @@ class CatalogOperationMetadata:
 
 
 @dataclass
+class CdfConfig:
+    """A Lakebase CDF configuration (CdfConfig): one per Postgres schema per database, replicating that
+    schema's tables into a Unity Catalog schema. Immutable once created."""
+
+    catalog: str
+    """The Unity Catalog catalog that replicated tables are written into. Set at creation; the
+    CdfConfig is immutable."""
+
+    schema: str
+    """The Unity Catalog schema that replicated tables are written into. Set at creation; the CdfConfig
+    is immutable."""
+
+    postgres_schema: str
+    """The Postgres schema this CdfConfig replicates from. Unique within the parent database. Set at
+    creation; the CdfConfig is immutable."""
+
+    cdf_config_id: Optional[str] = None
+    """The user-specified id; equals the final segment of ``name``. Defaults to the Postgres schema
+    name for configs without an explicit id."""
+
+    create_time: Optional[Timestamp] = None
+    """When the CdfConfig was created."""
+
+    name: Optional[str] = None
+    """Output only. The full resource name of the CdfConfig. Format:
+    projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CdfConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.cdf_config_id is not None:
+            body["cdf_config_id"] = self.cdf_config_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.postgres_schema is not None:
+            body["postgres_schema"] = self.postgres_schema
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CdfConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.cdf_config_id is not None:
+            body["cdf_config_id"] = self.cdf_config_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.postgres_schema is not None:
+            body["postgres_schema"] = self.postgres_schema
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CdfConfig:
+        """Deserializes the CdfConfig from a dictionary."""
+        return cls(
+            catalog=d.get("catalog", None),
+            cdf_config_id=d.get("cdf_config_id", None),
+            create_time=_timestamp(d, "create_time"),
+            name=d.get("name", None),
+            postgres_schema=d.get("postgres_schema", None),
+            schema=d.get("schema", None),
+        )
+
+
+@dataclass
+class CdfConfigOperationMetadata:
+    """Metadata for CdfConfig long-running operations. Intentionally empty today; fields (e.g.
+    progress) may be added as the operation contract grows."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CdfConfigOperationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CdfConfigOperationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CdfConfigOperationMetadata:
+        """Deserializes the CdfConfigOperationMetadata from a dictionary."""
+        return cls()
+
+
+class CdfState(Enum):
+    """The replication state of a single replicated table (CdfStatus)."""
+
+    CDF_STATE_SKIPPED = "CDF_STATE_SKIPPED"
+    CDF_STATE_SNAPSHOTTING = "CDF_STATE_SNAPSHOTTING"
+    CDF_STATE_STREAMING = "CDF_STATE_STREAMING"
+    CDF_STATE_TERMINATED = "CDF_STATE_TERMINATED"
+
+
+@dataclass
+class CdfStatus:
+    """The read-only replication status of a single Postgres table replicated under a CdfConfig. One
+    status exists per replicated table. It is created automatically and cannot be modified."""
+
+    committed_lsn: Optional[str] = None
+    """The high-watermark Log Sequence Number (LSN) committed to Delta Lake."""
+
+    create_time: Optional[Timestamp] = None
+    """When replication for this table was first established."""
+
+    last_sync_time: Optional[Timestamp] = None
+    """The last time changes for this table were written to Delta Lake."""
+
+    name: Optional[str] = None
+    """Output only. The full resource name of the CdfStatus. Format:
+    projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
+    The {cdf_status} segment is the Postgres table name."""
+
+    postgres_table: Optional[str] = None
+    """The Postgres table being replicated."""
+
+    state: Optional[CdfState] = None
+    """The current replication state of this table."""
+
+    status_detail: Optional[str] = None
+    """Human-readable detail for the current state (e.g. the skip/error reason). Empty for healthy
+    states."""
+
+    uc_table: Optional[str] = None
+    """The Unity Catalog table receiving replicated data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CdfStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.committed_lsn is not None:
+            body["committed_lsn"] = self.committed_lsn
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.last_sync_time is not None:
+            body["last_sync_time"] = self.last_sync_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.postgres_table is not None:
+            body["postgres_table"] = self.postgres_table
+        if self.state is not None:
+            body["state"] = self.state.value
+        if self.status_detail is not None:
+            body["status_detail"] = self.status_detail
+        if self.uc_table is not None:
+            body["uc_table"] = self.uc_table
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CdfStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.committed_lsn is not None:
+            body["committed_lsn"] = self.committed_lsn
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.last_sync_time is not None:
+            body["last_sync_time"] = self.last_sync_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.postgres_table is not None:
+            body["postgres_table"] = self.postgres_table
+        if self.state is not None:
+            body["state"] = self.state
+        if self.status_detail is not None:
+            body["status_detail"] = self.status_detail
+        if self.uc_table is not None:
+            body["uc_table"] = self.uc_table
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CdfStatus:
+        """Deserializes the CdfStatus from a dictionary."""
+        return cls(
+            committed_lsn=d.get("committed_lsn", None),
+            create_time=_timestamp(d, "create_time"),
+            last_sync_time=_timestamp(d, "last_sync_time"),
+            name=d.get("name", None),
+            postgres_table=d.get("postgres_table", None),
+            state=_enum(d, "state", CdfState),
+            status_detail=d.get("status_detail", None),
+            uc_table=d.get("uc_table", None),
+        )
+
+
+@dataclass
+class ComputeInstance:
+    name: str
+    """The fully qualified name for this compute instance. Format:
+    projects/*/branches/*/endpoints/*/compute-instances/*"""
+
+    compute_instance_id: str
+    """The unique ID for this compute."""
+
+    compute_host: Optional[str] = None
+    """A host scoped directly to the enclosing compute. This host is guaranteed to resolve to the
+    specific compute instance."""
+
+    current_state: Optional[ComputeInstanceComputeState] = None
+    """The current state of the compute."""
+
+    pending_state: Optional[ComputeInstanceComputeState] = None
+    """The desired pending state of the compute, if a state transition is in progress."""
+
+    role: Optional[ComputeInstanceComputeType] = None
+    """The role of this compute within the endpoint."""
+
+    start_time: Optional[Timestamp] = None
+    """A timestamp indicating when the compute was last started."""
+
+    suspend_time: Optional[Timestamp] = None
+    """A timestamp indicating when the compute was last suspended."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ComputeInstance into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.compute_host is not None:
+            body["compute_host"] = self.compute_host
+        if self.compute_instance_id is not None:
+            body["compute_instance_id"] = self.compute_instance_id
+        if self.current_state is not None:
+            body["current_state"] = self.current_state.value
+        if self.name is not None:
+            body["name"] = self.name
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state.value
+        if self.role is not None:
+            body["role"] = self.role.value
+        if self.start_time is not None:
+            body["start_time"] = self.start_time.ToJsonString()
+        if self.suspend_time is not None:
+            body["suspend_time"] = self.suspend_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ComputeInstance into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.compute_host is not None:
+            body["compute_host"] = self.compute_host
+        if self.compute_instance_id is not None:
+            body["compute_instance_id"] = self.compute_instance_id
+        if self.current_state is not None:
+            body["current_state"] = self.current_state
+        if self.name is not None:
+            body["name"] = self.name
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state
+        if self.role is not None:
+            body["role"] = self.role
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        if self.suspend_time is not None:
+            body["suspend_time"] = self.suspend_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ComputeInstance:
+        """Deserializes the ComputeInstance from a dictionary."""
+        return cls(
+            compute_host=d.get("compute_host", None),
+            compute_instance_id=d.get("compute_instance_id", None),
+            current_state=_enum(d, "current_state", ComputeInstanceComputeState),
+            name=d.get("name", None),
+            pending_state=_enum(d, "pending_state", ComputeInstanceComputeState),
+            role=_enum(d, "role", ComputeInstanceComputeType),
+            start_time=_timestamp(d, "start_time"),
+            suspend_time=_timestamp(d, "suspend_time"),
+        )
+
+
+class ComputeInstanceComputeState(Enum):
+    ACTIVE = "ACTIVE"
+    IDLE = "IDLE"
+    INIT = "INIT"
+
+
+class ComputeInstanceComputeType(Enum):
+    HOT_STANDBY = "HOT_STANDBY"
+    READ_ONLY = "READ_ONLY"
+    READ_WRITE = "READ_WRITE"
+
+
+@dataclass
+class DailySchedule:
+    """Take a snapshot once per day, at the configured hour."""
+
+    hour: Optional[int] = None
+    """The hour of the day, in UTC, at which to take the snapshot, in [0, 23]."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DailySchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.hour is not None:
+            body["hour"] = self.hour
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DailySchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.hour is not None:
+            body["hour"] = self.hour
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DailySchedule:
+        """Deserializes the DailySchedule from a dictionary."""
+        return cls(hour=d.get("hour", None))
+
+
+@dataclass
 class DataApi:
     """DataApi represents the Data API (PostgREST) configuration for a Database. At most one DataApi
     per database. Create enables Data API, Delete disables it."""
@@ -642,6 +972,10 @@ class DataApiDataApiSpec:
     db_aggregates_enabled: Optional[bool] = None
     """Enable aggregate functions (count, sum, avg, etc.) in Data API responses. Default: true."""
 
+    db_anon_role: Optional[str] = None
+    """The PostgreSQL role used for unauthenticated (anonymous) requests. Must be a valid PostgreSQL
+    role name (1-63 chars, [a-zA-Z_][a-zA-Z0-9_$]*). Default: "anonymous"."""
+
     db_extra_search_path: Optional[List[str]] = None
     """Additional schemas to include in the PostgreSQL search path. Each entry must be a valid
     PostgreSQL schema name."""
@@ -674,6 +1008,8 @@ class DataApiDataApiSpec:
         body = {}
         if self.db_aggregates_enabled is not None:
             body["db_aggregates_enabled"] = self.db_aggregates_enabled
+        if self.db_anon_role is not None:
+            body["db_anon_role"] = self.db_anon_role
         if self.db_extra_search_path:
             body["db_extra_search_path"] = [v for v in self.db_extra_search_path]
         if self.db_max_rows is not None:
@@ -697,6 +1033,8 @@ class DataApiDataApiSpec:
         body = {}
         if self.db_aggregates_enabled is not None:
             body["db_aggregates_enabled"] = self.db_aggregates_enabled
+        if self.db_anon_role is not None:
+            body["db_anon_role"] = self.db_anon_role
         if self.db_extra_search_path:
             body["db_extra_search_path"] = self.db_extra_search_path
         if self.db_max_rows is not None:
@@ -720,6 +1058,7 @@ class DataApiDataApiSpec:
         """Deserializes the DataApiDataApiSpec from a dictionary."""
         return cls(
             db_aggregates_enabled=d.get("db_aggregates_enabled", None),
+            db_anon_role=d.get("db_anon_role", None),
             db_extra_search_path=d.get("db_extra_search_path", None),
             db_max_rows=d.get("db_max_rows", None),
             db_schemas=d.get("db_schemas", None),
@@ -740,6 +1079,9 @@ class DataApiDataApiStatus:
 
     db_aggregates_enabled: Optional[bool] = None
     """Actual aggregate function setting read from the database."""
+
+    db_anon_role: Optional[str] = None
+    """Actual anonymous role name read from the database."""
 
     db_extra_search_path: Optional[List[str]] = None
     """Actual extra search path schemas read from the database."""
@@ -775,6 +1117,8 @@ class DataApiDataApiStatus:
             body["available_schemas"] = [v for v in self.available_schemas]
         if self.db_aggregates_enabled is not None:
             body["db_aggregates_enabled"] = self.db_aggregates_enabled
+        if self.db_anon_role is not None:
+            body["db_anon_role"] = self.db_anon_role
         if self.db_extra_search_path:
             body["db_extra_search_path"] = [v for v in self.db_extra_search_path]
         if self.db_max_rows is not None:
@@ -802,6 +1146,8 @@ class DataApiDataApiStatus:
             body["available_schemas"] = self.available_schemas
         if self.db_aggregates_enabled is not None:
             body["db_aggregates_enabled"] = self.db_aggregates_enabled
+        if self.db_anon_role is not None:
+            body["db_anon_role"] = self.db_anon_role
         if self.db_extra_search_path:
             body["db_extra_search_path"] = self.db_extra_search_path
         if self.db_max_rows is not None:
@@ -828,6 +1174,7 @@ class DataApiDataApiStatus:
         return cls(
             available_schemas=d.get("available_schemas", None),
             db_aggregates_enabled=d.get("db_aggregates_enabled", None),
+            db_anon_role=d.get("db_anon_role", None),
             db_extra_search_path=d.get("db_extra_search_path", None),
             db_max_rows=d.get("db_max_rows", None),
             db_schemas=d.get("db_schemas", None),
@@ -970,6 +1317,14 @@ class DatabaseCredential:
 
 @dataclass
 class DatabaseDatabaseSpec:
+    role: str
+    """The name of the role that owns the database. Format:
+    projects/{project_id}/branches/{branch_id}/roles/{role_id}
+    
+    To change the owner, pass valid existing Role name when updating the Database
+    
+    A database always has an owner."""
+
     postgres_database: Optional[str] = None
     """The name of the Postgres database.
     
@@ -978,14 +1333,6 @@ class DatabaseDatabaseSpec:
     when creating the Database.
     
     To rename, pass a valid postgres identifier when updating the Database."""
-
-    role: Optional[str] = None
-    """The name of the role that owns the database. Format:
-    projects/{project_id}/branches/{branch_id}/roles/{role_id}
-    
-    To change the owner, pass valid existing Role name when updating the Database
-    
-    A database always has an owner."""
 
     def as_dict(self) -> dict:
         """Serializes the DatabaseDatabaseSpec into a dictionary suitable for use as a JSON request body."""
@@ -1122,6 +1469,52 @@ class DatabricksServiceExceptionWithDetailsProto:
         )
 
 
+class DayOfWeek(Enum):
+    """The day of the week on which a weekly snapshot is taken."""
+
+    FRIDAY = "FRIDAY"
+    MONDAY = "MONDAY"
+    SATURDAY = "SATURDAY"
+    SUNDAY = "SUNDAY"
+    THURSDAY = "THURSDAY"
+    TUESDAY = "TUESDAY"
+    WEDNESDAY = "WEDNESDAY"
+
+
+@dataclass
+class DeleteForwardEtlConfigurationResponse:
+    """Response to delete Forward ETL configuration."""
+
+    deleted_configs: Optional[int] = None
+    """Number of configuration rows deleted (0 or 1)."""
+
+    deleted_mappings: Optional[int] = None
+    """Number of table mapping rows deleted."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteForwardEtlConfigurationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.deleted_configs is not None:
+            body["deleted_configs"] = self.deleted_configs
+        if self.deleted_mappings is not None:
+            body["deleted_mappings"] = self.deleted_mappings
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteForwardEtlConfigurationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.deleted_configs is not None:
+            body["deleted_configs"] = self.deleted_configs
+        if self.deleted_mappings is not None:
+            body["deleted_mappings"] = self.deleted_mappings
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteForwardEtlConfigurationResponse:
+        """Deserializes the DeleteForwardEtlConfigurationResponse from a dictionary."""
+        return cls(deleted_configs=d.get("deleted_configs", None), deleted_mappings=d.get("deleted_mappings", None))
+
+
 @dataclass
 class DeltaTableSyncInfo:
     delta_commit_time: Optional[Timestamp] = None
@@ -1156,6 +1549,33 @@ class DeltaTableSyncInfo:
             delta_commit_time=_timestamp(d, "delta_commit_time"),
             delta_commit_version=d.get("delta_commit_version", None),
         )
+
+
+@dataclass
+class DisableForwardEtlResponse:
+    """Response to disable Forward ETL"""
+
+    disabled: Optional[bool] = None
+    """Whether Forward ETL was successfully disabled."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DisableForwardEtlResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DisableForwardEtlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DisableForwardEtlResponse:
+        """Deserializes the DisableForwardEtlResponse from a dictionary."""
+        return cls(disabled=d.get("disabled", None))
 
 
 @dataclass
@@ -1353,6 +1773,15 @@ class EndpointHosts:
     attribute is defined if the enclosing endpoint is a group with greater than 1 computes
     configured, and has readable secondaries enabled."""
 
+    read_only_pooled_host: Optional[str] = None
+    """The read-only hostname of the compute endpoint, with pooling. This attribute is always defined
+    for read-only endpoints, and may be defined for read-write endpoints if configured with read
+    replicas and allow read-only connections."""
+
+    read_write_pooled_host: Optional[str] = None
+    """The read-write hostname of the compute endpoint, with pooling. This attribute is only defined
+    for read-write endpoints."""
+
     def as_dict(self) -> dict:
         """Serializes the EndpointHosts into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1360,6 +1789,10 @@ class EndpointHosts:
             body["host"] = self.host
         if self.read_only_host is not None:
             body["read_only_host"] = self.read_only_host
+        if self.read_only_pooled_host is not None:
+            body["read_only_pooled_host"] = self.read_only_pooled_host
+        if self.read_write_pooled_host is not None:
+            body["read_write_pooled_host"] = self.read_write_pooled_host
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1369,12 +1802,21 @@ class EndpointHosts:
             body["host"] = self.host
         if self.read_only_host is not None:
             body["read_only_host"] = self.read_only_host
+        if self.read_only_pooled_host is not None:
+            body["read_only_pooled_host"] = self.read_only_pooled_host
+        if self.read_write_pooled_host is not None:
+            body["read_write_pooled_host"] = self.read_write_pooled_host
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointHosts:
         """Deserializes the EndpointHosts from a dictionary."""
-        return cls(host=d.get("host", None), read_only_host=d.get("read_only_host", None))
+        return cls(
+            host=d.get("host", None),
+            read_only_host=d.get("read_only_host", None),
+            read_only_pooled_host=d.get("read_only_pooled_host", None),
+            read_write_pooled_host=d.get("read_write_pooled_host", None),
+        )
 
 
 @dataclass
@@ -1446,15 +1888,15 @@ class EndpointSpec:
 
     no_suspension: Optional[bool] = None
     """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
-    true when provided. Mutually exclusive with `suspend_timeout_duration`. When updating, use
-    `spec.suspension` in the update_mask."""
+    true when provided. Mutually exclusive with ``suspend_timeout_duration``. When updating, use
+    ``spec.suspension`` in the update_mask."""
 
     settings: Optional[EndpointSettings] = None
 
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
-    should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with `no_suspension`.
-    When updating, use `spec.suspension` in the update_mask."""
+    should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with
+    ``no_suspension``. When updating, use ``spec.suspension`` in the update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointSpec into a dictionary suitable for use as a JSON request body."""
@@ -1541,6 +1983,9 @@ class EndpointStatus:
     hosts: Optional[EndpointHosts] = None
     """Contains host information for connecting to the endpoint."""
 
+    last_active_time: Optional[Timestamp] = None
+    """A timestamp indicating when the compute endpoint was last active."""
+
     pending_state: Optional[EndpointStatusState] = None
 
     settings: Optional[EndpointSettings] = None
@@ -1567,6 +2012,8 @@ class EndpointStatus:
             body["group"] = self.group.as_dict()
         if self.hosts:
             body["hosts"] = self.hosts.as_dict()
+        if self.last_active_time is not None:
+            body["last_active_time"] = self.last_active_time.ToJsonString()
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state.value
         if self.settings:
@@ -1594,6 +2041,8 @@ class EndpointStatus:
             body["group"] = self.group
         if self.hosts:
             body["hosts"] = self.hosts
+        if self.last_active_time is not None:
+            body["last_active_time"] = self.last_active_time
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state
         if self.settings:
@@ -1614,6 +2063,7 @@ class EndpointStatus:
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
             group=_from_dict(d, "group", EndpointGroupStatus),
             hosts=_from_dict(d, "hosts", EndpointHosts),
+            last_active_time=_timestamp(d, "last_active_time"),
             pending_state=_enum(d, "pending_state", EndpointStatusState),
             settings=_from_dict(d, "settings", EndpointSettings),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
@@ -1630,7 +2080,7 @@ class EndpointStatusState(Enum):
 
 
 class EndpointType(Enum):
-    """The compute endpoint type. Either `read_write` or `read_only`."""
+    """The compute endpoint type. Either ``read_write`` or ``read_only``."""
 
     ENDPOINT_TYPE_READ_ONLY = "ENDPOINT_TYPE_READ_ONLY"
     ENDPOINT_TYPE_READ_WRITE = "ENDPOINT_TYPE_READ_WRITE"
@@ -1723,30 +2173,534 @@ class ErrorCode(Enum):
 
 
 @dataclass
+class ForwardEtlConfig:
+    """Forward ETL configuration"""
+
+    create_time_millis: Optional[int] = None
+    """Configuration creation timestamp in milliseconds since epoch."""
+
+    enabled: Optional[bool] = None
+    """Whether Forward ETL is enabled."""
+
+    pg_database_oid: Optional[int] = None
+    """PostgreSQL database OID."""
+
+    pg_schema_oid: Optional[int] = None
+    """PostgreSQL schema OID."""
+
+    tenant_id: Optional[str] = None
+    """Tenant ID (dashless UUID format)."""
+
+    timeline_id: Optional[str] = None
+    """Timeline ID (dashless UUID format)."""
+
+    uc_catalog_id: Optional[str] = None
+    """Unity Catalog catalog ID."""
+
+    uc_schema_id: Optional[str] = None
+    """Unity Catalog schema ID."""
+
+    update_time_millis: Optional[int] = None
+    """Configuration last update timestamp in milliseconds since epoch."""
+
+    workspace_id: Optional[int] = None
+    """Workspace ID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time_millis is not None:
+            body["create_time_millis"] = self.create_time_millis
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.pg_database_oid is not None:
+            body["pg_database_oid"] = self.pg_database_oid
+        if self.pg_schema_oid is not None:
+            body["pg_schema_oid"] = self.pg_schema_oid
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.timeline_id is not None:
+            body["timeline_id"] = self.timeline_id
+        if self.uc_catalog_id is not None:
+            body["uc_catalog_id"] = self.uc_catalog_id
+        if self.uc_schema_id is not None:
+            body["uc_schema_id"] = self.uc_schema_id
+        if self.update_time_millis is not None:
+            body["update_time_millis"] = self.update_time_millis
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time_millis is not None:
+            body["create_time_millis"] = self.create_time_millis
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.pg_database_oid is not None:
+            body["pg_database_oid"] = self.pg_database_oid
+        if self.pg_schema_oid is not None:
+            body["pg_schema_oid"] = self.pg_schema_oid
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.timeline_id is not None:
+            body["timeline_id"] = self.timeline_id
+        if self.uc_catalog_id is not None:
+            body["uc_catalog_id"] = self.uc_catalog_id
+        if self.uc_schema_id is not None:
+            body["uc_schema_id"] = self.uc_schema_id
+        if self.update_time_millis is not None:
+            body["update_time_millis"] = self.update_time_millis
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlConfig:
+        """Deserializes the ForwardEtlConfig from a dictionary."""
+        return cls(
+            create_time_millis=d.get("create_time_millis", None),
+            enabled=d.get("enabled", None),
+            pg_database_oid=d.get("pg_database_oid", None),
+            pg_schema_oid=d.get("pg_schema_oid", None),
+            tenant_id=d.get("tenant_id", None),
+            timeline_id=d.get("timeline_id", None),
+            uc_catalog_id=d.get("uc_catalog_id", None),
+            uc_schema_id=d.get("uc_schema_id", None),
+            update_time_millis=d.get("update_time_millis", None),
+            workspace_id=d.get("workspace_id", None),
+        )
+
+
+@dataclass
+class ForwardEtlDatabase:
+    """Database metadata"""
+
+    name: Optional[str] = None
+    """Database name."""
+
+    oid: Optional[int] = None
+    """PostgreSQL database OID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlDatabase into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oid is not None:
+            body["oid"] = self.oid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlDatabase into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oid is not None:
+            body["oid"] = self.oid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlDatabase:
+        """Deserializes the ForwardEtlDatabase from a dictionary."""
+        return cls(name=d.get("name", None), oid=d.get("oid", None))
+
+
+@dataclass
+class ForwardEtlMetadata:
+    """Forward ETL metadata response"""
+
+    databases: Optional[List[ForwardEtlDatabase]] = None
+    """List of databases with their PostgreSQL OIDs."""
+
+    schemas: Optional[List[ForwardEtlSchema]] = None
+    """List of schemas with their PostgreSQL OIDs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.databases:
+            body["databases"] = [v.as_dict() for v in self.databases]
+        if self.schemas:
+            body["schemas"] = [v.as_dict() for v in self.schemas]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.databases:
+            body["databases"] = self.databases
+        if self.schemas:
+            body["schemas"] = self.schemas
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlMetadata:
+        """Deserializes the ForwardEtlMetadata from a dictionary."""
+        return cls(
+            databases=_repeated_dict(d, "databases", ForwardEtlDatabase),
+            schemas=_repeated_dict(d, "schemas", ForwardEtlSchema),
+        )
+
+
+@dataclass
+class ForwardEtlSchema:
+    """Schema metadata"""
+
+    name: Optional[str] = None
+    """Schema name."""
+
+    oid: Optional[int] = None
+    """PostgreSQL schema OID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlSchema into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oid is not None:
+            body["oid"] = self.oid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlSchema into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oid is not None:
+            body["oid"] = self.oid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlSchema:
+        """Deserializes the ForwardEtlSchema from a dictionary."""
+        return cls(name=d.get("name", None), oid=d.get("oid", None))
+
+
+@dataclass
+class ForwardEtlStatus:
+    """Forward ETL status response"""
+
+    configurations: Optional[List[ForwardEtlConfig]] = None
+    """List of Forward ETL configurations."""
+
+    table_mappings: Optional[List[ForwardEtlTableMapping]] = None
+    """Per-table replication mappings."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.configurations:
+            body["configurations"] = [v.as_dict() for v in self.configurations]
+        if self.table_mappings:
+            body["table_mappings"] = [v.as_dict() for v in self.table_mappings]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.configurations:
+            body["configurations"] = self.configurations
+        if self.table_mappings:
+            body["table_mappings"] = self.table_mappings
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlStatus:
+        """Deserializes the ForwardEtlStatus from a dictionary."""
+        return cls(
+            configurations=_repeated_dict(d, "configurations", ForwardEtlConfig),
+            table_mappings=_repeated_dict(d, "table_mappings", ForwardEtlTableMapping),
+        )
+
+
+@dataclass
+class ForwardEtlTableMapping:
+    """Per-table replication mapping"""
+
+    enabled: Optional[bool] = None
+    """Whether replication is enabled for this table."""
+
+    last_synced_lsn: Optional[str] = None
+    """Last synced LSN (Log Sequence Number) for this table."""
+
+    pg_table_name: Optional[str] = None
+    """PostgreSQL table name."""
+
+    pg_table_oid: Optional[int] = None
+    """PostgreSQL table OID."""
+
+    uc_table_id: Optional[str] = None
+    """Unity Catalog table ID."""
+
+    uc_table_name: Optional[str] = None
+    """Unity Catalog table name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlTableMapping into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.last_synced_lsn is not None:
+            body["last_synced_lsn"] = self.last_synced_lsn
+        if self.pg_table_name is not None:
+            body["pg_table_name"] = self.pg_table_name
+        if self.pg_table_oid is not None:
+            body["pg_table_oid"] = self.pg_table_oid
+        if self.uc_table_id is not None:
+            body["uc_table_id"] = self.uc_table_id
+        if self.uc_table_name is not None:
+            body["uc_table_name"] = self.uc_table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlTableMapping into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.last_synced_lsn is not None:
+            body["last_synced_lsn"] = self.last_synced_lsn
+        if self.pg_table_name is not None:
+            body["pg_table_name"] = self.pg_table_name
+        if self.pg_table_oid is not None:
+            body["pg_table_oid"] = self.pg_table_oid
+        if self.uc_table_id is not None:
+            body["uc_table_id"] = self.uc_table_id
+        if self.uc_table_name is not None:
+            body["uc_table_name"] = self.uc_table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlTableMapping:
+        """Deserializes the ForwardEtlTableMapping from a dictionary."""
+        return cls(
+            enabled=d.get("enabled", None),
+            last_synced_lsn=d.get("last_synced_lsn", None),
+            pg_table_name=d.get("pg_table_name", None),
+            pg_table_oid=d.get("pg_table_oid", None),
+            uc_table_id=d.get("uc_table_id", None),
+            uc_table_name=d.get("uc_table_name", None),
+        )
+
+
+@dataclass
+class InitialBranchSpec:
+    """Configuration for the initial default branch created during project creation."""
+
+    is_protected: Optional[bool] = None
+    """Whether the initial default branch should be protected from deletion."""
+
+    def as_dict(self) -> dict:
+        """Serializes the InitialBranchSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_protected is not None:
+            body["is_protected"] = self.is_protected
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitialBranchSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.is_protected is not None:
+            body["is_protected"] = self.is_protected
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InitialBranchSpec:
+        """Deserializes the InitialBranchSpec from a dictionary."""
+        return cls(is_protected=d.get("is_protected", None))
+
+
+@dataclass
+class InitialDatabaseSpec:
+    """Configuration for the initial Postgres database created inside the initial branch for a newly
+    created project. If omitted, the initial branch still gets an initial database with name
+    ``databricks_postgres``. The initial database is always owned by the initial Postgres role
+    (whether caller-provided via ``initial_role_spec`` or defaulted to the caller's identity)."""
+
+    postgres_database: Optional[str] = None
+    """The name of the Postgres database.
+    
+    This expects a valid Postgres identifier as specified in the link below.
+    https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS"""
+
+    def as_dict(self) -> dict:
+        """Serializes the InitialDatabaseSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.postgres_database is not None:
+            body["postgres_database"] = self.postgres_database
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitialDatabaseSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.postgres_database is not None:
+            body["postgres_database"] = self.postgres_database
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InitialDatabaseSpec:
+        """Deserializes the InitialDatabaseSpec from a dictionary."""
+        return cls(postgres_database=d.get("postgres_database", None))
+
+
+@dataclass
 class InitialEndpointSpec:
     """Configuration for the initial Read/Write endpoint created during project creation."""
+
+    autoscaling_limit_max_cu: Optional[float] = None
+    """The maximum number of Compute Units for the initial endpoint."""
+
+    autoscaling_limit_min_cu: Optional[float] = None
+    """The minimum number of Compute Units for the initial endpoint."""
 
     group: Optional[EndpointGroupSpec] = None
     """Settings for HA configuration of the endpoint."""
 
+    no_suspension: Optional[bool] = None
+    """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
+    true when provided. Mutually exclusive with ``suspend_timeout_duration``."""
+
+    suspend_timeout_duration: Optional[Duration] = None
+    """Duration of inactivity after which the initial endpoint is automatically suspended. If
+    specified, should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with
+    ``no_suspension``."""
+
     def as_dict(self) -> dict:
         """Serializes the InitialEndpointSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
         if self.group:
             body["group"] = self.group.as_dict()
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration.ToJsonString()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the InitialEndpointSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
         if self.group:
             body["group"] = self.group
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> InitialEndpointSpec:
         """Deserializes the InitialEndpointSpec from a dictionary."""
-        return cls(group=_from_dict(d, "group", EndpointGroupSpec))
+        return cls(
+            autoscaling_limit_max_cu=d.get("autoscaling_limit_max_cu", None),
+            autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
+            group=_from_dict(d, "group", EndpointGroupSpec),
+            no_suspension=d.get("no_suspension", None),
+            suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
+        )
+
+
+@dataclass
+class InitialRoleSpec:
+    """Configuration for the initial Postgres role created inside the initial branch for a newly
+    created project. If omitted, the default branch still gets an initial Postgres role
+    corresponding to the caller of the API endpoint."""
+
+    attributes: Optional[RoleAttributes] = None
+    """The desired API-exposed Postgres role attribute to associate with the role. Optional."""
+
+    auth_method: Optional[RoleAuthMethod] = None
+    """Controls how the Postgres role authenticates when a client opens a database connection.
+    Supported values:
+    
+    - LAKEBASE_OAUTH_V1: the role authenticates by presenting a Databricks OAuth access token
+      derived from the backing managed identity (the Databricks user, service principal, or group
+      named by the role's ``postgres_role``). No static password exists for roles using this method.
+    - PG_PASSWORD_SCRAM_SHA_256: the role authenticates with a Postgres password verified
+      server-side using the SCRAM-SHA-256 mechanism. Lakebase generates a password for the role.
+    - NO_LOGIN: the role cannot open a Postgres session at all. Useful for roles that exist only to
+      own objects or to aggregate privileges that are then granted to other, loginable roles.
+    
+    If auth_method is left unspecified, a meaningful authentication method is derived from the
+    identity_type:
+    
+    - For the managed identities, OAUTH is used.
+    - For the regular postgres roles, authentication based on postgres passwords is used.
+    
+    NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the default auth method
+    (group can login as well)."""
+
+    identity_type: Optional[RoleIdentityType] = None
+    """The type of role. When specifying a managed-identity, the chosen role_id must be a valid:
+    
+    - application ID for SERVICE_PRINCIPAL
+    - user email for USER
+    - group name for GROUP"""
+
+    membership_roles: Optional[List[RoleMembershipRole]] = None
+    """An enum value for a standard role that this role is a member of."""
+
+    postgres_role: Optional[str] = None
+    """The name of the Postgres role.
+    
+    This expects a valid Postgres identifier as specified in the link below.
+    https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+    
+    If you wish to create a Postgres Role backed by a managed Databricks identity, then
+    postgres_role must be one of the following:
+    
+    1. user email for IdentityType.USER
+    2. app ID for IdentityType.SERVICE_PRINCIPAL
+    3. group name for IdentityType.GROUP"""
+
+    def as_dict(self) -> dict:
+        """Serializes the InitialRoleSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes.as_dict()
+        if self.auth_method is not None:
+            body["auth_method"] = self.auth_method.value
+        if self.identity_type is not None:
+            body["identity_type"] = self.identity_type.value
+        if self.membership_roles:
+            body["membership_roles"] = [v.value for v in self.membership_roles]
+        if self.postgres_role is not None:
+            body["postgres_role"] = self.postgres_role
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitialRoleSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes
+        if self.auth_method is not None:
+            body["auth_method"] = self.auth_method
+        if self.identity_type is not None:
+            body["identity_type"] = self.identity_type
+        if self.membership_roles:
+            body["membership_roles"] = self.membership_roles
+        if self.postgres_role is not None:
+            body["postgres_role"] = self.postgres_role
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InitialRoleSpec:
+        """Deserializes the InitialRoleSpec from a dictionary."""
+        return cls(
+            attributes=_from_dict(d, "attributes", RoleAttributes),
+            auth_method=_enum(d, "auth_method", RoleAuthMethod),
+            identity_type=_enum(d, "identity_type", RoleIdentityType),
+            membership_roles=_repeated_enum(d, "membership_roles", RoleMembershipRole),
+            postgres_role=d.get("postgres_role", None),
+        )
 
 
 @dataclass
@@ -1779,6 +2733,116 @@ class ListBranchesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListBranchesResponse:
         """Deserializes the ListBranchesResponse from a dictionary."""
         return cls(branches=_repeated_dict(d, "branches", Branch), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListCdfConfigsResponse:
+    """Response to a ListCdfConfigs request, containing a page of CdfConfigs and a token for fetching
+    the next page."""
+
+    cdf_configs: Optional[List[CdfConfig]] = None
+    """The CdfConfigs under the parent database."""
+
+    next_page_token: Optional[str] = None
+    """Token to retrieve the next page of results; empty when there are no more."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCdfConfigsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cdf_configs:
+            body["cdf_configs"] = [v.as_dict() for v in self.cdf_configs]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListCdfConfigsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cdf_configs:
+            body["cdf_configs"] = self.cdf_configs
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListCdfConfigsResponse:
+        """Deserializes the ListCdfConfigsResponse from a dictionary."""
+        return cls(
+            cdf_configs=_repeated_dict(d, "cdf_configs", CdfConfig), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
+class ListCdfStatusesResponse:
+    """Response to a ListCdfStatuses request, containing a page of replicated table statuses and a
+    token for fetching the next page."""
+
+    cdf_statuses: Optional[List[CdfStatus]] = None
+    """The replicated tables under the parent CdfConfig."""
+
+    next_page_token: Optional[str] = None
+    """Token to retrieve the next page of results; empty when there are no more."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCdfStatusesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cdf_statuses:
+            body["cdf_statuses"] = [v.as_dict() for v in self.cdf_statuses]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListCdfStatusesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cdf_statuses:
+            body["cdf_statuses"] = self.cdf_statuses
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListCdfStatusesResponse:
+        """Deserializes the ListCdfStatusesResponse from a dictionary."""
+        return cls(
+            cdf_statuses=_repeated_dict(d, "cdf_statuses", CdfStatus), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
+class ListComputeInstancesResponse:
+    compute_instances: Optional[List[ComputeInstance]] = None
+    """The compute instances from the specified endpoint."""
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as ``page_token`` to retrieve the next page. If this field is
+    omitted, there are no subsequent pages."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListComputeInstancesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.compute_instances:
+            body["compute_instances"] = [v.as_dict() for v in self.compute_instances]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListComputeInstancesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.compute_instances:
+            body["compute_instances"] = self.compute_instances
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListComputeInstancesResponse:
+        """Deserializes the ListComputeInstancesResponse from a dictionary."""
+        return cls(
+            compute_instances=_repeated_dict(d, "compute_instances", ComputeInstance),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 @dataclass
@@ -1878,6 +2942,72 @@ class ListProjectsResponse:
 
 
 @dataclass
+class ListRecoveryBranchPreviewsResponse:
+    next_page_token: Optional[str] = None
+
+    recovery_branch_previews: Optional[List[RecoveryBranchPreview]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListRecoveryBranchPreviewsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.recovery_branch_previews:
+            body["recovery_branch_previews"] = [v.as_dict() for v in self.recovery_branch_previews]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListRecoveryBranchPreviewsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.recovery_branch_previews:
+            body["recovery_branch_previews"] = self.recovery_branch_previews
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListRecoveryBranchPreviewsResponse:
+        """Deserializes the ListRecoveryBranchPreviewsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            recovery_branch_previews=_repeated_dict(d, "recovery_branch_previews", RecoveryBranchPreview),
+        )
+
+
+@dataclass
+class ListReplicationGroupPreviewsResponse:
+    next_page_token: Optional[str] = None
+
+    replication_group_previews: Optional[List[ReplicationGroupPreview]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListReplicationGroupPreviewsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.replication_group_previews:
+            body["replication_group_previews"] = [v.as_dict() for v in self.replication_group_previews]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListReplicationGroupPreviewsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.replication_group_previews:
+            body["replication_group_previews"] = self.replication_group_previews
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListReplicationGroupPreviewsResponse:
+        """Deserializes the ListReplicationGroupPreviewsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            replication_group_previews=_repeated_dict(d, "replication_group_previews", ReplicationGroupPreview),
+        )
+
+
+@dataclass
 class ListRolesResponse:
     next_page_token: Optional[str] = None
     """Token to request the next page of Postgres roles."""
@@ -1910,9 +3040,81 @@ class ListRolesResponse:
 
 
 @dataclass
+class ListSnapshotsResponse:
+    next_page_token: Optional[str] = None
+    """Token to retrieve the next page; empty if there are no more pages."""
+
+    snapshots: Optional[List[Snapshot]] = None
+    """The snapshots in the project."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListSnapshotsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.snapshots:
+            body["snapshots"] = [v.as_dict() for v in self.snapshots]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSnapshotsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.snapshots:
+            body["snapshots"] = self.snapshots
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListSnapshotsResponse:
+        """Deserializes the ListSnapshotsResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), snapshots=_repeated_dict(d, "snapshots", Snapshot))
+
+
+@dataclass
+class MonthlySchedule:
+    """Take a snapshot once per month, on the configured day at the configured hour."""
+
+    day: int
+    """The day of the month on which to take the snapshot, in [1, 31]. In shorter months the snapshot
+    is taken on the last day instead (day 31 runs on Feb 28 or 29, and on Apr 30), so every month
+    gets exactly one snapshot."""
+
+    hour: Optional[int] = None
+    """The hour of the day, in UTC, at which to take the snapshot, in [0, 23]."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonthlySchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.day is not None:
+            body["day"] = self.day
+        if self.hour is not None:
+            body["hour"] = self.hour
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MonthlySchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.day is not None:
+            body["day"] = self.day
+        if self.hour is not None:
+            body["hour"] = self.hour
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MonthlySchedule:
+        """Deserializes the MonthlySchedule from a dictionary."""
+        return cls(day=d.get("day", None), hour=d.get("hour", None))
+
+
+@dataclass
 class NewPipelineSpec:
     budget_policy_id: Optional[str] = None
     """Budget policy to set on the newly created pipeline."""
+
+    pipeline_channel: Optional[NewPipelineSpecPipelineChannel] = None
+    """Release channel of the underlying pipeline's runtime. Some source table configurations (e.g.,
+    read-time CDF) require PREVIEW. Defaults to CURRENT if not specified."""
 
     storage_catalog: Optional[str] = None
     """UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This
@@ -1927,6 +3129,8 @@ class NewPipelineSpec:
         body = {}
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.pipeline_channel is not None:
+            body["pipeline_channel"] = self.pipeline_channel.value
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -1938,6 +3142,8 @@ class NewPipelineSpec:
         body = {}
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.pipeline_channel is not None:
+            body["pipeline_channel"] = self.pipeline_channel
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -1949,9 +3155,19 @@ class NewPipelineSpec:
         """Deserializes the NewPipelineSpec from a dictionary."""
         return cls(
             budget_policy_id=d.get("budget_policy_id", None),
+            pipeline_channel=_enum(d, "pipeline_channel", NewPipelineSpecPipelineChannel),
             storage_catalog=d.get("storage_catalog", None),
             storage_schema=d.get("storage_schema", None),
         )
+
+
+class NewPipelineSpecPipelineChannel(Enum):
+    """Release channel of the underlying pipeline's runtime. PREVIEW provides early access to the
+    latest features but may be less stable. Some source table configurations (e.g., read-time CDF)
+    require PREVIEW. Defaults to CURRENT if not specified."""
+
+    CURRENT = "CURRENT"
+    PREVIEW = "PREVIEW"
 
 
 class OpenApiMode(Enum):
@@ -1968,8 +3184,8 @@ class Operation:
     """This resource represents a long-running operation that is the result of a network API call."""
 
     done: Optional[bool] = None
-    """If the value is `false`, it means the operation is still in progress. If `true`, the operation
-    is completed, and either `error` or `response` is available."""
+    """If the value is ``false``, it means the operation is still in progress. If ``true``, the
+    operation is completed, and either ``error`` or ``response`` is available."""
 
     error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
     """The error result of the operation in case of failure or cancellation."""
@@ -1981,8 +3197,8 @@ class Operation:
 
     name: Optional[str] = None
     """The server-assigned name, which is only unique within the same service that originally returns
-    it. If you use the default HTTP mapping, the `name` should be a resource name ending with
-    `operations/{unique_id}`."""
+    it. If you use the default HTTP mapping, the ``name`` should be a resource name ending with
+    ``operations/{unique_id}``."""
 
     response: Optional[dict] = None
     """The normal, successful response of the operation."""
@@ -2038,12 +3254,30 @@ class Project:
     """A timestamp indicating when the project was soft-deleted. Empty if the project is not deleted,
     otherwise set to a timestamp in the past."""
 
+    initial_branch_spec: Optional[InitialBranchSpec] = None
+    """Configuration for the initial default branch created as part of project creation. Allows
+    overriding branch protection. These settings only apply at creation time and do not affect
+    resources created after project creation."""
+
+    initial_database_spec: Optional[InitialDatabaseSpec] = None
+    """Configuration for the initial Postgres database created inside the initial branch for this
+    project. If omitted, the initial branch still gets an initial database with name
+    ``databricks_postgres``. The initial database is always owned by the initial role
+    (caller-provided via ``initial_role_spec`` or defaulted to the caller's identity). This field is
+    input-only; to change databases after project creation, use the standalone Database API."""
+
     initial_endpoint_spec: Optional[InitialEndpointSpec] = None
     """Configuration settings for the initial Read/Write endpoint created inside the initial branch for
     a newly created project. If omitted, the initial endpoint created will have default settings,
     without high availability configured. This field does not apply to any endpoints created after
     project creation. Use spec.default_endpoint_settings to configure default settings for endpoints
     created after project creation."""
+
+    initial_role_spec: Optional[InitialRoleSpec] = None
+    """Configuration for the initial Postgres role created inside the initial branch for this project.
+    If omitted, the initial branch gets an initial role corresponding to the caller of the API
+    endpoint. This field is input-only; to change roles after project creation, use the standalone
+    Role API."""
 
     name: Optional[str] = None
     """Output only. The full resource path of the project. Format: projects/{project_id}"""
@@ -2075,8 +3309,14 @@ class Project:
             body["create_time"] = self.create_time.ToJsonString()
         if self.delete_time is not None:
             body["delete_time"] = self.delete_time.ToJsonString()
+        if self.initial_branch_spec:
+            body["initial_branch_spec"] = self.initial_branch_spec.as_dict()
+        if self.initial_database_spec:
+            body["initial_database_spec"] = self.initial_database_spec.as_dict()
         if self.initial_endpoint_spec:
             body["initial_endpoint_spec"] = self.initial_endpoint_spec.as_dict()
+        if self.initial_role_spec:
+            body["initial_role_spec"] = self.initial_role_spec.as_dict()
         if self.name is not None:
             body["name"] = self.name
         if self.project_id is not None:
@@ -2100,8 +3340,14 @@ class Project:
             body["create_time"] = self.create_time
         if self.delete_time is not None:
             body["delete_time"] = self.delete_time
+        if self.initial_branch_spec:
+            body["initial_branch_spec"] = self.initial_branch_spec
+        if self.initial_database_spec:
+            body["initial_database_spec"] = self.initial_database_spec
         if self.initial_endpoint_spec:
             body["initial_endpoint_spec"] = self.initial_endpoint_spec
+        if self.initial_role_spec:
+            body["initial_role_spec"] = self.initial_role_spec
         if self.name is not None:
             body["name"] = self.name
         if self.project_id is not None:
@@ -2124,7 +3370,10 @@ class Project:
         return cls(
             create_time=_timestamp(d, "create_time"),
             delete_time=_timestamp(d, "delete_time"),
+            initial_branch_spec=_from_dict(d, "initial_branch_spec", InitialBranchSpec),
+            initial_database_spec=_from_dict(d, "initial_database_spec", InitialDatabaseSpec),
             initial_endpoint_spec=_from_dict(d, "initial_endpoint_spec", InitialEndpointSpec),
+            initial_role_spec=_from_dict(d, "initial_role_spec", InitialRoleSpec),
             name=d.get("name", None),
             project_id=d.get("project_id", None),
             purge_time=_timestamp(d, "purge_time"),
@@ -2179,16 +3428,17 @@ class ProjectDefaultEndpointSettings:
 
     no_suspension: Optional[bool] = None
     """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
-    true when provided. Mutually exclusive with `suspend_timeout_duration`. When updating, use
-    `spec.project_default_settings.suspension` in the update_mask."""
+    true when provided. Mutually exclusive with ``suspend_timeout_duration``. When updating, use
+    ``spec.project_default_settings.suspension`` in the update_mask."""
 
     pg_settings: Optional[Dict[str, str]] = None
     """A raw representation of Postgres settings."""
 
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
-    should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with `no_suspension`.
-    When updating, use `spec.project_default_settings.suspension` in the update_mask."""
+    should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with
+    ``no_suspension``. When updating, use ``spec.project_default_settings.suspension`` in the
+    update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the ProjectDefaultEndpointSettings into a dictionary suitable for use as a JSON request body."""
@@ -2256,6 +3506,10 @@ class ProjectSpec:
     """The desired budget policy to associate with the project. See status.budget_policy_id for the
     policy that is actually applied to the project."""
 
+    compute_provisioner: Optional[str] = None
+    """The compute provisioner used to provision endpoints in this project. Overrides the default
+    provisioner when set."""
+
     custom_tags: Optional[List[ProjectCustomTag]] = None
     """Custom tags to associate with the project. Forwarded to LBM for billing and cost tracking. To
     update tags, provide the new tag list and include "spec.custom_tags" in the update_mask. To
@@ -2288,6 +3542,8 @@ class ProjectSpec:
         body = {}
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_provisioner is not None:
+            body["compute_provisioner"] = self.compute_provisioner
         if self.custom_tags:
             body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
         if self.default_branch is not None:
@@ -2309,6 +3565,8 @@ class ProjectSpec:
         body = {}
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_provisioner is not None:
+            body["compute_provisioner"] = self.compute_provisioner
         if self.custom_tags:
             body["custom_tags"] = self.custom_tags
         if self.default_branch is not None:
@@ -2330,6 +3588,7 @@ class ProjectSpec:
         """Deserializes the ProjectSpec from a dictionary."""
         return cls(
             budget_policy_id=d.get("budget_policy_id", None),
+            compute_provisioner=d.get("compute_provisioner", None),
             custom_tags=_repeated_dict(d, "custom_tags", ProjectCustomTag),
             default_branch=d.get("default_branch", None),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
@@ -2347,6 +3606,12 @@ class ProjectStatus:
 
     budget_policy_id: Optional[str] = None
     """The budget policy that is applied to the project."""
+
+    compute_last_active_time: Optional[Timestamp] = None
+    """The most recent time when any endpoint of this project was active."""
+
+    compute_provisioner: Optional[str] = None
+    """The effective compute provisioner backing this project's endpoints."""
 
     custom_tags: Optional[List[ProjectCustomTag]] = None
     """The effective custom tags associated with the project."""
@@ -2375,6 +3640,10 @@ class ProjectStatus:
     project_id: Optional[str] = None
     """Part of the resource name."""
 
+    replication_role: Optional[ReplicationRolePreview] = None
+    """The replication role of the project in this workspace. Populated only when cross-workspace
+    replication is configured."""
+
     synthetic_storage_size_bytes: Optional[int] = None
     """The current space occupied by the project in storage."""
 
@@ -2385,6 +3654,10 @@ class ProjectStatus:
             body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_last_active_time is not None:
+            body["compute_last_active_time"] = self.compute_last_active_time.ToJsonString()
+        if self.compute_provisioner is not None:
+            body["compute_provisioner"] = self.compute_provisioner
         if self.custom_tags:
             body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
         if self.default_branch is not None:
@@ -2403,6 +3676,8 @@ class ProjectStatus:
             body["pg_version"] = self.pg_version
         if self.project_id is not None:
             body["project_id"] = self.project_id
+        if self.replication_role is not None:
+            body["replication_role"] = self.replication_role.value
         if self.synthetic_storage_size_bytes is not None:
             body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
         return body
@@ -2414,6 +3689,10 @@ class ProjectStatus:
             body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_last_active_time is not None:
+            body["compute_last_active_time"] = self.compute_last_active_time
+        if self.compute_provisioner is not None:
+            body["compute_provisioner"] = self.compute_provisioner
         if self.custom_tags:
             body["custom_tags"] = self.custom_tags
         if self.default_branch is not None:
@@ -2432,6 +3711,8 @@ class ProjectStatus:
             body["pg_version"] = self.pg_version
         if self.project_id is not None:
             body["project_id"] = self.project_id
+        if self.replication_role is not None:
+            body["replication_role"] = self.replication_role
         if self.synthetic_storage_size_bytes is not None:
             body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
         return body
@@ -2442,6 +3723,8 @@ class ProjectStatus:
         return cls(
             branch_logical_size_limit_bytes=d.get("branch_logical_size_limit_bytes", None),
             budget_policy_id=d.get("budget_policy_id", None),
+            compute_last_active_time=_timestamp(d, "compute_last_active_time"),
+            compute_provisioner=d.get("compute_provisioner", None),
             custom_tags=_repeated_dict(d, "custom_tags", ProjectCustomTag),
             default_branch=d.get("default_branch", None),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
@@ -2451,6 +3734,7 @@ class ProjectStatus:
             owner=d.get("owner", None),
             pg_version=d.get("pg_version", None),
             project_id=d.get("project_id", None),
+            replication_role=_enum(d, "replication_role", ReplicationRolePreview),
             synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
         )
 
@@ -2470,6 +3754,355 @@ class ProvisioningPhase(Enum):
     PROVISIONING_PHASE_INDEX_SCAN = "PROVISIONING_PHASE_INDEX_SCAN"
     PROVISIONING_PHASE_INDEX_SORT = "PROVISIONING_PHASE_INDEX_SORT"
     PROVISIONING_PHASE_MAIN = "PROVISIONING_PHASE_MAIN"
+
+
+@dataclass
+class RecoveryBranchPreview:
+    create_time: Optional[Timestamp] = None
+
+    name: Optional[str] = None
+    """The resource name of the recovery branch. Format:
+    projects/{project_id}/preview/recovery-branches/{recovery_branch_id}"""
+
+    parent: Optional[str] = None
+    """The project containing this recovery branch. Format: projects/{project_id}"""
+
+    status: Optional[RecoveryBranchPreviewStatus] = None
+
+    uid: Optional[str] = None
+
+    update_time: Optional[Timestamp] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RecoveryBranchPreview into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parent is not None:
+            body["parent"] = self.parent
+        if self.status:
+            body["status"] = self.status.as_dict()
+        if self.uid is not None:
+            body["uid"] = self.uid
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RecoveryBranchPreview into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parent is not None:
+            body["parent"] = self.parent
+        if self.status:
+            body["status"] = self.status
+        if self.uid is not None:
+            body["uid"] = self.uid
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RecoveryBranchPreview:
+        """Deserializes the RecoveryBranchPreview from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            name=d.get("name", None),
+            parent=d.get("parent", None),
+            status=_from_dict(d, "status", RecoveryBranchPreviewStatus),
+            uid=d.get("uid", None),
+            update_time=_timestamp(d, "update_time"),
+        )
+
+
+@dataclass
+class RecoveryBranchPreviewStatus:
+    current_state: Optional[RecoveryBranchPreviewStatusState] = None
+
+    divergent: Optional[bool] = None
+
+    end_lsn: Optional[str] = None
+    """The Log Sequence Number (LSN) up to which the recovery branch's timeline holds data."""
+
+    expire_time: Optional[Timestamp] = None
+
+    failover_child_lsn: Optional[str] = None
+    """The Log Sequence Number (LSN) at which a local child timeline was branched off this recovery
+    branch's timeline during recovery branch creation."""
+
+    home_workspace: Optional[str] = None
+    """The workspace that owns the source branch and where reconciliation completes. Format: a
+    workspace identifier."""
+
+    is_foreign: Optional[bool] = None
+
+    origin_branch: Optional[str] = None
+    """The normal branch from which this recovery branch originated. Format:
+    projects/{project_id}/branches/{branch_id}"""
+
+    def as_dict(self) -> dict:
+        """Serializes the RecoveryBranchPreviewStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.current_state is not None:
+            body["current_state"] = self.current_state.value
+        if self.divergent is not None:
+            body["divergent"] = self.divergent
+        if self.end_lsn is not None:
+            body["end_lsn"] = self.end_lsn
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time.ToJsonString()
+        if self.failover_child_lsn is not None:
+            body["failover_child_lsn"] = self.failover_child_lsn
+        if self.home_workspace is not None:
+            body["home_workspace"] = self.home_workspace
+        if self.is_foreign is not None:
+            body["is_foreign"] = self.is_foreign
+        if self.origin_branch is not None:
+            body["origin_branch"] = self.origin_branch
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RecoveryBranchPreviewStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.current_state is not None:
+            body["current_state"] = self.current_state
+        if self.divergent is not None:
+            body["divergent"] = self.divergent
+        if self.end_lsn is not None:
+            body["end_lsn"] = self.end_lsn
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
+        if self.failover_child_lsn is not None:
+            body["failover_child_lsn"] = self.failover_child_lsn
+        if self.home_workspace is not None:
+            body["home_workspace"] = self.home_workspace
+        if self.is_foreign is not None:
+            body["is_foreign"] = self.is_foreign
+        if self.origin_branch is not None:
+            body["origin_branch"] = self.origin_branch
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RecoveryBranchPreviewStatus:
+        """Deserializes the RecoveryBranchPreviewStatus from a dictionary."""
+        return cls(
+            current_state=_enum(d, "current_state", RecoveryBranchPreviewStatusState),
+            divergent=d.get("divergent", None),
+            end_lsn=d.get("end_lsn", None),
+            expire_time=_timestamp(d, "expire_time"),
+            failover_child_lsn=d.get("failover_child_lsn", None),
+            home_workspace=d.get("home_workspace", None),
+            is_foreign=d.get("is_foreign", None),
+            origin_branch=d.get("origin_branch", None),
+        )
+
+
+class RecoveryBranchPreviewStatusState(Enum):
+    PENDING_HOME_SYNC = "PENDING_HOME_SYNC"
+    READY_FOR_INSPECTION = "READY_FOR_INSPECTION"
+    RECONCILED = "RECONCILED"
+
+
+@dataclass
+class ReplicationGroupPreview:
+    replication_mode: ReplicationModePreview
+    """The selected replication mode."""
+
+    workspaces: List[str]
+    """The workspaces participating in this replication group. Phase 1 requires exactly 2 entries."""
+
+    create_time: Optional[Timestamp] = None
+    """Server-generated timestamps."""
+
+    etag: Optional[str] = None
+    """Optional optimistic concurrency token for update and delete."""
+
+    name: Optional[str] = None
+    """The resource name of the replication group. Format:
+    projects/{project_id}/preview/replication-groups/{replication_group_id}"""
+
+    observed_metrics: Optional[ReplicationMetricsPreview] = None
+    """The latest observed replication metrics for this group."""
+
+    parent: Optional[str] = None
+    """The parent project that owns this replication group. Format: projects/{project_id}"""
+
+    primary_workspace: Optional[str] = None
+    """The workspace currently serving writes. Server-owned."""
+
+    state: Optional[ReplicationGroupPreviewState] = None
+    """The lifecycle state of the replication group."""
+
+    update_time: Optional[Timestamp] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationGroupPreview into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.name is not None:
+            body["name"] = self.name
+        if self.observed_metrics:
+            body["observed_metrics"] = self.observed_metrics.as_dict()
+        if self.parent is not None:
+            body["parent"] = self.parent
+        if self.primary_workspace is not None:
+            body["primary_workspace"] = self.primary_workspace
+        if self.replication_mode is not None:
+            body["replication_mode"] = self.replication_mode.value
+        if self.state is not None:
+            body["state"] = self.state.value
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.workspaces:
+            body["workspaces"] = [v for v in self.workspaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationGroupPreview into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.name is not None:
+            body["name"] = self.name
+        if self.observed_metrics:
+            body["observed_metrics"] = self.observed_metrics
+        if self.parent is not None:
+            body["parent"] = self.parent
+        if self.primary_workspace is not None:
+            body["primary_workspace"] = self.primary_workspace
+        if self.replication_mode is not None:
+            body["replication_mode"] = self.replication_mode
+        if self.state is not None:
+            body["state"] = self.state
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.workspaces:
+            body["workspaces"] = self.workspaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationGroupPreview:
+        """Deserializes the ReplicationGroupPreview from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            etag=d.get("etag", None),
+            name=d.get("name", None),
+            observed_metrics=_from_dict(d, "observed_metrics", ReplicationMetricsPreview),
+            parent=d.get("parent", None),
+            primary_workspace=d.get("primary_workspace", None),
+            replication_mode=_enum(d, "replication_mode", ReplicationModePreview),
+            state=_enum(d, "state", ReplicationGroupPreviewState),
+            update_time=_timestamp(d, "update_time"),
+            workspaces=d.get("workspaces", None),
+        )
+
+
+@dataclass
+class ReplicationGroupPreviewOperationMetadata:
+    """Empty placeholder; required by every LRO ``metadata_type``. Mirrors BranchOperationMetadata /
+    RoleOperationMetadata."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationGroupPreviewOperationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationGroupPreviewOperationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationGroupPreviewOperationMetadata:
+        """Deserializes the ReplicationGroupPreviewOperationMetadata from a dictionary."""
+        return cls()
+
+
+class ReplicationGroupPreviewState(Enum):
+    REPLICATION_GROUP_PREVIEW_STATE_DEGRADED = "REPLICATION_GROUP_PREVIEW_STATE_DEGRADED"
+    REPLICATION_GROUP_PREVIEW_STATE_DELETING = "REPLICATION_GROUP_PREVIEW_STATE_DELETING"
+    REPLICATION_GROUP_PREVIEW_STATE_FAILING_OVER = "REPLICATION_GROUP_PREVIEW_STATE_FAILING_OVER"
+    REPLICATION_GROUP_PREVIEW_STATE_PROVISIONING = "REPLICATION_GROUP_PREVIEW_STATE_PROVISIONING"
+    REPLICATION_GROUP_PREVIEW_STATE_READY = "REPLICATION_GROUP_PREVIEW_STATE_READY"
+    REPLICATION_GROUP_PREVIEW_STATE_SWITCHING_OVER = "REPLICATION_GROUP_PREVIEW_STATE_SWITCHING_OVER"
+
+
+@dataclass
+class ReplicationMetricsPreview:
+    as_of_time: Optional[Timestamp] = None
+    """The time at which these metrics were sampled."""
+
+    bytes_lag: Optional[int] = None
+    """The most recent observed byte lag."""
+
+    throughput_bytes_per_second: Optional[int] = None
+    """The most recent observed replication throughput."""
+
+    time_lag: Optional[Duration] = None
+    """The most recent observed time lag."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationMetricsPreview into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.as_of_time is not None:
+            body["as_of_time"] = self.as_of_time.ToJsonString()
+        if self.bytes_lag is not None:
+            body["bytes_lag"] = self.bytes_lag
+        if self.throughput_bytes_per_second is not None:
+            body["throughput_bytes_per_second"] = self.throughput_bytes_per_second
+        if self.time_lag is not None:
+            body["time_lag"] = self.time_lag.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationMetricsPreview into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.as_of_time is not None:
+            body["as_of_time"] = self.as_of_time
+        if self.bytes_lag is not None:
+            body["bytes_lag"] = self.bytes_lag
+        if self.throughput_bytes_per_second is not None:
+            body["throughput_bytes_per_second"] = self.throughput_bytes_per_second
+        if self.time_lag is not None:
+            body["time_lag"] = self.time_lag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationMetricsPreview:
+        """Deserializes the ReplicationMetricsPreview from a dictionary."""
+        return cls(
+            as_of_time=_timestamp(d, "as_of_time"),
+            bytes_lag=d.get("bytes_lag", None),
+            throughput_bytes_per_second=d.get("throughput_bytes_per_second", None),
+            time_lag=_duration(d, "time_lag"),
+        )
+
+
+class ReplicationModePreview(Enum):
+    """How changes are propagated from the primary workspace to its secondaries in a replication group:
+    on a fixed schedule or continuously as they occur."""
+
+    REPLICATION_MODE_PREVIEW_LIVE = "REPLICATION_MODE_PREVIEW_LIVE"
+    REPLICATION_MODE_PREVIEW_PERIODIC = "REPLICATION_MODE_PREVIEW_PERIODIC"
+
+
+class ReplicationRolePreview(Enum):
+    """The replication role of the project in its current workspace. Populated only when
+    cross-workspace replication is configured for the project."""
+
+    REPLICATION_ROLE_PREVIEW_DEMOTING = "REPLICATION_ROLE_PREVIEW_DEMOTING"
+    REPLICATION_ROLE_PREVIEW_PRIMARY = "REPLICATION_ROLE_PREVIEW_PRIMARY"
+    REPLICATION_ROLE_PREVIEW_SECONDARY = "REPLICATION_ROLE_PREVIEW_SECONDARY"
 
 
 @dataclass
@@ -2705,17 +4338,19 @@ class RoleRoleSpec:
     """Controls how the Postgres role authenticates when a client opens a database connection.
     Supported values:
     
-    * LAKEBASE_OAUTH_V1: the role authenticates by presenting a Databricks OAuth access token
-    derived from the backing managed identity (the Databricks user, service principal, or group
-    named by the role's `postgres_role`). No static password exists for roles using this method. *
-    PG_PASSWORD_SCRAM_SHA_256: the role authenticates with a Postgres password verified server-side
-    using the SCRAM-SHA-256 mechanism. Lakebase generates a password for the role. * NO_LOGIN: the
-    role cannot open a Postgres session at all. Useful for roles that exist only to own objects or
-    to aggregate privileges that are then granted to other, loginable roles.
+    - LAKEBASE_OAUTH_V1: the role authenticates by presenting a Databricks OAuth access token
+      derived from the backing managed identity (the Databricks user, service principal, or group
+      named by the role's ``postgres_role``). No static password exists for roles using this method.
+    - PG_PASSWORD_SCRAM_SHA_256: the role authenticates with a Postgres password verified
+      server-side using the SCRAM-SHA-256 mechanism. Lakebase generates a password for the role.
+    - NO_LOGIN: the role cannot open a Postgres session at all. Useful for roles that exist only to
+      own objects or to aggregate privileges that are then granted to other, loginable roles.
     
     If auth_method is left unspecified, a meaningful authentication method is derived from the
-    identity_type: * For the managed identities, OAUTH is used. * For the regular postgres roles,
-    authentication based on postgres passwords is used.
+    identity_type:
+    
+    - For the managed identities, OAUTH is used.
+    - For the regular postgres roles, authentication based on postgres passwords is used.
     
     NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the default auth method
     (group can login as well)."""
@@ -2723,7 +4358,9 @@ class RoleRoleSpec:
     identity_type: Optional[RoleIdentityType] = None
     """The type of role. When specifying a managed-identity, the chosen role_id must be a valid:
     
-    * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP"""
+    - application ID for SERVICE_PRINCIPAL
+    - user email for USER
+    - group name for GROUP"""
 
     membership_roles: Optional[List[RoleMembershipRole]] = None
     """An enum value for a standard role that this role is a member of."""
@@ -2739,8 +4376,9 @@ class RoleRoleSpec:
     If you wish to create a Postgres Role backed by a managed Databricks identity, then
     postgres_role must be one of the following:
     
-    1. user email for IdentityType.USER 2. app ID for IdentityType.SERVICE_PRINCIPAL 2. group name
-    for IdentityType.GROUP"""
+    1. user email for IdentityType.USER
+    2. app ID for IdentityType.SERVICE_PRINCIPAL
+    3. group name for IdentityType.GROUP"""
 
     def as_dict(self) -> dict:
         """Serializes the RoleRoleSpec into a dictionary suitable for use as a JSON request body."""
@@ -2848,6 +4486,366 @@ class RoleRoleStatus:
             postgres_role=d.get("postgres_role", None),
             role_id=d.get("role_id", None),
         )
+
+
+@dataclass
+class ScheduleCadence:
+    """One cadence at which automatic snapshots are taken."""
+
+    retention: Duration
+    """How long snapshots from this cadence are kept before automatic deletion. Must be at least 1
+    hour. Applied when a snapshot is taken; not retroactive, so changing it affects only later
+    snapshots."""
+
+    daily_schedule: Optional[DailySchedule] = None
+    """Take a snapshot once per day."""
+
+    monthly_schedule: Optional[MonthlySchedule] = None
+    """Take a snapshot once per month."""
+
+    weekly_schedule: Optional[WeeklySchedule] = None
+    """Take a snapshot once per week."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ScheduleCadence into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.daily_schedule:
+            body["daily_schedule"] = self.daily_schedule.as_dict()
+        if self.monthly_schedule:
+            body["monthly_schedule"] = self.monthly_schedule.as_dict()
+        if self.retention is not None:
+            body["retention"] = self.retention.ToJsonString()
+        if self.weekly_schedule:
+            body["weekly_schedule"] = self.weekly_schedule.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ScheduleCadence into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.daily_schedule:
+            body["daily_schedule"] = self.daily_schedule
+        if self.monthly_schedule:
+            body["monthly_schedule"] = self.monthly_schedule
+        if self.retention is not None:
+            body["retention"] = self.retention
+        if self.weekly_schedule:
+            body["weekly_schedule"] = self.weekly_schedule
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ScheduleCadence:
+        """Deserializes the ScheduleCadence from a dictionary."""
+        return cls(
+            daily_schedule=_from_dict(d, "daily_schedule", DailySchedule),
+            monthly_schedule=_from_dict(d, "monthly_schedule", MonthlySchedule),
+            retention=_duration(d, "retention"),
+            weekly_schedule=_from_dict(d, "weekly_schedule", WeeklySchedule),
+        )
+
+
+@dataclass
+class Snapshot:
+    """An immutable, point-in-time copy of a branch's data within a project. It remains available after
+    the source branch is deleted."""
+
+    create_time: Optional[Timestamp] = None
+    """When the snapshot was created."""
+
+    name: Optional[str] = None
+    """The resource name of the snapshot. Format: projects/{project_id}/snapshots/{snapshot_id}"""
+
+    snapshot_id: Optional[str] = None
+    """The user-chosen ID; the final segment of ``name``."""
+
+    spec: Optional[SnapshotSpec] = None
+    """Client-provided configuration of the snapshot."""
+
+    status: Optional[SnapshotStatus] = None
+    """Server-observed state of the snapshot."""
+
+    uid: Optional[str] = None
+    """Unique system-generated ID for the snapshot."""
+
+    update_time: Optional[Timestamp] = None
+    """When the snapshot was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Snapshot into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.snapshot_id is not None:
+            body["snapshot_id"] = self.snapshot_id
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
+        if self.status:
+            body["status"] = self.status.as_dict()
+        if self.uid is not None:
+            body["uid"] = self.uid
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Snapshot into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.snapshot_id is not None:
+            body["snapshot_id"] = self.snapshot_id
+        if self.spec:
+            body["spec"] = self.spec
+        if self.status:
+            body["status"] = self.status
+        if self.uid is not None:
+            body["uid"] = self.uid
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Snapshot:
+        """Deserializes the Snapshot from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            name=d.get("name", None),
+            snapshot_id=d.get("snapshot_id", None),
+            spec=_from_dict(d, "spec", SnapshotSpec),
+            status=_from_dict(d, "status", SnapshotStatus),
+            uid=d.get("uid", None),
+            update_time=_timestamp(d, "update_time"),
+        )
+
+
+@dataclass
+class SnapshotOperationMetadata:
+    """Metadata for the long-running snapshot Create, Update, and Delete operations."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SnapshotOperationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SnapshotOperationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SnapshotOperationMetadata:
+        """Deserializes the SnapshotOperationMetadata from a dictionary."""
+        return cls()
+
+
+@dataclass
+class SnapshotSchedule:
+    """The automatic snapshot cadences for a branch. There is exactly one schedule per branch
+    (singleton); it is configured in place, not created or deleted.
+
+    Name: projects/{project_id}/branches/{branch_id}/snapshot-schedule"""
+
+    name: Optional[str] = None
+    """The resource name of the branch's snapshot schedule. Format:
+    projects/{project_id}/branches/{branch_id}/snapshot-schedule"""
+
+    schedule: Optional[List[ScheduleCadence]] = None
+    """The cadences at which automatic snapshots are taken. Update replaces the whole set; an empty set
+    disables automatic snapshots. Order is not significant. When several cadences fire together, one
+    snapshot is taken, retained for the longest of their retentions."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SnapshotSchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schedule:
+            body["schedule"] = [v.as_dict() for v in self.schedule]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SnapshotSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schedule:
+            body["schedule"] = self.schedule
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SnapshotSchedule:
+        """Deserializes the SnapshotSchedule from a dictionary."""
+        return cls(name=d.get("name", None), schedule=_repeated_dict(d, "schedule", ScheduleCadence))
+
+
+@dataclass
+class SnapshotSpec:
+    """Client-provided configuration of the snapshot."""
+
+    source_branch: str
+    """The source branch to snapshot. Format: projects/{project_id}/branches/{branch_id}"""
+
+    expire_time: Optional[Timestamp] = None
+    """Absolute time at which the snapshot is deleted. Mutually exclusive with ``ttl`` and
+    ``no_expiry``."""
+
+    no_expiry: Optional[bool] = None
+    """If true, the snapshot never expires. Mutually exclusive with ``ttl`` and ``expire_time``."""
+
+    source_branch_lsn: Optional[str] = None
+    """LSN to snapshot from, e.g. ``16/B374D848``. Mutually exclusive with ``source_branch_time``."""
+
+    source_branch_time: Optional[Timestamp] = None
+    """Timestamp to snapshot from. Mutually exclusive with ``source_branch_lsn``."""
+
+    ttl: Optional[Duration] = None
+    """Time-to-live. The snapshot expires this long after it is created. Mutually exclusive with
+    ``expire_time`` and ``no_expiry``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SnapshotSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time.ToJsonString()
+        if self.no_expiry is not None:
+            body["no_expiry"] = self.no_expiry
+        if self.source_branch is not None:
+            body["source_branch"] = self.source_branch
+        if self.source_branch_lsn is not None:
+            body["source_branch_lsn"] = self.source_branch_lsn
+        if self.source_branch_time is not None:
+            body["source_branch_time"] = self.source_branch_time.ToJsonString()
+        if self.ttl is not None:
+            body["ttl"] = self.ttl.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SnapshotSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
+        if self.no_expiry is not None:
+            body["no_expiry"] = self.no_expiry
+        if self.source_branch is not None:
+            body["source_branch"] = self.source_branch
+        if self.source_branch_lsn is not None:
+            body["source_branch_lsn"] = self.source_branch_lsn
+        if self.source_branch_time is not None:
+            body["source_branch_time"] = self.source_branch_time
+        if self.ttl is not None:
+            body["ttl"] = self.ttl
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SnapshotSpec:
+        """Deserializes the SnapshotSpec from a dictionary."""
+        return cls(
+            expire_time=_timestamp(d, "expire_time"),
+            no_expiry=d.get("no_expiry", None),
+            source_branch=d.get("source_branch", None),
+            source_branch_lsn=d.get("source_branch_lsn", None),
+            source_branch_time=_timestamp(d, "source_branch_time"),
+            ttl=_duration(d, "ttl"),
+        )
+
+
+@dataclass
+class SnapshotStatus:
+    """Server-observed state of a snapshot."""
+
+    current_state: Optional[SnapshotStatusState] = None
+    """The snapshot's current state."""
+
+    diff_size_bytes: Optional[int] = None
+    """Incremental storage size in bytes since the previous snapshot. Unset when the snapshot is not
+    billed on incremental usage."""
+
+    expire_time: Optional[Timestamp] = None
+    """Absolute time at which the snapshot is deleted."""
+
+    full_size_bytes: Optional[int] = None
+    """Full logical size of the snapshot, in bytes."""
+
+    no_expiry: Optional[bool] = None
+    """True if the snapshot never expires."""
+
+    source_branch: Optional[str] = None
+    """The source branch the snapshot was taken from. Format:
+    projects/{project_id}/branches/{branch_id}"""
+
+    source_branch_lsn: Optional[str] = None
+    """The LSN at which the snapshot was taken."""
+
+    source_branch_time: Optional[Timestamp] = None
+    """The point in time at which the snapshot was taken."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SnapshotStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.current_state is not None:
+            body["current_state"] = self.current_state.value
+        if self.diff_size_bytes is not None:
+            body["diff_size_bytes"] = self.diff_size_bytes
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time.ToJsonString()
+        if self.full_size_bytes is not None:
+            body["full_size_bytes"] = self.full_size_bytes
+        if self.no_expiry is not None:
+            body["no_expiry"] = self.no_expiry
+        if self.source_branch is not None:
+            body["source_branch"] = self.source_branch
+        if self.source_branch_lsn is not None:
+            body["source_branch_lsn"] = self.source_branch_lsn
+        if self.source_branch_time is not None:
+            body["source_branch_time"] = self.source_branch_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SnapshotStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.current_state is not None:
+            body["current_state"] = self.current_state
+        if self.diff_size_bytes is not None:
+            body["diff_size_bytes"] = self.diff_size_bytes
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
+        if self.full_size_bytes is not None:
+            body["full_size_bytes"] = self.full_size_bytes
+        if self.no_expiry is not None:
+            body["no_expiry"] = self.no_expiry
+        if self.source_branch is not None:
+            body["source_branch"] = self.source_branch
+        if self.source_branch_lsn is not None:
+            body["source_branch_lsn"] = self.source_branch_lsn
+        if self.source_branch_time is not None:
+            body["source_branch_time"] = self.source_branch_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SnapshotStatus:
+        """Deserializes the SnapshotStatus from a dictionary."""
+        return cls(
+            current_state=_enum(d, "current_state", SnapshotStatusState),
+            diff_size_bytes=d.get("diff_size_bytes", None),
+            expire_time=_timestamp(d, "expire_time"),
+            full_size_bytes=d.get("full_size_bytes", None),
+            no_expiry=d.get("no_expiry", None),
+            source_branch=d.get("source_branch", None),
+            source_branch_lsn=d.get("source_branch_lsn", None),
+            source_branch_time=_timestamp(d, "source_branch_time"),
+        )
+
+
+class SnapshotStatusState(Enum):
+    """The state of the snapshot."""
+
+    AVAILABLE = "AVAILABLE"
+    CREATING = "CREATING"
+    DELETING = "DELETING"
+    FAILED = "FAILED"
 
 
 @dataclass
@@ -3092,6 +5090,12 @@ class SyncedTableSyncedTableSpec:
     
     The pipeline used for the synced table is returned via the top level pipeline_id attribute."""
 
+    extra_columns: Optional[List[SyncedTableSyncedTableSpecExtraColumn]] = None
+    """Extra PostgreSQL-only columns to add to the synced table."""
+
+    extra_index_definitions: Optional[List[SyncedTableSyncedTableSpecSecondaryIndex]] = None
+    """Secondary indexes to create on the synced table."""
+
     new_pipeline_spec: Optional[NewPipelineSpec] = None
     """Specification for creating a new pipeline. At most one of existing_pipeline_id and
     new_pipeline_spec should be defined.
@@ -3118,8 +5122,8 @@ class SyncedTableSyncedTableSpec:
     
     For the corresponding destination table, use any of the two:
     
-    * synced_table_id used at the creation of the SyncedTable * "name" consisting of
-    "synced_tables/" prefix and the full name of the destination table."""
+    - synced_table_id used at the creation of the SyncedTable
+    - "name" consisting of "synced_tables/" prefix and the full name of the destination table."""
 
     timeseries_key: Optional[str] = None
     """Time series key to deduplicate (tie-break) rows with the same primary key."""
@@ -3139,6 +5143,10 @@ class SyncedTableSyncedTableSpec:
             body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
         if self.existing_pipeline_id is not None:
             body["existing_pipeline_id"] = self.existing_pipeline_id
+        if self.extra_columns:
+            body["extra_columns"] = [v.as_dict() for v in self.extra_columns]
+        if self.extra_index_definitions:
+            body["extra_index_definitions"] = [v.as_dict() for v in self.extra_index_definitions]
         if self.new_pipeline_spec:
             body["new_pipeline_spec"] = self.new_pipeline_spec.as_dict()
         if self.postgres_database is not None:
@@ -3166,6 +5174,10 @@ class SyncedTableSyncedTableSpec:
             body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
         if self.existing_pipeline_id is not None:
             body["existing_pipeline_id"] = self.existing_pipeline_id
+        if self.extra_columns:
+            body["extra_columns"] = self.extra_columns
+        if self.extra_index_definitions:
+            body["extra_index_definitions"] = self.extra_index_definitions
         if self.new_pipeline_spec:
             body["new_pipeline_spec"] = self.new_pipeline_spec
         if self.postgres_database is not None:
@@ -3190,6 +5202,10 @@ class SyncedTableSyncedTableSpec:
             branch=d.get("branch", None),
             create_database_objects_if_missing=d.get("create_database_objects_if_missing", None),
             existing_pipeline_id=d.get("existing_pipeline_id", None),
+            extra_columns=_repeated_dict(d, "extra_columns", SyncedTableSyncedTableSpecExtraColumn),
+            extra_index_definitions=_repeated_dict(
+                d, "extra_index_definitions", SyncedTableSyncedTableSpecSecondaryIndex
+            ),
             new_pipeline_spec=_from_dict(d, "new_pipeline_spec", NewPipelineSpec),
             postgres_database=d.get("postgres_database", None),
             primary_key_columns=d.get("primary_key_columns", None),
@@ -3200,10 +5216,124 @@ class SyncedTableSyncedTableSpec:
         )
 
 
+@dataclass
+class SyncedTableSyncedTableSpecExtraColumn:
+    """An extra PostgreSQL column to add to the synced table."""
+
+    column_name: str
+    """Name of the column."""
+
+    column_type: str
+    """PostgreSQL type of the column, for example "tsvector" or "vector(1024)"."""
+
+    compute: Optional[str] = None
+    """SQL expression used to compute the column's value, for example "to_tsvector('english',
+    content)"."""
+
+    maintenance: Optional[SyncedTableSyncedTableSpecExtraColumnMaintenance] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableSyncedTableSpecExtraColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_name is not None:
+            body["column_name"] = self.column_name
+        if self.column_type is not None:
+            body["column_type"] = self.column_type
+        if self.compute is not None:
+            body["compute"] = self.compute
+        if self.maintenance is not None:
+            body["maintenance"] = self.maintenance.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableSyncedTableSpecExtraColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_name is not None:
+            body["column_name"] = self.column_name
+        if self.column_type is not None:
+            body["column_type"] = self.column_type
+        if self.compute is not None:
+            body["compute"] = self.compute
+        if self.maintenance is not None:
+            body["maintenance"] = self.maintenance
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSyncedTableSpecExtraColumn:
+        """Deserializes the SyncedTableSyncedTableSpecExtraColumn from a dictionary."""
+        return cls(
+            column_name=d.get("column_name", None),
+            column_type=d.get("column_type", None),
+            compute=d.get("compute", None),
+            maintenance=_enum(d, "maintenance", SyncedTableSyncedTableSpecExtraColumnMaintenance),
+        )
+
+
+class SyncedTableSyncedTableSpecExtraColumnMaintenance(Enum):
+    """How the column's value is populated and kept up to date."""
+
+    DEFAULT_VALUE = "DEFAULT_VALUE"
+    STORED_GENERATED = "STORED_GENERATED"
+
+
 class SyncedTableSyncedTableSpecPgSpecificType(Enum):
     """PostgreSQL-specific target types that can override the default Delta-to-PG mapping."""
 
+    PG_SPECIFIC_TYPE_HALFVEC = "PG_SPECIFIC_TYPE_HALFVEC"
+    PG_SPECIFIC_TYPE_VARCHAR = "PG_SPECIFIC_TYPE_VARCHAR"
     PG_SPECIFIC_TYPE_VECTOR = "PG_SPECIFIC_TYPE_VECTOR"
+
+
+@dataclass
+class SyncedTableSyncedTableSpecSecondaryIndex:
+    """Definition of a secondary index to create on the synced table."""
+
+    name: str
+    """Name of the index as it will appear in PostgreSQL."""
+
+    definition: str
+    """The definition portion of a CREATE INDEX statement, placed after ON table_name. For example:
+    USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64)."""
+
+    creation_point: Optional[SyncedTableSyncedTableSpecSecondaryIndexCreationPoint] = None
+    """When the index should be created relative to the initial data load."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableSyncedTableSpecSecondaryIndex into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.creation_point is not None:
+            body["creation_point"] = self.creation_point.value
+        if self.definition is not None:
+            body["definition"] = self.definition
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableSyncedTableSpecSecondaryIndex into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creation_point is not None:
+            body["creation_point"] = self.creation_point
+        if self.definition is not None:
+            body["definition"] = self.definition
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSyncedTableSpecSecondaryIndex:
+        """Deserializes the SyncedTableSyncedTableSpecSecondaryIndex from a dictionary."""
+        return cls(
+            creation_point=_enum(d, "creation_point", SyncedTableSyncedTableSpecSecondaryIndexCreationPoint),
+            definition=d.get("definition", None),
+            name=d.get("name", None),
+        )
+
+
+class SyncedTableSyncedTableSpecSecondaryIndexCreationPoint(Enum):
+    """Controls when the index is created relative to the initial data load."""
+
+    CREATION_POINT_AFTER_DATA_LOAD = "CREATION_POINT_AFTER_DATA_LOAD"
 
 
 class SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy(Enum):
@@ -3225,8 +5355,8 @@ class SyncedTableSyncedTableSpecTypeOverride:
     """PostgreSQL-specific target type to use for the column."""
 
     size: Optional[int] = None
-    """Size parameter for the target type. Required when pg_type is PG_SPECIFIC_TYPE_VECTOR (specifies
-    the vector dimension, e.g., 1024)."""
+    """Size parameter for the target type, for types that take one (e.g. vector dimension, varchar
+    length). Required when the chosen pg_type needs a size."""
 
     def as_dict(self) -> dict:
         """Serializes the SyncedTableSyncedTableSpecTypeOverride into a dictionary suitable for use as a JSON request body."""
@@ -3361,6 +5491,105 @@ class SyncedTableSyncedTableStatus:
         )
 
 
+@dataclass
+class Table:
+    """Table represents a non-synced database table in a Lakebase project. Unlike SyncedTable, this
+    does not have a data synchronization pipeline."""
+
+    name: str
+    """Full three-part (catalog, schema, table) name of the table."""
+
+    database: str
+    """The project and branch scoped database to which this table belongs. Of the format:
+    projects/{project_id}/branches/{branch_id}/databases/{database_id} where database_id is the name
+    of the logical database in Postgres."""
+
+    branch: Optional[str] = None
+    """The id of the database branch associated with the table. Of the format
+    projects/{project_id}/branches/{branch_id}."""
+
+    project: Optional[str] = None
+    """The id of the database project associated with the table. Of the format projects/{project_id}."""
+
+    table_serving_url: Optional[str] = None
+    """REST API URL for serving data from this table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Table into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.name is not None:
+            body["name"] = self.name
+        if self.project is not None:
+            body["project"] = self.project
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Table into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.name is not None:
+            body["name"] = self.name
+        if self.project is not None:
+            body["project"] = self.project
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Table:
+        """Deserializes the Table from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            database=d.get("database", None),
+            name=d.get("name", None),
+            project=d.get("project", None),
+            table_serving_url=d.get("table_serving_url", None),
+        )
+
+
+@dataclass
+class WeeklySchedule:
+    """Take a snapshot once per week, on the configured day at the configured hour."""
+
+    day_of_week: DayOfWeek
+    """The day of the week on which to take the snapshot."""
+
+    hour: Optional[int] = None
+    """The hour of the day, in UTC, at which to take the snapshot, in [0, 23]."""
+
+    def as_dict(self) -> dict:
+        """Serializes the WeeklySchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.day_of_week is not None:
+            body["day_of_week"] = self.day_of_week.value
+        if self.hour is not None:
+            body["hour"] = self.hour
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WeeklySchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.day_of_week is not None:
+            body["day_of_week"] = self.day_of_week
+        if self.hour is not None:
+            body["hour"] = self.hour
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> WeeklySchedule:
+        """Deserializes the WeeklySchedule from a dictionary."""
+        return cls(day_of_week=_enum(d, "day_of_week", DayOfWeek), hour=d.get("hour", None))
+
+
 class PostgresAPI:
     """Use the Postgres API to create and manage Lakebase Autoscaling Postgres infrastructure, including
     projects, branches, compute endpoints, and roles.
@@ -3371,9 +5600,9 @@ class PostgresAPI:
     **About resource IDs and names**
 
     Resources are identified by hierarchical resource names like
-    `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`. The `name` field on each resource
-    contains this full path and is output-only. Note that `name` refers to this resource path, not the
-    user-visible `display_name`."""
+    ``projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}``. The ``name`` field on each
+    resource contains this full path and is output-only. Note that ``name`` refers to this resource path, not
+    the user-visible ``display_name``."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3390,8 +5619,8 @@ class PostgresAPI:
         :param branch_id: str
           The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID
           is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, `development` becomes
-          `projects/my-app/branches/development`.
+          lowercase letters, numbers, and hyphens. For example, ``development`` becomes
+          ``projects/my-app/branches/development``.
         :param replace_existing: bool (optional)
           If true, update the branch if it already exists instead of returning an error.
 
@@ -3445,6 +5674,43 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateCatalogOperation(self, operation)
 
+    def create_cdf_config(
+        self, parent: str, cdf_config: CdfConfig, *, cdf_config_id: Optional[str] = None
+    ) -> CreateCdfConfigOperation:
+        """Create a CDF configuration that materializes the change data feed for all tables in a Postgres schema
+        as open-format Delta tables in Unity Catalog. Once created, each table's change history is
+        continuously written to its corresponding Lakehouse table.
+
+        :param parent: str
+          The parent database under which to create the CdfConfig. Format:
+          projects/{project}/branches/{branch}/databases/{database}
+        :param cdf_config: :class:`CdfConfig`
+          The CdfConfig to create. The catalog, schema, and postgres_schema fields are required; all other
+          fields are output only and ignored on input.
+        :param cdf_config_id: str (optional)
+          The user-specified id for the CdfConfig, forming the final segment of its resource name. Must match
+          the pattern ``[a-z][a-z0-9_]{0,62}``. Defaults to the Postgres schema name when omitted.
+
+        :returns: :class:`Operation`
+        """
+
+        body = cdf_config.as_dict()
+        query = {}
+        if cdf_config_id is not None:
+            query["cdf_config_id"] = cdf_config_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{parent}/cdf-configs", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return CreateCdfConfigOperation(self, operation)
+
     def create_data_api(self, parent: str, data_api: DataApi) -> CreateDataApiOperation:
         """Enable Data API for a database.
 
@@ -3472,7 +5738,12 @@ class PostgresAPI:
         return CreateDataApiOperation(self, operation)
 
     def create_database(
-        self, parent: str, database: Database, *, database_id: Optional[str] = None
+        self,
+        parent: str,
+        database: Database,
+        *,
+        database_id: Optional[str] = None,
+        replace_existing: Optional[bool] = None,
     ) -> CreateDatabaseOperation:
         """Create a Database.
 
@@ -3490,6 +5761,8 @@ class PostgresAPI:
           RFC-1123
 
           If database_id is not specified in the request, it is generated automatically.
+        :param replace_existing: bool (optional)
+          If true, update the database if it already exists instead of returning an error.
 
         :returns: :class:`Operation`
         """
@@ -3498,6 +5771,8 @@ class PostgresAPI:
         query = {}
         if database_id is not None:
             query["database_id"] = database_id
+        if replace_existing is not None:
+            query["replace_existing"] = replace_existing
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3523,8 +5798,8 @@ class PostgresAPI:
         :param endpoint_id: str
           The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
           The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, `primary` becomes
-          `projects/my-app/branches/development/endpoints/primary`.
+          lowercase letters, numbers, and hyphens. For example, ``primary`` becomes
+          ``projects/my-app/branches/development/endpoints/primary``.
         :param replace_existing: bool (optional)
           If true, update the endpoint if it already exists instead of returning an error.
 
@@ -3559,7 +5834,7 @@ class PostgresAPI:
         :param project_id: str
           The ID to use for the Project. This becomes the final component of the project's resource name. The
           ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, `my-app` becomes `projects/my-app`.
+          lowercase letters, numbers, and hyphens. For example, ``my-app`` becomes ``projects/my-app``.
 
         :returns: :class:`Operation`
         """
@@ -3581,13 +5856,63 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateProjectOperation(self, operation)
 
-    def create_role(self, parent: str, role: Role, *, role_id: Optional[str] = None) -> CreateRoleOperation:
+    def create_replication_group_preview(
+        self,
+        parent: str,
+        replication_group_preview: ReplicationGroupPreview,
+        replication_group_preview_id: str,
+        *,
+        request_id: Optional[str] = None,
+    ) -> CreateReplicationGroupPreviewOperation:
+        """Creates a new replication group for the project.
+
+        :param parent: str
+        :param replication_group_preview: :class:`ReplicationGroupPreview`
+        :param replication_group_preview_id: str
+        :param request_id: str (optional)
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = replication_group_preview.as_dict()
+        query = {}
+        if replication_group_preview_id is not None:
+            query["replication_group_preview_id"] = replication_group_preview_id
+        if request_id is not None:
+            query["request_id"] = request_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", f"/api/2.0/postgres/{parent}/preview/replication-groups", query=query, body=body, headers=headers
+        )
+        operation = Operation.from_dict(res)
+        return CreateReplicationGroupPreviewOperation(self, operation)
+
+    def create_role(
+        self, parent: str, role: Role, *, replace_existing: Optional[bool] = None, role_id: Optional[str] = None
+    ) -> CreateRoleOperation:
         """Creates a new Postgres role in the branch.
 
         :param parent: str
           The Branch where this Role is created. Format: projects/{project_id}/branches/{branch_id}
         :param role: :class:`Role`
           The desired specification of a Role.
+        :param replace_existing: bool (optional)
+          If true, update the role if it already exists instead of returning an error.
+
+          When the role already exists, the provided ``role`` spec fully replaces the existing one:
+          ``membership_roles`` is overwritten, not merged. Leaving ``membership_roles`` empty clears all of
+          the role's existing memberships, including ``DATABRICKS_SUPERUSER``. Always send the complete
+          desired list of memberships when using this field.
         :param role_id: str (optional)
           The ID to use for the Role, which will become the final component of the role's resource name. This
           ID becomes the role in Postgres.
@@ -3602,6 +5927,8 @@ class PostgresAPI:
 
         body = role.as_dict()
         query = {}
+        if replace_existing is not None:
+            query["replace_existing"] = replace_existing
         if role_id is not None:
             query["role_id"] = role_id
         headers = {
@@ -3617,6 +5944,38 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateRoleOperation(self, operation)
 
+    def create_snapshot(
+        self, parent: str, snapshot: Snapshot, *, snapshot_id: Optional[str] = None
+    ) -> CreateSnapshotOperation:
+        """Creates a snapshot, an immutable point-in-time copy of a branch's data, within the project.
+
+        :param parent: str
+          The project in which to create the snapshot. Format: projects/{project_id}
+        :param snapshot: :class:`Snapshot`
+          The snapshot to create.
+        :param snapshot_id: str (optional)
+          Client-chosen ID for the snapshot. If omitted, the server generates one.
+
+        :returns: :class:`Operation`
+        """
+
+        body = snapshot.as_dict()
+        query = {}
+        if snapshot_id is not None:
+            query["snapshot_id"] = snapshot_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{parent}/snapshots", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return CreateSnapshotOperation(self, operation)
+
     def create_synced_table(self, synced_table: SyncedTable, synced_table_id: str) -> CreateSyncedTableOperation:
         """Create a Synced Table.
 
@@ -3630,8 +5989,8 @@ class PostgresAPI:
 
           synced_table_id represents both of the following:
 
-          1. An online VIEW virtual table in the Unity Catalog accessible via the Lakehouse Federation. 2.
-          Postgres table named "{table}" in schema "{schema}" in the connected Postgres database
+          1. An online VIEW virtual table in the Unity Catalog accessible via the Lakehouse Federation.
+          2. Postgres table named "{table}" in schema "{schema}" in the connected Postgres database
 
         :returns: :class:`Operation`
         """
@@ -3653,11 +6012,38 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateSyncedTableOperation(self, operation)
 
-    def delete_branch(self, name: str, *, purge: Optional[bool] = None) -> DeleteBranchOperation:
+    def create_table(self, table: Table) -> Table:
+        """Create a Table (non-synced database table for Autoscaling v2 Lakebase projects).
+
+        :param table: :class:`Table`
+
+        :returns: :class:`Table`
+        """
+
+        body = table.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/postgres/tables", body=body, headers=headers)
+        return Table.from_dict(res)
+
+    def delete_branch(
+        self, name: str, *, allow_missing: Optional[bool] = None, purge: Optional[bool] = None
+    ) -> DeleteBranchOperation:
         """Deletes the specified database branch.
 
         :param name: str
           The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
+        :param allow_missing: bool (optional)
+          If true, if branch does not exists, the request will succeed and no action will be taken. If false
+          (default value) and branch does not exists, the request will fail with NOT_FOUND error.
         :param purge: bool (optional)
           If true, permanently delete the branch; if false, soft delete.
 
@@ -3665,6 +6051,8 @@ class PostgresAPI:
         """
 
         query = {}
+        if allow_missing is not None:
+            query["allow_missing"] = allow_missing
         if purge is not None:
             query["purge"] = purge
         headers = {
@@ -3701,6 +6089,36 @@ class PostgresAPI:
         res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
         operation = Operation.from_dict(res)
         return DeleteCatalogOperation(self, operation)
+
+    def delete_cdf_config(self, name: str, *, force: Optional[bool] = None) -> DeleteCdfConfigOperation:
+        """Delete a CDF configuration and stop materializing the change data feed. When force=true, also drops
+        the Delta tables in Unity Catalog. When force=false (default), the existing tables are preserved at
+        their last state.
+
+        :param name: str
+          The resource name of the CdfConfig to delete. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+        :param force: bool (optional)
+          When true, also drops the replicated Delta tables in Unity Catalog. When false (the default), the
+          replicated tables are preserved at their last synced state.
+
+        :returns: :class:`Operation`
+        """
+
+        query = {}
+        if force is not None:
+            query["force"] = force
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", query=query, headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteCdfConfigOperation(self, operation)
 
     def delete_data_api(self, name: str) -> DeleteDataApiOperation:
         """Disable Data API for a database.
@@ -3767,6 +6185,55 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return DeleteEndpointOperation(self, operation)
 
+    def delete_forward_etl_configuration(
+        self,
+        parent: str,
+        *,
+        pg_database_oid: Optional[int] = None,
+        pg_schema_oid: Optional[int] = None,
+        tenant_id: Optional[str] = None,
+        timeline_id: Optional[str] = None,
+    ) -> DeleteForwardEtlConfigurationResponse:
+        """Hard delete a Forward ETL configuration and all associated table mappings. Unlike DisableForwardEtl,
+        this permanently removes the config and mapping rows.
+
+        :param parent: str
+          The Branch to delete Forward ETL configuration for. Format:
+          projects/{project_id}/branches/{branch_id}
+        :param pg_database_oid: int (optional)
+          PostgreSQL database OID to delete configuration for.
+        :param pg_schema_oid: int (optional)
+          PostgreSQL schema OID to delete configuration for.
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`DeleteForwardEtlConfigurationResponse`
+        """
+
+        query = {}
+        if pg_database_oid is not None:
+            query["pg_database_oid"] = pg_database_oid
+        if pg_schema_oid is not None:
+            query["pg_schema_oid"] = pg_schema_oid
+        if tenant_id is not None:
+            query["tenant_id"] = tenant_id
+        if timeline_id is not None:
+            query["timeline_id"] = timeline_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "DELETE", f"/api/2.0/postgres/{parent}/forward-etl/configuration", query=query, headers=headers
+        )
+        return DeleteForwardEtlConfigurationResponse.from_dict(res)
+
     def delete_project(self, name: str, *, purge: Optional[bool] = None) -> DeleteProjectOperation:
         """Deletes the specified database project.
 
@@ -3792,6 +6259,67 @@ class PostgresAPI:
         res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", query=query, headers=headers)
         operation = Operation.from_dict(res)
         return DeleteProjectOperation(self, operation)
+
+    def delete_recovery_branch_preview(
+        self, name: str, *, request_id: Optional[str] = None
+    ) -> DeleteRecoveryBranchPreviewOperation:
+        """Deletes the specified recovery branch after reconciliation is complete.
+
+        :param name: str
+        :param request_id: str (optional)
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+
+        query = {}
+        if request_id is not None:
+            query["request_id"] = request_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", query=query, headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteRecoveryBranchPreviewOperation(self, operation)
+
+    def delete_replication_group_preview(
+        self, name: str, *, etag: Optional[str] = None, request_id: Optional[str] = None
+    ) -> DeleteReplicationGroupPreviewOperation:
+        """Deletes the specified replication group.
+
+        :param name: str
+        :param etag: str (optional)
+        :param request_id: str (optional)
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        if request_id is not None:
+            query["request_id"] = request_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", query=query, headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteReplicationGroupPreviewOperation(self, operation)
 
     def delete_role(self, name: str, *, reassign_owned_to: Optional[str] = None) -> DeleteRoleOperation:
         """Deletes the specified Postgres role.
@@ -3823,6 +6351,27 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return DeleteRoleOperation(self, operation)
 
+    def delete_snapshot(self, name: str) -> DeleteSnapshotOperation:
+        """Deletes the specified snapshot.
+
+        :param name: str
+          The resource name of the snapshot to delete. Format: projects/{project_id}/snapshots/{snapshot_id}
+
+        :returns: :class:`Operation`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteSnapshotOperation(self, operation)
+
     def delete_synced_table(self, name: str) -> DeleteSyncedTableOperation:
         """Delete a Synced Table.
 
@@ -3845,8 +6394,113 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return DeleteSyncedTableOperation(self, operation)
 
+    def delete_table(self, name: str):
+        """Delete a Table (non-synced database table for Autoscaling v2 Lakebase projects).
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/postgres/tables/{name}", headers=headers)
+
+    def disable_forward_etl(
+        self,
+        parent: str,
+        *,
+        pg_database_oid: Optional[int] = None,
+        pg_schema_oid: Optional[int] = None,
+        tenant_id: Optional[str] = None,
+        timeline_id: Optional[str] = None,
+    ) -> DisableForwardEtlResponse:
+        """Disable Forward ETL for a branch.
+
+        :param parent: str
+          The Branch to disable Forward ETL for. Format: projects/{project_id}/branches/{branch_id}
+        :param pg_database_oid: int (optional)
+          PostgreSQL database OID to disable.
+        :param pg_schema_oid: int (optional)
+          PostgreSQL schema OID to disable.
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`DisableForwardEtlResponse`
+        """
+
+        query = {}
+        if pg_database_oid is not None:
+            query["pg_database_oid"] = pg_database_oid
+        if pg_schema_oid is not None:
+            query["pg_schema_oid"] = pg_schema_oid
+        if tenant_id is not None:
+            query["tenant_id"] = tenant_id
+        if timeline_id is not None:
+            query["timeline_id"] = timeline_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{parent}/forward-etl", query=query, headers=headers)
+        return DisableForwardEtlResponse.from_dict(res)
+
+    def failover_replication_group_preview(
+        self, name: str, target_workspace: str, *, etag: Optional[str] = None, request_id: Optional[str] = None
+    ) -> FailoverReplicationGroupPreviewOperation:
+        """Fails over the replication group to a target workspace, promoting the secondary to primary.
+
+        :param name: str
+        :param target_workspace: str
+        :param etag: str (optional)
+        :param request_id: str (optional)
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = {}
+        if etag is not None:
+            body["etag"] = etag
+        if request_id is not None:
+            body["request_id"] = request_id
+        if target_workspace is not None:
+            body["target_workspace"] = target_workspace
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/failover", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return FailoverReplicationGroupPreviewOperation(self, operation)
+
     def generate_database_credential(
-        self, endpoint: str, *, claims: Optional[List[RequestedClaims]] = None
+        self,
+        endpoint: str,
+        *,
+        claims: Optional[List[RequestedClaims]] = None,
+        expire_time: Optional[Timestamp] = None,
+        group_name: Optional[str] = None,
+        ttl: Optional[Duration] = None,
     ) -> DatabaseCredential:
         """Generate OAuth credentials for a Postgres database.
 
@@ -3855,6 +6509,15 @@ class PostgresAPI:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param claims: List[:class:`RequestedClaims`] (optional)
           The returned token will be scoped to UC tables with the specified permissions.
+        :param expire_time: Timestamp (optional)
+          Timestamp in UTC of when this credential should expire. Must be at least 300 seconds (5 minutes) and
+          at most 1 hour from the current time.
+        :param group_name: str (optional)
+          Databricks workspace group name. When provided, credentials are generated with permissions scoped to
+          this group.
+        :param ttl: Duration (optional)
+          The requested time-to-live for the generated credential token. Must be at least 300 seconds (5
+          minutes) and at most 3600 seconds (1 hour).
 
         :returns: :class:`DatabaseCredential`
         """
@@ -3864,6 +6527,12 @@ class PostgresAPI:
             body["claims"] = [v.as_dict() for v in claims]
         if endpoint is not None:
             body["endpoint"] = endpoint
+        if expire_time is not None:
+            body["expire_time"] = expire_time.ToJsonString()
+        if group_name is not None:
+            body["group_name"] = group_name
+        if ttl is not None:
+            body["ttl"] = ttl.ToJsonString()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3917,6 +6586,72 @@ class PostgresAPI:
 
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Catalog.from_dict(res)
+
+    def get_cdf_config(self, name: str) -> CdfConfig:
+        """Get a single Lakebase CDF configuration, including the source Postgres schema, target Unity Catalog
+        schema, and the identity under which writes are authorized.
+
+        :param name: str
+          The resource name of the CdfConfig to retrieve. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+
+        :returns: :class:`CdfConfig`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return CdfConfig.from_dict(res)
+
+    def get_cdf_status(self, name: str) -> CdfStatus:
+        """Get the CDF status of a single table within a Lakebase CDF configuration, including its current state
+        and the last committed position in the feed.
+
+        :param name: str
+          The resource name of the CdfStatus to retrieve. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
+
+        :returns: :class:`CdfStatus`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return CdfStatus.from_dict(res)
+
+    def get_compute_instance(self, name: str) -> ComputeInstance:
+        """Lists the specific compute instance under an endpoint. Note: ComputeInstances are managed via the
+        parent Endpoint resource, and cannot be created, updated, or deleted directly.
+
+        :param name: str
+          The full resource path of the compute instance to retrieve. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}/compute-instances/{compute_instance_id}
+
+        :returns: :class:`ComputeInstance`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return ComputeInstance.from_dict(res)
 
     def get_data_api(self, name: str) -> DataApi:
         """Get Data API configuration for a database.
@@ -3981,6 +6716,68 @@ class PostgresAPI:
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Endpoint.from_dict(res)
 
+    def get_forward_etl_metadata(
+        self, parent: str, *, tenant_id: Optional[str] = None, timeline_id: Optional[str] = None
+    ) -> ForwardEtlMetadata:
+        """Get Forward ETL metadata (database and schema OIDs).
+
+        :param parent: str
+          The Branch to get metadata for. Format: projects/{project_id}/branches/{branch_id}
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`ForwardEtlMetadata`
+        """
+
+        query = {}
+        if tenant_id is not None:
+            query["tenant_id"] = tenant_id
+        if timeline_id is not None:
+            query["timeline_id"] = timeline_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{parent}/forward-etl/metadata", query=query, headers=headers)
+        return ForwardEtlMetadata.from_dict(res)
+
+    def get_forward_etl_status(
+        self, parent: str, *, tenant_id: Optional[str] = None, timeline_id: Optional[str] = None
+    ) -> ForwardEtlStatus:
+        """Get Forward ETL configuration and status for a branch.
+
+        :param parent: str
+          The Branch to get Forward ETL status for. Format: projects/{project_id}/branches/{branch_id}
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`ForwardEtlStatus`
+        """
+
+        query = {}
+        if tenant_id is not None:
+            query["tenant_id"] = tenant_id
+        if timeline_id is not None:
+            query["timeline_id"] = timeline_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{parent}/forward-etl", query=query, headers=headers)
+        return ForwardEtlStatus.from_dict(res)
+
     def get_operation(self, name: str) -> Operation:
         """Retrieves the status of a long-running operation.
 
@@ -4021,6 +6818,44 @@ class PostgresAPI:
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Project.from_dict(res)
 
+    def get_recovery_branch_preview(self, name: str) -> RecoveryBranchPreview:
+        """Retrieves information about the specified recovery branch.
+
+        :param name: str
+
+        :returns: :class:`RecoveryBranchPreview`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return RecoveryBranchPreview.from_dict(res)
+
+    def get_replication_group_preview(self, name: str) -> ReplicationGroupPreview:
+        """Retrieves information about the specified replication group.
+
+        :param name: str
+
+        :returns: :class:`ReplicationGroupPreview`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return ReplicationGroupPreview.from_dict(res)
+
     def get_role(self, name: str) -> Role:
         """Retrieves information about the specified Postgres role, including its authentication method and
         permissions.
@@ -4043,6 +6878,48 @@ class PostgresAPI:
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Role.from_dict(res)
 
+    def get_snapshot(self, name: str) -> Snapshot:
+        """Retrieves information about the specified snapshot.
+
+        :param name: str
+          The resource name of the snapshot to retrieve. Format: projects/{project_id}/snapshots/{snapshot_id}
+
+        :returns: :class:`Snapshot`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return Snapshot.from_dict(res)
+
+    def get_snapshot_schedule(self, name: str) -> SnapshotSchedule:
+        """Retrieves the snapshot schedule for a branch. A branch with no configured schedule returns an empty
+        schedule (not NOT_FOUND).
+
+        :param name: str
+          The resource name of the branch's snapshot schedule. Format:
+          projects/{project_id}/branches/{branch_id}/snapshot-schedule
+
+        :returns: :class:`SnapshotSchedule`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return SnapshotSchedule.from_dict(res)
+
     def get_synced_table(self, name: str) -> SyncedTable:
         """Get a Synced Table.
 
@@ -4063,6 +6940,60 @@ class PostgresAPI:
 
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return SyncedTable.from_dict(res)
+
+    def get_table(self, name: str) -> Table:
+        """Get a Table (non-synced database table for Autoscaling v2 Lakebase projects).
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+
+        :returns: :class:`Table`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/tables/{name}", headers=headers)
+        return Table.from_dict(res)
+
+    def inspect_recovery_branch_preview(
+        self, name: str, branch_id: str, *, request_id: Optional[str] = None
+    ) -> InspectRecoveryBranchPreviewOperation:
+        """Materializes a temporary inspection branch from the specified recovery branch for data examination.
+
+        :param name: str
+          The recovery branch from which to create the inspection branch.
+        :param branch_id: str
+          Caller-supplied id for the inspection Branch this custom method materializes.
+        :param request_id: str (optional)
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = {}
+        if branch_id is not None:
+            body["branch_id"] = branch_id
+        if request_id is not None:
+            body["request_id"] = request_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/inspect", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return InspectRecoveryBranchPreviewOperation(self, operation)
 
     def list_branches(
         self,
@@ -4107,6 +7038,130 @@ class PostgresAPI:
             if "branches" in json:
                 for v in json["branches"]:
                     yield Branch.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_cdf_configs(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[CdfConfig]:
+        """List all CDF configurations for a Lakebase database. Each configuration maps a Postgres schema to a
+        Unity Catalog schema where the change data feed is materialized.
+
+        :param parent: str
+          The parent database to list CdfConfigs for. Format:
+          projects/{project}/branches/{branch}/databases/{database}
+        :param page_size: int (optional)
+          Maximum number of CdfConfigs to return.
+        :param page_token: str (optional)
+          Pagination token returned by a previous ListCdfConfigs call. Empty on the first page.
+
+        :returns: Iterator over :class:`CdfConfig`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/postgres/{parent}/cdf-configs", query=query, headers=headers)
+            if "cdf_configs" in json:
+                for v in json["cdf_configs"]:
+                    yield CdfConfig.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_cdf_statuses(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[CdfStatus]:
+        """List the per-table CDF statuses within a Lakebase CDF configuration. Each status shows whether a
+        table's change data feed is snapshotting, streaming, or skipped.
+
+        :param parent: str
+          The parent CdfConfig to list CdfStatuses for. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+        :param page_size: int (optional)
+          Maximum number of CdfStatuses to return.
+        :param page_token: str (optional)
+          Pagination token returned by a previous ListCdfStatuses call. Empty on the first page.
+
+        :returns: Iterator over :class:`CdfStatus`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/postgres/{parent}/cdf-statuses", query=query, headers=headers)
+            if "cdf_statuses" in json:
+                for v in json["cdf_statuses"]:
+                    yield CdfStatus.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_compute_instances(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[ComputeInstance]:
+        """Lists all compute instances that have been created under the specified endpoint. Note:
+        ComputeInstances are managed via the parent Endpoint resource, and cannot be created, updated, or
+        deleted directly.
+
+        :param parent: str
+          The parent, which owns the compute instances.
+        :param page_size: int (optional)
+          The maximum number of compute instances to return. The service may return fewer than this value.
+
+          If unspecified, at most 50 compute instances will be returned. The maximum value is 1000; values
+          above 1000 will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous ``ListInstances`` call. Provide this to retrieve the
+          subsequent page.
+
+          When paginating, all other parameters provided to ``ListInstances`` must match the call that
+          provided the page token.
+
+        :returns: Iterator over :class:`ComputeInstance`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/postgres/{parent}/compute-instances", query=query, headers=headers)
+            if "compute_instances" in json:
+                for v in json["compute_instances"]:
+                    yield ComputeInstance.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -4227,6 +7282,78 @@ class PostgresAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_recovery_branch_previews(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[RecoveryBranchPreview]:
+        """Returns a paginated list of recovery branches for the project.
+
+        :param parent: str
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`RecoveryBranchPreview`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/postgres/{parent}/preview/recovery-branches", query=query, headers=headers
+            )
+            if "recovery_branch_previews" in json:
+                for v in json["recovery_branch_previews"]:
+                    yield RecoveryBranchPreview.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_replication_group_previews(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[ReplicationGroupPreview]:
+        """Returns a paginated list of replication groups for the project.
+
+        :param parent: str
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`ReplicationGroupPreview`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/postgres/{parent}/preview/replication-groups", query=query, headers=headers
+            )
+            if "replication_group_previews" in json:
+                for v in json["replication_group_previews"]:
+                    yield ReplicationGroupPreview.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def list_roles(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Role]:
@@ -4264,15 +7391,65 @@ class PostgresAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def undelete_branch(self, name: str) -> UndeleteBranchOperation:
-        """Undeletes the specified database branch.
+    def list_snapshots(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[Snapshot]:
+        """Returns a paginated list of snapshots in the project.
+
+        :param parent: str
+          The project that owns the snapshots. Format: projects/{project_id}
+        :param page_size: int (optional)
+          Maximum number of snapshots to return per page.
+        :param page_token: str (optional)
+          Page token from a previous response; omit for the first page.
+
+        :returns: Iterator over :class:`Snapshot`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/postgres/{parent}/snapshots", query=query, headers=headers)
+            if "snapshots" in json:
+                for v in json["snapshots"]:
+                    yield Snapshot.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def switchover_replication_group_preview(
+        self, name: str, target_workspace: str, *, etag: Optional[str] = None, request_id: Optional[str] = None
+    ) -> SwitchoverReplicationGroupPreviewOperation:
+        """Switches over the replication group to a target workspace with a coordinated failover.
 
         :param name: str
-          The full resource path of the branch to undelete. Format: projects/{project_id}/branches/{branch_id}
+        :param target_workspace: str
+        :param etag: str (optional)
+        :param request_id: str (optional)
 
         :returns: :class:`Operation`
         """
 
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = {}
+        if etag is not None:
+            body["etag"] = etag
+        if request_id is not None:
+            body["request_id"] = request_id
+        if target_workspace is not None:
+            body["target_workspace"] = target_workspace
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -4282,7 +7459,30 @@ class PostgresAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", headers=headers)
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/switchover", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return SwitchoverReplicationGroupPreviewOperation(self, operation)
+
+    def undelete_branch(self, name: str) -> UndeleteBranchOperation:
+        """Undeletes the specified database branch.
+
+        :param name: str
+          The full resource path of the branch to undelete. Format: projects/{project_id}/branches/{branch_id}
+
+        :returns: :class:`Operation`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", body=body, headers=headers)
         operation = Operation.from_dict(res)
         return UndeleteBranchOperation(self, operation)
 
@@ -4295,6 +7495,7 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -4304,7 +7505,7 @@ class PostgresAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", headers=headers)
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", body=body, headers=headers)
         operation = Operation.from_dict(res)
         return UndeleteProjectOperation(self, operation)
 
@@ -4318,7 +7519,7 @@ class PostgresAPI:
         :param branch: :class:`Branch`
           The Branch to update.
 
-          The branch's `name` field is used to identify the branch to update. Format:
+          The branch's ``name`` field is used to identify the branch to update. Format:
           projects/{project_id}/branches/{branch_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
@@ -4349,7 +7550,7 @@ class PostgresAPI:
         :param name: str
           Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
         :param data_api: :class:`DataApi`
-          The Data API configuration to update. The data_api's `name` field identifies the resource.
+          The Data API configuration to update. The data_api's ``name`` field identifies the resource.
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
 
@@ -4382,7 +7583,7 @@ class PostgresAPI:
         :param database: :class:`Database`
           The Database to update.
 
-          The database's `name` field is used to identify the database to update. Format:
+          The database's ``name`` field is used to identify the database to update. Format:
           projects/{project_id}/branches/{branch_id}/databases/{database_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
@@ -4417,7 +7618,7 @@ class PostgresAPI:
         :param endpoint: :class:`Endpoint`
           The Endpoint to update.
 
-          The endpoint's `name` field is used to identify the endpoint to update. Format:
+          The endpoint's ``name`` field is used to identify the endpoint to update. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
@@ -4450,7 +7651,8 @@ class PostgresAPI:
         :param project: :class:`Project`
           The Project to update.
 
-          The project's `name` field is used to identify the project to update. Format: projects/{project_id}
+          The project's ``name`` field is used to identify the project to update. Format:
+          projects/{project_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
 
@@ -4474,6 +7676,56 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return UpdateProjectOperation(self, operation)
 
+    def update_replication_group_preview(
+        self,
+        name: str,
+        replication_group_preview: ReplicationGroupPreview,
+        update_mask: FieldMask,
+        *,
+        request_id: Optional[str] = None,
+    ) -> UpdateReplicationGroupPreviewOperation:
+        """Updates the specified replication group.
+
+        :param name: str
+          The resource name of the replication group. Format:
+          projects/{project_id}/preview/replication-groups/{replication_group_id}
+        :param replication_group_preview: :class:`ReplicationGroupPreview`
+        :param update_mask: FieldMask
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
+        :param request_id: str (optional)
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = replication_group_preview.as_dict()
+        query = {}
+        if request_id is not None:
+            query["request_id"] = request_id
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return UpdateReplicationGroupPreviewOperation(self, operation)
+
     def update_role(self, name: str, role: Role, update_mask: FieldMask) -> UpdateRoleOperation:
         """Update a role for a branch.
 
@@ -4483,7 +7735,7 @@ class PostgresAPI:
         :param role: :class:`Role`
           The Postgres Role to update.
 
-          The role's `name` field is used to identify the role to update. Format:
+          The role's ``name`` field is used to identify the role to update. Format:
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param update_mask: FieldMask
           The list of fields to update in Postgres Role. If unspecified, all fields will be updated when
@@ -4508,6 +7760,72 @@ class PostgresAPI:
         res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return UpdateRoleOperation(self, operation)
+
+    def update_snapshot(self, name: str, snapshot: Snapshot, update_mask: FieldMask) -> UpdateSnapshotOperation:
+        """Updates the specified snapshot. You can change or disable its expiration policy.
+
+        :param name: str
+          The resource name of the snapshot. Format: projects/{project_id}/snapshots/{snapshot_id}
+        :param snapshot: :class:`Snapshot`
+          The snapshot to update. Its ``name`` identifies the snapshot. Format:
+          projects/{project_id}/snapshots/{snapshot_id}
+        :param update_mask: FieldMask
+          Fields to update. The only updatable path is ``spec.expiration``.
+
+        :returns: :class:`Operation`
+        """
+
+        body = snapshot.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return UpdateSnapshotOperation(self, operation)
+
+    def update_snapshot_schedule(
+        self, name: str, snapshot_schedule: SnapshotSchedule, update_mask: FieldMask
+    ) -> SnapshotSchedule:
+        """Sets the snapshot schedule for a branch. The ``schedule`` field is replaced wholesale; an empty
+        schedule disables automatic snapshots.
+
+        :param name: str
+          The resource name of the branch's snapshot schedule. Format:
+          projects/{project_id}/branches/{branch_id}/snapshot-schedule
+        :param snapshot_schedule: :class:`SnapshotSchedule`
+          The snapshot schedule to set. Its ``name`` identifies the branch. Format:
+          projects/{project_id}/branches/{branch_id}/snapshot-schedule
+        :param update_mask: FieldMask
+          Fields to update. The only updatable path is ``schedule``, which replaces the entire set of
+          cadences.
+
+        :returns: :class:`SnapshotSchedule`
+        """
+
+        body = snapshot_schedule.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
+        return SnapshotSchedule.from_dict(res)
 
 
 class CreateBranchOperation:
@@ -4649,6 +7967,83 @@ class CreateCatalogOperation:
             return None
 
         return CatalogOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class CreateCdfConfigOperation:
+    """Long-running operation for create_cdf_config"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> CdfConfig:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`CdfConfig`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            cdf_config = CdfConfig.from_dict(operation.response)
+
+            return cdf_config, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> CdfConfigOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`CdfConfigOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return CdfConfigOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.
@@ -4972,6 +8367,83 @@ class CreateProjectOperation:
         return operation.done
 
 
+class CreateReplicationGroupPreviewOperation:
+    """Long-running operation for create_replication_group_preview"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> ReplicationGroupPreview:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`ReplicationGroupPreview`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            replication_group_preview = ReplicationGroupPreview.from_dict(operation.response)
+
+            return replication_group_preview, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> ReplicationGroupPreviewOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`ReplicationGroupPreviewOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return ReplicationGroupPreviewOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
 class CreateRoleOperation:
     """Long-running operation for create_role"""
 
@@ -5034,6 +8506,83 @@ class CreateRoleOperation:
             return None
 
         return RoleOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class CreateSnapshotOperation:
+    """Long-running operation for create_snapshot"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Snapshot:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Snapshot`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            snapshot = Snapshot.from_dict(operation.response)
+
+            return snapshot, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> SnapshotOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`SnapshotOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return SnapshotOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.
@@ -5261,6 +8810,81 @@ class DeleteCatalogOperation:
             return None
 
         return CatalogOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteCdfConfigOperation:
+    """Long-running operation for delete_cdf_config"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> CdfConfigOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`CdfConfigOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return CdfConfigOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.
@@ -5576,6 +9200,156 @@ class DeleteProjectOperation:
         return operation.done
 
 
+class DeleteRecoveryBranchPreviewOperation:
+    """Long-running operation for delete_recovery_branch_preview"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> BranchOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`BranchOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return BranchOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteReplicationGroupPreviewOperation:
+    """Long-running operation for delete_replication_group_preview"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> ReplicationGroupPreviewOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`ReplicationGroupPreviewOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return ReplicationGroupPreviewOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
 class DeleteRoleOperation:
     """Long-running operation for delete_role"""
 
@@ -5651,6 +9425,81 @@ class DeleteRoleOperation:
         return operation.done
 
 
+class DeleteSnapshotOperation:
+    """Long-running operation for delete_snapshot"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> SnapshotOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`SnapshotOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return SnapshotOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
 class DeleteSyncedTableOperation:
     """Long-running operation for delete_synced_table"""
 
@@ -5711,6 +9560,237 @@ class DeleteSyncedTableOperation:
             return None
 
         return SyncedTableOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class FailoverReplicationGroupPreviewOperation:
+    """Long-running operation for failover_replication_group_preview"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> ReplicationGroupPreview:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`ReplicationGroupPreview`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            replication_group_preview = ReplicationGroupPreview.from_dict(operation.response)
+
+            return replication_group_preview, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> ReplicationGroupPreviewOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`ReplicationGroupPreviewOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return ReplicationGroupPreviewOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class InspectRecoveryBranchPreviewOperation:
+    """Long-running operation for inspect_recovery_branch_preview"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Branch:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Branch`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            branch = Branch.from_dict(operation.response)
+
+            return branch, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> BranchOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`BranchOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return BranchOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class SwitchoverReplicationGroupPreviewOperation:
+    """Long-running operation for switchover_replication_group_preview"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> ReplicationGroupPreview:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`ReplicationGroupPreview`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            replication_group_preview = ReplicationGroupPreview.from_dict(operation.response)
+
+            return replication_group_preview, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> ReplicationGroupPreviewOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`ReplicationGroupPreviewOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return ReplicationGroupPreviewOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.
@@ -6261,6 +10341,83 @@ class UpdateProjectOperation:
         return operation.done
 
 
+class UpdateReplicationGroupPreviewOperation:
+    """Long-running operation for update_replication_group_preview"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> ReplicationGroupPreview:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`ReplicationGroupPreview`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            replication_group_preview = ReplicationGroupPreview.from_dict(operation.response)
+
+            return replication_group_preview, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> ReplicationGroupPreviewOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`ReplicationGroupPreviewOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return ReplicationGroupPreviewOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
 class UpdateRoleOperation:
     """Long-running operation for update_role"""
 
@@ -6323,6 +10480,83 @@ class UpdateRoleOperation:
             return None
 
         return RoleOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UpdateSnapshotOperation:
+    """Long-running operation for update_snapshot"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Snapshot:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Snapshot`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            snapshot = Snapshot.from_dict(operation.response)
+
+            return snapshot, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> SnapshotOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`SnapshotOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return SnapshotOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

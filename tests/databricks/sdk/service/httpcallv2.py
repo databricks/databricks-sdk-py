@@ -115,6 +115,19 @@ class HttpCallV2API:
     ) -> Resource:
         """This mimics "old" style post requests which have the resource inlined.
 
+        Set the ``path_param_string`` value before calling. The *resource* is sent as the request **body**.
+        See the `API overview <https://docs.databricks.com/api>`__ for details.
+
+        Supported body styles:
+
+        - `inline <https://docs.databricks.com/api/inline>`__
+        - referenced
+
+        Resolution order:
+
+        1. inline body
+        2. referenced resource
+
         :param path_param_string: str
         :param path_param_int: int
         :param path_param_bool: bool
@@ -189,6 +202,40 @@ class HttpCallV2API:
         )
         return Resource.from_dict(res)
 
+    def sync_resource(self, path_param_string: str, path_param_int: int, path_param_bool: bool) -> Resource:
+        """This mimics a parameterless custom method: a body:"*" request whose fields are all path-bound, so the
+        request carries Content-Type: application/json but has no JSON body fields to serialize. The canonical
+        body for such a request is the empty object {}. The :sync verb sits after a literal path segment
+        because Databricks rejects a custom verb placed directly after a path variable as ambiguous.
+
+        :param path_param_string: str
+          String path segment identifying the resource to sync.
+        :param path_param_int: int
+          Integer path segment identifying the resource to sync.
+        :param path_param_bool: bool
+          Boolean path segment identifying the resource to sync.
+
+        :returns: :class:`Resource`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/http-call/{path_param_string}/{path_param_int}/{path_param_bool}/state:sync",
+            body=body,
+            headers=headers,
+        )
+        return Resource.from_dict(res)
+
     def update_resource(
         self,
         nested_path_param_string: str,
@@ -206,6 +253,10 @@ class HttpCallV2API:
     ) -> Resource:
         """This mimics "new" style post requests which have a body field.
 
+        .. note::
+
+           Prefer this over the inline form.
+
         :param nested_path_param_string: str
         :param nested_path_param_int: int
         :param nested_path_param_bool: bool
@@ -213,8 +264,8 @@ class HttpCallV2API:
           Body element
         :param field_mask: FieldMask (optional)
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
         :param optional_complex_query_param: :class:`ComplexQueryParam` (optional)

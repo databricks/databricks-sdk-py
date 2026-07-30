@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING, Dict
 
+from databricks.sdk.service.provisioning import Workspace
+
 from .oauth import TokenSource
-from .service.provisioning import Workspace
 
 if TYPE_CHECKING:
     from .config import Config

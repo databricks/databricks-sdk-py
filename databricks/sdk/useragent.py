@@ -12,6 +12,7 @@ from .version import __version__
 RUNTIME_KEY = "runtime"
 CICD_KEY = "cicd"
 AUTH_KEY = "auth"
+META_HARNESS_KEY = "meta-harness"
 
 _product_name = "unknown"
 _product_version = "0.0.0"
@@ -175,6 +176,9 @@ def to_string(
     agent = agent_provider()
     if agent:
         base.append(("agent", agent))
+    meta_harness = meta_harness_provider()
+    if meta_harness:
+        base.append((META_HARNESS_KEY, meta_harness))
     return " ".join(f"{k}/{v}" for k, v in base)
 
 
@@ -329,3 +333,37 @@ def _agent_env_fallback() -> str:
     if not v:
         return ""
     return _sanitize_agent_value(v)[:_MAX_AGENT_FALLBACK_LEN]
+
+
+@dataclass(frozen=True)
+class _MetaHarnessRecord:
+    env_var: str
+    product: str
+
+
+# Known agent meta-harnesses, detected independently of agents (a meta-harness
+# is not an agent). Keep in sync with databricks-sdk-go and databricks-sdk-java.
+_KNOWN_META_HARNESSES: List[_MetaHarnessRecord] = [
+    _MetaHarnessRecord("OMNIGENT", "omnigent"),  # https://github.com/omnigent-ai/omnigent
+]
+
+# None = not computed, "" = computed but no meta-harness found.
+_meta_harness_provider = None
+
+
+def meta_harness_provider() -> str:
+    """Detect a known agent meta-harness by presence-only env var, else "".
+
+    Returns "multiple" if more than one matched. Cached after the first call.
+    """
+    global _meta_harness_provider
+    if _meta_harness_provider is not None:
+        return _meta_harness_provider
+    matches = [h.product for h in _KNOWN_META_HARNESSES if h.env_var in os.environ]
+    if len(matches) == 1:
+        _meta_harness_provider = matches[0]
+    elif len(matches) > 1:
+        _meta_harness_provider = "multiple"
+    else:
+        _meta_harness_provider = ""
+    return _meta_harness_provider

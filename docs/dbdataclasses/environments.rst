@@ -14,11 +14,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GPU
       :value: "GPU"
 
+.. autoclass:: BatchGetWorkspaceBaseEnvironmentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DatabricksServiceExceptionWithDetailsProto
    :members:
    :undoc-members:
 
 .. autoclass:: DefaultWorkspaceBaseEnvironment
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnvironmentSpec
    :members:
    :undoc-members:
 
@@ -306,3 +314,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: WorkspaceBaseEnvironmentOperationMetadata
    :members:
    :undoc-members:
+
+.. py:class:: WorkspaceBaseEnvironmentProvider
+
+   Identifies who provides and manages a WorkspaceBaseEnvironment.
+
+   .. py:attribute:: ADMIN
+      :value: "ADMIN"
+
+   .. py:attribute:: DATABRICKS
+      :value: "DATABRICKS"

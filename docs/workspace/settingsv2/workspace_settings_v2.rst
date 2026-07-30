@@ -28,11 +28,11 @@
           unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListWorkspaceSettingsMetadataRequest` call. Provide this to
-          retrieve the subsequent page.
+          A page token, received from a previous ``ListWorkspaceSettingsMetadataRequest`` call. Provide this
+          to retrieve the subsequent page.
 
-          When paginating, all other parameters provided to `ListWorkspaceSettingsMetadataRequest` must match
-          the call that provided the page token.
+          When paginating, all other parameters provided to ``ListWorkspaceSettingsMetadataRequest`` must
+          match the call that provided the page token.
 
         :returns: Iterator over :class:`SettingsMetadata`
         

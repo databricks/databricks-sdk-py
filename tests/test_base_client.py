@@ -1,5 +1,9 @@
 import io
+import json
 import random
+from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
+from enum import Enum
 from http.server import BaseHTTPRequestHandler
 from typing import Callable, Iterator, List, Optional, Tuple, Type
 from unittest.mock import Mock
@@ -8,7 +12,7 @@ import pytest
 from requests import PreparedRequest, Response, Timeout
 
 from databricks.sdk import errors, useragent
-from databricks.sdk._base_client import _BaseClient, _RawResponse, _StreamingResponse
+from databricks.sdk._base_client import _BaseClient, _json_default, _RawResponse, _StreamingResponse
 from databricks.sdk.core import DatabricksError
 
 from .clock import FakeClock
@@ -561,3 +565,69 @@ def test_rewind_seekable_stream(test_case: RetryTestCase, failure: Tuple[Callabl
         do()
 
     assert session._received_requests == [test_case._expected_result for _ in range(expected_attempts_made)]
+
+
+@dataclass
+class _Chained:
+    field: str
+    nested: "Optional[_Chained]" = None
+    extra: Optional[object] = None
+
+    def as_dict(self) -> dict:
+        body = {"field": self.field}
+        if self.nested is not None:
+            body["nested"] = self.nested
+        if self.extra is not None:
+            body["extra"] = self.extra
+        return body
+
+
+class _Color(Enum):
+    RED = "red"
+
+
+class _StubTs:
+    def ToJsonString(self) -> str:
+        return "1970-01-01T00:00:00Z"
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        (_Chained("a"), {"field": "a"}),
+        (_Chained("a", nested=_Chained("b")), {"field": "a", "nested": _Chained("b")}),
+        (_Color.RED, "red"),
+        (datetime(2026, 7, 27, tzinfo=timezone.utc), "2026-07-27T00:00:00+00:00"),
+        (timedelta(seconds=90), "90.0s"),
+        (_StubTs(), "1970-01-01T00:00:00Z"),
+    ],
+)
+def test_json_default_coerces_non_serializable_values(value, expected):
+    assert _json_default(value) == expected
+
+
+def test_json_default_rejects_unknown_type():
+    with pytest.raises(TypeError):
+        _json_default(object())
+
+
+@pytest.mark.parametrize(
+    "content,expected_content",
+    [
+        (_Chained("a", nested=_Chained("b")), {"field": "a", "nested": {"field": "b"}}),
+        (
+            _Chained("a", extra={"when": datetime(2026, 7, 27, tzinfo=timezone.utc), "color": _Color.RED}),
+            {"field": "a", "extra": {"when": "2026-07-27T00:00:00+00:00", "color": "red"}},
+        ),
+    ],
+)
+def test_do_serializes_body_with_default_hook(requests_mock, content, expected_content):
+    client = _BaseClient()
+    requests_mock.post("https://localhost/test", json={"ok": True})
+
+    res = client.do("POST", "https://localhost/test", body={"content": content})
+
+    assert res == {"ok": True}
+    sent = requests_mock.last_request
+    assert sent.headers["Content-Type"] == "application/json"
+    assert json.loads(sent.body) == {"content": expected_content}

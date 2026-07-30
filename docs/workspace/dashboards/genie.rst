@@ -9,7 +9,7 @@
     Catalog and requires at least CAN USE permission on a Pro or Serverless SQL warehouse. Also, Databricks
     Assistant must be enabled.
 
-    .. py:method:: create_message(space_id: str, conversation_id: str, content: str) -> Wait[GenieMessage]
+    .. py:method:: create_message(space_id: str, conversation_id: str, content: str [, enable_visualization: Optional[bool]]) -> Wait[GenieMessage]
 
         Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
         previously created messages in the conversation to respond.
@@ -20,13 +20,15 @@
           The ID associated with the conversation.
         :param content: str
           User message content.
+        :param enable_visualization: bool (optional)
+          Enable visualization generation.
 
         :returns:
           Long-running operation waiter for :class:`GenieMessage`.
           See :method:wait_get_message_genie_completed for more details.
         
 
-    .. py:method:: create_message_and_wait(space_id: str, conversation_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
+    .. py:method:: create_message_and_wait(space_id: str, conversation_id: str, content: str [, enable_visualization: Optional[bool], timeout: datetime.timedelta = 0:20:00]) -> GenieMessage
 
 
     .. py:method:: create_message_comment(space_id: str, conversation_id: str, message_id: str, content: str) -> GenieMessageComment
@@ -54,7 +56,7 @@
         :param serialized_space: str
           The contents of the Genie Space in serialized string form. Use the [Get Genie
           Space](:method:genie/getspace) API to retrieve an example response, which includes the
-          `serialized_space` field. This field provides the structure of the JSON string that represents the
+          ``serialized_space`` field. This field provides the structure of the JSON string that represents the
           space's layout and components.
         :param description: str (optional)
           Optional description
@@ -92,6 +94,19 @@
 
         
 
+    .. py:method:: download_message_attachment_visualization(name: str) -> DownloadMessageAttachmentVisualizationResponse
+
+        Download a rendered image of a message visualization attachment. The response body is the raw PNG
+        image, not a JSON payload. This is only available if the attachment is a visualization and the message
+        status is ``COMPLETED``. This endpoint is not supported for Private Link workspaces.
+
+        :param name: str
+          The resource name of the attachment to render, in the format
+          ``spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}``.
+
+        :returns: :class:`DownloadMessageAttachmentVisualizationResponse`
+        
+
     .. py:method:: execute_message_attachment_query(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
 
         Execute the SQL for a message query attachment. Use this API when the query attachment has expired and
@@ -126,26 +141,22 @@
 
     .. py:method:: generate_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGenerateDownloadFullQueryResultResponse
 
-        Initiates a new SQL execution and returns a `download_id` and `download_id_signature` that you can use
-        to track the progress of the download. The query result is stored in an external link and can be
+        Initiates a new SQL execution and returns a ``download_id`` and ``download_id_signature`` that you can
+        use to track the progress of the download. The query result is stored in an external link and can be
         retrieved using the [Get Download Full Query Result](:method:genie/getdownloadfullqueryresult) API.
-        Both `download_id` and `download_id_signature` must be provided when calling the Get endpoint.
+        Both ``download_id`` and ``download_id_signature`` must be provided when calling the Get endpoint.
 
-        ----
+        **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
+        ``EXTERNAL_LINKS`` disposition.**
 
-        ### **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
-        `EXTERNAL_LINKS` disposition.**
-
-        When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is generated, which can be used to
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
         download the results directly from . As a short-lived is embedded in this URL, you should protect the
         URL.
 
-        Because URLs are already generated with embedded temporary s, you must not set an `Authorization`
+        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
         header in the download requests.
 
         See [Execute Statement](:method:statementexecution/executestatement) for more details.
-
-        ----
 
         :param space_id: str
           Genie space ID
@@ -230,26 +241,22 @@
     .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str, download_id_signature: str) -> GenieGetDownloadFullQueryResultResponse
 
         After [Generating a Full Query Result Download](:method:genie/generatedownloadfullqueryresult) and
-        successfully receiving a `download_id` and `download_id_signature`, use this API to poll the download
-        progress. Both `download_id` and `download_id_signature` are required to call this endpoint. When the
-        download is complete, the API returns the result in the `EXTERNAL_LINKS` disposition, containing one
-        or more external links to the query result files.
+        successfully receiving a ``download_id`` and ``download_id_signature``, use this API to poll the
+        download progress. Both ``download_id`` and ``download_id_signature`` are required to call this
+        endpoint. When the download is complete, the API returns the result in the ``EXTERNAL_LINKS``
+        disposition, containing one or more external links to the query result files.
 
-        ----
+        **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
+        ``EXTERNAL_LINKS`` disposition.**
 
-        ### **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
-        `EXTERNAL_LINKS` disposition.**
-
-        When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is generated, which can be used to
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
         download the results directly from . As a short-lived is embedded in this URL, you should protect the
         URL.
 
-        Because URLs are already generated with embedded temporary s, you must not set an `Authorization`
+        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
         header in the download requests.
 
         See [Execute Statement](:method:statementexecution/executestatement) for more details.
-
-        ----
 
         :param space_id: str
           Genie space ID
@@ -285,7 +292,7 @@
     .. py:method:: get_message_attachment_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
 
         Get the result of SQL query if the message has a query attachment. This is only available if a message
-        has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
+        has a query attachment and the message status is ``EXECUTING_QUERY`` OR ``COMPLETED``.
 
         :param space_id: str
           Genie space ID
@@ -441,7 +448,7 @@
 
         
 
-    .. py:method:: start_conversation(space_id: str, content: str) -> Wait[GenieMessage]
+    .. py:method:: start_conversation(space_id: str, content: str [, enable_visualization: Optional[bool]]) -> Wait[GenieMessage]
 
         Start a new conversation.
 
@@ -449,13 +456,15 @@
           The ID associated with the Genie space where you want to start a conversation.
         :param content: str
           The text of the message that starts the conversation.
+        :param enable_visualization: bool (optional)
+          Enable visualization generation.
 
         :returns:
           Long-running operation waiter for :class:`GenieMessage`.
           See :method:wait_get_message_genie_completed for more details.
         
 
-    .. py:method:: start_conversation_and_wait(space_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
+    .. py:method:: start_conversation_and_wait(space_id: str, content: str [, enable_visualization: Optional[bool], timeout: datetime.timedelta = 0:20:00]) -> GenieMessage
 
 
     .. py:method:: trash_space(space_id: str)
@@ -484,7 +493,7 @@
         :param serialized_space: str (optional)
           The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
           Space](:method:genie/getspace) API to retrieve an example response, which includes the
-          `serialized_space` field. This field provides the structure of the JSON string that represents the
+          ``serialized_space`` field. This field provides the structure of the JSON string that represents the
           space's layout and components.
         :param title: str (optional)
           Optional title override

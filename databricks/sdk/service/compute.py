@@ -4,24 +4,28 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
+from google.protobuf.timestamp_pb2 import Timestamp
+
+import time
+import random
+import logging
+import uuid
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
+    _timestamp,
+    Wait,
 )
 
-from ..errors import OperationFailed
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -53,7 +57,7 @@ class Adlsgen2Info:
 
     destination: str
     """abfss destination, e.g.
-    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`."""
+    ``abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>``."""
 
     def as_dict(self) -> dict:
         """Serializes the Adlsgen2Info into a dictionary suitable for use as a JSON request body."""
@@ -79,7 +83,7 @@ class Adlsgen2Info:
 class AutoScale:
     max_workers: Optional[int] = None
     """The maximum number of workers to which the cluster can scale up when overloaded. Note that
-    `max_workers` must be strictly greater than `min_workers`."""
+    ``max_workers`` must be strictly greater than ``min_workers``."""
 
     min_workers: Optional[int] = None
     """The minimum number of workers to which the cluster can scale down when underutilized. It is also
@@ -121,15 +125,15 @@ class AwsAttributes:
     volumes. For node types with no instance store, at least one EBS volume needs to be specified;
     otherwise, cluster creation will fail.
     
-    These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance store volumes will be
-    mounted at `/local_disk0`, `/local_disk1`, and etc.
+    These EBS volumes will be mounted at ``/ebs0``, ``/ebs1``, and etc. Instance store volumes will
+    be mounted at ``/local_disk0``, ``/local_disk1``, and etc.
     
     If EBS volumes are attached, Databricks will configure Spark to use only the EBS volumes for
     scratch storage because heterogenously sized scratch devices can lead to inefficient disk
     utilization. If no EBS volumes are attached, Databricks will configure Spark to use instance
     store volumes.
     
-    Please note that if EBS volumes are specified, then the Spark configuration `spark.local.dir`
+    Please note that if EBS volumes are specified, then the Spark configuration ``spark.local.dir``
     will be overridden."""
 
     ebs_volume_iops: Optional[int] = None
@@ -149,13 +153,13 @@ class AwsAttributes:
     """The type of EBS volumes that will be launched with this cluster."""
 
     first_on_demand: Optional[int] = None
-    """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. If this
-    value is greater than 0, the cluster driver node in particular will be placed on an on-demand
-    instance. If this value is greater than or equal to the current cluster size, all nodes will be
-    placed on on-demand instances. If this value is less than the current cluster size,
-    `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed
-    on `availability` instances. Note that this value does not affect cluster size and cannot
-    currently be mutated over the lifetime of a cluster."""
+    """The first ``first_on_demand`` nodes of the cluster will be placed on on-demand instances. If
+    this value is greater than 0, the cluster driver node in particular will be placed on an
+    on-demand instance. If this value is greater than or equal to the current cluster size, all
+    nodes will be placed on on-demand instances. If this value is less than the current cluster
+    size, ``first_on_demand`` nodes will be placed on on-demand instances and the remainder will be
+    placed on ``availability`` instances. Note that this value does not affect cluster size and
+    cannot currently be mutated over the lifetime of a cluster."""
 
     instance_profile_arn: Optional[str] = None
     """Nodes for this cluster will only be placed on AWS instances with this instance profile. If
@@ -168,9 +172,9 @@ class AwsAttributes:
     spot_bid_price_percent: Optional[int] = None
     """The bid price for AWS spot instances, as a percentage of the corresponding instance type's
     on-demand price. For example, if this field is set to 50, and the cluster needs a new
-    `r3.xlarge` spot instance, then the bid price is half of the price of on-demand `r3.xlarge`
+    ``r3.xlarge`` spot instance, then the bid price is half of the price of on-demand ``r3.xlarge``
     instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand
-    `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are
+    ``r3.xlarge`` instances. If not specified, the default value is 100. When spot instances are
     requested for this cluster, only spot instances whose bid price percentage matches this field
     will be considered. Note that, for safety, we enforce this field to be no more than 10000."""
 
@@ -183,8 +187,8 @@ class AwsAttributes:
     place cluster in a zone with high availability, and will retry placement in a different AZ if
     there is not enough capacity.
     
-    The list of available zones as well as the default value can be found by using the `List Zones`
-    method."""
+    The list of available zones as well as the default value can be found by using the ``List
+    Zones`` method."""
 
     def as_dict(self) -> dict:
         """Serializes the AwsAttributes into a dictionary suitable for use as a JSON request body."""
@@ -254,9 +258,10 @@ class AwsAttributes:
 
 
 class AwsAvailability(Enum):
-    """Availability type used for all subsequent nodes past the `first_on_demand` ones.
+    """Availability type used for all subsequent nodes past the ``first_on_demand`` ones.
 
-    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."""
+    Note: If ``first_on_demand`` is zero, this availability type will be used for the entire
+    cluster."""
 
     ON_DEMAND = "ON_DEMAND"
     SPOT = "SPOT"
@@ -268,8 +273,8 @@ class AzureAttributes:
     """Attributes set during cluster creation which are related to Microsoft Azure."""
 
     availability: Optional[AzureAvailability] = None
-    """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
-    `first_on_demand` is zero, this availability type will be used for the entire cluster."""
+    """Availability type used for all subsequent nodes past the ``first_on_demand`` ones. Note: If
+    ``first_on_demand`` is zero, this availability type will be used for the entire cluster."""
 
     capacity_reservation_group: Optional[str] = None
     """The Azure capacity reservation group resource ID to use for launching VMs. When specified, VMs
@@ -277,21 +282,23 @@ class AzureAttributes:
     
     Capacity reservations can only be specified when the workspace uses injected vnet (i.e. customer
     defined vnet not managed by databricks). Ensure the databricks-login-prod Enterprise Application
-    is granted the following four permissions: 1. Microsoft.Compute/capacityReservationGroups/read
-    2. Microsoft.Compute/capacityReservationGroups/deploy/action 3.
-    Microsoft.Compute/capacityReservationGroups/capacityReservations/read 4.
-    Microsoft.Compute/capacityReservationGroups/capacityReservations/deploy/action
+    is granted the following four permissions:
+    
+    1. Microsoft.Compute/capacityReservationGroups/read
+    2. Microsoft.Compute/capacityReservationGroups/deploy/action
+    3. Microsoft.Compute/capacityReservationGroups/capacityReservations/read
+    4. Microsoft.Compute/capacityReservationGroups/capacityReservations/deploy/action
     
     Format:
-    `/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/capacityReservationGroups/{capacityReservationGroupName}`"""
+    ``/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/capacityReservationGroups/{capacityReservationGroupName}``"""
 
     first_on_demand: Optional[int] = None
-    """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
+    """The first ``first_on_demand`` nodes of the cluster will be placed on on-demand instances. This
     value should be greater than 0, to make sure the cluster driver node is placed on an on-demand
     instance. If this value is greater than or equal to the current cluster size, all nodes will be
     placed on on-demand instances. If this value is less than the current cluster size,
-    `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed
-    on `availability` instances. Note that this value does not affect cluster size and cannot
+    ``first_on_demand`` nodes will be placed on on-demand instances and the remainder will be placed
+    on ``availability`` instances. Note that this value does not affect cluster size and cannot
     currently be mutated over the lifetime of a cluster."""
 
     log_analytics_info: Optional[LogAnalyticsInfo] = None
@@ -346,12 +353,40 @@ class AzureAttributes:
 
 
 class AzureAvailability(Enum):
-    """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
-    `first_on_demand` is zero, this availability type will be used for the entire cluster."""
+    """Availability type used for all subsequent nodes past the ``first_on_demand`` ones. Note: If
+    ``first_on_demand`` is zero, this availability type will be used for the entire cluster."""
 
     ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
     SPOT_AZURE = "SPOT_AZURE"
     SPOT_WITH_FALLBACK_AZURE = "SPOT_WITH_FALLBACK_AZURE"
+
+
+class BaseEnvironmentType(Enum):
+    """If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto"""
+
+    CPU = "CPU"
+    GPU = "GPU"
+
+
+@dataclass
+class CancelPendingClusterEnforcementResponse:
+    """Response for canceling the pending enforcement for a cluster. If the cancel request succeeds, an
+    empty response object is returned. Otherwise, an error response is returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelPendingClusterEnforcementResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelPendingClusterEnforcementResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CancelPendingClusterEnforcementResponse:
+        """Deserializes the CancelPendingClusterEnforcementResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -388,6 +423,22 @@ class ChangeClusterOwnerResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ChangeClusterOwnerResponse:
         """Deserializes the ChangeClusterOwnerResponse from a dictionary."""
         return cls()
+
+
+class CheckId(Enum):
+    """Identifies the specific diagnostic check the user will see. Each value maps to one row in the
+    cluster's Diagnostics tab."""
+
+    CHECK_ID_NETWORK_BIFROST = "CHECK_ID_NETWORK_BIFROST"
+    CHECK_ID_NETWORK_CONTROL_PLANE = "CHECK_ID_NETWORK_CONTROL_PLANE"
+    CHECK_ID_NETWORK_CP_MTLS = "CHECK_ID_NETWORK_CP_MTLS"
+    CHECK_ID_NETWORK_DNS_SERVER = "CHECK_ID_NETWORK_DNS_SERVER"
+    CHECK_ID_NETWORK_INTERNET = "CHECK_ID_NETWORK_INTERNET"
+    CHECK_ID_NETWORK_LOG_ARTIFACT_BUCKET = "CHECK_ID_NETWORK_LOG_ARTIFACT_BUCKET"
+    CHECK_ID_NETWORK_METADATA_ENDPOINT = "CHECK_ID_NETWORK_METADATA_ENDPOINT"
+    CHECK_ID_NETWORK_NIC = "CHECK_ID_NETWORK_NIC"
+    CHECK_ID_NETWORK_SCC_TUNNEL = "CHECK_ID_NETWORK_SCC_TUNNEL"
+    CHECK_ID_NETWORK_STORAGE_BUCKET = "CHECK_ID_NETWORK_STORAGE_BUCKET"
 
 
 @dataclass
@@ -592,8 +643,9 @@ class ClusterAttributes:
     the lifetime of a cluster."""
 
     spark_version: str
-    """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
-    be retrieved by using the :method:clusters/sparkVersions API call."""
+    """The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions
+    can be retrieved by using the `clusters/sparkVersions
+    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call."""
 
     autotermination_minutes: Optional[int] = None
     """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
@@ -613,8 +665,8 @@ class ClusterAttributes:
     """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
     destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
     specified for one cluster. If the conf is given, the logs will be delivered to the destination
-    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
-    destination of executor logs is `$destination/$clusterId/executor`."""
+    every ``5 mins``. The destination of driver logs is ``$destination/$clusterId/driver``, while
+    the destination of executor logs is ``$destination/$clusterId/executor``."""
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
@@ -623,14 +675,16 @@ class ClusterAttributes:
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
     - Currently, Databricks allows at most 45 custom tags
-    
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
-    tags"""
+      tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
+
+    dependency_mode: Optional[DependencyMode] = None
+    """Controls dependency configuration for the cluster."""
 
     docker_image: Optional[DockerImage] = None
     """Custom docker image BYOC"""
@@ -644,7 +698,7 @@ class ClusterAttributes:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
+    type will be set as the same value as ``node_type_id`` defined above.
     
     This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
     driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
@@ -663,17 +717,17 @@ class ClusterAttributes:
 
     init_scripts: Optional[List[InitScriptInfo]] = None
     """The configuration for storing init scripts. Any number of destinations can be specified. The
-    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
-    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+    scripts are executed sequentially in the order provided. If ``cluster_log_conf`` is specified,
+    init script logs are sent to ``<destination>/<cluster-ID>/init_scripts``."""
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    When set to true, Databricks will automatically set single node related `custom_tags`,
-    `spark_conf`, and `num_workers`"""
+    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
 
@@ -681,7 +735,8 @@ class ClusterAttributes:
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
     compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
+    `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
+    API call."""
 
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
@@ -693,47 +748,47 @@ class ClusterAttributes:
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
-    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    This field is not compatible with legacy ``spark_version`` values that contain ``-photon-``.
+    Remove ``-photon-`` from the ``spark_version`` and set ``runtime_engine`` to ``PHOTON``.
     
     If left unspecified, the runtime engine defaults to standard unless the spark_version contains
     -photon-, in which case Photon will be used."""
 
     single_user_name: Optional[str] = None
-    """Single user name if data_security_mode is `SINGLE_USER`"""
+    """Single user name if data_security_mode is ``SINGLE_USER``"""
 
     spark_conf: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified Spark configuration key-value pairs.
     Users can also pass in a string of extra JVM options to the driver and the executors via
-    `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."""
+    ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions`` respectively."""
 
     spark_env_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs.
-    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
-    while launching the driver and workers.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export
+    X='Y'``) while launching the driver and workers.
     
-    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
-    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them
+    to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default
     databricks managed environmental variables are included as well.
     
-    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-    -Dspark.shuffle.service.enabled=true"}`"""
+    Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}``"""
 
     ssh_public_keys: Optional[List[str]] = None
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
-    be specified."""
+    private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys
+    can be specified."""
 
     total_initial_remote_disk_size: Optional[int] = None
     """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
     supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    `effective_spark_version` is determined by `spark_version` (DBR release), this field
-    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+    ``effective_spark_version`` is determined by ``spark_version`` (DBR release), this field
+    ``use_ml_runtime``, and whether ``node_type_id`` is gpu node or not."""
 
     worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
     """Flexible node type configuration for worker nodes."""
@@ -757,6 +812,8 @@ class ClusterAttributes:
             body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
             body["data_security_mode"] = self.data_security_mode.value
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode.value
         if self.docker_image:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
@@ -824,6 +881,8 @@ class ClusterAttributes:
             body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
             body["data_security_mode"] = self.data_security_mode
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode
         if self.docker_image:
             body["docker_image"] = self.docker_image
         if self.driver_instance_pool_id is not None:
@@ -885,6 +944,7 @@ class ClusterAttributes:
             cluster_name=d.get("cluster_name", None),
             custom_tags=d.get("custom_tags", None),
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
+            dependency_mode=_enum(d, "dependency_mode", DependencyMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
             driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
@@ -920,6 +980,10 @@ class ClusterCompliance:
     is_compliant: Optional[bool] = None
     """Whether this cluster is in compliance with the latest version of its policy."""
 
+    pending_enforcement: Optional[PendingEnforcement] = None
+    """Information about the pending enforcement for the cluster. Only present if a pending enforcement
+    is scheduled for the cluster."""
+
     violations: Optional[Dict[str, str]] = None
     """An object containing key-value mappings representing the first 200 policy validation errors. The
     keys indicate the path where the policy validation error is occurring. The values indicate an
@@ -932,6 +996,8 @@ class ClusterCompliance:
             body["cluster_id"] = self.cluster_id
         if self.is_compliant is not None:
             body["is_compliant"] = self.is_compliant
+        if self.pending_enforcement:
+            body["pending_enforcement"] = self.pending_enforcement.as_dict()
         if self.violations:
             body["violations"] = self.violations
         return body
@@ -943,6 +1009,8 @@ class ClusterCompliance:
             body["cluster_id"] = self.cluster_id
         if self.is_compliant is not None:
             body["is_compliant"] = self.is_compliant
+        if self.pending_enforcement:
+            body["pending_enforcement"] = self.pending_enforcement
         if self.violations:
             body["violations"] = self.violations
         return body
@@ -953,6 +1021,7 @@ class ClusterCompliance:
         return cls(
             cluster_id=d.get("cluster_id", None),
             is_compliant=d.get("is_compliant", None),
+            pending_enforcement=_from_dict(d, "pending_enforcement", PendingEnforcement),
             violations=d.get("violations", None),
         )
 
@@ -992,8 +1061,8 @@ class ClusterDetails:
     """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
     destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
     specified for one cluster. If the conf is given, the logs will be delivered to the destination
-    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
-    destination of executor logs is `$destination/$clusterId/executor`."""
+    every ``5 mins``. The destination of driver logs is ``$destination/$clusterId/driver``, while
+    the destination of executor logs is ``$destination/$clusterId/executor``."""
 
     cluster_log_status: Optional[LogSyncStatus] = None
     """Cluster log delivery status."""
@@ -1016,27 +1085,25 @@ class ClusterDetails:
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
     - Currently, Databricks allows at most 45 custom tags
-    
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
-    tags"""
+      tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
 
     default_tags: Optional[Dict[str, str]] = None
-    """Tags that are added by Databricks regardless of any `custom_tags`, including:
+    """Tags that are added by Databricks regardless of any ``custom_tags``, including:
     
     - Vendor: Databricks
-    
     - Creator: <username_of_creator>
-    
     - ClusterName: <name_of_cluster>
-    
     - ClusterId: <id_of_cluster>
-    
     - Name: <Databricks internal use>"""
+
+    dependency_mode: Optional[DependencyMode] = None
+    """Controls dependency configuration for the cluster."""
 
     docker_image: Optional[DockerImage] = None
     """Custom docker image BYOC"""
@@ -1054,7 +1121,7 @@ class ClusterDetails:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
+    type will be set as the same value as ``node_type_id`` defined above.
     
     This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
     driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
@@ -1076,17 +1143,17 @@ class ClusterDetails:
 
     init_scripts: Optional[List[InitScriptInfo]] = None
     """The configuration for storing init scripts. Any number of destinations can be specified. The
-    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
-    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+    scripts are executed sequentially in the order provided. If ``cluster_log_conf`` is specified,
+    init script logs are sent to ``<destination>/<cluster-ID>/init_scripts``."""
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    When set to true, Databricks will automatically set single node related `custom_tags`,
-    `spark_conf`, and `num_workers`"""
+    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    ``spark_conf``, and ``num_workers``"""
 
     jdbc_port: Optional[int] = None
     """Port on which Spark JDBC server is listening, in the driver nod. No service will be listeningon
@@ -1104,17 +1171,18 @@ class ClusterDetails:
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
     compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
+    `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
+    API call."""
 
     num_workers: Optional[int] = None
     """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
     
     Note: When reading the properties of a cluster, this field reflects the desired number of
     workers rather than the actual current number of workers. For instance, if a cluster is resized
     from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
-    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
-    new nodes are provisioned."""
+    workers, whereas the workers listed in ``spark_info`` will gradually increase from 5 to 10 as
+    the new nodes are provisioned."""
 
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
@@ -1126,41 +1194,42 @@ class ClusterDetails:
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
-    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    This field is not compatible with legacy ``spark_version`` values that contain ``-photon-``.
+    Remove ``-photon-`` from the ``spark_version`` and set ``runtime_engine`` to ``PHOTON``.
     
     If left unspecified, the runtime engine defaults to standard unless the spark_version contains
     -photon-, in which case Photon will be used."""
 
     single_user_name: Optional[str] = None
-    """Single user name if data_security_mode is `SINGLE_USER`"""
+    """Single user name if data_security_mode is ``SINGLE_USER``"""
 
     spark_conf: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified Spark configuration key-value pairs.
     Users can also pass in a string of extra JVM options to the driver and the executors via
-    `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."""
+    ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions`` respectively."""
 
     spark_context_id: Optional[int] = None
     """A canonical SparkContext identifier. This value *does* change when the Spark driver restarts.
-    The pair `(cluster_id, spark_context_id)` is a globally unique identifier over all Spark
+    The pair ``(cluster_id, spark_context_id)`` is a globally unique identifier over all Spark
     contexts."""
 
     spark_env_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs.
-    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
-    while launching the driver and workers.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export
+    X='Y'``) while launching the driver and workers.
     
-    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
-    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them
+    to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default
     databricks managed environmental variables are included as well.
     
-    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-    -Dspark.shuffle.service.enabled=true"}`"""
+    Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}``"""
 
     spark_version: Optional[str] = None
-    """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
-    be retrieved by using the :method:clusters/sparkVersions API call."""
+    """The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions
+    can be retrieved by using the `clusters/sparkVersions
+    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call."""
 
     spec: Optional[ClusterSpec] = None
     """The spec contains a snapshot of the latest user specified settings that were used to create/edit
@@ -1168,36 +1237,36 @@ class ClusterDetails:
 
     ssh_public_keys: Optional[List[str]] = None
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
-    be specified."""
+    private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys
+    can be specified."""
 
     start_time: Optional[int] = None
     """Time (in epoch milliseconds) when the cluster creation request was received (when the cluster
-    entered a `PENDING` state)."""
+    entered a ``PENDING`` state)."""
 
     state: Optional[State] = None
     """Current state of the cluster."""
 
     state_message: Optional[str] = None
     """A message associated with the most recent state transition (e.g., the reason why the cluster
-    entered a `TERMINATED` state)."""
+    entered a ``TERMINATED`` state)."""
 
     terminated_time: Optional[int] = None
     """Time (in epoch milliseconds) when the cluster was terminated, if applicable."""
 
     termination_reason: Optional[TerminationReason] = None
     """Information about why the cluster was terminated. This field only appears when the cluster is in
-    a `TERMINATING` or `TERMINATED` state."""
+    a ``TERMINATING`` or ``TERMINATED`` state."""
 
     total_initial_remote_disk_size: Optional[int] = None
     """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
     supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    `effective_spark_version` is determined by `spark_version` (DBR release), this field
-    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+    ``effective_spark_version`` is determined by ``spark_version`` (DBR release), this field
+    ``use_ml_runtime``, and whether ``node_type_id`` is gpu node or not."""
 
     worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
     """Flexible node type configuration for worker nodes."""
@@ -1237,6 +1306,8 @@ class ClusterDetails:
             body["data_security_mode"] = self.data_security_mode.value
         if self.default_tags:
             body["default_tags"] = self.default_tags
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode.value
         if self.docker_image:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver:
@@ -1346,6 +1417,8 @@ class ClusterDetails:
             body["data_security_mode"] = self.data_security_mode
         if self.default_tags:
             body["default_tags"] = self.default_tags
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode
         if self.docker_image:
             body["docker_image"] = self.docker_image
         if self.driver:
@@ -1441,6 +1514,7 @@ class ClusterDetails:
             custom_tags=d.get("custom_tags", None),
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
             default_tags=d.get("default_tags", None),
+            dependency_mode=_enum(d, "dependency_mode", DependencyMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver=_from_dict(d, "driver", SparkNode),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
@@ -1577,18 +1651,18 @@ class ClusterLogConf:
     """Cluster log delivery config"""
 
     dbfs: Optional[DbfsStorageInfo] = None
-    """destination needs to be provided. e.g. `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" }
-    }`"""
+    """destination needs to be provided. e.g. ``{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" }
+    }``"""
 
     s3: Optional[S3StorageInfo] = None
-    """destination and either the region or endpoint need to be provided. e.g. `{ "s3": { "destination"
-    : "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }` Cluster iam role is used to
-    access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to
-    write data to the s3 destination."""
+    """destination and either the region or endpoint need to be provided. e.g. ``{ "s3": {
+    "destination" : "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }`` Cluster iam role
+    is used to access s3, please make sure the cluster iam role in ``instance_profile_arn`` has
+    permission to write data to the s3 destination."""
 
     volumes: Optional[VolumesStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "volumes": { "destination":
-    "/Volumes/catalog/schema/volume/cluster_log" } }`"""
+    """destination needs to be provided, e.g. ``{ "volumes": { "destination":
+    "/Volumes/catalog/schema/volume/cluster_log" } }``"""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterLogConf into a dictionary suitable for use as a JSON request body."""
@@ -2027,13 +2101,13 @@ class ClusterSize:
 
     num_workers: Optional[int] = None
     """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
     
     Note: When reading the properties of a cluster, this field reflects the desired number of
     workers rather than the actual current number of workers. For instance, if a cluster is resized
     from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
-    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
-    new nodes are provisioned."""
+    workers, whereas the workers listed in ``spark_info`` will gradually increase from 5 to 10 as
+    the new nodes are provisioned."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterSize into a dictionary suitable for use as a JSON request body."""
@@ -2103,8 +2177,8 @@ class ClusterSpec:
     """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
     destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
     specified for one cluster. If the conf is given, the logs will be delivered to the destination
-    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
-    destination of executor logs is `$destination/$clusterId/executor`."""
+    every ``5 mins``. The destination of driver logs is ``$destination/$clusterId/driver``, while
+    the destination of executor logs is ``$destination/$clusterId/executor``."""
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
@@ -2113,14 +2187,16 @@ class ClusterSpec:
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
     - Currently, Databricks allows at most 45 custom tags
-    
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
-    tags"""
+      tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
+
+    dependency_mode: Optional[DependencyMode] = None
+    """Controls dependency configuration for the cluster."""
 
     docker_image: Optional[DockerImage] = None
     """Custom docker image BYOC"""
@@ -2134,7 +2210,7 @@ class ClusterSpec:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
+    type will be set as the same value as ``node_type_id`` defined above.
     
     This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
     driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
@@ -2153,17 +2229,17 @@ class ClusterSpec:
 
     init_scripts: Optional[List[InitScriptInfo]] = None
     """The configuration for storing init scripts. Any number of destinations can be specified. The
-    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
-    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+    scripts are executed sequentially in the order provided. If ``cluster_log_conf`` is specified,
+    init script logs are sent to ``<destination>/<cluster-ID>/init_scripts``."""
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    When set to true, Databricks will automatically set single node related `custom_tags`,
-    `spark_conf`, and `num_workers`"""
+    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
 
@@ -2171,17 +2247,18 @@ class ClusterSpec:
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
     compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
+    `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
+    API call."""
 
     num_workers: Optional[int] = None
     """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
     
     Note: When reading the properties of a cluster, this field reflects the desired number of
     workers rather than the actual current number of workers. For instance, if a cluster is resized
     from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
-    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
-    new nodes are provisioned."""
+    workers, whereas the workers listed in ``spark_info`` will gradually increase from 5 to 10 as
+    the new nodes are provisioned."""
 
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
@@ -2193,51 +2270,52 @@ class ClusterSpec:
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
-    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    This field is not compatible with legacy ``spark_version`` values that contain ``-photon-``.
+    Remove ``-photon-`` from the ``spark_version`` and set ``runtime_engine`` to ``PHOTON``.
     
     If left unspecified, the runtime engine defaults to standard unless the spark_version contains
     -photon-, in which case Photon will be used."""
 
     single_user_name: Optional[str] = None
-    """Single user name if data_security_mode is `SINGLE_USER`"""
+    """Single user name if data_security_mode is ``SINGLE_USER``"""
 
     spark_conf: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified Spark configuration key-value pairs.
     Users can also pass in a string of extra JVM options to the driver and the executors via
-    `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."""
+    ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions`` respectively."""
 
     spark_env_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs.
-    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
-    while launching the driver and workers.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export
+    X='Y'``) while launching the driver and workers.
     
-    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
-    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them
+    to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default
     databricks managed environmental variables are included as well.
     
-    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-    -Dspark.shuffle.service.enabled=true"}`"""
+    Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}``"""
 
     spark_version: Optional[str] = None
-    """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
-    be retrieved by using the :method:clusters/sparkVersions API call."""
+    """The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions
+    can be retrieved by using the `clusters/sparkVersions
+    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call."""
 
     ssh_public_keys: Optional[List[str]] = None
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
-    be specified."""
+    private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys
+    can be specified."""
 
     total_initial_remote_disk_size: Optional[int] = None
     """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
     supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    `effective_spark_version` is determined by `spark_version` (DBR release), this field
-    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+    ``effective_spark_version`` is determined by ``spark_version`` (DBR release), this field
+    ``use_ml_runtime``, and whether ``node_type_id`` is gpu node or not."""
 
     worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
     """Flexible node type configuration for worker nodes."""
@@ -2265,6 +2343,8 @@ class ClusterSpec:
             body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
             body["data_security_mode"] = self.data_security_mode.value
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode.value
         if self.docker_image:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
@@ -2338,6 +2418,8 @@ class ClusterSpec:
             body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
             body["data_security_mode"] = self.data_security_mode
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode
         if self.docker_image:
             body["docker_image"] = self.docker_image
         if self.driver_instance_pool_id is not None:
@@ -2403,6 +2485,7 @@ class ClusterSpec:
             cluster_name=d.get("cluster_name", None),
             custom_tags=d.get("custom_tags", None),
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
+            dependency_mode=_enum(d, "dependency_mode", DependencyMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
             driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
@@ -2650,9 +2733,11 @@ class Created:
 @dataclass
 class CustomPolicyTag:
     key: str
-    """The key of the tag. - Must be unique among all custom tags of the same policy - Cannot be
-    “budget-policy-name”, “budget-policy-id” or "budget-policy-resolution-result" - these
-    tags are preserved."""
+    """The key of the tag.
+    
+    - Must be unique among all custom tags of the same policy
+    - Cannot be “budget-policy-name”, “budget-policy-id” or
+      "budget-policy-resolution-result" - these tags are preserved."""
 
     value: Optional[str] = None
     """The value of the tag."""
@@ -2736,28 +2821,31 @@ class DataPlaneEventDetailsEventType(Enum):
 class DataSecurityMode(Enum):
     """Data security mode decides what data governance model to use when accessing data from a cluster.
 
-    * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access mode depending
-    on your compute configuration. * `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be
-    shared by multiple users. Cluster users are fully isolated so that they cannot see each
-    other’s data and credentials. Most data governance features are supported in this mode. But
-    programming languages and cluster features might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A
-    secure cluster that can only be exclusively used by a single user specified in
-    `single_user_name`. Most programming languages, cluster features and data governance features
-    are available in this mode.
+    - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending
+      on your compute configuration.
+    - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users.
+      Cluster users are fully isolated so that they cannot see each other’s data and credentials.
+      Most data governance features are supported in this mode. But programming languages and
+      cluster features might be limited.
+    - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a
+      single user specified in ``single_user_name``. Most programming languages, cluster features
+      and data governance features are available in this mode.
 
     The following modes are legacy aliases for the above modes:
 
-    * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. * `SINGLE_USER`: Legacy
-    alias for `DATA_SECURITY_MODE_DEDICATED`.
+    - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+    - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
 
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
 
-    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
-    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
-    doesn’t have UC nor passthrough enabled."""
+    - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+    - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+      concurrency clusters.
+    - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+      clusters.
+    - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn’t have UC nor
+      passthrough enabled."""
 
     DATA_SECURITY_MODE_AUTO = "DATA_SECURITY_MODE_AUTO"
     DATA_SECURITY_MODE_DEDICATED = "DATA_SECURITY_MODE_DEDICATED"
@@ -2776,7 +2864,7 @@ class DbfsStorageInfo:
     """A storage location in DBFS"""
 
     destination: str
-    """dbfs destination, e.g. `dbfs:/my/path`"""
+    """dbfs destination, e.g. ``dbfs:/my/path``"""
 
     def as_dict(self) -> dict:
         """Serializes the DbfsStorageInfo into a dictionary suitable for use as a JSON request body."""
@@ -2796,6 +2884,183 @@ class DbfsStorageInfo:
     def from_dict(cls, d: Dict[str, Any]) -> DbfsStorageInfo:
         """Deserializes the DbfsStorageInfo from a dictionary."""
         return cls(destination=d.get("destination", None))
+
+
+@dataclass
+class DefaultBaseEnvironment:
+    base_environment_cache: Optional[List[DefaultBaseEnvironmentCache]] = None
+
+    base_environment_type: Optional[BaseEnvironmentType] = None
+
+    created_timestamp: Optional[int] = None
+
+    creator_user_id: Optional[int] = None
+
+    environment: Optional[Environment] = None
+    """Note: we made ``environment`` non-internal because we need to expose its ``client`` field. All
+    other fields should be treated as internal."""
+
+    filepath: Optional[str] = None
+
+    id: Optional[str] = None
+
+    is_default: Optional[bool] = None
+
+    last_updated_timestamp: Optional[int] = None
+
+    last_updated_user_id: Optional[int] = None
+
+    message: Optional[str] = None
+
+    name: Optional[str] = None
+
+    principal_ids: Optional[List[int]] = None
+
+    status: Optional[DefaultBaseEnvironmentCacheStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DefaultBaseEnvironment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.base_environment_cache:
+            body["base_environment_cache"] = [v.as_dict() for v in self.base_environment_cache]
+        if self.base_environment_type is not None:
+            body["base_environment_type"] = self.base_environment_type.value
+        if self.created_timestamp is not None:
+            body["created_timestamp"] = self.created_timestamp
+        if self.creator_user_id is not None:
+            body["creator_user_id"] = self.creator_user_id
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
+        if self.filepath is not None:
+            body["filepath"] = self.filepath
+        if self.id is not None:
+            body["id"] = self.id
+        if self.is_default is not None:
+            body["is_default"] = self.is_default
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.last_updated_user_id is not None:
+            body["last_updated_user_id"] = self.last_updated_user_id
+        if self.message is not None:
+            body["message"] = self.message
+        if self.name is not None:
+            body["name"] = self.name
+        if self.principal_ids:
+            body["principal_ids"] = [v for v in self.principal_ids]
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultBaseEnvironment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.base_environment_cache:
+            body["base_environment_cache"] = self.base_environment_cache
+        if self.base_environment_type is not None:
+            body["base_environment_type"] = self.base_environment_type
+        if self.created_timestamp is not None:
+            body["created_timestamp"] = self.created_timestamp
+        if self.creator_user_id is not None:
+            body["creator_user_id"] = self.creator_user_id
+        if self.environment:
+            body["environment"] = self.environment
+        if self.filepath is not None:
+            body["filepath"] = self.filepath
+        if self.id is not None:
+            body["id"] = self.id
+        if self.is_default is not None:
+            body["is_default"] = self.is_default
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.last_updated_user_id is not None:
+            body["last_updated_user_id"] = self.last_updated_user_id
+        if self.message is not None:
+            body["message"] = self.message
+        if self.name is not None:
+            body["name"] = self.name
+        if self.principal_ids:
+            body["principal_ids"] = self.principal_ids
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultBaseEnvironment:
+        """Deserializes the DefaultBaseEnvironment from a dictionary."""
+        return cls(
+            base_environment_cache=_repeated_dict(d, "base_environment_cache", DefaultBaseEnvironmentCache),
+            base_environment_type=_enum(d, "base_environment_type", BaseEnvironmentType),
+            created_timestamp=d.get("created_timestamp", None),
+            creator_user_id=d.get("creator_user_id", None),
+            environment=_from_dict(d, "environment", Environment),
+            filepath=d.get("filepath", None),
+            id=d.get("id", None),
+            is_default=d.get("is_default", None),
+            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_user_id=d.get("last_updated_user_id", None),
+            message=d.get("message", None),
+            name=d.get("name", None),
+            principal_ids=d.get("principal_ids", None),
+            status=_enum(d, "status", DefaultBaseEnvironmentCacheStatus),
+        )
+
+
+@dataclass
+class DefaultBaseEnvironmentCache:
+    indefinite_materialized_environment: Optional[MaterializedEnvironment] = None
+
+    materialized_environment: Optional[MaterializedEnvironment] = None
+
+    message: Optional[str] = None
+
+    status: Optional[DefaultBaseEnvironmentCacheStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DefaultBaseEnvironmentCache into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.indefinite_materialized_environment:
+            body["indefinite_materialized_environment"] = self.indefinite_materialized_environment.as_dict()
+        if self.materialized_environment:
+            body["materialized_environment"] = self.materialized_environment.as_dict()
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultBaseEnvironmentCache into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.indefinite_materialized_environment:
+            body["indefinite_materialized_environment"] = self.indefinite_materialized_environment
+        if self.materialized_environment:
+            body["materialized_environment"] = self.materialized_environment
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultBaseEnvironmentCache:
+        """Deserializes the DefaultBaseEnvironmentCache from a dictionary."""
+        return cls(
+            indefinite_materialized_environment=_from_dict(
+                d, "indefinite_materialized_environment", MaterializedEnvironment
+            ),
+            materialized_environment=_from_dict(d, "materialized_environment", MaterializedEnvironment),
+            message=d.get("message", None),
+            status=_enum(d, "status", DefaultBaseEnvironmentCacheStatus),
+        )
+
+
+class DefaultBaseEnvironmentCacheStatus(Enum):
+    CREATED = "CREATED"
+    EXPIRED = "EXPIRED"
+    FAILED = "FAILED"
+    INVALID = "INVALID"
+    PENDING = "PENDING"
+    REFRESHING = "REFRESHING"
 
 
 @dataclass
@@ -2870,6 +3135,22 @@ class DeleteResponse:
         return cls()
 
 
+class DependencyMode(Enum):
+    """Controls dependency configuration for the cluster.
+
+    - ``DEPENDENCY_MODE_AUTO``: Databricks will choose the most appropriate dependency mode based on
+      your compute configuration.
+    - ``DEPENDENCY_MODE_ENVIRONMENTS``: Enables a unified dependency management experience across
+      classic and serverless, resulting in increased stability and performance. Supported only on
+      DBR 19+ in Standard access mode.
+    - ``DEPENDENCY_MODE_CLUSTER_LIBRARIES``: Legacy mode: dependencies come from cluster libraries
+      and init scripts."""
+
+    DEPENDENCY_MODE_AUTO = "DEPENDENCY_MODE_AUTO"
+    DEPENDENCY_MODE_CLUSTER_LIBRARIES = "DEPENDENCY_MODE_CLUSTER_LIBRARIES"
+    DEPENDENCY_MODE_ENVIRONMENTS = "DEPENDENCY_MODE_ENVIRONMENTS"
+
+
 @dataclass
 class DestroyResponse:
     def as_dict(self) -> dict:
@@ -2889,25 +3170,153 @@ class DestroyResponse:
 
 
 @dataclass
+class Diagnostic:
+    """The cluster diagnostics singleton resource: the latest diagnostics run for a cluster."""
+
+    checks: Optional[List[DiagnosticCheck]] = None
+    """List of individual checks (maps to UI rows)."""
+
+    diagnostics_status: Optional[DiagnosticsStatus] = None
+    """Overall run status (PASSED / FAILED / NOT_RUN). FAILED if any individual check fails."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Diagnostic into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.checks:
+            body["checks"] = [v.as_dict() for v in self.checks]
+        if self.diagnostics_status is not None:
+            body["diagnostics_status"] = self.diagnostics_status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Diagnostic into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.checks:
+            body["checks"] = self.checks
+        if self.diagnostics_status is not None:
+            body["diagnostics_status"] = self.diagnostics_status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Diagnostic:
+        """Deserializes the Diagnostic from a dictionary."""
+        return cls(
+            checks=_repeated_dict(d, "checks", DiagnosticCheck),
+            diagnostics_status=_enum(d, "diagnostics_status", DiagnosticsStatus),
+        )
+
+
+@dataclass
+class DiagnosticCheck:
+    """A single check (one row of the cluster's Diagnostics tab)."""
+
+    check_id: Optional[CheckId] = None
+    """Identifies the probed target (from the CheckId enum)."""
+
+    check_status: Optional[DiagnosticsStatus] = None
+    """Outcome of this specific check (PASSED / FAILED / NOT_RUN)."""
+
+    description: Optional[str] = None
+    """Static summary of what this check tests (e.g., "Control-plane REST reachability")."""
+
+    reason: Optional[DiagnosticsErrorReason] = None
+    """The error reason that caused the check failure, mapping to the first failing layer (DNS -> TCP
+    -> TLS -> HTTP). Set ONLY when check_status = FAILED."""
+
+    remediation: Optional[str] = None
+    """Static, human-readable instructions to resolve the failure. Set ONLY when check_status = FAILED."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DiagnosticCheck into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.check_id is not None:
+            body["check_id"] = self.check_id.value
+        if self.check_status is not None:
+            body["check_status"] = self.check_status.value
+        if self.description is not None:
+            body["description"] = self.description
+        if self.reason is not None:
+            body["reason"] = self.reason.value
+        if self.remediation is not None:
+            body["remediation"] = self.remediation
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DiagnosticCheck into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.check_id is not None:
+            body["check_id"] = self.check_id
+        if self.check_status is not None:
+            body["check_status"] = self.check_status
+        if self.description is not None:
+            body["description"] = self.description
+        if self.reason is not None:
+            body["reason"] = self.reason
+        if self.remediation is not None:
+            body["remediation"] = self.remediation
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DiagnosticCheck:
+        """Deserializes the DiagnosticCheck from a dictionary."""
+        return cls(
+            check_id=_enum(d, "check_id", CheckId),
+            check_status=_enum(d, "check_status", DiagnosticsStatus),
+            description=d.get("description", None),
+            reason=_enum(d, "reason", DiagnosticsErrorReason),
+            remediation=d.get("remediation", None),
+        )
+
+
+class DiagnosticsErrorReason(Enum):
+    """Diagnostic error reason for a failed check, identifying the first failing network layer (DNS ->
+    TCP -> TLS -> HTTP). Set on Check.reason only when check_status = FAILED."""
+
+    ERROR_REASON_CERT_SAN_MISMATCH = "ERROR_REASON_CERT_SAN_MISMATCH"
+    ERROR_REASON_DNS_RESOLVE_FAIL = "ERROR_REASON_DNS_RESOLVE_FAIL"
+    ERROR_REASON_HTTP_3XX = "ERROR_REASON_HTTP_3XX"
+    ERROR_REASON_HTTP_4XX = "ERROR_REASON_HTTP_4XX"
+    ERROR_REASON_HTTP_5XX = "ERROR_REASON_HTTP_5XX"
+    ERROR_REASON_HTTP_TIMEOUT = "ERROR_REASON_HTTP_TIMEOUT"
+    ERROR_REASON_NOT_RUN = "ERROR_REASON_NOT_RUN"
+    ERROR_REASON_TCP_REFUSED = "ERROR_REASON_TCP_REFUSED"
+    ERROR_REASON_TCP_TIMEOUT = "ERROR_REASON_TCP_TIMEOUT"
+    ERROR_REASON_TLS_HANDSHAKE_FAIL = "ERROR_REASON_TLS_HANDSHAKE_FAIL"
+
+
+class DiagnosticsStatus(Enum):
+    """Overall status of a cluster diagnostics run, and of each individual check within it."""
+
+    DIAGNOSTICS_STATUS_FAILED = "DIAGNOSTICS_STATUS_FAILED"
+    DIAGNOSTICS_STATUS_NOT_RUN = "DIAGNOSTICS_STATUS_NOT_RUN"
+    DIAGNOSTICS_STATUS_PASSED = "DIAGNOSTICS_STATUS_PASSED"
+
+
+@dataclass
 class DiskSpec:
     """Describes the disks that are launched for each instance in the spark cluster. For example, if
     the cluster has 3 instances, each instance is configured to launch 2 disks, 100 GiB each, then
     Databricks will launch a total of 6 disks, 100 GiB each, for this cluster."""
 
     disk_count: Optional[int] = None
-    """The number of disks launched for each instance: - This feature is only enabled for supported
-    node types. - Users can choose up to the limit of the disks supported by the node type. - For
-    node types with no OS disk, at least one disk must be specified; otherwise, cluster creation
-    will fail.
+    """The number of disks launched for each instance:
+    
+    - This feature is only enabled for supported node types.
+    - Users can choose up to the limit of the disks supported by the node type.
+    - For node types with no OS disk, at least one disk must be specified; otherwise, cluster
+      creation will fail.
     
     If disks are attached, Databricks will configure Spark to use only the disks for scratch
     storage, because heterogenously sized scratch devices can lead to inefficient disk utilization.
     If no disks are attached, Databricks will configure Spark to use instance store disks.
     
-    Note: If disks are specified, then the Spark configuration `spark.local.dir` will be overridden.
+    Note: If disks are specified, then the Spark configuration ``spark.local.dir`` will be
+    overridden.
     
-    Disks will be mounted at: - For AWS: `/ebs0`, `/ebs1`, and etc. - For Azure: `/remote_volume0`,
-    `/remote_volume1`, and etc."""
+    Disks will be mounted at:
+    
+    - For AWS: ``/ebs0``, ``/ebs1``, and etc.
+    - For Azure: ``/remote_volume0``, ``/remote_volume1``, and etc."""
 
     disk_iops: Optional[int] = None
 
@@ -2915,9 +3324,15 @@ class DiskSpec:
     """The size of each disk (in GiB) launched for each instance. Values must fall into the supported
     range for a particular instance type.
     
-    For AWS: - General Purpose SSD: 100 - 4096 GiB - Throughput Optimized HDD: 500 - 4096 GiB
+    For AWS:
     
-    For Azure: - Premium LRS (SSD): 1 - 1023 GiB - Standard LRS (HDD): 1- 1023 GiB"""
+    - General Purpose SSD: 100 - 4096 GiB
+    - Throughput Optimized HDD: 500 - 4096 GiB
+    
+    For Azure:
+    
+    - Premium LRS (SSD): 1 - 1023 GiB
+    - Standard LRS (HDD): 1- 1023 GiB"""
 
     disk_throughput: Optional[int] = None
 
@@ -3167,6 +3582,9 @@ class EnforceClusterComplianceResponse:
     """A list of changes that have been made to the cluster settings for the cluster to become
     compliant with its policy."""
 
+    enforce_result: Optional[EnforcePolicyComplianceForClusterResponseEnforceResult] = None
+    """Describes whether changes have been applied to the cluster."""
+
     has_changes: Optional[bool] = None
     """Whether any changes have been made to the cluster settings for the cluster to become compliant
     with its policy."""
@@ -3176,6 +3594,8 @@ class EnforceClusterComplianceResponse:
         body = {}
         if self.changes:
             body["changes"] = [v.as_dict() for v in self.changes]
+        if self.enforce_result is not None:
+            body["enforce_result"] = self.enforce_result.value
         if self.has_changes is not None:
             body["has_changes"] = self.has_changes
         return body
@@ -3185,6 +3605,8 @@ class EnforceClusterComplianceResponse:
         body = {}
         if self.changes:
             body["changes"] = self.changes
+        if self.enforce_result is not None:
+            body["enforce_result"] = self.enforce_result
         if self.has_changes is not None:
             body["has_changes"] = self.has_changes
         return body
@@ -3192,7 +3614,378 @@ class EnforceClusterComplianceResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EnforceClusterComplianceResponse:
         """Deserializes the EnforceClusterComplianceResponse from a dictionary."""
-        return cls(changes=_repeated_dict(d, "changes", ClusterSettingsChange), has_changes=d.get("has_changes", None))
+        return cls(
+            changes=_repeated_dict(d, "changes", ClusterSettingsChange),
+            enforce_result=_enum(d, "enforce_result", EnforcePolicyComplianceForClusterResponseEnforceResult),
+            has_changes=d.get("has_changes", None),
+        )
+
+
+class EnforcePolicyComplianceForClusterEnforceMode(Enum):
+    ENFORCE_IMMEDIATELY = "ENFORCE_IMMEDIATELY"
+    WAIT_FOR_TERMINATION = "WAIT_FOR_TERMINATION"
+
+
+@dataclass
+class EnforcePolicyComplianceForClusterResponseClusterSettings:
+    autoscale: Optional[AutoScale] = None
+    """Parameters needed in order to automatically scale clusters up and down based on load. Note:
+    autoscaling works best with DB runtime versions 3.0 or later."""
+
+    autotermination_minutes: Optional[int] = None
+    """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
+    this cluster will not be automatically terminated. If specified, the threshold must be between
+    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
+    termination."""
+
+    aws_attributes: Optional[AwsAttributes] = None
+    """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
+    creation, a set of default values will be used."""
+
+    azure_attributes: Optional[AzureAttributes] = None
+    """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
+    a set of default values will be used."""
+
+    cluster_log_conf: Optional[ClusterLogConf] = None
+    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+    specified for one cluster. If the conf is given, the logs will be delivered to the destination
+    every ``5 mins``. The destination of driver logs is ``$destination/$clusterId/driver``, while
+    the destination of executor logs is ``$destination/$clusterId/executor``."""
+
+    cluster_name: Optional[str] = None
+    """Cluster name requested by the user. This doesn't have to be unique. If not specified at
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
+
+    custom_tags: Optional[Dict[str, str]] = None
+    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
+    
+    - Currently, Databricks allows at most 45 custom tags
+    - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
+      tags"""
+
+    data_security_mode: Optional[DataSecurityMode] = None
+
+    dependency_mode: Optional[DependencyMode] = None
+    """Controls dependency configuration for the cluster."""
+
+    docker_image: Optional[DockerImage] = None
+    """Custom docker image BYOC"""
+
+    driver_instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
+    uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
+
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
+
+    driver_node_type_id: Optional[str] = None
+    """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
+    type will be set as the same value as ``node_type_id`` defined above.
+    
+    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
+    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
+    and node_type_id take precedence."""
+
+    enable_elastic_disk: Optional[bool] = None
+    """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
+    space when its Spark workers are running low on disk space."""
+
+    enable_local_disk_encryption: Optional[bool] = None
+    """Whether to enable LUKS on cluster VMs' local disks"""
+
+    gcp_attributes: Optional[GcpAttributes] = None
+    """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
+    creation, a set of default values will be used."""
+
+    init_scripts: Optional[List[InitScriptInfo]] = None
+    """The configuration for storing init scripts. Any number of destinations can be specified. The
+    scripts are executed sequentially in the order provided. If ``cluster_log_conf`` is specified,
+    init script logs are sent to ``<destination>/<cluster-ID>/init_scripts``."""
+
+    instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
+    
+    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    ``spark_conf``, and ``num_workers``"""
+
+    kind: Optional[Kind] = None
+
+    node_type_id: Optional[str] = None
+    """This field encodes, through a single value, the resources available to each of the Spark nodes
+    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
+    compute intensive workloads. A list of available node types can be retrieved by using the
+    `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
+    API call."""
+
+    num_workers: Optional[int] = None
+    """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+    ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
+    
+    Note: When reading the properties of a cluster, this field reflects the desired number of
+    workers rather than the actual current number of workers. For instance, if a cluster is resized
+    from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
+    workers, whereas the workers listed in ``spark_info`` will gradually increase from 5 to 10 as
+    the new nodes are provisioned."""
+
+    policy_id: Optional[str] = None
+    """The ID of the cluster policy used to create the cluster if applicable."""
+
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
+    runtime_engine: Optional[RuntimeEngine] = None
+    """Determines the cluster's runtime engine, either standard or Photon.
+    
+    This field is not compatible with legacy ``spark_version`` values that contain ``-photon-``.
+    Remove ``-photon-`` from the ``spark_version`` and set ``runtime_engine`` to ``PHOTON``.
+    
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
+
+    single_user_name: Optional[str] = None
+    """Single user name if data_security_mode is ``SINGLE_USER``"""
+
+    spark_conf: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified Spark configuration key-value pairs.
+    Users can also pass in a string of extra JVM options to the driver and the executors via
+    ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions`` respectively."""
+
+    spark_env_vars: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified environment variable key-value pairs.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export
+    X='Y'``) while launching the driver and workers.
+    
+    In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them
+    to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default
+    databricks managed environmental variables are included as well.
+    
+    Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}``"""
+
+    spark_version: Optional[str] = None
+    """The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions
+    can be retrieved by using the `clusters/sparkVersions
+    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call."""
+
+    ssh_public_keys: Optional[List[str]] = None
+    """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
+    private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys
+    can be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
+    
+    ``effective_spark_version`` is determined by ``spark_version`` (DBR release), this field
+    ``use_ml_runtime``, and whether ``node_type_id`` is gpu node or not."""
+
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
+    workload_type: Optional[WorkloadType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceForClusterResponseClusterSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.autoscale:
+            body["autoscale"] = self.autoscale.as_dict()
+        if self.autotermination_minutes is not None:
+            body["autotermination_minutes"] = self.autotermination_minutes
+        if self.aws_attributes:
+            body["aws_attributes"] = self.aws_attributes.as_dict()
+        if self.azure_attributes:
+            body["azure_attributes"] = self.azure_attributes.as_dict()
+        if self.cluster_log_conf:
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
+        if self.cluster_name is not None:
+            body["cluster_name"] = self.cluster_name
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.data_security_mode is not None:
+            body["data_security_mode"] = self.data_security_mode.value
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode.value
+        if self.docker_image:
+            body["docker_image"] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
+        if self.driver_node_type_id is not None:
+            body["driver_node_type_id"] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None:
+            body["enable_elastic_disk"] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
+        if self.gcp_attributes:
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
+        if self.init_scripts:
+            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None:
+            body["instance_pool_id"] = self.instance_pool_id
+        if self.is_single_node is not None:
+            body["is_single_node"] = self.is_single_node
+        if self.kind is not None:
+            body["kind"] = self.kind.value
+        if self.node_type_id is not None:
+            body["node_type_id"] = self.node_type_id
+        if self.num_workers is not None:
+            body["num_workers"] = self.num_workers
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.runtime_engine is not None:
+            body["runtime_engine"] = self.runtime_engine.value
+        if self.single_user_name is not None:
+            body["single_user_name"] = self.single_user_name
+        if self.spark_conf:
+            body["spark_conf"] = self.spark_conf
+        if self.spark_env_vars:
+            body["spark_env_vars"] = self.spark_env_vars
+        if self.spark_version is not None:
+            body["spark_version"] = self.spark_version
+        if self.ssh_public_keys:
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
+        if self.use_ml_runtime is not None:
+            body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
+        if self.workload_type:
+            body["workload_type"] = self.workload_type.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceForClusterResponseClusterSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscale:
+            body["autoscale"] = self.autoscale
+        if self.autotermination_minutes is not None:
+            body["autotermination_minutes"] = self.autotermination_minutes
+        if self.aws_attributes:
+            body["aws_attributes"] = self.aws_attributes
+        if self.azure_attributes:
+            body["azure_attributes"] = self.azure_attributes
+        if self.cluster_log_conf:
+            body["cluster_log_conf"] = self.cluster_log_conf
+        if self.cluster_name is not None:
+            body["cluster_name"] = self.cluster_name
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.data_security_mode is not None:
+            body["data_security_mode"] = self.data_security_mode
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode
+        if self.docker_image:
+            body["docker_image"] = self.docker_image
+        if self.driver_instance_pool_id is not None:
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
+        if self.driver_node_type_id is not None:
+            body["driver_node_type_id"] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None:
+            body["enable_elastic_disk"] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
+        if self.gcp_attributes:
+            body["gcp_attributes"] = self.gcp_attributes
+        if self.init_scripts:
+            body["init_scripts"] = self.init_scripts
+        if self.instance_pool_id is not None:
+            body["instance_pool_id"] = self.instance_pool_id
+        if self.is_single_node is not None:
+            body["is_single_node"] = self.is_single_node
+        if self.kind is not None:
+            body["kind"] = self.kind
+        if self.node_type_id is not None:
+            body["node_type_id"] = self.node_type_id
+        if self.num_workers is not None:
+            body["num_workers"] = self.num_workers
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.runtime_engine is not None:
+            body["runtime_engine"] = self.runtime_engine
+        if self.single_user_name is not None:
+            body["single_user_name"] = self.single_user_name
+        if self.spark_conf:
+            body["spark_conf"] = self.spark_conf
+        if self.spark_env_vars:
+            body["spark_env_vars"] = self.spark_env_vars
+        if self.spark_version is not None:
+            body["spark_version"] = self.spark_version
+        if self.ssh_public_keys:
+            body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
+        if self.use_ml_runtime is not None:
+            body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
+        if self.workload_type:
+            body["workload_type"] = self.workload_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnforcePolicyComplianceForClusterResponseClusterSettings:
+        """Deserializes the EnforcePolicyComplianceForClusterResponseClusterSettings from a dictionary."""
+        return cls(
+            autoscale=_from_dict(d, "autoscale", AutoScale),
+            autotermination_minutes=d.get("autotermination_minutes", None),
+            aws_attributes=_from_dict(d, "aws_attributes", AwsAttributes),
+            azure_attributes=_from_dict(d, "azure_attributes", AzureAttributes),
+            cluster_log_conf=_from_dict(d, "cluster_log_conf", ClusterLogConf),
+            cluster_name=d.get("cluster_name", None),
+            custom_tags=d.get("custom_tags", None),
+            data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
+            dependency_mode=_enum(d, "dependency_mode", DependencyMode),
+            docker_image=_from_dict(d, "docker_image", DockerImage),
+            driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
+            driver_node_type_id=d.get("driver_node_type_id", None),
+            enable_elastic_disk=d.get("enable_elastic_disk", None),
+            enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
+            gcp_attributes=_from_dict(d, "gcp_attributes", GcpAttributes),
+            init_scripts=_repeated_dict(d, "init_scripts", InitScriptInfo),
+            instance_pool_id=d.get("instance_pool_id", None),
+            is_single_node=d.get("is_single_node", None),
+            kind=_enum(d, "kind", Kind),
+            node_type_id=d.get("node_type_id", None),
+            num_workers=d.get("num_workers", None),
+            policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
+            runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
+            single_user_name=d.get("single_user_name", None),
+            spark_conf=d.get("spark_conf", None),
+            spark_env_vars=d.get("spark_env_vars", None),
+            spark_version=d.get("spark_version", None),
+            ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
+            use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
+            workload_type=_from_dict(d, "workload_type", WorkloadType),
+        )
+
+
+class EnforcePolicyComplianceForClusterResponseEnforceResult(Enum):
+    APPLIED = "APPLIED"
+    DEFERRED = "DEFERRED"
+    NO_CHANGES = "NO_CHANGES"
 
 
 @dataclass
@@ -3204,16 +3997,16 @@ class Environment:
     base_environment: Optional[str] = None
     """The base environment this environment is built on top of. A base environment defines the
     environment version and a list of dependencies for serverless compute. The value can be a file
-    path to a custom `env.yaml` file (e.g., `/Workspace/path/to/env.yaml`). Support for a
-    Databricks-provided base environment ID (e.g., `workspace-base-environments/databricks_ai_v4`)
+    path to a custom ``env.yaml`` file (e.g., ``/Workspace/path/to/env.yaml``). Support for a
+    Databricks-provided base environment ID (e.g., ``workspace-base-environments/databricks_ai_v4``)
     and workspace base environment ID (e.g.,
-    `workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7`) is in Beta. Either
-    `environment_version` or `base_environment` can be provided. For more information about
+    ``workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7``) is in Beta. Either
+    ``environment_version`` or ``base_environment`` can be provided. For more information about
     Databricks-provided base environments, see the [list workspace base
     environments](:method:Environments/ListWorkspaceBaseEnvironments) API. For more information, see"""
 
     client: Optional[str] = None
-    """Use `environment_version` instead."""
+    """Use ``environment_version`` instead."""
 
     dependencies: Optional[List[str]] = None
     """List of pip dependencies, as supported by the version of pip in this environment. Each
@@ -3223,13 +4016,13 @@ class Environment:
     Databricks), or a VCS project URL."""
 
     environment_version: Optional[str] = None
-    """Either `environment_version` or `base_environment` needs to be provided. Environment version
+    """Either ``environment_version`` or ``base_environment`` needs to be provided. Environment version
     used by the environment. Each version comes with a specific Python version and a set of Python
     packages. The version is a string, consisting of an integer."""
 
     java_dependencies: Optional[List[str]] = None
     """List of java dependencies. Each dependency is a string representing a java library path. For
-    example: `/Volumes/path/to/test.jar`."""
+    example: ``/Volumes/path/to/test.jar``."""
 
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
@@ -3276,8 +4069,8 @@ class Environment:
 @dataclass
 class EventDetails:
     attributes: Optional[ClusterAttributes] = None
-    """* For created clusters, the attributes of the cluster. * For edited clusters, the new attributes
-    of the cluster."""
+    """- For created clusters, the attributes of the cluster.
+    - For edited clusters, the new attributes of the cluster."""
 
     cause: Optional[EventDetailsCause] = None
     """The cause of a change in target size."""
@@ -3311,8 +4104,9 @@ class EventDetails:
     """Instance Id where the event originated from"""
 
     job_run_name: Optional[str] = None
-    """Unique identifier of the specific job run associated with this cluster event * For clusters
-    created for jobs, this will be the same as the cluster name"""
+    """Unique identifier of the specific job run associated with this cluster event
+    
+    - For clusters created for jobs, this will be the same as the cluster name"""
 
     previous_attributes: Optional[ClusterAttributes] = None
     """The cluster attributes before a cluster was edited."""
@@ -3324,8 +4118,10 @@ class EventDetails:
     """Previous disk size in bytes"""
 
     reason: Optional[TerminationReason] = None
-    """A termination reason: * On a TERMINATED event, this is the reason of the termination. * On a
-    RESIZE_COMPLETE event, this indicates the reason that we failed to acquire some nodes."""
+    """A termination reason:
+    
+    - On a TERMINATED event, this is the reason of the termination.
+    - On a RESIZE_COMPLETE event, this indicates the reason that we failed to acquire some nodes."""
 
     target_num_vcpus: Optional[int] = None
     """The targeted number of vCPUs in the cluster."""
@@ -3475,6 +4271,8 @@ class EventType(Enum):
     DBFS_DOWN = "DBFS_DOWN"
     DECOMMISSION_ENDED = "DECOMMISSION_ENDED"
     DECOMMISSION_STARTED = "DECOMMISSION_STARTED"
+    DEFERRED_POLICY_ENFORCEMENT_FAILED = "DEFERRED_POLICY_ENFORCEMENT_FAILED"
+    DEFERRED_POLICY_ENFORCEMENT_SCHEDULED = "DEFERRED_POLICY_ENFORCEMENT_SCHEDULED"
     DID_NOT_EXPAND_DISK = "DID_NOT_EXPAND_DISK"
     DRIVER_HEALTHY = "DRIVER_HEALTHY"
     DRIVER_NOT_RESPONDING = "DRIVER_NOT_RESPONDING"
@@ -3516,12 +4314,12 @@ class GcpAttributes:
     supported, and only on N2D instance types. When not set, no confidential computing is applied."""
 
     first_on_demand: Optional[int] = None
-    """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
+    """The first ``first_on_demand`` nodes of the cluster will be placed on on-demand instances. This
     value should be greater than 0, to make sure the cluster driver node is placed on an on-demand
     instance. If this value is greater than or equal to the current cluster size, all nodes will be
     placed on on-demand instances. If this value is less than the current cluster size,
-    `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed
-    on `availability` instances. Note that this value does not affect cluster size and cannot
+    ``first_on_demand`` nodes will be placed on on-demand instances and the remainder will be placed
+    on ``availability`` instances. Note that this value does not affect cluster size and cannot
     currently be mutated over the lifetime of a cluster."""
 
     google_service_account: Optional[str] = None
@@ -3531,10 +4329,9 @@ class GcpAttributes:
 
     local_ssd_count: Optional[int] = None
     """If provided, each node (workers and driver) in the cluster will have this number of local SSDs
-    attached. Each local SSD is 375GB in size. Refer to [GCP documentation] for the supported number
-    of local SSDs for each instance type.
-    
-    [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds"""
+    attached. Each local SSD is 375GB in size. Refer to `GCP documentation
+    <https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds>`__ for the
+    supported number of local SSDs for each instance type."""
 
     use_preemptible_executors: Optional[bool] = None
     """This field determines whether the spark executors will be scheduled to run on preemptible VMs
@@ -3543,10 +4340,13 @@ class GcpAttributes:
 
     zone_id: Optional[str] = None
     """Identifier for the availability zone in which the cluster resides. This can be one of the
-    following: - "HA" => High availability, spread nodes across availability zones for a Databricks
-    deployment region [default]. - "AUTO" => Databricks picks an availability zone to schedule the
-    cluster on. - A GCP availability zone => Pick One of the available zones for (machine type +
-    region) from https://cloud.google.com/compute/docs/regions-zones."""
+    following:
+    
+    - "HA" => High availability, spread nodes across availability zones for a Databricks deployment
+      region [default].
+    - "AUTO" => Databricks picks an availability zone to schedule the cluster on.
+    - A GCP availability zone => Pick One of the available zones for (machine type + region) from
+      https://cloud.google.com/compute/docs/regions-zones."""
 
     def as_dict(self) -> dict:
         """Serializes the GcpAttributes into a dictionary suitable for use as a JSON request body."""
@@ -3619,7 +4419,7 @@ class GcsStorageInfo:
     """A storage location in Google Cloud Platform's GCS"""
 
     destination: str
-    """GCS destination/URI, e.g. `gs://my-bucket/some-prefix`"""
+    """GCS destination/URI, e.g. ``gs://my-bucket/some-prefix``"""
 
     def as_dict(self) -> dict:
         """Serializes the GcsStorageInfo into a dictionary suitable for use as a JSON request body."""
@@ -3647,6 +4447,10 @@ class GetClusterComplianceResponse:
     """Whether the cluster is compliant with its policy or not. Clusters could be out of compliance if
     the policy was updated after the cluster was last edited."""
 
+    pending_enforcement: Optional[PendingEnforcement] = None
+    """Information about the pending enforcement for the cluster. Only present if a pending enforcement
+    is scheduled for the cluster."""
+
     violations: Optional[Dict[str, str]] = None
     """An object containing key-value mappings representing the first 200 policy validation errors. The
     keys indicate the path where the policy validation error is occurring. The values indicate an
@@ -3657,6 +4461,8 @@ class GetClusterComplianceResponse:
         body = {}
         if self.is_compliant is not None:
             body["is_compliant"] = self.is_compliant
+        if self.pending_enforcement:
+            body["pending_enforcement"] = self.pending_enforcement.as_dict()
         if self.violations:
             body["violations"] = self.violations
         return body
@@ -3666,6 +4472,8 @@ class GetClusterComplianceResponse:
         body = {}
         if self.is_compliant is not None:
             body["is_compliant"] = self.is_compliant
+        if self.pending_enforcement:
+            body["pending_enforcement"] = self.pending_enforcement
         if self.violations:
             body["violations"] = self.violations
         return body
@@ -3673,7 +4481,11 @@ class GetClusterComplianceResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetClusterComplianceResponse:
         """Deserializes the GetClusterComplianceResponse from a dictionary."""
-        return cls(is_compliant=d.get("is_compliant", None), violations=d.get("violations", None))
+        return cls(
+            is_compliant=d.get("is_compliant", None),
+            pending_enforcement=_from_dict(d, "pending_enforcement", PendingEnforcement),
+            violations=d.get("violations", None),
+        )
 
 
 @dataclass
@@ -3914,7 +4726,7 @@ class GetInstancePool:
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances
-    and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
     - Currently, Databricks allows at most 45 custom tags"""
 
@@ -3922,15 +4734,18 @@ class GetInstancePool:
     """Tags that are added by Databricks regardless of any ``custom_tags``, including:
     
     - Vendor: Databricks
-    
     - InstancePoolCreator: <user_id_of_creator>
-    
     - InstancePoolName: <name_of_pool>
-    
     - InstancePoolId: <id_of_pool>"""
 
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
+
+    enable_auto_alternate_node_types: Optional[bool] = None
+    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
+    are enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This
+    field was deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove
+    this field after sufficient time has passed for all clients to migrate."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
@@ -3968,7 +4783,8 @@ class GetInstancePool:
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
     compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
+    `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
+    API call."""
 
     preloaded_docker_images: Optional[List[DockerImage]] = None
     """Custom Docker Image BYOC"""
@@ -3976,7 +4792,8 @@ class GetInstancePool:
     preloaded_spark_versions: Optional[List[str]] = None
     """A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
     started with the preloaded Spark version will start faster. A list of available Spark versions
-    can be retrieved by using the :method:clusters/sparkVersions API call."""
+    can be retrieved by using the `clusters/sparkVersions
+    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call."""
 
     remote_disk_throughput: Optional[int] = None
     """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
@@ -4008,6 +4825,8 @@ class GetInstancePool:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec.as_dict()
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4055,6 +4874,8 @@ class GetInstancePool:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4098,6 +4919,7 @@ class GetInstancePool:
             custom_tags=d.get("custom_tags", None),
             default_tags=d.get("default_tags", None),
             disk_spec=_from_dict(d, "disk_spec", DiskSpec),
+            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
@@ -4349,6 +5171,8 @@ class HardwareAcceleratorType(Enum):
     specify hardware accelerator requirements for AI compute workloads."""
 
     GPU_1X_A10 = "GPU_1xA10"
+    GPU_1X_H100 = "GPU_1xH100"
+    GPU_8X_B300 = "GPU_8xB300"
     GPU_8X_H100 = "GPU_8xH100"
 
 
@@ -4417,31 +5241,33 @@ class InitScriptInfo:
 
     abfss: Optional[Adlsgen2Info] = None
     """destination needs to be provided, e.g.
-    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`"""
+    ``abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>``"""
 
     dbfs: Optional[DbfsStorageInfo] = None
-    """destination needs to be provided. e.g. `{ "dbfs": { "destination" : "dbfs:/home/cluster_log" }
-    }`"""
+    """destination needs to be provided. e.g. ``{ "dbfs": { "destination" : "dbfs:/home/cluster_log" }
+    }``"""
 
     file: Optional[LocalFileInfo] = None
-    """destination needs to be provided, e.g. `{ "file": { "destination": "file:/my/local/file.sh" } }`"""
+    """destination needs to be provided, e.g. ``{ "file": { "destination": "file:/my/local/file.sh" }
+    }``"""
 
     gcs: Optional[GcsStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "gcs": { "destination": "gs://my-bucket/file.sh" } }`"""
+    """destination needs to be provided, e.g. ``{ "gcs": { "destination": "gs://my-bucket/file.sh" }
+    }``"""
 
     s3: Optional[S3StorageInfo] = None
-    """destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": {
-    \"destination\": \"s3://cluster_log_bucket/prefix\", \"region\": \"us-west-2\" } }` Cluster iam
-    role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has
+    """destination and either the region or endpoint need to be provided. e.g. ``{ \"s3\": {
+    \"destination\": \"s3://cluster_log_bucket/prefix\", \"region\": \"us-west-2\" } }`` Cluster iam
+    role is used to access s3, please make sure the cluster iam role in ``instance_profile_arn`` has
     permission to write data to the s3 destination."""
 
     volumes: Optional[VolumesStorageInfo] = None
-    """destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\" :
-    \"/Volumes/my-init.sh\" } }`"""
+    """destination needs to be provided. e.g. ``{ \"volumes\" : { \"destination\" :
+    \"/Volumes/my-init.sh\" } }``"""
 
     workspace: Optional[WorkspaceStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "workspace": { "destination":
-    "/cluster-init-scripts/setup-datadog.sh" } }`"""
+    """destination needs to be provided, e.g. ``{ "workspace": { "destination":
+    "/cluster-init-scripts/setup-datadog.sh" } }``"""
 
     def as_dict(self) -> dict:
         """Serializes the InitScriptInfo into a dictionary suitable for use as a JSON request body."""
@@ -4499,11 +5325,11 @@ class InitScriptInfo:
 class InitScriptInfoAndExecutionDetails:
     abfss: Optional[Adlsgen2Info] = None
     """destination needs to be provided, e.g.
-    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`"""
+    ``abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>``"""
 
     dbfs: Optional[DbfsStorageInfo] = None
-    """destination needs to be provided. e.g. `{ "dbfs": { "destination" : "dbfs:/home/cluster_log" }
-    }`"""
+    """destination needs to be provided. e.g. ``{ "dbfs": { "destination" : "dbfs:/home/cluster_log" }
+    }``"""
 
     error_message: Optional[str] = None
     """Additional details regarding errors (such as a file not found message if the status is
@@ -4514,15 +5340,17 @@ class InitScriptInfoAndExecutionDetails:
     """The number duration of the script execution in seconds"""
 
     file: Optional[LocalFileInfo] = None
-    """destination needs to be provided, e.g. `{ "file": { "destination": "file:/my/local/file.sh" } }`"""
+    """destination needs to be provided, e.g. ``{ "file": { "destination": "file:/my/local/file.sh" }
+    }``"""
 
     gcs: Optional[GcsStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "gcs": { "destination": "gs://my-bucket/file.sh" } }`"""
+    """destination needs to be provided, e.g. ``{ "gcs": { "destination": "gs://my-bucket/file.sh" }
+    }``"""
 
     s3: Optional[S3StorageInfo] = None
-    """destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": {
-    \"destination\": \"s3://cluster_log_bucket/prefix\", \"region\": \"us-west-2\" } }` Cluster iam
-    role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has
+    """destination and either the region or endpoint need to be provided. e.g. ``{ \"s3\": {
+    \"destination\": \"s3://cluster_log_bucket/prefix\", \"region\": \"us-west-2\" } }`` Cluster iam
+    role is used to access s3, please make sure the cluster iam role in ``instance_profile_arn`` has
     permission to write data to the s3 destination."""
 
     status: Optional[InitScriptExecutionDetailsInitScriptExecutionStatus] = None
@@ -4533,12 +5361,12 @@ class InitScriptInfoAndExecutionDetails:
     enabled and script execution fails."""
 
     volumes: Optional[VolumesStorageInfo] = None
-    """destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\" :
-    \"/Volumes/my-init.sh\" } }`"""
+    """destination needs to be provided. e.g. ``{ \"volumes\" : { \"destination\" :
+    \"/Volumes/my-init.sh\" } }``"""
 
     workspace: Optional[WorkspaceStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "workspace": { "destination":
-    "/cluster-init-scripts/setup-datadog.sh" } }`"""
+    """destination needs to be provided, e.g. ``{ "workspace": { "destination":
+    "/cluster-init-scripts/setup-datadog.sh" } }``"""
 
     def as_dict(self) -> dict:
         """Serializes the InitScriptInfoAndExecutionDetails into a dictionary suitable for use as a JSON request body."""
@@ -4751,7 +5579,7 @@ class InstancePoolAndStats:
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances
-    and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
     - Currently, Databricks allows at most 45 custom tags"""
 
@@ -4759,15 +5587,18 @@ class InstancePoolAndStats:
     """Tags that are added by Databricks regardless of any ``custom_tags``, including:
     
     - Vendor: Databricks
-    
     - InstancePoolCreator: <user_id_of_creator>
-    
     - InstancePoolName: <name_of_pool>
-    
     - InstancePoolId: <id_of_pool>"""
 
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
+
+    enable_auto_alternate_node_types: Optional[bool] = None
+    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
+    are enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This
+    field was deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove
+    this field after sufficient time has passed for all clients to migrate."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
@@ -4808,7 +5639,8 @@ class InstancePoolAndStats:
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
     compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
+    `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
+    API call."""
 
     preloaded_docker_images: Optional[List[DockerImage]] = None
     """Custom Docker Image BYOC"""
@@ -4816,7 +5648,8 @@ class InstancePoolAndStats:
     preloaded_spark_versions: Optional[List[str]] = None
     """A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
     started with the preloaded Spark version will start faster. A list of available Spark versions
-    can be retrieved by using the :method:clusters/sparkVersions API call."""
+    can be retrieved by using the `clusters/sparkVersions
+    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call."""
 
     remote_disk_throughput: Optional[int] = None
     """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
@@ -4848,6 +5681,8 @@ class InstancePoolAndStats:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec.as_dict()
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4895,6 +5730,8 @@ class InstancePoolAndStats:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4938,6 +5775,7 @@ class InstancePoolAndStats:
             custom_tags=d.get("custom_tags", None),
             default_tags=d.get("default_tags", None),
             disk_spec=_from_dict(d, "disk_spec", DiskSpec),
+            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
@@ -4977,9 +5815,9 @@ class InstancePoolAwsAttributes:
     spot_bid_price_percent: Optional[int] = None
     """Calculates the bid price for AWS spot instances, as a percentage of the corresponding instance
     type's on-demand price. For example, if this field is set to 50, and the cluster needs a new
-    `r3.xlarge` spot instance, then the bid price is half of the price of on-demand `r3.xlarge`
+    ``r3.xlarge`` spot instance, then the bid price is half of the price of on-demand ``r3.xlarge``
     instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand
-    `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are
+    ``r3.xlarge`` instances. If not specified, the default value is 100. When spot instances are
     requested for this cluster, only spot instances whose bid price percentage matches this field
     will be considered. Note that, for safety, we enforce this field to be no more than 10000."""
 
@@ -4989,7 +5827,7 @@ class InstancePoolAwsAttributes:
     Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
     deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
     if not specified, a default zone will be used. The list of available zones as well as the
-    default value can be found by using the `List Zones` method."""
+    default value can be found by using the ``List Zones`` method."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolAwsAttributes into a dictionary suitable for use as a JSON request body."""
@@ -5042,6 +5880,25 @@ class InstancePoolAzureAttributes:
     availability: Optional[InstancePoolAzureAttributesAvailability] = None
     """Availability type used for the spot nodes."""
 
+    capacity_reservation_group: Optional[str] = None
+    """The Azure capacity reservation group resource ID to use for launching VMs in this pool. When
+    specified, VMs will be launched using the provided capacity reservation.
+    
+    NOTE: Omitting this field will clear any existing configured capacity reservation group on the
+    pool.
+    
+    Capacity reservations can only be specified when the workspace uses injected vnet (i.e. customer
+    defined vnet not managed by databricks). Ensure the databricks-login-prod Enterprise Application
+    is granted the following four permissions:
+    
+    1. Microsoft.Compute/capacityReservationGroups/read
+    2. Microsoft.Compute/capacityReservationGroups/deploy/action
+    3. Microsoft.Compute/capacityReservationGroups/capacityReservations/read
+    4. Microsoft.Compute/capacityReservationGroups/capacityReservations/deploy/action
+    
+    Format:
+    ``/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/capacityReservationGroups/{capacityReservationGroupName}``"""
+
     spot_bid_max_price: Optional[float] = None
     """With variable pricing, you have option to set a max price, in US dollars (USD) For example, the
     value 2 would be a max price of $2.00 USD per hour. If you set the max price to be -1, the VM
@@ -5053,6 +5910,8 @@ class InstancePoolAzureAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability.value
+        if self.capacity_reservation_group is not None:
+            body["capacity_reservation_group"] = self.capacity_reservation_group
         if self.spot_bid_max_price is not None:
             body["spot_bid_max_price"] = self.spot_bid_max_price
         return body
@@ -5062,6 +5921,8 @@ class InstancePoolAzureAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability
+        if self.capacity_reservation_group is not None:
+            body["capacity_reservation_group"] = self.capacity_reservation_group
         if self.spot_bid_max_price is not None:
             body["spot_bid_max_price"] = self.spot_bid_max_price
         return body
@@ -5071,6 +5932,7 @@ class InstancePoolAzureAttributes:
         """Deserializes the InstancePoolAzureAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", InstancePoolAzureAttributesAvailability),
+            capacity_reservation_group=d.get("capacity_reservation_group", None),
             spot_bid_max_price=d.get("spot_bid_max_price", None),
         )
 
@@ -5090,10 +5952,9 @@ class InstancePoolGcpAttributes:
 
     local_ssd_count: Optional[int] = None
     """If provided, each node in the instance pool will have this number of local SSDs attached. Each
-    local SSD is 375GB in size. Refer to [GCP documentation] for the supported number of local SSDs
-    for each instance type.
-    
-    [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds"""
+    local SSD is 375GB in size. Refer to `GCP documentation
+    <https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds>`__ for the
+    supported number of local SSDs for each instance type."""
 
     zone_id: Optional[str] = None
     """Identifier for the availability zone/datacenter in which the cluster resides. This string will
@@ -5102,10 +5963,12 @@ class InstancePoolGcpAttributes:
     workspace resides in the "us-east1" region. This is an optional field at instance pool creation,
     and if not specified, a default zone will be used.
     
-    This field can be one of the following: - "HA" => High availability, spread nodes across
-    availability zones for a Databricks deployment region - A GCP availability zone => Pick One of
-    the available zones for (machine type + region) from
-    https://cloud.google.com/compute/docs/regions-zones (e.g. "us-west1-a").
+    This field can be one of the following:
+    
+    - "HA" => High availability, spread nodes across availability zones for a Databricks deployment
+      region
+    - A GCP availability zone => Pick One of the available zones for (machine type + region) from
+      https://cloud.google.com/compute/docs/regions-zones (e.g. "us-west1-a").
     
     If empty, Databricks picks an availability zone to schedule the cluster on."""
 
@@ -5264,8 +6127,10 @@ class InstancePoolPermissionsDescription:
 class InstancePoolState(Enum):
     """The state of a Cluster. The current allowable state transitions are as follows:
 
-    - ``ACTIVE`` -> ``STOPPED`` - ``ACTIVE`` -> ``DELETED`` - ``STOPPED`` -> ``ACTIVE`` -
-    ``STOPPED`` -> ``DELETED``"""
+    - ``ACTIVE`` -> ``STOPPED``
+    - ``ACTIVE`` -> ``DELETED``
+    - ``STOPPED`` -> ``ACTIVE``
+    - ``STOPPED`` -> ``DELETED``"""
 
     ACTIVE = "ACTIVE"
     DELETED = "DELETED"
@@ -5358,17 +6223,15 @@ class InstanceProfile:
     iam_role_arn: Optional[str] = None
     """The AWS IAM role ARN of the role associated with the instance profile. This field is required if
     your role name and instance profile name do not match and you want to use the instance profile
-    with [Databricks SQL Serverless].
+    with `Databricks SQL Serverless <https://docs.databricks.com/sql/admin/serverless.html>`__.
     
-    Otherwise, this field is optional.
-    
-    [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html"""
+    Otherwise, this field is optional."""
 
     is_meta_instance_profile: Optional[bool] = None
     """Boolean flag indicating whether the instance profile should only be used in credential
     passthrough scenarios. If true, it means the instance profile contains an meta IAM role which
     could assume a wide range of roles. Therefore it should always be used with authorization. This
-    field is optional, the default value is `false`."""
+    field is optional, the default value is ``false``."""
 
     def as_dict(self) -> dict:
         """Serializes the InstanceProfile into a dictionary suitable for use as a JSON request body."""
@@ -5405,15 +6268,16 @@ class InstanceProfile:
 class Kind(Enum):
     """The kind of compute described by this compute specification.
 
-    Depending on `kind`, different validations and default values will be applied.
+    Depending on ``kind``, different validations and default values will be applied.
 
-    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
-    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime)
+    Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+    specified ``kind`` do not.
 
-    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    - [is_single_node](/api/workspace/clusters/create#is_single_node)
+    - [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime)
 
-    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
+    By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your
+    clusters are automatically using ``kind = CLASSIC_PREVIEW``."""
 
     CLASSIC_PREVIEW = "CLASSIC_PREVIEW"
 
@@ -5436,29 +6300,29 @@ class Library:
 
     jar: Optional[str] = None
     """URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
-    paths, and S3 URIs. For example: `{ "jar": "/Workspace/path/to/library.jar" }`, `{ "jar" :
-    "/Volumes/path/to/library.jar" }` or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used,
-    please make sure the cluster has read access on the library. You may need to launch the cluster
-    with an IAM role to access the S3 URI."""
+    paths, and S3 URIs. For example: ``{ "jar": "/Workspace/path/to/library.jar" }``, ``{ "jar" :
+    "/Volumes/path/to/library.jar" }`` or ``{ "jar": "s3://my-bucket/library.jar" }``. If S3 is
+    used, please make sure the cluster has read access on the library. You may need to launch the
+    cluster with an IAM role to access the S3 URI."""
 
     maven: Optional[MavenLibrary] = None
-    """Specification of a maven library to be installed. For example: `{ "coordinates":
-    "org.jsoup:jsoup:1.7.2" }`"""
+    """Specification of a maven library to be installed. For example: ``{ "coordinates":
+    "org.jsoup:jsoup:1.7.2" }``"""
 
     pypi: Optional[PythonPyPiLibrary] = None
-    """Specification of a PyPi library to be installed. For example: `{ "package": "simplejson" }`"""
+    """Specification of a PyPi library to be installed. For example: ``{ "package": "simplejson" }``"""
 
     requirements: Optional[str] = None
     """URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes
-    paths are supported. For example: `{ "requirements": "/Workspace/path/to/requirements.txt" }` or
-    `{ "requirements" : "/Volumes/path/to/requirements.txt" }`"""
+    paths are supported. For example: ``{ "requirements": "/Workspace/path/to/requirements.txt" }``
+    or ``{ "requirements" : "/Volumes/path/to/requirements.txt" }``"""
 
     whl: Optional[str] = None
     """URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog
-    Volumes paths, and S3 URIs. For example: `{ "whl": "/Workspace/path/to/library.whl" }`, `{ "whl"
-    : "/Volumes/path/to/library.whl" }` or `{ "whl": "s3://my-bucket/library.whl" }`. If S3 is used,
-    please make sure the cluster has read access on the library. You may need to launch the cluster
-    with an IAM role to access the S3 URI."""
+    Volumes paths, and S3 URIs. For example: ``{ "whl": "/Workspace/path/to/library.whl" }``, ``{
+    "whl" : "/Volumes/path/to/library.whl" }`` or ``{ "whl": "s3://my-bucket/library.whl" }``. If S3
+    is used, please make sure the cluster has read access on the library. You may need to launch the
+    cluster with an IAM role to access the S3 URI."""
 
     def as_dict(self) -> dict:
         """Serializes the Library into a dictionary suitable for use as a JSON request body."""
@@ -5822,6 +6686,39 @@ class ListClustersSortByField(Enum):
 
 
 @dataclass
+class ListDefaultBaseEnvironmentsResponse:
+    default_base_environments: Optional[List[DefaultBaseEnvironment]] = None
+
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDefaultBaseEnvironmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_base_environments:
+            body["default_base_environments"] = [v.as_dict() for v in self.default_base_environments]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDefaultBaseEnvironmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_base_environments:
+            body["default_base_environments"] = self.default_base_environments
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDefaultBaseEnvironmentsResponse:
+        """Deserializes the ListDefaultBaseEnvironmentsResponse from a dictionary."""
+        return cls(
+            default_base_environments=_repeated_dict(d, "default_base_environments", DefaultBaseEnvironment),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListGlobalInitScriptsResponse:
     scripts: Optional[List[GlobalInitScriptDetails]] = None
 
@@ -5993,7 +6890,7 @@ class ListSortOrder(Enum):
 @dataclass
 class LocalFileInfo:
     destination: str
-    """local file destination, e.g. `file:/my/local/file.sh`"""
+    """local file destination, e.g. ``file:/my/local/file.sh``"""
 
     def as_dict(self) -> dict:
         """Serializes the LocalFileInfo into a dictionary suitable for use as a JSON request body."""
@@ -6053,7 +6950,7 @@ class LogSyncStatus:
     """The log delivery status"""
 
     last_attempted: Optional[int] = None
-    """The timestamp of last attempt. If the last attempt fails, `last_exception` will contain the
+    """The timestamp of last attempt. If the last attempt fails, ``last_exception`` will contain the
     exception in the last attempt."""
 
     last_exception: Optional[str] = None
@@ -6088,12 +6985,52 @@ MapAny = Dict[str, Any]
 
 
 @dataclass
+class MaterializedEnvironment:
+    """Materialized Environment information enables environment sharing and reuse via Environment
+    Caching during library installations. Currently this feature is only supported for Python
+    libraries.
+
+    - If the env cache entry in LMv2 DB doesn't exist or invalid, library installations and
+      environment materialization will occur. A new Materialized Environment metadata will be sent
+      from DP upon successful library installations and env materialization, and is persisted into
+      database by LMv2.
+    - If the env cache entry in LMv2 DB is valid, the Materialized Environment will be sent to DP by
+      LMv2, and DP will restore the cached environment from a store instead of reinstalling
+      libraries from scratch.
+
+    If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto with new version
+    If changed, also update estore/namespaces/envspecenvironments/latest.proto with new version"""
+
+    last_updated_timestamp: Optional[int] = None
+    """The timestamp (in epoch milliseconds) when the materialized env is updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializedEnvironment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializedEnvironment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializedEnvironment:
+        """Deserializes the MaterializedEnvironment from a dictionary."""
+        return cls(last_updated_timestamp=d.get("last_updated_timestamp", None))
+
+
+@dataclass
 class MavenLibrary:
     coordinates: str
     """Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2"."""
 
     exclusions: Optional[List[str]] = None
-    """List of dependences to exclude. For example: `["slf4j:slf4j", "*:hadoop-client"]`.
+    """List of dependences to exclude. For example: ``["slf4j:slf4j", "*:hadoop-client"]``.
     
     Maven dependency exclusions:
     https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html."""
@@ -6410,6 +7347,76 @@ class NodeTypeFlexibility:
 
 
 @dataclass
+class PendingEnforcement:
+    """Represents a pending enforcement on a cluster, which contains the changes to make to the cluster
+    configuration when the cluster is next terminated or restarted."""
+
+    enforcement_status: Optional[PendingEnforcementEnforcementStatus] = None
+    """Whether the pending enforcement will be applied. A pending enforcement begins in ``ACTIVE``
+    state. If the enforcement fails to apply too many times, the state transitions to ``INACTIVE``.
+    Afterwards, the enforcement must be re-scheduled to become ``ACTIVE`` again."""
+
+    initiate_time: Optional[Timestamp] = None
+    """The time the pending enforcement was initiated."""
+
+    initiator_user: Optional[str] = None
+    """The user who initiated the pending enforcement."""
+
+    target_changes: Optional[List[ClusterSettingsChange]] = None
+    """A list of changes that will be made to the cluster configuration when the pending enforcement is
+    applied."""
+
+    target_spec: Optional[EnforcePolicyComplianceForClusterResponseClusterSettings] = None
+    """The new configuration to apply upon cluster termination or restart."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PendingEnforcement into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enforcement_status is not None:
+            body["enforcement_status"] = self.enforcement_status.value
+        if self.initiate_time is not None:
+            body["initiate_time"] = self.initiate_time.ToJsonString()
+        if self.initiator_user is not None:
+            body["initiator_user"] = self.initiator_user
+        if self.target_changes:
+            body["target_changes"] = [v.as_dict() for v in self.target_changes]
+        if self.target_spec:
+            body["target_spec"] = self.target_spec.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PendingEnforcement into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enforcement_status is not None:
+            body["enforcement_status"] = self.enforcement_status
+        if self.initiate_time is not None:
+            body["initiate_time"] = self.initiate_time
+        if self.initiator_user is not None:
+            body["initiator_user"] = self.initiator_user
+        if self.target_changes:
+            body["target_changes"] = self.target_changes
+        if self.target_spec:
+            body["target_spec"] = self.target_spec
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PendingEnforcement:
+        """Deserializes the PendingEnforcement from a dictionary."""
+        return cls(
+            enforcement_status=_enum(d, "enforcement_status", PendingEnforcementEnforcementStatus),
+            initiate_time=_timestamp(d, "initiate_time"),
+            initiator_user=d.get("initiator_user", None),
+            target_changes=_repeated_dict(d, "target_changes", ClusterSettingsChange),
+            target_spec=_from_dict(d, "target_spec", EnforcePolicyComplianceForClusterResponseClusterSettings),
+        )
+
+
+class PendingEnforcementEnforcementStatus(Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+
+
+@dataclass
 class PendingInstanceError:
     """Error message of a failed pending instances"""
 
@@ -6481,6 +7488,29 @@ class PinClusterResponse:
 class Policy:
     """Describes a Cluster Policy entity."""
 
+    auto_enforcement_config: Optional[PolicyAutoEnforcementConfig] = None
+    """If present, auto enforcement is enabled for the policy. After the policy is edited, a background
+    operation may be scheduled to scan and edit all clusters and jobs using this policy to be in
+    compliance with the policy.
+    
+    The background operation is created when a policy edit does one of the following:
+    
+    - Changes the policy definition, or
+    - Changes auto enforcement from disabled to enabled Additionally, changes to the policy
+      definition or auto enforcement configuration may cause an in-progress operation to be
+      restarted.
+    
+    To cancel an in-progress operation, edit the policy to delete this auto enforcement
+    configuration.
+    
+    The background operation status is reported via the ``background_enforcement`` field when
+    reading the policy."""
+
+    background_enforcement: Optional[PolicyBackgroundEnforcement] = None
+    """Status and results of the background auto-enforcement operation for this policy. Only returned
+    if calling "Get a cluster policy" with ``POLICY_VIEW_FULL``. Must be a workspace admin for this
+    field to be populated."""
+
     created_at_timestamp: Optional[int] = None
     """Creation time. The timestamp (in millisecond) when this Cluster Policy was created."""
 
@@ -6489,9 +7519,8 @@ class Policy:
     deleted."""
 
     definition: Optional[str] = None
-    """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
-    
-    [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
+    """Policy definition document expressed in `Databricks Cluster Policy Definition Language
+    <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__."""
 
     description: Optional[str] = None
     """Additional human-readable description of the cluster policy."""
@@ -6513,20 +7542,19 @@ class Policy:
     100 characters."""
 
     policy_family_definition_overrides: Optional[str] = None
-    """Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
+    """Policy definition JSON document expressed in `Databricks Policy Definition Language
+    <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__. The JSON
     document must be passed as a string and cannot be embedded in the requests.
     
     You can use this to customize the policy definition inherited from the policy family. Policy
-    rules specified here are merged into the inherited policy definition.
-    
-    [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
+    rules specified here are merged into the inherited policy definition."""
 
     policy_family_id: Optional[str] = None
     """ID of the policy family. The cluster policy's policy definition inherits the policy family's
     policy definition.
     
-    Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize
-    the policy definition."""
+    Cannot be used with ``definition``. Use ``policy_family_definition_overrides`` instead to
+    customize the policy definition."""
 
     policy_id: Optional[str] = None
     """Canonical unique identifier for the Cluster Policy."""
@@ -6534,6 +7562,10 @@ class Policy:
     def as_dict(self) -> dict:
         """Serializes the Policy into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auto_enforcement_config:
+            body["auto_enforcement_config"] = self.auto_enforcement_config.as_dict()
+        if self.background_enforcement:
+            body["background_enforcement"] = self.background_enforcement.as_dict()
         if self.created_at_timestamp is not None:
             body["created_at_timestamp"] = self.created_at_timestamp
         if self.creator_user_name is not None:
@@ -6561,6 +7593,10 @@ class Policy:
     def as_shallow_dict(self) -> dict:
         """Serializes the Policy into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.auto_enforcement_config:
+            body["auto_enforcement_config"] = self.auto_enforcement_config
+        if self.background_enforcement:
+            body["background_enforcement"] = self.background_enforcement
         if self.created_at_timestamp is not None:
             body["created_at_timestamp"] = self.created_at_timestamp
         if self.creator_user_name is not None:
@@ -6589,6 +7625,8 @@ class Policy:
     def from_dict(cls, d: Dict[str, Any]) -> Policy:
         """Deserializes the Policy from a dictionary."""
         return cls(
+            auto_enforcement_config=_from_dict(d, "auto_enforcement_config", PolicyAutoEnforcementConfig),
+            background_enforcement=_from_dict(d, "background_enforcement", PolicyBackgroundEnforcement),
             created_at_timestamp=d.get("created_at_timestamp", None),
             creator_user_name=d.get("creator_user_name", None),
             definition=d.get("definition", None),
@@ -6604,11 +7642,148 @@ class Policy:
 
 
 @dataclass
+class PolicyAutoEnforcementConfig:
+    """Configures how auto enforcement should be executed for a cluster policy."""
+
+    enforce_mode: Optional[PolicyAutoEnforcementConfigPolicyAutoEnforcementEnforceMode] = None
+    """For running clusters, whether to defer enforcement until the cluster terminates or to restart it
+    immediately."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PolicyAutoEnforcementConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enforce_mode is not None:
+            body["enforce_mode"] = self.enforce_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PolicyAutoEnforcementConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enforce_mode is not None:
+            body["enforce_mode"] = self.enforce_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PolicyAutoEnforcementConfig:
+        """Deserializes the PolicyAutoEnforcementConfig from a dictionary."""
+        return cls(enforce_mode=_enum(d, "enforce_mode", PolicyAutoEnforcementConfigPolicyAutoEnforcementEnforceMode))
+
+
+class PolicyAutoEnforcementConfigPolicyAutoEnforcementEnforceMode(Enum):
+    """Behavior for running clusters when auto-enforcement is applied. Mirrors ``enforce_mode`` on the
+    enforce compliance API."""
+
+    ENFORCE_IMMEDIATELY = "ENFORCE_IMMEDIATELY"
+    WAIT_FOR_TERMINATION = "WAIT_FOR_TERMINATION"
+
+
+@dataclass
+class PolicyBackgroundEnforcement:
+    """Status and results of the background enforcement operation for a policy."""
+
+    deferred_cluster_enforce_count: Optional[int] = None
+    """Number of clusters that are scheduled to enforce on next termination or restart."""
+
+    end_time: Optional[Timestamp] = None
+    """The time the enforcement operation finished. Only set once the operation reaches a COMPLETED or
+    ABORTED state."""
+
+    failed_cluster_enforce_count: Optional[int] = None
+    """Number of clusters that could not be enforced due to an error."""
+
+    failed_job_enforce_count: Optional[int] = None
+    """Number of jobs that could not be enforced due to an error."""
+
+    initiate_time: Optional[Timestamp] = None
+    """The time the enforcement operation was initiated."""
+
+    initiator_user: Optional[str] = None
+    """The user who edited the policy to initiate the enforcement operation."""
+
+    status: Optional[PolicyBackgroundEnforcementPolicyBackgroundEnforcementStatus] = None
+    """Whether the enforcement operation is still in-progress or completed."""
+
+    success_cluster_enforce_count: Optional[int] = None
+    """Number of clusters that were successfully enforced."""
+
+    success_job_enforce_count: Optional[int] = None
+    """Number of jobs that were successfully enforced."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PolicyBackgroundEnforcement into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.deferred_cluster_enforce_count is not None:
+            body["deferred_cluster_enforce_count"] = self.deferred_cluster_enforce_count
+        if self.end_time is not None:
+            body["end_time"] = self.end_time.ToJsonString()
+        if self.failed_cluster_enforce_count is not None:
+            body["failed_cluster_enforce_count"] = self.failed_cluster_enforce_count
+        if self.failed_job_enforce_count is not None:
+            body["failed_job_enforce_count"] = self.failed_job_enforce_count
+        if self.initiate_time is not None:
+            body["initiate_time"] = self.initiate_time.ToJsonString()
+        if self.initiator_user is not None:
+            body["initiator_user"] = self.initiator_user
+        if self.status is not None:
+            body["status"] = self.status.value
+        if self.success_cluster_enforce_count is not None:
+            body["success_cluster_enforce_count"] = self.success_cluster_enforce_count
+        if self.success_job_enforce_count is not None:
+            body["success_job_enforce_count"] = self.success_job_enforce_count
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PolicyBackgroundEnforcement into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.deferred_cluster_enforce_count is not None:
+            body["deferred_cluster_enforce_count"] = self.deferred_cluster_enforce_count
+        if self.end_time is not None:
+            body["end_time"] = self.end_time
+        if self.failed_cluster_enforce_count is not None:
+            body["failed_cluster_enforce_count"] = self.failed_cluster_enforce_count
+        if self.failed_job_enforce_count is not None:
+            body["failed_job_enforce_count"] = self.failed_job_enforce_count
+        if self.initiate_time is not None:
+            body["initiate_time"] = self.initiate_time
+        if self.initiator_user is not None:
+            body["initiator_user"] = self.initiator_user
+        if self.status is not None:
+            body["status"] = self.status
+        if self.success_cluster_enforce_count is not None:
+            body["success_cluster_enforce_count"] = self.success_cluster_enforce_count
+        if self.success_job_enforce_count is not None:
+            body["success_job_enforce_count"] = self.success_job_enforce_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PolicyBackgroundEnforcement:
+        """Deserializes the PolicyBackgroundEnforcement from a dictionary."""
+        return cls(
+            deferred_cluster_enforce_count=d.get("deferred_cluster_enforce_count", None),
+            end_time=_timestamp(d, "end_time"),
+            failed_cluster_enforce_count=d.get("failed_cluster_enforce_count", None),
+            failed_job_enforce_count=d.get("failed_job_enforce_count", None),
+            initiate_time=_timestamp(d, "initiate_time"),
+            initiator_user=d.get("initiator_user", None),
+            status=_enum(d, "status", PolicyBackgroundEnforcementPolicyBackgroundEnforcementStatus),
+            success_cluster_enforce_count=d.get("success_cluster_enforce_count", None),
+            success_job_enforce_count=d.get("success_job_enforce_count", None),
+        )
+
+
+class PolicyBackgroundEnforcementPolicyBackgroundEnforcementStatus(Enum):
+    """The status of a background policy enforcement operation."""
+
+    ABORTED = "ABORTED"
+    COMPLETED = "COMPLETED"
+    IN_PROGRESS = "IN_PROGRESS"
+
+
+@dataclass
 class PolicyFamily:
     definition: Optional[str] = None
-    """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
-    
-    [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
+    """Policy definition document expressed in `Databricks Cluster Policy Definition Language
+    <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__."""
 
     description: Optional[str] = None
     """Human-readable description of the purpose of the policy family."""
@@ -6654,6 +7829,13 @@ class PolicyFamily:
             name=d.get("name", None),
             policy_family_id=d.get("policy_family_id", None),
         )
+
+
+class PolicyView(Enum):
+    """Controls which fields are returned when reading a policy."""
+
+    POLICY_VIEW_BASIC = "POLICY_VIEW_BASIC"
+    POLICY_VIEW_FULL = "POLICY_VIEW_FULL"
 
 
 @dataclass
@@ -6719,6 +7901,24 @@ class RCranLibrary:
     def from_dict(cls, d: Dict[str, Any]) -> RCranLibrary:
         """Deserializes the RCranLibrary from a dictionary."""
         return cls(package=d.get("package", None), repo=d.get("repo", None))
+
+
+@dataclass
+class RefreshDefaultBaseEnvironmentsResponse:
+    def as_dict(self) -> dict:
+        """Serializes the RefreshDefaultBaseEnvironmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RefreshDefaultBaseEnvironmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RefreshDefaultBaseEnvironmentsResponse:
+        """Deserializes the RefreshDefaultBaseEnvironmentsResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -6793,11 +7993,10 @@ class Results:
     file_name: Optional[str] = None
     """The image data in one of the following formats:
     
-    1. A Data URL with base64-encoded image data: `data:image/{type};base64,{base64-data}`. Example:
-    `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...`
-    
-    2. A FileStore file path for large images: `/plots/{filename}.png`. Example:
-    `/plots/b6a7ad70-fb2c-4353-8aed-3f1e015174a4.png`"""
+    1. A Data URL with base64-encoded image data: ``data:image/{type};base64,{base64-data}``.
+       Example: ``data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...``
+    2. A FileStore file path for large images: ``/plots/{filename}.png``. Example:
+       ``/plots/b6a7ad70-fb2c-4353-8aed-3f1e015174a4.png``"""
 
     file_names: Optional[List[str]] = None
     """List of image data for multiple images. Each element follows the same format as file_name."""
@@ -6897,36 +8096,36 @@ class S3StorageInfo:
     """A storage location in Amazon S3"""
 
     destination: str
-    """S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster
-    iam role, please make sure you set cluster iam role and the role has write access to the
+    """S3 destination, e.g. ``s3://my-bucket/some-prefix`` Note that logs will be delivered using
+    cluster iam role, please make sure you set cluster iam role and the role has write access to the
     destination. Please also note that you cannot use AWS keys to deliver logs."""
 
     canned_acl: Optional[str] = None
-    """(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If
-    `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on
-    the destination bucket and prefix. The full list of possible canned acl can be found at
+    """(Optional) Set canned access control list for the logs, e.g. ``bucket-owner-full-control``. If
+    ``canned_cal`` is set, please make sure the cluster iam role has ``s3:PutObjectAcl`` permission
+    on the destination bucket and prefix. The full list of possible canned acl can be found at
     http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note
     that by default only the object owner gets full controls. If you are using cross account role
-    for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to
+    for writing data, you may want to set ``bucket-owner-full-control`` to make bucket owner able to
     read the logs."""
 
     enable_encryption: Optional[bool] = None
-    """(Optional) Flag to enable server side encryption, `false` by default."""
+    """(Optional) Flag to enable server side encryption, ``false`` by default."""
 
     encryption_type: Optional[str] = None
-    """(Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when
-    encryption is enabled and the default type is `sse-s3`."""
+    """(Optional) The encryption type, it could be ``sse-s3`` or ``sse-kms``. It will be used only when
+    encryption is enabled and the default type is ``sse-s3``."""
 
     endpoint: Optional[str] = None
-    """S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be
+    """S3 endpoint, e.g. ``https://s3-us-west-2.amazonaws.com``. Either region or endpoint needs to be
     set. If both are set, endpoint will be used."""
 
     kms_key: Optional[str] = None
     """(Optional) Kms key which will be used if encryption is enabled and encryption type is set to
-    `sse-kms`."""
+    ``sse-kms``."""
 
     region: Optional[str] = None
-    """S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set,
+    """S3 region, e.g. ``us-west-2``. Either region or endpoint needs to be set. If both are set,
     endpoint will be used."""
 
     def as_dict(self) -> dict:
@@ -7144,10 +8343,16 @@ class StartClusterResponse:
 class State(Enum):
     """The state of a Cluster. The current allowable state transitions are as follows:
 
-    - `PENDING` -> `RUNNING` - `PENDING` -> `TERMINATING` - `RUNNING` -> `RESIZING` - `RUNNING` ->
-    `RESTARTING` - `RUNNING` -> `TERMINATING` - `RESTARTING` -> `RUNNING` - `RESTARTING` ->
-    `TERMINATING` - `RESIZING` -> `RUNNING` - `RESIZING` -> `TERMINATING` - `TERMINATING` ->
-    `TERMINATED`"""
+    - ``PENDING`` -> ``RUNNING``
+    - ``PENDING`` -> ``TERMINATING``
+    - ``RUNNING`` -> ``RESIZING``
+    - ``RUNNING`` -> ``RESTARTING``
+    - ``RUNNING`` -> ``TERMINATING``
+    - ``RESTARTING`` -> ``RUNNING``
+    - ``RESTARTING`` -> ``TERMINATING``
+    - ``RESIZING`` -> ``RUNNING``
+    - ``RESIZING`` -> ``TERMINATING``
+    - ``TERMINATING`` -> ``TERMINATED``"""
 
     ERROR = "ERROR"
     PENDING = "PENDING"
@@ -7243,6 +8448,7 @@ class TerminationReasonCode(Enum):
     BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG = "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG"
     BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED = "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED"
     BUDGET_POLICY_RESOLUTION_FAILURE = "BUDGET_POLICY_RESOLUTION_FAILURE"
+    CERT_ROTATION = "CERT_ROTATION"
     CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED = "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
     CLOUD_ACCOUNT_SETUP_FAILURE = "CLOUD_ACCOUNT_SETUP_FAILURE"
     CLOUD_OPERATION_CANCELLED = "CLOUD_OPERATION_CANCELLED"
@@ -7261,6 +8467,7 @@ class TerminationReasonCode(Enum):
     CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
     CONTROL_PLANE_REQUEST_FAILURE = "CONTROL_PLANE_REQUEST_FAILURE"
     CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
+    COST_CONTROL_ENTITLEMENT_DENIED = "COST_CONTROL_ENTITLEMENT_DENIED"
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
@@ -7271,6 +8478,7 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
+    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -7351,6 +8559,8 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
+    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
+    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
@@ -7361,9 +8571,11 @@ class TerminationReasonCode(Enum):
     REQUEST_REJECTED = "REQUEST_REJECTED"
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
     RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
+    SECRET_CREATION_ACCESS_DENIED = "SECRET_CREATION_ACCESS_DENIED"
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
+    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
@@ -7395,6 +8607,7 @@ class TerminationReasonCode(Enum):
     WORKER_SETUP_FAILURE = "WORKER_SETUP_FAILURE"
     WORKSPACE_CANCELLED_ERROR = "WORKSPACE_CANCELLED_ERROR"
     WORKSPACE_CONFIGURATION_ERROR = "WORKSPACE_CONFIGURATION_ERROR"
+    WORKSPACE_DELEGATION_KEY_MISCONFIGURED = "WORKSPACE_DELEGATION_KEY_MISCONFIGURED"
     WORKSPACE_UPDATE = "WORKSPACE_UPDATE"
 
 
@@ -7467,8 +8680,8 @@ class UpdateClusterResource:
     """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
     destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
     specified for one cluster. If the conf is given, the logs will be delivered to the destination
-    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
-    destination of executor logs is `$destination/$clusterId/executor`."""
+    every ``5 mins``. The destination of driver logs is ``$destination/$clusterId/driver``, while
+    the destination of executor logs is ``$destination/$clusterId/executor``."""
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
@@ -7477,14 +8690,16 @@ class UpdateClusterResource:
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
     - Currently, Databricks allows at most 45 custom tags
-    
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
-    tags"""
+      tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
+
+    dependency_mode: Optional[DependencyMode] = None
+    """Controls dependency configuration for the cluster."""
 
     docker_image: Optional[DockerImage] = None
     """Custom docker image BYOC"""
@@ -7498,7 +8713,7 @@ class UpdateClusterResource:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
+    type will be set as the same value as ``node_type_id`` defined above.
     
     This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
     driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
@@ -7517,17 +8732,17 @@ class UpdateClusterResource:
 
     init_scripts: Optional[List[InitScriptInfo]] = None
     """The configuration for storing init scripts. Any number of destinations can be specified. The
-    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
-    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+    scripts are executed sequentially in the order provided. If ``cluster_log_conf`` is specified,
+    init script logs are sent to ``<destination>/<cluster-ID>/init_scripts``."""
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    When set to true, Databricks will automatically set single node related `custom_tags`,
-    `spark_conf`, and `num_workers`"""
+    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
 
@@ -7535,17 +8750,18 @@ class UpdateClusterResource:
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
     compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
+    `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
+    API call."""
 
     num_workers: Optional[int] = None
     """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
     
     Note: When reading the properties of a cluster, this field reflects the desired number of
     workers rather than the actual current number of workers. For instance, if a cluster is resized
     from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
-    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
-    new nodes are provisioned."""
+    workers, whereas the workers listed in ``spark_info`` will gradually increase from 5 to 10 as
+    the new nodes are provisioned."""
 
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
@@ -7557,51 +8773,52 @@ class UpdateClusterResource:
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
-    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    This field is not compatible with legacy ``spark_version`` values that contain ``-photon-``.
+    Remove ``-photon-`` from the ``spark_version`` and set ``runtime_engine`` to ``PHOTON``.
     
     If left unspecified, the runtime engine defaults to standard unless the spark_version contains
     -photon-, in which case Photon will be used."""
 
     single_user_name: Optional[str] = None
-    """Single user name if data_security_mode is `SINGLE_USER`"""
+    """Single user name if data_security_mode is ``SINGLE_USER``"""
 
     spark_conf: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified Spark configuration key-value pairs.
     Users can also pass in a string of extra JVM options to the driver and the executors via
-    `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."""
+    ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions`` respectively."""
 
     spark_env_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs.
-    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
-    while launching the driver and workers.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export
+    X='Y'``) while launching the driver and workers.
     
-    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
-    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them
+    to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default
     databricks managed environmental variables are included as well.
     
-    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-    -Dspark.shuffle.service.enabled=true"}`"""
+    Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}``"""
 
     spark_version: Optional[str] = None
-    """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
-    be retrieved by using the :method:clusters/sparkVersions API call."""
+    """The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions
+    can be retrieved by using the `clusters/sparkVersions
+    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call."""
 
     ssh_public_keys: Optional[List[str]] = None
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
-    be specified."""
+    private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys
+    can be specified."""
 
     total_initial_remote_disk_size: Optional[int] = None
     """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
     supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    `effective_spark_version` is determined by `spark_version` (DBR release), this field
-    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+    ``effective_spark_version`` is determined by ``spark_version`` (DBR release), this field
+    ``use_ml_runtime``, and whether ``node_type_id`` is gpu node or not."""
 
     worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
     """Flexible node type configuration for worker nodes."""
@@ -7627,6 +8844,8 @@ class UpdateClusterResource:
             body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
             body["data_security_mode"] = self.data_security_mode.value
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode.value
         if self.docker_image:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
@@ -7698,6 +8917,8 @@ class UpdateClusterResource:
             body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
             body["data_security_mode"] = self.data_security_mode
+        if self.dependency_mode is not None:
+            body["dependency_mode"] = self.dependency_mode
         if self.docker_image:
             body["docker_image"] = self.docker_image
         if self.driver_instance_pool_id is not None:
@@ -7762,6 +8983,7 @@ class UpdateClusterResource:
             cluster_name=d.get("cluster_name", None),
             custom_tags=d.get("custom_tags", None),
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
+            dependency_mode=_enum(d, "dependency_mode", DependencyMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
             driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
@@ -7831,8 +9053,8 @@ class VolumesStorageInfo:
     """A storage location back by UC Volumes."""
 
     destination: str
-    """UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or
-    `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"""
+    """UC Volumes destination, e.g. ``/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`` or
+    ``dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh``"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumesStorageInfo into a dictionary suitable for use as a JSON request body."""
@@ -7886,7 +9108,7 @@ class WorkspaceStorageInfo:
     """A storage location in Workspace Filesystem (WSFS)"""
 
     destination: str
-    """wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`"""
+    """wsfs destination, e.g. ``workspace:/cluster-init-scripts/setup-datadog.sh``"""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceStorageInfo into a dictionary suitable for use as a JSON request body."""
@@ -7913,16 +9135,22 @@ class ClusterPoliciesAPI:
     These rules specify which attributes or attribute values can be used during cluster creation. Cluster
     policies have ACLs that limit their use to specific users and groups.
 
-    With cluster policies, you can: - Auto-install cluster libraries on the next restart by listing them in
-    the policy's "libraries" field (Public Preview). - Limit users to creating clusters with the prescribed
-    settings. - Simplify the user interface, enabling more users to create clusters, by fixing and hiding some
-    fields. - Manage costs by setting limits on attributes that impact the hourly rate.
+    With cluster policies, you can:
+
+    - Auto-install cluster libraries on the next restart by listing them in the policy's "libraries" field
+      (Public Preview).
+    - Limit users to creating clusters with the prescribed settings.
+    - Simplify the user interface, enabling more users to create clusters, by fixing and hiding some fields.
+    - Manage costs by setting limits on attributes that impact the hourly rate.
 
     Cluster policy permissions limit which policies a user can select in the Policy drop-down when the user
-    creates a cluster: - A user who has unrestricted cluster create permission can select the Unrestricted
-    policy and create fully-configurable clusters. - A user who has both unrestricted cluster create
-    permission and access to cluster policies can select the Unrestricted policy and policies they have access
-    to. - A user that has access to only cluster policies, can select the policies they have access to.
+    creates a cluster:
+
+    - A user who has unrestricted cluster create permission can select the Unrestricted policy and create
+      fully-configurable clusters.
+    - A user who has both unrestricted cluster create permission and access to cluster policies can select the
+      Unrestricted policy and policies they have access to.
+    - A user that has access to only cluster policies, can select the policies they have access to.
 
     If no policies exist in the workspace, the Policy drop-down doesn't appear. Only admin users can create,
     edit, and delete policies. Admin users also have access to all policies."""
@@ -7933,6 +9161,7 @@ class ClusterPoliciesAPI:
     def create(
         self,
         *,
+        auto_enforcement_config: Optional[PolicyAutoEnforcementConfig] = None,
         definition: Optional[str] = None,
         description: Optional[str] = None,
         libraries: Optional[List[Library]] = None,
@@ -7943,10 +9172,24 @@ class ClusterPoliciesAPI:
     ) -> CreatePolicyResponse:
         """Creates a new policy with prescribed settings.
 
-        :param definition: str (optional)
-          Policy definition document expressed in [Databricks Cluster Policy Definition Language].
+        :param auto_enforcement_config: :class:`PolicyAutoEnforcementConfig` (optional)
+          If present, auto enforcement is enabled for the policy. After the policy is edited, a background
+          operation may be scheduled to scan and edit all clusters and jobs using this policy to be in
+          compliance with the policy.
 
-          [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
+          The background operation is created when a policy edit does one of the following:
+
+          - Changes the policy definition, or
+          - Changes auto enforcement from disabled to enabled Additionally, changes to the policy definition
+            or auto enforcement configuration may cause an in-progress operation to be restarted.
+
+          To cancel an in-progress operation, edit the policy to delete this auto enforcement configuration.
+
+          The background operation status is reported via the ``background_enforcement`` field when reading
+          the policy.
+        :param definition: str (optional)
+          Policy definition document expressed in `Databricks Cluster Policy Definition Language
+          <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__.
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
         :param libraries: List[:class:`Library`] (optional)
@@ -7959,24 +9202,25 @@ class ClusterPoliciesAPI:
           Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
           characters.
         :param policy_family_definition_overrides: str (optional)
-          Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
+          Policy definition JSON document expressed in `Databricks Policy Definition Language
+          <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__. The JSON
           document must be passed as a string and cannot be embedded in the requests.
 
           You can use this to customize the policy definition inherited from the policy family. Policy rules
           specified here are merged into the inherited policy definition.
-
-          [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param policy_family_id: str (optional)
           ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
           definition.
 
-          Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
-          policy definition.
+          Cannot be used with ``definition``. Use ``policy_family_definition_overrides`` instead to customize
+          the policy definition.
 
         :returns: :class:`CreatePolicyResponse`
         """
 
         body = {}
+        if auto_enforcement_config is not None:
+            body["auto_enforcement_config"] = auto_enforcement_config.as_dict()
         if definition is not None:
             body["definition"] = definition
         if description is not None:
@@ -8030,6 +9274,7 @@ class ClusterPoliciesAPI:
         self,
         policy_id: str,
         *,
+        auto_enforcement_config: Optional[PolicyAutoEnforcementConfig] = None,
         definition: Optional[str] = None,
         description: Optional[str] = None,
         libraries: Optional[List[Library]] = None,
@@ -8043,10 +9288,24 @@ class ClusterPoliciesAPI:
 
         :param policy_id: str
           The ID of the policy to update.
-        :param definition: str (optional)
-          Policy definition document expressed in [Databricks Cluster Policy Definition Language].
+        :param auto_enforcement_config: :class:`PolicyAutoEnforcementConfig` (optional)
+          If present, auto enforcement is enabled for the policy. After the policy is edited, a background
+          operation may be scheduled to scan and edit all clusters and jobs using this policy to be in
+          compliance with the policy.
 
-          [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
+          The background operation is created when a policy edit does one of the following:
+
+          - Changes the policy definition, or
+          - Changes auto enforcement from disabled to enabled Additionally, changes to the policy definition
+            or auto enforcement configuration may cause an in-progress operation to be restarted.
+
+          To cancel an in-progress operation, edit the policy to delete this auto enforcement configuration.
+
+          The background operation status is reported via the ``background_enforcement`` field when reading
+          the policy.
+        :param definition: str (optional)
+          Policy definition document expressed in `Databricks Cluster Policy Definition Language
+          <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__.
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
         :param libraries: List[:class:`Library`] (optional)
@@ -8059,24 +9318,25 @@ class ClusterPoliciesAPI:
           Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
           characters.
         :param policy_family_definition_overrides: str (optional)
-          Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
+          Policy definition JSON document expressed in `Databricks Policy Definition Language
+          <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__. The JSON
           document must be passed as a string and cannot be embedded in the requests.
 
           You can use this to customize the policy definition inherited from the policy family. Policy rules
           specified here are merged into the inherited policy definition.
-
-          [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param policy_family_id: str (optional)
           ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
           definition.
 
-          Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
-          policy definition.
+          Cannot be used with ``definition``. Use ``policy_family_definition_overrides`` instead to customize
+          the policy definition.
 
 
         """
 
         body = {}
+        if auto_enforcement_config is not None:
+            body["auto_enforcement_config"] = auto_enforcement_config.as_dict()
         if definition is not None:
             body["definition"] = definition
         if description is not None:
@@ -8104,11 +9364,13 @@ class ClusterPoliciesAPI:
 
         self._api.do("POST", "/api/2.0/policies/clusters/edit", body=body, headers=headers)
 
-    def get(self, policy_id: str) -> Policy:
+    def get(self, policy_id: str, *, policy_view: Optional[PolicyView] = None) -> Policy:
         """Get a cluster policy entity. Creation and editing is available to admins only.
 
         :param policy_id: str
           Canonical unique identifier for the Cluster Policy.
+        :param policy_view: :class:`PolicyView` (optional)
+          Controls which fields are returned.
 
         :returns: :class:`Policy`
         """
@@ -8116,6 +9378,8 @@ class ClusterPoliciesAPI:
         query = {}
         if policy_id is not None:
             query["policy_id"] = policy_id
+        if policy_view is not None:
+            query["policy_view"] = policy_view.value
         headers = {
             "Accept": "application/json",
         }
@@ -8176,11 +9440,15 @@ class ClusterPoliciesAPI:
         """Returns a list of policies accessible by the requesting user.
 
         :param sort_column: :class:`ListSortColumn` (optional)
-          The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort result list by policy
-          creation time. * `POLICY_NAME` - Sort result list by policy name.
+          The cluster policy attribute to sort by.
+
+          - ``POLICY_CREATION_TIME`` - Sort result list by policy creation time.
+          - ``POLICY_NAME`` - Sort result list by policy name.
         :param sort_order: :class:`ListSortOrder` (optional)
-          The order in which the policies get listed. * `DESC` - Sort result list in descending order. * `ASC`
-          - Sort result list in ascending order.
+          The order in which the policies get listed.
+
+          - ``DESC`` - Sort result list in descending order.
+          - ``ASC`` - Sort result list in ascending order.
 
         :returns: Iterator over :class:`Policy`
         """
@@ -8358,7 +9626,7 @@ class ClustersAPI:
     def change_owner(self, cluster_id: str, owner_username: str):
         """Change the owner of the cluster. You must be an admin and the cluster must be terminated to perform
         this operation. The service principal application ID can be supplied as an argument to
-        `owner_username`.
+        ``owner_username``.
 
         :param cluster_id: str
         :param owner_username: str
@@ -8397,6 +9665,7 @@ class ClustersAPI:
         cluster_name: Optional[str] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         data_security_mode: Optional[DataSecurityMode] = None,
+        dependency_mode: Optional[DependencyMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
         driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
@@ -8433,13 +9702,13 @@ class ClustersAPI:
         Otherwise the cluster will terminate with an informative error message.
 
         Rather than authoring the cluster's JSON definition from scratch, Databricks recommends filling out
-        the [create compute UI] and then copying the generated JSON definition from the UI.
-
-        [create compute UI]: https://docs.databricks.com/compute/configure.html
+        the `create compute UI <https://docs.databricks.com/compute/configure.html>`__ and then copying the
+        generated JSON definition from the UI.
 
         :param spark_version: str
-          The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
-          retrieved by using the :method:clusters/sparkVersions API call.
+          The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions can
+          be retrieved by using the `clusters/sparkVersions
+          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call.
         :param apply_policy_default_values: bool (optional)
           When set to true, fixed and default values from the policy will be used for fields that are omitted.
           When set to false, only fixed values from the policy will be applied.
@@ -8462,20 +9731,21 @@ class ClustersAPI:
           The configuration for delivering spark logs to a long-term storage destination. Three kinds of
           destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
           specified for one cluster. If the conf is given, the logs will be delivered to the destination every
-          `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination
-          of executor logs is `$destination/$clusterId/executor`.
+          ``5 mins``. The destination of driver logs is ``$destination/$clusterId/driver``, while the
+          destination of executor logs is ``$destination/$clusterId/executor``.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string. For job clusters, the cluster name is automatically set
           based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-          instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+          instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
-
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
+        :param dependency_mode: :class:`DependencyMode` (optional)
+          Controls dependency configuration for the cluster.
         :param docker_image: :class:`DockerImage` (optional)
           Custom docker image BYOC
         :param driver_instance_pool_id: str (optional)
@@ -8485,7 +9755,7 @@ class ClustersAPI:
           Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
-          will be set as the same value as `node_type_id` defined above.
+          will be set as the same value as ``node_type_id`` defined above.
 
           This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
           driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
@@ -8500,29 +9770,30 @@ class ClustersAPI:
           creation, a set of default values will be used.
         :param init_scripts: List[:class:`InitScriptInfo`] (optional)
           The configuration for storing init scripts. Any number of destinations can be specified. The scripts
-          are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script
-          logs are sent to `<destination>/<cluster-ID>/init_scripts`.
+          are executed sequentially in the order provided. If ``cluster_log_conf`` is specified, init script
+          logs are sent to ``<destination>/<cluster-ID>/init_scripts``.
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
         :param is_single_node: bool (optional)
-          This field can only be used when `kind = CLASSIC_PREVIEW`.
+          This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
-          and `num_workers`
+          When set to true, Databricks will automatically set single node related ``custom_tags``,
+          ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
-          :method:clusters/listNodeTypes API call.
+          `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
+          call.
         :param num_workers: int (optional)
           Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
 
           Note: When reading the properties of a cluster, this field reflects the desired number of workers
           rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
           workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
-          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          the workers listed in ``spark_info`` will gradually increase from 5 to 10 as the new nodes are
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
@@ -8532,41 +9803,41 @@ class ClustersAPI:
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
-          This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-          `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+          This field is not compatible with legacy ``spark_version`` values that contain ``-photon-``. Remove
+          ``-photon-`` from the ``spark_version`` and set ``runtime_engine`` to ``PHOTON``.
 
           If left unspecified, the runtime engine defaults to standard unless the spark_version contains
           -photon-, in which case Photon will be used.
         :param single_user_name: str (optional)
-          Single user name if data_security_mode is `SINGLE_USER`
+          Single user name if data_security_mode is ``SINGLE_USER``
         :param spark_conf: Dict[str,str] (optional)
           An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
           can also pass in a string of extra JVM options to the driver and the executors via
-          `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.
+          ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions`` respectively.
         :param spark_env_vars: Dict[str,str] (optional)
           An object containing a set of optional, user-specified environment variable key-value pairs. Please
-          note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while
+          note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export X='Y'``) while
           launching the driver and workers.
 
-          In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
-          `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks
+          In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them to
+          ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default databricks
           managed environmental variables are included as well.
 
-          Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-          "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-          -Dspark.shuffle.service.enabled=true"}`
+          Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+          "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+          -Dspark.shuffle.service.enabled=true"}``
         :param ssh_public_keys: List[str] (optional)
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-          private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
-          specified.
+          private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys can
+          be specified.
         :param total_initial_remote_disk_size: int (optional)
           If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
           supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
-          This field can only be used when `kind = CLASSIC_PREVIEW`.
+          This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          `effective_spark_version` is determined by `spark_version` (DBR release), this field
-          `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+          ``effective_spark_version`` is determined by ``spark_version`` (DBR release), this field
+          ``use_ml_runtime``, and whether ``node_type_id`` is gpu node or not.
         :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
@@ -8597,6 +9868,8 @@ class ClustersAPI:
             body["custom_tags"] = custom_tags
         if data_security_mode is not None:
             body["data_security_mode"] = data_security_mode.value
+        if dependency_mode is not None:
+            body["dependency_mode"] = dependency_mode.value
         if docker_image is not None:
             body["docker_image"] = docker_image.as_dict()
         if driver_instance_pool_id is not None:
@@ -8677,6 +9950,7 @@ class ClustersAPI:
         cluster_name: Optional[str] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         data_security_mode: Optional[DataSecurityMode] = None,
+        dependency_mode: Optional[DependencyMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
         driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
@@ -8714,6 +9988,7 @@ class ClustersAPI:
             cluster_name=cluster_name,
             custom_tags=custom_tags,
             data_security_mode=data_security_mode,
+            dependency_mode=dependency_mode,
             docker_image=docker_image,
             driver_instance_pool_id=driver_instance_pool_id,
             driver_node_type_flexibility=driver_node_type_flexibility,
@@ -8743,8 +10018,8 @@ class ClustersAPI:
 
     def delete(self, cluster_id: str) -> Wait[ClusterDetails]:
         """Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
-        termination has completed, the cluster will be in a `TERMINATED` state. If the cluster is already in a
-        `TERMINATING` or `TERMINATED` state, nothing will happen.
+        termination has completed, the cluster will be in a ``TERMINATED`` state. If the cluster is already in
+        a ``TERMINATING`` or ``TERMINATED`` state, nothing will happen.
 
         :param cluster_id: str
           The cluster to be terminated.
@@ -8786,6 +10061,7 @@ class ClustersAPI:
         cluster_name: Optional[str] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         data_security_mode: Optional[DataSecurityMode] = None,
+        dependency_mode: Optional[DependencyMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
         driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
@@ -8812,22 +10088,23 @@ class ClustersAPI:
         workload_type: Optional[WorkloadType] = None,
     ) -> Wait[ClusterDetails]:
         """Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
-        updated if it is in a `RUNNING` or `TERMINATED` state.
+        updated if it is in a ``RUNNING`` or ``TERMINATED`` state.
 
-        If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes
+        If a cluster is updated while in a ``RUNNING`` state, it will be restarted so that the new attributes
         can take effect.
 
-        If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time it
-        is started using the `clusters/start` API, the new attributes will take effect. Any attempt to update
-        a cluster in any other state will be rejected with an `INVALID_STATE` error code.
+        If a cluster is updated while in a ``TERMINATED`` state, it will remain ``TERMINATED``. The next time
+        it is started using the ``clusters/start`` API, the new attributes will take effect. Any attempt to
+        update a cluster in any other state will be rejected with an ``INVALID_STATE`` error code.
 
         Clusters created by the Databricks Jobs service cannot be edited.
 
         :param cluster_id: str
           ID of the cluster
         :param spark_version: str
-          The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
-          retrieved by using the :method:clusters/sparkVersions API call.
+          The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions can
+          be retrieved by using the `clusters/sparkVersions
+          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call.
         :param apply_policy_default_values: bool (optional)
           When set to true, fixed and default values from the policy will be used for fields that are omitted.
           When set to false, only fixed values from the policy will be applied.
@@ -8848,20 +10125,21 @@ class ClustersAPI:
           The configuration for delivering spark logs to a long-term storage destination. Three kinds of
           destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
           specified for one cluster. If the conf is given, the logs will be delivered to the destination every
-          `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination
-          of executor logs is `$destination/$clusterId/executor`.
+          ``5 mins``. The destination of driver logs is ``$destination/$clusterId/driver``, while the
+          destination of executor logs is ``$destination/$clusterId/executor``.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string. For job clusters, the cluster name is automatically set
           based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-          instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+          instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
-
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
+        :param dependency_mode: :class:`DependencyMode` (optional)
+          Controls dependency configuration for the cluster.
         :param docker_image: :class:`DockerImage` (optional)
           Custom docker image BYOC
         :param driver_instance_pool_id: str (optional)
@@ -8871,7 +10149,7 @@ class ClustersAPI:
           Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
-          will be set as the same value as `node_type_id` defined above.
+          will be set as the same value as ``node_type_id`` defined above.
 
           This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
           driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
@@ -8886,29 +10164,30 @@ class ClustersAPI:
           creation, a set of default values will be used.
         :param init_scripts: List[:class:`InitScriptInfo`] (optional)
           The configuration for storing init scripts. Any number of destinations can be specified. The scripts
-          are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script
-          logs are sent to `<destination>/<cluster-ID>/init_scripts`.
+          are executed sequentially in the order provided. If ``cluster_log_conf`` is specified, init script
+          logs are sent to ``<destination>/<cluster-ID>/init_scripts``.
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
         :param is_single_node: bool (optional)
-          This field can only be used when `kind = CLASSIC_PREVIEW`.
+          This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
-          and `num_workers`
+          When set to true, Databricks will automatically set single node related ``custom_tags``,
+          ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
-          :method:clusters/listNodeTypes API call.
+          `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
+          call.
         :param num_workers: int (optional)
           Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
 
           Note: When reading the properties of a cluster, this field reflects the desired number of workers
           rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
           workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
-          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          the workers listed in ``spark_info`` will gradually increase from 5 to 10 as the new nodes are
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
@@ -8918,41 +10197,41 @@ class ClustersAPI:
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
-          This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-          `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+          This field is not compatible with legacy ``spark_version`` values that contain ``-photon-``. Remove
+          ``-photon-`` from the ``spark_version`` and set ``runtime_engine`` to ``PHOTON``.
 
           If left unspecified, the runtime engine defaults to standard unless the spark_version contains
           -photon-, in which case Photon will be used.
         :param single_user_name: str (optional)
-          Single user name if data_security_mode is `SINGLE_USER`
+          Single user name if data_security_mode is ``SINGLE_USER``
         :param spark_conf: Dict[str,str] (optional)
           An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
           can also pass in a string of extra JVM options to the driver and the executors via
-          `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.
+          ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions`` respectively.
         :param spark_env_vars: Dict[str,str] (optional)
           An object containing a set of optional, user-specified environment variable key-value pairs. Please
-          note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while
+          note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export X='Y'``) while
           launching the driver and workers.
 
-          In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
-          `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks
+          In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them to
+          ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default databricks
           managed environmental variables are included as well.
 
-          Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-          "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-          -Dspark.shuffle.service.enabled=true"}`
+          Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+          "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+          -Dspark.shuffle.service.enabled=true"}``
         :param ssh_public_keys: List[str] (optional)
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-          private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
-          specified.
+          private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys can
+          be specified.
         :param total_initial_remote_disk_size: int (optional)
           If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
           supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
-          This field can only be used when `kind = CLASSIC_PREVIEW`.
+          This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          `effective_spark_version` is determined by `spark_version` (DBR release), this field
-          `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+          ``effective_spark_version`` is determined by ``spark_version`` (DBR release), this field
+          ``use_ml_runtime``, and whether ``node_type_id`` is gpu node or not.
         :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
@@ -8983,6 +10262,8 @@ class ClustersAPI:
             body["custom_tags"] = custom_tags
         if data_security_mode is not None:
             body["data_security_mode"] = data_security_mode.value
+        if dependency_mode is not None:
+            body["dependency_mode"] = dependency_mode.value
         if docker_image is not None:
             body["docker_image"] = docker_image.as_dict()
         if driver_instance_pool_id is not None:
@@ -9059,6 +10340,7 @@ class ClustersAPI:
         cluster_name: Optional[str] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         data_security_mode: Optional[DataSecurityMode] = None,
+        dependency_mode: Optional[DependencyMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
         driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
@@ -9096,6 +10378,7 @@ class ClustersAPI:
             cluster_name=cluster_name,
             custom_tags=custom_tags,
             data_security_mode=data_security_mode,
+            dependency_mode=dependency_mode,
             docker_image=docker_image,
             driver_instance_pool_id=driver_instance_pool_id,
             driver_node_type_flexibility=driver_node_type_flexibility,
@@ -9231,6 +10514,35 @@ class ClustersAPI:
 
         res = self._api.do("GET", "/api/2.1/clusters/get", query=query, headers=headers)
         return ClusterDetails.from_dict(res)
+
+    def get_diagnostic(self, name: str) -> Diagnostic:
+        """Returns the most recent cluster diagnostics result for a cluster.
+
+        Cluster diagnostics are a set of environment checks -- for example, network reachability to the
+        control plane, storage, DNS, and the SCC tunnel -- that verify the cluster's environment is set up
+        correctly for the cluster to provision. The checks run automatically while the cluster is starting,
+        once per cluster start, and their results are stored.
+
+        This method only reads the latest stored result; it does NOT run the checks. The response reports an
+        overall status plus a per-check breakdown (check status, failure reason, remediation, and
+        description). If diagnostics have not run for the cluster, the overall status is NOT_RUN.
+
+        :param name: str
+          The resource name of the cluster whose diagnostics to retrieve. Format: clusters/{cluster_id}
+
+        :returns: :class:`Diagnostic`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/{name}/diagnostics", headers=headers)
+        return Diagnostic.from_dict(res)
 
     def get_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
@@ -9414,7 +10726,7 @@ class ClustersAPI:
         self, cluster_id: str, *, autoscale: Optional[AutoScale] = None, num_workers: Optional[int] = None
     ) -> Wait[ClusterDetails]:
         """Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
-        `RUNNING` state.
+        ``RUNNING`` state.
 
         :param cluster_id: str
           The cluster to be resized.
@@ -9423,12 +10735,12 @@ class ClustersAPI:
           autoscaling works best with DB runtime versions 3.0 or later.
         :param num_workers: int (optional)
           Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
 
           Note: When reading the properties of a cluster, this field reflects the desired number of workers
           rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
           workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
-          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          the workers listed in ``spark_info`` will gradually increase from 5 to 10 as the new nodes are
           provisioned.
 
         :returns:
@@ -9466,7 +10778,7 @@ class ClustersAPI:
         return self.resize(autoscale=autoscale, cluster_id=cluster_id, num_workers=num_workers).result(timeout=timeout)
 
     def restart(self, cluster_id: str, *, restart_user: Optional[str] = None) -> Wait[ClusterDetails]:
-        """Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
+        """Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a ``RUNNING`` state,
         nothing will happen.
 
         :param cluster_id: str
@@ -9547,11 +10859,15 @@ class ClustersAPI:
         return GetSparkVersionsResponse.from_dict(res)
 
     def start(self, cluster_id: str) -> Wait[ClusterDetails]:
-        """Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
-        - The previous cluster id and attributes are preserved. - The cluster starts with the last specified
-        cluster size. - If the previous cluster was an autoscaling cluster, the current cluster starts with
-        the minimum number of nodes. - If the cluster is not currently in a ``TERMINATED`` state, nothing will
-        happen. - Clusters launched to run a job cannot be started.
+        """Starts a terminated Spark cluster with the supplied ID. This works similar to ``createCluster``
+        except:
+
+        - The previous cluster id and attributes are preserved.
+        - The cluster starts with the last specified cluster size.
+        - If the previous cluster was an autoscaling cluster, the current cluster starts with the minimum
+          number of nodes.
+        - If the cluster is not currently in a ``TERMINATED`` state, nothing will happen.
+        - Clusters launched to run a job cannot be started.
 
         :param cluster_id: str
           The cluster to be started.
@@ -9607,13 +10923,13 @@ class ClustersAPI:
         self, cluster_id: str, update_mask: str, *, cluster: Optional[UpdateClusterResource] = None
     ) -> Wait[ClusterDetails]:
         """Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
-        fields to update using the `update_mask` field in the request body. A cluster can be updated if it is
-        in a `RUNNING` or `TERMINATED` state. If a cluster is updated while in a `RUNNING` state, it will be
-        restarted so that the new attributes can take effect. If a cluster is updated while in a `TERMINATED`
-        state, it will remain `TERMINATED`. The updated attributes will take effect the next time the cluster
-        is started using the `clusters/start` API. Attempts to update a cluster in any other state will be
-        rejected with an `INVALID_STATE` error code. Clusters created by the Databricks Jobs service cannot be
-        updated.
+        fields to update using the ``update_mask`` field in the request body. A cluster can be updated if it
+        is in a ``RUNNING`` or ``TERMINATED`` state. If a cluster is updated while in a ``RUNNING`` state, it
+        will be restarted so that the new attributes can take effect. If a cluster is updated while in a
+        ``TERMINATED`` state, it will remain ``TERMINATED``. The updated attributes will take effect the next
+        time the cluster is started using the ``clusters/start`` API. Attempts to update a cluster in any
+        other state will be rejected with an ``INVALID_STATE`` error code. Clusters created by the Databricks
+        Jobs service cannot be updated.
 
         :param cluster_id: str
           ID of the cluster.
@@ -9622,14 +10938,14 @@ class ClustersAPI:
           for more details.
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
         :param cluster: :class:`UpdateClusterResource` (optional)
           The cluster to be updated.
 
@@ -9816,7 +11132,7 @@ class CommandExecutionAPI:
     ) -> Wait[CommandStatusResponse]:
         """Cancels a currently running command within an execution context.
 
-        The command ID is obtained from a prior successful call to __execute__.
+        The command ID is obtained from a prior successful call to **execute**.
 
         :param cluster_id: str (optional)
         :param command_id: str (optional)
@@ -9864,7 +11180,7 @@ class CommandExecutionAPI:
     def command_status(self, cluster_id: str, context_id: str, command_id: str) -> CommandStatusResponse:
         """Gets the status of and, if available, the results from a currently executing command.
 
-        The command ID is obtained from a prior successful call to __execute__.
+        The command ID is obtained from a prior successful call to **execute**.
 
         :param cluster_id: str
         :param context_id: str
@@ -10057,7 +11373,7 @@ class GlobalInitScriptsAPI:
     **Important:** Existing clusters must be restarted to pick up any changes made to global init scripts.
     Global init scripts are run in order. If the init script returns with a bad exit code, the Apache Spark
     container fails to launch and init scripts with later position are skipped. If enough containers fail, the
-    entire cluster fails with a `GLOBAL_INIT_SCRIPT_FAILURE` error code."""
+    entire cluster fails with a ``GLOBAL_INIT_SCRIPT_FAILURE`` error code."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -10245,6 +11561,7 @@ class InstancePoolsAPI:
         azure_attributes: Optional[InstancePoolAzureAttributes] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         disk_spec: Optional[DiskSpec] = None,
+        enable_auto_alternate_node_types: Optional[bool] = None,
         enable_elastic_disk: Optional[bool] = None,
         gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
         idle_instance_autotermination_minutes: Optional[int] = None,
@@ -10265,7 +11582,8 @@ class InstancePoolsAPI:
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
-          :method:clusters/listNodeTypes API call.
+          `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
+          call.
         :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
           Attributes related to instance pools running on Amazon Web Services. If not specified at pool
           creation, a set of default values will be used.
@@ -10274,11 +11592,16 @@ class InstancePoolsAPI:
           default values will be used.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to `default_tags`. Notes:
+          EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
           Defines the specification of the disks that will be attached to all spark containers.
+        :param enable_auto_alternate_node_types: bool (optional)
+          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
+          enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This field was
+          deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove this field
+          after sufficient time has passed for all clients to migrate.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
           additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -10305,7 +11628,8 @@ class InstancePoolsAPI:
         :param preloaded_spark_versions: List[str] (optional)
           A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
           started with the preloaded Spark version will start faster. A list of available Spark versions can
-          be retrieved by using the :method:clusters/sparkVersions API call.
+          be retrieved by using the `clusters/sparkVersions
+          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call.
         :param remote_disk_throughput: int (optional)
           If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
           for GCP HYPERDISK_BALANCED types.
@@ -10325,6 +11649,8 @@ class InstancePoolsAPI:
             body["custom_tags"] = custom_tags
         if disk_spec is not None:
             body["disk_spec"] = disk_spec.as_dict()
+        if enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = enable_auto_alternate_node_types
         if enable_elastic_disk is not None:
             body["enable_elastic_disk"] = enable_elastic_disk
         if gcp_attributes is not None:
@@ -10391,6 +11717,7 @@ class InstancePoolsAPI:
         node_type_id: str,
         *,
         custom_tags: Optional[Dict[str, str]] = None,
+        enable_auto_alternate_node_types: Optional[bool] = None,
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
@@ -10408,12 +11735,18 @@ class InstancePoolsAPI:
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
-          :method:clusters/listNodeTypes API call.
+          `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
+          call.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to `default_tags`. Notes:
+          EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
+        :param enable_auto_alternate_node_types: bool (optional)
+          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
+          enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This field was
+          deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove this field
+          after sufficient time has passed for all clients to migrate.
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
           in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
@@ -10439,6 +11772,8 @@ class InstancePoolsAPI:
         body = {}
         if custom_tags is not None:
             body["custom_tags"] = custom_tags
+        if enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = enable_auto_alternate_node_types
         if idle_instance_autotermination_minutes is not None:
             body["idle_instance_autotermination_minutes"] = idle_instance_autotermination_minutes
         if instance_pool_id is not None:
@@ -10612,10 +11947,10 @@ class InstancePoolsAPI:
 
 class InstanceProfilesAPI:
     """The Instance Profiles API allows admins to add, list, and remove instance profiles that users can launch
-    clusters with. Regular users can list the instance profiles available to them. See [Secure access to S3
-    buckets] using instance profiles for more information.
-
-    [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html"""
+    clusters with. Regular users can list the instance profiles available to them. See `Secure access to S3
+    buckets
+    <https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html>`__
+    using instance profiles for more information."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -10638,16 +11973,14 @@ class InstanceProfilesAPI:
         :param iam_role_arn: str (optional)
           The AWS IAM role ARN of the role associated with the instance profile. This field is required if
           your role name and instance profile name do not match and you want to use the instance profile with
-          [Databricks SQL Serverless].
+          `Databricks SQL Serverless <https://docs.databricks.com/sql/admin/serverless.html>`__.
 
           Otherwise, this field is optional.
-
-          [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
         :param is_meta_instance_profile: bool (optional)
           Boolean flag indicating whether the instance profile should only be used in credential passthrough
           scenarios. If true, it means the instance profile contains an meta IAM role which could assume a
           wide range of roles. Therefore it should always be used with authorization. This field is optional,
-          the default value is `false`.
+          the default value is ``false``.
         :param skip_validation: bool (optional)
           By default, Databricks validates that it has sufficient permissions to launch instances with the
           instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
@@ -10688,31 +12021,29 @@ class InstanceProfilesAPI:
         """The only supported field to change is the optional IAM role ARN associated with the instance profile.
         It is required to specify the IAM role ARN if both of the following are true:
 
-        * Your role name and instance profile name do not match. The name is the part after the last slash in
-        each ARN. * You want to use the instance profile with [Databricks SQL Serverless].
+        - Your role name and instance profile name do not match. The name is the part after the last slash in
+          each ARN.
+        - You want to use the instance profile with `Databricks SQL Serverless
+          <https://docs.databricks.com/sql/admin/serverless.html>`__.
 
-        To understand where these fields are in the AWS console, see [Enable serverless SQL warehouses].
+        To understand where these fields are in the AWS console, see `Enable serverless SQL warehouses
+        <https://docs.databricks.com/sql/admin/serverless.html>`__.
 
         This API is only available to admin users.
-
-        [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
-        [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html
 
         :param instance_profile_arn: str
           The AWS ARN of the instance profile to register with Databricks. This field is required.
         :param iam_role_arn: str (optional)
           The AWS IAM role ARN of the role associated with the instance profile. This field is required if
           your role name and instance profile name do not match and you want to use the instance profile with
-          [Databricks SQL Serverless].
+          `Databricks SQL Serverless <https://docs.databricks.com/sql/admin/serverless.html>`__.
 
           Otherwise, this field is optional.
-
-          [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
         :param is_meta_instance_profile: bool (optional)
           Boolean flag indicating whether the instance profile should only be used in credential passthrough
           scenarios. If true, it means the instance profile contains an meta IAM role which could assume a
           wide range of roles. Therefore it should always be used with authorization. This field is optional,
-          the default value is `false`.
+          the default value is ``false``.
 
 
         """
@@ -10823,10 +12154,12 @@ class LibrariesAPI:
 
     def cluster_status(self, cluster_id: str) -> Iterator[LibraryFullStatus]:
         """Get the status of libraries on a cluster. A status is returned for all libraries installed on this
-        cluster via the API or the libraries UI. The order of returned libraries is as follows: 1. Libraries
-        set to be installed on this cluster, in the order that the libraries were added to the cluster, are
-        returned first. 2. Libraries that were previously requested to be installed on this cluster or, but
-        are now marked for removal, in no particular order, are returned last.
+        cluster via the API or the libraries UI. The order of returned libraries is as follows:
+
+        1. Libraries set to be installed on this cluster, in the order that the libraries were added to the
+           cluster, are returned first.
+        2. Libraries that were previously requested to be installed on this cluster or, but are now marked for
+           removal, in no particular order, are returned last.
 
         :param cluster_id: str
           Unique identifier of the cluster whose status should be retrieved.
@@ -10848,6 +12181,94 @@ class LibrariesAPI:
         json = self._api.do("GET", "/api/2.0/libraries/cluster-status", query=query, headers=headers)
         parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
         return parsed if parsed is not None else []
+
+    def create_default_base_environment(
+        self,
+        default_base_environment: DefaultBaseEnvironment,
+        *,
+        request_id: Optional[str] = None,
+        workspace_base_environment_id: Optional[str] = None,
+    ) -> DefaultBaseEnvironment:
+        """Create a default base environment within workspaces to define the environment version and a list of
+        dependencies to be used in serverless notebooks and jobs. This process will asynchronously generate a
+        cache to optimize dependency resolution.
+
+        :param default_base_environment: :class:`DefaultBaseEnvironment`
+        :param request_id: str (optional)
+          A unique identifier for this request. A random UUID is recommended. This request is only idempotent
+          if a ``request_id`` is provided.
+        :param workspace_base_environment_id: str (optional)
+
+        :returns: :class:`DefaultBaseEnvironment`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = {}
+        if default_base_environment is not None:
+            body["default_base_environment"] = default_base_environment.as_dict()
+        if request_id is not None:
+            body["request_id"] = request_id
+        if workspace_base_environment_id is not None:
+            body["workspace_base_environment_id"] = workspace_base_environment_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/default-base-environments", body=body, headers=headers)
+        return DefaultBaseEnvironment.from_dict(res)
+
+    def delete_default_base_environment(self, id: str):
+        """Delete the default base environment given an ID. The default base environment may be used by
+        downstream workloads. Please ensure that the deletion is intentional.
+
+        :param id: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/default-base-environments/{id}", headers=headers)
+
+    def get_default_base_environment(self, id: str, *, trace_id: Optional[str] = None) -> DefaultBaseEnvironment:
+        """Return the default base environment details for a given ID.
+
+        :param id: str
+        :param trace_id: str (optional)
+          Deprecated: use ctx.requestId instead
+
+        :returns: :class:`DefaultBaseEnvironment`
+        """
+
+        query = {}
+        if id is not None:
+            query["id"] = id
+        if trace_id is not None:
+            query["trace_id"] = trace_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "GET", "/api/2.0/default-base-environments:getDefaultBaseEnvironment", query=query, headers=headers
+        )
+        return DefaultBaseEnvironment.from_dict(res)
 
     def install(self, cluster_id: str, libraries: List[Library]):
         """Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
@@ -10877,6 +12298,62 @@ class LibrariesAPI:
 
         self._api.do("POST", "/api/2.0/libraries/install", body=body, headers=headers)
 
+    def list_default_base_environments(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DefaultBaseEnvironment]:
+        """List default base environments defined in the workspaces for the requested user.
+
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`DefaultBaseEnvironment`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/default-base-environments", query=query, headers=headers)
+            if "default_base_environments" in json:
+                for v in json["default_base_environments"]:
+                    yield DefaultBaseEnvironment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def refresh_default_base_environments(self, ids: List[str]):
+        """Refresh the cached default base environments for the given IDs. This process will asynchronously
+        regenerate the caches. The existing caches remains available until it expires.
+
+        :param ids: List[str]
+
+
+        """
+
+        body = {}
+        if ids is not None:
+            body["ids"] = [v for v in ids]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("POST", "/api/2.0/default-base-environments/refresh", body=body, headers=headers)
+
     def uninstall(self, cluster_id: str, libraries: List[Library]):
         """Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is
         restarted. A request to uninstall a library that is not currently installed is ignored.
@@ -10905,6 +12382,62 @@ class LibrariesAPI:
 
         self._api.do("POST", "/api/2.0/libraries/uninstall", body=body, headers=headers)
 
+    def update_default_base_environment(
+        self, id: str, default_base_environment: DefaultBaseEnvironment
+    ) -> DefaultBaseEnvironment:
+        """Update the default base environment for the given ID. This process will asynchronously regenerate the
+        cache. The existing cache remains available until it expires.
+
+        :param id: str
+        :param default_base_environment: :class:`DefaultBaseEnvironment`
+
+        :returns: :class:`DefaultBaseEnvironment`
+        """
+
+        body = {}
+        if default_base_environment is not None:
+            body["default_base_environment"] = default_base_environment.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/default-base-environments/{id}", body=body, headers=headers)
+        return DefaultBaseEnvironment.from_dict(res)
+
+    def update_default_default_base_environment(
+        self, *, base_environment_type: Optional[BaseEnvironmentType] = None, id: Optional[str] = None
+    ) -> DefaultBaseEnvironment:
+        """Set the default base environment for the workspace. This marks the specified DBE as the workspace
+        default.
+
+        :param base_environment_type: :class:`BaseEnvironmentType` (optional)
+        :param id: str (optional)
+
+        :returns: :class:`DefaultBaseEnvironment`
+        """
+
+        body = {}
+        if base_environment_type is not None:
+            body["base_environment_type"] = base_environment_type.value
+        if id is not None:
+            body["id"] = id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/default-base-environments:setDefault", body=body, headers=headers)
+        return DefaultBaseEnvironment.from_dict(res)
+
 
 class PolicyComplianceForClustersAPI:
     """The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your
@@ -10919,23 +12452,70 @@ class PolicyComplianceForClustersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def cancel_pending_cluster_enforcement(
+        self, cluster_id: str, *, allow_missing: Optional[bool] = None
+    ) -> CancelPendingClusterEnforcementResponse:
+        """Cancels a pending enforcement on a cluster. After canceling the pending enforcement, the cluster will
+        no longer update on the next termination or restart. Pending enforcements cannot be canceled when a
+        cluster is in ``TERMINATING`` state. Only workspace admins can cancel pending enforcements.
+
+        :param cluster_id: str
+          The ID of the cluster to cancel the pending enforcement for.
+        :param allow_missing: bool (optional)
+          If true and no pending enforcement exists, the request will succeed but no action will be taken.
+
+        :returns: :class:`CancelPendingClusterEnforcementResponse`
+        """
+
+        body = {}
+        if allow_missing is not None:
+            body["allow_missing"] = allow_missing
+        if cluster_id is not None:
+            body["cluster_id"] = cluster_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", "/api/2.0/policies/clusters:cancelPendingClusterEnforcement", body=body, headers=headers
+        )
+        return CancelPendingClusterEnforcementResponse.from_dict(res)
+
     def enforce_compliance(
-        self, cluster_id: str, *, validate_only: Optional[bool] = None
+        self,
+        cluster_id: str,
+        *,
+        enforce_mode: Optional[EnforcePolicyComplianceForClusterEnforceMode] = None,
+        validate_only: Optional[bool] = None,
     ) -> EnforceClusterComplianceResponse:
-        """Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if
-        it is in a `RUNNING` or `TERMINATED` state.
+        """Updates a cluster to be compliant with the current version of its policy.
 
-        If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes
-        can take effect.
+        If a cluster is updated while in a ``TERMINATED`` state, it will remain ``TERMINATED``. The next time
+        the cluster is started, the new attributes will take effect.
 
-        If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the
-        cluster is started, the new attributes will take effect.
+        For clusters in other states, the behavior depends on the ``enforce_mode`` used.
 
         Clusters created by the Databricks Jobs, SDP, or Models services cannot be enforced by this API.
         Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.
 
         :param cluster_id: str
           The ID of the cluster you want to enforce policy compliance on.
+        :param enforce_mode: :class:`EnforcePolicyComplianceForClusterEnforceMode` (optional)
+          Determines how changes should be made to clusters that are not in ``TERMINATED`` state.
+
+          - ``ENFORCE_IMMEDIATELY``: If the cluster is in a ``RUNNING`` state, it will be restarted so that
+            the new attributes can take effect. For other states aside from ``TERMINATED`` state, the request
+            will be rejected.
+          - ``WAIT_FOR_TERMINATION``: The cluster is not immediately edited. Instead, a pending enforcement is
+            scheduled to update the cluster when it terminates or restarts. When this occurs,
+            ``enforce_result`` will contain ``DEFERRED``. Only workspace admins can use this mode.
+
+          Regardless of the enforce mode, clusters in ``TERMINATED`` state are immediately edited.
         :param validate_only: bool (optional)
           If set, previews the changes that would be made to a cluster to enforce compliance but does not
           update the cluster.
@@ -10946,6 +12526,8 @@ class PolicyComplianceForClustersAPI:
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
+        if enforce_mode is not None:
+            body["enforce_mode"] = enforce_mode.value
         if validate_only is not None:
             body["validate_only"] = validate_only
         headers = {
@@ -10997,7 +12579,7 @@ class PolicyComplianceForClustersAPI:
           further constrain the maximum number of results returned in a single page.
         :param page_token: str (optional)
           A page token that can be used to navigate to the next page or previous page as returned by
-          `next_page_token` or `prev_page_token`.
+          ``next_page_token`` or ``prev_page_token``.
 
         :returns: Iterator over :class:`ClusterCompliance`
         """

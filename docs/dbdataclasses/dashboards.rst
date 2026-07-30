@@ -25,6 +25,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DASHBOARD_VIEW_BASIC
       :value: "DASHBOARD_VIEW_BASIC"
 
+.. autoclass:: DownloadMessageAttachmentVisualizationResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: EvaluationStatusType
 
    .. py:attribute:: DONE
@@ -177,6 +181,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieVizAttachment
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetPublishedDashboardEmbeddedResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetPublishedDashboardTokenInfoResponse
    :members:
    :undoc-members:
@@ -210,6 +222,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION
       :value: "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION"
 
+   .. py:attribute:: BUDGET_EXCEEDED_EXCEPTION
+      :value: "BUDGET_EXCEEDED_EXCEPTION"
+
+   .. py:attribute:: CERTIFIED_ANSWERS_MISSING_EXCEPTION
+      :value: "CERTIFIED_ANSWERS_MISSING_EXCEPTION"
+
    .. py:attribute:: CHAT_COMPLETION_CLIENT_EXCEPTION
       :value: "CHAT_COMPLETION_CLIENT_EXCEPTION"
 
@@ -233,6 +251,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: COULD_NOT_GET_UC_SCHEMA_EXCEPTION
       :value: "COULD_NOT_GET_UC_SCHEMA_EXCEPTION"
+
+   .. py:attribute:: DASHBOARD_PERMISSION_DENIED_EXCEPTION
+      :value: "DASHBOARD_PERMISSION_DENIED_EXCEPTION"
+
+   .. py:attribute:: DELEGATION_NOT_FOUND_EXCEPTION
+      :value: "DELEGATION_NOT_FOUND_EXCEPTION"
 
    .. py:attribute:: DEPLOYMENT_NOT_FOUND_EXCEPTION
       :value: "DEPLOYMENT_NOT_FOUND_EXCEPTION"
@@ -300,6 +324,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION
       :value: "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
 
+   .. py:attribute:: INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION
+      :value: "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
+
    .. py:attribute:: INVALID_CHAT_COMPLETION_JSON_EXCEPTION
       :value: "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
 
@@ -348,6 +375,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NO_TABLES_TO_QUERY_EXCEPTION
       :value: "NO_TABLES_TO_QUERY_EXCEPTION"
 
+   .. py:attribute:: PAY_PER_TOKEN_DISABLED_EXCEPTION
+      :value: "PAY_PER_TOKEN_DISABLED_EXCEPTION"
+
    .. py:attribute:: RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION
       :value: "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION"
 
@@ -392,7 +422,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MessageStatus
 
-   MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`: Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a generated SQL query. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. * `FAILED`: The response generation or query execution failed. See `error` field. * `COMPLETED`: Message processing is completed. Results are in the `attachments` field. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to rerun the query. Rerun the SQL query result by calling [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery) API. * `CANCELLED`: Message has been cancelled.
+   MessageStatus. The possible values are:
+   - ``FETCHING_METADATA``: Fetching metadata from the data sources. - ``FILTERING_CONTEXT``: Running smart context step to determine relevant context. - ``ASKING_AI``: Waiting for the LLM to respond to the user's question. - ``PENDING_WAREHOUSE``: Waiting for warehouse before the SQL query can start executing. - ``EXECUTING_QUERY``: Executing a generated SQL query. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. - ``FAILED``: The response generation or query execution failed. See ``error`` field. - ``COMPLETED``: Message processing is completed. Results are in the ``attachments`` field. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. - ``SUBMITTED``: Message has been submitted. - ``QUERY_RESULT_EXPIRED``: SQL result is not available anymore. The user needs to rerun the query. Rerun the SQL query result by calling [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery) API. - ``CANCELLED``: Message has been cancelled.
 
    .. py:attribute:: ASKING_AI
       :value: "ASKING_AI"
@@ -431,6 +462,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: QueryAttachmentParameter
    :members:
    :undoc-members:
+
+.. py:class:: ResponsePhase
+
+   .. py:attribute:: RESPONSE_PHASE_THINKING
+      :value: "RESPONSE_PHASE_THINKING"
+
+   .. py:attribute:: RESPONSE_PHASE_VERIFYING
+      :value: "RESPONSE_PHASE_VERIFYING"
 
 .. autoclass:: Result
    :members:
@@ -529,6 +568,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SINGLE_CELL_DIFFERENCE
       :value: "SINGLE_CELL_DIFFERENCE"
 
+   .. py:attribute:: TRANSIENT_ERROR
+      :value: "TRANSIENT_ERROR"
+
 .. autoclass:: Subscriber
    :members:
    :undoc-members:
@@ -562,7 +604,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ThoughtType
 
-   ThoughtType. The possible values are: * `THOUGHT_TYPE_UNSPECIFIED`: Default value that should not be used. * `THOUGHT_TYPE_DESCRIPTION`: A high-level description of how the question was interpreted. * `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of the question were resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables or datasets were identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined instructions were referenced. * `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the answer. The category of a Thought. Additional values may be added in the future.
+   ThoughtType. The possible values are:
+   - ``THOUGHT_TYPE_UNSPECIFIED``: Default value that should not be used. - ``THOUGHT_TYPE_DESCRIPTION``: A high-level description of how the question was interpreted. - ``THOUGHT_TYPE_UNDERSTANDING``: How ambiguous parts of the question were resolved. - ``THOUGHT_TYPE_DATA_SOURCING``: Which tables or datasets were identified as relevant. - ``THOUGHT_TYPE_INSTRUCTIONS``: Which author-defined instructions were referenced. - ``THOUGHT_TYPE_STEPS``: The logical steps taken to compute the answer. The category of a Thought. Additional values may be added in the future.
 
    .. py:attribute:: THOUGHT_TYPE_DATA_SOURCING
       :value: "THOUGHT_TYPE_DATA_SOURCING"
@@ -586,3 +629,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UnpublishDashboardResponse
    :members:
    :undoc-members:
+
+.. autoclass:: VerificationMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: VerificationSection
+
+   Verification workflow section - indicates which stage of verification this attachment belongs to These sections are used for grouping and ordering attachments in the frontend UI
+
+   .. py:attribute:: VERIFICATION_SECTION_FINAL_DECISION
+      :value: "VERIFICATION_SECTION_FINAL_DECISION"
+
+   .. py:attribute:: VERIFICATION_SECTION_PROPOSED_IMPROVEMENT
+      :value: "VERIFICATION_SECTION_PROPOSED_IMPROVEMENT"
+
+   .. py:attribute:: VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION
+      :value: "VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION"
+
+   .. py:attribute:: VERIFICATION_SECTION_VERIFICATION_QUERIES
+      :value: "VERIFICATION_SECTION_VERIFICATION_QUERIES"

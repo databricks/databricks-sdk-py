@@ -34,7 +34,7 @@
         :param filter_by: :class:`QueryFilter` (optional)
           An optional filter object to limit query history results. Accepts parameters such as user IDs,
           endpoint IDs, and statuses to narrow the returned data. In a URL, the parameters of this filter are
-          specified with dot notation. For example: `filter_by.statement_ids`.
+          specified with dot notation. For example: ``filter_by.statement_ids``.
         :param include_metrics: bool (optional)
           Whether to include the query metrics with each query. Only use this for a small subset of queries
           (max_results). Defaults to false.

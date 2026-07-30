@@ -10,6 +10,18 @@
     workspace-level base environments that define the environment version and dependencies to be used in
     serverless notebooks and jobs.
 
+    .. py:method:: batch_get_workspace_base_environments(names: List[str]) -> BatchGetWorkspaceBaseEnvironmentsResponse
+
+        Retrieves multiple WorkspaceBaseEnvironments by name in a single call. The operation is atomic: it
+        either returns all of the requested environments or fails.
+
+        :param names: List[str]
+          Required. The names of the workspace base environments to retrieve. Format:
+          workspace-base-environments/{workspace_base_environment}
+
+        :returns: :class:`BatchGetWorkspaceBaseEnvironmentsResponse`
+        
+
     .. py:method:: create_workspace_base_environment(workspace_base_environment: WorkspaceBaseEnvironment [, request_id: Optional[str], workspace_base_environment_id: Optional[str]]) -> CreateWorkspaceBaseEnvironmentOperation
 
         Creates a new WorkspaceBaseEnvironment. This is a long-running operation. The operation will
@@ -80,15 +92,14 @@
 
         Databricks provides the following base environments:
 
-        - `workspace-base-environments/databricks_ai_...`: includes popular AI and deep learning packages for
-        serverless GPU compute.
-
-        - `workspace-base-environments/databricks_ml_...`: includes popular ML packages for serverless
-        compute.
+        - ``workspace-base-environments/databricks_ai_...``: includes popular AI and deep learning packages
+          for serverless GPU compute.
+        - ``workspace-base-environments/databricks_ml_...``: includes popular ML packages for serverless
+          compute.
 
         Databricks-provided base environments are versioned. For example,
-        `workspace-base-environments/databricks_ml_v5` corresponds to the ML environment built on environment
-        version 5.
+        ``workspace-base-environments/databricks_ml_v5`` corresponds to the ML environment built on
+        environment version 5.
 
         :param page_size: int (optional)
           The maximum number of environments to return per page. Default is 1000.

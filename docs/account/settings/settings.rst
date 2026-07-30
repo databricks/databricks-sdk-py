@@ -21,9 +21,12 @@
 
         Disable legacy features for new Databricks workspaces.
     
-        For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2. Hive Metastore will not be
-        provisioned. 3. Disables the use of ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
-        prior to 13.3LTS.
+        For newly created workspaces:
+    
+        1. Disables the use of DBFS root and mounts.
+        2. Hive Metastore will not be provisioned.
+        3. Disables the use of ‘No-isolation clusters’.
+        4. Disables Databricks Runtime versions prior to 13.3LTS.
 
     .. py:property:: enable_ip_access_lists
         :type: EnableIpAccessListsAPI
