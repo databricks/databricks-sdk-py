@@ -2,7 +2,6 @@
 # ruff: noqa: F403, F405
 
 import pytest
-
 from databricks.sdk.core import ApiClient
 from tests.databricks.sdk.service.idempotencytesting import *
 
