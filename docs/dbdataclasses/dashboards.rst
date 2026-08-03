@@ -61,6 +61,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: GenieConversationType
+
+   The type of a Genie conversation. Distinguishes an agent-mode conversation from a classic chat conversation so callers can route message retrieval accordingly without a per-conversation lookup.
+
+   .. py:attribute:: GENIE_CONVERSATION_TYPE_AGENT
+      :value: "GENIE_CONVERSATION_TYPE_AGENT"
+
+   .. py:attribute:: GENIE_CONVERSATION_TYPE_CHAT
+      :value: "GENIE_CONVERSATION_TYPE_CHAT"
+
 .. py:class:: GenieEvalAssessment
 
    .. py:attribute:: BAD
@@ -597,6 +607,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: FOLLOW_UP_QUESTION
       :value: "FOLLOW_UP_QUESTION"
+
+   .. py:attribute:: TEXT_ATTACHMENT_PURPOSE_ANSWER
+      :value: "TEXT_ATTACHMENT_PURPOSE_ANSWER"
 
 .. autoclass:: Thought
    :members:

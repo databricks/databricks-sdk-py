@@ -4,24 +4,27 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
-from databricks.sdk.service import compute
+
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
+    Wait,
 )
 
-from ..errors import OperationFailed
+
+from databricks.sdk.service import compute
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -11940,7 +11943,7 @@ class JobsAPI:
         start_time_from: Optional[int] = None,
         start_time_to: Optional[int] = None,
     ) -> Iterator[BaseRun]:
-        """List runs in descending order by start time.
+        """List runs in descending order by end time. If a run has not finished, it falls back to start time.
 
         :param active_only: bool (optional)
           If active_only is ``true``, only active runs are included in the results; otherwise, lists both
@@ -12290,9 +12293,6 @@ class JobsAPI:
           Databricks guarantees that exactly one run is launched with that idempotency token.
 
           This token must have at most 64 characters.
-
-          For more information, see `How to ensure idempotency for jobs
-          <https://kb.databricks.com/jobs/jobs-idempotency.html>`__.
         :param jar_params: List[str] (optional)
           A list of parameters for jobs with Spark JAR tasks, for example ``"jar_params": ["john doe",
           "35"]``. The parameters are used to invoke the main function of the main class specified in the
@@ -12559,9 +12559,6 @@ class JobsAPI:
           Databricks guarantees that exactly one run is launched with that idempotency token.
 
           This token must have at most 64 characters.
-
-          For more information, see `How to ensure idempotency for jobs
-          <https://kb.databricks.com/jobs/jobs-idempotency.html>`__.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           ``email_notifications`` and ``webhook_notifications`` for this run.

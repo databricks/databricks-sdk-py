@@ -2,11 +2,12 @@
 # ruff: noqa: F403, F405
 
 import pytest
+import databricks.sdk.core as client
+
 from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
-
-import databricks.sdk.core as client
 from databricks.sdk.common.types.fieldmask import FieldMask
+
 from tests.databricks.sdk.service.httpcallv2 import *
 
 

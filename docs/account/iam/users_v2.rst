@@ -122,7 +122,8 @@
 
     .. py:method:: update(id: str [, active: Optional[bool], display_name: Optional[str], emails: Optional[List[ComplexValue]], external_id: Optional[str], name: Optional[Name], roles: Optional[List[ComplexValue]], user_name: Optional[str]])
 
-        Replaces a user's information with the data supplied in request.
+        Replaces a user's information with the data supplied in request. The ``userName`` and ``emails``
+        attributes cannot be updated through this API; any supplied changes to them are ignored (no-op).
 
         :param id: str
           Databricks user ID.
@@ -131,14 +132,16 @@
         :param display_name: str (optional)
           String that represents a concatenation of given and family names. For example ``John Smith``.
         :param emails: List[:class:`ComplexValue`] (optional)
-          All the emails associated with the Databricks user.
+          All the emails associated with the Databricks user. This attribute cannot be updated through the
+          SCIM PATCH or PUT APIs; any supplied change is ignored.
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Indicates if the group has the admin role.
         :param user_name: str (optional)
-          Email address of the Databricks user.
+          Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or PUT
+          APIs; any supplied change is ignored.
 
 
         

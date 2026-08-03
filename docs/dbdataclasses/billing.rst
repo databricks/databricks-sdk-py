@@ -12,6 +12,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    Type of action that a budget alert executes when its threshold is crossed.
 
+   .. py:attribute:: BLOCK_USAGE
+      :value: "BLOCK_USAGE"
+
    .. py:attribute:: EMAIL_NOTIFICATION
       :value: "EMAIL_NOTIFICATION"
 
@@ -23,6 +26,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: LIST_PRICE_DOLLARS_USD
       :value: "LIST_PRICE_DOLLARS_USD"
+
+.. py:class:: AlertConfigurationScopeType
+
+   Evaluation scope for an alert configuration.
+
+   .. py:attribute:: ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER
+      :value: "ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER"
+
+   .. py:attribute:: ALERT_CONFIGURATION_SCOPE_TYPE_SHARED
+      :value: "ALERT_CONFIGURATION_SCOPE_TYPE_SHARED"
 
 .. py:class:: AlertConfigurationTimePeriod
 
@@ -62,6 +75,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: BudgetPolicy
    :members:
    :undoc-members:
+
+.. py:class:: BudgetResourceType
+
+   Resource scope for a budget configuration. Determines whether the budget tracks all resources or a specific resource.
+
+   .. py:attribute:: BUDGET_RESOURCE_TYPE_ALL_RESOURCES
+      :value: "BUDGET_RESOURCE_TYPE_ALL_RESOURCES"
+
+   .. py:attribute:: BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY
+      :value: "BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY"
 
 .. autoclass:: CreateBillingUsageDashboardResponse
    :members:
@@ -186,6 +209,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "JSON"
 
 .. autoclass:: PatchStatusResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: PrincipalOverride
    :members:
    :undoc-members:
 
