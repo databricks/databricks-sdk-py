@@ -4,24 +4,27 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
-from databricks.sdk.service import compute
+
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
+    Wait,
 )
 
-from ..errors import OperationFailed
+
+from databricks.sdk.service import compute
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -3118,11 +3121,21 @@ class GenieTask:
     configuration_id: str
     """Required. Resource name of the agent task configuration to run."""
 
+    parameters: Optional[Dict[str, str]] = None
+    """Per-run parameter overrides, keyed by parameter name, substituted into the agent task
+    configuration's prompt before the run. A ``{{name}}`` placeholder in the prompt is replaced by
+    the matching value; unmatched placeholders are left unchanged. Values may reference job
+    parameters with ``{{job.parameters.*}}`` or upstream task output, which are resolved before the
+    task runs. Limited to 10000 characters when serialized as JSON; keys must be 1-100 characters
+    and contain only letters, digits, underscores, dashes, and periods."""
+
     def as_dict(self) -> dict:
         """Serializes the GenieTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.configuration_id is not None:
             body["configuration_id"] = self.configuration_id
+        if self.parameters:
+            body["parameters"] = self.parameters
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3130,12 +3143,14 @@ class GenieTask:
         body = {}
         if self.configuration_id is not None:
             body["configuration_id"] = self.configuration_id
+        if self.parameters:
+            body["parameters"] = self.parameters
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieTask:
         """Deserializes the GenieTask from a dictionary."""
-        return cls(configuration_id=d.get("configuration_id", None))
+        return cls(configuration_id=d.get("configuration_id", None), parameters=d.get("parameters", None))
 
 
 @dataclass
@@ -6210,6 +6225,10 @@ class ResolvedValues:
 
     dbt_task: Optional[ResolvedDbtTaskValues] = None
 
+    genie_task: Optional[ResolvedValuesGenieTaskResolvedValues] = None
+    """Resolved values for a Genie task: the per-run ``parameters`` overrides with
+    ``{{job.parameters.*}}`` / upstream-task references replaced by concrete values before the run."""
+
     notebook_task: Optional[ResolvedNotebookTaskValues] = None
 
     pipeline_task: Optional[ResolvedPipelineTaskValues] = None
@@ -6241,6 +6260,8 @@ class ResolvedValues:
             body["condition_task"] = self.condition_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
+        if self.genie_task:
+            body["genie_task"] = self.genie_task.as_dict()
         if self.notebook_task:
             body["notebook_task"] = self.notebook_task.as_dict()
         if self.pipeline_task:
@@ -6274,6 +6295,8 @@ class ResolvedValues:
             body["condition_task"] = self.condition_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
+        if self.genie_task:
+            body["genie_task"] = self.genie_task
         if self.notebook_task:
             body["notebook_task"] = self.notebook_task
         if self.pipeline_task:
@@ -6303,6 +6326,7 @@ class ResolvedValues:
             alert_task=_from_dict(d, "alert_task", ResolvedValuesAlertTaskResolvedValues),
             condition_task=_from_dict(d, "condition_task", ResolvedConditionTaskValues),
             dbt_task=_from_dict(d, "dbt_task", ResolvedDbtTaskValues),
+            genie_task=_from_dict(d, "genie_task", ResolvedValuesGenieTaskResolvedValues),
             notebook_task=_from_dict(d, "notebook_task", ResolvedNotebookTaskValues),
             pipeline_task=_from_dict(d, "pipeline_task", ResolvedPipelineTaskValues),
             python_wheel_task=_from_dict(d, "python_wheel_task", ResolvedPythonWheelTaskValues),
@@ -6386,6 +6410,36 @@ class ResolvedValuesAlertTaskResolvedValues:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResolvedValuesAlertTaskResolvedValues:
         """Deserializes the ResolvedValuesAlertTaskResolvedValues from a dictionary."""
+        return cls(parameters=d.get("parameters", None))
+
+
+@dataclass
+class ResolvedValuesGenieTaskResolvedValues:
+    """Resolved values for a Genie task: the per-run ``parameters`` overrides with
+    ``{{job.parameters.*}}`` / ``{{tasks.<key>.values.<name>}}`` references replaced by the concrete
+    values before the run."""
+
+    parameters: Optional[Dict[str, str]] = None
+    """The per-run parameter overrides with all ``{{job.parameters.*}}`` /
+    ``{{tasks.<key>.values.<name>}}`` references replaced by concrete values."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResolvedValuesGenieTaskResolvedValues into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.parameters:
+            body["parameters"] = self.parameters
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedValuesGenieTaskResolvedValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.parameters:
+            body["parameters"] = self.parameters
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedValuesGenieTaskResolvedValues:
+        """Deserializes the ResolvedValuesGenieTaskResolvedValues from a dictionary."""
         return cls(parameters=d.get("parameters", None))
 
 
@@ -11940,7 +11994,7 @@ class JobsAPI:
         start_time_from: Optional[int] = None,
         start_time_to: Optional[int] = None,
     ) -> Iterator[BaseRun]:
-        """List runs in descending order by start time.
+        """List runs in descending order by end time. If a run has not finished, it falls back to start time.
 
         :param active_only: bool (optional)
           If active_only is ``true``, only active runs are included in the results; otherwise, lists both
@@ -12290,9 +12344,6 @@ class JobsAPI:
           Databricks guarantees that exactly one run is launched with that idempotency token.
 
           This token must have at most 64 characters.
-
-          For more information, see `How to ensure idempotency for jobs
-          <https://kb.databricks.com/jobs/jobs-idempotency.html>`__.
         :param jar_params: List[str] (optional)
           A list of parameters for jobs with Spark JAR tasks, for example ``"jar_params": ["john doe",
           "35"]``. The parameters are used to invoke the main function of the main class specified in the
@@ -12559,9 +12610,6 @@ class JobsAPI:
           Databricks guarantees that exactly one run is launched with that idempotency token.
 
           This token must have at most 64 characters.
-
-          For more information, see `How to ensure idempotency for jobs
-          <https://kb.databricks.com/jobs/jobs-idempotency.html>`__.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           ``email_notifications`` and ``webhook_notifications`` for this run.

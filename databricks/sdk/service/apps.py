@@ -4,29 +4,29 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common import lro
-from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.retries import RetryError, poll
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
     _timestamp,
+    Wait,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+from databricks.sdk.common import lro
+from databricks.sdk.retries import RetryError, poll
 
-from ..errors import OperationFailed
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -91,6 +91,10 @@ class App:
 
     effective_user_api_scopes: Optional[List[str]] = None
     """The effective api scopes granted to the user access token."""
+
+    forward_user_access_token: Optional[bool] = None
+    """Forward the user's access token to the app. Requires stopping and starting app compute to take
+    effect."""
 
     git_repository: Optional[GitRepository] = None
     """Git repository configuration for app deployments. When specified, deployments can reference code
@@ -186,6 +190,8 @@ class App:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = [v for v in self.effective_user_api_scopes]
+        if self.forward_user_access_token is not None:
+            body["forward_user_access_token"] = self.forward_user_access_token
         if self.git_repository:
             body["git_repository"] = self.git_repository.as_dict()
         if self.git_source:
@@ -271,6 +277,8 @@ class App:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = self.effective_user_api_scopes
+        if self.forward_user_access_token is not None:
+            body["forward_user_access_token"] = self.forward_user_access_token
         if self.git_repository:
             body["git_repository"] = self.git_repository
         if self.git_source:
@@ -339,6 +347,7 @@ class App:
             effective_resources=_repeated_dict(d, "effective_resources", AppResource),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
+            forward_user_access_token=d.get("forward_user_access_token", None),
             git_repository=_from_dict(d, "git_repository", GitRepository),
             git_source=_from_dict(d, "git_source", GitSource),
             id=d.get("id", None),
@@ -1816,6 +1825,10 @@ class AppUpdate:
 
     description: Optional[str] = None
 
+    forward_user_access_token: Optional[bool] = None
+    """Forward the user's access token to the app. Requires stopping and starting app compute to take
+    effect."""
+
     git_repository: Optional[GitRepository] = None
 
     resources: Optional[List[AppResource]] = None
@@ -1843,6 +1856,8 @@ class AppUpdate:
             body["compute_size"] = self.compute_size.value
         if self.description is not None:
             body["description"] = self.description
+        if self.forward_user_access_token is not None:
+            body["forward_user_access_token"] = self.forward_user_access_token
         if self.git_repository:
             body["git_repository"] = self.git_repository.as_dict()
         if self.resources:
@@ -1872,6 +1887,8 @@ class AppUpdate:
             body["compute_size"] = self.compute_size
         if self.description is not None:
             body["description"] = self.description
+        if self.forward_user_access_token is not None:
+            body["forward_user_access_token"] = self.forward_user_access_token
         if self.git_repository:
             body["git_repository"] = self.git_repository
         if self.resources:
@@ -1896,6 +1913,7 @@ class AppUpdate:
             compute_min_instances=d.get("compute_min_instances", None),
             compute_size=_enum(d, "compute_size", ComputeSize),
             description=d.get("description", None),
+            forward_user_access_token=d.get("forward_user_access_token", None),
             git_repository=_from_dict(d, "git_repository", GitRepository),
             resources=_repeated_dict(d, "resources", AppResource),
             status=_from_dict(d, "status", AppUpdateUpdateStatus),
@@ -2661,6 +2679,11 @@ class Space:
     """The name of the app space. The name must contain only lowercase alphanumeric characters and
     hyphens. It must be unique within the workspace."""
 
+    assume_group_id: Optional[str] = None
+    """The group whose permissions users assume via Role Authorization for apps in this space. When
+    set, user tokens assume the role of this group instead of doing regular obo token downscoping.
+    Set only at space creation, and mutually exclusive with group_id."""
+
     create_time: Optional[Timestamp] = None
     """The creation time of the app space. Formatted timestamp in ISO 6801."""
 
@@ -2719,6 +2742,8 @@ class Space:
     def as_dict(self) -> dict:
         """Serializes the Space into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.assume_group_id is not None:
+            body["assume_group_id"] = self.assume_group_id
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
         if self.creator is not None:
@@ -2760,6 +2785,8 @@ class Space:
     def as_shallow_dict(self) -> dict:
         """Serializes the Space into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.assume_group_id is not None:
+            body["assume_group_id"] = self.assume_group_id
         if self.create_time is not None:
             body["create_time"] = self.create_time
         if self.creator is not None:
@@ -2802,6 +2829,7 @@ class Space:
     def from_dict(cls, d: Dict[str, Any]) -> Space:
         """Deserializes the Space from a dictionary."""
         return cls(
+            assume_group_id=d.get("assume_group_id", None),
             create_time=_timestamp(d, "create_time"),
             creator=d.get("creator", None),
             description=d.get("description", None),

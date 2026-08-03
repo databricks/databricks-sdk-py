@@ -158,7 +158,8 @@
 
     .. py:method:: update(id: str [, active: Optional[bool], display_name: Optional[str], emails: Optional[List[ComplexValue]], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], name: Optional[Name], roles: Optional[List[ComplexValue]], schemas: Optional[List[UserSchema]], user_name: Optional[str]])
 
-        Replaces a user's information with the data supplied in request.
+        Replaces a user's information with the data supplied in request. The ``userName`` and ``emails``
+        attributes cannot be updated through this API; any supplied changes to them are ignored (no-op).
 
         :param id: str
           Databricks user ID.
@@ -170,7 +171,8 @@
           <https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation>`__.
           Use Account SCIM APIs to update ``displayName``.
         :param emails: List[:class:`ComplexValue`] (optional)
-          All the emails associated with the Databricks user.
+          All the emails associated with the Databricks user. This attribute cannot be updated through the
+          SCIM PATCH or PUT APIs; any supplied change is ignored.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See `assigning entitlements
           <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
@@ -184,7 +186,8 @@
         :param schemas: List[:class:`UserSchema`] (optional)
           The schema of the user.
         :param user_name: str (optional)
-          Email address of the Databricks user.
+          Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or PUT
+          APIs; any supplied change is ignored.
 
 
         

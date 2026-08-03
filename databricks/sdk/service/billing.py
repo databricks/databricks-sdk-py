@@ -4,19 +4,23 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
+from dataclasses import dataclass
+from enum import Enum
+from typing import Dict, List, Any, Iterator, Optional, BinaryIO
+
 
 import logging
 import uuid
-from dataclasses import dataclass
-from enum import Enum
-from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
-from databricks.sdk.service import compute
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
 )
+
+
+from databricks.sdk.service import compute
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -70,6 +74,7 @@ class ActionConfiguration:
 class ActionConfigurationType(Enum):
     """Type of action that a budget alert executes when its threshold is crossed."""
 
+    BLOCK_USAGE = "BLOCK_USAGE"
     EMAIL_NOTIFICATION = "EMAIL_NOTIFICATION"
 
 
@@ -82,6 +87,10 @@ class AlertConfiguration:
     alert_configuration_id: Optional[str] = None
     """Databricks alert configuration ID."""
 
+    principal_overrides: Optional[List[PrincipalOverride]] = None
+    """Per-principal threshold overrides for this alert. Only applies to per-user alerts
+    (``scope_type`` = ``ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER``); ignored for shared alerts."""
+
     quantity_threshold: Optional[str] = None
     """The threshold for the budget alert to determine if it is in a triggered state. The number is
     evaluated based on ``quantity_type``."""
@@ -89,6 +98,10 @@ class AlertConfiguration:
     quantity_type: Optional[AlertConfigurationQuantityType] = None
     """The way to calculate cost for this budget alert. This is what ``quantity_threshold`` is measured
     in."""
+
+    scope_type: Optional[AlertConfigurationScopeType] = None
+    """How the alert threshold is evaluated. Determines whether spend is tracked in aggregate or per
+    individual user."""
 
     time_period: Optional[AlertConfigurationTimePeriod] = None
     """The time window of usage data for the budget."""
@@ -103,10 +116,14 @@ class AlertConfiguration:
             body["action_configurations"] = [v.as_dict() for v in self.action_configurations]
         if self.alert_configuration_id is not None:
             body["alert_configuration_id"] = self.alert_configuration_id
+        if self.principal_overrides:
+            body["principal_overrides"] = [v.as_dict() for v in self.principal_overrides]
         if self.quantity_threshold is not None:
             body["quantity_threshold"] = self.quantity_threshold
         if self.quantity_type is not None:
             body["quantity_type"] = self.quantity_type.value
+        if self.scope_type is not None:
+            body["scope_type"] = self.scope_type.value
         if self.time_period is not None:
             body["time_period"] = self.time_period.value
         if self.trigger_type is not None:
@@ -120,10 +137,14 @@ class AlertConfiguration:
             body["action_configurations"] = self.action_configurations
         if self.alert_configuration_id is not None:
             body["alert_configuration_id"] = self.alert_configuration_id
+        if self.principal_overrides:
+            body["principal_overrides"] = self.principal_overrides
         if self.quantity_threshold is not None:
             body["quantity_threshold"] = self.quantity_threshold
         if self.quantity_type is not None:
             body["quantity_type"] = self.quantity_type
+        if self.scope_type is not None:
+            body["scope_type"] = self.scope_type
         if self.time_period is not None:
             body["time_period"] = self.time_period
         if self.trigger_type is not None:
@@ -136,8 +157,10 @@ class AlertConfiguration:
         return cls(
             action_configurations=_repeated_dict(d, "action_configurations", ActionConfiguration),
             alert_configuration_id=d.get("alert_configuration_id", None),
+            principal_overrides=_repeated_dict(d, "principal_overrides", PrincipalOverride),
             quantity_threshold=d.get("quantity_threshold", None),
             quantity_type=_enum(d, "quantity_type", AlertConfigurationQuantityType),
+            scope_type=_enum(d, "scope_type", AlertConfigurationScopeType),
             time_period=_enum(d, "time_period", AlertConfigurationTimePeriod),
             trigger_type=_enum(d, "trigger_type", AlertConfigurationTriggerType),
         )
@@ -145,6 +168,13 @@ class AlertConfiguration:
 
 class AlertConfigurationQuantityType(Enum):
     LIST_PRICE_DOLLARS_USD = "LIST_PRICE_DOLLARS_USD"
+
+
+class AlertConfigurationScopeType(Enum):
+    """Evaluation scope for an alert configuration."""
+
+    ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER = "ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER"
+    ALERT_CONFIGURATION_SCOPE_TYPE_SHARED = "ALERT_CONFIGURATION_SCOPE_TYPE_SHARED"
 
 
 class AlertConfigurationTimePeriod(Enum):
@@ -178,6 +208,16 @@ class BudgetConfiguration:
     of what is considered for this budget. Leave empty to include all usage for this account. All
     provided filters must be matched for usage to be included."""
 
+    include_external_spend: Optional[bool] = None
+    """Whether this budget tracks external pass-through spend (third-party costs billed through a
+    Databricks product) in addition to internal Databricks spend. Only applicable when
+    ``resource_type`` is ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``; AI Gateway External Models is
+    the first use case. This field is immutable after create."""
+
+    resource_type: Optional[BudgetResourceType] = None
+    """The resource scope for this budget. Determines whether the budget tracks all resources or a
+    specific resource."""
+
     update_time: Optional[int] = None
     """Update time of this budget configuration."""
 
@@ -196,6 +236,10 @@ class BudgetConfiguration:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter.as_dict()
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
+        if self.resource_type is not None:
+            body["resource_type"] = self.resource_type.value
         if self.update_time is not None:
             body["update_time"] = self.update_time
         return body
@@ -215,6 +259,10 @@ class BudgetConfiguration:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
+        if self.resource_type is not None:
+            body["resource_type"] = self.resource_type
         if self.update_time is not None:
             body["update_time"] = self.update_time
         return body
@@ -229,6 +277,8 @@ class BudgetConfiguration:
             create_time=d.get("create_time", None),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
+            include_external_spend=d.get("include_external_spend", None),
+            resource_type=_enum(d, "resource_type", BudgetResourceType),
             update_time=d.get("update_time", None),
         )
 
@@ -422,6 +472,14 @@ class BudgetPolicy:
         )
 
 
+class BudgetResourceType(Enum):
+    """Resource scope for a budget configuration. Determines whether the budget tracks all resources or
+    a specific resource."""
+
+    BUDGET_RESOURCE_TYPE_ALL_RESOURCES = "BUDGET_RESOURCE_TYPE_ALL_RESOURCES"
+    BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY = "BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY"
+
+
 @dataclass
 class CreateBillingUsageDashboardResponse:
     dashboard_id: Optional[str] = None
@@ -464,6 +522,16 @@ class CreateBudgetConfigurationBudget:
     of what is considered for this budget. Leave empty to include all usage for this account. All
     provided filters must be matched for usage to be included."""
 
+    include_external_spend: Optional[bool] = None
+    """Whether this budget tracks external pass-through spend (third-party costs billed through a
+    Databricks product) in addition to internal Databricks spend. Only applicable when
+    ``resource_type`` is ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``; AI Gateway External Models is
+    the first use case. This field is immutable after create."""
+
+    resource_type: Optional[BudgetResourceType] = None
+    """The resource scope for this budget. Determines whether the budget tracks all resources or a
+    specific resource."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationBudget into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -475,6 +543,10 @@ class CreateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter.as_dict()
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
+        if self.resource_type is not None:
+            body["resource_type"] = self.resource_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -488,6 +560,10 @@ class CreateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
+        if self.resource_type is not None:
+            body["resource_type"] = self.resource_type
         return body
 
     @classmethod
@@ -500,6 +576,8 @@ class CreateBudgetConfigurationBudget:
             ),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
+            include_external_spend=d.get("include_external_spend", None),
+            resource_type=_enum(d, "resource_type", BudgetResourceType),
         )
 
 
@@ -541,6 +619,10 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
     """Configured actions for this alert. These define what happens when an alert enters a triggered
     state."""
 
+    principal_overrides: Optional[List[PrincipalOverride]] = None
+    """Per-principal threshold overrides for this alert. Only applies to per-user alerts
+    (``scope_type`` = ``ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER``); ignored for shared alerts."""
+
     quantity_threshold: Optional[str] = None
     """The threshold for the budget alert to determine if it is in a triggered state. The number is
     evaluated based on ``quantity_type``."""
@@ -548,6 +630,10 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
     quantity_type: Optional[AlertConfigurationQuantityType] = None
     """The way to calculate cost for this budget alert. This is what ``quantity_threshold`` is measured
     in."""
+
+    scope_type: Optional[AlertConfigurationScopeType] = None
+    """How the alert threshold is evaluated. Determines whether spend is tracked in aggregate or per
+    individual user."""
 
     time_period: Optional[AlertConfigurationTimePeriod] = None
     """The time window of usage data for the budget."""
@@ -560,10 +646,14 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
         body = {}
         if self.action_configurations:
             body["action_configurations"] = [v.as_dict() for v in self.action_configurations]
+        if self.principal_overrides:
+            body["principal_overrides"] = [v.as_dict() for v in self.principal_overrides]
         if self.quantity_threshold is not None:
             body["quantity_threshold"] = self.quantity_threshold
         if self.quantity_type is not None:
             body["quantity_type"] = self.quantity_type.value
+        if self.scope_type is not None:
+            body["scope_type"] = self.scope_type.value
         if self.time_period is not None:
             body["time_period"] = self.time_period.value
         if self.trigger_type is not None:
@@ -575,10 +665,14 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
         body = {}
         if self.action_configurations:
             body["action_configurations"] = self.action_configurations
+        if self.principal_overrides:
+            body["principal_overrides"] = self.principal_overrides
         if self.quantity_threshold is not None:
             body["quantity_threshold"] = self.quantity_threshold
         if self.quantity_type is not None:
             body["quantity_type"] = self.quantity_type
+        if self.scope_type is not None:
+            body["scope_type"] = self.scope_type
         if self.time_period is not None:
             body["time_period"] = self.time_period
         if self.trigger_type is not None:
@@ -592,8 +686,10 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
             action_configurations=_repeated_dict(
                 d, "action_configurations", CreateBudgetConfigurationBudgetActionConfigurations
             ),
+            principal_overrides=_repeated_dict(d, "principal_overrides", PrincipalOverride),
             quantity_threshold=d.get("quantity_threshold", None),
             quantity_type=_enum(d, "quantity_type", AlertConfigurationQuantityType),
+            scope_type=_enum(d, "scope_type", AlertConfigurationScopeType),
             time_period=_enum(d, "time_period", AlertConfigurationTimePeriod),
             trigger_type=_enum(d, "trigger_type", AlertConfigurationTriggerType),
         )
@@ -1360,6 +1456,41 @@ class PatchStatusResponse:
 
 
 @dataclass
+class PrincipalOverride:
+    """Per-principal threshold override on a PER_USER alert: bumps the alert's quantity_threshold for
+    one principal_id."""
+
+    override_threshold: Optional[str] = None
+    """Dollar amount that overrides the parent alert's quantity_threshold for this principal."""
+
+    principal_id: Optional[int] = None
+    """Account-level principal id (user, group, or service principal)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PrincipalOverride into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.override_threshold is not None:
+            body["override_threshold"] = self.override_threshold
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PrincipalOverride into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.override_threshold is not None:
+            body["override_threshold"] = self.override_threshold
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PrincipalOverride:
+        """Deserializes the PrincipalOverride from a dictionary."""
+        return cls(override_threshold=d.get("override_threshold", None), principal_id=d.get("principal_id", None))
+
+
+@dataclass
 class SortSpec:
     descending: Optional[bool] = None
     """Whether to sort in descending order."""
@@ -1415,6 +1546,16 @@ class UpdateBudgetConfigurationBudget:
     of what is considered for this budget. Leave empty to include all usage for this account. All
     provided filters must be matched for usage to be included."""
 
+    include_external_spend: Optional[bool] = None
+    """Whether this budget tracks external pass-through spend (third-party costs billed through a
+    Databricks product) in addition to internal Databricks spend. Only applicable when
+    ``resource_type`` is ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``; AI Gateway External Models is
+    the first use case. This field is immutable after create."""
+
+    resource_type: Optional[BudgetResourceType] = None
+    """The resource scope for this budget. Determines whether the budget tracks all resources or a
+    specific resource."""
+
     def as_dict(self) -> dict:
         """Serializes the UpdateBudgetConfigurationBudget into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1428,6 +1569,10 @@ class UpdateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter.as_dict()
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
+        if self.resource_type is not None:
+            body["resource_type"] = self.resource_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1443,6 +1588,10 @@ class UpdateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
+        if self.resource_type is not None:
+            body["resource_type"] = self.resource_type
         return body
 
     @classmethod
@@ -1454,6 +1603,8 @@ class UpdateBudgetConfigurationBudget:
             budget_configuration_id=d.get("budget_configuration_id", None),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
+            include_external_spend=d.get("include_external_spend", None),
+            resource_type=_enum(d, "resource_type", BudgetResourceType),
         )
 
 
