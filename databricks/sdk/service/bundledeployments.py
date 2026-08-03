@@ -4,21 +4,22 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common.types.fieldmask import FieldMask
+import logging
+
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
     _timestamp,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -541,10 +542,21 @@ class Operation:
     caller must echo the value it last observed; if it no longer matches the server's value, the
     update is rejected with ABORTED so the caller can re-read and retry. Ignored on CreateOperation."""
 
-    state: Optional[any] = None
+    state: Optional[str] = None
     """Serialized local config state after the operation. Should be unset for delete operations.
     Mutable: may be updated after creation via UpdateOperation. When updating, the caller must echo
-    the last-observed ``sequence_id`` as a concurrency precondition."""
+    the last-observed ``sequence_id`` as a concurrency precondition.
+    
+    Opaque to this service: the string is stored and returned unchanged. This is deliberately not
+    google.protobuf.Value, whose only numeric case is ``double number_value``, so parsing the
+    client's JSON into it rewrites every integer as a double - ``1`` reads back as ``1.0``, which no
+    longer deserializes into an integer field - and silently loses precision above 2^53, which is
+    within range for IDs the client records.
+    
+    A string rather than bytes: the payload is always UTF-8 JSON, and proto3 JSON maps bytes to
+    base64, which inflates every request and response by a third and makes state unreadable in logs
+    and API responses. Both generate the same OpenAPI schema ("type": "string"), so the SDKs are
+    identical either way."""
 
     update_time: Optional[Timestamp] = None
     """When the operation was last updated. Set to ``create_time`` when the operation is created and to
@@ -571,7 +583,7 @@ class Operation:
             body["resource_type"] = self.resource_type.value
         if self.sequence_id is not None:
             body["sequence_id"] = self.sequence_id
-        if self.state:
+        if self.state is not None:
             body["state"] = self.state
         if self.status is not None:
             body["status"] = self.status.value
@@ -600,7 +612,7 @@ class Operation:
             body["resource_type"] = self.resource_type
         if self.sequence_id is not None:
             body["sequence_id"] = self.sequence_id
-        if self.state:
+        if self.state is not None:
             body["state"] = self.state
         if self.status is not None:
             body["status"] = self.status
@@ -675,8 +687,9 @@ class Resource:
     """Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar",
     "jobs.foo.permissions")."""
 
-    state: Optional[any] = None
-    """Serialized local config state (what the CLI deployed)."""
+    state: Optional[str] = None
+    """Serialized local config state (what the CLI deployed). Opaque to this service; see
+    Operation.state for why this is a string and not google.protobuf.Value."""
 
     update_time: Optional[Timestamp] = None
     """When the last operation that updated this resource's recorded state was applied. Pairs with
@@ -699,7 +712,7 @@ class Resource:
             body["resource_key"] = self.resource_key
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type.value
-        if self.state:
+        if self.state is not None:
             body["state"] = self.state
         if self.update_time is not None:
             body["update_time"] = self.update_time.ToJsonString()
@@ -722,7 +735,7 @@ class Resource:
             body["resource_key"] = self.resource_key
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type
-        if self.state:
+        if self.state is not None:
             body["state"] = self.state
         if self.update_time is not None:
             body["update_time"] = self.update_time

@@ -1,5 +1,17 @@
 # Version changelog
 
+## Release v0.124.0 (2026-08-03)
+
+### API Changes
+* Add `group_id` field for `databricks.sdk.service.iamv2.Group`.
+* Add `service_principal_id` field for `databricks.sdk.service.iamv2.ServicePrincipal`.
+* Add `user_id` field for `databricks.sdk.service.iamv2.User`.
+* [Breaking] Change `state` field for `databricks.sdk.service.bundledeployments.Operation` to type `str` dataclass.
+* [Breaking] Change `state` field for `databricks.sdk.service.bundledeployments.Resource` to type `str` dataclass.
+* [Breaking] Remove `internal_id` field for `databricks.sdk.service.iamv2.Group`.
+* [Breaking] Remove `internal_id` field for `databricks.sdk.service.iamv2.ServicePrincipal`.
+* [Breaking] Remove `internal_id` field for `databricks.sdk.service.iamv2.User`.
+
 ## Release v0.123.0 (2026-07-30)
 
 ### API Changes

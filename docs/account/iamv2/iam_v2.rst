@@ -136,31 +136,31 @@
 
         
 
-    .. py:method:: delete_group(internal_id: str)
+    .. py:method:: delete_group(group_id: str)
 
         Deletes a group from the Databricks account by its internal ID.
 
-        :param internal_id: str
+        :param group_id: str
           Required. Internal ID of the group in Databricks.
 
 
         
 
-    .. py:method:: delete_service_principal(internal_id: str)
+    .. py:method:: delete_service_principal(service_principal_id: str)
 
         Deletes a service principal from the Databricks account by its internal ID.
 
-        :param internal_id: str
+        :param service_principal_id: str
           Required. Internal ID of the service principal in Databricks.
 
 
         
 
-    .. py:method:: delete_user(internal_id: str)
+    .. py:method:: delete_user(user_id: str)
 
         Deletes a user from the Databricks account by its internal ID.
 
-        :param internal_id: str
+        :param user_id: str
           Required. Internal ID of the user in Databricks.
 
 
@@ -255,31 +255,31 @@
         :returns: :class:`ExternalUser`
         
 
-    .. py:method:: get_group(internal_id: str) -> Group
+    .. py:method:: get_group(group_id: str) -> Group
 
         Fetches a group from the Databricks account by its internal ID.
 
-        :param internal_id: str
+        :param group_id: str
           Required. Internal ID of the group in Databricks.
 
         :returns: :class:`Group`
         
 
-    .. py:method:: get_service_principal(internal_id: str) -> ServicePrincipal
+    .. py:method:: get_service_principal(service_principal_id: str) -> ServicePrincipal
 
         Fetches a service principal from the Databricks account by its internal ID.
 
-        :param internal_id: str
+        :param service_principal_id: str
           Required. Internal ID of the service principal in Databricks.
 
         :returns: :class:`ServicePrincipal`
         
 
-    .. py:method:: get_user(internal_id: str) -> User
+    .. py:method:: get_user(user_id: str) -> User
 
         Fetches a user from the Databricks account by its internal ID.
 
-        :param internal_id: str
+        :param user_id: str
           Required. Internal ID of the user in Databricks.
 
         :returns: :class:`User`
@@ -367,7 +367,7 @@
         :returns: :class:`ListDirectGroupMembersResponse`
         
 
-    .. py:method:: list_groups( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> ListGroupsResponse
+    .. py:method:: list_groups( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Group]
 
         Lists the groups in the Databricks account, returning one page per call. Supports filtering by group
         name or external ID.
@@ -380,10 +380,10 @@
           A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
           page.
 
-        :returns: :class:`ListGroupsResponse`
+        :returns: Iterator over :class:`Group`
         
 
-    .. py:method:: list_service_principals( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> ListServicePrincipalsResponse
+    .. py:method:: list_service_principals( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ServicePrincipal]
 
         Lists the service principals in the Databricks account, returning one page per call. Supports
         filtering by application ID or external ID.
@@ -396,7 +396,7 @@
           A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
           subsequent page.
 
-        :returns: :class:`ListServicePrincipalsResponse`
+        :returns: Iterator over :class:`ServicePrincipal`
         
 
     .. py:method:: list_transitive_parent_groups(principal_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListTransitiveParentGroupsResponse
@@ -416,7 +416,7 @@
         :returns: :class:`ListTransitiveParentGroupsResponse`
         
 
-    .. py:method:: list_users( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> ListUsersResponse
+    .. py:method:: list_users( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[User]
 
         Lists the users in the Databricks account, returning one page per call. Supports filtering by username
         or external ID.
@@ -428,10 +428,10 @@
         :param page_token: str (optional)
           A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
 
-        :returns: :class:`ListUsersResponse`
+        :returns: Iterator over :class:`User`
         
 
-    .. py:method:: list_workspace_access_details(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAccessDetailsResponse
+    .. py:method:: list_workspace_access_details(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceAccessDetail]
 
         Lists the access details of every provisioned principal (user, service principal, or group) with
         access to the given workspace, returning one page per call.
@@ -448,7 +448,7 @@
           A page token, received from a previous ListWorkspaceAccessDetails call. Provide this to retrieve the
           subsequent page.
 
-        :returns: :class:`ListWorkspaceAccessDetailsResponse`
+        :returns: Iterator over :class:`WorkspaceAccessDetail`
         
 
     .. py:method:: list_workspace_assignment_details(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAssignmentDetailsResponse
@@ -522,12 +522,12 @@
         :returns: :class:`AttributeControlEntry`
         
 
-    .. py:method:: update_group(internal_id: str, group: Group, update_mask: str) -> Group
+    .. py:method:: update_group(group_id: str, group: Group, update_mask: str) -> Group
 
         Updates an existing group in the Databricks account. Only the fields named in the update mask are
         modified. Returns the updated Group resource.
 
-        :param internal_id: str
+        :param group_id: str
           Required. Internal ID of the group in Databricks.
         :param group: :class:`Group`
           Required. Group to be updated in <Databricks>
@@ -537,12 +537,12 @@
         :returns: :class:`Group`
         
 
-    .. py:method:: update_service_principal(internal_id: str, service_principal: ServicePrincipal, update_mask: str) -> ServicePrincipal
+    .. py:method:: update_service_principal(service_principal_id: str, service_principal: ServicePrincipal, update_mask: str) -> ServicePrincipal
 
         Updates an existing service principal in the Databricks account. Only the fields named in the update
         mask are modified. Returns the updated ServicePrincipal resource.
 
-        :param internal_id: str
+        :param service_principal_id: str
           Required. Internal ID of the service principal in Databricks.
         :param service_principal: :class:`ServicePrincipal`
           Required. Service Principal to be updated in <Databricks>
@@ -552,14 +552,14 @@
         :returns: :class:`ServicePrincipal`
         
 
-    .. py:method:: update_user(internal_id: str, user: User, update_mask: str) -> User
+    .. py:method:: update_user(user_id: str, user: User, update_mask: str) -> User
 
         Updates an existing user in the Databricks account, returning the updated User resource. The behavior
         is the same whether or not Account Identity Management (AIM) is enabled. Only the fields named in the
         update mask are modified; the updatable fields are fullName.givenName, fullName.familyName, status,
         and externalId.
 
-        :param internal_id: str
+        :param user_id: str
           Required. Internal ID of the user in Databricks.
         :param user: :class:`User`
           Required. User to be updated in <Databricks>

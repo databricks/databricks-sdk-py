@@ -4,25 +4,28 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional, BinaryIO
 
-from databricks.sdk.service import sql
+
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
+    Wait,
 )
 
-from ..errors import OperationFailed
+
+from databricks.sdk.service import sql
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -432,6 +435,10 @@ class GenieConversation:
 class GenieConversationSummary:
     conversation_id: str
 
+    agent_type: Optional[GenieConversationType] = None
+    """Whether this is a classic chat or an agent-mode conversation. Allows callers to route message
+    retrieval (chat vs. agent endpoint) without an extra lookup."""
+
     created_timestamp: Optional[int] = None
 
     title: Optional[str] = None
@@ -439,6 +446,8 @@ class GenieConversationSummary:
     def as_dict(self) -> dict:
         """Serializes the GenieConversationSummary into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.agent_type is not None:
+            body["agent_type"] = self.agent_type.value
         if self.conversation_id is not None:
             body["conversation_id"] = self.conversation_id
         if self.created_timestamp is not None:
@@ -450,6 +459,8 @@ class GenieConversationSummary:
     def as_shallow_dict(self) -> dict:
         """Serializes the GenieConversationSummary into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.agent_type is not None:
+            body["agent_type"] = self.agent_type
         if self.conversation_id is not None:
             body["conversation_id"] = self.conversation_id
         if self.created_timestamp is not None:
@@ -462,10 +473,20 @@ class GenieConversationSummary:
     def from_dict(cls, d: Dict[str, Any]) -> GenieConversationSummary:
         """Deserializes the GenieConversationSummary from a dictionary."""
         return cls(
+            agent_type=_enum(d, "agent_type", GenieConversationType),
             conversation_id=d.get("conversation_id", None),
             created_timestamp=d.get("created_timestamp", None),
             title=d.get("title", None),
         )
+
+
+class GenieConversationType(Enum):
+    """The type of a Genie conversation. Distinguishes an agent-mode conversation from a classic chat
+    conversation so callers can route message retrieval accordingly without a per-conversation
+    lookup."""
+
+    GENIE_CONVERSATION_TYPE_AGENT = "GENIE_CONVERSATION_TYPE_AGENT"
+    GENIE_CONVERSATION_TYPE_CHAT = "GENIE_CONVERSATION_TYPE_CHAT"
 
 
 class GenieEvalAssessment(Enum):
@@ -2494,6 +2515,9 @@ class SubscriptionSubscriberUser:
 
 @dataclass
 class TextAttachment:
+    """A text response on a conversation message: the answer, the final summary, or a clarifying
+    follow-up question, along with optional phase and verification metadata."""
+
     content: Optional[str] = None
     """AI generated message"""
 
@@ -2502,7 +2526,10 @@ class TextAttachment:
     phase: Optional[ResponsePhase] = None
 
     purpose: Optional[TextAttachmentPurpose] = None
-    """Purpose/intent of this text attachment"""
+    """Purpose of this text attachment. A completed message may contain more than one text attachment
+    (for example a clarifying follow-up question alongside the final answer); use this field to tell
+    them apart. ``TEXT_ATTACHMENT_PURPOSE_ANSWER`` marks the final answer/summary and
+    ``FOLLOW_UP_QUESTION`` marks a clarifying question."""
 
     verification_metadata: Optional[VerificationMetadata] = None
     """Metadata for verification phase attachments. Only set when phase = RESPONSE_PHASE_VERIFYING."""
@@ -2553,6 +2580,7 @@ class TextAttachmentPurpose(Enum):
     """Purpose/intent of a text attachment"""
 
     FOLLOW_UP_QUESTION = "FOLLOW_UP_QUESTION"
+    TEXT_ATTACHMENT_PURPOSE_ANSWER = "TEXT_ATTACHMENT_PURPOSE_ANSWER"
 
 
 @dataclass
