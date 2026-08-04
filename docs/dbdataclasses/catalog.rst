@@ -2061,6 +2061,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: REFRESH
       :value: "REFRESH"
 
+   .. py:attribute:: REFRESH_FLOW
+      :value: "REFRESH_FLOW"
+
    .. py:attribute:: SELECT
       :value: "SELECT"
 
