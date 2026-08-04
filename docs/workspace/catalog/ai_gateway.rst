@@ -250,8 +250,8 @@
         :param include_browse: bool (optional)
           Whether to include agent services for which the principal can only access selective metadata.
         :param page_size: int (optional)
-          Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 1000.
-          Use ``next_page_token`` to retrieve additional pages.
+          Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          ``next_page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)
@@ -274,7 +274,7 @@
         :param include_browse: bool (optional)
           Whether to include MCP services for which the principal can only access selective metadata.
         :param page_size: int (optional)
-          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 1000. Use
+          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``next_page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
@@ -300,7 +300,7 @@
         :param include_browse: bool (optional)
           Whether to include provider services for which the principal can only access selective metadata.
         :param page_size: int (optional)
-          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 1000.
+          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
           Use ``next_page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
@@ -326,8 +326,8 @@
         :param include_browse: bool (optional)
           Whether to include model services for which the principal can only access selective metadata.
         :param page_size: int (optional)
-          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 1000.
-          Use ``next_page_token`` to retrieve additional pages.
+          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          ``next_page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)

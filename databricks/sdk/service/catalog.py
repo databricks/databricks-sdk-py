@@ -4,30 +4,30 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
 from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common.types.fieldmask import FieldMask
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _duration,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
     _timestamp,
+    Wait,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
 
-from ..errors import OperationFailed
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -8312,16 +8312,6 @@ class ModelProviderServiceConfigAmazonBedrockProviderDirectConfig:
     """AWS access-key-pair auth. Mutually exclusive with ``service_credential``. Supersedes the flat
     ``aws_access_key_id`` / ``aws_secret_access_key`` fields."""
 
-    aws_access_key_id: Optional[str] = None
-    """Deprecated flat AWS access key ID. Superseded by ``aws_access_key.access_key_id``. Kept for one
-    migration cycle; the handler mirrors it to/from ``aws_access_key``. Treated as
-    username-equivalent (not a secret value): round-trips on reads and is scrubbed from audit logs."""
-
-    aws_secret_access_key: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Deprecated flat AWS secret access key. Superseded by ``aws_access_key.secret_access_key``. Kept
-    for one migration cycle; the handler mirrors it to/from ``aws_access_key``. Supplied as inline
-    plaintext via ``ProviderSecret.plaintext``."""
-
     region: Optional[str] = None
     """AWS region where the Bedrock endpoint is hosted (e.g., ``us-east-1``). Required on Create."""
 
@@ -8338,10 +8328,6 @@ class ModelProviderServiceConfigAmazonBedrockProviderDirectConfig:
         body = {}
         if self.aws_access_key:
             body["aws_access_key"] = self.aws_access_key.as_dict()
-        if self.aws_access_key_id is not None:
-            body["aws_access_key_id"] = self.aws_access_key_id
-        if self.aws_secret_access_key:
-            body["aws_secret_access_key"] = self.aws_secret_access_key.as_dict()
         if self.region is not None:
             body["region"] = self.region
         if self.service_credential:
@@ -8353,10 +8339,6 @@ class ModelProviderServiceConfigAmazonBedrockProviderDirectConfig:
         body = {}
         if self.aws_access_key:
             body["aws_access_key"] = self.aws_access_key
-        if self.aws_access_key_id is not None:
-            body["aws_access_key_id"] = self.aws_access_key_id
-        if self.aws_secret_access_key:
-            body["aws_secret_access_key"] = self.aws_secret_access_key
         if self.region is not None:
             body["region"] = self.region
         if self.service_credential:
@@ -8368,8 +8350,6 @@ class ModelProviderServiceConfigAmazonBedrockProviderDirectConfig:
         """Deserializes the ModelProviderServiceConfigAmazonBedrockProviderDirectConfig from a dictionary."""
         return cls(
             aws_access_key=_from_dict(d, "aws_access_key", ModelProviderServiceConfigAwsAccessKey),
-            aws_access_key_id=d.get("aws_access_key_id", None),
-            aws_secret_access_key=_from_dict(d, "aws_secret_access_key", ModelProviderServiceConfigProviderSecret),
             region=d.get("region", None),
             service_credential=_from_dict(d, "service_credential", ModelProviderServiceConfigServiceCredential),
         )
@@ -8576,15 +8556,6 @@ class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
     """Full Azure OpenAI endpoint base URL, e.g. ``https://myresource.openai.azure.com``. Required on
     Create."""
 
-    client_id: Optional[str] = None
-    """Deprecated flat Entra client ID. Superseded by ``entra_service_principal.client_id``. Kept for
-    one migration cycle; the handler mirrors it to/from ``entra_service_principal``."""
-
-    client_secret: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Deprecated flat Entra client secret. Superseded by ``entra_service_principal.client_secret``.
-    Kept for one migration cycle; the handler mirrors it to/from ``entra_service_principal``.
-    Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
-
     entra_service_principal: Optional[ModelProviderServiceConfigEntraServicePrincipal] = None
     """Entra ID (service principal) auth. Mutually exclusive with ``api_key`` and
     ``service_credential``. Supersedes the flat ``tenant_id`` / ``client_id`` / ``client_secret``
@@ -8599,10 +8570,6 @@ class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
     Azure-hosted workspaces; Create requests from other clouds are rejected with
     INVALID_PARAMETER_VALUE."""
 
-    tenant_id: Optional[str] = None
-    """Deprecated flat Entra tenant ID. Superseded by ``entra_service_principal.tenant_id``. Kept for
-    one migration cycle; the handler mirrors it to/from ``entra_service_principal``."""
-
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAzureOpenAiProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8610,16 +8577,10 @@ class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
             body["api_key"] = self.api_key.as_dict()
         if self.base_url is not None:
             body["base_url"] = self.base_url
-        if self.client_id is not None:
-            body["client_id"] = self.client_id
-        if self.client_secret:
-            body["client_secret"] = self.client_secret.as_dict()
         if self.entra_service_principal:
             body["entra_service_principal"] = self.entra_service_principal.as_dict()
         if self.service_credential:
             body["service_credential"] = self.service_credential.as_dict()
-        if self.tenant_id is not None:
-            body["tenant_id"] = self.tenant_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8629,16 +8590,10 @@ class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
             body["api_key"] = self.api_key
         if self.base_url is not None:
             body["base_url"] = self.base_url
-        if self.client_id is not None:
-            body["client_id"] = self.client_id
-        if self.client_secret:
-            body["client_secret"] = self.client_secret
         if self.entra_service_principal:
             body["entra_service_principal"] = self.entra_service_principal
         if self.service_credential:
             body["service_credential"] = self.service_credential
-        if self.tenant_id is not None:
-            body["tenant_id"] = self.tenant_id
         return body
 
     @classmethod
@@ -8647,13 +8602,10 @@ class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
         return cls(
             api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
             base_url=d.get("base_url", None),
-            client_id=d.get("client_id", None),
-            client_secret=_from_dict(d, "client_secret", ModelProviderServiceConfigProviderSecret),
             entra_service_principal=_from_dict(
                 d, "entra_service_principal", ModelProviderServiceConfigEntraServicePrincipal
             ),
             service_credential=_from_dict(d, "service_credential", ModelProviderServiceConfigServiceCredential),
-            tenant_id=d.get("tenant_id", None),
         )
 
 
@@ -8817,17 +8769,29 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderConfig:
 
 @dataclass
 class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
-    """Direct form of Gemini Enterprise provider config."""
+    """Direct form of Gemini Enterprise provider config.
+
+    Authentication is one of two mutually exclusive modes; exactly one must be supplied on Create:
+
+    - API key: set ``api_key``, leave ``service_credential`` unset.
+    - UC service credential: set ``service_credential``, leave ``api_key`` unset."""
 
     api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Google Gemini Enterprise API key. Required on Create. Supplied as inline plaintext via
-    ``ProviderSecret.plaintext``."""
+    """Google Gemini Enterprise API key. Required on Create when using API-key auth; mutually exclusive
+    with ``service_credential``. Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
 
     project_id: Optional[str] = None
     """GCP project ID hosting the Gemini Enterprise endpoint. Required on Create."""
 
     region: Optional[str] = None
     """GCP region of the Gemini Enterprise endpoint (e.g., ``us-central1``). Required on Create."""
+
+    service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
+    """Reference to a UC service credential authorizing Gemini Enterprise requests. On Create, supply
+    ``service_credential.name`` as ``credentials/{name}``; required when using UC-service-credential
+    auth and mutually exclusive with ``api_key``. The credential is referenced by name; its value is
+    not carried here. On read, the resolved ``id`` and ``is_deleted`` are also populated. Supported
+    only on GCP-hosted workspaces."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
@@ -8838,6 +8802,8 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
             body["project_id"] = self.project_id
         if self.region is not None:
             body["region"] = self.region
+        if self.service_credential:
+            body["service_credential"] = self.service_credential.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8849,6 +8815,8 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
             body["project_id"] = self.project_id
         if self.region is not None:
             body["region"] = self.region
+        if self.service_credential:
+            body["service_credential"] = self.service_credential
         return body
 
     @classmethod
@@ -8858,6 +8826,7 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
             api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
             project_id=d.get("project_id", None),
             region=d.get("region", None),
+            service_credential=_from_dict(d, "service_credential", ModelProviderServiceConfigServiceCredential),
         )
 
 
@@ -8910,15 +8879,6 @@ class ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig:
     base_url: Optional[str] = None
     """Microsoft AI Foundry endpoint URL. Required on Create."""
 
-    client_id: Optional[str] = None
-    """Deprecated flat Entra client ID. Superseded by ``entra_service_principal.client_id``. Kept for
-    one migration cycle; the handler mirrors it to/from ``entra_service_principal``."""
-
-    client_secret: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Deprecated flat Entra client secret. Superseded by ``entra_service_principal.client_secret``.
-    Kept for one migration cycle; the handler mirrors it to/from ``entra_service_principal``.
-    Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
-
     entra_service_principal: Optional[ModelProviderServiceConfigEntraServicePrincipal] = None
     """Entra ID (service principal) auth. Mutually exclusive with ``api_key`` and
     ``service_credential``. Supersedes the flat ``tenant_id`` / ``client_id`` / ``client_secret``
@@ -8933,10 +8893,6 @@ class ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig:
     populated. Only supported on Azure-hosted workspaces; Create requests from other clouds are
     rejected with INVALID_PARAMETER_VALUE."""
 
-    tenant_id: Optional[str] = None
-    """Deprecated flat Entra tenant ID. Superseded by ``entra_service_principal.tenant_id``. Kept for
-    one migration cycle; the handler mirrors it to/from ``entra_service_principal``."""
-
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8944,16 +8900,10 @@ class ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig:
             body["api_key"] = self.api_key.as_dict()
         if self.base_url is not None:
             body["base_url"] = self.base_url
-        if self.client_id is not None:
-            body["client_id"] = self.client_id
-        if self.client_secret:
-            body["client_secret"] = self.client_secret.as_dict()
         if self.entra_service_principal:
             body["entra_service_principal"] = self.entra_service_principal.as_dict()
         if self.service_credential:
             body["service_credential"] = self.service_credential.as_dict()
-        if self.tenant_id is not None:
-            body["tenant_id"] = self.tenant_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8963,16 +8913,10 @@ class ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig:
             body["api_key"] = self.api_key
         if self.base_url is not None:
             body["base_url"] = self.base_url
-        if self.client_id is not None:
-            body["client_id"] = self.client_id
-        if self.client_secret:
-            body["client_secret"] = self.client_secret
         if self.entra_service_principal:
             body["entra_service_principal"] = self.entra_service_principal
         if self.service_credential:
             body["service_credential"] = self.service_credential
-        if self.tenant_id is not None:
-            body["tenant_id"] = self.tenant_id
         return body
 
     @classmethod
@@ -8981,13 +8925,10 @@ class ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig:
         return cls(
             api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
             base_url=d.get("base_url", None),
-            client_id=d.get("client_id", None),
-            client_secret=_from_dict(d, "client_secret", ModelProviderServiceConfigProviderSecret),
             entra_service_principal=_from_dict(
                 d, "entra_service_principal", ModelProviderServiceConfigEntraServicePrincipal
             ),
             service_credential=_from_dict(d, "service_credential", ModelProviderServiceConfigServiceCredential),
-            tenant_id=d.get("tenant_id", None),
         )
 
 
@@ -11590,6 +11531,7 @@ class Privilege(Enum):
     READ_STREAM = "READ_STREAM"
     READ_VOLUME = "READ_VOLUME"
     REFRESH = "REFRESH"
+    REFRESH_FLOW = "REFRESH_FLOW"
     SELECT = "SELECT"
     SET_SHARE_PERMISSION = "SET_SHARE_PERMISSION"
     UPDATE = "UPDATE"
@@ -15449,8 +15391,8 @@ class AiGatewayAPI:
         :param include_browse: bool (optional)
           Whether to include agent services for which the principal can only access selective metadata.
         :param page_size: int (optional)
-          Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 1000.
-          Use ``next_page_token`` to retrieve additional pages.
+          Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          ``next_page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)
@@ -15506,7 +15448,7 @@ class AiGatewayAPI:
         :param include_browse: bool (optional)
           Whether to include MCP services for which the principal can only access selective metadata.
         :param page_size: int (optional)
-          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 1000. Use
+          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``next_page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
@@ -15567,7 +15509,7 @@ class AiGatewayAPI:
         :param include_browse: bool (optional)
           Whether to include provider services for which the principal can only access selective metadata.
         :param page_size: int (optional)
-          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 1000.
+          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
           Use ``next_page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
@@ -15628,8 +15570,8 @@ class AiGatewayAPI:
         :param include_browse: bool (optional)
           Whether to include model services for which the principal can only access selective metadata.
         :param page_size: int (optional)
-          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 1000.
-          Use ``next_page_token`` to retrieve additional pages.
+          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          ``next_page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)

@@ -4,11 +4,12 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
+
+
+import logging
 
 from databricks.sdk.service._internal import (
     _enum,
@@ -16,6 +17,7 @@ from databricks.sdk.service._internal import (
     _repeated_dict,
     _repeated_enum,
 )
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -3215,7 +3217,8 @@ class AccountUsersV2API:
         roles: Optional[List[ComplexValue]] = None,
         user_name: Optional[str] = None,
     ):
-        """Replaces a user's information with the data supplied in request.
+        """Replaces a user's information with the data supplied in request. The ``userName`` and ``emails``
+        attributes cannot be updated through this API; any supplied changes to them are ignored (no-op).
 
         :param id: str
           Databricks user ID.
@@ -3224,14 +3227,16 @@ class AccountUsersV2API:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names. For example ``John Smith``.
         :param emails: List[:class:`ComplexValue`] (optional)
-          All the emails associated with the Databricks user.
+          All the emails associated with the Databricks user. This attribute cannot be updated through the
+          SCIM PATCH or PUT APIs; any supplied change is ignored.
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Indicates if the group has the admin role.
         :param user_name: str (optional)
-          Email address of the Databricks user.
+          Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or PUT
+          APIs; any supplied change is ignored.
 
 
         """
@@ -4430,7 +4435,8 @@ class UsersV2API:
         schemas: Optional[List[UserSchema]] = None,
         user_name: Optional[str] = None,
     ):
-        """Replaces a user's information with the data supplied in request.
+        """Replaces a user's information with the data supplied in request. The ``userName`` and ``emails``
+        attributes cannot be updated through this API; any supplied changes to them are ignored (no-op).
 
         :param id: str
           Databricks user ID.
@@ -4442,7 +4448,8 @@ class UsersV2API:
           <https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation>`__.
           Use Account SCIM APIs to update ``displayName``.
         :param emails: List[:class:`ComplexValue`] (optional)
-          All the emails associated with the Databricks user.
+          All the emails associated with the Databricks user. This attribute cannot be updated through the
+          SCIM PATCH or PUT APIs; any supplied change is ignored.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See `assigning entitlements
           <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
@@ -4456,7 +4463,8 @@ class UsersV2API:
         :param schemas: List[:class:`UserSchema`] (optional)
           The schema of the user.
         :param user_name: str (optional)
-          Email address of the Databricks user.
+          Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or PUT
+          APIs; any supplied change is ignored.
 
 
         """
