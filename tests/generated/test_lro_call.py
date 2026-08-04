@@ -2,19 +2,19 @@
 # ruff: noqa: F403, F405
 
 from datetime import timedelta
-from typing import Any, Dict
 
 import pytest
 
 import databricks.sdk.core as client
 from databricks.sdk.common import lro
+from typing import Dict, Any
 from tests.databricks.sdk.service.lrotesting import (
-    DatabricksServiceExceptionWithDetailsProto,
-    ErrorCode,
     LroTestingAPI,
     Operation,
     TestResource,
     TestResourceOperationMetadata,
+    DatabricksServiceExceptionWithDetailsProto,
+    ErrorCode,
 )
 
 

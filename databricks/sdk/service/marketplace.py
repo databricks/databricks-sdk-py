@@ -4,11 +4,12 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
+
+
+import logging
 
 from databricks.sdk.service._internal import (
     _enum,
@@ -16,6 +17,7 @@ from databricks.sdk.service._internal import (
     _repeated_dict,
     _repeated_enum,
 )
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1122,6 +1124,11 @@ class InstallListingMcpConnectionDetail:
     host: Optional[str] = None
     """Optional override of the MCP server host. Defaults to the host configured on the listing."""
 
+    mcp_service_name: Optional[str] = None
+    """Name of the UC MCP service to create. The schema-scoped UC connection backing it is derived as
+    ``<mcp_service_name>_connection`` (not separately named). Used on the MCP-service creation path;
+    ``connection_name`` is ignored there."""
+
     oauth_credentials: Optional[InstallListingMcpConnectionDetailOauthCredentials] = None
     """OAuth client credentials supplied by the consumer, for OAuth (U2M/M2M) authentication."""
 
@@ -1141,6 +1148,8 @@ class InstallListingMcpConnectionDetail:
             body["connection_name"] = self.connection_name
         if self.host is not None:
             body["host"] = self.host
+        if self.mcp_service_name is not None:
+            body["mcp_service_name"] = self.mcp_service_name
         if self.oauth_credentials:
             body["oauth_credentials"] = self.oauth_credentials.as_dict()
         if self.schema is not None:
@@ -1160,6 +1169,8 @@ class InstallListingMcpConnectionDetail:
             body["connection_name"] = self.connection_name
         if self.host is not None:
             body["host"] = self.host
+        if self.mcp_service_name is not None:
+            body["mcp_service_name"] = self.mcp_service_name
         if self.oauth_credentials:
             body["oauth_credentials"] = self.oauth_credentials
         if self.schema is not None:
@@ -1175,6 +1186,7 @@ class InstallListingMcpConnectionDetail:
             catalog=d.get("catalog", None),
             connection_name=d.get("connection_name", None),
             host=d.get("host", None),
+            mcp_service_name=d.get("mcp_service_name", None),
             oauth_credentials=_from_dict(d, "oauth_credentials", InstallListingMcpConnectionDetailOauthCredentials),
             schema=d.get("schema", None),
         )
