@@ -301,6 +301,13 @@ class dbutils:
             ...
 
         @staticmethod
+        def getAll() -> dict[str, str]:
+            """Returns a dictionary of all widget names and their current values in the notebook.
+            :return: Dictionary of widget names and current values.
+            """
+            ...
+
+        @staticmethod
         def text(name: str, defaultValue: str, label: str = None):
             """Creates a text input widget with given name, default value and optional label for
             display
