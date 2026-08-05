@@ -5520,6 +5520,15 @@ class PowerBiTable:
     catalog: Optional[str] = None
     """The catalog name in Databricks"""
 
+    detect_data_changes_column: Optional[str] = None
+    """The column used for Power BI's "detect data changes" polling expression on this table. When the
+    task's IncrementalRefreshConfig.detect_data_changes is true, Power BI evaluates MAX(this_column)
+    per partition and skips partitions whose value hasn't changed since the previous refresh. Falls
+    back to incremental_refresh_datetime_column when unset, which is fine for the common case where
+    the partition column is also a good change-detection signal. Set this explicitly when you want
+    to partition on one column (e.g., event_date) but detect changes on another (e.g.,
+    last_modified_at)."""
+
     incremental_refresh_datetime_column: Optional[str] = None
     """The datetime column used for incremental refresh partitioning on this table. e.g., "order_date",
     "updated_at" Only applicable when the task has incremental_refresh_config set and this table
@@ -5544,6 +5553,8 @@ class PowerBiTable:
         body = {}
         if self.catalog is not None:
             body["catalog"] = self.catalog
+        if self.detect_data_changes_column is not None:
+            body["detect_data_changes_column"] = self.detect_data_changes_column
         if self.incremental_refresh_datetime_column is not None:
             body["incremental_refresh_datetime_column"] = self.incremental_refresh_datetime_column
         if self.name is not None:
@@ -5561,6 +5572,8 @@ class PowerBiTable:
         body = {}
         if self.catalog is not None:
             body["catalog"] = self.catalog
+        if self.detect_data_changes_column is not None:
+            body["detect_data_changes_column"] = self.detect_data_changes_column
         if self.incremental_refresh_datetime_column is not None:
             body["incremental_refresh_datetime_column"] = self.incremental_refresh_datetime_column
         if self.name is not None:
@@ -5578,6 +5591,7 @@ class PowerBiTable:
         """Deserializes the PowerBiTable from a dictionary."""
         return cls(
             catalog=d.get("catalog", None),
+            detect_data_changes_column=d.get("detect_data_changes_column", None),
             incremental_refresh_datetime_column=d.get("incremental_refresh_datetime_column", None),
             name=d.get("name", None),
             schema=d.get("schema", None),
@@ -5610,6 +5624,11 @@ class PowerBiTask:
     """Incremental refresh policy applied to all IMPORT mode tables in the model. Windows and mode are
     shared; partition columns are set per-table on PowerBiTable."""
 
+    power_bi_gateway_id: Optional[str] = None
+    """The ID of the on-premises Power BI Gateway to bind this dataset to. Used when the Databricks
+    workspace is in a private network that the Power BI cloud connector cannot reach directly. When
+    set, the handler calls the Power BI BindToGateway API after publish."""
+
     power_bi_model: Optional[PowerBiModel] = None
     """The semantic model to update"""
 
@@ -5629,6 +5648,8 @@ class PowerBiTask:
             body["connection_resource_name"] = self.connection_resource_name
         if self.incremental_refresh_config:
             body["incremental_refresh_config"] = self.incremental_refresh_config.as_dict()
+        if self.power_bi_gateway_id is not None:
+            body["power_bi_gateway_id"] = self.power_bi_gateway_id
         if self.power_bi_model:
             body["power_bi_model"] = self.power_bi_model.as_dict()
         if self.refresh_after_update is not None:
@@ -5646,6 +5667,8 @@ class PowerBiTask:
             body["connection_resource_name"] = self.connection_resource_name
         if self.incremental_refresh_config:
             body["incremental_refresh_config"] = self.incremental_refresh_config
+        if self.power_bi_gateway_id is not None:
+            body["power_bi_gateway_id"] = self.power_bi_gateway_id
         if self.power_bi_model:
             body["power_bi_model"] = self.power_bi_model
         if self.refresh_after_update is not None:
@@ -5662,6 +5685,7 @@ class PowerBiTask:
         return cls(
             connection_resource_name=d.get("connection_resource_name", None),
             incremental_refresh_config=_from_dict(d, "incremental_refresh_config", IncrementalRefreshConfig),
+            power_bi_gateway_id=d.get("power_bi_gateway_id", None),
             power_bi_model=_from_dict(d, "power_bi_model", PowerBiModel),
             refresh_after_update=d.get("refresh_after_update", None),
             tables=_repeated_dict(d, "tables", PowerBiTable),

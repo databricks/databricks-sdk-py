@@ -1,5 +1,19 @@
 # Version changelog
 
+## Release v0.125.0 (2026-08-05)
+
+### API Changes
+* Add `principal_overrides` and `scope_type` fields for `databricks.sdk.service.billing.AlertConfiguration`.
+* Add `resource_type` field for `databricks.sdk.service.billing.BudgetConfiguration`.
+* Add `resource_type` field for `databricks.sdk.service.billing.CreateBudgetConfigurationBudget`.
+* Add `principal_overrides` and `scope_type` fields for `databricks.sdk.service.billing.CreateBudgetConfigurationBudgetAlertConfigurations`.
+* Add `resource_type` field for `databricks.sdk.service.billing.UpdateBudgetConfigurationBudget`.
+* Add `grant` field for `databricks.sdk.service.catalog.PolicyInfo`.
+* Add `input_column` and `output_column` fields for `databricks.sdk.service.pipelines.Transformer`.
+* Add `block_usage` enum value for `databricks.sdk.service.billing.ActionConfigurationType`.
+* Add `netsuite` enum value for `databricks.sdk.service.catalog.ConnectionType`.
+* Add `policy_type_grant` enum value for `databricks.sdk.service.catalog.PolicyType`.
+
 ## Release v0.124.0 (2026-08-04)
 
 ### API Changes

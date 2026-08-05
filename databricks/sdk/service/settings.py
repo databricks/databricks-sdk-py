@@ -1389,6 +1389,7 @@ class CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess:
 
 class CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode(Enum):
     FULL_ACCESS = "FULL_ACCESS"
+    LEGACY_MODE = "LEGACY_MODE"
     RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
 
 
