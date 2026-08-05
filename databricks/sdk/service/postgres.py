@@ -6513,8 +6513,9 @@ class PostgresAPI:
           Timestamp in UTC of when this credential should expire. Must be at least 300 seconds (5 minutes) and
           at most 1 hour from the current time.
         :param group_name: str (optional)
-          Databricks workspace group name. When provided, credentials are generated with permissions scoped to
-          this group.
+          The display name of a ``Databricks`` workspace group. When set, the returned credential is scoped to
+          this group, so the caller connects directly as the group's Postgres role. The caller must be a
+          member of the group. When omitted, the credential is scoped to the caller's own identity.
         :param ttl: Duration (optional)
           The requested time-to-live for the generated credential token. Must be at least 300 seconds (5
           minutes) and at most 3600 seconds (1 hour).

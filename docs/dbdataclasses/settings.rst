@@ -284,6 +284,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FULL_ACCESS
       :value: "FULL_ACCESS"
 
+   .. py:attribute:: LEGACY_MODE
+      :value: "LEGACY_MODE"
+
    .. py:attribute:: RESTRICTED_ACCESS
       :value: "RESTRICTED_ACCESS"
 

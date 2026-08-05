@@ -470,6 +470,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NETSKOPE_LOGS
       :value: "NETSKOPE_LOGS"
 
+   .. py:attribute:: NETSUITE
+      :value: "NETSUITE"
+
    .. py:attribute:: NOTION
       :value: "NOTION"
 
