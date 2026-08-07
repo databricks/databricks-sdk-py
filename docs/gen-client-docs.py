@@ -152,7 +152,7 @@ class ServiceDoc:
         folder = "account" if self.tag.is_account else "workspace"
         try:
             root = __examples__ / folder / self.service_name
-            return root, os.listdir(root)
+            return root, sorted(os.listdir(root))
         except:
             return None, []
 
