@@ -76,7 +76,8 @@ class Deployment:
     """When the deployment was created."""
 
     created_by: Optional[str] = None
-    """The user who created the deployment (email or principal name)."""
+    """The user who created the deployment (email or principal name). Empty if authoritative deployment
+    metadata does not identify a creator or the principal cannot be resolved."""
 
     deployment_mode: Optional[DeploymentMode] = None
     """Bundle target deployment mode (development or production), derived from the most recent
@@ -127,7 +128,9 @@ class Deployment:
     """When the deployment was last updated."""
 
     updated_by: Optional[str] = None
-    """The user who most recently updated the deployment (email or principal name)."""
+    """The user who most recently updated the deployment (email or principal name). Empty if
+    authoritative deployment metadata does not identify a modifier or the principal cannot be
+    resolved."""
 
     workspace_info: Optional[WorkspaceInfo] = None
     """Workspace location of the deployment, derived from the latest version."""
@@ -519,10 +522,10 @@ class Operation:
     deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}"""
 
     resource_id: Optional[str] = None
-    """ID of the actual resource in the workspace (e.g. the job ID, pipeline ID). Optional at creation:
-    CREATE and RECREATE operations produce a new resource whose ID is not yet known when the
-    operation is recorded. Mutable: may be filled in (or corrected) later via UpdateOperation once
-    the ID is known."""
+    """ID of the actual resource in the workspace (e.g. the job ID, pipeline ID). Required whenever
+    ``state`` is set, because state records a resource that exists. A CREATE or RECREATE that has
+    not produced its resource yet records neither. Mutable: may be filled in (or corrected) later
+    via UpdateOperation once the ID is known."""
 
     resource_key: Optional[str] = None
     """Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar", "jobs.foo.permissions",
@@ -543,7 +546,12 @@ class Operation:
     update is rejected with ABORTED so the caller can re-read and retry. Ignored on CreateOperation."""
 
     state: Optional[str] = None
-    """Serialized local config state after the operation. Should be unset for delete operations.
+    """Serialized local config state after the operation. Its presence records whether the resource
+    still exists, so an operation that records no state removes its resource from the deployment. It
+    may be unset only for an operation that left no resource behind: a ``DELETE`` that succeeded, or
+    a ``CREATE`` or ``RECREATE`` that failed. It is required otherwise, including for a failed
+    ``DELETE``, whose resource survives.
+    
     Mutable: may be updated after creation via UpdateOperation. When updating, the caller must echo
     the last-observed ``sequence_id`` as a concurrency precondition.
     
@@ -1088,8 +1096,9 @@ class BundleDeploymentsAPI:
         If an operation with the same key already exists under the version, the server returns
         ``ALREADY_EXISTS``.
 
-        On success the server also updates the corresponding deployment-level Resource (creating it if this is
-        the first operation for that resource_key, or removing it if action_type is DELETE).
+        On success the server also updates the corresponding deployment-level resource, creating it if this is
+        the first operation for that resource_key and removing it if the operation records no ``state`` (see
+        that field).
 
         :param parent: str
           The parent version where this operation will be recorded. Format:
@@ -1305,6 +1314,10 @@ class BundleDeploymentsAPI:
           - ``deployment_mode = <MODE>``: exact match on the deployment mode. The value is a
             ``DeploymentMode`` enum value, with or without the ``DEPLOYMENT_MODE_`` prefix and
             case-insensitive (e.g. ``deployment_mode = DEVELOPMENT``).
+          - ``created_by = "<email>"``: exact match on the creator's email or principal name. To list only the
+            deployments you created, pass your own identity (e.g. ``created_by = "me@example.com"``). This
+            term matches the same value the deployment reports in ``created_by``, so a deployment whose
+            creator cannot currently be resolved reports an empty ``created_by`` and does not match this term.
           - ``display_name = "<name>"``: exact match on the display name.
           - ``display_name : "<substring>"``: case-insensitive substring match on the display name.
 
@@ -1472,9 +1485,11 @@ class BundleDeploymentsAPI:
         by an optimistic-concurrency check: the caller sets ``operation.sequence_id`` to the value it last
         observed, and the server rejects the update with ``ABORTED`` if the operation has been modified since.
         On success the server increments ``sequence_id``; updates to ``state`` and ``resource_id`` are
-        mirrored onto the corresponding deployment-level Resource projection. The parent version must be in
-        progress, delete operations cannot be updated, and after the update is applied a succeeded operation
-        cannot carry an ``error_message``.
+        mirrored onto the corresponding deployment-level resource. Listing ``state`` in ``update_mask`` with
+        no value clears it, which removes the resource, so a delete that is retried until it succeeds must
+        clear ``state``. The parent version must be in progress, and after the update is applied a succeeded
+        operation cannot carry an ``error_message``. See the ``state`` and ``resource_id`` fields for the
+        rest.
 
         :param name: str
           Resource name of the operation. Format:

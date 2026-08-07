@@ -861,6 +861,43 @@ class ListWorkspaceAssignmentDetailsResponse:
         )
 
 
+@dataclass
+class ListWorkspaceAssignmentsResponse:
+    """Response message for listing workspace assignments."""
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    workspace_assignments: Optional[List[WorkspaceAssignment]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListWorkspaceAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.workspace_assignments:
+            body["workspace_assignments"] = [v.as_dict() for v in self.workspace_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListWorkspaceAssignmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.workspace_assignments:
+            body["workspace_assignments"] = self.workspace_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListWorkspaceAssignmentsResponse:
+        """Deserializes the ListWorkspaceAssignmentsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            workspace_assignments=_repeated_dict(d, "workspace_assignments", WorkspaceAssignment),
+        )
+
+
 class PrincipalType(Enum):
     """The type of the principal (user/sp/group)."""
 
@@ -1253,6 +1290,97 @@ class WorkspaceAccessDetailView(Enum):
 
 
 @dataclass
+class WorkspaceAssignment:
+    """The direct assignment of a provisioned account-level principal (user, service principal, or
+    group) to a workspace, together with the entitlements that assignment grants in the workspace.
+
+    This resource covers only principals assigned directly to the workspace. Principals that inherit
+    workspace access through a group are not represented here. See WorkspaceAccessDetail and
+    WorkspaceIdentityDetail for the effective, direct-or-indirect view. Creating the resource
+    assigns the principal to the workspace, and deleting it removes the assignment.
+
+    ``entitlements`` is the only client-settable field. It holds the entitlements granted directly
+    on this assignment, including any the principal also holds through a group.
+    ``effective_entitlements`` is the read-only union of those and any granted through group
+    membership.
+
+    A direct assignment always carries at least one directly-assigned entitlement, because the
+    assignment is what grants it. Create and update both reject an empty ``entitlements`` set. To
+    remove a principal's assignment entirely, delete the resource.
+
+    This resource replaces workspace assignment previously managed through the workspace SCIM and
+    permission-assignment APIs, and is intended for account and workspace admins."""
+
+    principal_id: int
+    """The internal ID of the principal (user/sp/group) in Databricks."""
+
+    account_id: Optional[str] = None
+    """The account ID parent of the workspace where the principal is assigned"""
+
+    effective_entitlements: Optional[List[Entitlement]] = None
+    """Every entitlement the principal holds in this workspace, whether granted directly or through
+    group membership. Get responses populate this field. List responses leave it empty."""
+
+    entitlements: Optional[List[Entitlement]] = None
+    """Entitlements granted directly to the principal on this workspace. This is the only
+    client-settable field. Create and update manage exactly this set, including entitlements the
+    principal also holds through a group. List responses leave this field empty. Get a single
+    principal to read its entitlements."""
+
+    principal_type: Optional[PrincipalType] = None
+    """The type of the principal (user/service principal/group) that is assigned."""
+
+    workspace_id: Optional[int] = None
+    """The workspace ID where the principal is assigned"""
+
+    def as_dict(self) -> dict:
+        """Serializes the WorkspaceAssignment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
+        if self.effective_entitlements:
+            body["effective_entitlements"] = [v.value for v in self.effective_entitlements]
+        if self.entitlements:
+            body["entitlements"] = [v.value for v in self.entitlements]
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type.value
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WorkspaceAssignment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
+        if self.effective_entitlements:
+            body["effective_entitlements"] = self.effective_entitlements
+        if self.entitlements:
+            body["entitlements"] = self.entitlements
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceAssignment:
+        """Deserializes the WorkspaceAssignment from a dictionary."""
+        return cls(
+            account_id=d.get("account_id", None),
+            effective_entitlements=_repeated_enum(d, "effective_entitlements", Entitlement),
+            entitlements=_repeated_enum(d, "entitlements", Entitlement),
+            principal_id=d.get("principal_id", None),
+            principal_type=_enum(d, "principal_type", PrincipalType),
+            workspace_id=d.get("workspace_id", None),
+        )
+
+
+@dataclass
 class WorkspaceAssignmentDetail:
     """The direct assignment of a provisioned account-level principal (user, service principal, or
     group) to a workspace, together with the entitlements that assignment grants in the workspace.
@@ -1578,6 +1706,37 @@ class AccountIamV2API:
         )
         return User.from_dict(res)
 
+    def create_workspace_assignment(
+        self, workspace_id: int, workspace_assignment: WorkspaceAssignment
+    ) -> WorkspaceAssignment:
+        """Creates a workspace assignment for a principal. Entitlements are granted one at a time rather than
+        atomically. If the request fails partway through, the principal stays assigned to the workspace with
+        only some of the requested entitlements. Get the assignment afterwards to confirm which entitlements
+        were granted.
+
+        :param workspace_id: int
+          Required. The workspace ID for which the workspace assignment is being created.
+        :param workspace_assignment: :class:`WorkspaceAssignment`
+          Required. Workspace assignment to be created in <Databricks>.
+
+        :returns: :class:`WorkspaceAssignment`
+        """
+
+        body = workspace_assignment.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignments",
+            body=body,
+            headers=headers,
+        )
+        return WorkspaceAssignment.from_dict(res)
+
     def create_workspace_assignment_detail(
         self, workspace_id: int, workspace_assignment_detail: WorkspaceAssignmentDetail
     ) -> WorkspaceAssignmentDetail:
@@ -1713,6 +1872,29 @@ class AccountIamV2API:
         }
 
         self._api.do("DELETE", f"/api/2.0/identity/accounts/{self._api.account_id}/users/{user_id}", headers=headers)
+
+    def delete_workspace_assignment(self, workspace_id: int, principal_id: int):
+        """Deletes a workspace assignment for a principal, revoking all of its entitlements. Entitlements are
+        revoked one at a time rather than atomically. If the request fails partway through, the principal
+        stays assigned with some of its original entitlements. Retrying is safe.
+
+        :param workspace_id: int
+          The workspace ID where the principal has access.
+        :param principal_id: int
+          Required. ID of the principal in Databricks to delete workspace assignment for.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}",
+            headers=headers,
+        )
 
     def delete_workspace_assignment_detail(self, workspace_id: int, principal_id: int):
         """Deletes a workspace assignment detail for a principal, revoking all of its entitlements. Entitlements
@@ -1942,6 +2124,29 @@ class AccountIamV2API:
             headers=headers,
         )
         return WorkspaceAccessDetail.from_dict(res)
+
+    def get_workspace_assignment(self, workspace_id: int, principal_id: int) -> WorkspaceAssignment:
+        """Returns the assignment for a principal in a workspace.
+
+        :param workspace_id: int
+          Required. The workspace ID for which the assignment is being requested.
+        :param principal_id: int
+          Required. The internal ID of the principal (user/sp/group) for which the assignment is being
+          requested.
+
+        :returns: :class:`WorkspaceAssignment`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}",
+            headers=headers,
+        )
+        return WorkspaceAssignment.from_dict(res)
 
     def get_workspace_assignment_detail(self, workspace_id: int, principal_id: int) -> WorkspaceAssignmentDetail:
         """Returns the assignment details for a principal in a workspace.
@@ -2300,6 +2505,41 @@ class AccountIamV2API:
         )
         return ListWorkspaceAssignmentDetailsResponse.from_dict(res)
 
+    def list_workspace_assignments(
+        self, workspace_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> ListWorkspaceAssignmentsResponse:
+        """Lists workspace assignments for a workspace. The response omits the per-principal entitlement fields
+        (``entitlements`` and ``effective_entitlements``). To read the entitlements for a single principal,
+        get that principal's assignment.
+
+        :param workspace_id: int
+          Required. The workspace ID for which the workspace assignments are being fetched.
+        :param page_size: int (optional)
+          The maximum number of workspace assignments to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListWorkspaceAssignments call. Provide this to retrieve the
+          subsequent page.
+
+        :returns: :class:`ListWorkspaceAssignmentsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignments",
+            query=query,
+            headers=headers,
+        )
+        return ListWorkspaceAssignmentsResponse.from_dict(res)
+
     def resolve_group(self, external_id: str) -> ResolveGroupResponse:
         """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
         will be created in the account. If the customer is not onboarded onto Automatic Identity Management
@@ -2511,6 +2751,43 @@ class AccountIamV2API:
         )
         return User.from_dict(res)
 
+    def update_workspace_assignment(
+        self, workspace_id: int, principal_id: int, workspace_assignment: WorkspaceAssignment, update_mask: FieldMask
+    ) -> WorkspaceAssignment:
+        """Updates the entitlements of a directly assigned principal in a workspace. Changes are applied one at a
+        time rather than atomically. If the request fails partway through, only some of the requested changes
+        take effect. Get the assignment afterwards to confirm the final state.
+
+        :param workspace_id: int
+          Required. The workspace ID for which the workspace assignment is being updated.
+        :param principal_id: int
+          Required. ID of the principal in Databricks.
+        :param workspace_assignment: :class:`WorkspaceAssignment`
+          Required. Workspace assignment to be updated in <Databricks>.
+        :param update_mask: FieldMask
+          Required. The list of fields to update.
+
+        :returns: :class:`WorkspaceAssignment`
+        """
+
+        body = workspace_assignment.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return WorkspaceAssignment.from_dict(res)
+
     def update_workspace_assignment_detail(
         self,
         workspace_id: int,
@@ -2695,6 +2972,32 @@ class WorkspaceIamV2API:
         res = self._api.do("POST", "/api/2.0/identity/workspace-assignment-details", body=body, headers=headers)
         return WorkspaceAssignmentDetail.from_dict(res)
 
+    def create_workspace_assignment_proxy(self, workspace_assignment: WorkspaceAssignment) -> WorkspaceAssignment:
+        """Creates a workspace assignment for a principal in the calling workspace. Entitlements are granted one
+        at a time rather than atomically. If the request fails partway through, the principal stays assigned
+        to the workspace with only some of the requested entitlements. Get the assignment afterwards to
+        confirm which entitlements were granted.
+
+        :param workspace_assignment: :class:`WorkspaceAssignment`
+          Required. Workspace assignment to be created in <Databricks>.
+
+        :returns: :class:`WorkspaceAssignment`
+        """
+
+        body = workspace_assignment.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/identity/workspace-assignments", body=body, headers=headers)
+        return WorkspaceAssignment.from_dict(res)
+
     def delete_direct_group_member_proxy(self, group_id: int, principal_id: int):
         """Deletes a group membership (unassigns a principal from a group).
 
@@ -2795,6 +3098,28 @@ class WorkspaceIamV2API:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/identity/workspace-assignment-details/{principal_id}", headers=headers)
+
+    def delete_workspace_assignment_proxy(self, principal_id: int):
+        """Deletes a workspace assignment for a principal in the calling workspace, revoking all of its
+        entitlements. Entitlements are revoked one at a time rather than atomically. If the request fails
+        partway through, the principal stays assigned with some of its original entitlements. Retrying is
+        safe.
+
+        :param principal_id: int
+          Required. ID of the principal in Databricks to delete workspace assignment for.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/identity/workspace-assignments/{principal_id}", headers=headers)
 
     def get_direct_group_member_proxy(self, group_id: int, principal_id: int) -> DirectGroupMember:
         """Gets a provisioned direct member of a group.
@@ -3003,6 +3328,27 @@ class WorkspaceIamV2API:
 
         res = self._api.do("GET", f"/api/2.0/identity/workspace-assignment-details/{principal_id}", headers=headers)
         return WorkspaceAssignmentDetail.from_dict(res)
+
+    def get_workspace_assignment_proxy(self, principal_id: int) -> WorkspaceAssignment:
+        """Returns the assignment for a principal in the calling workspace.
+
+        :param principal_id: int
+          Required. The internal ID of the principal (user/sp/group) for which the assignment is being
+          requested.
+
+        :returns: :class:`WorkspaceAssignment`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/identity/workspace-assignments/{principal_id}", headers=headers)
+        return WorkspaceAssignment.from_dict(res)
 
     def get_workspace_identity_detail(self, principal_id: int) -> WorkspaceIdentityDetail:
         """Returns the identity details for a principal in a workspace.
@@ -3289,6 +3635,37 @@ class WorkspaceIamV2API:
         res = self._api.do("GET", "/api/2.0/identity/workspace-assignment-details", query=query, headers=headers)
         return ListWorkspaceAssignmentDetailsResponse.from_dict(res)
 
+    def list_workspace_assignments_proxy(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> ListWorkspaceAssignmentsResponse:
+        """Lists workspace assignments for the calling workspace. The response omits the per-principal
+        entitlement fields (``entitlements`` and ``effective_entitlements``). To read the entitlements for a
+        single principal, get that principal's assignment.
+
+        :param page_size: int (optional)
+          The maximum number of workspace assignments to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token from a previous list call. Provide this to retrieve the subsequent page.
+
+        :returns: :class:`ListWorkspaceAssignmentsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", "/api/2.0/identity/workspace-assignments", query=query, headers=headers)
+        return ListWorkspaceAssignmentsResponse.from_dict(res)
+
     def resolve_group_proxy(self, external_id: str) -> ResolveGroupResponse:
         """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
         will be created in the account. If the customer is not onboarded onto Automatic Identity Management
@@ -3506,6 +3883,41 @@ class WorkspaceIamV2API:
             headers=headers,
         )
         return WorkspaceAssignmentDetail.from_dict(res)
+
+    def update_workspace_assignment_proxy(
+        self, principal_id: int, workspace_assignment: WorkspaceAssignment, update_mask: FieldMask
+    ) -> WorkspaceAssignment:
+        """Updates the entitlements of a directly assigned principal in the calling workspace. Changes are
+        applied one at a time rather than atomically. If the request fails partway through, only some of the
+        requested changes take effect. Get the assignment afterwards to confirm the final state.
+
+        :param principal_id: int
+          Required. ID of the principal in Databricks.
+        :param workspace_assignment: :class:`WorkspaceAssignment`
+          Required. Workspace assignment to be updated in <Databricks>.
+        :param update_mask: FieldMask
+          Required. The list of fields to update.
+
+        :returns: :class:`WorkspaceAssignment`
+        """
+
+        body = workspace_assignment.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/identity/workspace-assignments/{principal_id}", query=query, body=body, headers=headers
+        )
+        return WorkspaceAssignment.from_dict(res)
 
     def update_workspace_identity_detail(
         self, principal_id: int, workspace_identity_detail: WorkspaceIdentityDetail, update_mask: FieldMask
