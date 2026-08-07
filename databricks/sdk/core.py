@@ -37,6 +37,10 @@ class ApiClient:
             http_timeout_seconds=cfg.http_timeout_seconds,
             extra_error_customizers=[_AddDebugErrorCustomizer(cfg)],
             clock=cfg.clock,
+            proxy_url=cfg.proxy_url,
+            proxy_username=cfg.proxy_username,
+            proxy_password=cfg.proxy_password,
+            proxy_auth_type=cfg.proxy_auth_type,
         )
 
     @property
