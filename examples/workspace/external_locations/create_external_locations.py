@@ -18,5 +18,5 @@ created = w.external_locations.create(
 )
 
 # cleanup
-w.storage_credentials.delete(delete=credential.name)
-w.external_locations.delete(delete=created.name)
+w.storage_credentials.delete(name=credential.name)
+w.external_locations.delete(name=created.name)

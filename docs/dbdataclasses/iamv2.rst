@@ -109,6 +109,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListWorkspaceAssignmentsResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: PrincipalType
 
    The type of the principal (user/sp/group).
@@ -183,6 +187,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: FULL
       :value: "FULL"
+
+.. autoclass:: WorkspaceAssignment
+   :members:
+   :undoc-members:
 
 .. autoclass:: WorkspaceAssignmentDetail
    :members:
