@@ -12,4 +12,4 @@ credential = w.storage_credentials.create(
 )
 
 # cleanup
-w.storage_credentials.delete(delete=credential.name)
+w.storage_credentials.delete(name=credential.name)

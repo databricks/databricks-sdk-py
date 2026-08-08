@@ -22,13 +22,13 @@
             
             w = WorkspaceClient()
             
-            created_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
+            new_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
-            created_schema = w.schemas.create(name=f"sdk-{time.time_ns()}", catalog_name=created_catalog.name)
+            created = w.schemas.create(name=f"sdk-{time.time_ns()}", catalog_name=new_catalog.name)
             
             # cleanup
-            w.catalogs.delete(name=created_catalog.name, force=True)
-            w.schemas.delete(full_name=created_schema.full_name)
+            w.catalogs.delete(name=new_catalog.name, force=True)
+            w.schemas.delete(full_name=created.full_name)
 
         Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the
         **CREATE_SCHEMA** privilege in the parent catalog.
