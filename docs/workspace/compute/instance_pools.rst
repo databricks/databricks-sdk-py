@@ -65,9 +65,7 @@
           Defines the specification of the disks that will be attached to all spark containers.
         :param enable_auto_alternate_node_types: bool (optional)
           For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
-          enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This field was
-          deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove this field
-          after sufficient time has passed for all clients to migrate.
+          enabled. This field must not be set together with node_type_flexibility.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
           additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -162,9 +160,7 @@
           - Currently, Databricks allows at most 45 custom tags
         :param enable_auto_alternate_node_types: bool (optional)
           For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
-          enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This field was
-          deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove this field
-          after sufficient time has passed for all clients to migrate.
+          enabled. This field must not be set together with node_type_flexibility.
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
           in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances

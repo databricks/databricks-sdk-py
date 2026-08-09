@@ -176,7 +176,7 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_snapshot(parent: str, snapshot: Snapshot [, snapshot_id: Optional[str]]) -> CreateSnapshotOperation
+    .. py:method:: create_snapshot(parent: str, snapshot: Snapshot, snapshot_id: str) -> CreateSnapshotOperation
 
         Creates a snapshot, an immutable point-in-time copy of a branch's data, within the project.
 
@@ -184,8 +184,9 @@
           The project in which to create the snapshot. Format: projects/{project_id}
         :param snapshot: :class:`Snapshot`
           The snapshot to create.
-        :param snapshot_id: str (optional)
-          Client-chosen ID for the snapshot. If omitted, the server generates one.
+        :param snapshot_id: str
+          Client-chosen ID for the snapshot. It becomes the final segment of the snapshot resource name and
+          cannot be changed after creation.
 
         :returns: :class:`Operation`
         
@@ -996,21 +997,6 @@
         :param update_mask: FieldMask
           The list of fields to update in Postgres Role. If unspecified, all fields will be updated when
           possible.
-
-        :returns: :class:`Operation`
-        
-
-    .. py:method:: update_snapshot(name: str, snapshot: Snapshot, update_mask: FieldMask) -> UpdateSnapshotOperation
-
-        Updates the specified snapshot. You can change or disable its expiration policy.
-
-        :param name: str
-          The resource name of the snapshot. Format: projects/{project_id}/snapshots/{snapshot_id}
-        :param snapshot: :class:`Snapshot`
-          The snapshot to update. Its ``name`` identifies the snapshot. Format:
-          projects/{project_id}/snapshots/{snapshot_id}
-        :param update_mask: FieldMask
-          Fields to update. The only updatable path is ``spec.expiration``.
 
         :returns: :class:`Operation`
         

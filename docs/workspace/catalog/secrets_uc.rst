@@ -40,7 +40,7 @@
 
         
 
-    .. py:method:: get_secret(full_name: str) -> Secret
+    .. py:method:: get_secret(full_name: str [, include_value: Optional[bool]]) -> Secret
 
         Gets a secret by its three-level (fully qualified) name.
 
@@ -53,6 +53,9 @@
         :param full_name: str
           The three-level (fully qualified) name of the secret (for example,
           **catalog_name.schema_name.secret_name**).
+        :param include_value: bool (optional)
+          Whether to include the secret value in the response. Defaults to false. Requires the **READ_SECRET**
+          privilege.
 
         :returns: :class:`Secret`
         

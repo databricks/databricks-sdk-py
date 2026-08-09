@@ -835,22 +835,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: SnapshotStatusState
-
-   The state of the snapshot.
-
-   .. py:attribute:: AVAILABLE
-      :value: "AVAILABLE"
-
-   .. py:attribute:: CREATING
-      :value: "CREATING"
-
-   .. py:attribute:: DELETING
-      :value: "DELETING"
-
-   .. py:attribute:: FAILED
-      :value: "FAILED"
-
 .. autoclass:: SyncedTable
    :members:
    :undoc-members:
