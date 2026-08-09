@@ -164,6 +164,12 @@ class BranchSpec:
     source_branch_time: Optional[Timestamp] = None
     """The point in time on the source branch from which this branch was created."""
 
+    source_snapshot: Optional[str] = None
+    """The snapshot this branch was created from. When set, the branch's data comes from the snapshot
+    rather than a source branch, so source_branch, source_branch_lsn, and source_branch_time must be
+    empty. The snapshot must be AVAILABLE and belong to this branch's project. Format:
+    projects/{project_id}/snapshots/{snapshot_id}"""
+
     ttl: Optional[Duration] = None
     """Relative time-to-live duration. When set, the branch will expire at creation_time + ttl.
     Mutually exclusive with ``expire_time`` and ``no_expiry``. When updating, use
@@ -184,6 +190,8 @@ class BranchSpec:
             body["source_branch_lsn"] = self.source_branch_lsn
         if self.source_branch_time is not None:
             body["source_branch_time"] = self.source_branch_time.ToJsonString()
+        if self.source_snapshot is not None:
+            body["source_snapshot"] = self.source_snapshot
         if self.ttl is not None:
             body["ttl"] = self.ttl.ToJsonString()
         return body
@@ -203,6 +211,8 @@ class BranchSpec:
             body["source_branch_lsn"] = self.source_branch_lsn
         if self.source_branch_time is not None:
             body["source_branch_time"] = self.source_branch_time
+        if self.source_snapshot is not None:
+            body["source_snapshot"] = self.source_snapshot
         if self.ttl is not None:
             body["ttl"] = self.ttl
         return body
@@ -217,6 +227,7 @@ class BranchSpec:
             source_branch=d.get("source_branch", None),
             source_branch_lsn=d.get("source_branch_lsn", None),
             source_branch_time=_timestamp(d, "source_branch_time"),
+            source_snapshot=d.get("source_snapshot", None),
             ttl=_duration(d, "ttl"),
         )
 
@@ -4566,9 +4577,6 @@ class Snapshot:
     uid: Optional[str] = None
     """Unique system-generated ID for the snapshot."""
 
-    update_time: Optional[Timestamp] = None
-    """When the snapshot was last updated."""
-
     def as_dict(self) -> dict:
         """Serializes the Snapshot into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4584,8 +4592,6 @@ class Snapshot:
             body["status"] = self.status.as_dict()
         if self.uid is not None:
             body["uid"] = self.uid
-        if self.update_time is not None:
-            body["update_time"] = self.update_time.ToJsonString()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4603,8 +4609,6 @@ class Snapshot:
             body["status"] = self.status
         if self.uid is not None:
             body["uid"] = self.uid
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
         return body
 
     @classmethod
@@ -4617,13 +4621,12 @@ class Snapshot:
             spec=_from_dict(d, "spec", SnapshotSpec),
             status=_from_dict(d, "status", SnapshotStatus),
             uid=d.get("uid", None),
-            update_time=_timestamp(d, "update_time"),
         )
 
 
 @dataclass
 class SnapshotOperationMetadata:
-    """Metadata for the long-running snapshot Create, Update, and Delete operations."""
+    """Metadata for the long-running snapshot Create and Delete operations."""
 
     def as_dict(self) -> dict:
         """Serializes the SnapshotOperationMetadata into a dictionary suitable for use as a JSON request body."""
@@ -4703,7 +4706,7 @@ class SnapshotSpec:
 
     ttl: Optional[Duration] = None
     """Time-to-live. The snapshot expires this long after it is created. Mutually exclusive with
-    ``expire_time`` and ``no_expiry``."""
+    ``expire_time`` and ``no_expiry``. Reads report the resolved absolute ``expire_time`` instead."""
 
     def as_dict(self) -> dict:
         """Serializes the SnapshotSpec into a dictionary suitable for use as a JSON request body."""
@@ -4756,9 +4759,6 @@ class SnapshotSpec:
 class SnapshotStatus:
     """Server-observed state of a snapshot."""
 
-    current_state: Optional[SnapshotStatusState] = None
-    """The snapshot's current state."""
-
     diff_size_bytes: Optional[int] = None
     """Incremental storage size in bytes since the previous snapshot. Unset when the snapshot is not
     billed on incremental usage."""
@@ -4776,17 +4776,9 @@ class SnapshotStatus:
     """The source branch the snapshot was taken from. Format:
     projects/{project_id}/branches/{branch_id}"""
 
-    source_branch_lsn: Optional[str] = None
-    """The LSN at which the snapshot was taken."""
-
-    source_branch_time: Optional[Timestamp] = None
-    """The point in time at which the snapshot was taken."""
-
     def as_dict(self) -> dict:
         """Serializes the SnapshotStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.current_state is not None:
-            body["current_state"] = self.current_state.value
         if self.diff_size_bytes is not None:
             body["diff_size_bytes"] = self.diff_size_bytes
         if self.expire_time is not None:
@@ -4797,17 +4789,11 @@ class SnapshotStatus:
             body["no_expiry"] = self.no_expiry
         if self.source_branch is not None:
             body["source_branch"] = self.source_branch
-        if self.source_branch_lsn is not None:
-            body["source_branch_lsn"] = self.source_branch_lsn
-        if self.source_branch_time is not None:
-            body["source_branch_time"] = self.source_branch_time.ToJsonString()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SnapshotStatus into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.current_state is not None:
-            body["current_state"] = self.current_state
         if self.diff_size_bytes is not None:
             body["diff_size_bytes"] = self.diff_size_bytes
         if self.expire_time is not None:
@@ -4818,34 +4804,18 @@ class SnapshotStatus:
             body["no_expiry"] = self.no_expiry
         if self.source_branch is not None:
             body["source_branch"] = self.source_branch
-        if self.source_branch_lsn is not None:
-            body["source_branch_lsn"] = self.source_branch_lsn
-        if self.source_branch_time is not None:
-            body["source_branch_time"] = self.source_branch_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SnapshotStatus:
         """Deserializes the SnapshotStatus from a dictionary."""
         return cls(
-            current_state=_enum(d, "current_state", SnapshotStatusState),
             diff_size_bytes=d.get("diff_size_bytes", None),
             expire_time=_timestamp(d, "expire_time"),
             full_size_bytes=d.get("full_size_bytes", None),
             no_expiry=d.get("no_expiry", None),
             source_branch=d.get("source_branch", None),
-            source_branch_lsn=d.get("source_branch_lsn", None),
-            source_branch_time=_timestamp(d, "source_branch_time"),
         )
-
-
-class SnapshotStatusState(Enum):
-    """The state of the snapshot."""
-
-    AVAILABLE = "AVAILABLE"
-    CREATING = "CREATING"
-    DELETING = "DELETING"
-    FAILED = "FAILED"
 
 
 @dataclass
@@ -5944,17 +5914,16 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateRoleOperation(self, operation)
 
-    def create_snapshot(
-        self, parent: str, snapshot: Snapshot, *, snapshot_id: Optional[str] = None
-    ) -> CreateSnapshotOperation:
+    def create_snapshot(self, parent: str, snapshot: Snapshot, snapshot_id: str) -> CreateSnapshotOperation:
         """Creates a snapshot, an immutable point-in-time copy of a branch's data, within the project.
 
         :param parent: str
           The project in which to create the snapshot. Format: projects/{project_id}
         :param snapshot: :class:`Snapshot`
           The snapshot to create.
-        :param snapshot_id: str (optional)
-          Client-chosen ID for the snapshot. If omitted, the server generates one.
+        :param snapshot_id: str
+          Client-chosen ID for the snapshot. It becomes the final segment of the snapshot resource name and
+          cannot be changed after creation.
 
         :returns: :class:`Operation`
         """
@@ -7761,37 +7730,6 @@ class PostgresAPI:
         res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return UpdateRoleOperation(self, operation)
-
-    def update_snapshot(self, name: str, snapshot: Snapshot, update_mask: FieldMask) -> UpdateSnapshotOperation:
-        """Updates the specified snapshot. You can change or disable its expiration policy.
-
-        :param name: str
-          The resource name of the snapshot. Format: projects/{project_id}/snapshots/{snapshot_id}
-        :param snapshot: :class:`Snapshot`
-          The snapshot to update. Its ``name`` identifies the snapshot. Format:
-          projects/{project_id}/snapshots/{snapshot_id}
-        :param update_mask: FieldMask
-          Fields to update. The only updatable path is ``spec.expiration``.
-
-        :returns: :class:`Operation`
-        """
-
-        body = snapshot.as_dict()
-        query = {}
-        if update_mask is not None:
-            query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
-        operation = Operation.from_dict(res)
-        return UpdateSnapshotOperation(self, operation)
 
     def update_snapshot_schedule(
         self, name: str, snapshot_schedule: SnapshotSchedule, update_mask: FieldMask
@@ -10481,83 +10419,6 @@ class UpdateRoleOperation:
             return None
 
         return RoleOperationMetadata.from_dict(self._operation.metadata)
-
-    def done(self) -> bool:
-        """Done reports whether the long-running operation has completed.
-
-        :returns: bool
-        """
-        # Refresh the operation state first
-        operation = self._impl.get_operation(name=self._operation.name)
-
-        # Update local operation state
-        self._operation = operation
-
-        return operation.done
-
-
-class UpdateSnapshotOperation:
-    """Long-running operation for update_snapshot"""
-
-    def __init__(self, impl: PostgresAPI, operation: Operation):
-        self._impl = impl
-        self._operation = operation
-
-    def wait(self, opts: Optional[lro.LroOptions] = None) -> Snapshot:
-        """Wait blocks until the long-running operation is completed. If no timeout is
-        specified, this will poll indefinitely. If a timeout is provided and the operation
-        didn't finish within the timeout, this function will raise an error of type
-        TimeoutError, otherwise returns successful response and any errors encountered.
-
-        :param opts: :class:`LroOptions`
-          Timeout options (default: polls indefinitely)
-
-        :returns: :class:`Snapshot`
-        """
-
-        def poll_operation():
-            operation = self._impl.get_operation(name=self._operation.name)
-
-            # Update local operation state
-            self._operation = operation
-
-            if not operation.done:
-                return None, RetryError.continues("operation still in progress")
-
-            if operation.error:
-                error_msg = operation.error.message if operation.error.message else "unknown error"
-                if operation.error.error_code:
-                    error_msg = f"[{operation.error.error_code}] {error_msg}"
-                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
-
-            # Operation completed successfully, unmarshal response.
-            if operation.response is None:
-                return None, RetryError.halt(Exception("operation completed but no response available"))
-
-            snapshot = Snapshot.from_dict(operation.response)
-
-            return snapshot, None
-
-        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
-
-    def name(self) -> str:
-        """Name returns the name of the long-running operation. The name is assigned
-        by the server and is unique within the service from which the operation is created.
-
-        :returns: str
-        """
-        return self._operation.name
-
-    def metadata(self) -> SnapshotOperationMetadata:
-        """Metadata returns metadata associated with the long-running operation.
-        If the metadata is not available, the returned metadata is None.
-
-        :returns: :class:`SnapshotOperationMetadata` or None
-        """
-        if self._operation.metadata is None:
-            return None
-
-        return SnapshotOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

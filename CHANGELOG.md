@@ -1,5 +1,24 @@
 # Version changelog
 
+## Release v0.126.0 (2026-08-09)
+
+### API Changes
+* Add `include_value` field for `databricks.sdk.service.catalog.GetSecretRequest`.
+* Add `docker_image_url` field for `databricks.sdk.service.jobs.AiRuntimeTask`.
+* Add `gpu_xlarge_8` enum value for `databricks.sdk.service.serving.ServedModelInputWorkloadType`.
+* Add `gpu_xlarge_8` enum value for `databricks.sdk.service.serving.ServingModelWorkloadType`.
+* Change `account_sp_status` and `display_name` fields for `databricks.sdk.service.iamv2.ServicePrincipal` to be required.
+* Change `account_user_status`, `full_name` and `username` fields for `databricks.sdk.service.iamv2.User` to be required.
+* [Breaking] Remove `include_browse` field for `databricks.sdk.service.catalog.GetMcpServiceRequest`.
+* [Breaking] Remove `include_browse` field for `databricks.sdk.service.catalog.GetModelProviderServiceRequest`.
+* [Breaking] Remove `include_browse` field for `databricks.sdk.service.catalog.GetModelServiceRequest`.
+* [Breaking] Remove `include_browse` field for `databricks.sdk.service.catalog.ListMcpServicesRequest`.
+* [Breaking] Remove `include_browse` field for `databricks.sdk.service.catalog.ListModelProviderServicesRequest`.
+* [Breaking] Remove `include_browse` field for `databricks.sdk.service.catalog.ListModelServicesRequest`.
+* [Breaking] Remove `browse_only` field for `databricks.sdk.service.catalog.McpService`.
+* [Breaking] Remove `browse_only` field for `databricks.sdk.service.catalog.ModelProviderService`.
+* [Breaking] Remove `browse_only` field for `databricks.sdk.service.catalog.ModelService`.
+
 ## Release v0.125.0 (2026-08-05)
 
 ### API Changes
