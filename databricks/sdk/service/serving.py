@@ -4207,7 +4207,9 @@ class TelemetryConfig:
 
     table_names: Optional[UnityCatalogTableNames] = None
     """The Unity Catalog tables to which endpoint telemetry (logs, traces, and metrics) is exported.
-    Provide this to create a new telemetry profile for the endpoint from the given tables."""
+    Provide this to create a new telemetry profile for the endpoint from the given tables. This
+    field selects the tables when writing a telemetry configuration; it is not returned when reading
+    one. Responses identify the resulting profile with ``telemetry_profile_id`` instead."""
 
     telemetry_profile_id: Optional[str] = None
     """The ID of an existing telemetry profile to apply to this endpoint. Provide this to reuse a

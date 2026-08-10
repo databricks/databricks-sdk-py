@@ -1425,11 +1425,18 @@ class GitHubConnectorOptions:
     """(Optional) Branches to ingest per repository. A repository not listed here is ingested on its
     default branch."""
 
+    repository_id_selections: Optional[List[str]] = None
+    """(Optional) Specifies the GitHub repository ids to ingest. These ids are immutable and survive
+    repository renames. When set, ingestion is restricted to these repositories. When empty, all
+    repositories in the organization are ingested."""
+
     def as_dict(self) -> dict:
         """Serializes the GitHubConnectorOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.repository_branch_selections:
             body["repository_branch_selections"] = [v.as_dict() for v in self.repository_branch_selections]
+        if self.repository_id_selections:
+            body["repository_id_selections"] = [v for v in self.repository_id_selections]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1437,6 +1444,8 @@ class GitHubConnectorOptions:
         body = {}
         if self.repository_branch_selections:
             body["repository_branch_selections"] = self.repository_branch_selections
+        if self.repository_id_selections:
+            body["repository_id_selections"] = self.repository_id_selections
         return body
 
     @classmethod
@@ -1445,7 +1454,8 @@ class GitHubConnectorOptions:
         return cls(
             repository_branch_selections=_repeated_dict(
                 d, "repository_branch_selections", GitHubConnectorOptionsRepositoryBranchSelection
-            )
+            ),
+            repository_id_selections=d.get("repository_id_selections", None),
         )
 
 
