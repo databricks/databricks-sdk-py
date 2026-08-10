@@ -172,7 +172,7 @@
 
         
 
-    .. py:method:: get_agent_service(name: str [, include_browse: Optional[bool]]) -> AgentService
+    .. py:method:: get_agent_service(name: str) -> AgentService
 
         Returns the agent service identified by its resource name.
 
@@ -182,13 +182,11 @@
         :param name: str
           Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
           Each ``{...}`` component is capped at 255 characters individually.
-        :param include_browse: bool (optional)
-          Whether to include agent services for which the principal can only access selective metadata.
 
         :returns: :class:`AgentService`
         
 
-    .. py:method:: get_mcp_service(name: str [, include_browse: Optional[bool]]) -> McpService
+    .. py:method:: get_mcp_service(name: str) -> McpService
 
         Returns the MCP service identified by its resource name.
 
@@ -198,13 +196,11 @@
         :param name: str
           Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
           ``{...}`` component is capped at 255 characters individually.
-        :param include_browse: bool (optional)
-          Whether to include MCP services for which the principal can only access selective metadata.
 
         :returns: :class:`McpService`
         
 
-    .. py:method:: get_model_provider_service(name: str [, include_browse: Optional[bool]]) -> ModelProviderService
+    .. py:method:: get_model_provider_service(name: str) -> ModelProviderService
 
         Returns the model provider service identified by its resource name.
 
@@ -215,13 +211,11 @@
           Resource name of the model provider service. Format:
           ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
           capped at 255 characters individually.
-        :param include_browse: bool (optional)
-          Whether to include provider services for which the principal can only access selective metadata.
 
         :returns: :class:`ModelProviderService`
         
 
-    .. py:method:: get_model_service(name: str [, include_browse: Optional[bool]]) -> ModelService
+    .. py:method:: get_model_service(name: str) -> ModelService
 
         Returns the model service identified by its resource name.
 
@@ -231,13 +225,11 @@
         :param name: str
           Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
           Each ``{...}`` component is capped at 255 characters individually.
-        :param include_browse: bool (optional)
-          Whether to include model services for which the principal can only access selective metadata.
 
         :returns: :class:`ModelService`
         
 
-    .. py:method:: list_agent_services( [, include_browse: Optional[bool], page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[AgentService]
+    .. py:method:: list_agent_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[AgentService]
 
         Lists the agent services in a Unity Catalog schema. Provide ``parent`` as
         ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
@@ -247,8 +239,6 @@
         services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
         returned.
 
-        :param include_browse: bool (optional)
-          Whether to include agent services for which the principal can only access selective metadata.
         :param page_size: int (optional)
           Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``next_page_token`` to retrieve additional pages.
@@ -261,7 +251,7 @@
         :returns: Iterator over :class:`AgentService`
         
 
-    .. py:method:: list_mcp_services( [, include_browse: Optional[bool], page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListMcpServicesRequestView]]) -> Iterator[McpService]
+    .. py:method:: list_mcp_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListMcpServicesRequestView]]) -> Iterator[McpService]
 
         Lists the MCP services in a Unity Catalog schema. Provide ``parent`` as
         ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
@@ -271,8 +261,6 @@
         services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
         returned.
 
-        :param include_browse: bool (optional)
-          Whether to include MCP services for which the principal can only access selective metadata.
         :param page_size: int (optional)
           Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``next_page_token`` to retrieve additional pages.
@@ -287,7 +275,7 @@
         :returns: Iterator over :class:`McpService`
         
 
-    .. py:method:: list_model_provider_services( [, include_browse: Optional[bool], page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListModelProviderServicesRequestView]]) -> Iterator[ModelProviderService]
+    .. py:method:: list_model_provider_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListModelProviderServicesRequestView]]) -> Iterator[ModelProviderService]
 
         Lists the model provider services in a Unity Catalog schema. Provide ``parent`` as
         ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
@@ -297,8 +285,6 @@
         provider services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or
         ``MANAGE``) are returned.
 
-        :param include_browse: bool (optional)
-          Whether to include provider services for which the principal can only access selective metadata.
         :param page_size: int (optional)
           Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
           Use ``next_page_token`` to retrieve additional pages.
@@ -313,7 +299,7 @@
         :returns: Iterator over :class:`ModelProviderService`
         
 
-    .. py:method:: list_model_services( [, include_browse: Optional[bool], page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListModelServicesRequestView]]) -> Iterator[ModelService]
+    .. py:method:: list_model_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListModelServicesRequestView]]) -> Iterator[ModelService]
 
         Lists the model services in a Unity Catalog schema. Provide ``parent`` as
         ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
@@ -323,8 +309,6 @@
         services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
         returned.
 
-        :param include_browse: bool (optional)
-          Whether to include model services for which the principal can only access selective metadata.
         :param page_size: int (optional)
           Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``next_page_token`` to retrieve additional pages.
