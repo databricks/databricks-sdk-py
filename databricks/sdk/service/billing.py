@@ -36,8 +36,14 @@ class ActionConfiguration:
     action_type: Optional[ActionConfigurationType] = None
     """The type of the action."""
 
+    create_time: Optional[int] = None
+    """Creation time of this action configuration."""
+
     target: Optional[str] = None
     """Target for the action. For example, an email address."""
+
+    update_time: Optional[int] = None
+    """Update time of this action configuration."""
 
     def as_dict(self) -> dict:
         """Serializes the ActionConfiguration into a dictionary suitable for use as a JSON request body."""
@@ -46,8 +52,12 @@ class ActionConfiguration:
             body["action_configuration_id"] = self.action_configuration_id
         if self.action_type is not None:
             body["action_type"] = self.action_type.value
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
         if self.target is not None:
             body["target"] = self.target
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -57,8 +67,12 @@ class ActionConfiguration:
             body["action_configuration_id"] = self.action_configuration_id
         if self.action_type is not None:
             body["action_type"] = self.action_type
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
         if self.target is not None:
             body["target"] = self.target
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
         return body
 
     @classmethod
@@ -67,7 +81,9 @@ class ActionConfiguration:
         return cls(
             action_configuration_id=d.get("action_configuration_id", None),
             action_type=_enum(d, "action_type", ActionConfigurationType),
+            create_time=d.get("create_time", None),
             target=d.get("target", None),
+            update_time=d.get("update_time", None),
         )
 
 
@@ -86,6 +102,9 @@ class AlertConfiguration:
 
     alert_configuration_id: Optional[str] = None
     """Databricks alert configuration ID."""
+
+    create_time: Optional[int] = None
+    """Creation time of this alert configuration."""
 
     principal_overrides: Optional[List[PrincipalOverride]] = None
     """Per-principal threshold overrides for this alert. Only applies to per-user alerts
@@ -109,6 +128,9 @@ class AlertConfiguration:
     trigger_type: Optional[AlertConfigurationTriggerType] = None
     """The evaluation method to determine when this budget alert is in a triggered state."""
 
+    update_time: Optional[int] = None
+    """Update time of this alert configuration."""
+
     def as_dict(self) -> dict:
         """Serializes the AlertConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -116,6 +138,8 @@ class AlertConfiguration:
             body["action_configurations"] = [v.as_dict() for v in self.action_configurations]
         if self.alert_configuration_id is not None:
             body["alert_configuration_id"] = self.alert_configuration_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
         if self.principal_overrides:
             body["principal_overrides"] = [v.as_dict() for v in self.principal_overrides]
         if self.quantity_threshold is not None:
@@ -128,6 +152,8 @@ class AlertConfiguration:
             body["time_period"] = self.time_period.value
         if self.trigger_type is not None:
             body["trigger_type"] = self.trigger_type.value
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -137,6 +163,8 @@ class AlertConfiguration:
             body["action_configurations"] = self.action_configurations
         if self.alert_configuration_id is not None:
             body["alert_configuration_id"] = self.alert_configuration_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
         if self.principal_overrides:
             body["principal_overrides"] = self.principal_overrides
         if self.quantity_threshold is not None:
@@ -149,6 +177,8 @@ class AlertConfiguration:
             body["time_period"] = self.time_period
         if self.trigger_type is not None:
             body["trigger_type"] = self.trigger_type
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
         return body
 
     @classmethod
@@ -157,12 +187,14 @@ class AlertConfiguration:
         return cls(
             action_configurations=_repeated_dict(d, "action_configurations", ActionConfiguration),
             alert_configuration_id=d.get("alert_configuration_id", None),
+            create_time=d.get("create_time", None),
             principal_overrides=_repeated_dict(d, "principal_overrides", PrincipalOverride),
             quantity_threshold=d.get("quantity_threshold", None),
             quantity_type=_enum(d, "quantity_type", AlertConfigurationQuantityType),
             scope_type=_enum(d, "scope_type", AlertConfigurationScopeType),
             time_period=_enum(d, "time_period", AlertConfigurationTimePeriod),
             trigger_type=_enum(d, "trigger_type", AlertConfigurationTriggerType),
+            update_time=d.get("update_time", None),
         )
 
 

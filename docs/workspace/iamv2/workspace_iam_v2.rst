@@ -73,6 +73,19 @@
         :returns: :class:`WorkspaceAssignmentDetail`
         
 
+    .. py:method:: create_workspace_assignment_proxy(workspace_assignment: WorkspaceAssignment) -> WorkspaceAssignment
+
+        Creates a workspace assignment for a principal in the calling workspace. Entitlements are granted one
+        at a time rather than atomically. If the request fails partway through, the principal stays assigned
+        to the workspace with only some of the requested entitlements. Get the assignment afterwards to
+        confirm which entitlements were granted.
+
+        :param workspace_assignment: :class:`WorkspaceAssignment`
+          Required. Workspace assignment to be created in <Databricks>.
+
+        :returns: :class:`WorkspaceAssignment`
+        
+
     .. py:method:: delete_direct_group_member_proxy(group_id: int, principal_id: int)
 
         Deletes a group membership (unassigns a principal from a group).
@@ -119,6 +132,19 @@
     .. py:method:: delete_workspace_assignment_detail_proxy(principal_id: int)
 
         Deletes a workspace assignment detail for a principal in the calling workspace, revoking all of its
+        entitlements. Entitlements are revoked one at a time rather than atomically. If the request fails
+        partway through, the principal stays assigned with some of its original entitlements. Retrying is
+        safe.
+
+        :param principal_id: int
+          Required. ID of the principal in Databricks to delete workspace assignment for.
+
+
+        
+
+    .. py:method:: delete_workspace_assignment_proxy(principal_id: int)
+
+        Deletes a workspace assignment for a principal in the calling workspace, revoking all of its
         entitlements. Entitlements are revoked one at a time rather than atomically. If the request fails
         partway through, the principal stays assigned with some of its original entitlements. Retrying is
         safe.
@@ -238,6 +264,17 @@
           being requested.
 
         :returns: :class:`WorkspaceAssignmentDetail`
+        
+
+    .. py:method:: get_workspace_assignment_proxy(principal_id: int) -> WorkspaceAssignment
+
+        Returns the assignment for a principal in the calling workspace.
+
+        :param principal_id: int
+          Required. The internal ID of the principal (user/sp/group) for which the assignment is being
+          requested.
+
+        :returns: :class:`WorkspaceAssignment`
         
 
     .. py:method:: get_workspace_identity_detail(principal_id: int) -> WorkspaceIdentityDetail
@@ -364,6 +401,20 @@
         :returns: :class:`ListWorkspaceAssignmentDetailsResponse`
         
 
+    .. py:method:: list_workspace_assignments_proxy( [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAssignmentsResponse
+
+        Lists workspace assignments for the calling workspace. The response omits the per-principal
+        entitlement fields (``entitlements`` and ``effective_entitlements``). To read the entitlements for a
+        single principal, get that principal's assignment.
+
+        :param page_size: int (optional)
+          The maximum number of workspace assignments to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token from a previous list call. Provide this to retrieve the subsequent page.
+
+        :returns: :class:`ListWorkspaceAssignmentsResponse`
+        
+
     .. py:method:: resolve_group_proxy(external_id: str) -> ResolveGroupResponse
 
         Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
@@ -460,6 +511,22 @@
           Required. The list of fields to update.
 
         :returns: :class:`WorkspaceAssignmentDetail`
+        
+
+    .. py:method:: update_workspace_assignment_proxy(principal_id: int, workspace_assignment: WorkspaceAssignment, update_mask: FieldMask) -> WorkspaceAssignment
+
+        Updates the entitlements of a directly assigned principal in the calling workspace. Changes are
+        applied one at a time rather than atomically. If the request fails partway through, only some of the
+        requested changes take effect. Get the assignment afterwards to confirm the final state.
+
+        :param principal_id: int
+          Required. ID of the principal in Databricks.
+        :param workspace_assignment: :class:`WorkspaceAssignment`
+          Required. Workspace assignment to be updated in <Databricks>.
+        :param update_mask: FieldMask
+          Required. The list of fields to update.
+
+        :returns: :class:`WorkspaceAssignment`
         
 
     .. py:method:: update_workspace_identity_detail(principal_id: int, workspace_identity_detail: WorkspaceIdentityDetail, update_mask: FieldMask) -> WorkspaceIdentityDetail

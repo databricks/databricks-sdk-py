@@ -666,6 +666,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: OKTA_SYSTEM_LOGS
       :value: "OKTA_SYSTEM_LOGS"
 
+   .. py:attribute:: ONEDRIVE
+      :value: "ONEDRIVE"
+
    .. py:attribute:: ONE_PASSWORD_EVENT_LOGS
       :value: "ONE_PASSWORD_EVENT_LOGS"
 
@@ -920,6 +923,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: Notifications
    :members:
    :undoc-members:
+
+.. autoclass:: OneDriveOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: OneDriveOptionsOneDriveEntityType
+
+   The type of OneDrive entity to ingest.
+
+   .. py:attribute:: FILE
+      :value: "FILE"
+
+   .. py:attribute:: FILE_METADATA
+      :value: "FILE_METADATA"
+
+   .. py:attribute:: FILE_PERMISSION
+      :value: "FILE_PERMISSION"
+
+   .. py:attribute:: GROUP_MEMBERSHIP
+      :value: "GROUP_MEMBERSHIP"
 
 .. autoclass:: OperationTimeWindow
    :members:

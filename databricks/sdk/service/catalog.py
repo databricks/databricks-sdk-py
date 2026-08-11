@@ -424,9 +424,6 @@ class AgentService:
     """Type of agent service. Required on create. Immutable after creation. For future internal / genie
     / app kinds, determines how the backing agent surface is provisioned."""
 
-    browse_only: Optional[bool] = None
-    """Whether the caller sees only metadata available through the BROWSE privilege."""
-
     comment: Optional[str] = None
     """User-provided description."""
 
@@ -474,8 +471,6 @@ class AgentService:
         body = {}
         if self.agent_service_type is not None:
             body["agent_service_type"] = self.agent_service_type.value
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.comment is not None:
             body["comment"] = self.comment
         if self.config:
@@ -505,8 +500,6 @@ class AgentService:
         body = {}
         if self.agent_service_type is not None:
             body["agent_service_type"] = self.agent_service_type
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.comment is not None:
             body["comment"] = self.comment
         if self.config:
@@ -536,7 +529,6 @@ class AgentService:
         """Deserializes the AgentService from a dictionary."""
         return cls(
             agent_service_type=_enum(d, "agent_service_type", AgentServiceAgentServiceType),
-            browse_only=d.get("browse_only", None),
             comment=d.get("comment", None),
             config=_from_dict(d, "config", AgentServiceConfig),
             create_time=_timestamp(d, "create_time"),
@@ -7545,9 +7537,6 @@ class McpService:
     references an MCP server -- customer-external via a UC Connection, or Databricks-hosted via an
     internal server -- and exposes its tools for discovery, authorization, and invocation."""
 
-    browse_only: Optional[bool] = None
-    """Whether the caller sees only metadata available through the BROWSE privilege."""
-
     comment: Optional[str] = None
     """User-provided description."""
 
@@ -7592,8 +7581,6 @@ class McpService:
     def as_dict(self) -> dict:
         """Serializes the McpService into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.comment is not None:
             body["comment"] = self.comment
         if self.config:
@@ -7621,8 +7608,6 @@ class McpService:
     def as_shallow_dict(self) -> dict:
         """Serializes the McpService into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.comment is not None:
             body["comment"] = self.comment
         if self.config:
@@ -7651,7 +7636,6 @@ class McpService:
     def from_dict(cls, d: Dict[str, Any]) -> McpService:
         """Deserializes the McpService from a dictionary."""
         return cls(
-            browse_only=d.get("browse_only", None),
             comment=d.get("comment", None),
             config=_from_dict(d, "config", McpServiceConfig),
             create_time=_timestamp(d, "create_time"),
@@ -7986,9 +7970,6 @@ class ModelProviderService:
     multiple models); a single ModelService can fan out across multiple ModelProviderServices for
     traffic split or failover."""
 
-    browse_only: Optional[bool] = None
-    """Whether the caller sees only metadata available through the BROWSE privilege."""
-
     comment: Optional[str] = None
     """User-provided description."""
 
@@ -8035,8 +8016,6 @@ class ModelProviderService:
     def as_dict(self) -> dict:
         """Serializes the ModelProviderService into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.comment is not None:
             body["comment"] = self.comment
         if self.config:
@@ -8064,8 +8043,6 @@ class ModelProviderService:
     def as_shallow_dict(self) -> dict:
         """Serializes the ModelProviderService into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.comment is not None:
             body["comment"] = self.comment
         if self.config:
@@ -8094,7 +8071,6 @@ class ModelProviderService:
     def from_dict(cls, d: Dict[str, Any]) -> ModelProviderService:
         """Deserializes the ModelProviderService from a dictionary."""
         return cls(
-            browse_only=d.get("browse_only", None),
             comment=d.get("comment", None),
             config=_from_dict(d, "config", ModelProviderServiceConfig),
             create_time=_timestamp(d, "create_time"),
@@ -8310,8 +8286,7 @@ class ModelProviderServiceConfigAmazonBedrockProviderDirectConfig:
       is referenced by name, not held on this message. Setting more than one mode is rejected."""
 
     aws_access_key: Optional[ModelProviderServiceConfigAwsAccessKey] = None
-    """AWS access-key-pair auth. Mutually exclusive with ``service_credential``. Supersedes the flat
-    ``aws_access_key_id`` / ``aws_secret_access_key`` fields."""
+    """AWS access-key-pair auth. Mutually exclusive with ``service_credential``."""
 
     region: Optional[str] = None
     """AWS region where the Bedrock endpoint is hosted (e.g., ``us-east-1``). Required on Create."""
@@ -8559,8 +8534,7 @@ class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
 
     entra_service_principal: Optional[ModelProviderServiceConfigEntraServicePrincipal] = None
     """Entra ID (service principal) auth. Mutually exclusive with ``api_key`` and
-    ``service_credential``. Supersedes the flat ``tenant_id`` / ``client_id`` / ``client_secret``
-    fields."""
+    ``service_credential``."""
 
     service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
     """Reference to a UC service credential authorizing Azure OpenAI requests. On Create the caller
@@ -8882,8 +8856,7 @@ class ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig:
 
     entra_service_principal: Optional[ModelProviderServiceConfigEntraServicePrincipal] = None
     """Entra ID (service principal) auth. Mutually exclusive with ``api_key`` and
-    ``service_credential``. Supersedes the flat ``tenant_id`` / ``client_id`` / ``client_secret``
-    fields."""
+    ``service_credential``."""
 
     service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
     """Reference to a UC service credential authorizing Microsoft Foundry requests. On Create the
@@ -9116,9 +9089,6 @@ class ModelService:
     ModelProviderService). Applies centralized access control, rate limits, guardrails, and auditing
     to the traffic it serves."""
 
-    browse_only: Optional[bool] = None
-    """Whether the caller sees only metadata available through the BROWSE privilege."""
-
     comment: Optional[str] = None
     """User-provided description."""
 
@@ -9168,8 +9138,6 @@ class ModelService:
     def as_dict(self) -> dict:
         """Serializes the ModelService into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.comment is not None:
             body["comment"] = self.comment
         if self.config:
@@ -9199,8 +9167,6 @@ class ModelService:
     def as_shallow_dict(self) -> dict:
         """Serializes the ModelService into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.comment is not None:
             body["comment"] = self.comment
         if self.config:
@@ -9231,7 +9197,6 @@ class ModelService:
     def from_dict(cls, d: Dict[str, Any]) -> ModelService:
         """Deserializes the ModelService from a dictionary."""
         return cls(
-            browse_only=d.get("browse_only", None),
             comment=d.get("comment", None),
             config=_from_dict(d, "config", ModelServiceConfig),
             create_time=_timestamp(d, "create_time"),
@@ -11182,8 +11147,8 @@ class PolicyInfo:
     update."""
 
     for_securable_type: SecurableType
-    """Type of securables that the policy should take effect on. Only ``TABLE`` is supported at this
-    moment. Required on create and optional on update."""
+    """Type of securables that the policy should take effect on. Required on create and optional on
+    update."""
 
     policy_type: PolicyType
     """Type of the policy. Required on create."""
@@ -15256,7 +15221,7 @@ class AiGatewayAPI:
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
 
-    def get_agent_service(self, name: str, *, include_browse: Optional[bool] = None) -> AgentService:
+    def get_agent_service(self, name: str) -> AgentService:
         """Returns the agent service identified by its resource name.
 
         You must be the owner of the agent service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on
@@ -15265,15 +15230,10 @@ class AiGatewayAPI:
         :param name: str
           Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
           Each ``{...}`` component is capped at 255 characters individually.
-        :param include_browse: bool (optional)
-          Whether to include agent services for which the principal can only access selective metadata.
 
         :returns: :class:`AgentService`
         """
 
-        query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         headers = {
             "Accept": "application/json",
         }
@@ -15282,10 +15242,10 @@ class AiGatewayAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
         return AgentService.from_dict(res)
 
-    def get_mcp_service(self, name: str, *, include_browse: Optional[bool] = None) -> McpService:
+    def get_mcp_service(self, name: str) -> McpService:
         """Returns the MCP service identified by its resource name.
 
         You must be the owner of the MCP service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on it,
@@ -15294,15 +15254,10 @@ class AiGatewayAPI:
         :param name: str
           Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
           ``{...}`` component is capped at 255 characters individually.
-        :param include_browse: bool (optional)
-          Whether to include MCP services for which the principal can only access selective metadata.
 
         :returns: :class:`McpService`
         """
 
-        query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         headers = {
             "Accept": "application/json",
         }
@@ -15311,10 +15266,10 @@ class AiGatewayAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
         return McpService.from_dict(res)
 
-    def get_model_provider_service(self, name: str, *, include_browse: Optional[bool] = None) -> ModelProviderService:
+    def get_model_provider_service(self, name: str) -> ModelProviderService:
         """Returns the model provider service identified by its resource name.
 
         You must be the owner of the model provider service or have ``EXECUTE``, ``READ_METADATA``, or
@@ -15324,15 +15279,10 @@ class AiGatewayAPI:
           Resource name of the model provider service. Format:
           ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
           capped at 255 characters individually.
-        :param include_browse: bool (optional)
-          Whether to include provider services for which the principal can only access selective metadata.
 
         :returns: :class:`ModelProviderService`
         """
 
-        query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         headers = {
             "Accept": "application/json",
         }
@@ -15341,10 +15291,10 @@ class AiGatewayAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
         return ModelProviderService.from_dict(res)
 
-    def get_model_service(self, name: str, *, include_browse: Optional[bool] = None) -> ModelService:
+    def get_model_service(self, name: str) -> ModelService:
         """Returns the model service identified by its resource name.
 
         You must be the owner of the model service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on
@@ -15353,15 +15303,10 @@ class AiGatewayAPI:
         :param name: str
           Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
           Each ``{...}`` component is capped at 255 characters individually.
-        :param include_browse: bool (optional)
-          Whether to include model services for which the principal can only access selective metadata.
 
         :returns: :class:`ModelService`
         """
 
-        query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         headers = {
             "Accept": "application/json",
         }
@@ -15370,16 +15315,11 @@ class AiGatewayAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
         return ModelService.from_dict(res)
 
     def list_agent_services(
-        self,
-        *,
-        include_browse: Optional[bool] = None,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
-        parent: Optional[str] = None,
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, parent: Optional[str] = None
     ) -> Iterator[AgentService]:
         """Lists the agent services in a Unity Catalog schema. Provide ``parent`` as
         ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
@@ -15389,8 +15329,6 @@ class AiGatewayAPI:
         services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
         returned.
 
-        :param include_browse: bool (optional)
-          Whether to include agent services for which the principal can only access selective metadata.
         :param page_size: int (optional)
           Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``next_page_token`` to retrieve additional pages.
@@ -15404,8 +15342,6 @@ class AiGatewayAPI:
         """
 
         query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -15432,7 +15368,6 @@ class AiGatewayAPI:
     def list_mcp_services(
         self,
         *,
-        include_browse: Optional[bool] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         parent: Optional[str] = None,
@@ -15446,8 +15381,6 @@ class AiGatewayAPI:
         services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
         returned.
 
-        :param include_browse: bool (optional)
-          Whether to include MCP services for which the principal can only access selective metadata.
         :param page_size: int (optional)
           Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``next_page_token`` to retrieve additional pages.
@@ -15463,8 +15396,6 @@ class AiGatewayAPI:
         """
 
         query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -15493,7 +15424,6 @@ class AiGatewayAPI:
     def list_model_provider_services(
         self,
         *,
-        include_browse: Optional[bool] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         parent: Optional[str] = None,
@@ -15507,8 +15437,6 @@ class AiGatewayAPI:
         provider services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or
         ``MANAGE``) are returned.
 
-        :param include_browse: bool (optional)
-          Whether to include provider services for which the principal can only access selective metadata.
         :param page_size: int (optional)
           Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
           Use ``next_page_token`` to retrieve additional pages.
@@ -15524,8 +15452,6 @@ class AiGatewayAPI:
         """
 
         query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -15554,7 +15480,6 @@ class AiGatewayAPI:
     def list_model_services(
         self,
         *,
-        include_browse: Optional[bool] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         parent: Optional[str] = None,
@@ -15568,8 +15493,6 @@ class AiGatewayAPI:
         services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
         returned.
 
-        :param include_browse: bool (optional)
-          Whether to include model services for which the principal can only access selective metadata.
         :param page_size: int (optional)
           Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``next_page_token`` to retrieve additional pages.
@@ -15585,8 +15508,6 @@ class AiGatewayAPI:
         """
 
         query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -20666,7 +20587,7 @@ class SecretsUcAPI:
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/secrets/{full_name}", headers=headers)
 
-    def get_secret(self, full_name: str) -> Secret:
+    def get_secret(self, full_name: str, *, include_value: Optional[bool] = None) -> Secret:
         """Gets a secret by its three-level (fully qualified) name.
 
         You must be a metastore admin, the owner of the secret, or have the **MANAGE** privilege on the
@@ -20678,10 +20599,16 @@ class SecretsUcAPI:
         :param full_name: str
           The three-level (fully qualified) name of the secret (for example,
           **catalog_name.schema_name.secret_name**).
+        :param include_value: bool (optional)
+          Whether to include the secret value in the response. Defaults to false. Requires the **READ_SECRET**
+          privilege.
 
         :returns: :class:`Secret`
         """
 
+        query = {}
+        if include_value is not None:
+            query["include_value"] = include_value
         headers = {
             "Accept": "application/json",
         }
@@ -20690,7 +20617,7 @@ class SecretsUcAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/secrets/{full_name}", headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/secrets/{full_name}", query=query, headers=headers)
         return Secret.from_dict(res)
 
     def list_secrets(

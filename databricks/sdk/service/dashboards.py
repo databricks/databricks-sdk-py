@@ -9,6 +9,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Dict, List, Any, Iterator, Callable, Optional, BinaryIO
 
+from google.protobuf.timestamp_pb2 import Timestamp
 
 import time
 import random
@@ -20,6 +21,7 @@ from databricks.sdk.service._internal import (
     _from_dict,
     _repeated_dict,
     _repeated_enum,
+    _timestamp,
     Wait,
 )
 
@@ -1549,6 +1551,9 @@ class GenieSpace:
     title: str
     """Title of the Genie Space"""
 
+    create_time: Optional[Timestamp] = None
+    """Time when the Genie space was created."""
+
     description: Optional[str] = None
     """Description of the Genie Space"""
 
@@ -1565,12 +1570,17 @@ class GenieSpace:
     response, which includes the ``serialized_space`` field. This field provides the structure of
     the JSON string that represents the space's layout and components."""
 
+    update_time: Optional[Timestamp] = None
+    """Time when the Genie space was last modified, matching the value shown in the Genie Agent UI."""
+
     warehouse_id: Optional[str] = None
     """Warehouse associated with the Genie Space"""
 
     def as_dict(self) -> dict:
         """Serializes the GenieSpace into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
         if self.description is not None:
             body["description"] = self.description
         if self.etag is not None:
@@ -1583,6 +1593,8 @@ class GenieSpace:
             body["space_id"] = self.space_id
         if self.title is not None:
             body["title"] = self.title
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
         if self.warehouse_id is not None:
             body["warehouse_id"] = self.warehouse_id
         return body
@@ -1590,6 +1602,8 @@ class GenieSpace:
     def as_shallow_dict(self) -> dict:
         """Serializes the GenieSpace into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
         if self.description is not None:
             body["description"] = self.description
         if self.etag is not None:
@@ -1602,6 +1616,8 @@ class GenieSpace:
             body["space_id"] = self.space_id
         if self.title is not None:
             body["title"] = self.title
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
         if self.warehouse_id is not None:
             body["warehouse_id"] = self.warehouse_id
         return body
@@ -1610,12 +1626,14 @@ class GenieSpace:
     def from_dict(cls, d: Dict[str, Any]) -> GenieSpace:
         """Deserializes the GenieSpace from a dictionary."""
         return cls(
+            create_time=_timestamp(d, "create_time"),
             description=d.get("description", None),
             etag=d.get("etag", None),
             parent_path=d.get("parent_path", None),
             serialized_space=d.get("serialized_space", None),
             space_id=d.get("space_id", None),
             title=d.get("title", None),
+            update_time=_timestamp(d, "update_time"),
             warehouse_id=d.get("warehouse_id", None),
         )
 

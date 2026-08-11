@@ -546,6 +546,8 @@ class ConnectorOptions:
 
     meta_ads_options: Optional[MetaMarketingOptions] = None
 
+    onedrive_options: Optional[OneDriveOptions] = None
+
     outlook_options: Optional[OutlookOptions] = None
 
     rabbitmq_options: Optional[RabbitmqOptions] = None
@@ -589,6 +591,8 @@ class ConnectorOptions:
             body["marketo_options"] = self.marketo_options.as_dict()
         if self.meta_ads_options:
             body["meta_ads_options"] = self.meta_ads_options.as_dict()
+        if self.onedrive_options:
+            body["onedrive_options"] = self.onedrive_options.as_dict()
         if self.outlook_options:
             body["outlook_options"] = self.outlook_options.as_dict()
         if self.rabbitmq_options:
@@ -634,6 +638,8 @@ class ConnectorOptions:
             body["marketo_options"] = self.marketo_options
         if self.meta_ads_options:
             body["meta_ads_options"] = self.meta_ads_options
+        if self.onedrive_options:
+            body["onedrive_options"] = self.onedrive_options
         if self.outlook_options:
             body["outlook_options"] = self.outlook_options
         if self.rabbitmq_options:
@@ -667,6 +673,7 @@ class ConnectorOptions:
             linkedin_ads_options=_from_dict(d, "linkedin_ads_options", LinkedInAdsOptions),
             marketo_options=_from_dict(d, "marketo_options", MarketoOptions),
             meta_ads_options=_from_dict(d, "meta_ads_options", MetaMarketingOptions),
+            onedrive_options=_from_dict(d, "onedrive_options", OneDriveOptions),
             outlook_options=_from_dict(d, "outlook_options", OutlookOptions),
             rabbitmq_options=_from_dict(d, "rabbitmq_options", RabbitmqOptions),
             reddit_ads_options=_from_dict(d, "reddit_ads_options", RedditAdsOptions),
@@ -1425,11 +1432,18 @@ class GitHubConnectorOptions:
     """(Optional) Branches to ingest per repository. A repository not listed here is ingested on its
     default branch."""
 
+    repository_id_selections: Optional[List[str]] = None
+    """(Optional) Specifies the GitHub repository ids to ingest. These ids are immutable and survive
+    repository renames. When set, ingestion is restricted to these repositories. When empty, all
+    repositories in the organization are ingested."""
+
     def as_dict(self) -> dict:
         """Serializes the GitHubConnectorOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.repository_branch_selections:
             body["repository_branch_selections"] = [v.as_dict() for v in self.repository_branch_selections]
+        if self.repository_id_selections:
+            body["repository_id_selections"] = [v for v in self.repository_id_selections]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1437,6 +1451,8 @@ class GitHubConnectorOptions:
         body = {}
         if self.repository_branch_selections:
             body["repository_branch_selections"] = self.repository_branch_selections
+        if self.repository_id_selections:
+            body["repository_id_selections"] = self.repository_id_selections
         return body
 
     @classmethod
@@ -1445,7 +1461,8 @@ class GitHubConnectorOptions:
         return cls(
             repository_branch_selections=_repeated_dict(
                 d, "repository_branch_selections", GitHubConnectorOptionsRepositoryBranchSelection
-            )
+            ),
+            repository_id_selections=d.get("repository_id_selections", None),
         )
 
 
@@ -2236,6 +2253,7 @@ class IngestionSourceType(Enum):
     NETSUITE = "NETSUITE"
     NOTION = "NOTION"
     OKTA_SYSTEM_LOGS = "OKTA_SYSTEM_LOGS"
+    ONEDRIVE = "ONEDRIVE"
     ONE_PASSWORD_EVENT_LOGS = "ONE_PASSWORD_EVENT_LOGS"
     ORACLE = "ORACLE"
     ORACLE_ELOQUA = "ORACLE_ELOQUA"
@@ -3031,6 +3049,58 @@ class Notifications:
     def from_dict(cls, d: Dict[str, Any]) -> Notifications:
         """Deserializes the Notifications from a dictionary."""
         return cls(alerts=d.get("alerts", None), email_recipients=d.get("email_recipients", None))
+
+
+@dataclass
+class OneDriveOptions:
+    entity_type: Optional[OneDriveOptionsOneDriveEntityType] = None
+    """(Optional) The type of OneDrive entity to ingest. If not specified, defaults to FILE."""
+
+    file_ingestion_options: Optional[FileIngestionOptions] = None
+    """(Optional) File ingestion options for processing files."""
+
+    url: Optional[str] = None
+    """Required. The OneDrive URL."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OneDriveOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type.value
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options.as_dict()
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OneDriveOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OneDriveOptions:
+        """Deserializes the OneDriveOptions from a dictionary."""
+        return cls(
+            entity_type=_enum(d, "entity_type", OneDriveOptionsOneDriveEntityType),
+            file_ingestion_options=_from_dict(d, "file_ingestion_options", FileIngestionOptions),
+            url=d.get("url", None),
+        )
+
+
+class OneDriveOptionsOneDriveEntityType(Enum):
+    """The type of OneDrive entity to ingest."""
+
+    FILE = "FILE"
+    FILE_METADATA = "FILE_METADATA"
+    FILE_PERMISSION = "FILE_PERMISSION"
+    GROUP_MEMBERSHIP = "GROUP_MEMBERSHIP"
 
 
 @dataclass

@@ -67,6 +67,10 @@ class AssetReplicationConfig:
     enable_dashboards: bool
     """Whether to replicate dashboards."""
 
+    enable_genie_spaces: Optional[bool] = None
+    """Whether to replicate Genie Spaces, a WORKSPACE sub-type replicated through the workspace-content
+    CPDR path."""
+
     def as_dict(self) -> dict:
         """Serializes the AssetReplicationConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -76,6 +80,8 @@ class AssetReplicationConfig:
             body["enable_dashboards"] = self.enable_dashboards
         if self.enable_files is not None:
             body["enable_files"] = self.enable_files
+        if self.enable_genie_spaces is not None:
+            body["enable_genie_spaces"] = self.enable_genie_spaces
         if self.enable_jobs is not None:
             body["enable_jobs"] = self.enable_jobs
         if self.enable_libraries is not None:
@@ -99,6 +105,8 @@ class AssetReplicationConfig:
             body["enable_dashboards"] = self.enable_dashboards
         if self.enable_files is not None:
             body["enable_files"] = self.enable_files
+        if self.enable_genie_spaces is not None:
+            body["enable_genie_spaces"] = self.enable_genie_spaces
         if self.enable_jobs is not None:
             body["enable_jobs"] = self.enable_jobs
         if self.enable_libraries is not None:
@@ -120,6 +128,7 @@ class AssetReplicationConfig:
             enable_clusters=d.get("enable_clusters", None),
             enable_dashboards=d.get("enable_dashboards", None),
             enable_files=d.get("enable_files", None),
+            enable_genie_spaces=d.get("enable_genie_spaces", None),
             enable_jobs=d.get("enable_jobs", None),
             enable_libraries=d.get("enable_libraries", None),
             enable_notebooks=d.get("enable_notebooks", None),
