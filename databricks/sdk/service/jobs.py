@@ -459,6 +459,13 @@ class AiRuntimeTask:
     container image instead of the default Databricks client image. Format:
     ``{organization}/{repository}:{tag}``"""
 
+    mlflow_artifact_location: Optional[str] = None
+    """Optional root location for MLflow artifacts logged by the run. If this field isn't specified the
+    default artifact location will be in dbfs i.e.
+    ``dbfs:/databricks/mlflow-tracking/<experiment_id>/...`` If dbfs access is restricted or UC is
+    preferred this can be a custom location in UC: ``dbfs:/Volumes/<catalog>/<schema>/<volume>/...``
+    The location should be unique for each experiment."""
+
     mlflow_experiment_directory: Optional[str] = None
     """Optional workspace directory under which the MLflow experiment named in ``experiment`` is
     created. Must start with ``/Workspace``. Set this when running as a service principal that has
@@ -487,6 +494,8 @@ class AiRuntimeTask:
             body["docker_image_url"] = self.docker_image_url
         if self.experiment is not None:
             body["experiment"] = self.experiment
+        if self.mlflow_artifact_location is not None:
+            body["mlflow_artifact_location"] = self.mlflow_artifact_location
         if self.mlflow_experiment_directory is not None:
             body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
         if self.mlflow_run is not None:
@@ -506,6 +515,8 @@ class AiRuntimeTask:
             body["docker_image_url"] = self.docker_image_url
         if self.experiment is not None:
             body["experiment"] = self.experiment
+        if self.mlflow_artifact_location is not None:
+            body["mlflow_artifact_location"] = self.mlflow_artifact_location
         if self.mlflow_experiment_directory is not None:
             body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
         if self.mlflow_run is not None:
@@ -522,6 +533,7 @@ class AiRuntimeTask:
             deployments=_repeated_dict(d, "deployments", DeploymentSpec),
             docker_image_url=d.get("docker_image_url", None),
             experiment=d.get("experiment", None),
+            mlflow_artifact_location=d.get("mlflow_artifact_location", None),
             mlflow_experiment_directory=d.get("mlflow_experiment_directory", None),
             mlflow_run=d.get("mlflow_run", None),
             parameters=d.get("parameters", None),
@@ -7784,6 +7796,10 @@ class RunTask:
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
       and optimized cluster performance."""
 
+    effective_serverless_compute_id: Optional[str] = None
+    """The id of the serverless compute this task ran on, either explicitly configured on the task or
+    the workspace default. Only set once the compute has been resolved at run trigger."""
+
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
     behavior is to not send any emails."""
@@ -7977,6 +7993,8 @@ class RunTask:
             body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
+        if self.effective_serverless_compute_id is not None:
+            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.end_time is not None:
@@ -8098,6 +8116,8 @@ class RunTask:
             body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
+        if self.effective_serverless_compute_id is not None:
+            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.end_time is not None:
@@ -8202,6 +8222,7 @@ class RunTask:
             disable_auto_optimization=d.get("disable_auto_optimization", None),
             disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
+            effective_serverless_compute_id=d.get("effective_serverless_compute_id", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=d.get("end_time", None),
             environment_key=d.get("environment_key", None),
