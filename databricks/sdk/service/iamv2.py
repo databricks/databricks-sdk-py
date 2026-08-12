@@ -225,8 +225,10 @@ class ExternalGroup:
     """Internal groupId of the group in Databricks."""
 
     name: Optional[str] = None
-    """The resource name of the external group. Format:
-    accounts/{account_id}/external-groups/{external_group_id}"""
+    """The resource name of the external group. The format depends on the API that returned it:
+    
+    - Account-scoped: accounts/{account_id}/external-groups/{external_group_id}
+    - Workspace-scoped: external-groups/{external_group_id}"""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalGroup into a dictionary suitable for use as a JSON request body."""
@@ -296,8 +298,12 @@ class ExternalServicePrincipal:
     """Internal servicePrincipalId of the service principal in Databricks."""
 
     name: Optional[str] = None
-    """The resource name of the external service principal. Format:
-    accounts/{account_id}/external-service-principals/{external_service_principal_id}"""
+    """The resource name of the external service principal. The format depends on the API that returned
+    it:
+    
+    - Account-scoped:
+      accounts/{account_id}/external-service-principals/{external_service_principal_id}
+    - Workspace-scoped: external-service-principals/{external_service_principal_id}"""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalServicePrincipal into a dictionary suitable for use as a JSON request body."""
@@ -378,8 +384,10 @@ class ExternalUser:
     """Internal userId of the user in Databricks."""
 
     name: Optional[str] = None
-    """The resource name of the external user. Format:
-    accounts/{account_id}/external-users/{external_user_id}"""
+    """The resource name of the external user. The format depends on the API that returned it:
+    
+    - Account-scoped: accounts/{account_id}/external-users/{external_user_id}
+    - Workspace-scoped: external-users/{external_user_id}"""
 
     username: Optional[str] = None
     """Username/email of the user, from Databricks."""

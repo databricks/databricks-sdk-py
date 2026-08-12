@@ -2309,8 +2309,9 @@ class PtCommitmentAutoRenew:
 @dataclass
 class PtCommitmentRelocation:
     """A request to relocate ("upgrade") an existing Provisioned Throughput commitment onto a
-    different, same-line endpoint. The commitment row moves intact (same commitment_id) from the
-    source endpoint to the target in a single transaction."""
+    different, same-line endpoint. Each source commitment is deleted and reissued as a fresh
+    commitment on the target (new id, term restarting at the relocation time, same model units, term
+    length, and auto-renew) in a single transaction."""
 
     source_endpoint: str
     """The endpoint that currently owns the commitments (the relocation source)."""
@@ -4207,9 +4208,7 @@ class TelemetryConfig:
 
     table_names: Optional[UnityCatalogTableNames] = None
     """The Unity Catalog tables to which endpoint telemetry (logs, traces, and metrics) is exported.
-    Provide this to create a new telemetry profile for the endpoint from the given tables. This
-    field selects the tables when writing a telemetry configuration; it is not returned when reading
-    one. Responses identify the resulting profile with ``telemetry_profile_id`` instead."""
+    Provide this to create a new telemetry profile for the endpoint from the given tables."""
 
     telemetry_profile_id: Optional[str] = None
     """The ID of an existing telemetry profile to apply to this endpoint. Provide this to reuse a

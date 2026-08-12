@@ -244,11 +244,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ContinuousTriggerConfiguration
+   :members:
+   :undoc-members:
+
+.. autoclass:: ContinuousTriggerState
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateResponse
    :members:
    :undoc-members:
 
 .. autoclass:: CronSchedule
+   :members:
+   :undoc-members:
+
+.. autoclass:: CronTriggerConfiguration
    :members:
    :undoc-members:
 
@@ -656,6 +668,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MODEL_VERSION_READY
       :value: "MODEL_VERSION_READY"
 
+.. autoclass:: ModelTriggerState
+   :members:
+   :undoc-members:
+
 .. autoclass:: NotebookOutput
    :members:
    :undoc-members:
@@ -675,6 +691,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UNPAUSED
       :value: "UNPAUSED"
+
+.. autoclass:: PerTriggerState
+   :members:
+   :undoc-members:
 
 .. py:class:: PerformanceTarget
 
@@ -703,6 +723,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WEEKS
       :value: "WEEKS"
+
+.. autoclass:: PeriodicTriggerState
+   :members:
+   :undoc-members:
 
 .. autoclass:: PipelineParams
    :members:
@@ -1059,6 +1083,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKFLOW_RUN
       :value: "WORKFLOW_RUN"
 
+.. autoclass:: ScheduleTriggerState
+   :members:
+   :undoc-members:
+
 .. autoclass:: SchemaTool
    :members:
    :undoc-members:
@@ -1401,6 +1429,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SUCCESS"
 
 .. autoclass:: TraceDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: TriggerConfiguration
+   :members:
+   :undoc-members:
+
+.. autoclass:: TriggerDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: TriggerEvaluation
+   :members:
+   :undoc-members:
+
+.. autoclass:: TriggerHistory
    :members:
    :undoc-members:
 

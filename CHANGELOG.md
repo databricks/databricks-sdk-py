@@ -1,5 +1,17 @@
 # Version changelog
 
+## Release v0.127.0 (2026-08-12)
+
+### API Changes
+* Add `mlflow_artifact_location` field for `databricks.sdk.service.jobs.AiRuntimeTask`.
+* Add `trigger_details` field for `databricks.sdk.service.jobs.BaseJob`.
+* Add `triggers` field for `databricks.sdk.service.jobs.CreateJob`.
+* Add `trigger_details` field for `databricks.sdk.service.jobs.Job`.
+* Add `triggers` field for `databricks.sdk.service.jobs.JobSettings`.
+* Add `api_source_connector_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `api_source_connector_config` field for `databricks.sdk.service.pipelines.SourceConfig`.
+* Add `all_vpc_sc_services` and `google_api_endpoints` fields for `databricks.sdk.service.settings.GcpEndpoint`.
+
 ## Release v0.126.0 (2026-08-11)
 
 ### API Changes

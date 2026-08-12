@@ -796,6 +796,12 @@ class BaseJob:
     """Settings for this job and all of its runs. These settings can be updated using the ``resetJob``
     method."""
 
+    trigger_details: Optional[List[TriggerDetails]] = None
+    """Per-trigger runtime information for the multi-trigger surface. Same length and order as
+    ``JobSettings.triggers``; ``trigger_details[i]`` corresponds to ``triggers[i]``. Sub-fields
+    (``state``, ``history``) are populated independently based on the
+    ``GetJob.include_trigger_state`` / ``include_trigger_history`` flags."""
+
     trigger_state: Optional[TriggerStateProto] = None
     """State of the trigger associated with the job."""
 
@@ -818,6 +824,8 @@ class BaseJob:
             body["path"] = self.path
         if self.settings:
             body["settings"] = self.settings.as_dict()
+        if self.trigger_details:
+            body["trigger_details"] = [v.as_dict() for v in self.trigger_details]
         if self.trigger_state:
             body["trigger_state"] = self.trigger_state.as_dict()
         return body
@@ -841,6 +849,8 @@ class BaseJob:
             body["path"] = self.path
         if self.settings:
             body["settings"] = self.settings
+        if self.trigger_details:
+            body["trigger_details"] = self.trigger_details
         if self.trigger_state:
             body["trigger_state"] = self.trigger_state
         return body
@@ -857,6 +867,7 @@ class BaseJob:
             job_id=d.get("job_id", None),
             path=d.get("path", None),
             settings=_from_dict(d, "settings", JobSettings),
+            trigger_details=_repeated_dict(d, "trigger_details", TriggerDetails),
             trigger_state=_from_dict(d, "trigger_state", TriggerStateProto),
         )
 
@@ -1765,6 +1776,85 @@ class Continuous:
 
 
 @dataclass
+class ContinuousTriggerConfiguration:
+    """Continuous trigger. Stripped-down counterpart to ``ContinuousSettings``: ``pause_status`` is
+    owned by the enclosing ``TriggerConfiguration`` and intentionally omitted here."""
+
+    maintenance_window: Optional[MaintenanceWindow] = None
+    """Defines when platform-initiated maintenance may run for this trigger. If unspecified,
+    maintenance may run at any time."""
+
+    task_retry_mode: Optional[TaskRetryMode] = None
+    """Whether the continuous job applies task-level retries. Defaults to NEVER."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ContinuousTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.maintenance_window:
+            body["maintenance_window"] = self.maintenance_window.as_dict()
+        if self.task_retry_mode is not None:
+            body["task_retry_mode"] = self.task_retry_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ContinuousTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.maintenance_window:
+            body["maintenance_window"] = self.maintenance_window
+        if self.task_retry_mode is not None:
+            body["task_retry_mode"] = self.task_retry_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ContinuousTriggerConfiguration:
+        """Deserializes the ContinuousTriggerConfiguration from a dictionary."""
+        return cls(
+            maintenance_window=_from_dict(d, "maintenance_window", MaintenanceWindow),
+            task_retry_mode=_enum(d, "task_retry_mode", TaskRetryMode),
+        )
+
+
+@dataclass
+class ContinuousTriggerState:
+    consecutive_failures: Optional[int] = None
+
+    is_backing_off: Optional[bool] = None
+
+    next_attempt_ms: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ContinuousTriggerState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.consecutive_failures is not None:
+            body["consecutive_failures"] = self.consecutive_failures
+        if self.is_backing_off is not None:
+            body["is_backing_off"] = self.is_backing_off
+        if self.next_attempt_ms is not None:
+            body["next_attempt_ms"] = self.next_attempt_ms
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ContinuousTriggerState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.consecutive_failures is not None:
+            body["consecutive_failures"] = self.consecutive_failures
+        if self.is_backing_off is not None:
+            body["is_backing_off"] = self.is_backing_off
+        if self.next_attempt_ms is not None:
+            body["next_attempt_ms"] = self.next_attempt_ms
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ContinuousTriggerState:
+        """Deserializes the ContinuousTriggerState from a dictionary."""
+        return cls(
+            consecutive_failures=d.get("consecutive_failures", None),
+            is_backing_off=d.get("is_backing_off", None),
+            next_attempt_ms=d.get("next_attempt_ms", None),
+        )
+
+
+@dataclass
 class CreateResponse:
     """Job was created successfully"""
 
@@ -1846,6 +1936,46 @@ class CronSchedule:
             sql_condition=_from_dict(d, "sql_condition", SqlConditionConfiguration),
             timezone_id=d.get("timezone_id", None),
         )
+
+
+@dataclass
+class CronTriggerConfiguration:
+    """Cron schedule trigger. Stripped-down counterpart to ``CronSchedule``: ``pause_status`` and
+    ``sql_condition`` are owned by the enclosing ``TriggerConfiguration`` and intentionally omitted
+    here."""
+
+    quartz_cron_expression: str
+    """A Cron expression using Quartz syntax that describes the schedule for this trigger. See `Cron
+    Trigger
+    <http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html>`__ for
+    details."""
+
+    timezone_id: str
+    """A Java timezone ID. The schedule is resolved with respect to this timezone. See `Java TimeZone
+    <https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html>`__ for details."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CronTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.quartz_cron_expression is not None:
+            body["quartz_cron_expression"] = self.quartz_cron_expression
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CronTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.quartz_cron_expression is not None:
+            body["quartz_cron_expression"] = self.quartz_cron_expression
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CronTriggerConfiguration:
+        """Deserializes the CronTriggerConfiguration from a dictionary."""
+        return cls(quartz_cron_expression=d.get("quartz_cron_expression", None), timezone_id=d.get("timezone_id", None))
 
 
 @dataclass
@@ -3525,6 +3655,12 @@ class Job:
     """Settings for this job and all of its runs. These settings can be updated using the ``resetJob``
     method."""
 
+    trigger_details: Optional[List[TriggerDetails]] = None
+    """Per-trigger runtime information for the multi-trigger surface. Same length and order as
+    ``JobSettings.triggers``; ``trigger_details[i]`` corresponds to ``triggers[i]``. Sub-fields
+    (``state``, ``history``) are populated independently based on the
+    ``GetJob.include_trigger_state`` / ``include_trigger_history`` flags."""
+
     trigger_state: Optional[TriggerStateProto] = None
     """State of the trigger associated with the job."""
 
@@ -3551,6 +3687,8 @@ class Job:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
             body["settings"] = self.settings.as_dict()
+        if self.trigger_details:
+            body["trigger_details"] = [v.as_dict() for v in self.trigger_details]
         if self.trigger_state:
             body["trigger_state"] = self.trigger_state.as_dict()
         return body
@@ -3578,6 +3716,8 @@ class Job:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
             body["settings"] = self.settings
+        if self.trigger_details:
+            body["trigger_details"] = self.trigger_details
         if self.trigger_state:
             body["trigger_state"] = self.trigger_state
         return body
@@ -3596,6 +3736,7 @@ class Job:
             path=d.get("path", None),
             run_as_user_name=d.get("run_as_user_name", None),
             settings=_from_dict(d, "settings", JobSettings),
+            trigger_details=_repeated_dict(d, "trigger_details", TriggerDetails),
             trigger_state=_from_dict(d, "trigger_state", TriggerStateProto),
         )
 
@@ -4502,6 +4643,12 @@ class JobSettings:
     the job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API
     request to ``runNow``."""
 
+    triggers: Optional[List[TriggerConfiguration]] = None
+    """List of triggers attached to this job. A run starts when any active trigger evaluates to true.
+    Cannot be set in the same request as the legacy ``schedule``, ``trigger``, or ``continuous``
+    fields. The 10-trigger cap is the design's hard limit; rollout steps the effective cap 3 -> 5 ->
+    10 via internal validation during the preview."""
+
     usage_policy_id: Optional[str] = None
     """The id of the user specified usage policy to use for this job. If not specified, a default usage
     policy may be applied when creating or modifying the job. See ``effective_usage_policy_id`` for
@@ -4563,6 +4710,8 @@ class JobSettings:
             body["timeout_seconds"] = self.timeout_seconds
         if self.trigger:
             body["trigger"] = self.trigger.as_dict()
+        if self.triggers:
+            body["triggers"] = [v.as_dict() for v in self.triggers]
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
         if self.webhook_notifications:
@@ -4622,6 +4771,8 @@ class JobSettings:
             body["timeout_seconds"] = self.timeout_seconds
         if self.trigger:
             body["trigger"] = self.trigger
+        if self.triggers:
+            body["triggers"] = self.triggers
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
         if self.webhook_notifications:
@@ -4657,6 +4808,7 @@ class JobSettings:
             tasks=_repeated_dict(d, "tasks", Task),
             timeout_seconds=d.get("timeout_seconds", None),
             trigger=_from_dict(d, "trigger", TriggerSettings),
+            triggers=_repeated_dict(d, "triggers", TriggerConfiguration),
             usage_policy_id=d.get("usage_policy_id", None),
             webhook_notifications=_from_dict(d, "webhook_notifications", WebhookNotifications),
         )
@@ -5124,6 +5276,27 @@ class ModelTriggerConfigurationCondition(Enum):
 
 
 @dataclass
+class ModelTriggerState:
+    """Runtime state for a model trigger. Currently empty because model triggers do not expose any
+    trigger-specific runtime state."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelTriggerState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelTriggerState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelTriggerState:
+        """Deserializes the ModelTriggerState from a dictionary."""
+        return cls()
+
+
+@dataclass
 class NotebookOutput:
     result: Optional[str] = None
     """The value passed to
@@ -5283,6 +5456,88 @@ class PauseStatus(Enum):
     UNPAUSED = "UNPAUSED"
 
 
+@dataclass
+class PerTriggerState:
+    """Per-trigger runtime state for the multi-trigger surface. Mirrors ``TriggerConfiguration``'s
+    trigger-type variants 1:1; each entry sets exactly one variant matching the corresponding
+    trigger's type. Variants with no runtime state today (``schedule``, ``model``) are emitted as
+    empty messages."""
+
+    continuous: Optional[ContinuousTriggerState] = None
+
+    file_arrival: Optional[FileArrivalTriggerState] = None
+
+    model: Optional[ModelTriggerState] = None
+
+    pause_status: Optional[PauseStatus] = None
+    """Whether this trigger is paused or not. Mirrors the configured pause_status."""
+
+    periodic: Optional[PeriodicTriggerState] = None
+
+    schedule: Optional[ScheduleTriggerState] = None
+
+    sql_condition: Optional[SqlConditionState] = None
+    """State for SQL condition evaluation, can coexist with other trigger states."""
+
+    table_update: Optional[TableTriggerState] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the PerTriggerState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.continuous:
+            body["continuous"] = self.continuous.as_dict()
+        if self.file_arrival:
+            body["file_arrival"] = self.file_arrival.as_dict()
+        if self.model:
+            body["model"] = self.model.as_dict()
+        if self.pause_status is not None:
+            body["pause_status"] = self.pause_status.value
+        if self.periodic:
+            body["periodic"] = self.periodic.as_dict()
+        if self.schedule:
+            body["schedule"] = self.schedule.as_dict()
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition.as_dict()
+        if self.table_update:
+            body["table_update"] = self.table_update.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PerTriggerState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.continuous:
+            body["continuous"] = self.continuous
+        if self.file_arrival:
+            body["file_arrival"] = self.file_arrival
+        if self.model:
+            body["model"] = self.model
+        if self.pause_status is not None:
+            body["pause_status"] = self.pause_status
+        if self.periodic:
+            body["periodic"] = self.periodic
+        if self.schedule:
+            body["schedule"] = self.schedule
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition
+        if self.table_update:
+            body["table_update"] = self.table_update
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PerTriggerState:
+        """Deserializes the PerTriggerState from a dictionary."""
+        return cls(
+            continuous=_from_dict(d, "continuous", ContinuousTriggerState),
+            file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerState),
+            model=_from_dict(d, "model", ModelTriggerState),
+            pause_status=_enum(d, "pause_status", PauseStatus),
+            periodic=_from_dict(d, "periodic", PeriodicTriggerState),
+            schedule=_from_dict(d, "schedule", ScheduleTriggerState),
+            sql_condition=_from_dict(d, "sql_condition", SqlConditionState),
+            table_update=_from_dict(d, "table_update", TableTriggerState),
+        )
+
+
 class PerformanceTarget(Enum):
     """PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run
     on serverless compute should be. The performance mode on the job or pipeline should map to a
@@ -5329,6 +5584,30 @@ class PeriodicTriggerConfigurationTimeUnit(Enum):
     HOURS = "HOURS"
     MINUTES = "MINUTES"
     WEEKS = "WEEKS"
+
+
+@dataclass
+class PeriodicTriggerState:
+    next_run_time: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the PeriodicTriggerState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_run_time is not None:
+            body["next_run_time"] = self.next_run_time
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PeriodicTriggerState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_run_time is not None:
+            body["next_run_time"] = self.next_run_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PeriodicTriggerState:
+        """Deserializes the PeriodicTriggerState from a dictionary."""
+        return cls(next_run_time=d.get("next_run_time", None))
 
 
 @dataclass
@@ -8280,6 +8559,27 @@ class RunType(Enum):
 
 
 @dataclass
+class ScheduleTriggerState:
+    """Runtime state for a schedule trigger. Currently empty because schedule triggers do not expose
+    any trigger-specific runtime state."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ScheduleTriggerState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ScheduleTriggerState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ScheduleTriggerState:
+        """Deserializes the ScheduleTriggerState from a dictionary."""
+        return cls()
+
+
+@dataclass
 class SchemaTool:
     name: Optional[str] = None
     """UC schema name (``catalog.schema``)."""
@@ -10892,6 +11192,219 @@ class TraceDestination:
 
 
 @dataclass
+class TriggerConfiguration:
+    """A single trigger attached to a job via ``JobSettings.triggers``. Exactly one of the trigger-type
+    fields (``periodic``, ``schedule``, ``continuous``, ``file_arrival``, ``table_update``,
+    ``model``) must be set; mutual exclusivity is enforced in the API handler rather than via
+    ``oneof`` so that codegen, validation, and JSON serialization across SDKs and Terraform behave
+    consistently."""
+
+    continuous: Optional[ContinuousTriggerConfiguration] = None
+    """Continuous trigger configuration."""
+
+    file_arrival: Optional[FileArrivalTriggerConfiguration] = None
+    """File arrival trigger configuration."""
+
+    model: Optional[ModelTriggerConfiguration] = None
+    """Model trigger configuration."""
+
+    pause_status: Optional[PauseStatus] = None
+    """Whether this trigger is paused. Defaults to UNPAUSED when unset; the server always returns an
+    explicit value on read."""
+
+    periodic: Optional[PeriodicTriggerConfiguration] = None
+    """Trigger type: exactly one must be set; mutual exclusivity is enforced in the API handler
+    Periodic trigger configuration."""
+
+    schedule: Optional[CronTriggerConfiguration] = None
+    """Cron schedule trigger configuration."""
+
+    sql_condition: Optional[SqlConditionConfiguration] = None
+    """Optional SQL condition that gates whether this trigger fires."""
+
+    table_update: Optional[TableUpdateTriggerConfiguration] = None
+    """Table update trigger configuration."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.continuous:
+            body["continuous"] = self.continuous.as_dict()
+        if self.file_arrival:
+            body["file_arrival"] = self.file_arrival.as_dict()
+        if self.model:
+            body["model"] = self.model.as_dict()
+        if self.pause_status is not None:
+            body["pause_status"] = self.pause_status.value
+        if self.periodic:
+            body["periodic"] = self.periodic.as_dict()
+        if self.schedule:
+            body["schedule"] = self.schedule.as_dict()
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition.as_dict()
+        if self.table_update:
+            body["table_update"] = self.table_update.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.continuous:
+            body["continuous"] = self.continuous
+        if self.file_arrival:
+            body["file_arrival"] = self.file_arrival
+        if self.model:
+            body["model"] = self.model
+        if self.pause_status is not None:
+            body["pause_status"] = self.pause_status
+        if self.periodic:
+            body["periodic"] = self.periodic
+        if self.schedule:
+            body["schedule"] = self.schedule
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition
+        if self.table_update:
+            body["table_update"] = self.table_update
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerConfiguration:
+        """Deserializes the TriggerConfiguration from a dictionary."""
+        return cls(
+            continuous=_from_dict(d, "continuous", ContinuousTriggerConfiguration),
+            file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerConfiguration),
+            model=_from_dict(d, "model", ModelTriggerConfiguration),
+            pause_status=_enum(d, "pause_status", PauseStatus),
+            periodic=_from_dict(d, "periodic", PeriodicTriggerConfiguration),
+            schedule=_from_dict(d, "schedule", CronTriggerConfiguration),
+            sql_condition=_from_dict(d, "sql_condition", SqlConditionConfiguration),
+            table_update=_from_dict(d, "table_update", TableUpdateTriggerConfiguration),
+        )
+
+
+@dataclass
+class TriggerDetails:
+    """Per-trigger runtime details returned by ``GetJob``. Same length and order as
+    ``JobSettings.triggers``; sub-fields are populated independently based on the corresponding
+    ``GetJob.include_trigger_state`` / ``include_trigger_history`` flags."""
+
+    history: Optional[TriggerHistory] = None
+    """Recent evaluation history. Populated when ``GetJob.include_trigger_history`` is set."""
+
+    state: Optional[PerTriggerState] = None
+    """Current runtime state. Populated when ``GetJob.include_trigger_state`` is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TriggerDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.history:
+            body["history"] = self.history.as_dict()
+        if self.state:
+            body["state"] = self.state.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TriggerDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.history:
+            body["history"] = self.history
+        if self.state:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerDetails:
+        """Deserializes the TriggerDetails from a dictionary."""
+        return cls(history=_from_dict(d, "history", TriggerHistory), state=_from_dict(d, "state", PerTriggerState))
+
+
+@dataclass
+class TriggerEvaluation:
+    description: Optional[str] = None
+    """Human-readable description of the trigger evaluation result. Explains why the trigger evaluation
+    triggered or did not trigger a run, or failed."""
+
+    run_id: Optional[int] = None
+    """The ID of the run that was triggered by the trigger evaluation. Only returned if a run was
+    triggered."""
+
+    timestamp: Optional[int] = None
+    """Timestamp at which the trigger was evaluated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TriggerEvaluation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TriggerEvaluation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerEvaluation:
+        """Deserializes the TriggerEvaluation from a dictionary."""
+        return cls(
+            description=d.get("description", None), run_id=d.get("run_id", None), timestamp=d.get("timestamp", None)
+        )
+
+
+@dataclass
+class TriggerHistory:
+    last_failed: Optional[TriggerEvaluation] = None
+    """The last time the trigger failed to evaluate."""
+
+    last_not_triggered: Optional[TriggerEvaluation] = None
+    """The last time the trigger was evaluated but did not trigger a run."""
+
+    last_triggered: Optional[TriggerEvaluation] = None
+    """The last time the run was triggered due to a file arrival."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TriggerHistory into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_failed:
+            body["last_failed"] = self.last_failed.as_dict()
+        if self.last_not_triggered:
+            body["last_not_triggered"] = self.last_not_triggered.as_dict()
+        if self.last_triggered:
+            body["last_triggered"] = self.last_triggered.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TriggerHistory into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.last_failed:
+            body["last_failed"] = self.last_failed
+        if self.last_not_triggered:
+            body["last_not_triggered"] = self.last_not_triggered
+        if self.last_triggered:
+            body["last_triggered"] = self.last_triggered
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerHistory:
+        """Deserializes the TriggerHistory from a dictionary."""
+        return cls(
+            last_failed=_from_dict(d, "last_failed", TriggerEvaluation),
+            last_not_triggered=_from_dict(d, "last_not_triggered", TriggerEvaluation),
+            last_triggered=_from_dict(d, "last_triggered", TriggerEvaluation),
+        )
+
+
+@dataclass
 class TriggerInfo:
     """Additional details about what triggered the run"""
 
@@ -11552,6 +12065,7 @@ class JobsAPI:
         tasks: Optional[List[Task]] = None,
         timeout_seconds: Optional[int] = None,
         trigger: Optional[TriggerSettings] = None,
+        triggers: Optional[List[TriggerConfiguration]] = None,
         usage_policy_id: Optional[str] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
     ) -> CreateResponse:
@@ -11657,6 +12171,11 @@ class JobsAPI:
           A configuration to trigger a run when certain conditions are met. The default behavior is that the
           job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API request to
           ``runNow``.
+        :param triggers: List[:class:`TriggerConfiguration`] (optional)
+          List of triggers attached to this job. A run starts when any active trigger evaluates to true.
+          Cannot be set in the same request as the legacy ``schedule``, ``trigger``, or ``continuous`` fields.
+          The 10-trigger cap is the design's hard limit; rollout steps the effective cap 3 -> 5 -> 10 via
+          internal validation during the preview.
         :param usage_policy_id: str (optional)
           The id of the user specified usage policy to use for this job. If not specified, a default usage
           policy may be applied when creating or modifying the job. See ``effective_usage_policy_id`` for the
@@ -11720,6 +12239,8 @@ class JobsAPI:
             body["timeout_seconds"] = timeout_seconds
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
+        if triggers is not None:
+            body["triggers"] = [v.as_dict() for v in triggers]
         if usage_policy_id is not None:
             body["usage_policy_id"] = usage_policy_id
         if webhook_notifications is not None:
