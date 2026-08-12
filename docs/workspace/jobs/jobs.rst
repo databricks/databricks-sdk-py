@@ -125,7 +125,7 @@
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
 
-    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environment_variables: Optional[List[JobEnvironmentVariables]], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], parent_path: Optional[str], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
+    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environment_variables: Optional[List[JobEnvironmentVariables]], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], parent_path: Optional[str], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], triggers: Optional[List[TriggerConfiguration]], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
 
 
         Usage:
@@ -264,6 +264,11 @@
           A configuration to trigger a run when certain conditions are met. The default behavior is that the
           job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API request to
           ``runNow``.
+        :param triggers: List[:class:`TriggerConfiguration`] (optional)
+          List of triggers attached to this job. A run starts when any active trigger evaluates to true.
+          Cannot be set in the same request as the legacy ``schedule``, ``trigger``, or ``continuous`` fields.
+          The 10-trigger cap is the design's hard limit; rollout steps the effective cap 3 -> 5 -> 10 via
+          internal validation during the preview.
         :param usage_policy_id: str (optional)
           The id of the user specified usage policy to use for this job. If not specified, a default usage
           policy may be applied when creating or modifying the job. See ``effective_usage_policy_id`` for the
