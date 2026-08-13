@@ -5335,7 +5335,11 @@ class SchemaRegistryConfig:
 @dataclass
 class SchemaSpec:
     source_schema: str
-    """Required. Schema name in the source database."""
+    """Schema name in the source database. Currently required; this field will become optional in an
+    upcoming release, since some source types (for example streaming / message-bus connectors) do
+    not use it. When that change ships, this field's type in the generated SDKs and CLI will change
+    from required to optional (nullable); clients that assume it is always present should handle its
+    absence."""
 
     destination_catalog: str
     """Required. Destination catalog to store tables."""
@@ -5783,7 +5787,11 @@ class StorageMode(Enum):
 @dataclass
 class TableSpec:
     source_table: str
-    """Required. Table name in the source database."""
+    """Table name in the source database. Currently required; this field will become optional in an
+    upcoming release, since some source types (for example streaming / message-bus connectors) do
+    not use it. When that change ships, this field's type in the generated SDKs and CLI will change
+    from required to optional (nullable); clients that assume it is always present should handle its
+    absence."""
 
     destination_catalog: str
     """Required. Destination catalog to store table."""

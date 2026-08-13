@@ -267,8 +267,7 @@
         :param triggers: List[:class:`TriggerConfiguration`] (optional)
           List of triggers attached to this job. A run starts when any active trigger evaluates to true.
           Cannot be set in the same request as the legacy ``schedule``, ``trigger``, or ``continuous`` fields.
-          The 10-trigger cap is the design's hard limit; rollout steps the effective cap 3 -> 5 -> 10 via
-          internal validation during the preview.
+          Gated behind the "Multiple Triggers" feature preview.
         :param usage_policy_id: str (optional)
           The id of the user specified usage policy to use for this job. If not specified, a default usage
           policy may be applied when creating or modifying the job. See ``effective_usage_policy_id`` for the

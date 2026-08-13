@@ -1643,7 +1643,12 @@ class AccountIamV2API:
         return DirectGroupMember.from_dict(res)
 
     def create_group(self, group: Group) -> Group:
-        """Creates a group in the Databricks account and returns the resulting Group resource.
+        """Creates a local group in the Databricks account and returns the created group. A local group is one
+        that is not synced from the customer's identity provider, and can be created whether or not Account
+        Identity Management (AIM) is enabled.
+
+        When AIM is enabled, supplying an external ID returns an error. Use the ExternalGroup resource to sync
+        groups from the identity provider instead.
 
         :param group: :class:`Group`
           Required. Group to be created in <Databricks>
@@ -2873,8 +2878,12 @@ class WorkspaceIamV2API:
         return DirectGroupMember.from_dict(res)
 
     def create_group_proxy(self, group: Group) -> Group:
-        """Creates a group in the Databricks account that parents the calling workspace and returns the resulting
-        Group resource.
+        """Creates a local group in the Databricks account that parents the calling workspace and returns the
+        created group. A local group is one that is not synced from the customer's identity provider, and can
+        be created whether or not Account Identity Management (AIM) is enabled.
+
+        When AIM is enabled, supplying an external ID returns an error. Use the ExternalGroup resource to sync
+        groups from the identity provider instead.
 
         :param group: :class:`Group`
           Required. Group to be created in <Databricks>
