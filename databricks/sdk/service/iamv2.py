@@ -149,6 +149,9 @@ class DirectGroupMember:
     external_id: Optional[str] = None
     """The external ID of the principal in Databricks."""
 
+    group_id: Optional[int] = None
+    """The internal ID of the group this member belongs to."""
+
     membership_source: Optional[GroupMembershipSource] = None
     """The source of group membership (internal or from identity provider)."""
 
@@ -162,6 +165,8 @@ class DirectGroupMember:
             body["display_name"] = self.display_name
         if self.external_id is not None:
             body["external_id"] = self.external_id
+        if self.group_id is not None:
+            body["group_id"] = self.group_id
         if self.membership_source is not None:
             body["membership_source"] = self.membership_source.value
         if self.principal_id is not None:
@@ -177,6 +182,8 @@ class DirectGroupMember:
             body["display_name"] = self.display_name
         if self.external_id is not None:
             body["external_id"] = self.external_id
+        if self.group_id is not None:
+            body["group_id"] = self.group_id
         if self.membership_source is not None:
             body["membership_source"] = self.membership_source
         if self.principal_id is not None:
@@ -191,6 +198,7 @@ class DirectGroupMember:
         return cls(
             display_name=d.get("display_name", None),
             external_id=d.get("external_id", None),
+            group_id=d.get("group_id", None),
             membership_source=_enum(d, "membership_source", GroupMembershipSource),
             principal_id=d.get("principal_id", None),
             principal_type=_enum(d, "principal_type", PrincipalType),
@@ -1340,7 +1348,7 @@ class WorkspaceAssignment:
     """The type of the principal (user/service principal/group) that is assigned."""
 
     workspace_id: Optional[int] = None
-    """The workspace ID where the principal is assigned"""
+    """The workspace ID where the principal is assigned."""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceAssignment into a dictionary suitable for use as a JSON request body."""
@@ -1430,7 +1438,7 @@ class WorkspaceAssignmentDetail:
     principal_type: Optional[PrincipalType] = None
 
     workspace_id: Optional[int] = None
-    """The workspace ID where the principal is assigned"""
+    """The workspace ID where the principal is assigned."""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceAssignmentDetail into a dictionary suitable for use as a JSON request body."""
@@ -1647,8 +1655,9 @@ class AccountIamV2API:
         that is not synced from the customer's identity provider, and can be created whether or not Account
         Identity Management (AIM) is enabled.
 
-        When AIM is enabled, supplying an external ID returns an error. Use the ExternalGroup resource to sync
-        groups from the identity provider instead.
+        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
+        identity provider, resolve it by its external ID with ResolveGroup; to read an existing external
+        identity, use the ExternalGroup resource.
 
         :param group: :class:`Group`
           Required. Group to be created in <Databricks>
@@ -1673,8 +1682,9 @@ class AccountIamV2API:
         A local service principal is one that is not synced from the customer's identity provider, and can be
         created whether or not Account Identity Management (AIM) is enabled.
 
-        When AIM is enabled, supplying an external ID returns an error. Use the ExternalServicePrincipal
-        resource to sync service principals from the identity provider instead.
+        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
+        identity provider, resolve it by its external ID with ResolveServicePrincipal; to read an existing
+        external identity, use the ExternalServicePrincipal resource.
 
         :param service_principal: :class:`ServicePrincipal`
           Required. Service principal to be created in <Databricks>
@@ -1699,8 +1709,9 @@ class AccountIamV2API:
         is not synced from the customer's identity provider, and can be created whether or not Account
         Identity Management (AIM) is enabled.
 
-        When AIM is enabled, supplying an external ID returns an error. Use the ExternalUser resource to sync
-        users from the identity provider instead.
+        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
+        identity provider, resolve it by its external ID with ResolveUser; to read an existing external
+        identity, use the ExternalUser resource.
 
         :param user: :class:`User`
           Required. User to be created in <Databricks>
@@ -2252,7 +2263,7 @@ class AccountIamV2API:
 
     def list_direct_group_members(
         self, group_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> ListDirectGroupMembersResponse:
+    ) -> Iterator[DirectGroupMember]:
         """Lists provisioned direct members of a group with their membership source (internal or from identity
         provider).
 
@@ -2265,7 +2276,7 @@ class AccountIamV2API:
           A page token, received from a previous ListDirectGroupMembers call. Provide this to retrieve the
           subsequent page.
 
-        :returns: :class:`ListDirectGroupMembersResponse`
+        :returns: Iterator over :class:`DirectGroupMember`
         """
 
         query = {}
@@ -2277,13 +2288,19 @@ class AccountIamV2API:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{group_id}/direct-members",
-            query=query,
-            headers=headers,
-        )
-        return ListDirectGroupMembersResponse.from_dict(res)
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{group_id}/direct-members",
+                query=query,
+                headers=headers,
+            )
+            if "direct_group_members" in json:
+                for v in json["direct_group_members"]:
+                    yield DirectGroupMember.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def list_groups(
         self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -2485,7 +2502,7 @@ class AccountIamV2API:
 
     def list_workspace_assignment_details(
         self, workspace_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> ListWorkspaceAssignmentDetailsResponse:
+    ) -> Iterator[WorkspaceAssignmentDetail]:
         """Lists workspace assignment details for a workspace. The response omits the per-principal entitlement
         fields (``entitlements`` and ``effective_entitlements``). To read the entitlements for a single
         principal, get that principal's assignment detail.
@@ -2499,7 +2516,7 @@ class AccountIamV2API:
           A page token, received from a previous ListWorkspaceAssignmentDetails call. Provide this to retrieve
           the subsequent page.
 
-        :returns: :class:`ListWorkspaceAssignmentDetailsResponse`
+        :returns: Iterator over :class:`WorkspaceAssignmentDetail`
         """
 
         query = {}
@@ -2511,13 +2528,19 @@ class AccountIamV2API:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignment-details",
-            query=query,
-            headers=headers,
-        )
-        return ListWorkspaceAssignmentDetailsResponse.from_dict(res)
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignment-details",
+                query=query,
+                headers=headers,
+            )
+            if "workspace_assignment_details" in json:
+                for v in json["workspace_assignment_details"]:
+                    yield WorkspaceAssignmentDetail.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def list_workspace_assignments(
         self, workspace_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -2669,6 +2692,9 @@ class AccountIamV2API:
         """Updates an existing group in the Databricks account. Only the fields named in the update mask are
         modified. Returns the updated Group resource.
 
+        When AIM is enabled and the group is an external identity (its external_id is set), only external_id
+        can be updated; its other fields are sourced from your identity provider.
+
         :param group_id: str
           Required. Internal ID of the group in Databricks.
         :param group: :class:`Group`
@@ -2703,6 +2729,9 @@ class AccountIamV2API:
         """Updates an existing service principal in the Databricks account. Only the fields named in the update
         mask are modified. Returns the updated ServicePrincipal resource.
 
+        When AIM is enabled and the service principal is an external identity (its external_id is set), only
+        external_id can be updated; its other fields are sourced from your identity provider.
+
         :param service_principal_id: str
           Required. Internal ID of the service principal in Databricks.
         :param service_principal: :class:`ServicePrincipal`
@@ -2734,8 +2763,10 @@ class AccountIamV2API:
     def update_user(self, user_id: str, user: User, update_mask: str) -> User:
         """Updates an existing user in the Databricks account and returns the updated user. Only the fields named
         in the update mask are modified. The updatable fields are fullName.givenName, fullName.familyName,
-        status, and externalId. The behavior is the same whether or not Account Identity Management (AIM) is
-        enabled.
+        status, and externalId.
+
+        When AIM is enabled and the user is an external identity (its external_id is set), only external_id
+        can be updated; its other fields are sourced from your identity provider.
 
         :param user_id: str
           Required. Internal ID of the user in Databricks.
@@ -2882,8 +2913,9 @@ class WorkspaceIamV2API:
         created group. A local group is one that is not synced from the customer's identity provider, and can
         be created whether or not Account Identity Management (AIM) is enabled.
 
-        When AIM is enabled, supplying an external ID returns an error. Use the ExternalGroup resource to sync
-        groups from the identity provider instead.
+        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
+        identity provider, resolve it by its external ID with ResolveGroup; to read an existing external
+        identity, use the ExternalGroup resource.
 
         :param group: :class:`Group`
           Required. Group to be created in <Databricks>
@@ -2911,8 +2943,9 @@ class WorkspaceIamV2API:
         customer's identity provider, and can be created whether or not Account Identity Management (AIM) is
         enabled.
 
-        When AIM is enabled, supplying an external ID returns an error. Use the ExternalServicePrincipal
-        resource to sync service principals from the identity provider instead.
+        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
+        identity provider, resolve it by its external ID with ResolveServicePrincipal; to read an existing
+        external identity, use the ExternalServicePrincipal resource.
 
         :param service_principal: :class:`ServicePrincipal`
           Required. Service principal to be created in <Databricks>
@@ -2939,8 +2972,9 @@ class WorkspaceIamV2API:
         created user. A local user is one that is not synced from the customer's identity provider, and can be
         created whether or not Account Identity Management (AIM) is enabled.
 
-        When AIM is enabled, supplying an external ID returns an error. Use the ExternalUser resource to sync
-        users from the identity provider instead.
+        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
+        identity provider, resolve it by its external ID with ResolveUser; to read an existing external
+        identity, use the ExternalUser resource.
 
         :param user: :class:`User`
           Required. User to be created in <Databricks>
@@ -3391,7 +3425,7 @@ class WorkspaceIamV2API:
 
     def list_direct_group_members_proxy(
         self, group_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> ListDirectGroupMembersResponse:
+    ) -> Iterator[DirectGroupMember]:
         """Lists provisioned direct members of a group with their membership source (internal or from identity
         provider).
 
@@ -3403,7 +3437,7 @@ class WorkspaceIamV2API:
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
-        :returns: :class:`ListDirectGroupMembersResponse`
+        :returns: Iterator over :class:`DirectGroupMember`
         """
 
         query = {}
@@ -3419,8 +3453,16 @@ class WorkspaceIamV2API:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.0/identity/groups/{group_id}/direct-members", query=query, headers=headers)
-        return ListDirectGroupMembersResponse.from_dict(res)
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/identity/groups/{group_id}/direct-members", query=query, headers=headers
+            )
+            if "direct_group_members" in json:
+                for v in json["direct_group_members"]:
+                    yield DirectGroupMember.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def list_groups_proxy(
         self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -3623,7 +3665,7 @@ class WorkspaceIamV2API:
 
     def list_workspace_assignment_details_proxy(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> ListWorkspaceAssignmentDetailsResponse:
+    ) -> Iterator[WorkspaceAssignmentDetail]:
         """Lists workspace assignment details for the calling workspace. The response omits the per-principal
         entitlement fields (``entitlements`` and ``effective_entitlements``). To read the entitlements for a
         single principal, get that principal's assignment detail.
@@ -3634,7 +3676,7 @@ class WorkspaceIamV2API:
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
-        :returns: :class:`ListWorkspaceAssignmentDetailsResponse`
+        :returns: Iterator over :class:`WorkspaceAssignmentDetail`
         """
 
         query = {}
@@ -3650,8 +3692,14 @@ class WorkspaceIamV2API:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", "/api/2.0/identity/workspace-assignment-details", query=query, headers=headers)
-        return ListWorkspaceAssignmentDetailsResponse.from_dict(res)
+        while True:
+            json = self._api.do("GET", "/api/2.0/identity/workspace-assignment-details", query=query, headers=headers)
+            if "workspace_assignment_details" in json:
+                for v in json["workspace_assignment_details"]:
+                    yield WorkspaceAssignmentDetail.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def list_workspace_assignments_proxy(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -3768,6 +3816,9 @@ class WorkspaceIamV2API:
         """Updates an existing group in the Databricks account that parents the calling workspace. Only the
         fields named in the update mask are modified. Returns the updated Group resource.
 
+        When AIM is enabled and the group is an external identity (its external_id is set), only external_id
+        can be updated; its other fields are sourced from your identity provider.
+
         :param group_id: str
           Required. Internal ID of the group in Databricks.
         :param group: :class:`Group`
@@ -3799,6 +3850,9 @@ class WorkspaceIamV2API:
     ) -> ServicePrincipal:
         """Updates an existing service principal in the Databricks account that parents the calling workspace.
         Only the fields named in the update mask are modified. Returns the updated ServicePrincipal resource.
+
+        When AIM is enabled and the service principal is an external identity (its external_id is set), only
+        external_id can be updated; its other fields are sourced from your identity provider.
 
         :param service_principal_id: str
           Required. Internal ID of the service principal in Databricks.
@@ -3836,6 +3890,9 @@ class WorkspaceIamV2API:
         """Updates an existing user in the Databricks account that parents the calling workspace and returns the
         updated user. Only the fields named in the update mask are modified. The updatable fields are
         fullName.givenName, fullName.familyName, status, and externalId.
+
+        When AIM is enabled and the user is an external identity (its external_id is set), only external_id
+        can be updated; its other fields are sourced from your identity provider.
 
         :param user_id: str
           Required. Internal ID of the user in Databricks.

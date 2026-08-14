@@ -22,6 +22,7 @@ from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
+    _repeated_enum,
     _timestamp,
     Wait,
 )
@@ -4203,6 +4204,10 @@ class ServingModelWorkloadType(Enum):
 
 @dataclass
 class TelemetryConfig:
+    enabled_telemetry_features: Optional[List[TelemetryFeature]] = None
+    """The telemetry signals to enable for this endpoint. If empty or omitted, all signals are enabled;
+    otherwise only the listed signals are enabled."""
+
     inference_table_config: Optional[TelemetryInferenceTableConfig] = None
     """Configuration for inference table payload logging, including sampling."""
 
@@ -4217,6 +4222,8 @@ class TelemetryConfig:
     def as_dict(self) -> dict:
         """Serializes the TelemetryConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.enabled_telemetry_features:
+            body["enabled_telemetry_features"] = [v.value for v in self.enabled_telemetry_features]
         if self.inference_table_config:
             body["inference_table_config"] = self.inference_table_config.as_dict()
         if self.table_names:
@@ -4228,6 +4235,8 @@ class TelemetryConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the TelemetryConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.enabled_telemetry_features:
+            body["enabled_telemetry_features"] = self.enabled_telemetry_features
         if self.inference_table_config:
             body["inference_table_config"] = self.inference_table_config
         if self.table_names:
@@ -4240,10 +4249,21 @@ class TelemetryConfig:
     def from_dict(cls, d: Dict[str, Any]) -> TelemetryConfig:
         """Deserializes the TelemetryConfig from a dictionary."""
         return cls(
+            enabled_telemetry_features=_repeated_enum(d, "enabled_telemetry_features", TelemetryFeature),
             inference_table_config=_from_dict(d, "inference_table_config", TelemetryInferenceTableConfig),
             table_names=_from_dict(d, "table_names", UnityCatalogTableNames),
             telemetry_profile_id=d.get("telemetry_profile_id", None),
         )
+
+
+class TelemetryFeature(Enum):
+    """A telemetry signal that a serving endpoint can export to Unity Catalog. Use these values to
+    select which signals the endpoint exports."""
+
+    TELEMETRY_FEATURE_INFERENCE_TABLE = "TELEMETRY_FEATURE_INFERENCE_TABLE"
+    TELEMETRY_FEATURE_LOGS = "TELEMETRY_FEATURE_LOGS"
+    TELEMETRY_FEATURE_METRICS = "TELEMETRY_FEATURE_METRICS"
+    TELEMETRY_FEATURE_TRACES = "TELEMETRY_FEATURE_TRACES"
 
 
 @dataclass
