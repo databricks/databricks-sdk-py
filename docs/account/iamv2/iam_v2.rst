@@ -54,8 +54,9 @@
         that is not synced from the customer's identity provider, and can be created whether or not Account
         Identity Management (AIM) is enabled.
 
-        When AIM is enabled, supplying an external ID returns an error. Use the ExternalGroup resource to sync
-        groups from the identity provider instead.
+        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
+        identity provider, resolve it by its external ID with ResolveGroup; to read an existing external
+        identity, use the ExternalGroup resource.
 
         :param group: :class:`Group`
           Required. Group to be created in <Databricks>
@@ -69,8 +70,9 @@
         A local service principal is one that is not synced from the customer's identity provider, and can be
         created whether or not Account Identity Management (AIM) is enabled.
 
-        When AIM is enabled, supplying an external ID returns an error. Use the ExternalServicePrincipal
-        resource to sync service principals from the identity provider instead.
+        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
+        identity provider, resolve it by its external ID with ResolveServicePrincipal; to read an existing
+        external identity, use the ExternalServicePrincipal resource.
 
         :param service_principal: :class:`ServicePrincipal`
           Required. Service principal to be created in <Databricks>
@@ -84,8 +86,9 @@
         is not synced from the customer's identity provider, and can be created whether or not Account
         Identity Management (AIM) is enabled.
 
-        When AIM is enabled, supplying an external ID returns an error. Use the ExternalUser resource to sync
-        users from the identity provider instead.
+        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
+        identity provider, resolve it by its external ID with ResolveUser; to read an existing external
+        identity, use the ExternalUser resource.
 
         :param user: :class:`User`
           Required. User to be created in <Databricks>
@@ -398,7 +401,7 @@
         :returns: :class:`ListAttributeControlEntriesResponse`
         
 
-    .. py:method:: list_direct_group_members(group_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListDirectGroupMembersResponse
+    .. py:method:: list_direct_group_members(group_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DirectGroupMember]
 
         Lists provisioned direct members of a group with their membership source (internal or from identity
         provider).
@@ -412,7 +415,7 @@
           A page token, received from a previous ListDirectGroupMembers call. Provide this to retrieve the
           subsequent page.
 
-        :returns: :class:`ListDirectGroupMembersResponse`
+        :returns: Iterator over :class:`DirectGroupMember`
         
 
     .. py:method:: list_groups( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Group]
@@ -499,7 +502,7 @@
         :returns: Iterator over :class:`WorkspaceAccessDetail`
         
 
-    .. py:method:: list_workspace_assignment_details(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAssignmentDetailsResponse
+    .. py:method:: list_workspace_assignment_details(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceAssignmentDetail]
 
         Lists workspace assignment details for a workspace. The response omits the per-principal entitlement
         fields (``entitlements`` and ``effective_entitlements``). To read the entitlements for a single
@@ -514,7 +517,7 @@
           A page token, received from a previous ListWorkspaceAssignmentDetails call. Provide this to retrieve
           the subsequent page.
 
-        :returns: :class:`ListWorkspaceAssignmentDetailsResponse`
+        :returns: Iterator over :class:`WorkspaceAssignmentDetail`
         
 
     .. py:method:: list_workspace_assignments(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAssignmentsResponse
@@ -592,6 +595,9 @@
         Updates an existing group in the Databricks account. Only the fields named in the update mask are
         modified. Returns the updated Group resource.
 
+        When AIM is enabled and the group is an external identity (its external_id is set), only external_id
+        can be updated; its other fields are sourced from your identity provider.
+
         :param group_id: str
           Required. Internal ID of the group in Databricks.
         :param group: :class:`Group`
@@ -607,6 +613,9 @@
         Updates an existing service principal in the Databricks account. Only the fields named in the update
         mask are modified. Returns the updated ServicePrincipal resource.
 
+        When AIM is enabled and the service principal is an external identity (its external_id is set), only
+        external_id can be updated; its other fields are sourced from your identity provider.
+
         :param service_principal_id: str
           Required. Internal ID of the service principal in Databricks.
         :param service_principal: :class:`ServicePrincipal`
@@ -621,8 +630,10 @@
 
         Updates an existing user in the Databricks account and returns the updated user. Only the fields named
         in the update mask are modified. The updatable fields are fullName.givenName, fullName.familyName,
-        status, and externalId. The behavior is the same whether or not Account Identity Management (AIM) is
-        enabled.
+        status, and externalId.
+
+        When AIM is enabled and the user is an external identity (its external_id is set), only external_id
+        can be updated; its other fields are sourced from your identity provider.
 
         :param user_id: str
           Required. Internal ID of the user in Databricks.

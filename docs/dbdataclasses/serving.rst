@@ -586,6 +586,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: TelemetryFeature
+
+   A telemetry signal that a serving endpoint can export to Unity Catalog. Use these values to select which signals the endpoint exports.
+
+   .. py:attribute:: TELEMETRY_FEATURE_INFERENCE_TABLE
+      :value: "TELEMETRY_FEATURE_INFERENCE_TABLE"
+
+   .. py:attribute:: TELEMETRY_FEATURE_LOGS
+      :value: "TELEMETRY_FEATURE_LOGS"
+
+   .. py:attribute:: TELEMETRY_FEATURE_METRICS
+      :value: "TELEMETRY_FEATURE_METRICS"
+
+   .. py:attribute:: TELEMETRY_FEATURE_TRACES
+      :value: "TELEMETRY_FEATURE_TRACES"
+
 .. autoclass:: TelemetryInferenceTableConfig
    :members:
    :undoc-members:

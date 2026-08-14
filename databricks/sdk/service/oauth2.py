@@ -334,6 +334,11 @@ class GetCustomAppIntegrationOutput:
     integration_id: Optional[str] = None
     """ID of this custom app"""
 
+    is_agent: Optional[bool] = None
+    """When true, the custom OAuth app integration is backed by an AI agent service principal instead
+    of a standard application service principal. Mirrors the is_agent input on create; the server
+    derives it from the presence of the internal OAuthClientApp.agent message."""
+
     name: Optional[str] = None
     """The display name of the custom OAuth app"""
 
@@ -367,6 +372,8 @@ class GetCustomAppIntegrationOutput:
             body["creator_username"] = self.creator_username
         if self.integration_id is not None:
             body["integration_id"] = self.integration_id
+        if self.is_agent is not None:
+            body["is_agent"] = self.is_agent
         if self.name is not None:
             body["name"] = self.name
         if self.principal_id is not None:
@@ -396,6 +403,8 @@ class GetCustomAppIntegrationOutput:
             body["creator_username"] = self.creator_username
         if self.integration_id is not None:
             body["integration_id"] = self.integration_id
+        if self.is_agent is not None:
+            body["is_agent"] = self.is_agent
         if self.name is not None:
             body["name"] = self.name
         if self.principal_id is not None:
@@ -420,6 +429,7 @@ class GetCustomAppIntegrationOutput:
             created_by=d.get("created_by", None),
             creator_username=d.get("creator_username", None),
             integration_id=d.get("integration_id", None),
+            is_agent=d.get("is_agent", None),
             name=d.get("name", None),
             principal_id=d.get("principal_id", None),
             redirect_urls=d.get("redirect_urls", None),

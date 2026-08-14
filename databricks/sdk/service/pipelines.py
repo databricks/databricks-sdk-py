@@ -1254,6 +1254,9 @@ class GetPipelineResponse:
     effective_publishing_mode: Optional[PublishingMode] = None
     """Publishing mode of the pipeline"""
 
+    effective_serverless_compute_id: Optional[str] = None
+    """Serverless compute ID resolved for the pipeline."""
+
     effective_usage_policy_id: Optional[str] = None
     """Serverless usage policy ID of the pipeline."""
 
@@ -1305,6 +1308,8 @@ class GetPipelineResponse:
             body["effective_environment_version"] = self.effective_environment_version
         if self.effective_publishing_mode is not None:
             body["effective_publishing_mode"] = self.effective_publishing_mode.value
+        if self.effective_serverless_compute_id is not None:
+            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.effective_usage_policy_id is not None:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.health is not None:
@@ -1344,6 +1349,8 @@ class GetPipelineResponse:
             body["effective_environment_version"] = self.effective_environment_version
         if self.effective_publishing_mode is not None:
             body["effective_publishing_mode"] = self.effective_publishing_mode
+        if self.effective_serverless_compute_id is not None:
+            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.effective_usage_policy_id is not None:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.health is not None:
@@ -1378,6 +1385,7 @@ class GetPipelineResponse:
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             effective_environment_version=d.get("effective_environment_version", None),
             effective_publishing_mode=_enum(d, "effective_publishing_mode", PublishingMode),
+            effective_serverless_compute_id=d.get("effective_serverless_compute_id", None),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             health=_enum(d, "health", GetPipelineResponseHealth),
             last_modified=d.get("last_modified", None),
