@@ -6398,6 +6398,40 @@ class GetWorkspaceBindingsResponse:
 
 
 @dataclass
+class GovernedTagReference:
+    """A governed tag referenced by a policy condition."""
+
+    tag_key: str
+    """The governed tag key."""
+
+    tag_value: Optional[str] = None
+    """The governed tag value, when the policy references a specific value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GovernedTagReference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.tag_key is not None:
+            body["tag_key"] = self.tag_key
+        if self.tag_value is not None:
+            body["tag_value"] = self.tag_value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GovernedTagReference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.tag_key is not None:
+            body["tag_key"] = self.tag_key
+        if self.tag_value is not None:
+            body["tag_value"] = self.tag_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GovernedTagReference:
+        """Deserializes the GovernedTagReference from a dictionary."""
+        return cls(tag_key=d.get("tag_key", None), tag_value=d.get("tag_value", None))
+
+
+@dataclass
 class GrantOptions:
     privileges: List[str]
     """List of privileges to grant. When any of these privileges are requested, the policy will grant
@@ -11175,6 +11209,10 @@ class PolicyInfo:
     except_principals: Optional[List[str]] = None
     """Optional list of user or group names that should be excluded from the policy."""
 
+    governed_tags: Optional[List[GovernedTagReference]] = None
+    """Governed tag keys and values referenced by this policy's conditions and function arguments.
+    Output only."""
+
     grant: Optional[GrantOptions] = None
     """Options for grant policies. Valid only if ``policy_type`` is ``POLICY_TYPE_GRANT``. Required on
     create and optional on update. When specified on update, the new options will replace the
@@ -11237,6 +11275,8 @@ class PolicyInfo:
             body["except_principals"] = [v for v in self.except_principals]
         if self.for_securable_type is not None:
             body["for_securable_type"] = self.for_securable_type.value
+        if self.governed_tags:
+            body["governed_tags"] = [v.as_dict() for v in self.governed_tags]
         if self.grant:
             body["grant"] = self.grant.as_dict()
         if self.id is not None:
@@ -11282,6 +11322,8 @@ class PolicyInfo:
             body["except_principals"] = self.except_principals
         if self.for_securable_type is not None:
             body["for_securable_type"] = self.for_securable_type
+        if self.governed_tags:
+            body["governed_tags"] = self.governed_tags
         if self.grant:
             body["grant"] = self.grant
         if self.id is not None:
@@ -11321,6 +11363,7 @@ class PolicyInfo:
             deny=_from_dict(d, "deny", DenyOptions),
             except_principals=d.get("except_principals", None),
             for_securable_type=_enum(d, "for_securable_type", SecurableType),
+            governed_tags=_repeated_dict(d, "governed_tags", GovernedTagReference),
             grant=_from_dict(d, "grant", GrantOptions),
             id=d.get("id", None),
             match_columns=_repeated_dict(d, "match_columns", MatchColumn),

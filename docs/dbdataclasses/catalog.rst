@@ -1180,6 +1180,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GovernedTagReference
+   :members:
+   :undoc-members:
+
 .. autoclass:: GrantOptions
    :members:
    :undoc-members:

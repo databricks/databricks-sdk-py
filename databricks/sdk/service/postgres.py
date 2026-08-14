@@ -7492,7 +7492,7 @@ class PostgresAPI:
           The branch's ``name`` field is used to identify the branch to update. Format:
           projects/{project_id}/branches/{branch_id}
         :param update_mask: FieldMask
-          The list of fields to update. If unspecified, all fields will be updated when possible.
+          The list of fields to update.
 
         :returns: :class:`Operation`
         """
@@ -7522,7 +7522,7 @@ class PostgresAPI:
         :param data_api: :class:`DataApi`
           The Data API configuration to update. The data_api's ``name`` field identifies the resource.
         :param update_mask: FieldMask
-          The list of fields to update. If unspecified, all fields will be updated when possible.
+          The list of fields to update.
 
         :returns: :class:`Operation`
         """
@@ -7556,7 +7556,7 @@ class PostgresAPI:
           The database's ``name`` field is used to identify the database to update. Format:
           projects/{project_id}/branches/{branch_id}/databases/{database_id}
         :param update_mask: FieldMask
-          The list of fields to update. If unspecified, all fields will be updated when possible.
+          The list of fields to update.
 
         :returns: :class:`Operation`
         """
@@ -7591,7 +7591,7 @@ class PostgresAPI:
           The endpoint's ``name`` field is used to identify the endpoint to update. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param update_mask: FieldMask
-          The list of fields to update. If unspecified, all fields will be updated when possible.
+          The list of fields to update.
 
         :returns: :class:`Operation`
         """
@@ -7624,7 +7624,7 @@ class PostgresAPI:
           The project's ``name`` field is used to identify the project to update. Format:
           projects/{project_id}
         :param update_mask: FieldMask
-          The list of fields to update. If unspecified, all fields will be updated when possible.
+          The list of fields to update.
 
         :returns: :class:`Operation`
         """
@@ -7708,8 +7708,7 @@ class PostgresAPI:
           The role's ``name`` field is used to identify the role to update. Format:
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param update_mask: FieldMask
-          The list of fields to update in Postgres Role. If unspecified, all fields will be updated when
-          possible.
+          The list of fields to update.
 
         :returns: :class:`Operation`
         """

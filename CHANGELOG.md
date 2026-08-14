@@ -1,13 +1,26 @@
 # Version changelog
 
+## Release v0.129.0 (2026-08-14)
+
+### API Changes
+* Add `agent_type` field for `databricks.sdk.service.dashboards.GenieConversationSummary`.
+* Add `group_id` field for `databricks.sdk.service.iamv2.DirectGroupMember`.
+* Add `effective_serverless_compute_id` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `pipeline_channel` field for `databricks.sdk.service.postgres.NewPipelineSpec`.
+* Add `text_attachment_purpose_answer` enum value for `databricks.sdk.service.dashboards.TextAttachmentPurpose`.
+* [Breaking] Add pagination for [AccountIamV2API.list_direct_group_members](https://databricks-sdk-py.readthedocs.io/en/latest/account/iamv2/account_iam_v2.html#databricks.sdk.service.iamv2.AccountIamV2API.list_direct_group_members) method.
+* [Breaking] Add pagination for [AccountIamV2API.list_workspace_assignment_details](https://databricks-sdk-py.readthedocs.io/en/latest/account/iamv2/account_iam_v2.html#databricks.sdk.service.iamv2.AccountIamV2API.list_workspace_assignment_details) method.
+* [Breaking] Add pagination for [WorkspaceIamV2API.list_direct_group_members_proxy](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iamv2/workspace_iam_v2.html#databricks.sdk.service.iamv2.WorkspaceIamV2API.list_direct_group_members_proxy) method.
+* [Breaking] Add pagination for [WorkspaceIamV2API.list_workspace_assignment_details_proxy](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iamv2/workspace_iam_v2.html#databricks.sdk.service.iamv2.WorkspaceIamV2API.list_workspace_assignment_details_proxy) method.
+
 ## Release v0.128.0 (2026-08-13)
 
 ### API Changes
 * Add `create_direct_group_member()`, `create_group()`, `create_service_principal()`, `create_user()`, `create_workspace_assignment()`, `delete_direct_group_member()`, `delete_group()`, `delete_service_principal()`, `delete_user()`, `delete_workspace_assignment()`, `get_direct_group_member()`, `get_group()`, `get_service_principal()`, `get_user()`, `get_workspace_assignment()`, `list_direct_group_members()`, `list_groups()`, `list_service_principals()`, `list_transitive_parent_groups()`, `list_users()`, `list_workspace_assignments()`, `update_group()`, `update_service_principal()`, `update_user()` and `update_workspace_assignment()` methods for [a.account_iam_v2](https://databricks-sdk-py.readthedocs.io/en/latest/account/iamv2/account_iam_v2.html) account-level service.
 * Add `create_direct_group_member_proxy()`, `create_group_proxy()`, `create_service_principal_proxy()`, `create_user_proxy()`, `create_workspace_assignment_proxy()`, `delete_direct_group_member_proxy()`, `delete_group_proxy()`, `delete_service_principal_proxy()`, `delete_user_proxy()`, `delete_workspace_assignment_proxy()`, `get_direct_group_member_proxy()`, `get_group_proxy()`, `get_service_principal_proxy()`, `get_user_proxy()`, `get_workspace_assignment_proxy()`, `get_workspace_identity_detail()`, `list_direct_group_members_proxy()`, `list_groups_proxy()`, `list_service_principals_proxy()`, `list_transitive_parent_groups_proxy()`, `list_users_proxy()`, `list_workspace_assignments_proxy()`, `update_group_proxy()`, `update_service_principal_proxy()`, `update_user_proxy()`, `update_workspace_assignment_proxy()` and `update_workspace_identity_detail()` methods for [w.workspace_iam_v2](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iamv2/workspace_iam_v2.html) workspace-level service.
 * Add `create_time` and `update_time` fields for `databricks.sdk.service.dashboards.GenieSpace`.
-* [Breaking] Change `new_cluster` field for `databricks.sdk.service.jobs.JobCluster` to no longer be required.
 * Change `new_cluster` field for `databricks.sdk.service.jobs.JobCluster` to no longer be required.
+* [Breaking] Change `new_cluster` field for `databricks.sdk.service.jobs.JobCluster` to no longer be required.
 
 ## Release v0.127.0 (2026-08-12)
 
