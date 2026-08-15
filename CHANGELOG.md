@@ -1,6 +1,6 @@
 # Version changelog
 
-## Release v0.129.0 (2026-08-14)
+## Release v0.129.0 (2026-08-15)
 
 ### API Changes
 * Add `agent_type` field for `databricks.sdk.service.dashboards.GenieConversationSummary`.
