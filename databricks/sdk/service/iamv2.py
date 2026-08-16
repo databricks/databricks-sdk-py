@@ -2544,7 +2544,7 @@ class AccountIamV2API:
 
     def list_workspace_assignments(
         self, workspace_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> ListWorkspaceAssignmentsResponse:
+    ) -> Iterator[WorkspaceAssignment]:
         """Lists workspace assignments for a workspace. The response omits the per-principal entitlement fields
         (``entitlements`` and ``effective_entitlements``). To read the entitlements for a single principal,
         get that principal's assignment.
@@ -2557,7 +2557,7 @@ class AccountIamV2API:
           A page token, received from a previous ListWorkspaceAssignments call. Provide this to retrieve the
           subsequent page.
 
-        :returns: :class:`ListWorkspaceAssignmentsResponse`
+        :returns: Iterator over :class:`WorkspaceAssignment`
         """
 
         query = {}
@@ -2569,13 +2569,19 @@ class AccountIamV2API:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignments",
-            query=query,
-            headers=headers,
-        )
-        return ListWorkspaceAssignmentsResponse.from_dict(res)
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignments",
+                query=query,
+                headers=headers,
+            )
+            if "workspace_assignments" in json:
+                for v in json["workspace_assignments"]:
+                    yield WorkspaceAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def resolve_group(self, external_id: str) -> ResolveGroupResponse:
         """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
@@ -3703,7 +3709,7 @@ class WorkspaceIamV2API:
 
     def list_workspace_assignments_proxy(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> ListWorkspaceAssignmentsResponse:
+    ) -> Iterator[WorkspaceAssignment]:
         """Lists workspace assignments for the calling workspace. The response omits the per-principal
         entitlement fields (``entitlements`` and ``effective_entitlements``). To read the entitlements for a
         single principal, get that principal's assignment.
@@ -3713,7 +3719,7 @@ class WorkspaceIamV2API:
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
-        :returns: :class:`ListWorkspaceAssignmentsResponse`
+        :returns: Iterator over :class:`WorkspaceAssignment`
         """
 
         query = {}
@@ -3729,8 +3735,14 @@ class WorkspaceIamV2API:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", "/api/2.0/identity/workspace-assignments", query=query, headers=headers)
-        return ListWorkspaceAssignmentsResponse.from_dict(res)
+        while True:
+            json = self._api.do("GET", "/api/2.0/identity/workspace-assignments", query=query, headers=headers)
+            if "workspace_assignments" in json:
+                for v in json["workspace_assignments"]:
+                    yield WorkspaceAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def resolve_group_proxy(self, external_id: str) -> ResolveGroupResponse:
         """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it

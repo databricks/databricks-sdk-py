@@ -408,7 +408,7 @@
         :returns: Iterator over :class:`WorkspaceAssignmentDetail`
         
 
-    .. py:method:: list_workspace_assignments_proxy( [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAssignmentsResponse
+    .. py:method:: list_workspace_assignments_proxy( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceAssignment]
 
         Lists workspace assignments for the calling workspace. The response omits the per-principal
         entitlement fields (``entitlements`` and ``effective_entitlements``). To read the entitlements for a
@@ -419,7 +419,7 @@
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
-        :returns: :class:`ListWorkspaceAssignmentsResponse`
+        :returns: Iterator over :class:`WorkspaceAssignment`
         
 
     .. py:method:: resolve_group_proxy(external_id: str) -> ResolveGroupResponse

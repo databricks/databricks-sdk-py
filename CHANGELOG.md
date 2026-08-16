@@ -1,6 +1,15 @@
 # Version changelog
 
-## Release v0.129.0 (2026-08-15)
+## Release v0.130.0 (2026-08-16)
+
+### API Changes
+* Add `linkedin_ads_options` and `marketo_options` fields for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `pg_specific_type_halfvec` and `pg_specific_type_varchar` enum values for `databricks.sdk.service.database.SyncedTableSpecPgSpecificType`.
+* Add `pg_specific_type_halfvec` and `pg_specific_type_varchar` enum values for `databricks.sdk.service.postgres.SyncedTableSyncedTableSpecPgSpecificType`.
+* [Breaking] Add pagination for [AccountIamV2API.list_workspace_assignments](https://databricks-sdk-py.readthedocs.io/en/latest/account/iamv2/account_iam_v2.html#databricks.sdk.service.iamv2.AccountIamV2API.list_workspace_assignments) method.
+* [Breaking] Add pagination for [WorkspaceIamV2API.list_workspace_assignments_proxy](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iamv2/workspace_iam_v2.html#databricks.sdk.service.iamv2.WorkspaceIamV2API.list_workspace_assignments_proxy) method.
+
+## Release v0.129.0 (2026-08-14)
 
 ### API Changes
 * Add `agent_type` field for `databricks.sdk.service.dashboards.GenieConversationSummary`.

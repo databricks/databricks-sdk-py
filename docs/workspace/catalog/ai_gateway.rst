@@ -7,7 +7,7 @@
     Govern AI workloads in Unity Catalog. This API manages the Unity Catalog securables that bring centralized
     access control, lineage, and auditing to AI-serving entities: model services (governed access to
     foundation models and external LLMs), model provider services (governed connections to external model
-    providers), MCP services (governed Model Context Protocol servers), and agent services (governed agents).
+    providers), and MCP services (governed Model Context Protocol servers).
 
     .. py:method:: create_agent_service(agent_service: AgentService, parent: str, agent_service_id: str) -> AgentService
 
@@ -22,11 +22,10 @@
           The agent service to create. The server populates ``name`` from ``parent`` + ``agent_service_id``;
           clients should leave it unset.
         :param parent: str
-          Resource name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component
-          is capped at 255 characters individually.
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
         :param agent_service_id: str
-          Leaf identifier for the agent service (the unqualified name within the parent schema, e.g.
-          "support_agent").
+          Name for the agent service, e.g. "support_agent".
 
         :returns: :class:`AgentService`
         
@@ -45,11 +44,10 @@
           The MCP service to create. The server populates ``name`` from ``parent`` + ``mcp_service_id``;
           clients should leave it unset.
         :param parent: str
-          Resource name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component
-          is capped at 255 characters individually.
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
         :param mcp_service_id: str
-          Leaf identifier for the MCP service (the unqualified name within the parent schema, e.g.
-          "my_mcp_service").
+          Name for the MCP service, e.g. "my_mcp_service".
 
         :returns: :class:`McpService`
         
@@ -68,11 +66,10 @@
           The model provider service to create. The server populates ``name`` from ``parent`` +
           ``model_provider_service_id``; clients should leave it unset.
         :param parent: str
-          Resource name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component
-          is capped at 255 characters individually.
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
         :param model_provider_service_id: str
-          Leaf identifier for the provider service (the unqualified name within the parent schema, e.g.
-          "openai_prod").
+          Name for the model provider service, e.g. "openai_prod".
 
         :returns: :class:`ModelProviderService`
         
@@ -90,11 +87,10 @@
           The model service to create. The server populates ``name`` from ``parent`` + ``model_service_id``;
           clients should leave it unset.
         :param parent: str
-          Resource name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component
-          is capped at 255 characters individually.
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
         :param model_service_id: str
-          Leaf identifier for the model service (the unqualified name within the parent schema, e.g.
-          "my_model_service").
+          Name for the model service, e.g. "my_model_service".
 
         :returns: :class:`ModelService`
         
@@ -241,11 +237,11 @@
 
         :param page_size: int (optional)
           Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
-          ``next_page_token`` to retrieve additional pages.
+          ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)
-          Resource name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
           component is capped at 255 characters individually.
 
         :returns: Iterator over :class:`AgentService`
@@ -263,14 +259,16 @@
 
         :param page_size: int (optional)
           Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
-          ``next_page_token`` to retrieve additional pages.
+          ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)
-          Resource name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListMcpServicesRequestView` (optional)
-          View selector controlling which fields are populated per row.
+          View selector controlling which fields are populated per row. ``FULL`` returns the full
+          representation of the service; ``BASIC`` returns a more compact version. Defaults to ``BASIC`` when
+          unset.
 
         :returns: Iterator over :class:`McpService`
         
@@ -287,14 +285,16 @@
 
         :param page_size: int (optional)
           Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
-          Use ``next_page_token`` to retrieve additional pages.
+          Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)
-          Resource name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelProviderServicesRequestView` (optional)
-          View selector controlling which fields are populated per row.
+          View selector controlling which fields are populated per row. ``FULL`` returns the full
+          representation of the service; ``BASIC`` returns a more compact version. Defaults to ``BASIC`` when
+          unset.
 
         :returns: Iterator over :class:`ModelProviderService`
         
@@ -311,14 +311,16 @@
 
         :param page_size: int (optional)
           Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
-          ``next_page_token`` to retrieve additional pages.
+          ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)
-          Resource name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelServicesRequestView` (optional)
-          View selector controlling which fields are populated per row.
+          View selector controlling which fields are populated per row. ``FULL`` returns the full
+          representation of the service; ``BASIC`` returns a more compact version. Defaults to ``BASIC`` when
+          unset.
 
         :returns: Iterator over :class:`ModelService`
         
