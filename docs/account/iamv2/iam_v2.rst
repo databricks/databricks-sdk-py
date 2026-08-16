@@ -520,7 +520,7 @@
         :returns: Iterator over :class:`WorkspaceAssignmentDetail`
         
 
-    .. py:method:: list_workspace_assignments(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAssignmentsResponse
+    .. py:method:: list_workspace_assignments(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceAssignment]
 
         Lists workspace assignments for a workspace. The response omits the per-principal entitlement fields
         (``entitlements`` and ``effective_entitlements``). To read the entitlements for a single principal,
@@ -534,7 +534,7 @@
           A page token, received from a previous ListWorkspaceAssignments call. Provide this to retrieve the
           subsequent page.
 
-        :returns: :class:`ListWorkspaceAssignmentsResponse`
+        :returns: Iterator over :class:`WorkspaceAssignment`
         
 
     .. py:method:: resolve_group(external_id: str) -> ResolveGroupResponse

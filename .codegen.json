@@ -39,6 +39,7 @@
     ],
     "skip_from_source": [
       "CLAUDE.md",
+      "OWNERS",
       "README.md",
       "tagging.py"
     ],

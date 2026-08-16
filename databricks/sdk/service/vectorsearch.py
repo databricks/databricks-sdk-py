@@ -1781,6 +1781,14 @@ class ResultManifest:
     facet_columns: Optional[List[ColumnInfo]] = None
     """Information about each column in ``facet_result``."""
 
+    total_hit_count: Optional[int] = None
+    """Documents matching the query, independent of num_results (which bounds ``row_count``). A lower
+    bound once matches exceed the per-shard counting threshold. Unset unless doc count is enabled."""
+
+    total_hit_count_lower_bound: Optional[bool] = None
+    """True when total_hit_count is a lower bound (the match count exceeded the counting threshold)
+    rather than the exact total. Unset unless doc count is enabled."""
+
     def as_dict(self) -> dict:
         """Serializes the ResultManifest into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1792,6 +1800,10 @@ class ResultManifest:
             body["facet_column_count"] = self.facet_column_count
         if self.facet_columns:
             body["facet_columns"] = [v.as_dict() for v in self.facet_columns]
+        if self.total_hit_count is not None:
+            body["total_hit_count"] = self.total_hit_count
+        if self.total_hit_count_lower_bound is not None:
+            body["total_hit_count_lower_bound"] = self.total_hit_count_lower_bound
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1805,6 +1817,10 @@ class ResultManifest:
             body["facet_column_count"] = self.facet_column_count
         if self.facet_columns:
             body["facet_columns"] = self.facet_columns
+        if self.total_hit_count is not None:
+            body["total_hit_count"] = self.total_hit_count
+        if self.total_hit_count_lower_bound is not None:
+            body["total_hit_count_lower_bound"] = self.total_hit_count_lower_bound
         return body
 
     @classmethod
@@ -1815,6 +1831,8 @@ class ResultManifest:
             columns=_repeated_dict(d, "columns", ColumnInfo),
             facet_column_count=d.get("facet_column_count", None),
             facet_columns=_repeated_dict(d, "facet_columns", ColumnInfo),
+            total_hit_count=d.get("total_hit_count", None),
+            total_hit_count_lower_bound=d.get("total_hit_count_lower_bound", None),
         )
 
 
