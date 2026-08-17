@@ -1,6 +1,15 @@
+import json
+
 import pytest
 
 from databricks.sdk.mixins.compute import SemVer
+
+SPARK_VERSIONS_RESPONSE = {
+    "versions": [
+        {"key": "16.4.x-scala2.12", "name": "16.4"},
+        {"key": "18.2.x-scala2.13", "name": "18.2"},
+    ]
+}
 
 
 @pytest.mark.parametrize(
@@ -40,3 +49,25 @@ def test_sorting_semver():
         SemVer(1, 0, 0),
         SemVer(12, 0, 0),
     ]
+
+
+def test_select_spark_version_latest_ignores_scala_by_default(w, requests_mock):
+    # Regression test for https://github.com/databricks/databricks-sdk-py/issues/1487:
+    # select_spark_version(latest=True) implicitly filtered to the "2.12" default
+    # scala version before picking the latest, instead of considering every scala
+    # version like the Go SDK it's ported from does.
+    requests_mock.get(
+        "http://localhost/api/2.1/clusters/spark-versions",
+        text=json.dumps(SPARK_VERSIONS_RESPONSE),
+    )
+
+    assert w.clusters.select_spark_version(latest=True) == "18.2.x-scala2.13"
+
+
+def test_select_spark_version_latest_still_honors_an_explicit_scala(w, requests_mock):
+    requests_mock.get(
+        "http://localhost/api/2.1/clusters/spark-versions",
+        text=json.dumps(SPARK_VERSIONS_RESPONSE),
+    )
+
+    assert w.clusters.select_spark_version(latest=True, scala="2.12") == "16.4.x-scala2.12"

@@ -81,7 +81,7 @@ class ClustersExt(compute.ClustersAPI):
         ml: bool = False,
         genomics: bool = False,
         gpu: bool = False,
-        scala: str = "2.12",
+        scala: str = "",
         spark_version: str = None,
         photon: bool = False,
         graviton: bool = False,
@@ -95,17 +95,19 @@ class ClustersExt(compute.ClustersAPI):
         :param genomics: bool
         :param gpu: bool
         :param scala: str
+            Scala version to filter on, e.g. "2.12" or "2.13". Leave empty (the default) to
+            consider every Scala version, matching the Go SDK's zero-value behavior.
         :param spark_version: str
         :param photon: bool
         :param graviton: bool
 
         :returns: `spark_version` compatible string
         """
-        # Logic ported from https://github.com/databricks/databricks-sdk-go/blob/main/service/compute/spark_version.go
+        # Logic ported from https://github.com/databricks/databricks-sdk-go/blob/main/service/compute/ext_spark_version.go
         versions = []
         sv = self.spark_versions()
         for version in sv.versions:
-            if "-scala" + scala not in version.key:
+            if scala and "-scala" + scala not in version.key:
                 continue
             matches = (
                 ("apache-spark-" not in version.key)
