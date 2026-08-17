@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.131.0 (2026-08-17)
+
+### API Changes
+* [Breaking] Change `action_type` and `status` fields for `databricks.sdk.service.bundledeployments.Operation` to no longer be required.
+* Change `action_type` and `status` fields for `databricks.sdk.service.bundledeployments.Operation` to no longer be required.
+* [Breaking] Remove `create_operation()` method for [w.bundle_deployments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/bundledeployments/bundle_deployments.html) workspace-level service.
+
 ## Release v0.130.0 (2026-08-16)
 
 ### API Changes

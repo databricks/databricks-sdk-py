@@ -40,31 +40,7 @@
         :returns: :class:`Deployment`
         
 
-    .. py:method:: create_operation(parent: str, operation: Operation, resource_key: str) -> Operation
-
-        Creates a resource operation under a version.
-
-        The caller must provide a ``resource_key`` which becomes the final component of the operation's name.
-        If an operation with the same key already exists under the version, the server returns
-        ``ALREADY_EXISTS``.
-
-        On success the server also updates the corresponding deployment-level resource, creating it if this is
-        the first operation for that resource_key and removing it if the operation records no ``state`` (see
-        that field).
-
-        :param parent: str
-          The parent version where this operation will be recorded. Format:
-          deployments/{deployment_id}/versions/{version_id}
-        :param operation: :class:`Operation`
-          The resource operation to create.
-        :param resource_key: str
-          The key identifying the resource this operation applies to. Becomes the final component of the
-          operation's name.
-
-        :returns: :class:`Operation`
-        
-
-    .. py:method:: create_version(parent: str, version: Version, version_id: str) -> Version
+    .. py:method:: create_version(parent: str, version: Version, version_id: str [, operations: Optional[List[StagedOperation]]]) -> Version
 
         Creates a new version under a deployment.
 
@@ -73,6 +49,12 @@
         deployment's most recent version, and sets the version's ``previous_version_id`` to the deployment's
         most recent version (leaving it unset for the first version), which the server validates to detect
         concurrent deploys.
+
+        The caller also provides the full set of ``operations`` planned for this version, each identified by a
+        ``resource_key`` and an ``action_type``. The server records one operation per resource in
+        ``OPERATION_STATUS_PENDING`` in the same transaction as the version, so the plan is captured
+        atomically. The outcome of each operation is recorded later via UpdateOperation as the resource is
+        applied; the set of operations cannot be changed after the version is created.
 
         :param parent: str
           The parent deployment where this version will be created. Format: deployments/{deployment_id}
@@ -84,6 +66,11 @@
           or equal to 1. Must be numerically greater than the deployment's most recent version (see
           ``version.previous_version_id``); it does not need to start at 1 or increase by exactly 1. If the
           value is not numerically greater, the server returns ``INVALID_PARAMETER_VALUE``.
+        :param operations: List[:class:`StagedOperation`] (optional)
+          The full set of resource operations to record for this version. The server creates one operation per
+          entry in ``OPERATION_STATUS_PENDING``, in the same transaction as the version; each outcome is
+          recorded later via UpdateOperation. May be empty for a version that changes no resources. Each
+          ``resource_key`` must be unique within the request.
 
         :returns: :class:`Version`
         
@@ -247,16 +234,16 @@
 
         Updates a resource operation's mutable fields.
 
-        ``state``, ``error_message``, ``resource_id``, and ``status`` may be updated, independently;
-        ``update_mask`` must contain only those paths. All other fields are immutable. The update is guarded
-        by an optimistic-concurrency check: the caller sets ``operation.sequence_id`` to the value it last
-        observed, and the server rejects the update with ``ABORTED`` if the operation has been modified since.
-        On success the server increments ``sequence_id``; updates to ``state`` and ``resource_id`` are
-        mirrored onto the corresponding deployment-level resource. Listing ``state`` in ``update_mask`` with
-        no value clears it, which removes the resource, so a delete that is retried until it succeeds must
-        clear ``state``. The parent version must be in progress, and after the update is applied a succeeded
-        operation cannot carry an ``error_message``. See the ``state`` and ``resource_id`` fields for the
-        rest.
+        ``state``, ``error_message``, ``resource_id``, ``status``, and ``dashboard_metadata`` may be updated,
+        independently; ``update_mask`` must contain only those paths. All other fields are immutable. The
+        update is guarded by an optimistic-concurrency check: the caller sets ``operation.sequence_id`` to the
+        value it last observed, and the server rejects the update with ``ABORTED`` if the operation has been
+        modified since. On success the server increments ``sequence_id``; updates to ``state``,
+        ``resource_id``, and ``dashboard_metadata`` are mirrored onto the corresponding deployment-level
+        resource. Listing ``state`` in ``update_mask`` with no value clears it, which removes the resource, so
+        a delete that is retried until it succeeds must clear ``state``. The parent version must be in
+        progress, and after the update is applied a succeeded operation cannot carry an ``error_message``. See
+        the ``state`` and ``resource_id`` fields for the rest.
 
         :param name: str
           Resource name of the operation. Format:
@@ -267,8 +254,8 @@
           field docs on Operation). All other fields are ignored.
         :param update_mask: FieldMask
           The set of fields to update. Required; supported paths are ``state``, ``error_message``,
-          ``resource_id``, and ``status``. An empty mask or any other path is rejected with
-          INVALID_PARAMETER_VALUE.
+          ``resource_id``, ``status``, and ``dashboard_metadata``. An empty mask or any other path is rejected
+          with INVALID_PARAMETER_VALUE.
 
         :returns: :class:`Operation`
         
