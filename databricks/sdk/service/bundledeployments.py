@@ -492,24 +492,25 @@ class ListVersionsResponse:
 
 @dataclass
 class Operation:
-    """An operation on a single resource performed during a version. Operations record the result of
-    applying a resource change to the workspace. Most fields are immutable once recorded; ``state``,
-    ``error_message``, ``resource_id``, and ``status`` may be updated afterwards (via
-    UpdateOperation), guarded by ``sequence_id`` for optimistic concurrency control."""
+    """An operation on a single resource performed during a version. The full set of operations for a
+    version is recorded when the version is created: each carries its ``resource_key`` and
+    ``action_type`` and starts in ``OPERATION_STATUS_PENDING``. As each resource is applied, its
+    operation is updated (via UpdateOperation) to record the result of applying the change to the
+    workspace. ``state``, ``error_message``, ``resource_id``, ``status``, and ``dashboard_metadata``
+    may be updated afterwards, guarded by ``sequence_id`` for optimistic concurrency control; all
+    other fields are immutable once recorded."""
 
-    action_type: OperationActionType
-    """The type of operation performed on this resource."""
-
-    status: OperationStatus
-    """Whether the operation succeeded or failed. Mutable: may be updated after creation via
-    UpdateOperation, e.g. when an operation recorded as failed is retried and eventually succeeds. A
-    succeeded operation cannot carry an ``error_message``."""
+    action_type: Optional[OperationActionType] = None
+    """The type of operation performed on this resource. Set when the version is created and immutable
+    thereafter."""
 
     create_time: Optional[Timestamp] = None
     """When the operation was recorded."""
 
     dashboard_metadata: Optional[DashboardMetadata] = None
-    """Dashboard-specific metadata; set only for dashboard resources."""
+    """Dashboard-specific metadata; set only for dashboard resources. Mutable: may be set or updated
+    via UpdateOperation as the resource is applied, and is mirrored onto the corresponding
+    deployment-level resource."""
 
     error_message: Optional[str] = None
     """Error message if the operation failed. Set when status is OPERATION_STATUS_FAILED. Captures the
@@ -530,7 +531,8 @@ class Operation:
     resource_key: Optional[str] = None
     """Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar", "jobs.foo.permissions",
     "files.<rel-path>"). Can be an arbitrary UTF-8 encoded string key. This key links the operation
-    to the corresponding deployment-level Resource."""
+    to the corresponding deployment-level Resource. Set when the version is created and immutable
+    thereafter."""
 
     resource_type: Optional[DeploymentResourceType] = None
     """The type of the deployment resource this operation applies to. Derived from the ``resource_key``
@@ -539,11 +541,12 @@ class Operation:
     sequence_id: Optional[int] = None
     """Monotonically increasing revision used for optimistic concurrency control (the AIP-154
     concurrency token for this resource, realized as a sequence number rather than an opaque etag).
-    The server assigns 1 on creation and increments it on every successful UpdateOperation. It is
-    OPTIONAL rather than OUTPUT_ONLY because it is dual-purpose: CreateOperation/GetOperation return
-    the current value, and UpdateOperation reads the caller-supplied value as a precondition. The
-    caller must echo the value it last observed; if it no longer matches the server's value, the
-    update is rejected with ABORTED so the caller can re-read and retry. Ignored on CreateOperation."""
+    The server assigns 0 when the operation is created and increments it on every successful
+    UpdateOperation, so a never-updated operation is at 0 and the first successful update makes it
+    1. It is OPTIONAL rather than OUTPUT_ONLY because it is dual-purpose: GetOperation returns the
+    current value, and UpdateOperation reads the caller-supplied value as a precondition. The caller
+    must echo the value it last observed; if it no longer matches the server's value, the update is
+    rejected with ABORTED so the caller can re-read and retry."""
 
     state: Optional[str] = None
     """Serialized local config state after the operation. Its presence records whether the resource
@@ -565,6 +568,12 @@ class Operation:
     base64, which inflates every request and response by a third and makes state unreadable in logs
     and API responses. Both generate the same OpenAPI schema ("type": "string"), so the SDKs are
     identical either way."""
+
+    status: Optional[OperationStatus] = None
+    """Status of the operation. Starts as OPERATION_STATUS_PENDING when the version is created and
+    moves to a terminal status once the resource is applied. Mutable: updated via UpdateOperation,
+    e.g. when an operation recorded as failed is retried and eventually succeeds. A succeeded
+    operation cannot carry an ``error_message``."""
 
     update_time: Optional[Timestamp] = None
     """When the operation was last updated. Set to ``create_time`` when the operation is created and to
@@ -665,6 +674,7 @@ class OperationStatus(Enum):
     """Status of a resource operation."""
 
     OPERATION_STATUS_FAILED = "OPERATION_STATUS_FAILED"
+    OPERATION_STATUS_PENDING = "OPERATION_STATUS_PENDING"
     OPERATION_STATUS_SUCCEEDED = "OPERATION_STATUS_SUCCEEDED"
 
 
@@ -763,6 +773,44 @@ class Resource:
             state=d.get("state", None),
             update_time=_timestamp(d, "update_time"),
         )
+
+
+@dataclass
+class StagedOperation:
+    """A resource operation to record when a version is created. Each staged operation identifies the
+    resource it applies to and the action planned for it; the server records the operation in
+    ``OPERATION_STATUS_PENDING``, and its outcome is filled in later via UpdateOperation."""
+
+    resource_key: str
+    """The key identifying the resource this operation applies to (e.g. "jobs.foo", "pipelines.bar").
+    Becomes the final component of the operation's name and must be unique among the operations in
+    the request."""
+
+    action_type: OperationActionType
+    """The type of operation planned for this resource."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StagedOperation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.action_type is not None:
+            body["action_type"] = self.action_type.value
+        if self.resource_key is not None:
+            body["resource_key"] = self.resource_key
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StagedOperation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.action_type is not None:
+            body["action_type"] = self.action_type
+        if self.resource_key is not None:
+            body["resource_key"] = self.resource_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StagedOperation:
+        """Deserializes the StagedOperation from a dictionary."""
+        return cls(action_type=_enum(d, "action_type", OperationActionType), resource_key=d.get("resource_key", None))
 
 
 @dataclass
@@ -1089,46 +1137,9 @@ class BundleDeploymentsAPI:
         res = self._api.do("POST", "/api/2.0/bundle/deployments", body=body, headers=headers)
         return Deployment.from_dict(res)
 
-    def create_operation(self, parent: str, operation: Operation, resource_key: str) -> Operation:
-        """Creates a resource operation under a version.
-
-        The caller must provide a ``resource_key`` which becomes the final component of the operation's name.
-        If an operation with the same key already exists under the version, the server returns
-        ``ALREADY_EXISTS``.
-
-        On success the server also updates the corresponding deployment-level resource, creating it if this is
-        the first operation for that resource_key and removing it if the operation records no ``state`` (see
-        that field).
-
-        :param parent: str
-          The parent version where this operation will be recorded. Format:
-          deployments/{deployment_id}/versions/{version_id}
-        :param operation: :class:`Operation`
-          The resource operation to create.
-        :param resource_key: str
-          The key identifying the resource this operation applies to. Becomes the final component of the
-          operation's name.
-
-        :returns: :class:`Operation`
-        """
-
-        body = operation.as_dict()
-        query = {}
-        if resource_key is not None:
-            query["resource_key"] = resource_key
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("POST", f"/api/2.0/bundle/{parent}/operations", query=query, body=body, headers=headers)
-        return Operation.from_dict(res)
-
-    def create_version(self, parent: str, version: Version, version_id: str) -> Version:
+    def create_version(
+        self, parent: str, version: Version, version_id: str, *, operations: Optional[List[StagedOperation]] = None
+    ) -> Version:
         """Creates a new version under a deployment.
 
         Creating a version acquires an exclusive lock on the deployment, preventing concurrent deploys. The
@@ -1136,6 +1147,12 @@ class BundleDeploymentsAPI:
         deployment's most recent version, and sets the version's ``previous_version_id`` to the deployment's
         most recent version (leaving it unset for the first version), which the server validates to detect
         concurrent deploys.
+
+        The caller also provides the full set of ``operations`` planned for this version, each identified by a
+        ``resource_key`` and an ``action_type``. The server records one operation per resource in
+        ``OPERATION_STATUS_PENDING`` in the same transaction as the version, so the plan is captured
+        atomically. The outcome of each operation is recorded later via UpdateOperation as the resource is
+        applied; the set of operations cannot be changed after the version is created.
 
         :param parent: str
           The parent deployment where this version will be created. Format: deployments/{deployment_id}
@@ -1147,12 +1164,19 @@ class BundleDeploymentsAPI:
           or equal to 1. Must be numerically greater than the deployment's most recent version (see
           ``version.previous_version_id``); it does not need to start at 1 or increase by exactly 1. If the
           value is not numerically greater, the server returns ``INVALID_PARAMETER_VALUE``.
+        :param operations: List[:class:`StagedOperation`] (optional)
+          The full set of resource operations to record for this version. The server creates one operation per
+          entry in ``OPERATION_STATUS_PENDING``, in the same transaction as the version; each outcome is
+          recorded later via UpdateOperation. May be empty for a version that changes no resources. Each
+          ``resource_key`` must be unique within the request.
 
         :returns: :class:`Version`
         """
 
         body = version.as_dict()
         query = {}
+        if operations is not None:
+            query["operations"] = [v.as_dict() for v in operations]
         if version_id is not None:
             query["version_id"] = version_id
         headers = {
@@ -1480,16 +1504,16 @@ class BundleDeploymentsAPI:
     def update_operation(self, name: str, operation: Operation, update_mask: FieldMask) -> Operation:
         """Updates a resource operation's mutable fields.
 
-        ``state``, ``error_message``, ``resource_id``, and ``status`` may be updated, independently;
-        ``update_mask`` must contain only those paths. All other fields are immutable. The update is guarded
-        by an optimistic-concurrency check: the caller sets ``operation.sequence_id`` to the value it last
-        observed, and the server rejects the update with ``ABORTED`` if the operation has been modified since.
-        On success the server increments ``sequence_id``; updates to ``state`` and ``resource_id`` are
-        mirrored onto the corresponding deployment-level resource. Listing ``state`` in ``update_mask`` with
-        no value clears it, which removes the resource, so a delete that is retried until it succeeds must
-        clear ``state``. The parent version must be in progress, and after the update is applied a succeeded
-        operation cannot carry an ``error_message``. See the ``state`` and ``resource_id`` fields for the
-        rest.
+        ``state``, ``error_message``, ``resource_id``, ``status``, and ``dashboard_metadata`` may be updated,
+        independently; ``update_mask`` must contain only those paths. All other fields are immutable. The
+        update is guarded by an optimistic-concurrency check: the caller sets ``operation.sequence_id`` to the
+        value it last observed, and the server rejects the update with ``ABORTED`` if the operation has been
+        modified since. On success the server increments ``sequence_id``; updates to ``state``,
+        ``resource_id``, and ``dashboard_metadata`` are mirrored onto the corresponding deployment-level
+        resource. Listing ``state`` in ``update_mask`` with no value clears it, which removes the resource, so
+        a delete that is retried until it succeeds must clear ``state``. The parent version must be in
+        progress, and after the update is applied a succeeded operation cannot carry an ``error_message``. See
+        the ``state`` and ``resource_id`` fields for the rest.
 
         :param name: str
           Resource name of the operation. Format:
@@ -1500,8 +1524,8 @@ class BundleDeploymentsAPI:
           field docs on Operation). All other fields are ignored.
         :param update_mask: FieldMask
           The set of fields to update. Required; supported paths are ``state``, ``error_message``,
-          ``resource_id``, and ``status``. An empty mask or any other path is rejected with
-          INVALID_PARAMETER_VALUE.
+          ``resource_id``, ``status``, and ``dashboard_metadata``. An empty mask or any other path is rejected
+          with INVALID_PARAMETER_VALUE.
 
         :returns: :class:`Operation`
         """

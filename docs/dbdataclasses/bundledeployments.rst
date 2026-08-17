@@ -177,10 +177,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: OPERATION_STATUS_FAILED
       :value: "OPERATION_STATUS_FAILED"
 
+   .. py:attribute:: OPERATION_STATUS_PENDING
+      :value: "OPERATION_STATUS_PENDING"
+
    .. py:attribute:: OPERATION_STATUS_SUCCEEDED
       :value: "OPERATION_STATUS_SUCCEEDED"
 
 .. autoclass:: Resource
+   :members:
+   :undoc-members:
+
+.. autoclass:: StagedOperation
    :members:
    :undoc-members:
 
