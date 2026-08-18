@@ -277,6 +277,10 @@ class BranchStatus:
     non-recovery-derived branches this is unset. Format:
     projects/{project_id}/preview/recovery-branches/{recovery_branch_id}"""
 
+    source_snapshot: Optional[str] = None
+    """The snapshot this branch was restored from. Set only for branches created by restoring a
+    snapshot; unset for all other branches. Format: projects/{project_id}/snapshots/{snapshot_id}"""
+
     state_change_time: Optional[Timestamp] = None
     """A timestamp indicating when the ``current_state`` began."""
 
@@ -309,6 +313,8 @@ class BranchStatus:
             body["source_branch_time"] = self.source_branch_time.ToJsonString()
         if self.source_recovery_branch is not None:
             body["source_recovery_branch"] = self.source_recovery_branch
+        if self.source_snapshot is not None:
+            body["source_snapshot"] = self.source_snapshot
         if self.state_change_time is not None:
             body["state_change_time"] = self.state_change_time.ToJsonString()
         return body
@@ -342,6 +348,8 @@ class BranchStatus:
             body["source_branch_time"] = self.source_branch_time
         if self.source_recovery_branch is not None:
             body["source_recovery_branch"] = self.source_recovery_branch
+        if self.source_snapshot is not None:
+            body["source_snapshot"] = self.source_snapshot
         if self.state_change_time is not None:
             body["state_change_time"] = self.state_change_time
         return body
@@ -363,6 +371,7 @@ class BranchStatus:
             source_branch_lsn=d.get("source_branch_lsn", None),
             source_branch_time=_timestamp(d, "source_branch_time"),
             source_recovery_branch=d.get("source_recovery_branch", None),
+            source_snapshot=d.get("source_snapshot", None),
             state_change_time=_timestamp(d, "state_change_time"),
         )
 

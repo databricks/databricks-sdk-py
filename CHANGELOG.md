@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.132.0 (2026-08-18)
+
+### API Changes
+* Add `default_git_source`, `git_source` and `source_code_path` fields for `databricks.sdk.service.apps.App`.
+* Add `auto_deploy` and `caller_credential_id` fields for `databricks.sdk.service.apps.GitRepository`.
+* Add `custom_udf` field for `databricks.sdk.service.ml.Function`.
+* Add `effective_serverless_compute_id` field for `databricks.sdk.service.pipelines.GetPipelineResponse`.
+
 ## Release v0.131.0 (2026-08-17)
 
 ### API Changes
