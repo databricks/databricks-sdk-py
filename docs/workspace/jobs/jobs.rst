@@ -349,7 +349,7 @@
         :returns: :class:`ExportRunOutput`
         
 
-    .. py:method:: get(job_id: int [, page_token: str]) -> Job
+    .. py:method:: get(job_id: int [, include_trigger_state: bool, page_token: str]) -> Job
 
 
         Usage:
@@ -395,6 +395,8 @@
 
         :param job_id: int
           The canonical identifier of the job to retrieve information about. This field is required.
+        :param include_trigger_state: bool (optional)
+          Flag that indicates that trigger state should be included in the response.
         :param page_token: str (optional)
           Use `next_page_token` returned from the previous GetJob to request the next page of the job's
           sub-resources.

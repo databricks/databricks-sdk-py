@@ -14,13 +14,16 @@ def make_getrun_path_pattern(run_id: int, page_token: Optional[str] = None) -> P
         return re.compile(rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/runs/get?run_id={run_id}')}")
 
 
-def make_getjob_path_pattern(job_id: int, page_token: Optional[str] = None) -> Pattern[str]:
+def make_getjob_path_pattern(
+    job_id: int, page_token: Optional[str] = None, include_trigger_state: Optional[bool] = None
+) -> Pattern[str]:
+    query_params = [("job_id", str(job_id))]
+    if include_trigger_state is not None:
+        query_params.append(("include_trigger_state", str(include_trigger_state).lower()))
     if page_token:
-        return re.compile(
-            rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/get?job_id={job_id}&page_token={page_token}')}"
-        )
-    else:
-        return re.compile(rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/get?job_id={job_id}')}")
+        query_params.append(("page_token", page_token))
+    query = "&".join(f"{key}={value}" for key, value in sorted(query_params))
+    return re.compile(rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/get?{query}')}")
 
 
 def make_listjobs_path_pattern(page_token: str) -> Pattern[str]:
@@ -165,6 +168,28 @@ def test_get_job_with_no_pagination(config, requests_mock):
     w = WorkspaceClient(config=config)
 
     job = w.jobs.get(1337, page_token="initialToken")
+
+    assert job.as_dict() == {
+        "settings": {
+            "tasks": [{"task_key": "taskKey1"}, {"task_key": "taskKey2"}],
+        }
+    }
+
+
+def test_get_job_forwards_include_trigger_state(config, requests_mock):
+    job1 = {
+        "settings": {"tasks": [{"task_key": "taskKey1"}]},
+        "next_page_token": "tokenToSecondPage",
+    }
+    job2 = {"settings": {"tasks": [{"task_key": "taskKey2"}]}}
+    requests_mock.get(make_getjob_path_pattern(1337, include_trigger_state=True), text=json.dumps(job1))
+    requests_mock.get(
+        make_getjob_path_pattern(1337, "tokenToSecondPage", include_trigger_state=True),
+        text=json.dumps(job2),
+    )
+    w = WorkspaceClient(config=config)
+
+    job = w.jobs.get(1337, include_trigger_state=True)
 
     assert job.as_dict() == {
         "settings": {

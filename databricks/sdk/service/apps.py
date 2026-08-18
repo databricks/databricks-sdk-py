@@ -70,6 +70,9 @@ class App:
     """The email of the user that created the app."""
 
     default_git_source: Optional[GitSource] = None
+    """The Git source of the app's most recent active deployment, including the repository
+    configuration and the resolved reference. Populated by the system after a Git-based deployment
+    and used as the default reference when automatic deployments are enabled."""
 
     default_source_code_path: Optional[str] = None
     """The default workspace file system path of the source code from which app deployment are created.
@@ -101,6 +104,8 @@ class App:
     from this repository by providing only the git reference (branch, tag, or commit)."""
 
     git_source: Optional[GitSource] = None
+    """The Git source to deploy from, specifying the reference to check out (branch, tag, or commit)
+    and an optional path to the app source code within the repository configured in git_repository."""
 
     id: Optional[str] = None
     """The unique identifier of the app."""
