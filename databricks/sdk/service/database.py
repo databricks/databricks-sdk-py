@@ -18,6 +18,7 @@ import uuid
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     Wait,
 )
@@ -725,7 +726,7 @@ class DeltaTableSyncInfo:
         """Deserializes the DeltaTableSyncInfo from a dictionary."""
         return cls(
             delta_commit_timestamp=d.get("delta_commit_timestamp", None),
-            delta_commit_version=d.get("delta_commit_version", None),
+            delta_commit_version=_int64(d, "delta_commit_version"),
         )
 
 
@@ -1212,7 +1213,7 @@ class SyncedTableContinuousUpdateStatus:
         """Deserializes the SyncedTableContinuousUpdateStatus from a dictionary."""
         return cls(
             initial_pipeline_sync_progress=_from_dict(d, "initial_pipeline_sync_progress", SyncedTablePipelineProgress),
-            last_processed_commit_version=d.get("last_processed_commit_version", None),
+            last_processed_commit_version=_int64(d, "last_processed_commit_version"),
             timestamp=d.get("timestamp", None),
         )
 
@@ -1253,8 +1254,7 @@ class SyncedTableFailedStatus:
     def from_dict(cls, d: Dict[str, Any]) -> SyncedTableFailedStatus:
         """Deserializes the SyncedTableFailedStatus from a dictionary."""
         return cls(
-            last_processed_commit_version=d.get("last_processed_commit_version", None),
-            timestamp=d.get("timestamp", None),
+            last_processed_commit_version=_int64(d, "last_processed_commit_version"), timestamp=d.get("timestamp", None)
         )
 
 
@@ -1320,11 +1320,11 @@ class SyncedTablePipelineProgress:
         """Deserializes the SyncedTablePipelineProgress from a dictionary."""
         return cls(
             estimated_completion_time_seconds=d.get("estimated_completion_time_seconds", None),
-            latest_version_currently_processing=d.get("latest_version_currently_processing", None),
+            latest_version_currently_processing=_int64(d, "latest_version_currently_processing"),
             provisioning_phase=_enum(d, "provisioning_phase", ProvisioningPhase),
             sync_progress_completion=d.get("sync_progress_completion", None),
-            synced_row_count=d.get("synced_row_count", None),
-            total_row_count=d.get("total_row_count", None),
+            synced_row_count=_int64(d, "synced_row_count"),
+            total_row_count=_int64(d, "total_row_count"),
         )
 
 
@@ -1847,7 +1847,7 @@ class SyncedTableTriggeredUpdateStatus:
     def from_dict(cls, d: Dict[str, Any]) -> SyncedTableTriggeredUpdateStatus:
         """Deserializes the SyncedTableTriggeredUpdateStatus from a dictionary."""
         return cls(
-            last_processed_commit_version=d.get("last_processed_commit_version", None),
+            last_processed_commit_version=_int64(d, "last_processed_commit_version"),
             timestamp=d.get("timestamp", None),
             triggered_update_progress=_from_dict(d, "triggered_update_progress", SyncedTablePipelineProgress),
         )

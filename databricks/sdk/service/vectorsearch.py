@@ -18,6 +18,7 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     Wait,
 )
@@ -174,9 +175,9 @@ class AutoEvalJob:
             mlflow_experiment_id=d.get("mlflow_experiment_id", None),
             mlflow_run_id=d.get("mlflow_run_id", None),
             overall_progress=d.get("overall_progress", None),
-            progress_on_current_stage=d.get("progress_on_current_stage", None),
+            progress_on_current_stage=_int64(d, "progress_on_current_stage"),
             results_table_full_name=d.get("results_table_full_name", None),
-            total_for_current_stage=d.get("total_for_current_stage", None),
+            total_for_current_stage=_int64(d, "total_for_current_stage"),
         )
 
 
@@ -284,7 +285,7 @@ class DeleteDataResult:
     def from_dict(cls, d: Dict[str, Any]) -> DeleteDataResult:
         """Deserializes the DeleteDataResult from a dictionary."""
         return cls(
-            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=d.get("success_row_count", None)
+            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=_int64(d, "success_row_count")
         )
 
 
@@ -817,14 +818,14 @@ class EndpointInfo:
         """Deserializes the EndpointInfo from a dictionary."""
         return cls(
             budget_policy_id=d.get("budget_policy_id", None),
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             creator=d.get("creator", None),
             custom_tags=_repeated_dict(d, "custom_tags", CustomTag),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             endpoint_status=_from_dict(d, "endpoint_status", EndpointStatus),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             last_updated_user=d.get("last_updated_user", None),
             name=d.get("name", None),
             num_indexes=d.get("num_indexes", None),
@@ -863,9 +864,7 @@ class EndpointScalingInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointScalingInfo:
         """Deserializes the EndpointScalingInfo from a dictionary."""
-        return cls(
-            requested_target_qps=d.get("requested_target_qps", None), state=_enum(d, "state", ScalingChangeState)
-        )
+        return cls(requested_target_qps=_int64(d, "requested_target_qps"), state=_enum(d, "state", ScalingChangeState))
 
 
 @dataclass
@@ -1112,7 +1111,7 @@ class GetAutoEvalStatusResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetAutoEvalStatusResponse:
         """Deserializes the GetAutoEvalStatusResponse from a dictionary."""
         return cls(
-            end_time_ms=d.get("end_time_ms", None),
+            end_time_ms=_int64(d, "end_time_ms"),
             job_id=d.get("job_id", None),
             latest_run=_from_dict(d, "latest_run", AutoEvalJob),
             run_as_user=d.get("run_as_user", None),
@@ -1397,7 +1396,7 @@ class MetricValue:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MetricValue:
         """Deserializes the MetricValue from a dictionary."""
-        return cls(timestamp=d.get("timestamp", None), value=d.get("value", None))
+        return cls(timestamp=_int64(d, "timestamp"), value=d.get("value", None))
 
 
 @dataclass
@@ -1831,7 +1830,7 @@ class ResultManifest:
             columns=_repeated_dict(d, "columns", ColumnInfo),
             facet_column_count=d.get("facet_column_count", None),
             facet_columns=_repeated_dict(d, "facet_columns", ColumnInfo),
-            total_hit_count=d.get("total_hit_count", None),
+            total_hit_count=_int64(d, "total_hit_count"),
             total_hit_count_lower_bound=d.get("total_hit_count_lower_bound", None),
         )
 
@@ -2109,7 +2108,7 @@ class UpsertDataResult:
     def from_dict(cls, d: Dict[str, Any]) -> UpsertDataResult:
         """Deserializes the UpsertDataResult from a dictionary."""
         return cls(
-            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=d.get("success_row_count", None)
+            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=_int64(d, "success_row_count")
         )
 
 
@@ -2345,7 +2344,7 @@ class VectorIndexStatus:
         """Deserializes the VectorIndexStatus from a dictionary."""
         return cls(
             index_url=d.get("index_url", None),
-            indexed_row_count=d.get("indexed_row_count", None),
+            indexed_row_count=_int64(d, "indexed_row_count"),
             message=d.get("message", None),
             ready=d.get("ready", None),
         )

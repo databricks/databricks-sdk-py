@@ -16,6 +16,7 @@ from databricks.sdk.service._internal import (
     _duration,
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
 )
@@ -1233,7 +1234,7 @@ class PermissionsChange:
         return cls(
             add=d.get("add", None),
             principal=d.get("principal", None),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             remove=d.get("remove", None),
         )
 
@@ -1326,7 +1327,7 @@ class PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
         return cls(
             principal=d.get("principal", None),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             privileges=_repeated_enum(d, "privileges", Privilege),
         )
 
@@ -1462,7 +1463,7 @@ class ProviderInfo:
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
             cloud=d.get("cloud", None),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             data_provider_global_metastore_id=d.get("data_provider_global_metastore_id", None),
             email_recipient_id=d.get("email_recipient_id", None),
@@ -1472,7 +1473,7 @@ class ProviderInfo:
             recipient_profile=_from_dict(d, "recipient_profile", RecipientProfile),
             recipient_profile_str=d.get("recipient_profile_str", None),
             region=d.get("region", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -1704,11 +1705,11 @@ class RecipientInfo:
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
             cloud=d.get("cloud", None),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             data_recipient_global_metastore_id=d.get("data_recipient_global_metastore_id", None),
             email=d.get("email", None),
-            expiration_time=d.get("expiration_time", None),
+            expiration_time=_int64(d, "expiration_time"),
             id=d.get("id", None),
             ip_access_list=_from_dict(d, "ip_access_list", IpAccessList),
             metastore_id=d.get("metastore_id", None),
@@ -1718,7 +1719,7 @@ class RecipientInfo:
             region=d.get("region", None),
             sharing_code=d.get("sharing_code", None),
             tokens=_repeated_dict(d, "tokens", RecipientTokenInfo),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -1833,11 +1834,11 @@ class RecipientTokenInfo:
         """Deserializes the RecipientTokenInfo from a dictionary."""
         return cls(
             activation_url=d.get("activation_url", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
-            expiration_time=d.get("expiration_time", None),
+            expiration_time=_int64(d, "expiration_time"),
             id=d.get("id", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -1871,7 +1872,7 @@ class RegisteredModelAlias:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAlias:
         """Deserializes the RegisteredModelAlias from a dictionary."""
-        return cls(alias_name=d.get("alias_name", None), version_num=d.get("version_num", None))
+        return cls(alias_name=d.get("alias_name", None), version_num=_int64(d, "version_num"))
 
 
 @dataclass
@@ -2178,7 +2179,7 @@ class ShareInfo:
         """Deserializes the ShareInfo from a dictionary."""
         return cls(
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             name=d.get("name", None),
             objects=_repeated_dict(d, "objects", SharedDataObject),
@@ -2187,7 +2188,7 @@ class ShareInfo:
             serverless_budget_policy_id=d.get("serverless_budget_policy_id", None),
             storage_location=d.get("storage_location", None),
             storage_root=d.get("storage_root", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -2409,7 +2410,7 @@ class SharedDataObject:
     def from_dict(cls, d: Dict[str, Any]) -> SharedDataObject:
         """Deserializes the SharedDataObject from a dictionary."""
         return cls(
-            added_at=d.get("added_at", None),
+            added_at=_int64(d, "added_at"),
             added_by=d.get("added_by", None),
             cdf_enabled=d.get("cdf_enabled", None),
             comment=d.get("comment", None),
@@ -2422,7 +2423,7 @@ class SharedDataObject:
             name=d.get("name", None),
             partitions=_repeated_dict(d, "partitions", Partition),
             shared_as=d.get("shared_as", None),
-            start_version=d.get("start_version", None),
+            start_version=_int64(d, "start_version"),
             status=_enum(d, "status", SharedDataObjectStatus),
             string_shared_as=d.get("string_shared_as", None),
         )

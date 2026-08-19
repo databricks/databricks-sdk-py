@@ -12,10 +12,12 @@ from databricks.sdk.service._internal import (
     _escape_multi_segment_path_parameter,
     _fieldmask,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_duration,
     _repeated_enum,
     _repeated_fieldmask,
+    _repeated_int64,
     _repeated_timestamp,
     _timestamp,
 )
@@ -60,6 +62,28 @@ def test_repeated_dict():
         B("a"),
         B("c"),
     ]
+
+
+@pytest.mark.parametrize(
+    "wire_value",
+    [9223372036854775807, "9223372036854775807", -9223372036854775808, "-9223372036854775808"],
+)
+def test_int64(wire_value):
+    assert _int64({"field": wire_value}, "field") == int(wire_value)
+
+
+@pytest.mark.parametrize("input_dict", [{}, {"field": None}])
+def test_int64_missing_or_none(input_dict):
+    assert _int64(input_dict, "field") is None
+
+
+def test_repeated_int64():
+    assert _repeated_int64({"field": [123, "456", -789, "-1011"]}, "field") == [123, 456, -789, -1011]
+
+
+@pytest.mark.parametrize("input_dict,expected", [({}, None), ({"field": None}, None), ({"field": []}, [])])
+def test_repeated_int64_missing_none_or_empty(input_dict, expected):
+    assert _repeated_int64(input_dict, "field") == expected
 
 
 def test_escape_multi_segment_path_parameter():

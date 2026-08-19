@@ -18,8 +18,10 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
+    _repeated_int64,
     Wait,
 )
 from databricks.sdk.common.types.fieldmask import FieldMask
@@ -1204,10 +1206,10 @@ class BaseChunkInfo:
     def from_dict(cls, d: Dict[str, Any]) -> BaseChunkInfo:
         """Deserializes the BaseChunkInfo from a dictionary."""
         return cls(
-            byte_count=d.get("byte_count", None),
+            byte_count=_int64(d, "byte_count"),
             chunk_index=d.get("chunk_index", None),
-            row_count=d.get("row_count", None),
-            row_offset=d.get("row_offset", None),
+            row_count=_int64(d, "row_count"),
+            row_offset=_int64(d, "row_offset"),
         )
 
 
@@ -2732,7 +2734,7 @@ class EndpointInfo:
             max_num_clusters=d.get("max_num_clusters", None),
             min_num_clusters=d.get("min_num_clusters", None),
             name=d.get("name", None),
-            num_active_sessions=d.get("num_active_sessions", None),
+            num_active_sessions=_int64(d, "num_active_sessions"),
             num_clusters=d.get("num_clusters", None),
             odbc_params=_from_dict(d, "odbc_params", OdbcParams),
             spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
@@ -2949,15 +2951,15 @@ class ExternalLink:
     def from_dict(cls, d: Dict[str, Any]) -> ExternalLink:
         """Deserializes the ExternalLink from a dictionary."""
         return cls(
-            byte_count=d.get("byte_count", None),
+            byte_count=_int64(d, "byte_count"),
             chunk_index=d.get("chunk_index", None),
             expiration=d.get("expiration", None),
             external_link=d.get("external_link", None),
             http_headers=d.get("http_headers", None),
             next_chunk_index=d.get("next_chunk_index", None),
             next_chunk_internal_link=d.get("next_chunk_internal_link", None),
-            row_count=d.get("row_count", None),
-            row_offset=d.get("row_offset", None),
+            row_count=_int64(d, "row_count"),
+            row_offset=_int64(d, "row_offset"),
         )
 
 
@@ -3373,7 +3375,7 @@ class GetWarehouseResponse:
             max_num_clusters=d.get("max_num_clusters", None),
             min_num_clusters=d.get("min_num_clusters", None),
             name=d.get("name", None),
-            num_active_sessions=d.get("num_active_sessions", None),
+            num_active_sessions=_int64(d, "num_active_sessions"),
             num_clusters=d.get("num_clusters", None),
             odbc_params=_from_dict(d, "odbc_params", OdbcParams),
             spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
@@ -5002,7 +5004,7 @@ class QueryFilter:
             query_start_time_range=_from_dict(d, "query_start_time_range", TimeRange),
             statement_ids=d.get("statement_ids", None),
             statuses=_repeated_enum(d, "statuses", QueryStatus),
-            user_ids=d.get("user_ids", None),
+            user_ids=_repeated_int64(d, "user_ids"),
             warehouse_ids=d.get("warehouse_ids", None),
         )
 
@@ -5228,28 +5230,28 @@ class QueryInfo:
             cache_query_id=d.get("cache_query_id", None),
             channel_used=_from_dict(d, "channel_used", ChannelInfo),
             client_application=d.get("client_application", None),
-            duration=d.get("duration", None),
+            duration=_int64(d, "duration"),
             endpoint_id=d.get("endpoint_id", None),
             error_message=d.get("error_message", None),
-            executed_as_user_id=d.get("executed_as_user_id", None),
+            executed_as_user_id=_int64(d, "executed_as_user_id"),
             executed_as_user_name=d.get("executed_as_user_name", None),
-            execution_end_time_ms=d.get("execution_end_time_ms", None),
+            execution_end_time_ms=_int64(d, "execution_end_time_ms"),
             is_final=d.get("is_final", None),
             lookup_key=d.get("lookup_key", None),
             metrics=_from_dict(d, "metrics", QueryMetrics),
             plans_state=_enum(d, "plans_state", PlansState),
-            query_end_time_ms=d.get("query_end_time_ms", None),
+            query_end_time_ms=_int64(d, "query_end_time_ms"),
             query_id=d.get("query_id", None),
             query_source=_from_dict(d, "query_source", ExternalQuerySource),
-            query_start_time_ms=d.get("query_start_time_ms", None),
+            query_start_time_ms=_int64(d, "query_start_time_ms"),
             query_tags=_repeated_dict(d, "query_tags", QueryTag),
             query_text=d.get("query_text", None),
-            rows_produced=d.get("rows_produced", None),
+            rows_produced=_int64(d, "rows_produced"),
             session_id=d.get("session_id", None),
             spark_ui_url=d.get("spark_ui_url", None),
             statement_type=_enum(d, "statement_type", QueryStatementType),
             status=_enum(d, "status", QueryStatus),
-            user_id=d.get("user_id", None),
+            user_id=_int64(d, "user_id"),
             user_name=d.get("user_name", None),
             warehouse_id=d.get("warehouse_id", None),
         )
@@ -5537,35 +5539,35 @@ class QueryMetrics:
     def from_dict(cls, d: Dict[str, Any]) -> QueryMetrics:
         """Deserializes the QueryMetrics from a dictionary."""
         return cls(
-            compilation_time_ms=d.get("compilation_time_ms", None),
-            execution_time_ms=d.get("execution_time_ms", None),
-            network_sent_bytes=d.get("network_sent_bytes", None),
-            overloading_queue_start_timestamp=d.get("overloading_queue_start_timestamp", None),
-            photon_total_time_ms=d.get("photon_total_time_ms", None),
-            projected_remaining_task_total_time_ms=d.get("projected_remaining_task_total_time_ms", None),
-            projected_remaining_wallclock_time_ms=d.get("projected_remaining_wallclock_time_ms", None),
-            provisioning_queue_start_timestamp=d.get("provisioning_queue_start_timestamp", None),
-            pruned_bytes=d.get("pruned_bytes", None),
-            pruned_files_count=d.get("pruned_files_count", None),
-            query_compilation_start_timestamp=d.get("query_compilation_start_timestamp", None),
-            read_bytes=d.get("read_bytes", None),
-            read_cache_bytes=d.get("read_cache_bytes", None),
-            read_files_bytes=d.get("read_files_bytes", None),
-            read_files_count=d.get("read_files_count", None),
-            read_partitions_count=d.get("read_partitions_count", None),
-            read_remote_bytes=d.get("read_remote_bytes", None),
-            remaining_task_count=d.get("remaining_task_count", None),
-            result_fetch_time_ms=d.get("result_fetch_time_ms", None),
+            compilation_time_ms=_int64(d, "compilation_time_ms"),
+            execution_time_ms=_int64(d, "execution_time_ms"),
+            network_sent_bytes=_int64(d, "network_sent_bytes"),
+            overloading_queue_start_timestamp=_int64(d, "overloading_queue_start_timestamp"),
+            photon_total_time_ms=_int64(d, "photon_total_time_ms"),
+            projected_remaining_task_total_time_ms=_int64(d, "projected_remaining_task_total_time_ms"),
+            projected_remaining_wallclock_time_ms=_int64(d, "projected_remaining_wallclock_time_ms"),
+            provisioning_queue_start_timestamp=_int64(d, "provisioning_queue_start_timestamp"),
+            pruned_bytes=_int64(d, "pruned_bytes"),
+            pruned_files_count=_int64(d, "pruned_files_count"),
+            query_compilation_start_timestamp=_int64(d, "query_compilation_start_timestamp"),
+            read_bytes=_int64(d, "read_bytes"),
+            read_cache_bytes=_int64(d, "read_cache_bytes"),
+            read_files_bytes=_int64(d, "read_files_bytes"),
+            read_files_count=_int64(d, "read_files_count"),
+            read_partitions_count=_int64(d, "read_partitions_count"),
+            read_remote_bytes=_int64(d, "read_remote_bytes"),
+            remaining_task_count=_int64(d, "remaining_task_count"),
+            result_fetch_time_ms=_int64(d, "result_fetch_time_ms"),
             result_from_cache=d.get("result_from_cache", None),
-            rows_produced_count=d.get("rows_produced_count", None),
-            rows_read_count=d.get("rows_read_count", None),
-            runnable_tasks=d.get("runnable_tasks", None),
-            spill_to_disk_bytes=d.get("spill_to_disk_bytes", None),
+            rows_produced_count=_int64(d, "rows_produced_count"),
+            rows_read_count=_int64(d, "rows_read_count"),
+            runnable_tasks=_int64(d, "runnable_tasks"),
+            spill_to_disk_bytes=_int64(d, "spill_to_disk_bytes"),
             task_time_over_time_range=_from_dict(d, "task_time_over_time_range", TaskTimeOverRange),
-            task_total_time_ms=d.get("task_total_time_ms", None),
-            total_time_ms=d.get("total_time_ms", None),
-            work_to_be_done=d.get("work_to_be_done", None),
-            write_remote_bytes=d.get("write_remote_bytes", None),
+            task_total_time_ms=_int64(d, "task_total_time_ms"),
+            total_time_ms=_int64(d, "total_time_ms"),
+            work_to_be_done=_int64(d, "work_to_be_done"),
+            write_remote_bytes=_int64(d, "write_remote_bytes"),
         )
 
 
@@ -5913,14 +5915,14 @@ class ResultData:
     def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
         return cls(
-            byte_count=d.get("byte_count", None),
+            byte_count=_int64(d, "byte_count"),
             chunk_index=d.get("chunk_index", None),
             data_array=d.get("data_array", None),
             external_links=_repeated_dict(d, "external_links", ExternalLink),
             next_chunk_index=d.get("next_chunk_index", None),
             next_chunk_internal_link=d.get("next_chunk_internal_link", None),
-            row_count=d.get("row_count", None),
-            row_offset=d.get("row_offset", None),
+            row_count=_int64(d, "row_count"),
+            row_offset=_int64(d, "row_offset"),
         )
 
 
@@ -5993,9 +5995,9 @@ class ResultManifest:
             chunks=_repeated_dict(d, "chunks", BaseChunkInfo),
             format=_enum(d, "format", Format),
             schema=_from_dict(d, "schema", ResultSchema),
-            total_byte_count=d.get("total_byte_count", None),
+            total_byte_count=_int64(d, "total_byte_count"),
             total_chunk_count=d.get("total_chunk_count", None),
-            total_row_count=d.get("total_row_count", None),
+            total_row_count=_int64(d, "total_row_count"),
             truncated=d.get("truncated", None),
         )
 
@@ -6444,7 +6446,7 @@ class TaskTimeOverRange:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TaskTimeOverRange:
         """Deserializes the TaskTimeOverRange from a dictionary."""
-        return cls(entries=_repeated_dict(d, "entries", TaskTimeOverRangeEntry), interval=d.get("interval", None))
+        return cls(entries=_repeated_dict(d, "entries", TaskTimeOverRangeEntry), interval=_int64(d, "interval"))
 
 
 @dataclass
@@ -6469,7 +6471,7 @@ class TaskTimeOverRangeEntry:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TaskTimeOverRangeEntry:
         """Deserializes the TaskTimeOverRangeEntry from a dictionary."""
-        return cls(task_completed_time_ms=d.get("task_completed_time_ms", None))
+        return cls(task_completed_time_ms=_int64(d, "task_completed_time_ms"))
 
 
 @dataclass
@@ -6781,7 +6783,7 @@ class TimeRange:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TimeRange:
         """Deserializes the TimeRange from a dictionary."""
-        return cls(end_time_ms=d.get("end_time_ms", None), start_time_ms=d.get("start_time_ms", None))
+        return cls(end_time_ms=_int64(d, "end_time_ms"), start_time_ms=_int64(d, "start_time_ms"))
 
 
 @dataclass

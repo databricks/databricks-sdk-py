@@ -18,8 +18,10 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
+    _repeated_int64,
     Wait,
 )
 
@@ -58,7 +60,7 @@ class AkamaiOptions:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AkamaiOptions:
         """Deserializes the AkamaiOptions from a dictionary."""
-        return cls(config_ids=d.get("config_ids", None))
+        return cls(config_ids=_repeated_int64(d, "config_ids"))
 
 
 @dataclass
@@ -786,7 +788,7 @@ class DataPlaneId:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DataPlaneId:
         """Deserializes the DataPlaneId from a dictionary."""
-        return cls(instance=d.get("instance", None), seq_no=d.get("seq_no", None))
+        return cls(instance=d.get("instance", None), seq_no=_int64(d, "seq_no"))
 
 
 @dataclass
@@ -1388,7 +1390,7 @@ class GetPipelineResponse:
             effective_serverless_compute_id=d.get("effective_serverless_compute_id", None),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             health=_enum(d, "health", GetPipelineResponseHealth),
-            last_modified=d.get("last_modified", None),
+            last_modified=_int64(d, "last_modified"),
             latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
             name=d.get("name", None),
             parameters=d.get("parameters", None),
@@ -2110,7 +2112,7 @@ class IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
         return cls(
             cursor_columns=d.get("cursor_columns", None),
             deletion_condition=d.get("deletion_condition", None),
-            hard_deletion_sync_min_interval_in_seconds=d.get("hard_deletion_sync_min_interval_in_seconds", None),
+            hard_deletion_sync_min_interval_in_seconds=_int64(d, "hard_deletion_sync_min_interval_in_seconds"),
         )
 
 
@@ -2272,6 +2274,7 @@ class IngestionSourceType(Enum):
     PENDO = "PENDO"
     PINTEREST_ADS = "PINTEREST_ADS"
     POSTGRESQL = "POSTGRESQL"
+    POWER_BI = "POWER_BI"
     PROOFPOINT_SIEM = "PROOFPOINT_SIEM"
     QUICKBOOKS = "QUICKBOOKS"
     RABBITMQ = "RABBITMQ"
@@ -2490,7 +2493,7 @@ class KafkaOptions:
         return cls(
             client_config=d.get("client_config", None),
             key_transformer=_from_dict(d, "key_transformer", Transformer),
-            max_offsets_per_trigger=d.get("max_offsets_per_trigger", None),
+            max_offsets_per_trigger=_int64(d, "max_offsets_per_trigger"),
             max_partitions=d.get("max_partitions", None),
             starting_offset=d.get("starting_offset", None),
             topic_pattern=d.get("topic_pattern", None),
@@ -3341,7 +3344,7 @@ class Origin:
     def from_dict(cls, d: Dict[str, Any]) -> Origin:
         """Deserializes the Origin from a dictionary."""
         return cls(
-            batch_id=d.get("batch_id", None),
+            batch_id=_int64(d, "batch_id"),
             cloud=d.get("cloud", None),
             cluster_id=d.get("cluster_id", None),
             dataset_name=d.get("dataset_name", None),
@@ -3356,7 +3359,7 @@ class Origin:
             ingestion_source_table_version=d.get("ingestion_source_table_version", None),
             maintenance_id=d.get("maintenance_id", None),
             materialization_name=d.get("materialization_name", None),
-            org_id=d.get("org_id", None),
+            org_id=_int64(d, "org_id"),
             pipeline_id=d.get("pipeline_id", None),
             pipeline_name=d.get("pipeline_name", None),
             region=d.get("region", None),
@@ -5471,7 +5474,7 @@ class Sequencing:
     def from_dict(cls, d: Dict[str, Any]) -> Sequencing:
         """Deserializes the Sequencing from a dictionary."""
         return cls(
-            control_plane_seq_no=d.get("control_plane_seq_no", None),
+            control_plane_seq_no=_int64(d, "control_plane_seq_no"),
             data_plane_id=_from_dict(d, "data_plane_id", DataPlaneId),
         )
 
@@ -6516,7 +6519,7 @@ class UpdateInfo:
             cause=_enum(d, "cause", UpdateInfoCause),
             cluster_id=d.get("cluster_id", None),
             config=_from_dict(d, "config", PipelineSpec),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             full_refresh=d.get("full_refresh", None),
             full_refresh_selection=d.get("full_refresh_selection", None),
             mode=_enum(d, "mode", UpdateMode),

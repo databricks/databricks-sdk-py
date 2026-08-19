@@ -20,8 +20,10 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
+    _repeated_int64,
     _timestamp,
     Wait,
 )
@@ -1507,7 +1509,7 @@ class ClusterDetails:
             cluster_id=d.get("cluster_id", None),
             cluster_log_conf=_from_dict(d, "cluster_log_conf", ClusterLogConf),
             cluster_log_status=_from_dict(d, "cluster_log_status", LogSyncStatus),
-            cluster_memory_mb=d.get("cluster_memory_mb", None),
+            cluster_memory_mb=_int64(d, "cluster_memory_mb"),
             cluster_name=d.get("cluster_name", None),
             cluster_source=_enum(d, "cluster_source", ClusterSource),
             creator_user_name=d.get("creator_user_name", None),
@@ -1529,8 +1531,8 @@ class ClusterDetails:
             is_single_node=d.get("is_single_node", None),
             jdbc_port=d.get("jdbc_port", None),
             kind=_enum(d, "kind", Kind),
-            last_restarted_time=d.get("last_restarted_time", None),
-            last_state_loss_time=d.get("last_state_loss_time", None),
+            last_restarted_time=_int64(d, "last_restarted_time"),
+            last_state_loss_time=_int64(d, "last_state_loss_time"),
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
@@ -1538,15 +1540,15 @@ class ClusterDetails:
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
-            spark_context_id=d.get("spark_context_id", None),
+            spark_context_id=_int64(d, "spark_context_id"),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             spec=_from_dict(d, "spec", ClusterSpec),
             ssh_public_keys=d.get("ssh_public_keys", None),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             state=_enum(d, "state", State),
             state_message=d.get("state_message", None),
-            terminated_time=d.get("terminated_time", None),
+            terminated_time=_int64(d, "terminated_time"),
             termination_reason=_from_dict(d, "termination_reason", TerminationReason),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
@@ -1606,7 +1608,7 @@ class ClusterEvent:
             cluster_id=d.get("cluster_id", None),
             data_plane_event_details=_from_dict(d, "data_plane_event_details", DataPlaneEventDetails),
             details=_from_dict(d, "details", EventDetails),
-            timestamp=d.get("timestamp", None),
+            timestamp=_int64(d, "timestamp"),
             type=_enum(d, "type", EventType),
         )
 
@@ -2809,7 +2811,7 @@ class DataPlaneEventDetails:
             event_type=_enum(d, "event_type", DataPlaneEventDetailsEventType),
             executor_failures=d.get("executor_failures", None),
             host_id=d.get("host_id", None),
-            timestamp=d.get("timestamp", None),
+            timestamp=_int64(d, "timestamp"),
         )
 
 
@@ -2990,17 +2992,17 @@ class DefaultBaseEnvironment:
         return cls(
             base_environment_cache=_repeated_dict(d, "base_environment_cache", DefaultBaseEnvironmentCache),
             base_environment_type=_enum(d, "base_environment_type", BaseEnvironmentType),
-            created_timestamp=d.get("created_timestamp", None),
-            creator_user_id=d.get("creator_user_id", None),
+            created_timestamp=_int64(d, "created_timestamp"),
+            creator_user_id=_int64(d, "creator_user_id"),
             environment=_from_dict(d, "environment", Environment),
             filepath=d.get("filepath", None),
             id=d.get("id", None),
             is_default=d.get("is_default", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
-            last_updated_user_id=d.get("last_updated_user_id", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
+            last_updated_user_id=_int64(d, "last_updated_user_id"),
             message=d.get("message", None),
             name=d.get("name", None),
-            principal_ids=d.get("principal_ids", None),
+            principal_ids=_repeated_int64(d, "principal_ids"),
             status=_enum(d, "status", DefaultBaseEnvironmentCacheStatus),
         )
 
@@ -4232,16 +4234,16 @@ class EventDetails:
             current_num_vcpus=d.get("current_num_vcpus", None),
             current_num_workers=d.get("current_num_workers", None),
             did_not_expand_reason=d.get("did_not_expand_reason", None),
-            disk_size=d.get("disk_size", None),
+            disk_size=_int64(d, "disk_size"),
             driver_state_message=d.get("driver_state_message", None),
             enable_termination_for_node_blocklisted=d.get("enable_termination_for_node_blocklisted", None),
-            free_space=d.get("free_space", None),
+            free_space=_int64(d, "free_space"),
             init_scripts=_from_dict(d, "init_scripts", InitScriptEventDetails),
             instance_id=d.get("instance_id", None),
             job_run_name=d.get("job_run_name", None),
             previous_attributes=_from_dict(d, "previous_attributes", ClusterAttributes),
             previous_cluster_size=_from_dict(d, "previous_cluster_size", ClusterSize),
-            previous_disk_size=d.get("previous_disk_size", None),
+            previous_disk_size=_int64(d, "previous_disk_size"),
             reason=_from_dict(d, "reason", TerminationReason),
             target_num_vcpus=d.get("target_num_vcpus", None),
             target_num_workers=d.get("target_num_workers", None),
@@ -4629,14 +4631,14 @@ class GetEvents:
         """Deserializes the GetEvents from a dictionary."""
         return cls(
             cluster_id=d.get("cluster_id", None),
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             event_types=_repeated_enum(d, "event_types", EventType),
-            limit=d.get("limit", None),
-            offset=d.get("offset", None),
+            limit=_int64(d, "limit"),
+            offset=_int64(d, "offset"),
             order=_enum(d, "order", GetEventsOrder),
             page_size=d.get("page_size", None),
             page_token=d.get("page_token", None),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
         )
 
 
@@ -4707,7 +4709,7 @@ class GetEventsResponse:
             next_page=_from_dict(d, "next_page", GetEvents),
             next_page_token=d.get("next_page_token", None),
             prev_page_token=d.get("prev_page_token", None),
-            total_count=d.get("total_count", None),
+            total_count=_int64(d, "total_count"),
         )
 
 
@@ -6974,7 +6976,7 @@ class LogSyncStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LogSyncStatus:
         """Deserializes the LogSyncStatus from a dictionary."""
-        return cls(last_attempted=d.get("last_attempted", None), last_exception=d.get("last_exception", None))
+        return cls(last_attempted=_int64(d, "last_attempted"), last_exception=d.get("last_exception", None))
 
 
 MapAny = Dict[str, Any]
@@ -7017,7 +7019,7 @@ class MaterializedEnvironment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MaterializedEnvironment:
         """Deserializes the MaterializedEnvironment from a dictionary."""
-        return cls(last_updated_timestamp=d.get("last_updated_timestamp", None))
+        return cls(last_updated_timestamp=_int64(d, "last_updated_timestamp"))
 
 
 @dataclass
@@ -7623,13 +7625,13 @@ class Policy:
         return cls(
             auto_enforcement_config=_from_dict(d, "auto_enforcement_config", PolicyAutoEnforcementConfig),
             background_enforcement=_from_dict(d, "background_enforcement", PolicyBackgroundEnforcement),
-            created_at_timestamp=d.get("created_at_timestamp", None),
+            created_at_timestamp=_int64(d, "created_at_timestamp"),
             creator_user_name=d.get("creator_user_name", None),
             definition=d.get("definition", None),
             description=d.get("description", None),
             is_default=d.get("is_default", None),
             libraries=_repeated_dict(d, "libraries", Library),
-            max_clusters_per_user=d.get("max_clusters_per_user", None),
+            max_clusters_per_user=_int64(d, "max_clusters_per_user"),
             name=d.get("name", None),
             policy_family_definition_overrides=d.get("policy_family_definition_overrides", None),
             policy_family_id=d.get("policy_family_id", None),
@@ -8252,7 +8254,7 @@ class SparkNode:
             node_id=d.get("node_id", None),
             private_ip=d.get("private_ip", None),
             public_dns=d.get("public_dns", None),
-            start_timestamp=d.get("start_timestamp", None),
+            start_timestamp=_int64(d, "start_timestamp"),
         )
 
 

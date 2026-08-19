@@ -634,10 +634,10 @@ def test_list_runs_without_task_expansion(config, requests_mock):
                 "run_name": "run400",
                 "repair_history": [
                     {
-                        "id": "repair400_1",
+                        "id": "4001",
                     },
                     {
-                        "id": "repair400_2",
+                        "id": "4002",
                     },
                 ],
             }
@@ -679,10 +679,10 @@ def test_list_runs_without_task_expansion(config, requests_mock):
             "run_name": "run400",
             "repair_history": [
                 {
-                    "id": "repair400_1",
+                    "id": 4001,
                 },
                 {
-                    "id": "repair400_2",
+                    "id": 4002,
                 },
             ],
         },

@@ -1,5 +1,10 @@
 # Version changelog
 
+## Release v0.133.0 (2026-08-19)
+
+### API Changes
+* Add `enabled_telemetry_features` field for `databricks.sdk.service.serving.TelemetryConfig`.
+
 ## Release v0.132.0 (2026-08-18)
 
 ### API Changes

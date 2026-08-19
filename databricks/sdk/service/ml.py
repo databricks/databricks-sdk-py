@@ -21,6 +21,7 @@ from databricks.sdk.service._internal import (
     _duration,
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
     _timestamp,
@@ -130,10 +131,10 @@ class Activity:
         return cls(
             activity_type=_enum(d, "activity_type", ActivityType),
             comment=d.get("comment", None),
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             from_stage=d.get("from_stage", None),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             system_comment=d.get("system_comment", None),
             to_stage=d.get("to_stage", None),
             user_id=d.get("user_id", None),
@@ -426,7 +427,7 @@ class ApproxPercentileFunction:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ApproxPercentileFunction:
         """Deserializes the ApproxPercentileFunction from a dictionary."""
-        return cls(accuracy=d.get("accuracy", None), input=d.get("input", None), percentile=d.get("percentile", None))
+        return cls(accuracy=_int64(d, "accuracy"), input=d.get("input", None), percentile=d.get("percentile", None))
 
 
 @dataclass
@@ -698,9 +699,9 @@ class CommentObject:
         return cls(
             available_actions=_repeated_enum(d, "available_actions", CommentActivityAction),
             comment=d.get("comment", None),
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             user_id=d.get("user_id", None),
         )
 
@@ -1092,6 +1093,10 @@ class DataSource:
     kafka_source: Optional[KafkaSource] = None
     """A Kafka stream data source."""
 
+    lateness: Optional[SourceLateness] = None
+    """Completeness timing for this Feature's use of the source. This configuration is part of the
+    Feature definition; it does not modify the underlying table or stream."""
+
     request_source: Optional[RequestSource] = None
     """A request-time data source."""
 
@@ -1105,6 +1110,8 @@ class DataSource:
             body["delta_table_source"] = self.delta_table_source.as_dict()
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source.as_dict()
+        if self.lateness:
+            body["lateness"] = self.lateness.as_dict()
         if self.request_source:
             body["request_source"] = self.request_source.as_dict()
         if self.stream_source:
@@ -1118,6 +1125,8 @@ class DataSource:
             body["delta_table_source"] = self.delta_table_source
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source
+        if self.lateness:
+            body["lateness"] = self.lateness
         if self.request_source:
             body["request_source"] = self.request_source
         if self.stream_source:
@@ -1130,6 +1139,7 @@ class DataSource:
         return cls(
             delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
             kafka_source=_from_dict(d, "kafka_source", KafkaSource),
+            lateness=_from_dict(d, "lateness", SourceLateness),
             request_source=_from_dict(d, "request_source", RequestSource),
             stream_source=_from_dict(d, "stream_source", StreamSource),
         )
@@ -1750,9 +1760,9 @@ class Experiment:
         """Deserializes the Experiment from a dictionary."""
         return cls(
             artifact_location=d.get("artifact_location", None),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             experiment_id=d.get("experiment_id", None),
-            last_update_time=d.get("last_update_time", None),
+            last_update_time=_int64(d, "last_update_time"),
             lifecycle_stage=d.get("lifecycle_stage", None),
             name=d.get("name", None),
             tags=_repeated_dict(d, "tags", ExperimentTag),
@@ -2296,7 +2306,7 @@ class FeatureLineageModel:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FeatureLineageModel:
         """Deserializes the FeatureLineageModel from a dictionary."""
-        return cls(name=d.get("name", None), version=d.get("version", None))
+        return cls(name=d.get("name", None), version=_int64(d, "version"))
 
 
 @dataclass
@@ -2462,7 +2472,7 @@ class FileInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
-        return cls(file_size=d.get("file_size", None), is_dir=d.get("is_dir", None), path=d.get("path", None))
+        return cls(file_size=_int64(d, "file_size"), is_dir=d.get("is_dir", None), path=d.get("path", None))
 
 
 @dataclass
@@ -2521,7 +2531,7 @@ class FirstDistinctFunction:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FirstDistinctFunction:
         """Deserializes the FirstDistinctFunction from a dictionary."""
-        return cls(input=d.get("input", None), n=d.get("n", None))
+        return cls(input=d.get("input", None), n=_int64(d, "n"))
 
 
 @dataclass
@@ -2582,7 +2592,7 @@ class FirstNFunction:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FirstNFunction:
         """Deserializes the FirstNFunction from a dictionary."""
-        return cls(input=d.get("input", None), n=d.get("n", None))
+        return cls(input=d.get("input", None), n=_int64(d, "n"))
 
 
 @dataclass
@@ -3255,11 +3265,11 @@ class IngestionConfig:
     def from_dict(cls, d: Dict[str, Any]) -> IngestionConfig:
         """Deserializes the IngestionConfig from a dictionary."""
         return cls(
-            backfill_job_id=d.get("backfill_job_id", None),
+            backfill_job_id=_int64(d, "backfill_job_id"),
             backfill_source=_from_dict(d, "backfill_source", BackfillSource),
             deduplication_columns=d.get("deduplication_columns", None),
             ingestion_destination=_from_dict(d, "ingestion_destination", IngestionDestination),
-            ingestion_job_id=d.get("ingestion_job_id", None),
+            ingestion_job_id=_int64(d, "ingestion_job_id"),
             ingestion_pipeline_id=d.get("ingestion_pipeline_id", None),
         )
 
@@ -3389,7 +3399,7 @@ class JobContext:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> JobContext:
         """Deserializes the JobContext from a dictionary."""
-        return cls(job_id=d.get("job_id", None), job_run_id=d.get("job_run_id", None))
+        return cls(job_id=_int64(d, "job_id"), job_run_id=_int64(d, "job_run_id"))
 
 
 @dataclass
@@ -3816,7 +3826,7 @@ class LastDistinctFunction:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LastDistinctFunction:
         """Deserializes the LastDistinctFunction from a dictionary."""
-        return cls(input=d.get("input", None), n=d.get("n", None))
+        return cls(input=d.get("input", None), n=_int64(d, "n"))
 
 
 @dataclass
@@ -3877,7 +3887,7 @@ class LastNFunction:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LastNFunction:
         """Deserializes the LastNFunction from a dictionary."""
-        return cls(input=d.get("input", None), n=d.get("n", None))
+        return cls(input=d.get("input", None), n=_int64(d, "n"))
 
 
 @dataclass
@@ -3913,7 +3923,7 @@ class LineageContext:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LineageContext:
         """Deserializes the LineageContext from a dictionary."""
-        return cls(job_context=_from_dict(d, "job_context", JobContext), notebook_id=d.get("notebook_id", None))
+        return cls(job_context=_from_dict(d, "job_context", JobContext), notebook_id=_int64(d, "notebook_id"))
 
 
 @dataclass
@@ -4646,10 +4656,10 @@ class LoggedModelInfo:
         """Deserializes the LoggedModelInfo from a dictionary."""
         return cls(
             artifact_uri=d.get("artifact_uri", None),
-            creation_timestamp_ms=d.get("creation_timestamp_ms", None),
-            creator_id=d.get("creator_id", None),
+            creation_timestamp_ms=_int64(d, "creation_timestamp_ms"),
+            creator_id=_int64(d, "creator_id"),
             experiment_id=d.get("experiment_id", None),
-            last_updated_timestamp_ms=d.get("last_updated_timestamp_ms", None),
+            last_updated_timestamp_ms=_int64(d, "last_updated_timestamp_ms"),
             model_id=d.get("model_id", None),
             model_type=d.get("model_type", None),
             name=d.get("name", None),
@@ -4975,8 +4985,8 @@ class Metric:
             key=d.get("key", None),
             model_id=d.get("model_id", None),
             run_id=d.get("run_id", None),
-            step=d.get("step", None),
-            timestamp=d.get("timestamp", None),
+            step=_int64(d, "step"),
+            timestamp=_int64(d, "timestamp"),
             value=d.get("value", None),
         )
 
@@ -5074,9 +5084,9 @@ class Model:
     def from_dict(cls, d: Dict[str, Any]) -> Model:
         """Deserializes the Model from a dictionary."""
         return cls(
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             description=d.get("description", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             latest_versions=_repeated_dict(d, "latest_versions", ModelVersion),
             name=d.get("name", None),
             tags=_repeated_dict(d, "tags", ModelTag),
@@ -5163,10 +5173,10 @@ class ModelDatabricks:
     def from_dict(cls, d: Dict[str, Any]) -> ModelDatabricks:
         """Deserializes the ModelDatabricks from a dictionary."""
         return cls(
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             description=d.get("description", None),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             latest_versions=_repeated_dict(d, "latest_versions", ModelVersion),
             name=d.get("name", None),
             permission_level=_enum(d, "permission_level", PermissionLevel),
@@ -5233,7 +5243,7 @@ class ModelOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ModelOutput:
         """Deserializes the ModelOutput from a dictionary."""
-        return cls(model_id=d.get("model_id", None), step=d.get("step", None))
+        return cls(model_id=d.get("model_id", None), step=_int64(d, "step"))
 
 
 @dataclass
@@ -5378,10 +5388,10 @@ class ModelVersion:
     def from_dict(cls, d: Dict[str, Any]) -> ModelVersion:
         """Deserializes the ModelVersion from a dictionary."""
         return cls(
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             current_stage=d.get("current_stage", None),
             description=d.get("description", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             name=d.get("name", None),
             run_id=d.get("run_id", None),
             run_link=d.get("run_link", None),
@@ -5531,12 +5541,12 @@ class ModelVersionDatabricks:
     def from_dict(cls, d: Dict[str, Any]) -> ModelVersionDatabricks:
         """Deserializes the ModelVersionDatabricks from a dictionary."""
         return cls(
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             current_stage=d.get("current_stage", None),
             description=d.get("description", None),
             email_subscription_status=_enum(d, "email_subscription_status", RegistryEmailSubscriptionType),
             feature_list=_from_dict(d, "feature_list", FeatureList),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             name=d.get("name", None),
             open_requests=_repeated_dict(d, "open_requests", Activity),
             permission_level=_enum(d, "permission_level", PermissionLevel),
@@ -6393,13 +6403,13 @@ class RegistryWebhook:
     def from_dict(cls, d: Dict[str, Any]) -> RegistryWebhook:
         """Deserializes the RegistryWebhook from a dictionary."""
         return cls(
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             description=d.get("description", None),
             events=_repeated_enum(d, "events", RegistryWebhookEvent),
             http_url_spec=_from_dict(d, "http_url_spec", HttpUrlSpecWithoutSecret),
             id=d.get("id", None),
             job_spec=_from_dict(d, "job_spec", JobSpecWithoutSecret),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             model_name=d.get("model_name", None),
             status=_enum(d, "status", RegistryWebhookStatus),
         )
@@ -6579,8 +6589,9 @@ class RollingWindow:
     ``ContinuousWindow.offset``."""
 
     delay: Optional[Duration] = None
-    """The delay applied to the end of the rolling window (must be non-negative). For example, delay=1d
-    shifts the window end 1 day before the evaluation time."""
+    """Non-negative analytic lag that evaluates the window this far in the past. Use this for timing
+    variations unrelated to source lateness, such as a 30-day count as of one week ago. If unset,
+    the analytic lag is zero. It composes with source.lateness when both are set."""
 
     window_duration: Optional[Duration] = None
     """The duration of the rolling window. Must be positive when set; absent means lifetime (aggregate
@@ -6793,13 +6804,13 @@ class RunInfo:
         """Deserializes the RunInfo from a dictionary."""
         return cls(
             artifact_uri=d.get("artifact_uri", None),
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             experiment_id=d.get("experiment_id", None),
             lifecycle_stage=d.get("lifecycle_stage", None),
             run_id=d.get("run_id", None),
             run_name=d.get("run_name", None),
             run_uuid=d.get("run_uuid", None),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             status=_enum(d, "status", RunInfoStatus),
             user_id=d.get("user_id", None),
         )
@@ -6895,8 +6906,7 @@ class SawtoothWindow:
     than inferring hybrid behavior from window_duration."""
 
     delay: Optional[Duration] = None
-    """The delay applied to the end of the window (must be non-negative). For example, delay=1d shifts
-    the window end 1 day before the evaluation time."""
+    """Delay is not currently supported for Sawtooth windows."""
 
     window_duration: Optional[Duration] = None
     """The duration of the window. Must be positive and span more than two days when set, so that both
@@ -7510,6 +7520,17 @@ class SlidingWindow:
     slide_duration: str
     """The slide duration (interval by which windows advance, must be positive and less than duration)."""
 
+    delay: Optional[Duration] = None
+    """Non-negative analytic lag that evaluates the window this far in the past. Use this for timing
+    variations unrelated to source lateness, such as a 30-day count as of one week ago. If unset,
+    the analytic lag is zero. It composes with source.lateness when both are set."""
+
+    offset: Optional[Duration] = None
+    """Non-negative phase shift from the default midnight UTC alignment. For example, offset=22h on a
+    24h slide produces boundaries at 22:00 UTC (17:00 New York in standard time) instead of midnight
+    UTC. If unset, the offset is zero. Must be shorter than slide_duration (and therefore
+    window_duration)."""
+
     window_duration: Optional[str] = None
     """The duration of the sliding window. Must be positive when set; absent means lifetime (aggregate
     over the entity's entire history)."""
@@ -7517,6 +7538,10 @@ class SlidingWindow:
     def as_dict(self) -> dict:
         """Serializes the SlidingWindow into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay.ToJsonString()
+        if self.offset is not None:
+            body["offset"] = self.offset.ToJsonString()
         if self.slide_duration is not None:
             body["slide_duration"] = self.slide_duration
         if self.window_duration is not None:
@@ -7526,6 +7551,10 @@ class SlidingWindow:
     def as_shallow_dict(self) -> dict:
         """Serializes the SlidingWindow into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay
+        if self.offset is not None:
+            body["offset"] = self.offset
         if self.slide_duration is not None:
             body["slide_duration"] = self.slide_duration
         if self.window_duration is not None:
@@ -7535,7 +7564,42 @@ class SlidingWindow:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SlidingWindow:
         """Deserializes the SlidingWindow from a dictionary."""
-        return cls(slide_duration=d.get("slide_duration", None), window_duration=d.get("window_duration", None))
+        return cls(
+            delay=_duration(d, "delay"),
+            offset=_duration(d, "offset"),
+            slide_duration=d.get("slide_duration", None),
+            window_duration=d.get("window_duration", None),
+        )
+
+
+@dataclass
+class SourceLateness:
+    """Configures when event-time data from this source is considered complete for a Feature."""
+
+    settling_delay: Optional[Duration] = None
+    """Non-negative time to wait after a window ends before treating its source data as complete.
+    Training shifts the eligible evaluation time backwards by this duration so it does not join data
+    that would still have been settling online. Materialization waits for the duration to elapse
+    before publishing the window. If unset, source data is considered settled immediately."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SourceLateness into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.settling_delay is not None:
+            body["settling_delay"] = self.settling_delay.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SourceLateness into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.settling_delay is not None:
+            body["settling_delay"] = self.settling_delay
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SourceLateness:
+        """Deserializes the SourceLateness from a dictionary."""
+        return cls(settling_delay=_duration(d, "settling_delay"))
 
 
 class Status(Enum):
@@ -8129,6 +8193,14 @@ class TimeWindow:
 
     sliding: Optional[SlidingWindow] = None
 
+    start_time: Optional[Timestamp] = None
+    """Earliest event-time boundary at which the Feature may emit an output. This gates outputs, not
+    the historical inputs read by a window. For example, a 365-day window with start_time=2026-01-01
+    begins emitting partial-window values on that date instead of waiting for 365 days of data; a
+    lifetime window produces no output before start_time. If unset, tumbling and fixed-duration
+    sliding windows first emit at an offset-aligned boundary after a full window can be formed. If
+    unset, lifetime sliding windows and rolling windows emit as soon as eligible source data exists."""
+
     tumbling: Optional[TumblingWindow] = None
 
     def as_dict(self) -> dict:
@@ -8142,6 +8214,8 @@ class TimeWindow:
             body["sawtooth"] = self.sawtooth.as_dict()
         if self.sliding:
             body["sliding"] = self.sliding.as_dict()
+        if self.start_time is not None:
+            body["start_time"] = self.start_time.ToJsonString()
         if self.tumbling:
             body["tumbling"] = self.tumbling.as_dict()
         return body
@@ -8157,6 +8231,8 @@ class TimeWindow:
             body["sawtooth"] = self.sawtooth
         if self.sliding:
             body["sliding"] = self.sliding
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
         if self.tumbling:
             body["tumbling"] = self.tumbling
         return body
@@ -8169,6 +8245,7 @@ class TimeWindow:
             rolling=_from_dict(d, "rolling", RollingWindow),
             sawtooth=_from_dict(d, "sawtooth", SawtoothWindow),
             sliding=_from_dict(d, "sliding", SlidingWindow),
+            start_time=_timestamp(d, "start_time"),
             tumbling=_from_dict(d, "tumbling", TumblingWindow),
         )
 
@@ -8264,7 +8341,7 @@ class TransitionRequest:
         return cls(
             available_actions=_repeated_enum(d, "available_actions", ActivityAction),
             comment=d.get("comment", None),
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             to_stage=d.get("to_stage", None),
             user_id=d.get("user_id", None),
         )
@@ -8300,9 +8377,23 @@ class TumblingWindow:
     window_duration: str
     """The duration of each tumbling window (non-overlapping, fixed-duration windows)."""
 
+    delay: Optional[Duration] = None
+    """Non-negative analytic lag that evaluates the window this far in the past. Use this for timing
+    variations unrelated to source lateness, such as a 30-day count as of one week ago. If unset,
+    the analytic lag is zero. It composes with source.lateness when both are set."""
+
+    offset: Optional[Duration] = None
+    """Non-negative phase shift from the default midnight UTC alignment. For example, offset=22h on a
+    24h window produces boundaries at 22:00 UTC (17:00 New York in standard time) instead of
+    midnight UTC. If unset, the offset is zero. Must be shorter than window_duration."""
+
     def as_dict(self) -> dict:
         """Serializes the TumblingWindow into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay.ToJsonString()
+        if self.offset is not None:
+            body["offset"] = self.offset.ToJsonString()
         if self.window_duration is not None:
             body["window_duration"] = self.window_duration
         return body
@@ -8310,6 +8401,10 @@ class TumblingWindow:
     def as_shallow_dict(self) -> dict:
         """Serializes the TumblingWindow into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay
+        if self.offset is not None:
+            body["offset"] = self.offset
         if self.window_duration is not None:
             body["window_duration"] = self.window_duration
         return body
@@ -8317,7 +8412,9 @@ class TumblingWindow:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TumblingWindow:
         """Deserializes the TumblingWindow from a dictionary."""
-        return cls(window_duration=d.get("window_duration", None))
+        return cls(
+            delay=_duration(d, "delay"), offset=_duration(d, "offset"), window_duration=d.get("window_duration", None)
+        )
 
 
 @dataclass

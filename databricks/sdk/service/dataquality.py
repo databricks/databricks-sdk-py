@@ -14,6 +14,7 @@ import logging
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
 )
@@ -95,7 +96,7 @@ class AnomalyDetectionConfig:
     def from_dict(cls, d: Dict[str, Any]) -> AnomalyDetectionConfig:
         """Deserializes the AnomalyDetectionConfig from a dictionary."""
         return cls(
-            anomaly_detection_workflow_id=d.get("anomaly_detection_workflow_id", None),
+            anomaly_detection_workflow_id=_int64(d, "anomaly_detection_workflow_id"),
             excluded_table_full_names=d.get("excluded_table_full_names", None),
             job_type=_enum(d, "job_type", AnomalyDetectionJobType),
             publish_health_indicator=d.get("publish_health_indicator", None),
@@ -371,7 +372,7 @@ class DataProfilingConfig:
             effective_warehouse_id=d.get("effective_warehouse_id", None),
             inference_log=_from_dict(d, "inference_log", InferenceLogConfig),
             latest_monitor_failure_message=d.get("latest_monitor_failure_message", None),
-            monitor_version=d.get("monitor_version", None),
+            monitor_version=_int64(d, "monitor_version"),
             monitored_table_name=d.get("monitored_table_name", None),
             notification_settings=_from_dict(d, "notification_settings", NotificationSettings),
             output_schema_id=d.get("output_schema_id", None),
@@ -905,12 +906,12 @@ class Refresh:
     def from_dict(cls, d: Dict[str, Any]) -> Refresh:
         """Deserializes the Refresh from a dictionary."""
         return cls(
-            end_time_ms=d.get("end_time_ms", None),
+            end_time_ms=_int64(d, "end_time_ms"),
             message=d.get("message", None),
             object_id=d.get("object_id", None),
             object_type=d.get("object_type", None),
-            refresh_id=d.get("refresh_id", None),
-            start_time_ms=d.get("start_time_ms", None),
+            refresh_id=_int64(d, "refresh_id"),
+            start_time_ms=_int64(d, "start_time_ms"),
             state=_enum(d, "state", RefreshState),
             trigger=_enum(d, "trigger", RefreshTrigger),
         )

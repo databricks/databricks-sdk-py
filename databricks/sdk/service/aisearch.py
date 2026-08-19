@@ -15,6 +15,7 @@ import logging
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _timestamp,
 )
@@ -128,7 +129,7 @@ class DataModificationResult:
     def from_dict(cls, d: Dict[str, Any]) -> DataModificationResult:
         """Deserializes the DataModificationResult from a dictionary."""
         return cls(
-            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=d.get("success_row_count", None)
+            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=_int64(d, "success_row_count")
         )
 
 
@@ -565,9 +566,7 @@ class EndpointScalingInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointScalingInfo:
         """Deserializes the EndpointScalingInfo from a dictionary."""
-        return cls(
-            requested_target_qps=d.get("requested_target_qps", None), state=_enum(d, "state", ScalingChangeState)
-        )
+        return cls(requested_target_qps=_int64(d, "requested_target_qps"), state=_enum(d, "state", ScalingChangeState))
 
 
 @dataclass
@@ -899,7 +898,7 @@ class IndexStatus:
         """Deserializes the IndexStatus from a dictionary."""
         return cls(
             index_url=d.get("index_url", None),
-            indexed_row_count=d.get("indexed_row_count", None),
+            indexed_row_count=_int64(d, "indexed_row_count"),
             message=d.get("message", None),
             ready=d.get("ready", None),
         )

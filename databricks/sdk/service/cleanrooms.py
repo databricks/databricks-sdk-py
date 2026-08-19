@@ -19,6 +19,7 @@ from databricks.sdk.service._internal import (
     _duration,
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
     Wait,
@@ -147,7 +148,7 @@ class CleanRoom:
         return cls(
             access_restricted=_enum(d, "access_restricted", CleanRoomAccessRestricted),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             enable_shared_output=d.get("enable_shared_output", None),
             local_collaborator_alias=d.get("local_collaborator_alias", None),
             name=d.get("name", None),
@@ -156,7 +157,7 @@ class CleanRoom:
             remote_detailed_info=_from_dict(d, "remote_detailed_info", CleanRoomRemoteDetail),
             replication_config=_from_dict(d, "replication_config", ReplicationConfig),
             status=_enum(d, "status", CleanRoomStatusEnum),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
         )
 
 
@@ -314,7 +315,7 @@ class CleanRoomAsset:
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAsset:
         """Deserializes the CleanRoomAsset from a dictionary."""
         return cls(
-            added_at=d.get("added_at", None),
+            added_at=_int64(d, "added_at"),
             asset_type=_enum(d, "asset_type", CleanRoomAssetAssetType),
             clean_room_name=d.get("clean_room_name", None),
             foreign_table=_from_dict(d, "foreign_table", CleanRoomAssetForeignTable),
@@ -790,7 +791,7 @@ class CleanRoomAutoApprovalRule:
             author_collaborator_alias=d.get("author_collaborator_alias", None),
             author_scope=_enum(d, "author_scope", CleanRoomAutoApprovalRuleAuthorScope),
             clean_room_name=d.get("clean_room_name", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             rule_id=d.get("rule_id", None),
             rule_owner_collaborator_alias=d.get("rule_owner_collaborator_alias", None),
             runner_collaborator_alias=d.get("runner_collaborator_alias", None),
@@ -876,7 +877,7 @@ class CleanRoomCollaborator:
             display_name=d.get("display_name", None),
             global_metastore_id=d.get("global_metastore_id", None),
             invite_recipient_email=d.get("invite_recipient_email", None),
-            invite_recipient_workspace_id=d.get("invite_recipient_workspace_id", None),
+            invite_recipient_workspace_id=_int64(d, "invite_recipient_workspace_id"),
             organization_name=d.get("organization_name", None),
         )
 
@@ -935,7 +936,7 @@ class CleanRoomJarAnalysisReview:
         """Deserializes the CleanRoomJarAnalysisReview from a dictionary."""
         return cls(
             comment=d.get("comment", None),
-            created_at_millis=d.get("created_at_millis", None),
+            created_at_millis=_int64(d, "created_at_millis"),
             review_state=_enum(d, "review_state", CleanRoomJarAnalysisReviewJarAnalysisReviewState),
             review_sub_reason=_enum(d, "review_sub_reason", CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason),
             reviewer_collaborator_alias=d.get("reviewer_collaborator_alias", None),
@@ -1004,7 +1005,7 @@ class CleanRoomNotebookReview:
         """Deserializes the CleanRoomNotebookReview from a dictionary."""
         return cls(
             comment=d.get("comment", None),
-            created_at_millis=d.get("created_at_millis", None),
+            created_at_millis=_int64(d, "created_at_millis"),
             review_state=_enum(d, "review_state", CleanRoomNotebookReviewNotebookReviewState),
             review_sub_reason=_enum(d, "review_sub_reason", CleanRoomNotebookReviewNotebookReviewSubReason),
             reviewer_collaborator_alias=d.get("reviewer_collaborator_alias", None),
@@ -1124,13 +1125,13 @@ class CleanRoomNotebookTaskRun:
             notebook_etag=d.get("notebook_etag", None),
             notebook_job_run_state=_from_dict(d, "notebook_job_run_state", jobs.CleanRoomTaskRunState),
             notebook_name=d.get("notebook_name", None),
-            notebook_updated_at=d.get("notebook_updated_at", None),
-            output_schema_expiration_time=d.get("output_schema_expiration_time", None),
+            notebook_updated_at=_int64(d, "notebook_updated_at"),
+            output_schema_expiration_time=_int64(d, "output_schema_expiration_time"),
             output_schema_name=d.get("output_schema_name", None),
-            run_duration=d.get("run_duration", None),
-            shared_output_schema_expiration_time=d.get("shared_output_schema_expiration_time", None),
+            run_duration=_int64(d, "run_duration"),
+            shared_output_schema_expiration_time=_int64(d, "shared_output_schema_expiration_time"),
             shared_output_schema_name=d.get("shared_output_schema_name", None),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
         )
 
 
@@ -1370,9 +1371,9 @@ class CleanRoomTaskRun:
             collaborator_job_run_info=_from_dict(d, "collaborator_job_run_info", CollaboratorJobRunInfo),
             name=d.get("name", None),
             output_info=_from_dict(d, "output_info", CleanRoomTaskRunOutputInfo),
-            run_duration=d.get("run_duration", None),
+            run_duration=_int64(d, "run_duration"),
             shared_output_info=_from_dict(d, "shared_output_info", CleanRoomTaskRunOutputInfo),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             task_run_state=_from_dict(d, "task_run_state", jobs.CleanRoomTaskRunState),
             task_type=_enum(d, "task_type", CleanRoomTaskType),
         )
@@ -1407,7 +1408,7 @@ class CleanRoomTaskRunCleanRoomTaskAnalysisDetails:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRunCleanRoomTaskAnalysisDetails:
         """Deserializes the CleanRoomTaskRunCleanRoomTaskAnalysisDetails from a dictionary."""
-        return cls(etag=d.get("etag", None), updated_at=d.get("updated_at", None))
+        return cls(etag=d.get("etag", None), updated_at=_int64(d, "updated_at"))
 
 
 @dataclass
@@ -1440,7 +1441,7 @@ class CleanRoomTaskRunOutputInfo:
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRunOutputInfo:
         """Deserializes the CleanRoomTaskRunOutputInfo from a dictionary."""
         return cls(
-            output_schema_expiration_time=d.get("output_schema_expiration_time", None),
+            output_schema_expiration_time=_int64(d, "output_schema_expiration_time"),
             output_schema_name=d.get("output_schema_name", None),
         )
 
@@ -1502,10 +1503,10 @@ class CollaboratorJobRunInfo:
         """Deserializes the CollaboratorJobRunInfo from a dictionary."""
         return cls(
             collaborator_alias=d.get("collaborator_alias", None),
-            collaborator_job_id=d.get("collaborator_job_id", None),
-            collaborator_job_run_id=d.get("collaborator_job_run_id", None),
-            collaborator_task_run_id=d.get("collaborator_task_run_id", None),
-            collaborator_workspace_id=d.get("collaborator_workspace_id", None),
+            collaborator_job_id=_int64(d, "collaborator_job_id"),
+            collaborator_job_run_id=_int64(d, "collaborator_job_run_id"),
+            collaborator_task_run_id=_int64(d, "collaborator_task_run_id"),
+            collaborator_workspace_id=_int64(d, "collaborator_workspace_id"),
         )
 
 

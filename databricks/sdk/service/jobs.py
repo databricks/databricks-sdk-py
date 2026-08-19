@@ -18,7 +18,9 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
+    _repeated_int64,
     Wait,
 )
 
@@ -859,12 +861,12 @@ class BaseJob:
     def from_dict(cls, d: Dict[str, Any]) -> BaseJob:
         """Deserializes the BaseJob from a dictionary."""
         return cls(
-            created_time=d.get("created_time", None),
+            created_time=_int64(d, "created_time"),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
-            job_id=d.get("job_id", None),
+            job_id=_int64(d, "job_id"),
             path=d.get("path", None),
             settings=_from_dict(d, "settings", JobSettings),
             trigger_details=_repeated_dict(d, "trigger_details", TriggerDetails),
@@ -1196,7 +1198,7 @@ class BaseRun:
         """Deserializes the BaseRun from a dictionary."""
         return cls(
             attempt_number=d.get("attempt_number", None),
-            cleanup_duration=d.get("cleanup_duration", None),
+            cleanup_duration=_int64(d, "cleanup_duration"),
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             cluster_spec=_from_dict(d, "cluster_spec", ClusterSpec),
             creator_user_name=d.get("creator_user_name", None),
@@ -1204,28 +1206,28 @@ class BaseRun:
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             environment_variables=_repeated_dict(d, "environment_variables", JobEnvironmentVariables),
-            execution_duration=d.get("execution_duration", None),
+            execution_duration=_int64(d, "execution_duration"),
             git_source=_from_dict(d, "git_source", GitSource),
             has_more=d.get("has_more", None),
             job_clusters=_repeated_dict(d, "job_clusters", JobCluster),
-            job_id=d.get("job_id", None),
+            job_id=_int64(d, "job_id"),
             job_parameters=_repeated_dict(d, "job_parameters", JobParameter),
-            job_run_id=d.get("job_run_id", None),
-            number_in_job=d.get("number_in_job", None),
-            original_attempt_run_id=d.get("original_attempt_run_id", None),
+            job_run_id=_int64(d, "job_run_id"),
+            number_in_job=_int64(d, "number_in_job"),
+            original_attempt_run_id=_int64(d, "original_attempt_run_id"),
             overriding_parameters=_from_dict(d, "overriding_parameters", RunParameters),
-            queue_duration=d.get("queue_duration", None),
+            queue_duration=_int64(d, "queue_duration"),
             repair_history=_repeated_dict(d, "repair_history", RepairHistoryItem),
-            run_duration=d.get("run_duration", None),
-            run_id=d.get("run_id", None),
+            run_duration=_int64(d, "run_duration"),
+            run_id=_int64(d, "run_id"),
             run_name=d.get("run_name", None),
             run_page_url=d.get("run_page_url", None),
             run_type=_enum(d, "run_type", RunType),
             schedule=_from_dict(d, "schedule", CronSchedule),
-            setup_duration=d.get("setup_duration", None),
-            start_time=d.get("start_time", None),
+            setup_duration=_int64(d, "setup_duration"),
+            start_time=_int64(d, "start_time"),
             state=_from_dict(d, "state", RunState),
             status=_from_dict(d, "status", RunStatus),
             tasks=_repeated_dict(d, "tasks", RunTask),
@@ -1850,7 +1852,7 @@ class ContinuousTriggerState:
         return cls(
             consecutive_failures=d.get("consecutive_failures", None),
             is_backing_off=d.get("is_backing_off", None),
-            next_attempt_ms=d.get("next_attempt_ms", None),
+            next_attempt_ms=_int64(d, "next_attempt_ms"),
         )
 
 
@@ -1878,7 +1880,7 @@ class CreateResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
-        return cls(job_id=d.get("job_id", None))
+        return cls(job_id=_int64(d, "job_id"))
 
 
 @dataclass
@@ -2223,7 +2225,7 @@ class DbtCloudTask:
         """Deserializes the DbtCloudTask from a dictionary."""
         return cls(
             connection_resource_name=d.get("connection_resource_name", None),
-            dbt_cloud_job_id=d.get("dbt_cloud_job_id", None),
+            dbt_cloud_job_id=_int64(d, "dbt_cloud_job_id"),
         )
 
 
@@ -2266,7 +2268,7 @@ class DbtCloudTaskOutput:
     def from_dict(cls, d: Dict[str, Any]) -> DbtCloudTaskOutput:
         """Deserializes the DbtCloudTaskOutput from a dictionary."""
         return cls(
-            dbt_cloud_job_run_id=d.get("dbt_cloud_job_run_id", None),
+            dbt_cloud_job_run_id=_int64(d, "dbt_cloud_job_run_id"),
             dbt_cloud_job_run_output=_repeated_dict(d, "dbt_cloud_job_run_output", DbtCloudJobRunStep),
             dbt_cloud_job_run_url=d.get("dbt_cloud_job_run_url", None),
         )
@@ -3726,12 +3728,12 @@ class Job:
     def from_dict(cls, d: Dict[str, Any]) -> Job:
         """Deserializes the Job from a dictionary."""
         return cls(
-            created_time=d.get("created_time", None),
+            created_time=_int64(d, "created_time"),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
-            job_id=d.get("job_id", None),
+            job_id=_int64(d, "job_id"),
             next_page_token=d.get("next_page_token", None),
             path=d.get("path", None),
             run_as_user_name=d.get("run_as_user_name", None),
@@ -3937,7 +3939,7 @@ class JobCompliance:
     def from_dict(cls, d: Dict[str, Any]) -> JobCompliance:
         """Deserializes the JobCompliance from a dictionary."""
         return cls(
-            is_compliant=d.get("is_compliant", None), job_id=d.get("job_id", None), violations=d.get("violations", None)
+            is_compliant=d.get("is_compliant", None), job_id=_int64(d, "job_id"), violations=d.get("violations", None)
         )
 
 
@@ -4944,9 +4946,7 @@ class JobsHealthRule:
     def from_dict(cls, d: Dict[str, Any]) -> JobsHealthRule:
         """Deserializes the JobsHealthRule from a dictionary."""
         return cls(
-            metric=_enum(d, "metric", JobsHealthMetric),
-            op=_enum(d, "op", JobsHealthOperator),
-            value=d.get("value", None),
+            metric=_enum(d, "metric", JobsHealthMetric), op=_enum(d, "op", JobsHealthOperator), value=_int64(d, "value")
         )
 
 
@@ -5445,7 +5445,7 @@ class OutputSchemaInfo:
         """Deserializes the OutputSchemaInfo from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
-            expiration_time=d.get("expiration_time", None),
+            expiration_time=_int64(d, "expiration_time"),
             schema_name=d.get("schema_name", None),
         )
 
@@ -5606,7 +5606,7 @@ class PeriodicTriggerState:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PeriodicTriggerState:
         """Deserializes the PeriodicTriggerState from a dictionary."""
-        return cls(next_run_time=d.get("next_run_time", None))
+        return cls(next_run_time=_int64(d, "next_run_time"))
 
 
 @dataclass
@@ -6266,12 +6266,12 @@ class RepairHistoryItem:
         """Deserializes the RepairHistoryItem from a dictionary."""
         return cls(
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
-            end_time=d.get("end_time", None),
-            id=d.get("id", None),
-            start_time=d.get("start_time", None),
+            end_time=_int64(d, "end_time"),
+            id=_int64(d, "id"),
+            start_time=_int64(d, "start_time"),
             state=_from_dict(d, "state", RunState),
             status=_from_dict(d, "status", RunStatus),
-            task_run_ids=d.get("task_run_ids", None),
+            task_run_ids=_repeated_int64(d, "task_run_ids"),
             type=_enum(d, "type", RepairHistoryItemType),
         )
 
@@ -6308,7 +6308,7 @@ class RepairRunResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepairRunResponse:
         """Deserializes the RepairRunResponse from a dictionary."""
-        return cls(repair_id=d.get("repair_id", None))
+        return cls(repair_id=_int64(d, "repair_id"))
 
 
 @dataclass
@@ -7097,7 +7097,7 @@ class Run:
         """Deserializes the Run from a dictionary."""
         return cls(
             attempt_number=d.get("attempt_number", None),
-            cleanup_duration=d.get("cleanup_duration", None),
+            cleanup_duration=_int64(d, "cleanup_duration"),
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             cluster_spec=_from_dict(d, "cluster_spec", ClusterSpec),
             creator_user_name=d.get("creator_user_name", None),
@@ -7105,30 +7105,30 @@ class Run:
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             environment_variables=_repeated_dict(d, "environment_variables", JobEnvironmentVariables),
-            execution_duration=d.get("execution_duration", None),
+            execution_duration=_int64(d, "execution_duration"),
             git_source=_from_dict(d, "git_source", GitSource),
             has_more=d.get("has_more", None),
             iterations=_repeated_dict(d, "iterations", RunTask),
             job_clusters=_repeated_dict(d, "job_clusters", JobCluster),
-            job_id=d.get("job_id", None),
+            job_id=_int64(d, "job_id"),
             job_parameters=_repeated_dict(d, "job_parameters", JobParameter),
-            job_run_id=d.get("job_run_id", None),
+            job_run_id=_int64(d, "job_run_id"),
             next_page_token=d.get("next_page_token", None),
-            number_in_job=d.get("number_in_job", None),
-            original_attempt_run_id=d.get("original_attempt_run_id", None),
+            number_in_job=_int64(d, "number_in_job"),
+            original_attempt_run_id=_int64(d, "original_attempt_run_id"),
             overriding_parameters=_from_dict(d, "overriding_parameters", RunParameters),
-            queue_duration=d.get("queue_duration", None),
+            queue_duration=_int64(d, "queue_duration"),
             repair_history=_repeated_dict(d, "repair_history", RepairHistoryItem),
-            run_duration=d.get("run_duration", None),
-            run_id=d.get("run_id", None),
+            run_duration=_int64(d, "run_duration"),
+            run_id=_int64(d, "run_id"),
             run_name=d.get("run_name", None),
             run_page_url=d.get("run_page_url", None),
             run_type=_enum(d, "run_type", RunType),
             schedule=_from_dict(d, "schedule", CronSchedule),
-            setup_duration=d.get("setup_duration", None),
-            start_time=d.get("start_time", None),
+            setup_duration=_int64(d, "setup_duration"),
+            start_time=_int64(d, "start_time"),
             state=_from_dict(d, "state", RunState),
             status=_from_dict(d, "status", RunStatus),
             tasks=_repeated_dict(d, "tasks", RunTask),
@@ -7296,7 +7296,7 @@ class RunJobOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RunJobOutput:
         """Deserializes the RunJobOutput from a dictionary."""
-        return cls(run_id=d.get("run_id", None))
+        return cls(run_id=_int64(d, "run_id"))
 
 
 @dataclass
@@ -7444,7 +7444,7 @@ class RunJobTask:
         return cls(
             dbt_commands=d.get("dbt_commands", None),
             jar_params=d.get("jar_params", None),
-            job_id=d.get("job_id", None),
+            job_id=_int64(d, "job_id"),
             job_parameters=d.get("job_parameters", None),
             notebook_params=d.get("notebook_params", None),
             pipeline_params=_from_dict(d, "pipeline_params", PipelineParams),
@@ -7528,7 +7528,7 @@ class RunNowResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RunNowResponse:
         """Deserializes the RunNowResponse from a dictionary."""
-        return cls(number_in_job=d.get("number_in_job", None), run_id=d.get("run_id", None))
+        return cls(number_in_job=_int64(d, "number_in_job"), run_id=_int64(d, "run_id"))
 
 
 @dataclass
@@ -8487,7 +8487,7 @@ class RunTask:
             alert_task=_from_dict(d, "alert_task", AlertTask),
             attempt_number=d.get("attempt_number", None),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
-            cleanup_duration=d.get("cleanup_duration", None),
+            cleanup_duration=_int64(d, "cleanup_duration"),
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             compute=_from_dict(d, "compute", Compute),
             condition_task=_from_dict(d, "condition_task", RunConditionTask),
@@ -8502,10 +8502,10 @@ class RunTask:
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_serverless_compute_id=d.get("effective_serverless_compute_id", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             environment_key=d.get("environment_key", None),
             environment_variables_key=d.get("environment_variables_key", None),
-            execution_duration=d.get("execution_duration", None),
+            execution_duration=_int64(d, "execution_duration"),
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", RunForEachTask),
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
@@ -8522,20 +8522,20 @@ class RunTask:
             power_bi_task=_from_dict(d, "power_bi_task", PowerBiTask),
             python_operator_task=_from_dict(d, "python_operator_task", PythonOperatorTask),
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
-            queue_duration=d.get("queue_duration", None),
+            queue_duration=_int64(d, "queue_duration"),
             resolved_values=_from_dict(d, "resolved_values", ResolvedValues),
             retry_on_timeout=d.get("retry_on_timeout", None),
-            run_duration=d.get("run_duration", None),
-            run_id=d.get("run_id", None),
+            run_duration=_int64(d, "run_duration"),
+            run_id=_int64(d, "run_id"),
             run_if=_enum(d, "run_if", RunIf),
             run_job_task=_from_dict(d, "run_job_task", RunJobTask),
             run_page_url=d.get("run_page_url", None),
-            setup_duration=d.get("setup_duration", None),
+            setup_duration=_int64(d, "setup_duration"),
             spark_jar_task=_from_dict(d, "spark_jar_task", SparkJarTask),
             spark_python_task=_from_dict(d, "spark_python_task", SparkPythonTask),
             spark_submit_task=_from_dict(d, "spark_submit_task", SparkSubmitTask),
             sql_task=_from_dict(d, "sql_task", SqlTask),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             state=_from_dict(d, "state", RunState),
             status=_from_dict(d, "status", RunStatus),
             task_key=d.get("task_key", None),
@@ -9138,10 +9138,10 @@ class SqlDashboardWidgetOutput:
     def from_dict(cls, d: Dict[str, Any]) -> SqlDashboardWidgetOutput:
         """Deserializes the SqlDashboardWidgetOutput from a dictionary."""
         return cls(
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             error=_from_dict(d, "error", SqlOutputError),
             output_link=d.get("output_link", None),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             status=_enum(d, "status", SqlDashboardWidgetOutputStatus),
             widget_id=d.get("widget_id", None),
             widget_title=d.get("widget_title", None),
@@ -9600,7 +9600,7 @@ class SubmitRunResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SubmitRunResponse:
         """Deserializes the SubmitRunResponse from a dictionary."""
-        return cls(run_id=d.get("run_id", None))
+        return cls(run_id=_int64(d, "run_id"))
 
 
 @dataclass
@@ -11355,9 +11355,7 @@ class TriggerEvaluation:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TriggerEvaluation:
         """Deserializes the TriggerEvaluation from a dictionary."""
-        return cls(
-            description=d.get("description", None), run_id=d.get("run_id", None), timestamp=d.get("timestamp", None)
-        )
+        return cls(description=d.get("description", None), run_id=_int64(d, "run_id"), timestamp=_int64(d, "timestamp"))
 
 
 @dataclass
@@ -11434,9 +11432,7 @@ class TriggerInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TriggerInfo:
         """Deserializes the TriggerInfo from a dictionary."""
-        return cls(
-            run_id=d.get("run_id", None), sql_condition=_from_dict(d, "sql_condition", SqlConditionRunInfoDetails)
-        )
+        return cls(run_id=_int64(d, "run_id"), sql_condition=_from_dict(d, "sql_condition", SqlConditionRunInfoDetails))
 
 
 @dataclass

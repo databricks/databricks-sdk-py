@@ -15,7 +15,9 @@ import uuid
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
+    _repeated_int64,
 )
 
 
@@ -81,9 +83,9 @@ class ActionConfiguration:
         return cls(
             action_configuration_id=d.get("action_configuration_id", None),
             action_type=_enum(d, "action_type", ActionConfigurationType),
-            create_time=d.get("create_time", None),
+            create_time=_int64(d, "create_time"),
             target=d.get("target", None),
-            update_time=d.get("update_time", None),
+            update_time=_int64(d, "update_time"),
         )
 
 
@@ -187,14 +189,14 @@ class AlertConfiguration:
         return cls(
             action_configurations=_repeated_dict(d, "action_configurations", ActionConfiguration),
             alert_configuration_id=d.get("alert_configuration_id", None),
-            create_time=d.get("create_time", None),
+            create_time=_int64(d, "create_time"),
             principal_overrides=_repeated_dict(d, "principal_overrides", PrincipalOverride),
             quantity_threshold=d.get("quantity_threshold", None),
             quantity_type=_enum(d, "quantity_type", AlertConfigurationQuantityType),
             scope_type=_enum(d, "scope_type", AlertConfigurationScopeType),
             time_period=_enum(d, "time_period", AlertConfigurationTimePeriod),
             trigger_type=_enum(d, "trigger_type", AlertConfigurationTriggerType),
-            update_time=d.get("update_time", None),
+            update_time=_int64(d, "update_time"),
         )
 
 
@@ -306,12 +308,12 @@ class BudgetConfiguration:
             account_id=d.get("account_id", None),
             alert_configurations=_repeated_dict(d, "alert_configurations", AlertConfiguration),
             budget_configuration_id=d.get("budget_configuration_id", None),
-            create_time=d.get("create_time", None),
+            create_time=_int64(d, "create_time"),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
             include_external_spend=d.get("include_external_spend", None),
             resource_type=_enum(d, "resource_type", BudgetResourceType),
-            update_time=d.get("update_time", None),
+            update_time=_int64(d, "update_time"),
         )
 
 
@@ -443,7 +445,9 @@ class BudgetConfigurationFilterWorkspaceIdClause:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> BudgetConfigurationFilterWorkspaceIdClause:
         """Deserializes the BudgetConfigurationFilterWorkspaceIdClause from a dictionary."""
-        return cls(operator=_enum(d, "operator", BudgetConfigurationFilterOperator), values=d.get("values", None))
+        return cls(
+            operator=_enum(d, "operator", BudgetConfigurationFilterOperator), values=_repeated_int64(d, "values")
+        )
 
 
 @dataclass
@@ -497,7 +501,7 @@ class BudgetPolicy:
     def from_dict(cls, d: Dict[str, Any]) -> BudgetPolicy:
         """Deserializes the BudgetPolicy from a dictionary."""
         return cls(
-            binding_workspace_ids=d.get("binding_workspace_ids", None),
+            binding_workspace_ids=_repeated_int64(d, "binding_workspace_ids"),
             custom_tags=_repeated_dict(d, "custom_tags", compute.CustomPolicyTag),
             policy_id=d.get("policy_id", None),
             policy_name=d.get("policy_name", None),
@@ -878,7 +882,7 @@ class CreateLogDeliveryConfigurationParams:
             output_format=_enum(d, "output_format", OutputFormat),
             status=_enum(d, "status", LogDeliveryConfigStatus),
             storage_configuration_id=d.get("storage_configuration_id", None),
-            workspace_ids_filter=d.get("workspace_ids_filter", None),
+            workspace_ids_filter=_repeated_int64(d, "workspace_ids_filter"),
         )
 
 
@@ -982,7 +986,7 @@ class Filter:
     def from_dict(cls, d: Dict[str, Any]) -> Filter:
         """Deserializes the Filter from a dictionary."""
         return cls(
-            creator_user_id=d.get("creator_user_id", None),
+            creator_user_id=_int64(d, "creator_user_id"),
             creator_user_name=d.get("creator_user_name", None),
             policy_name=d.get("policy_name", None),
         )
@@ -1380,7 +1384,7 @@ class LogDeliveryConfiguration:
             account_id=d.get("account_id", None),
             config_id=d.get("config_id", None),
             config_name=d.get("config_name", None),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             credentials_id=d.get("credentials_id", None),
             delivery_path_prefix=d.get("delivery_path_prefix", None),
             delivery_start_time=d.get("delivery_start_time", None),
@@ -1389,8 +1393,8 @@ class LogDeliveryConfiguration:
             output_format=_enum(d, "output_format", OutputFormat),
             status=_enum(d, "status", LogDeliveryConfigStatus),
             storage_configuration_id=d.get("storage_configuration_id", None),
-            update_time=d.get("update_time", None),
-            workspace_ids_filter=d.get("workspace_ids_filter", None),
+            update_time=_int64(d, "update_time"),
+            workspace_ids_filter=_repeated_int64(d, "workspace_ids_filter"),
         )
 
 
@@ -1519,7 +1523,7 @@ class PrincipalOverride:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrincipalOverride:
         """Deserializes the PrincipalOverride from a dictionary."""
-        return cls(override_threshold=d.get("override_threshold", None), principal_id=d.get("principal_id", None))
+        return cls(override_threshold=d.get("override_threshold", None), principal_id=_int64(d, "principal_id"))
 
 
 @dataclass
@@ -1721,7 +1725,7 @@ class UsagePolicy:
     def from_dict(cls, d: Dict[str, Any]) -> UsagePolicy:
         """Deserializes the UsagePolicy from a dictionary."""
         return cls(
-            binding_workspace_ids=d.get("binding_workspace_ids", None),
+            binding_workspace_ids=_repeated_int64(d, "binding_workspace_ids"),
             custom_tags=_repeated_dict(d, "custom_tags", compute.CustomPolicyTag),
             policy_id=d.get("policy_id", None),
             policy_name=d.get("policy_name", None),

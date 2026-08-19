@@ -13,6 +13,7 @@ import logging
 
 from databricks.sdk.service._internal import (
     _from_dict,
+    _int64,
     _repeated_dict,
     _timestamp,
 )
@@ -80,7 +81,7 @@ class CreateCustomAppIntegrationOutput:
             client_secret=d.get("client_secret", None),
             client_secret_expire_time=_timestamp(d, "client_secret_expire_time"),
             integration_id=d.get("integration_id", None),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
         )
 
 
@@ -311,7 +312,7 @@ class FederationPolicy:
             name=d.get("name", None),
             oidc_policy=_from_dict(d, "oidc_policy", OidcFederationPolicy),
             policy_id=d.get("policy_id", None),
-            service_principal_id=d.get("service_principal_id", None),
+            service_principal_id=_int64(d, "service_principal_id"),
             uid=d.get("uid", None),
             update_time=d.get("update_time", None),
         )
@@ -426,12 +427,12 @@ class GetCustomAppIntegrationOutput:
             client_id=d.get("client_id", None),
             confidential=d.get("confidential", None),
             create_time=d.get("create_time", None),
-            created_by=d.get("created_by", None),
+            created_by=_int64(d, "created_by"),
             creator_username=d.get("creator_username", None),
             integration_id=d.get("integration_id", None),
             is_agent=d.get("is_agent", None),
             name=d.get("name", None),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             redirect_urls=d.get("redirect_urls", None),
             scopes=d.get("scopes", None),
             token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy),
@@ -531,7 +532,7 @@ class GetPublishedAppIntegrationOutput:
         return cls(
             app_id=d.get("app_id", None),
             create_time=d.get("create_time", None),
-            created_by=d.get("created_by", None),
+            created_by=_int64(d, "created_by"),
             integration_id=d.get("integration_id", None),
             name=d.get("name", None),
             token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy),
