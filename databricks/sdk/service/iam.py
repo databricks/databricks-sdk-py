@@ -14,6 +14,7 @@ import logging
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
 )
@@ -398,7 +399,7 @@ class Actor:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Actor:
         """Deserializes the Actor from a dictionary."""
-        return cls(actor_id=d.get("actor_id", None))
+        return cls(actor_id=_int64(d, "actor_id"))
 
 
 class AutoscopeState(Enum):
@@ -801,10 +802,10 @@ class ListAccountGroupsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListAccountGroupsResponse:
         """Deserializes the ListAccountGroupsResponse from a dictionary."""
         return cls(
-            items_per_page=d.get("itemsPerPage", None),
+            items_per_page=_int64(d, "itemsPerPage"),
             resources=_repeated_dict(d, "Resources", AccountGroup),
-            start_index=d.get("startIndex", None),
-            total_results=d.get("totalResults", None),
+            start_index=_int64(d, "startIndex"),
+            total_results=_int64(d, "totalResults"),
         )
 
 
@@ -852,10 +853,10 @@ class ListAccountServicePrincipalsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListAccountServicePrincipalsResponse:
         """Deserializes the ListAccountServicePrincipalsResponse from a dictionary."""
         return cls(
-            items_per_page=d.get("itemsPerPage", None),
+            items_per_page=_int64(d, "itemsPerPage"),
             resources=_repeated_dict(d, "Resources", AccountServicePrincipal),
-            start_index=d.get("startIndex", None),
-            total_results=d.get("totalResults", None),
+            start_index=_int64(d, "startIndex"),
+            total_results=_int64(d, "totalResults"),
         )
 
 
@@ -903,10 +904,10 @@ class ListAccountUsersResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListAccountUsersResponse:
         """Deserializes the ListAccountUsersResponse from a dictionary."""
         return cls(
-            items_per_page=d.get("itemsPerPage", None),
+            items_per_page=_int64(d, "itemsPerPage"),
             resources=_repeated_dict(d, "Resources", AccountUser),
-            start_index=d.get("startIndex", None),
-            total_results=d.get("totalResults", None),
+            start_index=_int64(d, "startIndex"),
+            total_results=_int64(d, "totalResults"),
         )
 
 
@@ -961,11 +962,11 @@ class ListGroupsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListGroupsResponse:
         """Deserializes the ListGroupsResponse from a dictionary."""
         return cls(
-            items_per_page=d.get("itemsPerPage", None),
+            items_per_page=_int64(d, "itemsPerPage"),
             resources=_repeated_dict(d, "Resources", Group),
             schemas=_repeated_enum(d, "schemas", ListResponseSchema),
-            start_index=d.get("startIndex", None),
-            total_results=d.get("totalResults", None),
+            start_index=_int64(d, "startIndex"),
+            total_results=_int64(d, "totalResults"),
         )
 
 
@@ -1024,11 +1025,11 @@ class ListServicePrincipalResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListServicePrincipalResponse:
         """Deserializes the ListServicePrincipalResponse from a dictionary."""
         return cls(
-            items_per_page=d.get("itemsPerPage", None),
+            items_per_page=_int64(d, "itemsPerPage"),
             resources=_repeated_dict(d, "Resources", ServicePrincipal),
             schemas=_repeated_enum(d, "schemas", ListResponseSchema),
-            start_index=d.get("startIndex", None),
-            total_results=d.get("totalResults", None),
+            start_index=_int64(d, "startIndex"),
+            total_results=_int64(d, "totalResults"),
         )
 
 
@@ -1088,11 +1089,11 @@ class ListUsersResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListUsersResponse:
         """Deserializes the ListUsersResponse from a dictionary."""
         return cls(
-            items_per_page=d.get("itemsPerPage", None),
+            items_per_page=_int64(d, "itemsPerPage"),
             resources=_repeated_dict(d, "Resources", User),
             schemas=_repeated_enum(d, "schemas", ListResponseSchema),
-            start_index=d.get("startIndex", None),
-            total_results=d.get("totalResults", None),
+            start_index=_int64(d, "startIndex"),
+            total_results=_int64(d, "totalResults"),
         )
 
 
@@ -1750,7 +1751,7 @@ class PrincipalOutput:
         return cls(
             display_name=d.get("display_name", None),
             group_name=d.get("group_name", None),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             service_principal_name=d.get("service_principal_name", None),
             user_name=d.get("user_name", None),
         )

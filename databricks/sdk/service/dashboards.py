@@ -19,6 +19,7 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
     _timestamp,
@@ -424,9 +425,9 @@ class GenieConversation:
         """Deserializes the GenieConversation from a dictionary."""
         return cls(
             conversation_id=d.get("conversation_id", None),
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             space_id=d.get("space_id", None),
             title=d.get("title", None),
             user_id=d.get("user_id", None),
@@ -477,7 +478,7 @@ class GenieConversationSummary:
         return cls(
             agent_type=_enum(d, "agent_type", GenieConversationType),
             conversation_id=d.get("conversation_id", None),
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             title=d.get("title", None),
         )
 
@@ -616,7 +617,7 @@ class GenieEvalResult:
         return cls(
             benchmark_answer=d.get("benchmark_answer", None),
             benchmark_question_id=d.get("benchmark_question_id", None),
-            created_by_user=d.get("created_by_user", None),
+            created_by_user=_int64(d, "created_by_user"),
             question=d.get("question", None),
             result_id=d.get("result_id", None),
             space_id=d.get("space_id", None),
@@ -846,15 +847,15 @@ class GenieEvalRunResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GenieEvalRunResponse:
         """Deserializes the GenieEvalRunResponse from a dictionary."""
         return cls(
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             eval_run_id=d.get("eval_run_id", None),
             eval_run_status=_enum(d, "eval_run_status", EvaluationStatusType),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
-            num_correct=d.get("num_correct", None),
-            num_done=d.get("num_done", None),
-            num_needs_review=d.get("num_needs_review", None),
-            num_questions=d.get("num_questions", None),
-            run_by_user=d.get("run_by_user", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
+            num_correct=_int64(d, "num_correct"),
+            num_done=_int64(d, "num_done"),
+            num_needs_review=_int64(d, "num_needs_review"),
+            num_questions=_int64(d, "num_questions"),
+            run_by_user=_int64(d, "run_by_user"),
         )
 
 
@@ -1331,16 +1332,16 @@ class GenieMessage:
             attachments=_repeated_dict(d, "attachments", GenieAttachment),
             content=d.get("content", None),
             conversation_id=d.get("conversation_id", None),
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             error=_from_dict(d, "error", MessageError),
             feedback=_from_dict(d, "feedback", GenieFeedback),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             message_id=d.get("message_id", None),
             query_result=_from_dict(d, "query_result", Result),
             space_id=d.get("space_id", None),
             status=_enum(d, "status", MessageStatus),
-            user_id=d.get("user_id", None),
+            user_id=_int64(d, "user_id"),
         )
 
 
@@ -1413,11 +1414,11 @@ class GenieMessageComment:
         return cls(
             content=d.get("content", None),
             conversation_id=d.get("conversation_id", None),
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             message_comment_id=d.get("message_comment_id", None),
             message_id=d.get("message_id", None),
             space_id=d.get("space_id", None),
-            user_id=d.get("user_id", None),
+            user_id=_int64(d, "user_id"),
         )
 
 
@@ -1501,7 +1502,7 @@ class GenieQueryAttachment:
         return cls(
             description=d.get("description", None),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             parameters=_repeated_dict(d, "parameters", QueryAttachmentParameter),
             query=d.get("query", None),
             query_result_metadata=_from_dict(d, "query_result_metadata", GenieResultMetadata),
@@ -1540,7 +1541,7 @@ class GenieResultMetadata:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieResultMetadata:
         """Deserializes the GenieResultMetadata from a dictionary."""
-        return cls(is_truncated=d.get("is_truncated", None), row_count=d.get("row_count", None))
+        return cls(is_truncated=d.get("is_truncated", None), row_count=_int64(d, "row_count"))
 
 
 @dataclass
@@ -2188,7 +2189,7 @@ class Result:
         """Deserializes the Result from a dictionary."""
         return cls(
             is_truncated=d.get("is_truncated", None),
-            row_count=d.get("row_count", None),
+            row_count=_int64(d, "row_count"),
             statement_id=d.get("statement_id", None),
             statement_id_signature=d.get("statement_id_signature", None),
         )
@@ -2470,7 +2471,7 @@ class Subscription:
         """Deserializes the Subscription from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
-            created_by_user_id=d.get("created_by_user_id", None),
+            created_by_user_id=_int64(d, "created_by_user_id"),
             dashboard_id=d.get("dashboard_id", None),
             etag=d.get("etag", None),
             schedule_id=d.get("schedule_id", None),
@@ -2528,7 +2529,7 @@ class SubscriptionSubscriberUser:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SubscriptionSubscriberUser:
         """Deserializes the SubscriptionSubscriberUser from a dictionary."""
-        return cls(user_id=d.get("user_id", None))
+        return cls(user_id=_int64(d, "user_id"))
 
 
 @dataclass

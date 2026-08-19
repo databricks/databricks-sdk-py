@@ -21,8 +21,10 @@ from databricks.sdk.service._internal import (
     _duration,
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
+    _repeated_int64,
     _timestamp,
     Wait,
 )
@@ -709,7 +711,7 @@ class ArtifactAllowlistInfo:
         """Deserializes the ArtifactAllowlistInfo from a dictionary."""
         return cls(
             artifact_matchers=_repeated_dict(d, "artifact_matchers", ArtifactMatcher),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             metastore_id=d.get("metastore_id", None),
         )
@@ -1606,9 +1608,9 @@ class CatalogInfo:
             comment=d.get("comment", None),
             connection_name=d.get("connection_name", None),
             conversion_info=_from_dict(d, "conversion_info", ConversionInfo),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
-            custom_max_retention_hours=d.get("custom_max_retention_hours", None),
+            custom_max_retention_hours=_int64(d, "custom_max_retention_hours"),
             dr_replication_info=_from_dict(d, "dr_replication_info", DrReplicationInfo),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
@@ -1628,7 +1630,7 @@ class CatalogInfo:
             share_name=d.get("share_name", None),
             storage_location=d.get("storage_location", None),
             storage_root=d.get("storage_root", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -2229,7 +2231,7 @@ class ConnectionInfo:
             comment=d.get("comment", None),
             connection_id=d.get("connection_id", None),
             connection_type=_enum(d, "connection_type", ConnectionType),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             credential_type=_enum(d, "credential_type", CredentialType),
             environment_settings=_from_dict(d, "environment_settings", EnvironmentSettings),
@@ -2243,7 +2245,7 @@ class ConnectionInfo:
             read_only=d.get("read_only", None),
             secrets=d.get("secrets", None),
             securable_type=_enum(d, "securable_type", SecurableType),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
             url=d.get("url", None),
         )
@@ -2384,7 +2386,7 @@ class ContinuousUpdateStatus:
         """Deserializes the ContinuousUpdateStatus from a dictionary."""
         return cls(
             initial_pipeline_sync_progress=_from_dict(d, "initial_pipeline_sync_progress", PipelineProgress),
-            last_processed_commit_version=d.get("last_processed_commit_version", None),
+            last_processed_commit_version=_int64(d, "last_processed_commit_version"),
             timestamp=d.get("timestamp", None),
         )
 
@@ -2895,7 +2897,7 @@ class CreateMetastoreAssignment:
         return cls(
             default_catalog_name=d.get("default_catalog_name", None),
             metastore_id=d.get("metastore_id", None),
-            workspace_id=d.get("workspace_id", None),
+            workspace_id=_int64(d, "workspace_id"),
         )
 
 
@@ -3134,7 +3136,7 @@ class CredentialInfo:
             azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentity),
             azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             databricks_gcp_service_account=_from_dict(d, "databricks_gcp_service_account", DatabricksGcpServiceAccount),
             full_name=d.get("full_name", None),
@@ -3145,7 +3147,7 @@ class CredentialInfo:
             owner=d.get("owner", None),
             purpose=_enum(d, "purpose", CredentialPurpose),
             read_only=d.get("read_only", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
             used_for_managed_storage=d.get("used_for_managed_storage", None),
         )
@@ -3162,6 +3164,7 @@ class CredentialType(Enum):
     EDGEGRID_AKAMAI = "EDGEGRID_AKAMAI"
     GENERIC_TOKEN_EXCHANGE = "GENERIC_TOKEN_EXCHANGE"
     INLINE_YAML = "INLINE_YAML"
+    MUTUAL_TLS = "MUTUAL_TLS"
     OAUTH_ACCESS_TOKEN = "OAUTH_ACCESS_TOKEN"
     OAUTH_DCR = "OAUTH_DCR"
     OAUTH_GOOGLE_SERVICE_ACCOUNT = "OAUTH_GOOGLE_SERVICE_ACCOUNT"
@@ -3706,7 +3709,7 @@ class DrReplicationInfo:
     def from_dict(cls, d: Dict[str, Any]) -> DrReplicationInfo:
         """Deserializes the DrReplicationInfo from a dictionary."""
         return cls(
-            last_failover_time_ms=d.get("last_failover_time_ms", None),
+            last_failover_time_ms=_int64(d, "last_failover_time_ms"),
             replicated_entities=d.get("replicated_entities", None),
             status=_enum(d, "status", DrReplicationStatus),
         )
@@ -4370,7 +4373,7 @@ class ExternalLineageModelVersionInfo:
     def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageModelVersionInfo:
         """Deserializes the ExternalLineageModelVersionInfo from a dictionary."""
         return cls(
-            event_time=d.get("event_time", None), model_name=d.get("model_name", None), version=d.get("version", None)
+            event_time=d.get("event_time", None), model_name=d.get("model_name", None), version=_int64(d, "version")
         )
 
 
@@ -4887,7 +4890,7 @@ class ExternalLocationInfo:
         return cls(
             browse_only=d.get("browse_only", None),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             credential_id=d.get("credential_id", None),
             credential_name=d.get("credential_name", None),
@@ -4902,7 +4905,7 @@ class ExternalLocationInfo:
             name=d.get("name", None),
             owner=d.get("owner", None),
             read_only=d.get("read_only", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
             url=d.get("url", None),
         )
@@ -5075,8 +5078,7 @@ class FailedStatus:
     def from_dict(cls, d: Dict[str, Any]) -> FailedStatus:
         """Deserializes the FailedStatus from a dictionary."""
         return cls(
-            last_processed_commit_version=d.get("last_processed_commit_version", None),
-            timestamp=d.get("timestamp", None),
+            last_processed_commit_version=_int64(d, "last_processed_commit_version"), timestamp=d.get("timestamp", None)
         )
 
 
@@ -5547,7 +5549,7 @@ class FunctionInfo:
             browse_only=d.get("browse_only", None),
             catalog_name=d.get("catalog_name", None),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             data_type=_enum(d, "data_type", ColumnTypeName),
             external_language=d.get("external_language", None),
@@ -5572,7 +5574,7 @@ class FunctionInfo:
             specific_name=d.get("specific_name", None),
             sql_data_access=_enum(d, "sql_data_access", FunctionInfoSqlDataAccess),
             sql_path=d.get("sql_path", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -5876,7 +5878,7 @@ class GenerateTemporaryPathCredentialResponse:
             aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
             azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
             azure_user_delegation_sas=_from_dict(d, "azure_user_delegation_sas", AzureUserDelegationSas),
-            expiration_time=d.get("expiration_time", None),
+            expiration_time=_int64(d, "expiration_time"),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
             uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
@@ -6012,7 +6014,7 @@ class GenerateTemporaryTableCredentialResponse:
             aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
             azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
             azure_user_delegation_sas=_from_dict(d, "azure_user_delegation_sas", AzureUserDelegationSas),
-            expiration_time=d.get("expiration_time", None),
+            expiration_time=_int64(d, "expiration_time"),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
             uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
@@ -6090,7 +6092,7 @@ class GenerateTemporaryVolumeCredentialResponse:
             aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
             azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
             azure_user_delegation_sas=_from_dict(d, "azure_user_delegation_sas", AzureUserDelegationSas),
-            expiration_time=d.get("expiration_time", None),
+            expiration_time=_int64(d, "expiration_time"),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
             uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
@@ -6120,7 +6122,7 @@ class GetCatalogWorkspaceBindingsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetCatalogWorkspaceBindingsResponse:
         """Deserializes the GetCatalogWorkspaceBindingsResponse from a dictionary."""
-        return cls(workspaces=d.get("workspaces", None))
+        return cls(workspaces=_repeated_int64(d, "workspaces"))
 
 
 @dataclass
@@ -6279,12 +6281,12 @@ class GetMetastoreSummaryResponse:
         """Deserializes the GetMetastoreSummaryResponse from a dictionary."""
         return cls(
             cloud=d.get("cloud", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             default_data_access_config_id=d.get("default_data_access_config_id", None),
             delta_sharing_organization_name=d.get("delta_sharing_organization_name", None),
-            delta_sharing_recipient_token_lifetime_in_seconds=d.get(
-                "delta_sharing_recipient_token_lifetime_in_seconds", None
+            delta_sharing_recipient_token_lifetime_in_seconds=_int64(
+                d, "delta_sharing_recipient_token_lifetime_in_seconds"
             ),
             delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
             external_access_enabled=d.get("external_access_enabled", None),
@@ -6297,7 +6299,7 @@ class GetMetastoreSummaryResponse:
             storage_root=d.get("storage_root", None),
             storage_root_credential_id=d.get("storage_root_credential_id", None),
             storage_root_credential_name=d.get("storage_root_credential_name", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -6569,7 +6571,7 @@ class ListAccountMetastoreAssignmentsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAccountMetastoreAssignmentsResponse:
         """Deserializes the ListAccountMetastoreAssignmentsResponse from a dictionary."""
-        return cls(workspace_ids=d.get("workspace_ids", None))
+        return cls(workspace_ids=_repeated_int64(d, "workspace_ids"))
 
 
 @dataclass
@@ -7813,7 +7815,7 @@ class MetastoreAssignment:
         return cls(
             default_catalog_name=d.get("default_catalog_name", None),
             metastore_id=d.get("metastore_id", None),
-            workspace_id=d.get("workspace_id", None),
+            workspace_id=_int64(d, "workspace_id"),
         )
 
 
@@ -7973,12 +7975,12 @@ class MetastoreInfo:
         """Deserializes the MetastoreInfo from a dictionary."""
         return cls(
             cloud=d.get("cloud", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             default_data_access_config_id=d.get("default_data_access_config_id", None),
             delta_sharing_organization_name=d.get("delta_sharing_organization_name", None),
-            delta_sharing_recipient_token_lifetime_in_seconds=d.get(
-                "delta_sharing_recipient_token_lifetime_in_seconds", None
+            delta_sharing_recipient_token_lifetime_in_seconds=_int64(
+                d, "delta_sharing_recipient_token_lifetime_in_seconds"
             ),
             delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
             external_access_enabled=d.get("external_access_enabled", None),
@@ -7991,7 +7993,7 @@ class MetastoreInfo:
             storage_root=d.get("storage_root", None),
             storage_root_credential_id=d.get("storage_root_credential_id", None),
             storage_root_credential_name=d.get("storage_root_credential_name", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -9755,7 +9757,7 @@ class ModelVersionInfo:
             aliases=_repeated_dict(d, "aliases", RegisteredModelAlias),
             catalog_name=d.get("catalog_name", None),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             id=d.get("id", None),
             metastore_id=d.get("metastore_id", None),
@@ -9767,7 +9769,7 @@ class ModelVersionInfo:
             source=d.get("source", None),
             status=_enum(d, "status", ModelVersionInfoStatus),
             storage_location=d.get("storage_location", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
             version=d.get("version", None),
         )
@@ -10130,7 +10132,7 @@ class MonitorInfo:
             drift_metrics_table_name=d.get("drift_metrics_table_name", None),
             inference_log=_from_dict(d, "inference_log", MonitorInferenceLog),
             latest_monitor_failure_msg=d.get("latest_monitor_failure_msg", None),
-            monitor_version=d.get("monitor_version", None),
+            monitor_version=_int64(d, "monitor_version"),
             notifications=_from_dict(d, "notifications", MonitorNotifications),
             output_schema_name=d.get("output_schema_name", None),
             profile_metrics_table_name=d.get("profile_metrics_table_name", None),
@@ -10332,10 +10334,10 @@ class MonitorRefreshInfo:
     def from_dict(cls, d: Dict[str, Any]) -> MonitorRefreshInfo:
         """Deserializes the MonitorRefreshInfo from a dictionary."""
         return cls(
-            end_time_ms=d.get("end_time_ms", None),
+            end_time_ms=_int64(d, "end_time_ms"),
             message=d.get("message", None),
-            refresh_id=d.get("refresh_id", None),
-            start_time_ms=d.get("start_time_ms", None),
+            refresh_id=_int64(d, "refresh_id"),
+            start_time_ms=_int64(d, "start_time_ms"),
             state=_enum(d, "state", MonitorRefreshInfoState),
             trigger=_enum(d, "trigger", MonitorRefreshInfoTrigger),
         )
@@ -11075,7 +11077,7 @@ class PermissionsChange:
         return cls(
             add=_repeated_enum(d, "add", Privilege),
             principal=d.get("principal", None),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             remove=_repeated_enum(d, "remove", Privilege),
         )
 
@@ -11135,10 +11137,10 @@ class PipelineProgress:
         """Deserializes the PipelineProgress from a dictionary."""
         return cls(
             estimated_completion_time_seconds=d.get("estimated_completion_time_seconds", None),
-            latest_version_currently_processing=d.get("latest_version_currently_processing", None),
+            latest_version_currently_processing=_int64(d, "latest_version_currently_processing"),
             sync_progress_completion=d.get("sync_progress_completion", None),
-            synced_row_count=d.get("synced_row_count", None),
-            total_row_count=d.get("total_row_count", None),
+            synced_row_count=_int64(d, "synced_row_count"),
+            total_row_count=_int64(d, "total_row_count"),
         )
 
 
@@ -11361,7 +11363,7 @@ class PolicyInfo:
         return cls(
             column_mask=_from_dict(d, "column_mask", ColumnMaskOptions),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             deny=_from_dict(d, "deny", DenyOptions),
             except_principals=d.get("except_principals", None),
@@ -11376,7 +11378,7 @@ class PolicyInfo:
             policy_type=_enum(d, "policy_type", PolicyType),
             row_filter=_from_dict(d, "row_filter", RowFilterOptions),
             to_principals=d.get("to_principals", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
             use_session_identity=d.get("use_session_identity", None),
             when_condition=d.get("when_condition", None),
@@ -11610,7 +11612,7 @@ class PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
         return cls(
             principal=d.get("principal", None),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             privileges=_repeated_enum(d, "privileges", Privilege),
         )
 
@@ -11738,7 +11740,7 @@ class QuotaInfo:
     def from_dict(cls, d: Dict[str, Any]) -> QuotaInfo:
         """Deserializes the QuotaInfo from a dictionary."""
         return cls(
-            last_refreshed_at=d.get("last_refreshed_at", None),
+            last_refreshed_at=_int64(d, "last_refreshed_at"),
             parent_full_name=d.get("parent_full_name", None),
             parent_securable_type=_enum(d, "parent_securable_type", SecurableType),
             quota_count=d.get("quota_count", None),
@@ -11871,8 +11873,8 @@ class RateLimit:
             renewal_period=_enum(d, "renewal_period", RateLimitRateLimitRenewalPeriod),
             request_tag_key=d.get("request_tag_key", None),
             request_tag_value=d.get("request_tag_value", None),
-            requests=d.get("requests", None),
-            tokens=d.get("tokens", None),
+            requests=_int64(d, "requests"),
+            tokens=_int64(d, "tokens"),
         )
 
 
@@ -12111,7 +12113,7 @@ class RegisteredModelInfo:
             browse_only=d.get("browse_only", None),
             catalog_name=d.get("catalog_name", None),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
@@ -12119,7 +12121,7 @@ class RegisteredModelInfo:
             owner=d.get("owner", None),
             schema_name=d.get("schema_name", None),
             storage_location=d.get("storage_location", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -12321,9 +12323,9 @@ class SchemaInfo:
             catalog_name=d.get("catalog_name", None),
             catalog_type=_enum(d, "catalog_type", CatalogType),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
-            custom_max_retention_hours=d.get("custom_max_retention_hours", None),
+            custom_max_retention_hours=_int64(d, "custom_max_retention_hours"),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
@@ -12336,7 +12338,7 @@ class SchemaInfo:
             schema_id=d.get("schema_id", None),
             storage_location=d.get("storage_location", None),
             storage_root=d.get("storage_root", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -12984,7 +12986,7 @@ class StorageCredentialInfo:
             azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
             cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             databricks_gcp_service_account=_from_dict(
                 d, "databricks_gcp_service_account", DatabricksGcpServiceAccountResponse
@@ -12996,7 +12998,7 @@ class StorageCredentialInfo:
             name=d.get("name", None),
             owner=d.get("owner", None),
             read_only=d.get("read_only", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
             used_for_managed_storage=d.get("used_for_managed_storage", None),
         )
@@ -13413,11 +13415,11 @@ class TableInfo:
             catalog_name=d.get("catalog_name", None),
             columns=_repeated_dict(d, "columns", ColumnInfo),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             data_access_configuration_id=d.get("data_access_configuration_id", None),
             data_source_format=_enum(d, "data_source_format", DataSourceFormat),
-            deleted_at=d.get("deleted_at", None),
+            deleted_at=_int64(d, "deleted_at"),
             delta_runtime_properties_kvpairs=_from_dict(
                 d, "delta_runtime_properties_kvpairs", DeltaRuntimePropertiesKvPairs
             ),
@@ -13441,7 +13443,7 @@ class TableInfo:
             table_constraints=_repeated_dict(d, "table_constraints", TableConstraint),
             table_id=d.get("table_id", None),
             table_type=_enum(d, "table_type", TableType),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
             view_definition=d.get("view_definition", None),
             view_dependencies=_from_dict(d, "view_dependencies", DependencyList),
@@ -13705,7 +13707,7 @@ class TemporaryCredentials:
         return cls(
             aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
             azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
-            expiration_time=d.get("expiration_time", None),
+            expiration_time=_int64(d, "expiration_time"),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
         )
@@ -13753,7 +13755,7 @@ class TriggeredUpdateStatus:
     def from_dict(cls, d: Dict[str, Any]) -> TriggeredUpdateStatus:
         """Deserializes the TriggeredUpdateStatus from a dictionary."""
         return cls(
-            last_processed_commit_version=d.get("last_processed_commit_version", None),
+            last_processed_commit_version=_int64(d, "last_processed_commit_version"),
             timestamp=d.get("timestamp", None),
             triggered_update_progress=_from_dict(d, "triggered_update_progress", PipelineProgress),
         )
@@ -13876,8 +13878,8 @@ class UpdateAccountsMetastore:
         """Deserializes the UpdateAccountsMetastore from a dictionary."""
         return cls(
             delta_sharing_organization_name=d.get("delta_sharing_organization_name", None),
-            delta_sharing_recipient_token_lifetime_in_seconds=d.get(
-                "delta_sharing_recipient_token_lifetime_in_seconds", None
+            delta_sharing_recipient_token_lifetime_in_seconds=_int64(
+                d, "delta_sharing_recipient_token_lifetime_in_seconds"
             ),
             delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
             external_access_enabled=d.get("external_access_enabled", None),
@@ -14021,7 +14023,7 @@ class UpdateCatalogWorkspaceBindingsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateCatalogWorkspaceBindingsResponse:
         """Deserializes the UpdateCatalogWorkspaceBindingsResponse from a dictionary."""
-        return cls(workspaces=d.get("workspaces", None))
+        return cls(workspaces=_repeated_int64(d, "workspaces"))
 
 
 @dataclass
@@ -14064,7 +14066,7 @@ class UpdateMetastoreAssignment:
         return cls(
             default_catalog_name=d.get("default_catalog_name", None),
             metastore_id=d.get("metastore_id", None),
-            workspace_id=d.get("workspace_id", None),
+            workspace_id=_int64(d, "workspace_id"),
         )
 
 
@@ -14500,7 +14502,7 @@ class VolumeInfo:
             browse_only=d.get("browse_only", None),
             catalog_name=d.get("catalog_name", None),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
             full_name=d.get("full_name", None),
@@ -14509,7 +14511,7 @@ class VolumeInfo:
             owner=d.get("owner", None),
             schema_name=d.get("schema_name", None),
             storage_location=d.get("storage_location", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
             volume_id=d.get("volume_id", None),
             volume_type=_enum(d, "volume_type", VolumeType),
@@ -14556,7 +14558,7 @@ class WorkspaceBinding:
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceBinding:
         """Deserializes the WorkspaceBinding from a dictionary."""
         return cls(
-            binding_type=_enum(d, "binding_type", WorkspaceBindingBindingType), workspace_id=d.get("workspace_id", None)
+            binding_type=_enum(d, "binding_type", WorkspaceBindingBindingType), workspace_id=_int64(d, "workspace_id")
         )
 
 

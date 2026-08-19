@@ -14,6 +14,7 @@ import logging
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
 )
@@ -198,9 +199,9 @@ class DirectGroupMember:
         return cls(
             display_name=d.get("display_name", None),
             external_id=d.get("external_id", None),
-            group_id=d.get("group_id", None),
+            group_id=_int64(d, "group_id"),
             membership_source=_enum(d, "membership_source", GroupMembershipSource),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             principal_type=_enum(d, "principal_type", PrincipalType),
         )
 
@@ -1285,10 +1286,10 @@ class WorkspaceAccessDetail:
             access_type=_enum(d, "access_type", WorkspaceAccessDetailAccessType),
             account_id=d.get("account_id", None),
             permissions=_repeated_enum(d, "permissions", WorkspacePermission),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             principal_type=_enum(d, "principal_type", PrincipalType),
             status=_enum(d, "status", State),
-            workspace_id=d.get("workspace_id", None),
+            workspace_id=_int64(d, "workspace_id"),
         )
 
 
@@ -1391,9 +1392,9 @@ class WorkspaceAssignment:
             account_id=d.get("account_id", None),
             effective_entitlements=_repeated_enum(d, "effective_entitlements", Entitlement),
             entitlements=_repeated_enum(d, "entitlements", Entitlement),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             principal_type=_enum(d, "principal_type", PrincipalType),
-            workspace_id=d.get("workspace_id", None),
+            workspace_id=_int64(d, "workspace_id"),
         )
 
 
@@ -1481,9 +1482,9 @@ class WorkspaceAssignmentDetail:
             account_id=d.get("account_id", None),
             effective_entitlements=_repeated_enum(d, "effective_entitlements", Entitlement),
             entitlements=_repeated_enum(d, "entitlements", Entitlement),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             principal_type=_enum(d, "principal_type", PrincipalType),
-            workspace_id=d.get("workspace_id", None),
+            workspace_id=_int64(d, "workspace_id"),
         )
 
 
@@ -1534,7 +1535,7 @@ class WorkspaceIdentityDetail:
         """Deserializes the WorkspaceIdentityDetail from a dictionary."""
         return cls(
             assignment_type=_enum(d, "assignment_type", WorkspaceIdentityDetailAssignmentType),
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             principal_type=_enum(d, "principal_type", PrincipalType),
             workspace_identity_status=_enum(d, "workspace_identity_status", State),
         )

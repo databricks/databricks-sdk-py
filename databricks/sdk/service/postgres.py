@@ -18,6 +18,7 @@ from databricks.sdk.service._internal import (
     _duration,
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
     _timestamp,
@@ -364,7 +365,7 @@ class BranchStatus:
             delete_time=_timestamp(d, "delete_time"),
             expire_time=_timestamp(d, "expire_time"),
             is_protected=d.get("is_protected", None),
-            logical_size_bytes=d.get("logical_size_bytes", None),
+            logical_size_bytes=_int64(d, "logical_size_bytes"),
             pending_state=_enum(d, "pending_state", BranchStatusState),
             purge_time=_timestamp(d, "purge_time"),
             source_branch=d.get("source_branch", None),
@@ -1566,8 +1567,7 @@ class DeltaTableSyncInfo:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaTableSyncInfo:
         """Deserializes the DeltaTableSyncInfo from a dictionary."""
         return cls(
-            delta_commit_time=_timestamp(d, "delta_commit_time"),
-            delta_commit_version=d.get("delta_commit_version", None),
+            delta_commit_time=_timestamp(d, "delta_commit_time"), delta_commit_version=_int64(d, "delta_commit_version")
         )
 
 
@@ -2280,16 +2280,16 @@ class ForwardEtlConfig:
     def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlConfig:
         """Deserializes the ForwardEtlConfig from a dictionary."""
         return cls(
-            create_time_millis=d.get("create_time_millis", None),
+            create_time_millis=_int64(d, "create_time_millis"),
             enabled=d.get("enabled", None),
-            pg_database_oid=d.get("pg_database_oid", None),
-            pg_schema_oid=d.get("pg_schema_oid", None),
+            pg_database_oid=_int64(d, "pg_database_oid"),
+            pg_schema_oid=_int64(d, "pg_schema_oid"),
             tenant_id=d.get("tenant_id", None),
             timeline_id=d.get("timeline_id", None),
             uc_catalog_id=d.get("uc_catalog_id", None),
             uc_schema_id=d.get("uc_schema_id", None),
-            update_time_millis=d.get("update_time_millis", None),
-            workspace_id=d.get("workspace_id", None),
+            update_time_millis=_int64(d, "update_time_millis"),
+            workspace_id=_int64(d, "workspace_id"),
         )
 
 
@@ -2324,7 +2324,7 @@ class ForwardEtlDatabase:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlDatabase:
         """Deserializes the ForwardEtlDatabase from a dictionary."""
-        return cls(name=d.get("name", None), oid=d.get("oid", None))
+        return cls(name=d.get("name", None), oid=_int64(d, "oid"))
 
 
 @dataclass
@@ -2395,7 +2395,7 @@ class ForwardEtlSchema:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlSchema:
         """Deserializes the ForwardEtlSchema from a dictionary."""
-        return cls(name=d.get("name", None), oid=d.get("oid", None))
+        return cls(name=d.get("name", None), oid=_int64(d, "oid"))
 
 
 @dataclass
@@ -2498,7 +2498,7 @@ class ForwardEtlTableMapping:
             enabled=d.get("enabled", None),
             last_synced_lsn=d.get("last_synced_lsn", None),
             pg_table_name=d.get("pg_table_name", None),
-            pg_table_oid=d.get("pg_table_oid", None),
+            pg_table_oid=_int64(d, "pg_table_oid"),
             uc_table_id=d.get("uc_table_id", None),
             uc_table_name=d.get("uc_table_name", None),
         )
@@ -3741,7 +3741,7 @@ class ProjectStatus:
     def from_dict(cls, d: Dict[str, Any]) -> ProjectStatus:
         """Deserializes the ProjectStatus from a dictionary."""
         return cls(
-            branch_logical_size_limit_bytes=d.get("branch_logical_size_limit_bytes", None),
+            branch_logical_size_limit_bytes=_int64(d, "branch_logical_size_limit_bytes"),
             budget_policy_id=d.get("budget_policy_id", None),
             compute_last_active_time=_timestamp(d, "compute_last_active_time"),
             compute_provisioner=d.get("compute_provisioner", None),
@@ -3755,7 +3755,7 @@ class ProjectStatus:
             pg_version=d.get("pg_version", None),
             project_id=d.get("project_id", None),
             replication_role=_enum(d, "replication_role", ReplicationRolePreview),
-            synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
+            synthetic_storage_size_bytes=_int64(d, "synthetic_storage_size_bytes"),
         )
 
 
@@ -4102,8 +4102,8 @@ class ReplicationMetricsPreview:
         """Deserializes the ReplicationMetricsPreview from a dictionary."""
         return cls(
             as_of_time=_timestamp(d, "as_of_time"),
-            bytes_lag=d.get("bytes_lag", None),
-            throughput_bytes_per_second=d.get("throughput_bytes_per_second", None),
+            bytes_lag=_int64(d, "bytes_lag"),
+            throughput_bytes_per_second=_int64(d, "throughput_bytes_per_second"),
             time_lag=_duration(d, "time_lag"),
         )
 
@@ -4819,9 +4819,9 @@ class SnapshotStatus:
     def from_dict(cls, d: Dict[str, Any]) -> SnapshotStatus:
         """Deserializes the SnapshotStatus from a dictionary."""
         return cls(
-            diff_size_bytes=d.get("diff_size_bytes", None),
+            diff_size_bytes=_int64(d, "diff_size_bytes"),
             expire_time=_timestamp(d, "expire_time"),
-            full_size_bytes=d.get("full_size_bytes", None),
+            full_size_bytes=_int64(d, "full_size_bytes"),
             no_expiry=d.get("no_expiry", None),
             source_branch=d.get("source_branch", None),
         )
@@ -4976,10 +4976,10 @@ class SyncedTablePipelineProgress:
         """Deserializes the SyncedTablePipelineProgress from a dictionary."""
         return cls(
             estimated_completion_time_seconds=d.get("estimated_completion_time_seconds", None),
-            latest_version_currently_processing=d.get("latest_version_currently_processing", None),
+            latest_version_currently_processing=_int64(d, "latest_version_currently_processing"),
             sync_progress_completion=d.get("sync_progress_completion", None),
-            synced_row_count=d.get("synced_row_count", None),
-            total_row_count=d.get("total_row_count", None),
+            synced_row_count=_int64(d, "synced_row_count"),
+            total_row_count=_int64(d, "total_row_count"),
         )
 
 
@@ -5458,7 +5458,7 @@ class SyncedTableSyncedTableStatus:
         """Deserializes the SyncedTableSyncedTableStatus from a dictionary."""
         return cls(
             detailed_state=_enum(d, "detailed_state", SyncedTableState),
-            last_processed_commit_version=d.get("last_processed_commit_version", None),
+            last_processed_commit_version=_int64(d, "last_processed_commit_version"),
             last_sync=_from_dict(d, "last_sync", SyncedTablePosition),
             last_sync_time=_timestamp(d, "last_sync_time"),
             message=d.get("message", None),

@@ -21,6 +21,7 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
     _timestamp,
@@ -362,11 +363,11 @@ class AiGatewayRateLimit:
     def from_dict(cls, d: Dict[str, Any]) -> AiGatewayRateLimit:
         """Deserializes the AiGatewayRateLimit from a dictionary."""
         return cls(
-            calls=d.get("calls", None),
+            calls=_int64(d, "calls"),
             key=_enum(d, "key", AiGatewayRateLimitKey),
             principal=d.get("principal", None),
             renewal_period=_enum(d, "renewal_period", AiGatewayRateLimitRenewalPeriod),
-            tokens=d.get("tokens", None),
+            tokens=_int64(d, "tokens"),
         )
 
 
@@ -1272,7 +1273,7 @@ class EndpointCoreConfigOutput:
         """Deserializes the EndpointCoreConfigOutput from a dictionary."""
         return cls(
             auto_capture_config=_from_dict(d, "auto_capture_config", AutoCaptureConfigOutput),
-            config_version=d.get("config_version", None),
+            config_version=_int64(d, "config_version"),
             served_entities=_repeated_dict(d, "served_entities", ServedEntityOutput),
             served_models=_repeated_dict(d, "served_models", ServedModelOutput),
             traffic_config=_from_dict(d, "traffic_config", TrafficConfig),
@@ -1380,7 +1381,7 @@ class EndpointPendingConfig:
             config_version=d.get("config_version", None),
             served_entities=_repeated_dict(d, "served_entities", ServedEntityOutput),
             served_models=_repeated_dict(d, "served_models", ServedModelOutput),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             traffic_config=_from_dict(d, "traffic_config", TrafficConfig),
         )
 
@@ -2266,7 +2267,7 @@ class PtCommitment:
             auto_renew_editable=d.get("auto_renew_editable", None),
             expire_time=_timestamp(d, "expire_time"),
             id=d.get("id", None),
-            provisioned_model_units=d.get("provisioned_model_units", None),
+            provisioned_model_units=_int64(d, "provisioned_model_units"),
             start_time=_timestamp(d, "start_time"),
             status=_enum(d, "status", CommitmentStatus),
             term=_enum(d, "term", CommitmentTerm),
@@ -2457,7 +2458,7 @@ class PtServedModel:
             entity_name=d.get("entity_name", None),
             entity_version=d.get("entity_version", None),
             name=d.get("name", None),
-            provisioned_model_units=d.get("provisioned_model_units", None),
+            provisioned_model_units=_int64(d, "provisioned_model_units"),
             pt_auto_renew=d.get("pt_auto_renew", None),
             pt_term=_enum(d, "pt_term", CommitmentTerm),
         )
@@ -2673,7 +2674,7 @@ class QueryEndpointResponse:
         """Deserializes the QueryEndpointResponse from a dictionary."""
         return cls(
             choices=_repeated_dict(d, "choices", V1ResponseChoiceElement),
-            created=d.get("created", None),
+            created=_int64(d, "created"),
             data=_repeated_dict(d, "data", EmbeddingsV1ResponseEmbeddingElement),
             id=d.get("id", None),
             model=d.get("model", None),
@@ -2732,7 +2733,7 @@ class RateLimit:
     def from_dict(cls, d: Dict[str, Any]) -> RateLimit:
         """Deserializes the RateLimit from a dictionary."""
         return cls(
-            calls=d.get("calls", None),
+            calls=_int64(d, "calls"),
             key=_enum(d, "key", RateLimitKey),
             renewal_period=_enum(d, "renewal_period", RateLimitRenewalPeriod),
         )
@@ -2949,7 +2950,7 @@ class ServedEntityInput:
             min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             name=d.get("name", None),
-            provisioned_model_units=d.get("provisioned_model_units", None),
+            provisioned_model_units=_int64(d, "provisioned_model_units"),
             scale_to_zero_enabled=d.get("scale_to_zero_enabled", None),
             workload_size=d.get("workload_size", None),
             workload_type=_enum(d, "workload_type", ServingModelWorkloadType),
@@ -3129,7 +3130,7 @@ class ServedEntityOutput:
         """Deserializes the ServedEntityOutput from a dictionary."""
         return cls(
             burst_scaling_enabled=d.get("burst_scaling_enabled", None),
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             creator=d.get("creator", None),
             entity_name=d.get("entity_name", None),
             entity_version=d.get("entity_version", None),
@@ -3142,7 +3143,7 @@ class ServedEntityOutput:
             min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             name=d.get("name", None),
-            provisioned_model_units=d.get("provisioned_model_units", None),
+            provisioned_model_units=_int64(d, "provisioned_model_units"),
             scale_to_zero_enabled=d.get("scale_to_zero_enabled", None),
             state=_from_dict(d, "state", ServedModelState),
             workload_size=d.get("workload_size", None),
@@ -3346,7 +3347,7 @@ class ServedModelInput:
             model_name=d.get("model_name", None),
             model_version=d.get("model_version", None),
             name=d.get("name", None),
-            provisioned_model_units=d.get("provisioned_model_units", None),
+            provisioned_model_units=_int64(d, "provisioned_model_units"),
             scale_to_zero_enabled=d.get("scale_to_zero_enabled", None),
             workload_size=d.get("workload_size", None),
             workload_type=_enum(d, "workload_type", ServedModelInputWorkloadType),
@@ -3504,7 +3505,7 @@ class ServedModelOutput:
         """Deserializes the ServedModelOutput from a dictionary."""
         return cls(
             burst_scaling_enabled=d.get("burst_scaling_enabled", None),
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             creator=d.get("creator", None),
             environment_vars=d.get("environment_vars", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
@@ -3513,7 +3514,7 @@ class ServedModelOutput:
             model_name=d.get("model_name", None),
             model_version=d.get("model_version", None),
             name=d.get("name", None),
-            provisioned_model_units=d.get("provisioned_model_units", None),
+            provisioned_model_units=_int64(d, "provisioned_model_units"),
             scale_to_zero_enabled=d.get("scale_to_zero_enabled", None),
             state=_from_dict(d, "state", ServedModelState),
             workload_size=d.get("workload_size", None),
@@ -3754,11 +3755,11 @@ class ServingEndpoint:
             ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
             budget_policy_id=d.get("budget_policy_id", None),
             config=_from_dict(d, "config", EndpointCoreConfigSummary),
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             creator=d.get("creator", None),
             description=d.get("description", None),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             name=d.get("name", None),
             state=_from_dict(d, "state", EndpointState),
             tags=_repeated_dict(d, "tags", EndpointTag),
@@ -4041,14 +4042,14 @@ class ServingEndpointDetailed:
             ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
             budget_policy_id=d.get("budget_policy_id", None),
             config=_from_dict(d, "config", EndpointCoreConfigOutput),
-            creation_timestamp=d.get("creation_timestamp", None),
+            creation_timestamp=_int64(d, "creation_timestamp"),
             creator=d.get("creator", None),
             data_plane_info=_from_dict(d, "data_plane_info", ModelDataPlaneInfo),
             description=d.get("description", None),
             email_notifications=_from_dict(d, "email_notifications", EmailNotifications),
             endpoint_url=d.get("endpoint_url", None),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             name=d.get("name", None),
             pending_config=_from_dict(d, "pending_config", EndpointPendingConfig),
             permission_level=_enum(d, "permission_level", ServingEndpointDetailedPermissionLevel),

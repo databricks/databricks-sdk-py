@@ -12,6 +12,7 @@ import logging
 
 from databricks.sdk.service._internal import (
     _escape_multi_segment_path_parameter,
+    _int64,
     _repeated_dict,
 )
 
@@ -81,7 +82,7 @@ class CreateResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
-        return cls(handle=d.get("handle", None))
+        return cls(handle=_int64(d, "handle"))
 
 
 @dataclass
@@ -153,9 +154,9 @@ class DirectoryEntry:
     def from_dict(cls, d: Dict[str, Any]) -> DirectoryEntry:
         """Deserializes the DirectoryEntry from a dictionary."""
         return cls(
-            file_size=d.get("file_size", None),
+            file_size=_int64(d, "file_size"),
             is_directory=d.get("is_directory", None),
-            last_modified=d.get("last_modified", None),
+            last_modified=_int64(d, "last_modified"),
             name=d.get("name", None),
             path=d.get("path", None),
         )
@@ -203,7 +204,7 @@ class DownloadResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DownloadResponse:
         """Deserializes the DownloadResponse from a dictionary."""
         return cls(
-            content_length=int(d.get("content-length", None)),
+            content_length=_int64(d, "content-length"),
             content_type=d.get("content-type", None),
             contents=d.get("contents", None),
             last_modified=d.get("last-modified", None),
@@ -254,9 +255,9 @@ class FileInfo:
     def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(
-            file_size=d.get("file_size", None),
+            file_size=_int64(d, "file_size"),
             is_dir=d.get("is_dir", None),
-            modification_time=d.get("modification_time", None),
+            modification_time=_int64(d, "modification_time"),
             path=d.get("path", None),
         )
 
@@ -297,7 +298,7 @@ class GetMetadataResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetMetadataResponse:
         """Deserializes the GetMetadataResponse from a dictionary."""
         return cls(
-            content_length=int(d.get("content-length", None)),
+            content_length=_int64(d, "content-length"),
             content_type=d.get("content-type", None),
             last_modified=d.get("last-modified", None),
         )
@@ -446,7 +447,7 @@ class ReadResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ReadResponse:
         """Deserializes the ReadResponse from a dictionary."""
-        return cls(bytes_read=d.get("bytes_read", None), data=d.get("data", None))
+        return cls(bytes_read=_int64(d, "bytes_read"), data=d.get("data", None))
 
 
 class DbfsAPI:

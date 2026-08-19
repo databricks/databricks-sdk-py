@@ -699,6 +699,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
 
+   .. py:attribute:: POWER_BI
+      :value: "POWER_BI"
+
    .. py:attribute:: PROOFPOINT_SIEM
       :value: "PROOFPOINT_SIEM"
 

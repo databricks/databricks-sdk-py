@@ -14,8 +14,10 @@ import logging
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
+    _repeated_int64,
 )
 from databricks.sdk.common.types.fieldmask import FieldMask
 
@@ -1327,7 +1329,7 @@ class CustomerFacingIngressNetworkPolicyAuthenticationIdentity:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAuthenticationIdentity:
         """Deserializes the CustomerFacingIngressNetworkPolicyAuthenticationIdentity from a dictionary."""
         return cls(
-            principal_id=d.get("principal_id", None),
+            principal_id=_int64(d, "principal_id"),
             principal_type=_enum(
                 d, "principal_type", CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType
             ),
@@ -2080,7 +2082,7 @@ class CustomerFacingIngressNetworkPolicyWorkspaceIdList:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyWorkspaceIdList:
         """Deserializes the CustomerFacingIngressNetworkPolicyWorkspaceIdList from a dictionary."""
-        return cls(workspace_ids=d.get("workspace_ids", None))
+        return cls(workspace_ids=_repeated_int64(d, "workspace_ids"))
 
 
 @dataclass
@@ -2257,9 +2259,9 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
                 "connection_state",
                 CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState,
             ),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             deactivated=d.get("deactivated", None),
-            deactivated_at=d.get("deactivated_at", None),
+            deactivated_at=_int64(d, "deactivated_at"),
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
             endpoint_service=d.get("endpoint_service", None),
@@ -2267,7 +2269,7 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_names=d.get("resource_names", None),
             rule_id=d.get("rule_id", None),
-            updated_time=d.get("updated_time", None),
+            updated_time=_int64(d, "updated_time"),
             vpc_endpoint_id=d.get("vpc_endpoint_id", None),
         )
 
@@ -3405,7 +3407,7 @@ class EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination:
         """Deserializes the EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination from a dictionary."""
-        return cls(workspace_ids=d.get("workspace_ids", None))
+        return cls(workspace_ids=_repeated_int64(d, "workspace_ids"))
 
 
 @dataclass
@@ -3959,8 +3961,8 @@ class ExchangeToken:
         """Deserializes the ExchangeToken from a dictionary."""
         return cls(
             credential=d.get("credential", None),
-            credential_eol_time=d.get("credentialEolTime", None),
-            owner_id=d.get("ownerId", None),
+            credential_eol_time=_int64(d, "credentialEolTime"),
+            owner_id=_int64(d, "ownerId"),
             scopes=d.get("scopes", None),
             token_type=_enum(d, "tokenType", TokenType),
         )
@@ -4434,15 +4436,15 @@ class IpAccessListInfo:
         """Deserializes the IpAccessListInfo from a dictionary."""
         return cls(
             address_count=d.get("address_count", None),
-            created_at=d.get("created_at", None),
-            created_by=d.get("created_by", None),
+            created_at=_int64(d, "created_at"),
+            created_by=_int64(d, "created_by"),
             enabled=d.get("enabled", None),
             ip_addresses=d.get("ip_addresses", None),
             label=d.get("label", None),
             list_id=d.get("list_id", None),
             list_type=_enum(d, "list_type", ListType),
-            updated_at=d.get("updated_at", None),
-            updated_by=d.get("updated_by", None),
+            updated_at=_int64(d, "updated_at"),
+            updated_by=_int64(d, "updated_by"),
         )
 
 
@@ -5119,9 +5121,9 @@ class NccAzurePrivateEndpointRule:
         """Deserializes the NccAzurePrivateEndpointRule from a dictionary."""
         return cls(
             connection_state=_enum(d, "connection_state", NccAzurePrivateEndpointRuleConnectionState),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             deactivated=d.get("deactivated", None),
-            deactivated_at=d.get("deactivated_at", None),
+            deactivated_at=_int64(d, "deactivated_at"),
             domain_names=d.get("domain_names", None),
             endpoint_name=d.get("endpoint_name", None),
             error_message=d.get("error_message", None),
@@ -5129,7 +5131,7 @@ class NccAzurePrivateEndpointRule:
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
             rule_id=d.get("rule_id", None),
-            updated_time=d.get("updated_time", None),
+            updated_time=_int64(d, "updated_time"),
         )
 
 
@@ -5483,9 +5485,9 @@ class NccPrivateEndpointRule:
         return cls(
             account_id=d.get("account_id", None),
             connection_state=_enum(d, "connection_state", NccPrivateEndpointRulePrivateLinkConnectionState),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             deactivated=d.get("deactivated", None),
-            deactivated_at=d.get("deactivated_at", None),
+            deactivated_at=_int64(d, "deactivated_at"),
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
             endpoint_name=d.get("endpoint_name", None),
@@ -5497,7 +5499,7 @@ class NccPrivateEndpointRule:
             resource_id=d.get("resource_id", None),
             resource_names=d.get("resource_names", None),
             rule_id=d.get("rule_id", None),
-            updated_time=d.get("updated_time", None),
+            updated_time=_int64(d, "updated_time"),
             vpc_endpoint_id=d.get("vpc_endpoint_id", None),
         )
 
@@ -5610,12 +5612,12 @@ class NetworkConnectivityConfiguration:
         """Deserializes the NetworkConnectivityConfiguration from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             egress_config=_from_dict(d, "egress_config", NccEgressConfig),
             name=d.get("name", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             region=d.get("region", None),
-            updated_time=d.get("updated_time", None),
+            updated_time=_int64(d, "updated_time"),
         )
 
 
@@ -5756,7 +5758,7 @@ class PartitionId:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PartitionId:
         """Deserializes the PartitionId from a dictionary."""
-        return cls(workspace_id=d.get("workspaceId", None))
+        return cls(workspace_id=_int64(d, "workspaceId"))
 
 
 @dataclass
@@ -5926,10 +5928,10 @@ class PublicTokenInfo:
             autoscope_state=_enum(d, "autoscope_state", iam.AutoscopeState),
             backfill_scopes=d.get("backfill_scopes", None),
             comment=d.get("comment", None),
-            creation_time=d.get("creation_time", None),
-            expiry_time=d.get("expiry_time", None),
+            creation_time=_int64(d, "creation_time"),
+            expiry_time=_int64(d, "expiry_time"),
             inferred_scopes=d.get("inferred_scopes", None),
-            last_accessed_time=d.get("last_accessed_time", None),
+            last_accessed_time=_int64(d, "last_accessed_time"),
             scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
         )
@@ -6404,16 +6406,16 @@ class TokenInfo:
             autoscope_state=_enum(d, "autoscope_state", iam.AutoscopeState),
             backfill_scopes=d.get("backfill_scopes", None),
             comment=d.get("comment", None),
-            created_by_id=d.get("created_by_id", None),
+            created_by_id=_int64(d, "created_by_id"),
             created_by_username=d.get("created_by_username", None),
-            creation_time=d.get("creation_time", None),
-            expiry_time=d.get("expiry_time", None),
+            creation_time=_int64(d, "creation_time"),
+            expiry_time=_int64(d, "expiry_time"),
             inferred_scopes=d.get("inferred_scopes", None),
-            last_used_day=d.get("last_used_day", None),
-            owner_id=d.get("owner_id", None),
+            last_used_day=_int64(d, "last_used_day"),
+            owner_id=_int64(d, "owner_id"),
             scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
-            workspace_id=d.get("workspace_id", None),
+            workspace_id=_int64(d, "workspace_id"),
         )
 
 
@@ -6667,7 +6669,7 @@ class WorkspaceNetworkOption:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceNetworkOption:
         """Deserializes the WorkspaceNetworkOption from a dictionary."""
-        return cls(network_policy_id=d.get("network_policy_id", None), workspace_id=d.get("workspace_id", None))
+        return cls(network_policy_id=d.get("network_policy_id", None), workspace_id=_int64(d, "workspace_id"))
 
 
 class AccountIpAccessListsAPI:

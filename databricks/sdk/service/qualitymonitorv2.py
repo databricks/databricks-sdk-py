@@ -14,6 +14,7 @@ import logging
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
 )
 
@@ -528,7 +529,7 @@ class Threshold:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Threshold:
         """Deserializes the Threshold from a dictionary."""
-        return cls(bound_value=d.get("bound_value", None), threshold_type=_enum(d, "threshold_type", ThresholdType))
+        return cls(bound_value=_int64(d, "bound_value"), threshold_type=_enum(d, "threshold_type", ThresholdType))
 
 
 class ThresholdType(Enum):

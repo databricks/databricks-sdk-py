@@ -699,6 +699,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INLINE_YAML
       :value: "INLINE_YAML"
 
+   .. py:attribute:: MUTUAL_TLS
+      :value: "MUTUAL_TLS"
+
    .. py:attribute:: OAUTH_ACCESS_TOKEN
       :value: "OAUTH_ACCESS_TOKEN"
 

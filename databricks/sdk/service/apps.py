@@ -19,6 +19,7 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _timestamp,
     Wait,
@@ -363,7 +364,7 @@ class App:
             pending_deployment=_from_dict(d, "pending_deployment", AppDeployment),
             resources=_repeated_dict(d, "resources", AppResource),
             service_principal_client_id=d.get("service_principal_client_id", None),
-            service_principal_id=d.get("service_principal_id", None),
+            service_principal_id=_int64(d, "service_principal_id"),
             service_principal_name=d.get("service_principal_name", None),
             source_code_path=d.get("source_code_path", None),
             space=d.get("space", None),
@@ -2403,7 +2404,7 @@ class GitRepository:
         """Deserializes the GitRepository from a dictionary."""
         return cls(
             auto_deploy=d.get("auto_deploy", None),
-            caller_credential_id=d.get("caller_credential_id", None),
+            caller_credential_id=_int64(d, "caller_credential_id"),
             provider=d.get("provider", None),
             url=d.get("url", None),
         )
@@ -2845,7 +2846,7 @@ class Space:
             name=d.get("name", None),
             resources=_repeated_dict(d, "resources", AppResource),
             service_principal_client_id=d.get("service_principal_client_id", None),
-            service_principal_id=d.get("service_principal_id", None),
+            service_principal_id=_int64(d, "service_principal_id"),
             service_principal_name=d.get("service_principal_name", None),
             status=_from_dict(d, "status", SpaceStatus),
             telemetry_export_destinations=_repeated_dict(

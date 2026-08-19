@@ -1125,6 +1125,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SourceLateness
+   :members:
+   :undoc-members:
+
 .. py:class:: Status
 
    The status of the model version. Valid values are:
