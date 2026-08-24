@@ -44,6 +44,12 @@ if TYPE_CHECKING:
 
 _LOG = logging.getLogger(__name__)
 
+_FILESYSTEM_PREFIXES = re.compile(r"^(?:dbfs|file):")
+
+
+def _strip_filesystem_prefix(path: Union[str, pathlib.Path]) -> str:
+    return _FILESYSTEM_PREFIXES.sub("", str(path), count=1)
+
 
 class _DbfsIO(BinaryIO):
     MAX_CHUNK_SIZE = 1024 * 1024
@@ -363,10 +369,10 @@ class _Path(ABC):
 
 class _LocalPath(_Path):
     def __init__(self, path: str):
+        path = str(path)
         if platform.system() == "Windows":
-            self._path = pathlib.Path(str(path).replace("file:///", "").replace("file:", ""))
-        else:
-            self._path = pathlib.Path(str(path).replace("file:", ""))
+            path = path.removeprefix("file:///")
+        self._path = pathlib.Path(path.removeprefix("file:"))
 
     def _is_local(self) -> bool:
         return True
@@ -432,7 +438,7 @@ class _LocalPath(_Path):
 
 class _VolumesPath(_Path):
     def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
-        self._path = pathlib.PurePosixPath(str(src).replace("dbfs:", "").replace("file:", ""))
+        self._path = pathlib.PurePosixPath(_strip_filesystem_prefix(src))
         self._api = api
 
     def _is_local(self) -> bool:
@@ -508,7 +514,7 @@ class _VolumesPath(_Path):
 
 class _DbfsPath(_Path):
     def __init__(self, api: files.DbfsAPI, src: str):
-        self._path = pathlib.PurePosixPath(str(src).replace("dbfs:", "").replace("file:", ""))
+        self._path = pathlib.PurePosixPath(_strip_filesystem_prefix(src))
         self._api = api
 
     def _is_local(self) -> bool:

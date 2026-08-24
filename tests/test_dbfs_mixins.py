@@ -1,3 +1,5 @@
+import pathlib
+
 import pytest
 
 from databricks.sdk.errors import NotFound
@@ -77,6 +79,34 @@ def test_fs_path(config, path, expected_type):
     assert isinstance(dbfs_ext._path(path), expected_type)
 
 
+@pytest.mark.parametrize("path_type", [_DbfsPath, _VolumesPath])
+@pytest.mark.parametrize(
+    "path,expected",
+    [
+        ("dbfs:/path/to/file", "/path/to/file"),
+        ("file:/path/to/file", "/path/to/file"),
+        ("/dbfs:", "/dbfs:"),
+        ("/path/dbfs:file", "/path/dbfs:file"),
+        ("/path/file:dbfs:", "/path/file:dbfs:"),
+    ],
+)
+def test_remote_path_only_strips_leading_filesystem_prefix(mocker, path_type, path, expected):
+    assert path_type(mocker.Mock(), path).as_string == expected
+
+
+def test_local_path_only_strips_leading_file_prefix(tmp_path):
+    path = tmp_path / "file:name"
+
+    assert _LocalPath(f"file:{path}").as_string == str(path)
+
+
+def test_windows_local_path_preserves_file_uri_behavior(mocker):
+    mocker.patch("databricks.sdk.mixins.files.platform.system", return_value="Windows")
+
+    assert _LocalPath("file:///C:/Temp/file:name").as_string == str(pathlib.Path("C:/Temp/file:name"))
+    assert _LocalPath("file://server/share/file:name").as_string == str(pathlib.Path("//server/share/file:name"))
+
+
 def test_fs_path_invalid(config):
     dbfs_ext = DbfsExt(config)
     with pytest.raises(ValueError) as e:
@@ -92,7 +122,8 @@ def test_dbfs_local_path_mkdir(config, tmp_path):
     assert w.dbfs.exists(f"file:{tmp_path}/test_dir")
 
 
-def test_dbfs_exists(config, mocker):
+@pytest.mark.parametrize("path", ["/abc/def/ghi", "/dbfs:", "/abc/file:name"])
+def test_dbfs_exists(config, mocker, path):
     from databricks.sdk import WorkspaceClient
 
     get_status = mocker.patch(
@@ -101,17 +132,88 @@ def test_dbfs_exists(config, mocker):
     )
 
     client = WorkspaceClient(config=config)
-    client.dbfs.exists("/abc/def/ghi")
+    client.dbfs.exists(path)
 
-    get_status.assert_called_with("/abc/def/ghi")
+    get_status.assert_called_with(path)
 
 
-def test_volume_exists(config, mocker):
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/Volumes/abc/def/ghi",
+        "/Volumes/abc/def/dbfs:",
+        "/Volumes/abc/def/file:name",
+    ],
+)
+def test_volume_exists(config, mocker, path):
     from databricks.sdk import WorkspaceClient
 
     get_metadata = mocker.patch("databricks.sdk.service.files.FilesAPI.get_metadata")
 
     client = WorkspaceClient(config=config)
-    client.dbfs.exists("/Volumes/abc/def/ghi")
+    client.dbfs.exists(path)
 
-    get_metadata.assert_called_with("/Volumes/abc/def/ghi")
+    get_metadata.assert_called_with(path)
+
+
+def test_dbfs_recursive_list_preserves_dbfs_directory_name(config, mocker):
+    from databricks.sdk import WorkspaceClient
+    from databricks.sdk.service.files import FileInfo
+
+    mocker.patch(
+        "databricks.sdk.service.files.DbfsAPI.get_status",
+        return_value=FileInfo(path="/", is_dir=True),
+    )
+    requested_paths = []
+
+    def list_directory(path):
+        requested_paths.append(path)
+        if len(requested_paths) > 2:
+            pytest.fail("recursive listing revisited the root directory")
+        if path == "/":
+            return [FileInfo(path="/dbfs:", is_dir=True)]
+        if path == "/dbfs:":
+            return [FileInfo(path="/dbfs:/file", is_dir=False)]
+        raise AssertionError(f"unexpected path: {path}")
+
+    mocker.patch("databricks.sdk.service.files.DbfsAPI.list", side_effect=list_directory)
+
+    client = WorkspaceClient(config=config)
+    result = list(client.dbfs.list("/", recursive=True))
+
+    assert [entry.path for entry in result] == ["/dbfs:/file"]
+    assert requested_paths == ["/", "/dbfs:"]
+
+
+def test_volume_recursive_list_preserves_file_directory_name(mocker):
+    from databricks.sdk.service.files import DirectoryEntry
+
+    root = "/Volumes/catalog/schema/volume"
+    directory = f"{root}/file:"
+    api = mocker.Mock()
+    requested_paths = []
+
+    def list_directory(path):
+        requested_paths.append(path)
+        if len(requested_paths) > 2:
+            pytest.fail("recursive listing revisited the root directory")
+        if path == root:
+            return [DirectoryEntry(name="file:", path=directory, is_directory=True)]
+        if path == directory:
+            return [
+                DirectoryEntry(
+                    name="data",
+                    path=f"{directory}/data",
+                    is_directory=False,
+                    file_size=1,
+                    last_modified=123,
+                )
+            ]
+        raise AssertionError(f"unexpected path: {path}")
+
+    api.list_directory_contents.side_effect = list_directory
+
+    result = list(_VolumesPath(api, root).list(recursive=True))
+
+    assert [entry.path for entry in result] == [f"{directory}/data"]
+    assert requested_paths == [root, directory]
