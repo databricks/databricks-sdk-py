@@ -5,6 +5,7 @@ import sys
 import types
 from datetime import datetime, timedelta
 from typing import Dict
+from urllib.parse import parse_qs
 
 import pytest
 
@@ -102,6 +103,46 @@ def test_runtime_oauth_success_scenarios(
     assert creds_provider is not None
     headers = creds_provider()
     assert headers["Authorization"] == "Bearer exchanged-oauth-token"
+
+
+def test_runtime_oauth_with_group_reexchange_uses_fresh_notebook_pat(
+    mock_runtime_env, mock_runtime_native_auth, monkeypatch, requests_mock
+):
+    """Verifies grouped runtime OAuth retains its role and fetches a fresh PAT per exchange."""
+    token_endpoint = "https://test.cloud.databricks.com/oidc/v1/token"
+    token_responses = iter(
+        [
+            {"access_token": "expired-role-token", "token_type": "Bearer", "expires_in": -1},
+            {"access_token": "fresh-role-token", "token_type": "Bearer", "expires_in": 3600},
+        ]
+    )
+    token_request = requests_mock.post(
+        token_endpoint,
+        json=lambda _request, _context: next(token_responses),
+    )
+    # runtime_oauth verifies PAT availability before the refreshable source fetches one per exchange.
+    notebook_pats = iter(["preflight-pat", "first-exchange-pat", "second-exchange-pat"])
+
+    def init_runtime_native_auth():
+        return "https://test.cloud.databricks.com", lambda: {"Authorization": f"Bearer {next(notebook_pats)}"}
+
+    monkeypatch.setattr(sys.modules["databricks.sdk.runtime"], "init_runtime_native_auth", init_runtime_native_auth)
+    cfg = Config(
+        host="https://test.cloud.databricks.com",
+        scopes="all-apis",
+        group_id="group-id",
+        credentials_strategy=MockCredentialsStrategy(),
+    )
+
+    provider = runtime_oauth(cfg)
+
+    assert provider() == {"Authorization": "Bearer expired-role-token"}
+    assert provider() == {"Authorization": "Bearer fresh-role-token"}
+
+    assert token_request.call_count == 2
+    token_forms = [parse_qs(request.text) for request in token_request.request_history]
+    assert [form["subject_token"] for form in token_forms] == [["first-exchange-pat"], ["second-exchange-pat"]]
+    assert [form["assume_group"] for form in token_forms] == [["group-id"], ["group-id"]]
 
 
 @pytest.mark.parametrize(

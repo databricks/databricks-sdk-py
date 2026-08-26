@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
+from urllib.parse import parse_qs
 
 import pytest
 
@@ -187,3 +188,85 @@ def test_databricks_oidc_token_source_missing_host_raises():
     )
     with pytest.raises(ValueError, match="missing Host"):
         ts.token()
+
+
+@pytest.mark.parametrize(
+    "token_endpoint",
+    [
+        "https://workspace.cloud.databricks.com/oidc/v1/token",
+        "https://accounts.cloud.databricks.com/oidc/accounts/account-id/v1/token",
+        "https://db.cloud.databricks.com/oidc/accounts/account-id/v1/token",
+    ],
+    ids=["workspace", "account", "unified"],
+)
+def test_databricks_oidc_token_source_sends_group(requests_mock, token_endpoint):
+    """Verifies WIF sends assume_group to workspace, account, and unified token endpoints."""
+    requests_mock.post(
+        token_endpoint,
+        json={"access_token": "token", "token_type": "Bearer", "expires_in": 3600},
+    )
+    source = oidc.DatabricksOidcTokenSource(
+        host="https://example.cloud.databricks.com",
+        token_endpoint=token_endpoint,
+        id_token_source=_CountingIdTokenSource(),
+        client_id="client-id",
+        group_id="group-id",
+    )
+
+    source.token()
+
+    token_form = parse_qs(requests_mock.last_request.text)
+    assert token_form["assume_group"] == ["group-id"]
+
+
+def test_databricks_oidc_token_source_reexchange_sends_group(requests_mock):
+    """Verifies WIF retains assume_group when an expired token triggers re-exchange."""
+    token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"
+    token_request = requests_mock.post(
+        token_endpoint,
+        json={"access_token": "expired-token", "token_type": "Bearer", "expires_in": -1},
+    )
+    source = oidc.DatabricksOidcTokenSource(
+        host="https://workspace.cloud.databricks.com",
+        token_endpoint=token_endpoint,
+        id_token_source=_CountingIdTokenSource(),
+        client_id="client-id",
+        group_id="group-id",
+        disable_async=True,
+    )
+
+    source.token()
+    source.token()
+
+    assert token_request.call_count == 2
+    for request in token_request.request_history:
+        assert parse_qs(request.text)["assume_group"] == ["group-id"]
+
+
+def test_databricks_oidc_token_source_group_caches_are_isolated(requests_mock):
+    """Verifies normal and grouped WIF token sources cache only their own tokens."""
+    token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"
+
+    def issue_token(request, _context):
+        group_id = parse_qs(request.text, keep_blank_values=True).get("assume_group", ["normal"])[0]
+        return {"access_token": f"{group_id}-token", "token_type": "Bearer", "expires_in": 3600}
+
+    token_request = requests_mock.post(token_endpoint, json=issue_token)
+    sources = {
+        group_id: oidc.DatabricksOidcTokenSource(
+            host="https://workspace.cloud.databricks.com",
+            token_endpoint=token_endpoint,
+            id_token_source=_CountingIdTokenSource(),
+            client_id="client-id",
+            group_id=group_id,
+            disable_async=True,
+        )
+        for group_id in [None, "group-a", "group-b"]
+    }
+
+    for group_id, source in sources.items():
+        expected_token = f"{group_id or 'normal'}-token"
+        assert source.token().access_token == expected_token
+        assert source.token().access_token == expected_token
+
+    assert token_request.call_count == 3

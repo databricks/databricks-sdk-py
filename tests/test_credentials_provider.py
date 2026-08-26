@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from unittest.mock import Mock
+from urllib.parse import parse_qs
 
 import pytest
 
@@ -234,6 +235,7 @@ def test_external_browser_passes_profile_to_token_cache(mocker):
     mock_cfg.auth_type = "external-browser"
     mock_cfg.host = "https://test.databricks.com"
     mock_cfg.profile = "myprofile"
+    mock_cfg.group_id = "group-id"
     mock_cfg.client_id = "test-client-id"
     mock_cfg.client_secret = None
     mock_cfg.azure_client_id = None
@@ -254,6 +256,354 @@ def test_external_browser_passes_profile_to_token_cache(mocker):
     credentials_provider.external_browser(mock_cfg)
 
     assert mock_token_cache_class.call_args.kwargs["profile"] == "myprofile"
+    assert mock_token_cache_class.call_args.kwargs["group_id"] == "group-id"
+
+
+def test_external_browser_passes_group_to_oauth_client(mocker):
+    """Verifies external-browser auth forwards the requested group to its OAuth client."""
+    mock_cfg = Mock()
+    mock_cfg.auth_type = "external-browser"
+    mock_cfg.host = "https://test.databricks.com"
+    mock_cfg.group_id = "group-id"
+    mock_cfg.profile = None
+    mock_cfg.client_id = "client-id"
+    mock_cfg.client_secret = None
+    mock_cfg.azure_client_id = None
+    mock_cfg.get_scopes.return_value = ["all-apis"]
+    mock_cfg.disable_oauth_refresh_token = True
+
+    mocker.patch("databricks.sdk.credentials_provider.oauth.TokenCache").return_value.load.return_value = None
+    oauth_client_class = mocker.patch("databricks.sdk.credentials_provider.oauth.OAuthClient")
+    oauth_client_class.return_value.initiate_consent.return_value = None
+
+    credentials_provider.external_browser(mock_cfg)
+
+    assert oauth_client_class.call_args.kwargs["group_id"] == "group-id"
+
+
+def test_external_browser_with_azure_entra_rejects_group():
+    """Verifies Azure Entra browser auth rejects unsupported group-role requests."""
+    cfg = Mock(
+        auth_type="external-browser",
+        group_id="group-id",
+        client_id=None,
+        azure_client_id="azure-client-id",
+    )
+
+    with pytest.raises(ValueError, match="external-browser with Azure Entra ID"):
+        credentials_provider.external_browser(cfg)
+
+
+def test_external_browser_group_cache_isolation(mocker, monkeypatch, tmp_path):
+    """Verifies normal and grouped browser sessions persist in separate cache entries."""
+    monkeypatch.setattr(oauth.TokenCache, "BASE_PATH", str(tmp_path))
+    oidc_endpoints = oauth.OidcEndpoints(
+        "https://test.databricks.com/oidc/v1/authorize",
+        "https://test.databricks.com/oidc/v1/token",
+    )
+
+    def config(group_id):
+        cfg = Mock(
+            auth_type="external-browser",
+            host="https://test.databricks.com",
+            profile=None,
+            group_id=group_id,
+            client_id="client-id",
+            client_secret=None,
+            azure_client_id=None,
+            disable_oauth_refresh_token=False,
+            databricks_oidc_endpoints=oidc_endpoints,
+        )
+        cfg.get_scopes.return_value = ["all-apis"]
+        return cfg
+
+    def oauth_client(**kwargs):
+        group_id = kwargs["group_id"] or "normal"
+        credentials = oauth.SessionCredentials(
+            oauth.Token(
+                access_token=f"{group_id}-token",
+                token_type="Bearer",
+                expiry=datetime.now() + timedelta(hours=1),
+            ),
+            oidc_endpoints.token_endpoint,
+            "client-id",
+        )
+        consent = Mock()
+        consent.launch_external_browser.return_value = credentials
+        client = Mock()
+        client.initiate_consent.return_value = consent
+        return client
+
+    oauth_client_class = mocker.patch(
+        "databricks.sdk.credentials_provider.oauth.OAuthClient",
+        side_effect=oauth_client,
+    )
+
+    for group_id in [None, "group-a", "group-b"]:
+        provider = credentials_provider.external_browser(config(group_id))
+        assert provider() == {"Authorization": f"Bearer {group_id or 'normal'}-token"}
+
+    assert oauth_client_class.call_count == 3
+    assert len(list(tmp_path.iterdir())) == 3
+
+    oauth_client_class.reset_mock()
+    for group_id in [None, "group-a", "group-b"]:
+        provider = credentials_provider.external_browser(config(group_id))
+        assert provider() == {"Authorization": f"Bearer {group_id or 'normal'}-token"}
+
+    oauth_client_class.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "token_endpoint",
+    [
+        "https://workspace.cloud.databricks.com/oidc/v1/token",
+        "https://accounts.cloud.databricks.com/oidc/accounts/account-id/v1/token",
+        "https://db.cloud.databricks.com/oidc/accounts/account-id/v1/token",
+    ],
+    ids=["workspace", "account", "unified"],
+)
+def test_oauth_m2m_sends_group(requests_mock, token_endpoint):
+    """Verifies M2M sends assume_group to workspace, account, and unified token endpoints."""
+    requests_mock.post(
+        token_endpoint,
+        json={"access_token": "token", "token_type": "Bearer", "expires_in": 3600},
+    )
+    cfg = Mock(
+        group_id="group-id",
+        client_id="client-id",
+        client_secret="client-secret",
+        databricks_oidc_endpoints=oauth.OidcEndpoints("unused", token_endpoint),
+        disable_async_token_refresh=True,
+        authorization_details=None,
+    )
+    cfg.get_scopes_as_string.return_value = "all-apis"
+
+    provider = credentials_provider.oauth_service_principal(cfg)
+    provider()
+
+    token_form = parse_qs(requests_mock.last_request.text)
+    assert token_form["assume_group"] == ["group-id"]
+
+
+def test_oauth_m2m_without_group_preserves_token_form(requests_mock):
+    """Verifies ungrouped M2M requests do not add an assume_group parameter."""
+    token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"
+    requests_mock.post(
+        token_endpoint,
+        json={"access_token": "token", "token_type": "Bearer", "expires_in": 3600},
+    )
+    cfg = Mock(
+        group_id=None,
+        client_id="client-id",
+        client_secret="client-secret",
+        databricks_oidc_endpoints=oauth.OidcEndpoints("unused", token_endpoint),
+        disable_async_token_refresh=True,
+        authorization_details=None,
+    )
+    cfg.get_scopes_as_string.return_value = "all-apis"
+
+    credentials_provider.oauth_service_principal(cfg)()
+
+    token_form = parse_qs(requests_mock.last_request.text, keep_blank_values=True)
+    assert "assume_group" not in token_form
+
+
+def test_oauth_m2m_group_rejection_does_not_retry_without_group(requests_mock):
+    """Verifies a rejected group request is surfaced instead of retried as normal access."""
+    token_endpoint = "https://accounts.cloud.databricks.com/oidc/accounts/account-id/v1/token"
+    token_request = requests_mock.post(
+        token_endpoint,
+        status_code=400,
+        headers={"Content-Type": "application/json"},
+        json={"error": "invalid_request", "error_description": "assume_group is not supported"},
+    )
+    cfg = Mock(
+        group_id="group-id",
+        client_id="client-id",
+        client_secret="client-secret",
+        databricks_oidc_endpoints=oauth.OidcEndpoints("unused", token_endpoint),
+        disable_async_token_refresh=True,
+        authorization_details=None,
+    )
+    cfg.get_scopes_as_string.return_value = "all-apis"
+    provider = credentials_provider.oauth_service_principal(cfg)
+
+    with pytest.raises(ValueError, match="invalid_request: assume_group is not supported"):
+        provider()
+
+    assert token_request.call_count == 1
+    assert parse_qs(token_request.last_request.text)["assume_group"] == ["group-id"]
+
+
+def test_oauth_m2m_reexchange_sends_group(requests_mock):
+    """Verifies M2M retains assume_group when an expired token triggers re-exchange."""
+    token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"
+    token_responses = iter(
+        [
+            {"access_token": "expired-role-token", "token_type": "Bearer", "expires_in": -1},
+            {"access_token": "fresh-role-token", "token_type": "Bearer", "expires_in": 3600},
+        ]
+    )
+    token_request = requests_mock.post(
+        token_endpoint,
+        json=lambda _request, _context: next(token_responses),
+    )
+    cfg = Mock(
+        group_id="group-id",
+        client_id="client-id",
+        client_secret="client-secret",
+        databricks_oidc_endpoints=oauth.OidcEndpoints("unused", token_endpoint),
+        disable_async_token_refresh=True,
+        authorization_details=None,
+    )
+    cfg.get_scopes_as_string.return_value = "all-apis"
+    provider = credentials_provider.oauth_service_principal(cfg)
+
+    assert provider() == {"Authorization": "Bearer expired-role-token"}
+    assert provider() == {"Authorization": "Bearer fresh-role-token"}
+
+    assert token_request.call_count == 2
+    for request in token_request.request_history:
+        assert parse_qs(request.text)["assume_group"] == ["group-id"]
+
+
+def test_oauth_m2m_group_caches_are_isolated_per_provider(requests_mock):
+    """Verifies normal and grouped M2M providers cache only their own tokens."""
+    token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"
+
+    def issue_token(request, _context):
+        group_id = parse_qs(request.text, keep_blank_values=True).get("assume_group", ["normal"])[0]
+        return {"access_token": f"{group_id}-token", "token_type": "Bearer", "expires_in": 3600}
+
+    token_request = requests_mock.post(token_endpoint, json=issue_token)
+    providers = {}
+    for group_id in [None, "group-a", "group-b"]:
+        cfg = Mock(
+            group_id=group_id,
+            client_id="client-id",
+            client_secret="client-secret",
+            databricks_oidc_endpoints=oauth.OidcEndpoints("unused", token_endpoint),
+            disable_async_token_refresh=True,
+            authorization_details=None,
+        )
+        cfg.get_scopes_as_string.return_value = "all-apis"
+        providers[group_id] = credentials_provider.oauth_service_principal(cfg)
+
+    for group_id, provider in providers.items():
+        expected_headers = {"Authorization": f"Bearer {group_id or 'normal'}-token"}
+        assert provider() == expected_headers
+        assert provider() == expected_headers
+
+    assert token_request.call_count == 3
+
+
+def test_oidc_supplier_sends_group(requests_mock):
+    """Verifies the shared OIDC credentials provider forwards assume_group."""
+    token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"
+    requests_mock.post(
+        token_endpoint,
+        json={"access_token": "token", "token_type": "Bearer", "expires_in": 3600},
+    )
+    supplier = Mock()
+    supplier.get_oidc_token.return_value = "id-token"
+    cfg = Mock(
+        group_id="group-id",
+        token_audience="audience",
+        client_id="client-id",
+        databricks_oidc_endpoints=oauth.OidcEndpoints("unused", token_endpoint),
+        disable_async_token_refresh=True,
+        authorization_details=None,
+    )
+    cfg.get_scopes_as_string.return_value = "all-apis"
+
+    provider = credentials_provider._oidc_credentials_provider(cfg, lambda: supplier, "test OIDC")
+    provider()
+
+    token_form = parse_qs(requests_mock.last_request.text)
+    assert token_form["assume_group"] == ["group-id"]
+
+
+@pytest.mark.parametrize(
+    "provider",
+    [
+        credentials_provider.pat_auth,
+        credentials_provider.basic_auth,
+        credentials_provider.runtime_native_auth,
+        credentials_provider.azure_service_principal,
+        credentials_provider.github_oidc_azure,
+        credentials_provider.google_credentials,
+        credentials_provider.google_id,
+        credentials_provider.azure_cli,
+        credentials_provider.databricks_cli,
+        credentials_provider.metadata_service,
+        credentials_provider.model_serving_auth,
+    ],
+    ids=lambda provider: provider.auth_type(),
+)
+def test_explicit_unsupported_auth_rejects_group(provider):
+    """Verifies explicitly selected normal-access strategies reject group-role requests."""
+    auth_type = provider.auth_type()
+    cfg = Mock(group_id="group-id", auth_type=auth_type)
+
+    with pytest.raises(ValueError, match=f'auth type "{auth_type}" does not support group role assumption'):
+        provider(cfg)
+
+
+def test_default_credentials_skips_unsupported_auth_for_group():
+    """Verifies default discovery skips normal-access auth and continues to group-capable auth."""
+
+    @credentials_provider.credentials_strategy("unsupported", [], supports_group=False)
+    def unsupported(_):
+        return lambda: {"Authorization": "normal"}
+
+    @credentials_provider.credentials_strategy("supported", [], supports_group=True)
+    def supported(_):
+        return lambda: {"Authorization": "role"}
+
+    strategy = credentials_provider.DefaultCredentials()
+    strategy._auth_providers = [unsupported, supported]
+
+    provider = strategy(Mock(group_id="group-id", auth_type=None))
+
+    assert provider() == {"Authorization": "role"}
+
+
+def test_default_credentials_group_fallback_uses_oauth_m2m_not_pat(requests_mock):
+    """Verifies default discovery selects grouped M2M instead of available PAT credentials."""
+    token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"
+    token_request = requests_mock.post(
+        token_endpoint,
+        json={"access_token": "role-token", "token_type": "Bearer", "expires_in": 3600},
+    )
+    cfg = Mock(
+        group_id="group-id",
+        auth_type=None,
+        host="https://workspace.cloud.databricks.com",
+        token="normal-pat",
+        client_id="client-id",
+        client_secret="client-secret",
+        databricks_oidc_endpoints=oauth.OidcEndpoints("unused", token_endpoint),
+        disable_async_token_refresh=True,
+        authorization_details=None,
+    )
+    cfg.get_scopes_as_string.return_value = "all-apis"
+    strategy = credentials_provider.DefaultCredentials()
+    strategy._auth_providers = [credentials_provider.pat_auth, credentials_provider.oauth_service_principal]
+
+    provider = strategy(cfg)
+
+    assert provider() == {"Authorization": "Bearer role-token"}
+    assert strategy.auth_type() == "oauth-m2m"
+    assert parse_qs(token_request.last_request.text)["assume_group"] == ["group-id"]
+
+
+def test_default_credentials_group_exhaustion_keeps_generic_error():
+    """Verifies exhausting default discovery retains its established generic error."""
+    cfg = Mock(group_id="group-id", auth_type=None, host=None, scopes=None)
+
+    with pytest.raises(ValueError, match="cannot configure default credentials"):
+        credentials_provider.DefaultCredentials()(cfg)
 
 
 def test_oidc_credentials_provider_invalid_id_token_source():
@@ -703,7 +1053,7 @@ class TestCloudAgnosticHosts:
     def test_azure_service_principal_with_cloud_agnostic_host(self, mocker):
         """Test that azure_service_principal works with cloud-agnostic hosts after removing is_azure requirement."""
         # Mock Config with cloud-agnostic host
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
         mock_cfg.azure_client_id = "test-azure-client-id"
         mock_cfg.azure_client_secret = "test-azure-secret"
@@ -739,7 +1089,7 @@ class TestCloudAgnosticHosts:
     def test_google_credentials_with_cloud_agnostic_host(self, mocker):
         """Test that google_credentials works with cloud-agnostic hosts after removing is_gcp check."""
         # Mock Config with cloud-agnostic host
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
         mock_cfg.google_credentials = '{"type": "service_account", "project_id": "test"}'
         mock_cfg.client_type = ClientType.WORKSPACE
@@ -769,7 +1119,7 @@ class TestCloudAgnosticHosts:
 
     def test_google_credentials_includes_sa_token_on_success(self, mocker):
         """Test that google_credentials includes GCP SA access token when refresh succeeds."""
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"
         mock_cfg.google_credentials = '{"type": "service_account", "project_id": "test"}'
         mock_cfg.disable_async_token_refresh = True
@@ -796,7 +1146,7 @@ class TestCloudAgnosticHosts:
 
     def test_google_credentials_warns_on_sa_token_failure(self, mocker):
         """Test that google_credentials logs warning and omits SA token when refresh fails."""
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"
         mock_cfg.google_credentials = '{"type": "service_account", "project_id": "test"}'
         mock_cfg.disable_async_token_refresh = True
@@ -827,7 +1177,7 @@ class TestCloudAgnosticHosts:
     def test_google_id_with_cloud_agnostic_host(self, mocker):
         """Test that google_id works with cloud-agnostic hosts after removing is_gcp check."""
         # Mock Config with cloud-agnostic host
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
         mock_cfg.google_service_account = "test-sa@project.iam.gserviceaccount.com"
         mock_cfg.client_type = ClientType.WORKSPACE
@@ -864,7 +1214,7 @@ class TestCloudAgnosticHosts:
 
     def test_google_id_includes_sa_token_on_success(self, mocker):
         """Test that google_id includes GCP SA access token when refresh succeeds."""
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"
         mock_cfg.google_service_account = "test-sa@project.iam.gserviceaccount.com"
 
@@ -896,7 +1246,7 @@ class TestCloudAgnosticHosts:
 
     def test_google_id_warns_on_sa_token_failure(self, mocker):
         """Test that google_id logs warning and omits SA token when refresh fails."""
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"
         mock_cfg.google_service_account = "test-sa@project.iam.gserviceaccount.com"
 
@@ -935,7 +1285,7 @@ class TestCloudAgnosticHosts:
         mocker.patch.dict("os.environ", {"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "test-token"})
 
         # Mock Config with cloud-agnostic host
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
         mock_cfg.azure_client_id = "test-azure-client-id"
         mock_cfg.azure_tenant_id = None  # Will be auto-detected
@@ -982,7 +1332,7 @@ class TestCloudAgnosticHosts:
     def test_azure_cli_requires_effective_azure_login_app_id(self, mocker):
         """Test that azure_cli now requires effective_azure_login_app_id instead of is_azure."""
         # Mock Config with cloud-agnostic host
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
         mock_cfg.azure_tenant_id = "test-tenant-id"
         mock_cfg.azure_workspace_resource_id = None
@@ -1017,7 +1367,7 @@ class TestCloudAgnosticHosts:
     def test_azure_cli_returns_none_without_effective_azure_login_app_id(self):
         """Test that azure_cli returns None when effective_azure_login_app_id is not set."""
         # Mock Config without effective_azure_login_app_id
-        mock_cfg = Mock()
+        mock_cfg = Mock(group_id=None)
         mock_cfg.host = "https://api.databricks.com"
         mock_cfg.effective_azure_login_app_id = None  # Not set
 

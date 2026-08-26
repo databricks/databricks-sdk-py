@@ -85,7 +85,13 @@ class OauthCredentialsStrategy(CredentialsStrategy):
         return self._headers_provider(cfg).oauth_token()
 
 
-def credentials_strategy(name: str, require: List[str]):
+def _unsupported_group_role_assumption(auth_type: str) -> ValueError:
+    return ValueError(
+        f'auth type "{auth_type}" does not support group role assumption. Use Databricks OAuth authentication'
+    )
+
+
+def credentials_strategy(name: str, require: List[str], supports_group: Optional[bool] = None):
     """Given the function that receives a Config and returns RequestVisitor,
     create CredentialsProvider with a given name and required configuration
     attribute names to be present for this function to be called."""
@@ -95,6 +101,12 @@ def credentials_strategy(name: str, require: List[str]):
     ) -> CredentialsStrategy:
         @functools.wraps(func)
         def wrapper(cfg: "Config") -> Optional[CredentialsProvider]:
+            if cfg.group_id and supports_group is False:
+                # Explicit auth has no fallback, so report why the requested strategy cannot be used.
+                # Default auth is a discovery chain, so decline and let it find a group-capable strategy.
+                if cfg.auth_type == name:
+                    raise _unsupported_group_role_assumption(name)
+                return None
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
@@ -106,7 +118,7 @@ def credentials_strategy(name: str, require: List[str]):
     return inner
 
 
-def oauth_credentials_strategy(name: str, require: List[str]):
+def oauth_credentials_strategy(name: str, require: List[str], supports_group: Optional[bool] = None):
     """Given the function that receives a Config and returns an OauthHeaderFactory,
     create an OauthCredentialsProvider with a given name and required configuration
     attribute names to be present for this function to be called.
@@ -121,6 +133,12 @@ def oauth_credentials_strategy(name: str, require: List[str]):
     ) -> OauthCredentialsStrategy:
         @functools.wraps(func)
         def wrapper(cfg: "Config") -> Optional[OAuthCredentialsProvider]:
+            if cfg.group_id and supports_group is False:
+                # Explicit auth has no fallback, so report why the requested strategy cannot be used.
+                # Default auth is a discovery chain, so decline and let it find a group-capable strategy.
+                if cfg.auth_type == name:
+                    raise _unsupported_group_role_assumption(name)
+                return None
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
@@ -131,7 +149,7 @@ def oauth_credentials_strategy(name: str, require: List[str]):
     return inner
 
 
-@credentials_strategy("basic", ["host", "username", "password"])
+@credentials_strategy("basic", ["host", "username", "password"], supports_group=False)
 def basic_auth(cfg: "Config") -> CredentialsProvider:
     """Given username and password, add base64-encoded Basic credentials"""
     encoded = base64.b64encode(f"{cfg.username}:{cfg.password}".encode()).decode()
@@ -143,7 +161,7 @@ def basic_auth(cfg: "Config") -> CredentialsProvider:
     return inner
 
 
-@credentials_strategy("pat", ["host", "token"])
+@credentials_strategy("pat", ["host", "token"], supports_group=False)
 def pat_auth(cfg: "Config") -> CredentialsProvider:
     """Adds Databricks Personal Access Token to every request"""
     static_credentials = {"Authorization": f"Bearer {cfg.token}"}
@@ -154,8 +172,7 @@ def pat_auth(cfg: "Config") -> CredentialsProvider:
     return inner
 
 
-@credentials_strategy("runtime", [])
-def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
+def _runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     if "DATABRICKS_RUNTIME_VERSION" not in os.environ:
         return None
 
@@ -198,13 +215,18 @@ def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     return None
 
 
-@oauth_credentials_strategy("runtime-oauth", ["scopes"])
+@credentials_strategy("runtime", [], supports_group=False)
+def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
+    return _runtime_native_auth(cfg)
+
+
+@oauth_credentials_strategy("runtime-oauth", ["scopes"], supports_group=True)
 def runtime_oauth(cfg: "Config") -> Optional[CredentialsProvider]:
     if "DATABRICKS_RUNTIME_VERSION" not in os.environ:
         return None
 
     def get_notebook_pat_token() -> Optional[str]:
-        native_auth = runtime_native_auth(cfg)
+        native_auth = _runtime_native_auth(cfg)
         if native_auth is None:
             return None
         notebook_pat_token = None
@@ -222,6 +244,7 @@ def runtime_oauth(cfg: "Config") -> Optional[CredentialsProvider]:
         host=cfg.host,
         scopes=cfg.get_scopes_as_string(),
         authorization_details=cfg.authorization_details,
+        group_id=cfg.group_id,
     )
 
     def inner() -> Dict[str, str]:
@@ -234,7 +257,7 @@ def runtime_oauth(cfg: "Config") -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(inner, token)
 
 
-@oauth_credentials_strategy("oauth-m2m", ["host", "client_id", "client_secret"])
+@oauth_credentials_strategy("oauth-m2m", ["host", "client_id", "client_secret"], supports_group=True)
 def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
     """Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host.
@@ -243,6 +266,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
     if oidc is None:
         return None
 
+    endpoint_params = {"assume_group": cfg.group_id} if cfg.group_id else None
     token_source = oauth.ClientCredentials(
         client_id=cfg.client_id,
         client_secret=cfg.client_secret,
@@ -251,6 +275,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
         use_header=True,
         disable_async=cfg.disable_async_token_refresh,
         authorization_details=cfg.authorization_details,
+        endpoint_params=endpoint_params,
     )
 
     def inner() -> Dict[str, str]:
@@ -263,7 +288,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(inner, token)
 
 
-@credentials_strategy("external-browser", ["host", "auth_type"])
+@credentials_strategy("external-browser", ["host", "auth_type"], supports_group=True)
 def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
     if cfg.auth_type != "external-browser":
         return None
@@ -275,6 +300,10 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         client_secret = cfg.client_secret
         oidc_endpoints = cfg.databricks_oidc_endpoints
     elif cfg.azure_client_id:
+        # This branch authenticates against Azure Entra ID rather than Databricks OAuth,
+        # so it cannot mint a group-scoped token.
+        if cfg.group_id:
+            raise _unsupported_group_role_assumption("external-browser with Azure Entra ID")
         client_id = cfg.azure_client_id
         client_secret = cfg.azure_client_secret
         oidc_endpoints = get_azure_entra_id_workspace_endpoints(cfg.host)
@@ -301,6 +330,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         redirect_url=redirect_url,
         scopes=scopes,
         profile=cfg.profile,
+        group_id=cfg.group_id,
     )
     credentials = token_cache.load()
     if credentials:
@@ -320,6 +350,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         redirect_url=redirect_url,
         client_secret=client_secret,
         scopes=scopes,
+        group_id=cfg.group_id,
     )
     consent = oauth_client.initiate_consent()
     if not consent:
@@ -350,6 +381,7 @@ def _ensure_host_present(cfg: "Config", token_source_for: Callable[[str], oauth.
 @oauth_credentials_strategy(
     "azure-client-secret",
     ["azure_client_id", "azure_client_secret"],
+    supports_group=False,
 )
 def azure_service_principal(cfg: "Config") -> CredentialsProvider:
     """Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
@@ -389,7 +421,7 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-@credentials_strategy("env-oidc", ["host"])
+@credentials_strategy("env-oidc", ["host"], supports_group=True)
 def env_oidc(cfg) -> Optional[CredentialsProvider]:
     # Search for an OIDC ID token in DATABRICKS_OIDC_TOKEN environment variable
     # by default. This can be overridden by setting DATABRICKS_OIDC_TOKEN_ENV
@@ -401,7 +433,7 @@ def env_oidc(cfg) -> Optional[CredentialsProvider]:
     return oidc_credentials_provider(cfg, oidc.EnvIdTokenSource(env_var))
 
 
-@credentials_strategy("file-oidc", ["host", "oidc_token_filepath"])
+@credentials_strategy("file-oidc", ["host", "oidc_token_filepath"], supports_group=True)
 def file_oidc(cfg) -> Optional[CredentialsProvider]:
     return oidc_credentials_provider(cfg, oidc.FileIdTokenSource(cfg.oidc_token_filepath))
 
@@ -424,6 +456,7 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
         id_token_source=id_token_source,
         disable_async=cfg.disable_async_token_refresh,
         scopes=cfg.get_scopes_as_string(),
+        group_id=cfg.group_id,
     )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -476,15 +509,19 @@ def _oidc_credentials_provider(
             # Should not happen, since we checked it above.
             raise Exception(f"Cannot get {provider_name} token")
 
+        endpoint_params = {
+            "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+            "subject_token": id_token,
+            "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+        }
+        if cfg.group_id:
+            endpoint_params["assume_group"] = cfg.group_id
+
         return oauth.ClientCredentials(
             client_id=cfg.client_id,
             client_secret="",  # we have no (rotatable) secrets in OIDC flow
             token_url=cfg.databricks_oidc_endpoints.token_endpoint,
-            endpoint_params={
-                "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
-                "subject_token": id_token,
-                "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
-            },
+            endpoint_params=endpoint_params,
             scopes=cfg.get_scopes_as_string(),
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
@@ -501,7 +538,7 @@ def _oidc_credentials_provider(
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-@oauth_credentials_strategy("github-oidc", ["host", "client_id"])
+@oauth_credentials_strategy("github-oidc", ["host", "client_id"], supports_group=True)
 def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     """
     GitHub OIDC authentication uses a Token Supplier to get a JWT Token and exchanges
@@ -516,7 +553,7 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     )
 
 
-@oauth_credentials_strategy("azure-devops-oidc", ["host", "client_id"])
+@oauth_credentials_strategy("azure-devops-oidc", ["host", "client_id"], supports_group=True)
 def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     """
     Azure DevOps OIDC authentication uses a Token Supplier to get a JWT Token
@@ -533,7 +570,7 @@ def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
 
 # Azure Client ID is the minimal thing we need, as otherwise we get AADSTS700016: Application with
 # identifier 'https://token.actions.githubusercontent.com' was not found in the directory '...'.
-@oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"])
+@oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"], supports_group=False)
 def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     if "ACTIONS_ID_TOKEN_REQUEST_TOKEN" not in os.environ:
         # not in GitHub actions
@@ -585,7 +622,7 @@ GcpScopes = [
 ]
 
 
-@oauth_credentials_strategy("google-credentials", ["host", "google_credentials"])
+@oauth_credentials_strategy("google-credentials", ["host", "google_credentials"], supports_group=False)
 def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     # Reads credentials as JSON. Credentials can be either a path to JSON file, or actual JSON string.
     # Obtain the id token by providing the json file path and target audience.
@@ -624,7 +661,7 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-@oauth_credentials_strategy("google-id", ["host", "google_service_account"])
+@oauth_credentials_strategy("google-id", ["host", "google_service_account"], supports_group=False)
 def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     credentials, _project_id = google.auth.default()
 
@@ -877,7 +914,7 @@ class AzureCliTokenSource(CliTokenSource):
         return components[2]
 
 
-@credentials_strategy("azure-cli", ["effective_azure_login_app_id"])
+@credentials_strategy("azure-cli", ["effective_azure_login_app_id"], supports_group=False)
 def azure_cli(cfg: "Config") -> Optional[CredentialsProvider]:
     """Adds refreshed OAuth token granted by `az login` command to every request."""
     cfg.load_azure_tenant_id()
@@ -1209,7 +1246,7 @@ class DatabricksCliTokenSource(CliTokenSource):
         raise err
 
 
-@oauth_credentials_strategy("databricks-cli", ["host"])
+@oauth_credentials_strategy("databricks-cli", ["host"], supports_group=False)
 def databricks_cli(cfg: "Config") -> Optional[CredentialsProvider]:
     try:
         token_source = DatabricksCliTokenSource(cfg)
@@ -1291,7 +1328,7 @@ class MetadataServiceTokenSource(oauth.Refreshable):
         return oauth.Token(access_token=access_token, token_type=token_type, expiry=expiry)
 
 
-@credentials_strategy("metadata-service", ["host", "metadata_service_url"])
+@credentials_strategy("metadata-service", ["host", "metadata_service_url"], supports_group=False)
 def metadata_service(cfg: "Config") -> Optional[CredentialsProvider]:
     """Adds refreshed token granted by Databricks Metadata Service to every request."""
 
@@ -1410,7 +1447,7 @@ def model_serving_auth_visitor(cfg: "Config", credential_type: Optional[str] = N
     return inner
 
 
-@credentials_strategy("model-serving", [])
+@credentials_strategy("model-serving", [], supports_group=False)
 def model_serving_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     if not ModelServingAuthProvider.should_fetch_model_serving_environment_oauth():
         logger.debug("model-serving: Not in Databricks Model Serving, skipping")
@@ -1504,6 +1541,8 @@ class ModelServingUserCredentials(CredentialsStrategy):
 
     def __call__(self, cfg: "Config") -> CredentialsProvider:
         if ModelServingAuthProvider.should_fetch_model_serving_environment_oauth():
+            if cfg.group_id:
+                raise _unsupported_group_role_assumption("model-serving")
             header_factory = model_serving_auth_visitor(cfg, self.credential_type)
             if not header_factory:
                 raise ValueError(
