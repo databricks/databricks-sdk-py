@@ -4,21 +4,6 @@ Identity and Access Management
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.iamv2`` module.
 
 .. py:currentmodule:: databricks.sdk.service.iamv2
-.. autoclass:: AccountAccessIdentityRule
-   :members:
-   :undoc-members:
-
-.. py:class:: AccountAccessRuleAction
-
-   The action type for an account access identity rule (currently DENY only).
-
-   .. py:attribute:: DENY
-      :value: "DENY"
-
-.. autoclass:: AttributeControlEntry
-   :members:
-   :undoc-members:
-
 .. autoclass:: DirectGroupMember
    :members:
    :undoc-members:
@@ -73,14 +58,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INTERNAL
       :value: "INTERNAL"
 
-.. autoclass:: ListAccountAccessIdentityRulesResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ListAttributeControlEntriesResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: ListDirectGroupMembersResponse
    :members:
    :undoc-members:
@@ -98,10 +75,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListUsersResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ListWorkspaceAccessDetailsResponse
    :members:
    :undoc-members:
 

@@ -8,22 +8,22 @@ This document lists all authentication types (`auth_type`) supported by the Data
 |-----------|-------------|---------------------|---------------------|----------------------|
 | `pat` | Personal Access Token authentication - the most common method for programmatic access | `host`, `token` | - | `DATABRICKS_HOST`, `DATABRICKS_TOKEN` |
 | `basic` | Basic HTTP authentication using username and password (primarily for AWS) | `host`, `username`, `password` | `account_id` (for account-level operations) | `DATABRICKS_HOST`, `DATABRICKS_USERNAME`, `DATABRICKS_PASSWORD`, `DATABRICKS_ACCOUNT_ID` |
-| `oauth-m2m` | OAuth 2.0 Machine-to-Machine (service principal) authentication | `host`, `client_id`, `client_secret` | `scopes`, `authorization_details` | `DATABRICKS_HOST`, `DATABRICKS_CLIENT_ID`, `DATABRICKS_CLIENT_SECRET` |
-| `external-browser` | OAuth 2.0 authentication flow using local browser for user login | `host`, `auth_type='external-browser'` | `client_id`, `client_secret` | `DATABRICKS_HOST`, `DATABRICKS_AUTH_TYPE`, `DATABRICKS_CLIENT_ID` |
+| `oauth-m2m` | OAuth 2.0 Machine-to-Machine (service principal) authentication | `host`, `client_id`, `client_secret` | `scopes`, `authorization_details`, `group_id` | `DATABRICKS_HOST`, `DATABRICKS_CLIENT_ID`, `DATABRICKS_CLIENT_SECRET`, `DATABRICKS_GROUP_ID` |
+| `external-browser` | OAuth 2.0 authentication flow using local browser for user login | `host`, `auth_type='external-browser'` | `client_id`, `client_secret`, `group_id` | `DATABRICKS_HOST`, `DATABRICKS_AUTH_TYPE`, `DATABRICKS_CLIENT_ID`, `DATABRICKS_GROUP_ID` |
 | `databricks-cli` | Uses tokens from the Databricks CLI (`databricks auth login`) | `host` | `account_id` (for account-level), `databricks_cli_path` | `DATABRICKS_HOST`, `DATABRICKS_ACCOUNT_ID`, `DATABRICKS_CLI_PATH` |
 | `azure-client-secret` | Azure Active Directory (AAD) Service Principal authentication | `azure_client_id`, `azure_client_secret` | `azure_tenant_id` (auto-detected from `host` if not set), `host`, `azure_workspace_resource_id`, `azure_environment` | `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_TENANT_ID`, `DATABRICKS_HOST`, `DATABRICKS_AZURE_RESOURCE_ID`, `ARM_ENVIRONMENT` |
 | `azure-cli` | Uses credentials from Azure CLI (`az login`) | `host` (or `azure_workspace_resource_id`) | `azure_tenant_id` | `DATABRICKS_HOST`, `DATABRICKS_AZURE_RESOURCE_ID`, `ARM_TENANT_ID` |
-| `github-oidc` | GitHub Actions OIDC authentication (workload identity federation) | `host`, `client_id` | `token_audience`, `account_id` | `DATABRICKS_HOST`, `DATABRICKS_CLIENT_ID`, `DATABRICKS_TOKEN_AUDIENCE`, `DATABRICKS_ACCOUNT_ID` |
+| `github-oidc` | GitHub Actions OIDC authentication (workload identity federation) | `host`, `client_id` | `token_audience`, `account_id`, `group_id` | `DATABRICKS_HOST`, `DATABRICKS_CLIENT_ID`, `DATABRICKS_TOKEN_AUDIENCE`, `DATABRICKS_ACCOUNT_ID`, `DATABRICKS_GROUP_ID` |
 | `github-oidc-azure` | GitHub Actions OIDC for Azure Databricks workspaces | `host`, `azure_client_id` | `azure_tenant_id` | `DATABRICKS_HOST`, `ARM_CLIENT_ID`, `ARM_TENANT_ID` |
-| `azure-devops-oidc` | Azure DevOps Pipelines OIDC authentication | `host`, `client_id` | `token_audience`, `account_id` | `DATABRICKS_HOST`, `DATABRICKS_CLIENT_ID`, `SYSTEM_ACCESSTOKEN` |
+| `azure-devops-oidc` | Azure DevOps Pipelines OIDC authentication | `host`, `client_id` | `token_audience`, `account_id`, `group_id` | `DATABRICKS_HOST`, `DATABRICKS_CLIENT_ID`, `SYSTEM_ACCESSTOKEN`, `DATABRICKS_GROUP_ID` |
 | `google-credentials` | Google Cloud service account authentication using credentials JSON | `host`, `google_credentials` | - | `DATABRICKS_HOST`, `GOOGLE_CREDENTIALS` |
 | `google-id` | Google Cloud authentication using service account impersonation | `host`, `google_service_account` | - | `DATABRICKS_HOST`, `DATABRICKS_GOOGLE_SERVICE_ACCOUNT` |
 | `metadata-service` | Authentication using Databricks-hosted metadata service | `host`, `metadata_service_url` | - | `DATABRICKS_HOST`, `DATABRICKS_METADATA_SERVICE_URL` |
 | `runtime` | Auto-detected authentication when running in Databricks Runtime (notebooks, jobs) | _(auto-detected)_ | - | `DATABRICKS_RUNTIME_VERSION` (auto-set) |
-| `runtime-oauth` | OAuth authentication for Databricks Runtime with fine-grained permissions | `scopes` | `authorization_details` | `DATABRICKS_RUNTIME_VERSION` (auto-set) |
+| `runtime-oauth` | OAuth authentication for Databricks Runtime with fine-grained permissions | `scopes` | `authorization_details`, `group_id` | `DATABRICKS_RUNTIME_VERSION` (auto-set), `DATABRICKS_GROUP_ID` |
 | `model-serving` | Auto-detected authentication when running in Databricks Model Serving environment | _(auto-detected)_ | - | `IS_IN_DB_MODEL_SERVING_ENV` or `IS_IN_DATABRICKS_MODEL_SERVING_ENV` (auto-set) |
-| `env-oidc` | OIDC token from environment variable | `host` | `oidc_token_env`, `client_id` | `DATABRICKS_HOST`, `DATABRICKS_OIDC_TOKEN`, `DATABRICKS_OIDC_TOKEN_ENV`, `DATABRICKS_CLIENT_ID` |
-| `file-oidc` | OIDC token from file path | `host`, `oidc_token_filepath` | `client_id` | `DATABRICKS_HOST`, `DATABRICKS_OIDC_TOKEN_FILEPATH` (alias: `DATABRICKS_OIDC_TOKEN_FILE`), `DATABRICKS_CLIENT_ID` |
+| `env-oidc` | OIDC token from environment variable | `host` | `oidc_token_env`, `client_id`, `group_id` | `DATABRICKS_HOST`, `DATABRICKS_OIDC_TOKEN`, `DATABRICKS_OIDC_TOKEN_ENV`, `DATABRICKS_CLIENT_ID`, `DATABRICKS_GROUP_ID` |
+| `file-oidc` | OIDC token from file path | `host`, `oidc_token_filepath` | `client_id`, `group_id` | `DATABRICKS_HOST`, `DATABRICKS_OIDC_TOKEN_FILEPATH` (alias: `DATABRICKS_OIDC_TOKEN_FILE`), `DATABRICKS_CLIENT_ID`, `DATABRICKS_GROUP_ID` |
 
 For configuration options that apply to all authentication types (timeouts, debug settings, rate limits), see [Authentication](./authentication.md#additional-configuration-options).
 

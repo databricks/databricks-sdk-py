@@ -415,258 +415,6 @@ class AccountsUpdateStorageCredentialResponse:
 
 
 @dataclass
-class AgentService:
-    """An agent service represents a governed registration of an external AI agent (Bedrock Agents,
-    Snowflake Cortex Agents, Foundry, etc) in Unity Catalog. It acts as a schema-scoped securable
-    that references a UC Connection holding the agent platform's auth + endpoint, and exposes the
-    agent for discovery, authorization, and audit logging. Initial kind: AGENT_SERVICE_STANDARD.
-    Future kinds (INTERNAL, GENIE, APP) can be added as separate enum values."""
-
-    agent_service_type: Optional[AgentServiceAgentServiceType] = None
-    """Type of agent service. Required on create. Immutable after creation. For future internal / genie
-    / app kinds, determines how the backing agent surface is provisioned."""
-
-    comment: Optional[str] = None
-    """User-provided description."""
-
-    config: Optional[AgentServiceConfig] = None
-    """Operational configuration: connection, base_path, system_prompt, model_service, optional
-    inference table, optional rate limits. Required on CreateAgentService; on UpdateAgentService it
-    is required only when ``config`` (or a ``config.*`` subpath) appears in ``update_mask``."""
-
-    create_time: Optional[Timestamp] = None
-    """When the agent service was created."""
-
-    created_by: Optional[str] = None
-    """Creator identity."""
-
-    effective_owner: Optional[str] = None
-    """The resolved owner of the agent service. Falls back to the caller's identity when ``owner`` is
-    not explicitly set on creation."""
-
-    etag: Optional[str] = None
-    """Optimistic concurrency control token. Server-generated from the entity's state and returned on
-    every read. To use it as an if-match precondition on a mutation, echo the last-read value back
-    via the dedicated ``etag`` field on the Update / Delete request; the server rejects the mutation
-    if the stored etag differs."""
-
-    metastore_id: Optional[str] = None
-    """Metastore hosting the agent service."""
-
-    name: Optional[str] = None
-    """Resource name of the agent service. Format:
-    ``agent-services/{catalog}.{schema}.{agent_service}``. Each ``{...}`` component is capped at 255
-    characters individually. Server-derived on Create from ``parent`` + ``agent_service_id``;
-    required and immutable on Update/Get/Delete."""
-
-    owner: Optional[str] = None
-    """The owner of the agent service. Write-only; read owner via effective_owner."""
-
-    update_time: Optional[Timestamp] = None
-    """When the agent service was last modified."""
-
-    updated_by: Optional[str] = None
-    """Identity of the last updater."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AgentService into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.agent_service_type is not None:
-            body["agent_service_type"] = self.agent_service_type.value
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.config:
-            body["config"] = self.config.as_dict()
-        if self.create_time is not None:
-            body["create_time"] = self.create_time.ToJsonString()
-        if self.created_by is not None:
-            body["created_by"] = self.created_by
-        if self.effective_owner is not None:
-            body["effective_owner"] = self.effective_owner
-        if self.etag is not None:
-            body["etag"] = self.etag
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.name is not None:
-            body["name"] = self.name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.update_time is not None:
-            body["update_time"] = self.update_time.ToJsonString()
-        if self.updated_by is not None:
-            body["updated_by"] = self.updated_by
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AgentService into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.agent_service_type is not None:
-            body["agent_service_type"] = self.agent_service_type
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.config:
-            body["config"] = self.config
-        if self.create_time is not None:
-            body["create_time"] = self.create_time
-        if self.created_by is not None:
-            body["created_by"] = self.created_by
-        if self.effective_owner is not None:
-            body["effective_owner"] = self.effective_owner
-        if self.etag is not None:
-            body["etag"] = self.etag
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.name is not None:
-            body["name"] = self.name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
-        if self.updated_by is not None:
-            body["updated_by"] = self.updated_by
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AgentService:
-        """Deserializes the AgentService from a dictionary."""
-        return cls(
-            agent_service_type=_enum(d, "agent_service_type", AgentServiceAgentServiceType),
-            comment=d.get("comment", None),
-            config=_from_dict(d, "config", AgentServiceConfig),
-            create_time=_timestamp(d, "create_time"),
-            created_by=d.get("created_by", None),
-            effective_owner=d.get("effective_owner", None),
-            etag=d.get("etag", None),
-            metastore_id=d.get("metastore_id", None),
-            name=d.get("name", None),
-            owner=d.get("owner", None),
-            update_time=_timestamp(d, "update_time"),
-            updated_by=d.get("updated_by", None),
-        )
-
-
-class AgentServiceAgentServiceType(Enum):
-    """Type of agent service. Determines how the backing agent surface is provisioned and how
-    invocation routes to the runtime. Nested to scope enum values (guardrail:
-    avoid-generic-enum-names)."""
-
-    AGENT_SERVICE_TYPE_EXTERNAL = "AGENT_SERVICE_TYPE_EXTERNAL"
-
-
-@dataclass
-class AgentServiceConfig:
-    """Operational configuration for an agent service. Groups the source connection, base path, system
-    prompt, model service reference, optional inference table, and optional rate limits. The
-    ``source_connection.name`` is supplied on create."""
-
-    base_path: Optional[str] = None
-    """Vendor base path appended to the connection url at invocation time. Bedrock example:
-    ``/agents/AGENT123/agentAliases/ALIAS1/sessions``. Empty when the agent platform does not
-    require a per-agent suffix."""
-
-    inference_table: Optional[InferenceTableConfig] = None
-    """Inference table config for invocation payload logging. Reuses the shared InferenceTableConfig
-    (same as ModelServiceConfig.inference_table)."""
-
-    model_service: Optional[str] = None
-    """Resource name of the model service backing this agent. Empty when the agent platform manages its
-    own model selection (e.g. Bedrock Agents). Format:
-    ``model-services/{catalog}.{schema}.{model_service}``."""
-
-    rate_limits: Optional[List[RateLimit]] = None
-    """Per-principal rate limits applied to invocations routed through this agent service. Repeated to
-    support per-USER / USER_GROUP / SERVICE_PRINCIPAL / SERVICE / USER_DEFAULT scopes
-    simultaneously, mirroring McpServiceConfig.rate_limits. Empty when no rate limit is configured."""
-
-    source_connection: Optional[AgentServiceConfigSourceConnection] = None
-    """External agent referenced via a UC Connection."""
-
-    system_prompt: Optional[str] = None
-    """System prompt prepended to invocations. Max 8 KB."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AgentServiceConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.base_path is not None:
-            body["base_path"] = self.base_path
-        if self.inference_table:
-            body["inference_table"] = self.inference_table.as_dict()
-        if self.model_service is not None:
-            body["model_service"] = self.model_service
-        if self.rate_limits:
-            body["rate_limits"] = [v.as_dict() for v in self.rate_limits]
-        if self.source_connection:
-            body["source_connection"] = self.source_connection.as_dict()
-        if self.system_prompt is not None:
-            body["system_prompt"] = self.system_prompt
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AgentServiceConfig into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.base_path is not None:
-            body["base_path"] = self.base_path
-        if self.inference_table:
-            body["inference_table"] = self.inference_table
-        if self.model_service is not None:
-            body["model_service"] = self.model_service
-        if self.rate_limits:
-            body["rate_limits"] = self.rate_limits
-        if self.source_connection:
-            body["source_connection"] = self.source_connection
-        if self.system_prompt is not None:
-            body["system_prompt"] = self.system_prompt
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AgentServiceConfig:
-        """Deserializes the AgentServiceConfig from a dictionary."""
-        return cls(
-            base_path=d.get("base_path", None),
-            inference_table=_from_dict(d, "inference_table", InferenceTableConfig),
-            model_service=d.get("model_service", None),
-            rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
-            source_connection=_from_dict(d, "source_connection", AgentServiceConfigSourceConnection),
-            system_prompt=d.get("system_prompt", None),
-        )
-
-
-@dataclass
-class AgentServiceConfigSourceConnection:
-    """UC Connection for the agent platform, such as Bedrock Agents, Snowflake Cortex Agents, or
-    Foundry. On create, provide ``name`` in the schema-scoped form
-    ``connections/{catalog}.{schema}.{connection}``. On read, the service returns ``name``."""
-
-    name: str
-    """Name of the source UC connection, as ``connections/{catalog}.{schema}.{connection}``."""
-
-    is_deleted: Optional[bool] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the AgentServiceConfigSourceConnection into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.is_deleted is not None:
-            body["is_deleted"] = self.is_deleted
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AgentServiceConfigSourceConnection into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.is_deleted is not None:
-            body["is_deleted"] = self.is_deleted
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AgentServiceConfigSourceConnection:
-        """Deserializes the AgentServiceConfigSourceConnection from a dictionary."""
-        return cls(is_deleted=d.get("is_deleted", None), name=d.get("name", None))
-
-
-@dataclass
 class ArtifactAllowlistInfo:
     artifact_matchers: Optional[List[ArtifactMatcher]] = None
     """A list of allowed artifact match patterns."""
@@ -1365,40 +1113,10 @@ class CancelRefreshResponse:
 
 
 @dataclass
-class CatalogFederationConfig:
-    """Federation-only configuration for a FOREIGN catalog."""
-
-    schema_filter_type: Optional[SchemaFilterType] = None
-    """Controls how the catalog's schema filter items are treated."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CatalogFederationConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.schema_filter_type is not None:
-            body["schema_filter_type"] = self.schema_filter_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CatalogFederationConfig into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.schema_filter_type is not None:
-            body["schema_filter_type"] = self.schema_filter_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CatalogFederationConfig:
-        """Deserializes the CatalogFederationConfig from a dictionary."""
-        return cls(schema_filter_type=_enum(d, "schema_filter_type", SchemaFilterType))
-
-
-@dataclass
 class CatalogInfo:
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
-
-    catalog_federation_config: Optional[CatalogFederationConfig] = None
-    """Federation-only configuration, present only for FOREIGN catalogs."""
 
     catalog_type: Optional[CatalogType] = None
 
@@ -1408,9 +1126,6 @@ class CatalogInfo:
     connection_name: Optional[str] = None
     """The name of the connection to an external data source."""
 
-    conversion_info: Optional[ConversionInfo] = None
-    """Status of conversion of FOREIGN catalog to UC Native catalog."""
-
     created_at: Optional[int] = None
     """Time at which this catalog was created, in epoch milliseconds."""
 
@@ -1419,9 +1134,6 @@ class CatalogInfo:
 
     custom_max_retention_hours: Optional[int] = None
     """Custom maximum retention period in hours for the catalog"""
-
-    dr_replication_info: Optional[DrReplicationInfo] = None
-    """Disaster Recovery replication state snapshot."""
 
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
@@ -1481,24 +1193,18 @@ class CatalogInfo:
         body = {}
         if self.browse_only is not None:
             body["browse_only"] = self.browse_only
-        if self.catalog_federation_config:
-            body["catalog_federation_config"] = self.catalog_federation_config.as_dict()
         if self.catalog_type is not None:
             body["catalog_type"] = self.catalog_type.value
         if self.comment is not None:
             body["comment"] = self.comment
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
-        if self.conversion_info:
-            body["conversion_info"] = self.conversion_info.as_dict()
         if self.created_at is not None:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
         if self.custom_max_retention_hours is not None:
             body["custom_max_retention_hours"] = self.custom_max_retention_hours
-        if self.dr_replication_info:
-            body["dr_replication_info"] = self.dr_replication_info.as_dict()
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag.as_dict()
         if self.enable_predictive_optimization is not None:
@@ -1542,24 +1248,18 @@ class CatalogInfo:
         body = {}
         if self.browse_only is not None:
             body["browse_only"] = self.browse_only
-        if self.catalog_federation_config:
-            body["catalog_federation_config"] = self.catalog_federation_config
         if self.catalog_type is not None:
             body["catalog_type"] = self.catalog_type
         if self.comment is not None:
             body["comment"] = self.comment
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
-        if self.conversion_info:
-            body["conversion_info"] = self.conversion_info
         if self.created_at is not None:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
         if self.custom_max_retention_hours is not None:
             body["custom_max_retention_hours"] = self.custom_max_retention_hours
-        if self.dr_replication_info:
-            body["dr_replication_info"] = self.dr_replication_info
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag
         if self.enable_predictive_optimization is not None:
@@ -1603,15 +1303,12 @@ class CatalogInfo:
         """Deserializes the CatalogInfo from a dictionary."""
         return cls(
             browse_only=d.get("browse_only", None),
-            catalog_federation_config=_from_dict(d, "catalog_federation_config", CatalogFederationConfig),
             catalog_type=_enum(d, "catalog_type", CatalogType),
             comment=d.get("comment", None),
             connection_name=d.get("connection_name", None),
-            conversion_info=_from_dict(d, "conversion_info", ConversionInfo),
             created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             custom_max_retention_hours=_int64(d, "custom_max_retention_hours"),
-            dr_replication_info=_from_dict(d, "dr_replication_info", DrReplicationInfo),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
@@ -1638,7 +1335,6 @@ class CatalogInfo:
 class CatalogIsolationMode(Enum):
     ISOLATED = "ISOLATED"
     OPEN = "OPEN"
-    OPEN_IN_ACCOUNT = "OPEN_IN_ACCOUNT"
 
 
 class CatalogType(Enum):
@@ -1817,9 +1513,9 @@ class ColumnMask:
     """The full name of the column mask SQL UDF."""
 
     using_arguments: Optional[List[PolicyFunctionArgument]] = None
-    """The list of additional table columns or literals to be passed as additional arguments to a
-    column mask function. This is the replacement of the deprecated using_column_names field and
-    carries information about the types (alias or constant) of the arguments to the mask function."""
+    """The list of table columns or literals to be passed as additional arguments to a column mask
+    function, carrying the type (column reference vs constant literal) of each argument. Deprecated:
+    use using_column_names instead."""
 
     using_column_names: Optional[List[str]] = None
     """The list of additional table columns to be passed as input to the column mask function. The
@@ -1980,7 +1676,6 @@ class ColumnTypeName(Enum):
     DATE = "DATE"
     DECIMAL = "DECIMAL"
     DOUBLE = "DOUBLE"
-    FILE = "FILE"
     FLOAT = "FLOAT"
     GEOGRAPHY = "GEOGRAPHY"
     GEOMETRY = "GEOMETRY"
@@ -1992,58 +1687,11 @@ class ColumnTypeName(Enum):
     SHORT = "SHORT"
     STRING = "STRING"
     STRUCT = "STRUCT"
-    TABLEREF_TYPE = "TABLEREF_TYPE"
     TABLE_TYPE = "TABLE_TYPE"
-    TIME = "TIME"
     TIMESTAMP = "TIMESTAMP"
     TIMESTAMP_NTZ = "TIMESTAMP_NTZ"
     USER_DEFINED_TYPE = "USER_DEFINED_TYPE"
     VARIANT = "VARIANT"
-
-
-@dataclass
-class ConditionalDisplay:
-    """Defines when an option should be hidden based on another option's value. For example, for
-    pre-created OAuth connections, some options are conditionally hidden. This field works in
-    conjunction with OptionSpec.is_hidden:
-
-    - If OptionSpec.is_hidden is true, the option is always hidden regardless of ConditionalDisplay.
-    - If OptionSpec.is_hidden is false (or unset), ConditionalDisplay determines visibility:
-    - If depends_on_option matches any value in hidden_when_values, hide this option.
-    - Otherwise, show this option."""
-
-    depends_on_option: Optional[str] = None
-    """The name of the option whose value determines visibility of this option."""
-
-    hidden_when_values: Optional[List[str]] = None
-    """The values of the depends_on_option that will hide this option. If empty or not set, this option
-    follows default visibility (shown unless is_hidden is true). If depends_on_option has any of
-    these values, this option is hidden."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ConditionalDisplay into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.depends_on_option is not None:
-            body["depends_on_option"] = self.depends_on_option
-        if self.hidden_when_values:
-            body["hidden_when_values"] = [v for v in self.hidden_when_values]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ConditionalDisplay into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.depends_on_option is not None:
-            body["depends_on_option"] = self.depends_on_option
-        if self.hidden_when_values:
-            body["hidden_when_values"] = self.hidden_when_values
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ConditionalDisplay:
-        """Deserializes the ConditionalDisplay from a dictionary."""
-        return cls(
-            depends_on_option=d.get("depends_on_option", None), hidden_when_values=d.get("hidden_when_values", None)
-        )
 
 
 @dataclass
@@ -2119,10 +1767,6 @@ class ConnectionInfo:
     read_only: Optional[bool] = None
     """If the connection is read only."""
 
-    secrets: Optional[Dict[str, str]] = None
-    """A map of option names to UC Secret references. Keys are connection option names (same as in
-    OptionsKVPairs) and values are UC Secret fully qualified names."""
-
     securable_type: Optional[SecurableType] = None
 
     updated_at: Optional[int] = None
@@ -2167,8 +1811,6 @@ class ConnectionInfo:
             body["provisioning_info"] = self.provisioning_info.as_dict()
         if self.read_only is not None:
             body["read_only"] = self.read_only
-        if self.secrets:
-            body["secrets"] = self.secrets
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type.value
         if self.updated_at is not None:
@@ -2212,8 +1854,6 @@ class ConnectionInfo:
             body["provisioning_info"] = self.provisioning_info
         if self.read_only is not None:
             body["read_only"] = self.read_only
-        if self.secrets:
-            body["secrets"] = self.secrets
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type
         if self.updated_at is not None:
@@ -2243,7 +1883,6 @@ class ConnectionInfo:
             properties=d.get("properties", None),
             provisioning_info=_from_dict(d, "provisioning_info", ProvisioningInfo),
             read_only=d.get("read_only", None),
-            secrets=d.get("secrets", None),
             securable_type=_enum(d, "securable_type", SecurableType),
             updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
@@ -2252,95 +1891,36 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    ADOBE_COMMERCE = "ADOBE_COMMERCE"
-    ADP_WORKFORCE_NOW = "ADP_WORKFORCE_NOW"
-    AHA = "AHA"
-    AIRTABLE = "AIRTABLE"
-    AMPLITUDE = "AMPLITUDE"
-    APPFIGURES = "APPFIGURES"
-    APPLE_APP_STORE = "APPLE_APP_STORE"
-    APPLE_SEARCH_ADS = "APPLE_SEARCH_ADS"
-    ATLASSIAN_ORGANIZATION = "ATLASSIAN_ORGANIZATION"
-    AWIN = "AWIN"
-    AZURE_MONITOR_LOGS = "AZURE_MONITOR_LOGS"
-    BIGLAKE = "BIGLAKE"
     BIGQUERY = "BIGQUERY"
-    CERIDIAN_DAYFORCE = "CERIDIAN_DAYFORCE"
     CONFLUENCE = "CONFLUENCE"
     DATABRICKS = "DATABRICKS"
-    DELIGHTED = "DELIGHTED"
     DYNAMICS365 = "DYNAMICS365"
-    EPIC_CLARITY = "EPIC_CLARITY"
-    FRESHSERVICE = "FRESHSERVICE"
-    FRONT = "FRONT"
     GA4_RAW_DATA = "GA4_RAW_DATA"
-    GENESYS = "GENESYS"
     GITHUB = "GITHUB"
-    GITLAB = "GITLAB"
     GLUE = "GLUE"
-    GMAIL = "GMAIL"
-    GONG = "GONG"
-    GOOGLE_ANALYTICS = "GOOGLE_ANALYTICS"
-    GOOGLE_CALENDAR = "GOOGLE_CALENDAR"
-    GOOGLE_CLOUD_LAKEHOUSE = "GOOGLE_CLOUD_LAKEHOUSE"
-    GOOGLE_WORKSPACE = "GOOGLE_WORKSPACE"
-    GURU = "GURU"
-    HIBOB = "HIBOB"
     HIVE_METASTORE = "HIVE_METASTORE"
     HTTP = "HTTP"
     HUBSPOT = "HUBSPOT"
-    ICEBERG_REST = "ICEBERG_REST"
-    IRONCLAD = "IRONCLAD"
     JDBC = "JDBC"
-    KINESIS = "KINESIS"
-    LINEAR = "LINEAR"
-    MARKETO = "MARKETO"
     META_MARKETING = "META_MARKETING"
-    MICROSOFT_ENTRA_ID = "MICROSOFT_ENTRA_ID"
-    MONDAY_COM = "MONDAY_COM"
     MYSQL = "MYSQL"
-    NETSKOPE_LOGS = "NETSKOPE_LOGS"
     NETSUITE = "NETSUITE"
-    NOTION = "NOTION"
     ORACLE = "ORACLE"
-    ORACLE_ELOQUA = "ORACLE_ELOQUA"
-    ORACLE_FUSION_CLOUD = "ORACLE_FUSION_CLOUD"
     OUTLOOK = "OUTLOOK"
-    PAGERDUTY = "PAGERDUTY"
-    PALANTIR = "PALANTIR"
-    PARTNERSTACK = "PARTNERSTACK"
-    PENDO = "PENDO"
     POSTGRESQL = "POSTGRESQL"
     POWER_BI = "POWER_BI"
-    PUBSUB = "PUBSUB"
-    QUICKBOOKS = "QUICKBOOKS"
     REDSHIFT = "REDSHIFT"
     SALESFORCE = "SALESFORCE"
     SALESFORCE_DATA_CLOUD = "SALESFORCE_DATA_CLOUD"
-    SALESLOFT = "SALESLOFT"
-    SAP_SUCCESSFACTORS = "SAP_SUCCESSFACTORS"
-    SAS = "SAS"
-    SENDGRID = "SENDGRID"
     SERVICENOW = "SERVICENOW"
-    SHOPIFY = "SHOPIFY"
-    SLACK_ACCESS_AND_INTEGRATION_LOGS = "SLACK_ACCESS_AND_INTEGRATION_LOGS"
     SMARTSHEET = "SMARTSHEET"
-    SNAPCHAT_ADS = "SNAPCHAT_ADS"
     SNOWFLAKE = "SNOWFLAKE"
-    SPLUNK = "SPLUNK"
     SQLDW = "SQLDW"
     SQLSERVER = "SQLSERVER"
-    SQUARE = "SQUARE"
     TERADATA = "TERADATA"
     UNKNOWN_CONNECTION_TYPE = "UNKNOWN_CONNECTION_TYPE"
-    VERKADA = "VERKADA"
     WORKDAY_RAAS = "WORKDAY_RAAS"
-    YOUTUBE_ANALYTICS = "YOUTUBE_ANALYTICS"
     ZENDESK = "ZENDESK"
-    ZIP = "ZIP"
-    ZOHO_BOOKS = "ZOHO_BOOKS"
-    ZOOM = "ZOOM"
-    ZOOM_LOGS = "ZOOM_LOGS"
 
 
 @dataclass
@@ -2389,38 +1969,6 @@ class ContinuousUpdateStatus:
             last_processed_commit_version=_int64(d, "last_processed_commit_version"),
             timestamp=d.get("timestamp", None),
         )
-
-
-@dataclass
-class ConversionInfo:
-    """Status of conversion of FOREIGN entity into UC Native entity."""
-
-    state: Optional[ConversionInfoState] = None
-    """The conversion state of the resource."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ConversionInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.state is not None:
-            body["state"] = self.state.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ConversionInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.state is not None:
-            body["state"] = self.state
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ConversionInfo:
-        """Deserializes the ConversionInfo from a dictionary."""
-        return cls(state=_enum(d, "state", ConversionInfoState))
-
-
-class ConversionInfoState(Enum):
-    COMPLETED = "COMPLETED"
-    IN_PROGRESS = "IN_PROGRESS"
 
 
 @dataclass
@@ -3162,12 +2710,7 @@ class CredentialType(Enum):
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
     EDGEGRID_AKAMAI = "EDGEGRID_AKAMAI"
-    GENERIC_TOKEN_EXCHANGE = "GENERIC_TOKEN_EXCHANGE"
-    INLINE_YAML = "INLINE_YAML"
-    MUTUAL_TLS = "MUTUAL_TLS"
     OAUTH_ACCESS_TOKEN = "OAUTH_ACCESS_TOKEN"
-    OAUTH_DCR = "OAUTH_DCR"
-    OAUTH_GOOGLE_SERVICE_ACCOUNT = "OAUTH_GOOGLE_SERVICE_ACCOUNT"
     OAUTH_M2M = "OAUTH_M2M"
     OAUTH_MTLS = "OAUTH_MTLS"
     OAUTH_REFRESH_TOKEN = "OAUTH_REFRESH_TOKEN"
@@ -3515,32 +3058,6 @@ class DeltaSharingScopeEnum(Enum):
 
 
 @dataclass
-class DenyOptions:
-    privileges: List[str]
-    """List of privileges to deny. When any of these privileges are requested, the policy will deny
-    access if the principal and condition match. Required on create and update."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DenyOptions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.privileges:
-            body["privileges"] = [v for v in self.privileges]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DenyOptions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.privileges:
-            body["privileges"] = self.privileges
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DenyOptions:
-        """Deserializes the DenyOptions from a dictionary."""
-        return cls(privileges=d.get("privileges", None))
-
-
-@dataclass
 class Dependency:
     """A dependency of a SQL object. One of the following fields must be defined: **table**,
     **function**, **connection**, **credential**, **volume**, or **secret**."""
@@ -3551,18 +3068,7 @@ class Dependency:
 
     function: Optional[FunctionDependency] = None
 
-    metastore_name: Optional[str] = None
-    """Metastore context for the dependency. Global UC server responses currently populate this with
-    the metastore UUID string so clients can disambiguate dependencies with identical names across
-    metastores."""
-
-    secret: Optional[SecretDependency] = None
-    """A dependency on a Unity Catalog secret."""
-
     table: Optional[TableDependency] = None
-
-    volume: Optional[VolumeDependency] = None
-    """A dependency on a Unity Catalog volume."""
 
     def as_dict(self) -> dict:
         """Serializes the Dependency into a dictionary suitable for use as a JSON request body."""
@@ -3573,14 +3079,8 @@ class Dependency:
             body["credential"] = self.credential.as_dict()
         if self.function:
             body["function"] = self.function.as_dict()
-        if self.metastore_name is not None:
-            body["metastore_name"] = self.metastore_name
-        if self.secret:
-            body["secret"] = self.secret.as_dict()
         if self.table:
             body["table"] = self.table.as_dict()
-        if self.volume:
-            body["volume"] = self.volume.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3592,14 +3092,8 @@ class Dependency:
             body["credential"] = self.credential
         if self.function:
             body["function"] = self.function
-        if self.metastore_name is not None:
-            body["metastore_name"] = self.metastore_name
-        if self.secret:
-            body["secret"] = self.secret
         if self.table:
             body["table"] = self.table
-        if self.volume:
-            body["volume"] = self.volume
         return body
 
     @classmethod
@@ -3609,10 +3103,7 @@ class Dependency:
             connection=_from_dict(d, "connection", ConnectionDependency),
             credential=_from_dict(d, "credential", CredentialDependency),
             function=_from_dict(d, "function", FunctionDependency),
-            metastore_name=d.get("metastore_name", None),
-            secret=_from_dict(d, "secret", SecretDependency),
             table=_from_dict(d, "table", TableDependency),
-            volume=_from_dict(d, "volume", VolumeDependency),
         )
 
 
@@ -3667,57 +3158,6 @@ class DisableResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DisableResponse:
         """Deserializes the DisableResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class DrReplicationInfo:
-    """Metadata related to Disaster Recovery."""
-
-    last_failover_time_ms: Optional[int] = None
-    """Wall-clock epoch milliseconds when this catalog was last promoted to primary via failover or
-    failback. Set by DR Manager. Used by Predictive Optimization to suppress operations until
-    sufficient workload history accumulates."""
-
-    replicated_entities: Optional[str] = None
-    """See https://docs.google.com/document/d/1X0A_3hMhzuS2V1E3zB0x5wxPsFx70bVYK5rHep2AjW8."""
-
-    status: Optional[DrReplicationStatus] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the DrReplicationInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.last_failover_time_ms is not None:
-            body["last_failover_time_ms"] = self.last_failover_time_ms
-        if self.replicated_entities is not None:
-            body["replicated_entities"] = self.replicated_entities
-        if self.status is not None:
-            body["status"] = self.status.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DrReplicationInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.last_failover_time_ms is not None:
-            body["last_failover_time_ms"] = self.last_failover_time_ms
-        if self.replicated_entities is not None:
-            body["replicated_entities"] = self.replicated_entities
-        if self.status is not None:
-            body["status"] = self.status
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DrReplicationInfo:
-        """Deserializes the DrReplicationInfo from a dictionary."""
-        return cls(
-            last_failover_time_ms=_int64(d, "last_failover_time_ms"),
-            replicated_entities=d.get("replicated_entities", None),
-            status=_enum(d, "status", DrReplicationStatus),
-        )
-
-
-class DrReplicationStatus(Enum):
-    DR_REPLICATION_STATUS_PRIMARY = "DR_REPLICATION_STATUS_PRIMARY"
-    DR_REPLICATION_STATUS_SECONDARY = "DR_REPLICATION_STATUS_SECONDARY"
 
 
 @dataclass
@@ -3993,9 +3433,6 @@ class EntityTagAssignment:
     entity_type: str
     """The type of the entity to which the tag is assigned."""
 
-    inherited: Optional[bool] = None
-    """Boolean which indicates whether this tag is inherited."""
-
     source_type: Optional[TagAssignmentSourceType] = None
     """The source type of the tag assignment, e.g., user-assigned or system-assigned"""
 
@@ -4015,8 +3452,6 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
         if self.source_type is not None:
             body["source_type"] = self.source_type.value
         if self.tag_key is not None:
@@ -4036,8 +3471,6 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
         if self.source_type is not None:
             body["source_type"] = self.source_type
         if self.tag_key is not None:
@@ -4056,7 +3489,6 @@ class EntityTagAssignment:
         return cls(
             entity_name=d.get("entity_name", None),
             entity_type=d.get("entity_type", None),
-            inherited=d.get("inherited", None),
             source_type=_enum(d, "source_type", TagAssignmentSourceType),
             tag_key=d.get("tag_key", None),
             tag_value=d.get("tag_value", None),
@@ -4254,9 +3686,6 @@ class ExternalLineageInfo:
     table_info: Optional[ExternalLineageTableInfo] = None
     """Information about the table involved in the lineage relationship."""
 
-    volume_info: Optional[ExternalLineageVolumeInfo] = None
-    """Information about the volume involved in the lineage relationship."""
-
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4270,8 +3699,6 @@ class ExternalLineageInfo:
             body["model_info"] = self.model_info.as_dict()
         if self.table_info:
             body["table_info"] = self.table_info.as_dict()
-        if self.volume_info:
-            body["volume_info"] = self.volume_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4287,8 +3714,6 @@ class ExternalLineageInfo:
             body["model_info"] = self.model_info
         if self.table_info:
             body["table_info"] = self.table_info
-        if self.volume_info:
-            body["volume_info"] = self.volume_info
         return body
 
     @classmethod
@@ -4300,7 +3725,6 @@ class ExternalLineageInfo:
             file_info=_from_dict(d, "file_info", ExternalLineageFileInfo),
             model_info=_from_dict(d, "model_info", ExternalLineageModelVersionInfo),
             table_info=_from_dict(d, "table_info", ExternalLineageTableInfo),
-            volume_info=_from_dict(d, "volume_info", ExternalLineageVolumeInfo),
         )
 
 
@@ -4387,8 +3811,6 @@ class ExternalLineageObject:
 
     table: Optional[ExternalLineageTable] = None
 
-    volume: Optional[ExternalLineageVolume] = None
-
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageObject into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4400,8 +3822,6 @@ class ExternalLineageObject:
             body["path"] = self.path.as_dict()
         if self.table:
             body["table"] = self.table.as_dict()
-        if self.volume:
-            body["volume"] = self.volume.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4415,8 +3835,6 @@ class ExternalLineageObject:
             body["path"] = self.path
         if self.table:
             body["table"] = self.table
-        if self.volume:
-            body["volume"] = self.volume
         return body
 
     @classmethod
@@ -4427,7 +3845,6 @@ class ExternalLineageObject:
             model_version=_from_dict(d, "model_version", ExternalLineageModelVersion),
             path=_from_dict(d, "path", ExternalLineagePath),
             table=_from_dict(d, "table", ExternalLineageTable),
-            volume=_from_dict(d, "volume", ExternalLineageVolume),
         )
 
 
@@ -4645,81 +4062,6 @@ class ExternalLineageTableInfo:
         return cls(
             catalog_name=d.get("catalog_name", None),
             event_time=d.get("event_time", None),
-            name=d.get("name", None),
-            schema_name=d.get("schema_name", None),
-        )
-
-
-@dataclass
-class ExternalLineageVolume:
-    name: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ExternalLineageVolume into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExternalLineageVolume into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageVolume:
-        """Deserializes the ExternalLineageVolume from a dictionary."""
-        return cls(name=d.get("name", None))
-
-
-@dataclass
-class ExternalLineageVolumeInfo:
-    catalog_name: Optional[str] = None
-    """Name of the catalog."""
-
-    event_time: Optional[Timestamp] = None
-    """Timestamp of the lineage event."""
-
-    name: Optional[str] = None
-    """Name of the volume."""
-
-    schema_name: Optional[str] = None
-    """Name of the schema."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ExternalLineageVolumeInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.event_time is not None:
-            body["event_time"] = self.event_time.ToJsonString()
-        if self.name is not None:
-            body["name"] = self.name
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExternalLineageVolumeInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.event_time is not None:
-            body["event_time"] = self.event_time
-        if self.name is not None:
-            body["name"] = self.name
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageVolumeInfo:
-        """Deserializes the ExternalLineageVolumeInfo from a dictionary."""
-        return cls(
-            catalog_name=d.get("catalog_name", None),
-            event_time=_timestamp(d, "event_time"),
             name=d.get("name", None),
             schema_name=d.get("schema_name", None),
         )
@@ -5086,15 +4428,11 @@ class FailedStatus:
 class FileEventQueue:
     managed_aqs: Optional[AzureQueueStorage] = None
 
-    managed_onelake: Optional[OneLakeEventQueue] = None
-
     managed_pubsub: Optional[GcpPubsub] = None
 
     managed_sqs: Optional[AwsSqsQueue] = None
 
     provided_aqs: Optional[AzureQueueStorage] = None
-
-    provided_onelake: Optional[OneLakeEventQueue] = None
 
     provided_pubsub: Optional[GcpPubsub] = None
 
@@ -5105,16 +4443,12 @@ class FileEventQueue:
         body = {}
         if self.managed_aqs:
             body["managed_aqs"] = self.managed_aqs.as_dict()
-        if self.managed_onelake:
-            body["managed_onelake"] = self.managed_onelake.as_dict()
         if self.managed_pubsub:
             body["managed_pubsub"] = self.managed_pubsub.as_dict()
         if self.managed_sqs:
             body["managed_sqs"] = self.managed_sqs.as_dict()
         if self.provided_aqs:
             body["provided_aqs"] = self.provided_aqs.as_dict()
-        if self.provided_onelake:
-            body["provided_onelake"] = self.provided_onelake.as_dict()
         if self.provided_pubsub:
             body["provided_pubsub"] = self.provided_pubsub.as_dict()
         if self.provided_sqs:
@@ -5126,16 +4460,12 @@ class FileEventQueue:
         body = {}
         if self.managed_aqs:
             body["managed_aqs"] = self.managed_aqs
-        if self.managed_onelake:
-            body["managed_onelake"] = self.managed_onelake
         if self.managed_pubsub:
             body["managed_pubsub"] = self.managed_pubsub
         if self.managed_sqs:
             body["managed_sqs"] = self.managed_sqs
         if self.provided_aqs:
             body["provided_aqs"] = self.provided_aqs
-        if self.provided_onelake:
-            body["provided_onelake"] = self.provided_onelake
         if self.provided_pubsub:
             body["provided_pubsub"] = self.provided_pubsub
         if self.provided_sqs:
@@ -5147,11 +4477,9 @@ class FileEventQueue:
         """Deserializes the FileEventQueue from a dictionary."""
         return cls(
             managed_aqs=_from_dict(d, "managed_aqs", AzureQueueStorage),
-            managed_onelake=_from_dict(d, "managed_onelake", OneLakeEventQueue),
             managed_pubsub=_from_dict(d, "managed_pubsub", GcpPubsub),
             managed_sqs=_from_dict(d, "managed_sqs", AwsSqsQueue),
             provided_aqs=_from_dict(d, "provided_aqs", AzureQueueStorage),
-            provided_onelake=_from_dict(d, "provided_onelake", OneLakeEventQueue),
             provided_pubsub=_from_dict(d, "provided_pubsub", GcpPubsub),
             provided_sqs=_from_dict(d, "provided_sqs", AwsSqsQueue),
         )
@@ -5824,8 +5152,6 @@ class GenerateTemporaryPathCredentialResponse:
 
     r2_temp_credentials: Optional[R2Credentials] = None
 
-    uc_encrypted_token: Optional[UcEncryptedToken] = None
-
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
 
@@ -5844,8 +5170,6 @@ class GenerateTemporaryPathCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
-        if self.uc_encrypted_token:
-            body["uc_encrypted_token"] = self.uc_encrypted_token.as_dict()
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5865,8 +5189,6 @@ class GenerateTemporaryPathCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials
-        if self.uc_encrypted_token:
-            body["uc_encrypted_token"] = self.uc_encrypted_token
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5881,7 +5203,6 @@ class GenerateTemporaryPathCredentialResponse:
             expiration_time=_int64(d, "expiration_time"),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
-            uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
             url=d.get("url", None),
         )
 
@@ -5960,8 +5281,6 @@ class GenerateTemporaryTableCredentialResponse:
 
     r2_temp_credentials: Optional[R2Credentials] = None
 
-    uc_encrypted_token: Optional[UcEncryptedToken] = None
-
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
 
@@ -5980,8 +5299,6 @@ class GenerateTemporaryTableCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
-        if self.uc_encrypted_token:
-            body["uc_encrypted_token"] = self.uc_encrypted_token.as_dict()
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -6001,8 +5318,6 @@ class GenerateTemporaryTableCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials
-        if self.uc_encrypted_token:
-            body["uc_encrypted_token"] = self.uc_encrypted_token
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -6017,7 +5332,6 @@ class GenerateTemporaryTableCredentialResponse:
             expiration_time=_int64(d, "expiration_time"),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
-            uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
             url=d.get("url", None),
         )
 
@@ -6038,8 +5352,6 @@ class GenerateTemporaryVolumeCredentialResponse:
 
     r2_temp_credentials: Optional[R2Credentials] = None
 
-    uc_encrypted_token: Optional[UcEncryptedToken] = None
-
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
 
@@ -6058,8 +5370,6 @@ class GenerateTemporaryVolumeCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
-        if self.uc_encrypted_token:
-            body["uc_encrypted_token"] = self.uc_encrypted_token.as_dict()
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -6079,8 +5389,6 @@ class GenerateTemporaryVolumeCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials
-        if self.uc_encrypted_token:
-            body["uc_encrypted_token"] = self.uc_encrypted_token
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -6095,7 +5403,6 @@ class GenerateTemporaryVolumeCredentialResponse:
             expiration_time=_int64(d, "expiration_time"),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
-            uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
             url=d.get("url", None),
         )
 
@@ -6401,40 +5708,6 @@ class GetWorkspaceBindingsResponse:
 
 
 @dataclass
-class GovernedTagReference:
-    """A governed tag referenced by a policy condition."""
-
-    tag_key: str
-    """The governed tag key."""
-
-    tag_value: Optional[str] = None
-    """The governed tag value, when the policy references a specific value."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GovernedTagReference into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.tag_key is not None:
-            body["tag_key"] = self.tag_key
-        if self.tag_value is not None:
-            body["tag_value"] = self.tag_value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GovernedTagReference into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.tag_key is not None:
-            body["tag_key"] = self.tag_key
-        if self.tag_value is not None:
-            body["tag_value"] = self.tag_value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GovernedTagReference:
-        """Deserializes the GovernedTagReference from a dictionary."""
-        return cls(tag_key=d.get("tag_key", None), tag_value=d.get("tag_value", None))
-
-
-@dataclass
 class GrantOptions:
     privileges: List[str]
     """List of privileges to grant. When any of these privileges are requested, the policy will grant
@@ -6540,7 +5813,6 @@ class InferenceTableConfig:
 class IsolationMode(Enum):
     ISOLATION_MODE_ISOLATED = "ISOLATION_MODE_ISOLATED"
     ISOLATION_MODE_OPEN = "ISOLATION_MODE_OPEN"
-    ISOLATION_MODE_OPEN_IN_ACCOUNT = "ISOLATION_MODE_OPEN_IN_ACCOUNT"
 
 
 class LineageDirection(Enum):
@@ -6599,43 +5871,6 @@ class ListAccountStorageCredentialsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListAccountStorageCredentialsResponse:
         """Deserializes the ListAccountStorageCredentialsResponse from a dictionary."""
         return cls(storage_credentials=_repeated_dict(d, "storage_credentials", StorageCredentialInfo))
-
-
-@dataclass
-class ListAgentServicesResponse:
-    """Response for listing agent services."""
-
-    agent_services: Optional[List[AgentService]] = None
-    """The list of agent services."""
-
-    next_page_token: Optional[str] = None
-    """Pagination token for retrieving the next page of results."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ListAgentServicesResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.agent_services:
-            body["agent_services"] = [v.as_dict() for v in self.agent_services]
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListAgentServicesResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.agent_services:
-            body["agent_services"] = self.agent_services
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListAgentServicesResponse:
-        """Deserializes the ListAgentServicesResponse from a dictionary."""
-        return cls(
-            agent_services=_repeated_dict(d, "agent_services", AgentService),
-            next_page_token=d.get("next_page_token", None),
-        )
 
 
 @dataclass
@@ -8446,43 +7681,20 @@ class ModelProviderServiceConfigAnthropicProviderRelayedConfig:
     secret. Presence of this variant is the signal that the provider service uses relayed auth;
     ``plan_type`` further distinguishes which Anthropic subscription tier the token belongs to."""
 
-    plan_type: Optional[ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType] = None
-    """Which Anthropic subscription tier the relayed token belongs to. Optional; when unset the MPS
-    gets the full governance surface (see TEAM_ENTERPRISE). Immutable after Create, so the tier
-    cannot be flipped in place."""
-
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAnthropicProviderRelayedConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.plan_type is not None:
-            body["plan_type"] = self.plan_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAnthropicProviderRelayedConfig into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.plan_type is not None:
-            body["plan_type"] = self.plan_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigAnthropicProviderRelayedConfig:
         """Deserializes the ModelProviderServiceConfigAnthropicProviderRelayedConfig from a dictionary."""
-        return cls(
-            plan_type=_enum(
-                d, "plan_type", ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType
-            )
-        )
-
-
-class ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType(Enum):
-    """Which Anthropic subscription tier the relayed OAuth token belongs to. Immutable after Create
-    (switching tiers changes which governance controls the platform enforces). Only MAX and
-    TEAM_ENTERPRISE differ in the governance surface the gateway can enforce, not in how the token
-    is relayed."""
-
-    ANTHROPIC_RELAYED_PLAN_TYPE_MAX = "ANTHROPIC_RELAYED_PLAN_TYPE_MAX"
-    ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE = "ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE"
+        return cls()
 
 
 @dataclass
@@ -8800,13 +8012,6 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
     region: Optional[str] = None
     """GCP region of the Gemini Enterprise endpoint (e.g., ``us-central1``). Required on Create."""
 
-    service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
-    """Reference to a UC service credential authorizing Gemini Enterprise requests. On Create, supply
-    ``service_credential.name`` as ``credentials/{name}``; required when using UC-service-credential
-    auth and mutually exclusive with ``api_key``. The credential is referenced by name; its value is
-    not carried here. On read, the resolved ``id`` and ``is_deleted`` are also populated. Supported
-    only on GCP-hosted workspaces."""
-
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8816,8 +8021,6 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
             body["project_id"] = self.project_id
         if self.region is not None:
             body["region"] = self.region
-        if self.service_credential:
-            body["service_credential"] = self.service_credential.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8829,8 +8032,6 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
             body["project_id"] = self.project_id
         if self.region is not None:
             body["region"] = self.region
-        if self.service_credential:
-            body["service_credential"] = self.service_credential
         return body
 
     @classmethod
@@ -8840,7 +8041,6 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
             api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
             project_id=d.get("project_id", None),
             region=d.get("region", None),
-            service_credential=_from_dict(d, "service_credential", ModelProviderServiceConfigServiceCredential),
         )
 
 
@@ -10516,73 +9716,6 @@ class NotificationDestination:
 
 
 @dataclass
-class OneLakeEventQueue:
-    """File event queue for OneLake (Microsoft Fabric) locations. Events flow through Fabric
-    Eventstream in both arms; CSMS consumes from a user-provided Azure Event Hub (provided_onelake)
-    or from a Fabric Eventstream that CSMS provisions in the user's workspace (managed_onelake)."""
-
-    consumer_group: Optional[str] = None
-    """Event Hubs consumer group used to consume file events. Defaults to "$Default" when unset.
-    Recommended for provided_onelake: create a dedicated consumer group on the Event Hub for file
-    events to avoid contending with the customer's other consumers."""
-
-    event_hub_name: Optional[str] = None
-    """Event Hub entity name within the namespace. Only required for provided_onelake."""
-
-    event_hub_url: Optional[str] = None
-    """The Event Hub URL in the format https://{namespace}.servicebus.windows.net/{event_hub_name}.
-    Deprecated: use fully_qualified_namespace + event_hub_name instead."""
-
-    fully_qualified_namespace: Optional[str] = None
-    """The fully qualified domain name of the Event Hubs namespace, e.g.
-    {yournamespace}.servicebus.windows.net. Only required for provided_onelake."""
-
-    managed_resource_id: Optional[str] = None
-    """Unique identifier included in the name of the file events managed resources."""
-
-    def as_dict(self) -> dict:
-        """Serializes the OneLakeEventQueue into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.consumer_group is not None:
-            body["consumer_group"] = self.consumer_group
-        if self.event_hub_name is not None:
-            body["event_hub_name"] = self.event_hub_name
-        if self.event_hub_url is not None:
-            body["event_hub_url"] = self.event_hub_url
-        if self.fully_qualified_namespace is not None:
-            body["fully_qualified_namespace"] = self.fully_qualified_namespace
-        if self.managed_resource_id is not None:
-            body["managed_resource_id"] = self.managed_resource_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the OneLakeEventQueue into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.consumer_group is not None:
-            body["consumer_group"] = self.consumer_group
-        if self.event_hub_name is not None:
-            body["event_hub_name"] = self.event_hub_name
-        if self.event_hub_url is not None:
-            body["event_hub_url"] = self.event_hub_url
-        if self.fully_qualified_namespace is not None:
-            body["fully_qualified_namespace"] = self.fully_qualified_namespace
-        if self.managed_resource_id is not None:
-            body["managed_resource_id"] = self.managed_resource_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> OneLakeEventQueue:
-        """Deserializes the OneLakeEventQueue from a dictionary."""
-        return cls(
-            consumer_group=d.get("consumer_group", None),
-            event_hub_name=d.get("event_hub_name", None),
-            event_hub_url=d.get("event_hub_url", None),
-            fully_qualified_namespace=d.get("fully_qualified_namespace", None),
-            managed_resource_id=d.get("managed_resource_id", None),
-        )
-
-
-@dataclass
 class OnlineTable:
     """Online Table information."""
 
@@ -10855,10 +9988,6 @@ class OptionSpec:
     """For drop down / radio button selections, UI will want to know the possible input values, it can
     also be used by other option types to limit input selections."""
 
-    conditional_display: Optional[ConditionalDisplay] = None
-    """Conditional display configuration. Specifies when this option should be hidden based on another
-    option's value."""
-
     default_value: Optional[str] = None
     """The default value of the option, for example, value '443' for 'port' option."""
 
@@ -10905,8 +10034,6 @@ class OptionSpec:
         body = {}
         if self.allowed_values:
             body["allowed_values"] = [v for v in self.allowed_values]
-        if self.conditional_display:
-            body["conditional_display"] = self.conditional_display.as_dict()
         if self.default_value is not None:
             body["default_value"] = self.default_value
         if self.description is not None:
@@ -10940,8 +10067,6 @@ class OptionSpec:
         body = {}
         if self.allowed_values:
             body["allowed_values"] = self.allowed_values
-        if self.conditional_display:
-            body["conditional_display"] = self.conditional_display
         if self.default_value is not None:
             body["default_value"] = self.default_value
         if self.description is not None:
@@ -10975,7 +10100,6 @@ class OptionSpec:
         """Deserializes the OptionSpec from a dictionary."""
         return cls(
             allowed_values=d.get("allowed_values", None),
-            conditional_display=_from_dict(d, "conditional_display", ConditionalDisplay),
             default_value=d.get("default_value", None),
             description=d.get("description", None),
             hint=d.get("hint", None),
@@ -11014,7 +10138,6 @@ class OptionSpecOptionType(Enum):
     OPTION_MULTILINE_STRING = "OPTION_MULTILINE_STRING"
     OPTION_NUMBER = "OPTION_NUMBER"
     OPTION_SERVICE_CREDENTIAL = "OPTION_SERVICE_CREDENTIAL"
-    OPTION_STORAGE_CREDENTIAL = "OPTION_STORAGE_CREDENTIAL"
     OPTION_STRING = "OPTION_STRING"
 
 
@@ -11033,15 +10156,6 @@ class PermissionsChange:
     """The principal whose privileges we are changing. Only one of principal or principal_id should be
     specified, never both at the same time."""
 
-    principal_id: Optional[int] = None
-    """An opaque internal ID that identifies the principal whose privileges should be removed.
-    
-    This field is intended for removing privileges associated with a deleted user. When set, only
-    the entries specified in the remove field are processed; any entries in the add field will be
-    rejected.
-    
-    Only one of principal or principal_id should be specified, never both at the same time."""
-
     remove: Optional[List[Privilege]] = None
     """The set of privileges to remove."""
 
@@ -11052,8 +10166,6 @@ class PermissionsChange:
             body["add"] = [v.value for v in self.add]
         if self.principal is not None:
             body["principal"] = self.principal
-        if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = [v.value for v in self.remove]
         return body
@@ -11065,8 +10177,6 @@ class PermissionsChange:
             body["add"] = self.add
         if self.principal is not None:
             body["principal"] = self.principal
-        if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = self.remove
         return body
@@ -11077,7 +10187,6 @@ class PermissionsChange:
         return cls(
             add=_repeated_enum(d, "add", Privilege),
             principal=d.get("principal", None),
-            principal_id=_int64(d, "principal_id"),
             remove=_repeated_enum(d, "remove", Privilege),
         )
 
@@ -11206,17 +10315,8 @@ class PolicyInfo:
     created_by: Optional[str] = None
     """Username of the user who created the policy. Output only."""
 
-    deny: Optional[DenyOptions] = None
-    """Options for deny policies. Valid only if ``policy_type`` is ``POLICY_TYPE_DENY``. Required on
-    create and optional on update. When specified on update, the new options will replace the
-    existing options as a whole."""
-
     except_principals: Optional[List[str]] = None
     """Optional list of user or group names that should be excluded from the policy."""
-
-    governed_tags: Optional[List[GovernedTagReference]] = None
-    """Governed tag keys and values referenced by this policy's conditions and function arguments.
-    Output only."""
 
     grant: Optional[GrantOptions] = None
     """Options for grant policies. Valid only if ``policy_type`` is ``POLICY_TYPE_GRANT``. Required on
@@ -11253,13 +10353,6 @@ class PolicyInfo:
     updated_by: Optional[str] = None
     """Username of the user who last modified the policy. Output only."""
 
-    use_session_identity: Optional[bool] = None
-    """Temporary for migrating customers to session identity. Customers not currently using ABAC will
-    not be able to set this field to false and all new policies will have this field default to
-    true. Existing customers will have this field default to false, but can set it to true to opt in
-    to session identity. after a grace period, this field will be removed and all policies will use
-    session identity. Only for row filter and column mask policies. Not applicable to deny policies."""
-
     when_condition: Optional[str] = None
     """Optional condition when the policy should take effect."""
 
@@ -11274,14 +10367,10 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
-        if self.deny:
-            body["deny"] = self.deny.as_dict()
         if self.except_principals:
             body["except_principals"] = [v for v in self.except_principals]
         if self.for_securable_type is not None:
             body["for_securable_type"] = self.for_securable_type.value
-        if self.governed_tags:
-            body["governed_tags"] = [v.as_dict() for v in self.governed_tags]
         if self.grant:
             body["grant"] = self.grant.as_dict()
         if self.id is not None:
@@ -11304,8 +10393,6 @@ class PolicyInfo:
             body["updated_at"] = self.updated_at
         if self.updated_by is not None:
             body["updated_by"] = self.updated_by
-        if self.use_session_identity is not None:
-            body["use_session_identity"] = self.use_session_identity
         if self.when_condition is not None:
             body["when_condition"] = self.when_condition
         return body
@@ -11321,14 +10408,10 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
-        if self.deny:
-            body["deny"] = self.deny
         if self.except_principals:
             body["except_principals"] = self.except_principals
         if self.for_securable_type is not None:
             body["for_securable_type"] = self.for_securable_type
-        if self.governed_tags:
-            body["governed_tags"] = self.governed_tags
         if self.grant:
             body["grant"] = self.grant
         if self.id is not None:
@@ -11351,8 +10434,6 @@ class PolicyInfo:
             body["updated_at"] = self.updated_at
         if self.updated_by is not None:
             body["updated_by"] = self.updated_by
-        if self.use_session_identity is not None:
-            body["use_session_identity"] = self.use_session_identity
         if self.when_condition is not None:
             body["when_condition"] = self.when_condition
         return body
@@ -11365,10 +10446,8 @@ class PolicyInfo:
             comment=d.get("comment", None),
             created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
-            deny=_from_dict(d, "deny", DenyOptions),
             except_principals=d.get("except_principals", None),
             for_securable_type=_enum(d, "for_securable_type", SecurableType),
-            governed_tags=_repeated_dict(d, "governed_tags", GovernedTagReference),
             grant=_from_dict(d, "grant", GrantOptions),
             id=d.get("id", None),
             match_columns=_repeated_dict(d, "match_columns", MatchColumn),
@@ -11380,14 +10459,12 @@ class PolicyInfo:
             to_principals=d.get("to_principals", None),
             updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
-            use_session_identity=d.get("use_session_identity", None),
             when_condition=d.get("when_condition", None),
         )
 
 
 class PolicyType(Enum):
     POLICY_TYPE_COLUMN_MASK = "POLICY_TYPE_COLUMN_MASK"
-    POLICY_TYPE_DENY = "POLICY_TYPE_DENY"
     POLICY_TYPE_GRANT = "POLICY_TYPE_GRANT"
     POLICY_TYPE_ROW_FILTER = "POLICY_TYPE_ROW_FILTER"
 
@@ -11486,71 +10563,42 @@ class Privilege(Enum):
     APPLY_TAG = "APPLY_TAG"
     BROWSE = "BROWSE"
     CREATE = "CREATE"
-    CREATE_CASE_COLLECTION = "CREATE_CASE_COLLECTION"
     CREATE_CATALOG = "CREATE_CATALOG"
     CREATE_CLEAN_ROOM = "CREATE_CLEAN_ROOM"
     CREATE_CONNECTION = "CREATE_CONNECTION"
-    CREATE_DATASOURCE = "CREATE_DATASOURCE"
     CREATE_EXTERNAL_LOCATION = "CREATE_EXTERNAL_LOCATION"
     CREATE_EXTERNAL_TABLE = "CREATE_EXTERNAL_TABLE"
     CREATE_EXTERNAL_VOLUME = "CREATE_EXTERNAL_VOLUME"
-    CREATE_FEATURE = "CREATE_FEATURE"
-    CREATE_FLOW = "CREATE_FLOW"
     CREATE_FOREIGN_CATALOG = "CREATE_FOREIGN_CATALOG"
     CREATE_FOREIGN_SECURABLE = "CREATE_FOREIGN_SECURABLE"
     CREATE_FUNCTION = "CREATE_FUNCTION"
     CREATE_MANAGED_STORAGE = "CREATE_MANAGED_STORAGE"
     CREATE_MATERIALIZED_VIEW = "CREATE_MATERIALIZED_VIEW"
-    CREATE_MEMORY_STORE = "CREATE_MEMORY_STORE"
     CREATE_MODEL = "CREATE_MODEL"
     CREATE_PROVIDER = "CREATE_PROVIDER"
     CREATE_RECIPIENT = "CREATE_RECIPIENT"
-    CREATE_RULE = "CREATE_RULE"
     CREATE_SCHEMA = "CREATE_SCHEMA"
-    CREATE_SEMANTIC_GRAPH = "CREATE_SEMANTIC_GRAPH"
-    CREATE_SERVICE = "CREATE_SERVICE"
     CREATE_SERVICE_CREDENTIAL = "CREATE_SERVICE_CREDENTIAL"
     CREATE_SHARE = "CREATE_SHARE"
-    CREATE_SKILL = "CREATE_SKILL"
     CREATE_STORAGE_CREDENTIAL = "CREATE_STORAGE_CREDENTIAL"
-    CREATE_STREAM = "CREATE_STREAM"
     CREATE_TABLE = "CREATE_TABLE"
     CREATE_VIEW = "CREATE_VIEW"
     CREATE_VOLUME = "CREATE_VOLUME"
-    DELETE = "DELETE"
-    DELETE_EVENTS = "DELETE_EVENTS"
-    DELETE_SECURITY_DATA = "DELETE_SECURITY_DATA"
     EXECUTE = "EXECUTE"
     EXECUTE_CLEAN_ROOM_TASK = "EXECUTE_CLEAN_ROOM_TASK"
+    EXTERNAL_USE_LOCATION = "EXTERNAL_USE_LOCATION"
     EXTERNAL_USE_SCHEMA = "EXTERNAL_USE_SCHEMA"
-    INSERT = "INSERT"
-    INSERT_SECURITY_DATA = "INSERT_SECURITY_DATA"
     MANAGE = "MANAGE"
-    MANAGE_ACCESS = "MANAGE_ACCESS"
-    MANAGE_ACCESS_CONTROL = "MANAGE_ACCESS_CONTROL"
     MANAGE_ALLOWLIST = "MANAGE_ALLOWLIST"
-    MANAGE_GRANTS = "MANAGE_GRANTS"
     MODIFY = "MODIFY"
     MODIFY_CLEAN_ROOM = "MODIFY_CLEAN_ROOM"
-    READ_EVENTS = "READ_EVENTS"
-    READ_FEATURE = "READ_FEATURE"
     READ_FILES = "READ_FILES"
-    READ_FLOW = "READ_FLOW"
-    READ_MEMORY_STORE = "READ_MEMORY_STORE"
     READ_METADATA = "READ_METADATA"
     READ_PRIVATE_FILES = "READ_PRIVATE_FILES"
-    READ_SECURITY_DATA = "READ_SECURITY_DATA"
-    READ_SEMANTIC_GRAPH = "READ_SEMANTIC_GRAPH"
-    READ_SKILL = "READ_SKILL"
-    READ_STREAM = "READ_STREAM"
     READ_VOLUME = "READ_VOLUME"
     REFRESH = "REFRESH"
-    REFRESH_FLOW = "REFRESH_FLOW"
     SELECT = "SELECT"
     SET_SHARE_PERMISSION = "SET_SHARE_PERMISSION"
-    UPDATE = "UPDATE"
-    UPDATE_EVENTS = "UPDATE_EVENTS"
-    UPDATE_SECURITY_DATA = "UPDATE_SECURITY_DATA"
     USAGE = "USAGE"
     USE_CATALOG = "USE_CATALOG"
     USE_CONNECTION = "USE_CONNECTION"
@@ -11559,16 +10607,8 @@ class Privilege(Enum):
     USE_RECIPIENT = "USE_RECIPIENT"
     USE_SCHEMA = "USE_SCHEMA"
     USE_SHARE = "USE_SHARE"
-    USE_VOLUME = "USE_VOLUME"
-    VIEW_ADMIN_METADATA = "VIEW_ADMIN_METADATA"
-    VIEW_METADATA = "VIEW_METADATA"
-    VIEW_OBJECT = "VIEW_OBJECT"
     WRITE_FILES = "WRITE_FILES"
-    WRITE_FLOW = "WRITE_FLOW"
-    WRITE_MEMORY_STORE = "WRITE_MEMORY_STORE"
     WRITE_PRIVATE_FILES = "WRITE_PRIVATE_FILES"
-    WRITE_SEMANTIC_GRAPH = "WRITE_SEMANTIC_GRAPH"
-    WRITE_SKILL = "WRITE_SKILL"
     WRITE_VOLUME = "WRITE_VOLUME"
 
 
@@ -11578,10 +10618,6 @@ class PrivilegeAssignment:
     """The principal (user email address or group name). For deleted principals, ``principal`` is empty
     while ``principal_id`` is populated."""
 
-    principal_id: Optional[int] = None
-    """Unique identifier of the principal. For active principals, both ``principal`` and
-    ``principal_id`` are present."""
-
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
 
@@ -11590,8 +10626,6 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
-        if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = [v.value for v in self.privileges]
         return body
@@ -11601,8 +10635,6 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
-        if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = self.privileges
         return body
@@ -11610,11 +10642,7 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(
-            principal=d.get("principal", None),
-            principal_id=_int64(d, "principal_id"),
-            privileges=_repeated_enum(d, "privileges", Privilege),
-        )
+        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
 
 
 @dataclass
@@ -12162,14 +11190,6 @@ class RowFilterOptions:
         return cls(function_name=d.get("function_name", None), using=_repeated_dict(d, "using", FunctionArgument))
 
 
-class SchemaFilterType(Enum):
-    """Determines how a FOREIGN catalog's schema filter items are interpreted."""
-
-    SCHEMA_FILTER_TYPE_EXCLUDE = "SCHEMA_FILTER_TYPE_EXCLUDE"
-    SCHEMA_FILTER_TYPE_INCLUDE = "SCHEMA_FILTER_TYPE_INCLUDE"
-    SCHEMA_FILTER_TYPE_INCLUDE_ALL = "SCHEMA_FILTER_TYPE_INCLUDE_ALL"
-
-
 @dataclass
 class SchemaInfo:
     browse_only: Optional[bool] = None
@@ -12496,34 +11516,6 @@ class Secret:
 
 
 @dataclass
-class SecretDependency:
-    """A secret that is dependent on a SQL object."""
-
-    secret_full_name: str
-    """Full name of the dependent secret, in the form of
-    **catalog_name**.**schema_name**.**secret_name**."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SecretDependency into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.secret_full_name is not None:
-            body["secret_full_name"] = self.secret_full_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SecretDependency into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.secret_full_name is not None:
-            body["secret_full_name"] = self.secret_full_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SecretDependency:
-        """Deserializes the SecretDependency from a dictionary."""
-        return cls(secret_full_name=d.get("secret_full_name", None))
-
-
-@dataclass
 class Securable:
     """Generic definition of a securable, which is uniquely defined in a metastore by its type and full
     name."""
@@ -12571,23 +11563,6 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    CATALOG_FOREIGN_BIGLAKE = "CATALOG_FOREIGN_BIGLAKE"
-    CATALOG_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE = "CATALOG_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE"
-    CATALOG_FOREIGN_ICEBERG_REST = "CATALOG_FOREIGN_ICEBERG_REST"
-    CONNECTION_BIGLAKE_SERVICE_ACCOUNT = "CONNECTION_BIGLAKE_SERVICE_ACCOUNT"
-    CONNECTION_COMMUNITY_OAUTH_M2M = "CONNECTION_COMMUNITY_OAUTH_M2M"
-    CONNECTION_COMMUNITY_OAUTH_U2M = "CONNECTION_COMMUNITY_OAUTH_U2M"
-    CONNECTION_COMMUNITY_OAUTH_U2M_MAPPING = "CONNECTION_COMMUNITY_OAUTH_U2M_MAPPING"
-    CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_OAUTH_U2M = "CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_OAUTH_U2M"
-    CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_SERVICE_ACCOUNT = "CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_SERVICE_ACCOUNT"
-    CONNECTION_ICEBERG_REST_BEARER_TOKEN = "CONNECTION_ICEBERG_REST_BEARER_TOKEN"
-    CONNECTION_ICEBERG_REST_OAUTH_M2M = "CONNECTION_ICEBERG_REST_OAUTH_M2M"
-    RECIPIENT_EMAIL = "RECIPIENT_EMAIL"
-    RECIPIENT_EMAIL_DATABRICKS = "RECIPIENT_EMAIL_DATABRICKS"
-    RECIPIENT_EMAIL_TOKEN = "RECIPIENT_EMAIL_TOKEN"
-    SCHEMA_FOREIGN_BIGLAKE = "SCHEMA_FOREIGN_BIGLAKE"
-    SCHEMA_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE = "SCHEMA_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE"
-    SCHEMA_FOREIGN_ICEBERG_REST = "SCHEMA_FOREIGN_ICEBERG_REST"
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
     TABLE_DELTASHARING = "TABLE_DELTASHARING"
@@ -12610,12 +11585,9 @@ class SecurableKind(Enum):
     TABLE_EXTERNAL = "TABLE_EXTERNAL"
     TABLE_FEATURE_STORE = "TABLE_FEATURE_STORE"
     TABLE_FEATURE_STORE_EXTERNAL = "TABLE_FEATURE_STORE_EXTERNAL"
-    TABLE_FOREIGN_BIGLAKE = "TABLE_FOREIGN_BIGLAKE"
     TABLE_FOREIGN_BIGQUERY = "TABLE_FOREIGN_BIGQUERY"
     TABLE_FOREIGN_DATABRICKS = "TABLE_FOREIGN_DATABRICKS"
     TABLE_FOREIGN_DELTASHARING = "TABLE_FOREIGN_DELTASHARING"
-    TABLE_FOREIGN_DELTA_DELTASHARING = "TABLE_FOREIGN_DELTA_DELTASHARING"
-    TABLE_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE = "TABLE_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE"
     TABLE_FOREIGN_HIVE_METASTORE = "TABLE_FOREIGN_HIVE_METASTORE"
     TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL = "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL"
     TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED = "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED"
@@ -12629,12 +11601,10 @@ class SecurableKind(Enum):
     TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL = "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL"
     TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED = "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED"
     TABLE_FOREIGN_HIVE_METASTORE_VIEW = "TABLE_FOREIGN_HIVE_METASTORE_VIEW"
-    TABLE_FOREIGN_ICEBERG_REST = "TABLE_FOREIGN_ICEBERG_REST"
     TABLE_FOREIGN_MONGODB = "TABLE_FOREIGN_MONGODB"
     TABLE_FOREIGN_MYSQL = "TABLE_FOREIGN_MYSQL"
     TABLE_FOREIGN_NETSUITE = "TABLE_FOREIGN_NETSUITE"
     TABLE_FOREIGN_ORACLE = "TABLE_FOREIGN_ORACLE"
-    TABLE_FOREIGN_PALANTIR = "TABLE_FOREIGN_PALANTIR"
     TABLE_FOREIGN_POSTGRESQL = "TABLE_FOREIGN_POSTGRESQL"
     TABLE_FOREIGN_REDSHIFT = "TABLE_FOREIGN_REDSHIFT"
     TABLE_FOREIGN_SALESFORCE = "TABLE_FOREIGN_SALESFORCE"
@@ -12768,7 +11738,11 @@ class SecurableType(Enum):
     EXTERNAL_LOCATION = "EXTERNAL_LOCATION"
     EXTERNAL_METADATA = "EXTERNAL_METADATA"
     FUNCTION = "FUNCTION"
+    MCP_SERVICE = "MCP_SERVICE"
     METASTORE = "METASTORE"
+    MODEL = "MODEL"
+    MODEL_PROVIDER_SERVICE = "MODEL_PROVIDER_SERVICE"
+    MODEL_SERVICE = "MODEL_SERVICE"
     PIPELINE = "PIPELINE"
     PROVIDER = "PROVIDER"
     RECIPIENT = "RECIPIENT"
@@ -13465,9 +12439,9 @@ class TableRowFilter:
     should match the types of the filter function arguments."""
 
     input_arguments: Optional[List[PolicyFunctionArgument]] = None
-    """The list of additional table columns or literals to be passed as additional arguments to a row
-    filter function. This is the replacement of the deprecated input_column_names field and carries
-    information about the types (alias or constant) of the arguments to the filter function."""
+    """The list of table columns or literals to be passed as additional arguments to a row filter
+    function, carrying the type (column reference vs constant literal) of each argument. Deprecated:
+    use input_column_names instead."""
 
     def as_dict(self) -> dict:
         """Serializes the TableRowFilter into a dictionary suitable for use as a JSON request body."""
@@ -13759,34 +12733,6 @@ class TriggeredUpdateStatus:
             timestamp=d.get("timestamp", None),
             triggered_update_progress=_from_dict(d, "triggered_update_progress", PipelineProgress),
         )
-
-
-@dataclass
-class UcEncryptedToken:
-    """Encrypted token used when we cannot downscope the cloud provider token appropriately See:
-    https://docs.google.com/document/d/1hEKDnSckuU5PIS798CtfqBElrMR6OJuR2wgz_BjhMSY"""
-
-    encrypted_payload: Optional[str] = None
-    """Stores encrypted ScopedCloudToken as a base64-encoded string"""
-
-    def as_dict(self) -> dict:
-        """Serializes the UcEncryptedToken into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.encrypted_payload is not None:
-            body["encrypted_payload"] = self.encrypted_payload
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UcEncryptedToken into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.encrypted_payload is not None:
-            body["encrypted_payload"] = self.encrypted_payload
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UcEncryptedToken:
-        """Deserializes the UcEncryptedToken from a dictionary."""
-        return cls(encrypted_payload=d.get("encrypted_payload", None))
 
 
 @dataclass
@@ -14332,34 +13278,6 @@ class ValidationResultResult(Enum):
     FAIL = "FAIL"
     PASS = "PASS"
     SKIP = "SKIP"
-
-
-@dataclass
-class VolumeDependency:
-    """A volume that is dependent on a SQL object."""
-
-    volume_full_name: str
-    """Full name of the dependent volume, in the form of
-    **catalog_name**.**schema_name**.**volume_name**."""
-
-    def as_dict(self) -> dict:
-        """Serializes the VolumeDependency into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.volume_full_name is not None:
-            body["volume_full_name"] = self.volume_full_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VolumeDependency into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.volume_full_name is not None:
-            body["volume_full_name"] = self.volume_full_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VolumeDependency:
-        """Deserializes the VolumeDependency from a dictionary."""
-        return cls(volume_full_name=d.get("volume_full_name", None))
 
 
 @dataclass
@@ -14986,44 +13904,6 @@ class AiGatewayAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_agent_service(self, agent_service: AgentService, parent: str, agent_service_id: str) -> AgentService:
-        """Creates an agent service in a Unity Catalog schema. An agent service is a governed securable that
-        registers an AI agent and exposes it for discovery, access control, and auditing. The caller supplies
-        the leaf name in ``agent_service_id`` and the agent service type, which is immutable after creation.
-
-        You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
-
-        :param agent_service: :class:`AgentService`
-          The agent service to create. The server populates ``name`` from ``parent`` + ``agent_service_id``;
-          clients should leave it unset.
-        :param parent: str
-          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
-          capped at 255 characters individually.
-        :param agent_service_id: str
-          Name for the agent service, e.g. "support_agent".
-
-        :returns: :class:`AgentService`
-        """
-
-        body = agent_service.as_dict()
-        query = {}
-        if agent_service_id is not None:
-            query["agent_service_id"] = agent_service_id
-        if parent is not None:
-            query["parent"] = parent
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("POST", "/api/2.1/unity-catalog/agent-services", query=query, body=body, headers=headers)
-        return AgentService.from_dict(res)
-
     def create_mcp_service(self, mcp_service: McpService, parent: str, mcp_service_id: str) -> McpService:
         """Creates an MCP service in a Unity Catalog schema. An MCP (Model Context Protocol) service is a
         governed securable that registers an MCP server and exposes its tools for discovery, access control,
@@ -15144,36 +14024,6 @@ class AiGatewayAPI:
         res = self._api.do("POST", "/api/2.1/unity-catalog/model-services", query=query, body=body, headers=headers)
         return ModelService.from_dict(res)
 
-    def delete_agent_service(self, name: str, *, etag: Optional[str] = None):
-        """Deletes the agent service identified by its resource name. Optionally supply an ``etag`` to make the
-        delete conditional on the agent service not having changed since it was read.
-
-        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
-
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually.
-        :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
-
-
-        """
-
-        query = {}
-        if etag is not None:
-            query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
-
     def delete_mcp_service(self, name: str, *, etag: Optional[str] = None):
         """Deletes the MCP service identified by its resource name. Optionally supply an ``etag`` to make the
         delete conditional on the MCP service not having changed since it was read.
@@ -15265,30 +14115,6 @@ class AiGatewayAPI:
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
 
-    def get_agent_service(self, name: str) -> AgentService:
-        """Returns the agent service identified by its resource name.
-
-        You must be the owner of the agent service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on
-        it, plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
-
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually.
-
-        :returns: :class:`AgentService`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
-        return AgentService.from_dict(res)
-
     def get_mcp_service(self, name: str) -> McpService:
         """Returns the MCP service identified by its resource name.
 
@@ -15361,53 +14187,6 @@ class AiGatewayAPI:
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
         return ModelService.from_dict(res)
-
-    def list_agent_services(
-        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, parent: Optional[str] = None
-    ) -> Iterator[AgentService]:
-        """Lists the agent services in a Unity Catalog schema. Provide ``parent`` as
-        ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
-        subsequent pages.
-
-        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only agent
-        services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
-        returned.
-
-        :param page_size: int (optional)
-          Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
-          ``page_token`` to retrieve additional pages.
-        :param page_token: str (optional)
-          Opaque pagination token from a previous request.
-        :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
-          component is capped at 255 characters individually.
-
-        :returns: Iterator over :class:`AgentService`
-        """
-
-        query = {}
-        if page_size is not None:
-            query["page_size"] = page_size
-        if page_token is not None:
-            query["page_token"] = page_token
-        if parent is not None:
-            query["parent"] = parent
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        while True:
-            json = self._api.do("GET", "/api/2.1/unity-catalog/agent-services", query=query, headers=headers)
-            if "agent_services" in json:
-                for v in json["agent_services"]:
-                    yield AgentService.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
-                return
-            query["page_token"] = json["next_page_token"]
 
     def list_mcp_services(
         self,
@@ -15582,52 +14361,6 @@ class AiGatewayAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
-
-    def update_agent_service(
-        self, name: str, agent_service: AgentService, update_mask: FieldMask, *, etag: Optional[str] = None
-    ) -> AgentService:
-        """Updates an agent service. Only the fields named in ``update_mask`` are changed; the resource name and
-        agent service type are immutable. Optionally supply an ``etag`` to make the update conditional on the
-        agent service not having changed since it was read.
-
-        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
-
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
-          ``parent`` + ``agent_service_id``; required and immutable on Update/Get/Delete.
-        :param agent_service: :class:`AgentService`
-          The agent service with the updated field values. ``name`` identifies the resource
-          (``agent-services/{catalog}.{schema}.{agent_service}``); only fields listed in ``update_mask`` are
-          applied.
-        :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the ``agent_service`` field
-          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
-        :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
-
-        :returns: :class:`AgentService`
-        """
-
-        body = agent_service.as_dict()
-        query = {}
-        if etag is not None:
-            query["etag"] = etag
-        if update_mask is not None:
-            query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/{name}", query=query, body=body, headers=headers)
-        return AgentService.from_dict(res)
 
     def update_mcp_service(
         self, name: str, mcp_service: McpService, update_mask: FieldMask, *, etag: Optional[str] = None
@@ -15869,12 +14602,9 @@ class CatalogsAPI:
         self,
         name: str,
         *,
-        catalog_federation_config: Optional[CatalogFederationConfig] = None,
         comment: Optional[str] = None,
         connection_name: Optional[str] = None,
-        conversion_info: Optional[ConversionInfo] = None,
         custom_max_retention_hours: Optional[int] = None,
-        dr_replication_info: Optional[DrReplicationInfo] = None,
         managed_encryption_settings: Optional[EncryptionSettings] = None,
         options: Optional[Dict[str, str]] = None,
         properties: Optional[Dict[str, str]] = None,
@@ -15887,18 +14617,12 @@ class CatalogsAPI:
 
         :param name: str
           Name of catalog.
-        :param catalog_federation_config: :class:`CatalogFederationConfig` (optional)
-          Federation-only configuration, present only for FOREIGN catalogs.
         :param comment: str (optional)
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
-        :param conversion_info: :class:`ConversionInfo` (optional)
-          Status of conversion of FOREIGN catalog to UC Native catalog.
         :param custom_max_retention_hours: int (optional)
           Custom maximum retention period in hours for the catalog
-        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
-          Disaster Recovery replication state snapshot.
         :param managed_encryption_settings: :class:`EncryptionSettings` (optional)
           Control CMK encryption for managed catalog data
         :param options: Dict[str,str] (optional)
@@ -15918,18 +14642,12 @@ class CatalogsAPI:
         """
 
         body = {}
-        if catalog_federation_config is not None:
-            body["catalog_federation_config"] = catalog_federation_config.as_dict()
         if comment is not None:
             body["comment"] = comment
         if connection_name is not None:
             body["connection_name"] = connection_name
-        if conversion_info is not None:
-            body["conversion_info"] = conversion_info.as_dict()
         if custom_max_retention_hours is not None:
             body["custom_max_retention_hours"] = custom_max_retention_hours
-        if dr_replication_info is not None:
-            body["dr_replication_info"] = dr_replication_info.as_dict()
         if managed_encryption_settings is not None:
             body["managed_encryption_settings"] = managed_encryption_settings.as_dict()
         if name is not None:
@@ -16083,11 +14801,8 @@ class CatalogsAPI:
         self,
         name: str,
         *,
-        catalog_federation_config: Optional[CatalogFederationConfig] = None,
         comment: Optional[str] = None,
-        conversion_info: Optional[ConversionInfo] = None,
         custom_max_retention_hours: Optional[int] = None,
-        dr_replication_info: Optional[DrReplicationInfo] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         isolation_mode: Optional[CatalogIsolationMode] = None,
         managed_encryption_settings: Optional[EncryptionSettings] = None,
@@ -16101,16 +14816,10 @@ class CatalogsAPI:
 
         :param name: str
           The name of the catalog.
-        :param catalog_federation_config: :class:`CatalogFederationConfig` (optional)
-          Federation-only configuration, present only for FOREIGN catalogs.
         :param comment: str (optional)
           User-provided free-form text description.
-        :param conversion_info: :class:`ConversionInfo` (optional)
-          Status of conversion of FOREIGN catalog to UC Native catalog.
         :param custom_max_retention_hours: int (optional)
           Custom maximum retention period in hours for the catalog
-        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
-          Disaster Recovery replication state snapshot.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)
@@ -16130,16 +14839,10 @@ class CatalogsAPI:
         """
 
         body = {}
-        if catalog_federation_config is not None:
-            body["catalog_federation_config"] = catalog_federation_config.as_dict()
         if comment is not None:
             body["comment"] = comment
-        if conversion_info is not None:
-            body["conversion_info"] = conversion_info.as_dict()
         if custom_max_retention_hours is not None:
             body["custom_max_retention_hours"] = custom_max_retention_hours
-        if dr_replication_info is not None:
-            body["dr_replication_info"] = dr_replication_info.as_dict()
         if enable_predictive_optimization is not None:
             body["enable_predictive_optimization"] = enable_predictive_optimization.value
         if isolation_mode is not None:
@@ -16190,7 +14893,6 @@ class ConnectionsAPI:
         parent: Optional[str] = None,
         properties: Optional[Dict[str, str]] = None,
         read_only: Optional[bool] = None,
-        secrets: Optional[Dict[str, str]] = None,
     ) -> ConnectionInfo:
         """Creates a new connection
 
@@ -16214,9 +14916,6 @@ class ConnectionsAPI:
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
           If the connection is read only.
-        :param secrets: Dict[str,str] (optional)
-          A map of option names to UC Secret references. Keys are connection option names (same as in
-          OptionsKVPairs) and values are UC Secret fully qualified names.
 
         :returns: :class:`ConnectionInfo`
         """
@@ -16238,8 +14937,6 @@ class ConnectionsAPI:
             body["properties"] = properties
         if read_only is not None:
             body["read_only"] = read_only
-        if secrets is not None:
-            body["secrets"] = secrets
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -16354,7 +15051,6 @@ class ConnectionsAPI:
         environment_settings: Optional[EnvironmentSettings] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
-        secrets: Optional[Dict[str, str]] = None,
     ) -> ConnectionInfo:
         """Updates the connection that matches the supplied name.
 
@@ -16368,9 +15064,6 @@ class ConnectionsAPI:
           New name for the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
-        :param secrets: Dict[str,str] (optional)
-          A map of option names to UC Secret references. Keys are connection option names (same as in
-          OptionsKVPairs) and values are UC Secret fully qualified names.
 
         :returns: :class:`ConnectionInfo`
         """
@@ -16384,8 +15077,6 @@ class ConnectionsAPI:
             body["options"] = options
         if owner is not None:
             body["owner"] = owner
-        if secrets is not None:
-            body["secrets"] = secrets
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -16871,9 +15562,7 @@ class EntityTagAssignmentsAPI:
             headers=headers,
         )
 
-    def get(
-        self, entity_type: str, entity_name: str, tag_key: str, *, include_inherited: Optional[bool] = None
-    ) -> EntityTagAssignment:
+    def get(self, entity_type: str, entity_name: str, tag_key: str) -> EntityTagAssignment:
         """Gets a tag assignment for an Unity Catalog entity by tag key.
 
         :param entity_type: str
@@ -16882,15 +15571,10 @@ class EntityTagAssignmentsAPI:
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
           Required. The key of the tag
-        :param include_inherited: bool (optional)
-          Boolean which indicates whether this tag is inherited.
 
         :returns: :class:`EntityTagAssignment`
         """
 
-        query = {}
-        if include_inherited is not None:
-            query["include_inherited"] = include_inherited
         headers = {
             "Accept": "application/json",
         }
@@ -16902,19 +15586,12 @@ class EntityTagAssignmentsAPI:
         res = self._api.do(
             "GET",
             f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
-            query=query,
             headers=headers,
         )
         return EntityTagAssignment.from_dict(res)
 
     def list(
-        self,
-        entity_type: str,
-        entity_name: str,
-        *,
-        include_inherited: Optional[bool] = None,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, entity_type: str, entity_name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[EntityTagAssignment]:
         """List tag assignments for an Unity Catalog entity
 
@@ -16926,8 +15603,6 @@ class EntityTagAssignmentsAPI:
           The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
-        :param include_inherited: bool (optional)
-          Boolean which indicates whether this tag is inherited.
         :param max_results: int (optional)
           Optional. Maximum number of tag assignments to return in a single page
         :param page_token: str (optional)
@@ -16937,8 +15612,6 @@ class EntityTagAssignmentsAPI:
         """
 
         query = {}
-        if include_inherited is not None:
-            query["include_inherited"] = include_inherited
         if max_results is not None:
             query["max_results"] = max_results
         if page_token is not None:
@@ -17897,7 +16570,6 @@ class GrantsAPI:
         securable_type: str,
         full_name: str,
         *,
-        include_deleted_principals: Optional[bool] = None,
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
         principal: Optional[str] = None,
@@ -17915,8 +16587,6 @@ class GrantsAPI:
           Type of securable.
         :param full_name: str
           Full name of securable.
-        :param include_deleted_principals: bool (optional)
-          Optional. If true, also return privilege assignments whose principals have been deleted.
         :param max_results: int (optional)
           Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
           present in a single page response is guaranteed to contain all the privileges granted on the
@@ -17939,8 +16609,6 @@ class GrantsAPI:
         """
 
         query = {}
-        if include_deleted_principals is not None:
-            query["include_deleted_principals"] = include_deleted_principals
         if max_results is not None:
             query["max_results"] = max_results
         if page_token is not None:
@@ -18034,7 +16702,6 @@ class GrantsAPI:
         securable_type: str,
         full_name: str,
         *,
-        include_deleted_principals: Optional[bool] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         principal: Optional[str] = None,
@@ -18046,8 +16713,6 @@ class GrantsAPI:
           Type of securable.
         :param full_name: str
           Full name of securable.
-        :param include_deleted_principals: bool (optional)
-          Optional. If true, also return privilege assignments whose principals have been deleted.
         :param page_size: int (optional)
           Specifies the maximum number of privilege assignments to return (page length). Every
           PrivilegeAssignment present in a single page response is guaranteed to contain all the privileges
@@ -18070,8 +16735,6 @@ class GrantsAPI:
         """
 
         query = {}
-        if include_deleted_principals is not None:
-            query["include_deleted_principals"] = include_deleted_principals
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:

@@ -9,27 +9,6 @@
     foundation models and external LLMs), model provider services (governed connections to external model
     providers), and MCP services (governed Model Context Protocol servers).
 
-    .. py:method:: create_agent_service(agent_service: AgentService, parent: str, agent_service_id: str) -> AgentService
-
-        Creates an agent service in a Unity Catalog schema. An agent service is a governed securable that
-        registers an AI agent and exposes it for discovery, access control, and auditing. The caller supplies
-        the leaf name in ``agent_service_id`` and the agent service type, which is immutable after creation.
-
-        You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
-
-        :param agent_service: :class:`AgentService`
-          The agent service to create. The server populates ``name`` from ``parent`` + ``agent_service_id``;
-          clients should leave it unset.
-        :param parent: str
-          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
-          capped at 255 characters individually.
-        :param agent_service_id: str
-          Name for the agent service, e.g. "support_agent".
-
-        :returns: :class:`AgentService`
-        
-
     .. py:method:: create_mcp_service(mcp_service: McpService, parent: str, mcp_service_id: str) -> McpService
 
         Creates an MCP service in a Unity Catalog schema. An MCP (Model Context Protocol) service is a
@@ -95,24 +74,6 @@
         :returns: :class:`ModelService`
         
 
-    .. py:method:: delete_agent_service(name: str [, etag: Optional[str]])
-
-        Deletes the agent service identified by its resource name. Optionally supply an ``etag`` to make the
-        delete conditional on the agent service not having changed since it was read.
-
-        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
-
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually.
-        :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
-
-
-        
-
     .. py:method:: delete_mcp_service(name: str [, etag: Optional[str]])
 
         Deletes the MCP service identified by its resource name. Optionally supply an ``etag`` to make the
@@ -168,20 +129,6 @@
 
         
 
-    .. py:method:: get_agent_service(name: str) -> AgentService
-
-        Returns the agent service identified by its resource name.
-
-        You must be the owner of the agent service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on
-        it, plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
-
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually.
-
-        :returns: :class:`AgentService`
-        
-
     .. py:method:: get_mcp_service(name: str) -> McpService
 
         Returns the MCP service identified by its resource name.
@@ -223,28 +170,6 @@
           Each ``{...}`` component is capped at 255 characters individually.
 
         :returns: :class:`ModelService`
-        
-
-    .. py:method:: list_agent_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[AgentService]
-
-        Lists the agent services in a Unity Catalog schema. Provide ``parent`` as
-        ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
-        subsequent pages.
-
-        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only agent
-        services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
-        returned.
-
-        :param page_size: int (optional)
-          Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
-          ``page_token`` to retrieve additional pages.
-        :param page_token: str (optional)
-          Opaque pagination token from a previous request.
-        :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
-          component is capped at 255 characters individually.
-
-        :returns: Iterator over :class:`AgentService`
         
 
     .. py:method:: list_mcp_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListMcpServicesRequestView]]) -> Iterator[McpService]
@@ -323,33 +248,6 @@
           unset.
 
         :returns: Iterator over :class:`ModelService`
-        
-
-    .. py:method:: update_agent_service(name: str, agent_service: AgentService, update_mask: FieldMask [, etag: Optional[str]]) -> AgentService
-
-        Updates an agent service. Only the fields named in ``update_mask`` are changed; the resource name and
-        agent service type are immutable. Optionally supply an ``etag`` to make the update conditional on the
-        agent service not having changed since it was read.
-
-        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
-
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
-          ``parent`` + ``agent_service_id``; required and immutable on Update/Get/Delete.
-        :param agent_service: :class:`AgentService`
-          The agent service with the updated field values. ``name`` identifies the resource
-          (``agent-services/{catalog}.{schema}.{agent_service}``); only fields listed in ``update_mask`` are
-          applied.
-        :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the ``agent_service`` field
-          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
-        :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
-
-        :returns: :class:`AgentService`
         
 
     .. py:method:: update_mcp_service(name: str, mcp_service: McpService, update_mask: FieldMask [, etag: Optional[str]]) -> McpService

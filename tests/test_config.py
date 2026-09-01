@@ -603,6 +603,26 @@ def test_config_file_scopes_multiple_sorted(monkeypatch, mocker):
     assert config.get_scopes() == expected
 
 
+def test_group_id_config_precedence(monkeypatch, mocker):
+    """Verifies constructor, environment, and profile group IDs use standard precedence."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    set_home(monkeypatch, "/testdata")
+    monkeypatch.delenv("DATABRICKS_GROUP_ID", raising=False)
+
+    config = Config(profile="scope-empty")
+    assert config.group_id is None
+
+    config = Config(profile="group-role")
+    assert config.group_id == "profile-group"
+
+    monkeypatch.setenv("DATABRICKS_GROUP_ID", "environment-group")
+    config = Config(profile="group-role")
+    assert config.group_id == "environment-group"
+
+    config = Config(profile="group-role", group_id="configured-group")
+    assert config.group_id == "configured-group"
+
+
 def _get_scope_from_request(request_text: str) -> Optional[str]:
     """Extract the scope value from a URL-encoded request body."""
     params = parse_qs(request_text)

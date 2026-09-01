@@ -560,37 +560,8 @@ class BatchCreateMaterializedFeaturesResponse:
 
 
 @dataclass
-class ColumnIdentifier:
-    variant_expr_path: str
-    """String representation of the column name using dot-prefixed path notation. For nested fields,
-    the leaf value is what will be present in materialized tables and expected to match at query
-    time. For example, the leaf node of value.trip_details.location_details.pickup_zip is
-    pickup_zip."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ColumnIdentifier into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.variant_expr_path is not None:
-            body["variant_expr_path"] = self.variant_expr_path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ColumnIdentifier into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.variant_expr_path is not None:
-            body["variant_expr_path"] = self.variant_expr_path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ColumnIdentifier:
-        """Deserializes the ColumnIdentifier from a dictionary."""
-        return cls(variant_expr_path=d.get("variant_expr_path", None))
-
-
-@dataclass
 class ColumnSelection:
-    """A ColumnSelection function, equivalent to the LAST() record of an entity over a lifetime
-    ContinuousWindow"""
+    """A ColumnSelection function, equivalent to the LAST() record of an entity over a lifetime window"""
 
     column: str
     """Column name from source to select as the feature value."""
@@ -704,40 +675,6 @@ class CommentObject:
             last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             user_id=d.get("user_id", None),
         )
-
-
-@dataclass
-class ContinuousWindow:
-    """Deprecated: use RollingWindow with ``delay`` instead."""
-
-    window_duration: str
-    """The duration of the continuous window (must be positive)."""
-
-    offset: Optional[str] = None
-    """The offset of the continuous window (must be non-positive)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ContinuousWindow into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.offset is not None:
-            body["offset"] = self.offset
-        if self.window_duration is not None:
-            body["window_duration"] = self.window_duration
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ContinuousWindow into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.offset is not None:
-            body["offset"] = self.offset
-        if self.window_duration is not None:
-            body["window_duration"] = self.window_duration
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ContinuousWindow:
-        """Deserializes the ContinuousWindow from a dictionary."""
-        return cls(offset=d.get("offset", None), window_duration=d.get("window_duration", None))
 
 
 @dataclass
@@ -1511,17 +1448,9 @@ class DeltaTableSource:
     df.schema.json()). Required if transformation_sql is specified. Example:
     {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}"""
 
-    entity_columns: Optional[List[str]] = None
-    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity columns of
-    the Delta table."""
-
     filter_condition: Optional[str] = None
     """Single WHERE clause to filter delta table before applying transformations. Will be row-wise
     evaluated, so should only include conditionals and projections."""
-
-    timeseries_column: Optional[str] = None
-    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
-    timeseries column of the Delta table."""
 
     transformation_sql: Optional[str] = None
     """A single SQL SELECT expression applied after filter_condition. Should contains all the columns
@@ -1534,14 +1463,10 @@ class DeltaTableSource:
         body = {}
         if self.dataframe_schema is not None:
             body["dataframe_schema"] = self.dataframe_schema
-        if self.entity_columns:
-            body["entity_columns"] = [v for v in self.entity_columns]
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
-        if self.timeseries_column is not None:
-            body["timeseries_column"] = self.timeseries_column
         if self.transformation_sql is not None:
             body["transformation_sql"] = self.transformation_sql
         return body
@@ -1551,14 +1476,10 @@ class DeltaTableSource:
         body = {}
         if self.dataframe_schema is not None:
             body["dataframe_schema"] = self.dataframe_schema
-        if self.entity_columns:
-            body["entity_columns"] = self.entity_columns
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
-        if self.timeseries_column is not None:
-            body["timeseries_column"] = self.timeseries_column
         if self.transformation_sql is not None:
             body["transformation_sql"] = self.transformation_sql
         return body
@@ -1568,10 +1489,8 @@ class DeltaTableSource:
         """Deserializes the DeltaTableSource from a dictionary."""
         return cls(
             dataframe_schema=d.get("dataframe_schema", None),
-            entity_columns=d.get("entity_columns", None),
             filter_condition=d.get("filter_condition", None),
             full_name=d.get("full_name", None),
-            timeseries_column=d.get("timeseries_column", None),
             transformation_sql=d.get("transformation_sql", None),
         )
 
@@ -2089,14 +2008,6 @@ class Feature:
     entities: Optional[List[EntityColumn]] = None
     """The entity columns for the feature, used as aggregation keys and for query-time lookup."""
 
-    filter_condition: Optional[str] = None
-    """Deprecated: Use DeltaTableSource.filter_condition or KafkaSource.filter_condition instead. Kept
-    for backwards compatibility. The filter condition applied to the source data before aggregation."""
-
-    inputs: Optional[List[str]] = None
-    """Deprecated: Use AggregationFunction.inputs instead. Kept for backwards compatibility. The input
-    columns from which the feature is computed."""
-
     lineage_context: Optional[LineageContext] = None
     """Lineage context information for this feature. WARNING: This field is primarily intended for
     internal use by Databricks systems and is automatically populated when features are created
@@ -2109,10 +2020,6 @@ class Feature:
 
     schema_name: Optional[str] = None
     """Name of parent schema relative to its parent catalog."""
-
-    time_window: Optional[TimeWindow] = None
-    """Deprecated: Use Function.aggregation_function.time_window instead. Kept for backwards
-    compatibility. The time window in which the feature is computed."""
 
     timeseries_column: Optional[TimeseriesColumn] = None
     """Column recording time, used for point-in-time joins, backfills, and aggregations."""
@@ -2130,14 +2037,10 @@ class Feature:
             body["description"] = self.description
         if self.entities:
             body["entities"] = [v.as_dict() for v in self.entities]
-        if self.filter_condition is not None:
-            body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.function:
             body["function"] = self.function.as_dict()
-        if self.inputs:
-            body["inputs"] = [v for v in self.inputs]
         if self.lineage_context:
             body["lineage_context"] = self.lineage_context.as_dict()
         if self.name is not None:
@@ -2146,8 +2049,6 @@ class Feature:
             body["schema_name"] = self.schema_name
         if self.source:
             body["source"] = self.source.as_dict()
-        if self.time_window:
-            body["time_window"] = self.time_window.as_dict()
         if self.timeseries_column:
             body["timeseries_column"] = self.timeseries_column.as_dict()
         return body
@@ -2165,14 +2066,10 @@ class Feature:
             body["description"] = self.description
         if self.entities:
             body["entities"] = self.entities
-        if self.filter_condition is not None:
-            body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.function:
             body["function"] = self.function
-        if self.inputs:
-            body["inputs"] = self.inputs
         if self.lineage_context:
             body["lineage_context"] = self.lineage_context
         if self.name is not None:
@@ -2181,8 +2078,6 @@ class Feature:
             body["schema_name"] = self.schema_name
         if self.source:
             body["source"] = self.source
-        if self.time_window:
-            body["time_window"] = self.time_window
         if self.timeseries_column:
             body["timeseries_column"] = self.timeseries_column
         return body
@@ -2196,15 +2091,12 @@ class Feature:
             created_by=d.get("created_by", None),
             description=d.get("description", None),
             entities=_repeated_dict(d, "entities", EntityColumn),
-            filter_condition=d.get("filter_condition", None),
             full_name=d.get("full_name", None),
             function=_from_dict(d, "function", Function),
-            inputs=d.get("inputs", None),
             lineage_context=_from_dict(d, "lineage_context", LineageContext),
             name=d.get("name", None),
             schema_name=d.get("schema_name", None),
             source=_from_dict(d, "source", DataSource),
-            time_window=_from_dict(d, "time_window", TimeWindow),
             timeseries_column=_from_dict(d, "timeseries_column", TimeseriesColumn),
         )
 
@@ -2687,14 +2579,6 @@ class Function:
     custom_udf: Optional[CustomUdf] = None
     """Applies a registered Unity Catalog function row-wise to source columns."""
 
-    extra_parameters: Optional[List[FunctionExtraParameter]] = None
-    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
-    compatibility. Extra parameters for parameterized functions."""
-
-    function_type: Optional[FunctionFunctionType] = None
-    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
-    compatibility. The type of the function."""
-
     def as_dict(self) -> dict:
         """Serializes the Function into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2704,10 +2588,6 @@ class Function:
             body["column_selection"] = self.column_selection.as_dict()
         if self.custom_udf:
             body["custom_udf"] = self.custom_udf.as_dict()
-        if self.extra_parameters:
-            body["extra_parameters"] = [v.as_dict() for v in self.extra_parameters]
-        if self.function_type is not None:
-            body["function_type"] = self.function_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2719,10 +2599,6 @@ class Function:
             body["column_selection"] = self.column_selection
         if self.custom_udf:
             body["custom_udf"] = self.custom_udf
-        if self.extra_parameters:
-            body["extra_parameters"] = self.extra_parameters
-        if self.function_type is not None:
-            body["function_type"] = self.function_type
         return body
 
     @classmethod
@@ -2732,64 +2608,7 @@ class Function:
             aggregation_function=_from_dict(d, "aggregation_function", AggregationFunction),
             column_selection=_from_dict(d, "column_selection", ColumnSelection),
             custom_udf=_from_dict(d, "custom_udf", CustomUdf),
-            extra_parameters=_repeated_dict(d, "extra_parameters", FunctionExtraParameter),
-            function_type=_enum(d, "function_type", FunctionFunctionType),
         )
-
-
-@dataclass
-class FunctionExtraParameter:
-    """Deprecated: Use typed fields on function-specific messages (e.g.
-    ApproxPercentileFunction.percentile) or AggregationFunction.ExtraParameter instead. Kept for
-    backwards compatibility."""
-
-    key: str
-    """The name of the parameter."""
-
-    value: str
-    """The value of the parameter."""
-
-    def as_dict(self) -> dict:
-        """Serializes the FunctionExtraParameter into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the FunctionExtraParameter into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> FunctionExtraParameter:
-        """Deserializes the FunctionExtraParameter from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None))
-
-
-class FunctionFunctionType(Enum):
-    """Deprecated: Use the function-specific messages in AggregationFunction.function_type oneof
-    instead. Kept for backwards compatibility."""
-
-    APPROX_COUNT_DISTINCT = "APPROX_COUNT_DISTINCT"
-    APPROX_PERCENTILE = "APPROX_PERCENTILE"
-    AVG = "AVG"
-    COUNT = "COUNT"
-    FIRST = "FIRST"
-    LAST = "LAST"
-    MAX = "MAX"
-    MIN = "MIN"
-    STDDEV_POP = "STDDEV_POP"
-    STDDEV_SAMP = "STDDEV_SAMP"
-    SUM = "SUM"
-    VAR_POP = "VAR_POP"
-    VAR_SAMP = "VAR_SAMP"
 
 
 @dataclass
@@ -2916,31 +2735,6 @@ class GetLoggedModelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelResponse:
         """Deserializes the GetLoggedModelResponse from a dictionary."""
         return cls(model=_from_dict(d, "model", LoggedModel))
-
-
-@dataclass
-class GetLoggedModelsRequestResponse:
-    models: Optional[List[LoggedModel]] = None
-    """The retrieved logged models."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetLoggedModelsRequestResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.models:
-            body["models"] = [v.as_dict() for v in self.models]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetLoggedModelsRequestResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.models:
-            body["models"] = self.models
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelsRequestResponse:
-        """Deserializes the GetLoggedModelsRequestResponse from a dictionary."""
-        return cls(models=_repeated_dict(d, "models", LoggedModel))
 
 
 @dataclass
@@ -3213,7 +3007,8 @@ class IngestionConfig:
     """A user-provided source for backfilling data. Historical data is used when creating a training
     set from streaming features linked to this Stream. The backfill data stored in this location
     will be copied into the ingestion table for offline querying and training. The schema for this
-    source must match exactly that of the key and payload schemas specified for this Stream."""
+    source must match exactly that of the key and payload schemas specified for this Stream, except
+    that it may omit any columns listed in excluded_columns."""
 
     deduplication_columns: Optional[List[str]] = None
     """Column paths used to identify duplicate rows during ingestion; only one row per distinct
@@ -3584,70 +3379,31 @@ class KafkaSource:
     """Name of the Kafka source, used to identify it. This is used to look up the corresponding
     KafkaConfig object. Can be distinct from topic name."""
 
-    dataframe_schema: Optional[str] = None
-    """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
-    df.schema.json()). Any subsequent functions operate against this dataframe."""
-
-    entity_column_identifiers: Optional[List[ColumnIdentifier]] = None
-    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity column
-    identifiers of the Kafka source."""
-
     filter_condition: Optional[str] = None
     """The filter condition applied to the source data before aggregation."""
-
-    timeseries_column_identifier: Optional[ColumnIdentifier] = None
-    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
-    timeseries column identifier of the Kafka source."""
-
-    transformation_sql: Optional[str] = None
-    """The pipeline runs these SQL statements immediately after conversion into the schema specified on
-    the KafkaConfig object."""
 
     def as_dict(self) -> dict:
         """Serializes the KafkaSource into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.dataframe_schema is not None:
-            body["dataframe_schema"] = self.dataframe_schema
-        if self.entity_column_identifiers:
-            body["entity_column_identifiers"] = [v.as_dict() for v in self.entity_column_identifiers]
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.name is not None:
             body["name"] = self.name
-        if self.timeseries_column_identifier:
-            body["timeseries_column_identifier"] = self.timeseries_column_identifier.as_dict()
-        if self.transformation_sql is not None:
-            body["transformation_sql"] = self.transformation_sql
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the KafkaSource into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.dataframe_schema is not None:
-            body["dataframe_schema"] = self.dataframe_schema
-        if self.entity_column_identifiers:
-            body["entity_column_identifiers"] = self.entity_column_identifiers
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.name is not None:
             body["name"] = self.name
-        if self.timeseries_column_identifier:
-            body["timeseries_column_identifier"] = self.timeseries_column_identifier
-        if self.transformation_sql is not None:
-            body["transformation_sql"] = self.transformation_sql
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> KafkaSource:
         """Deserializes the KafkaSource from a dictionary."""
-        return cls(
-            dataframe_schema=d.get("dataframe_schema", None),
-            entity_column_identifiers=_repeated_dict(d, "entity_column_identifiers", ColumnIdentifier),
-            filter_condition=d.get("filter_condition", None),
-            name=d.get("name", None),
-            timeseries_column_identifier=_from_dict(d, "timeseries_column_identifier", ColumnIdentifier),
-            transformation_sql=d.get("transformation_sql", None),
-        )
+        return cls(filter_condition=d.get("filter_condition", None), name=d.get("name", None))
 
 
 @dataclass
@@ -3754,8 +3510,21 @@ class KinesisStreamConfig:
     (https://docs.databricks.com/aws/en/connect/streaming/kinesis)."""
 
     extra_options: Optional[Dict[str, str]] = None
-    """Optional Kinesis source options, validated against a server-side allowlist at request time. Auth
-    and connection details belong on the parent Stream's ``connection_config``, not here."""
+    """Optional Kinesis source options, validated against a server-side allowlist at request time.
+    Allowed keys:
+    
+    - ``consumerMode``
+    - ``consumerNamePrefix``
+    - ``maxFetchRate``
+    - ``minFetchPeriod``
+    - ``maxFetchDuration``
+    - ``maxRecordsPerFetch``
+    - ``shardsPerTask``
+    - ``fetchBufferSize``
+    - ``shardFetchInterval`` ``consumerMode`` must be ``efo`` or ``polling`` (case-insensitive).
+      ``maxRecordsPerFetch`` applies only during ingestion and does not affect the materialization
+      pipeline. Auth and connection details belong on the parent Stream's ``connection_config``, not
+      here."""
 
     stream_arns: Optional[StreamArnList] = None
     """Kinesis stream ARNs to read from."""
@@ -4753,11 +4522,6 @@ class MaterializedFeature:
     feature_name: str
     """The full name of the feature in Unity Catalog."""
 
-    cron_schedule: Optional[str] = None
-    """The quartz cron expression that defines the schedule of the materialization pipeline. The
-    schedule is evaluated in the UTC timezone. Hidden from GraphQL: superseded by the ``trigger``
-    oneof (cron_schedule_trigger), so not exposed to Catalog Explorer."""
-
     cron_schedule_trigger: Optional[CronSchedule] = None
     """A cron-based schedule trigger for the materialization pipeline."""
 
@@ -4796,8 +4560,6 @@ class MaterializedFeature:
     def as_dict(self) -> dict:
         """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.cron_schedule is not None:
-            body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
             body["cron_schedule_trigger"] = self.cron_schedule_trigger.as_dict()
         if self.feature_name is not None:
@@ -4825,8 +4587,6 @@ class MaterializedFeature:
     def as_shallow_dict(self) -> dict:
         """Serializes the MaterializedFeature into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.cron_schedule is not None:
-            body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
             body["cron_schedule_trigger"] = self.cron_schedule_trigger
         if self.feature_name is not None:
@@ -4855,7 +4615,6 @@ class MaterializedFeature:
     def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeature:
         """Deserializes the MaterializedFeature from a dictionary."""
         return cls(
-            cron_schedule=d.get("cron_schedule", None),
             cron_schedule_trigger=_from_dict(d, "cron_schedule_trigger", CronSchedule),
             feature_name=d.get("feature_name", None),
             is_online=d.get("is_online", None),
@@ -5983,16 +5742,9 @@ class PublishSpec:
     publish_mode: PublishSpecPublishMode
     """The publish mode of the pipeline that syncs the online table with the source table."""
 
-    full_feature_name: Optional[str] = None
-    """Full Unity Catalog name of one of the features materialized in the source table, used to derive
-    the synced online table's entity and timeseries columns. Required for view sources without a UC
-    PrimaryKeyConstraint; ignored when the source already has one."""
-
     def as_dict(self) -> dict:
         """Serializes the PublishSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.full_feature_name is not None:
-            body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
             body["online_store"] = self.online_store
         if self.online_table_name is not None:
@@ -6004,8 +5756,6 @@ class PublishSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the PublishSpec into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.full_feature_name is not None:
-            body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
             body["online_store"] = self.online_store
         if self.online_table_name is not None:
@@ -6018,7 +5768,6 @@ class PublishSpec:
     def from_dict(cls, d: Dict[str, Any]) -> PublishSpec:
         """Deserializes the PublishSpec from a dictionary."""
         return cls(
-            full_feature_name=d.get("full_feature_name", None),
             online_store=d.get("online_store", None),
             online_table_name=d.get("online_table_name", None),
             publish_mode=_enum(d, "publish_mode", PublishSpecPublishMode),
@@ -6584,9 +6333,7 @@ class RestoreRunsResponse:
 
 @dataclass
 class RollingWindow:
-    """A rolling time window with an optional delay. This is the SQL-spec-aligned replacement for
-    ContinuousWindow: ``delay`` is the non-negative counterpart of the legacy non-positive
-    ``ContinuousWindow.offset``."""
+    """A rolling time window with an optional non-negative delay."""
 
     delay: Optional[Duration] = None
     """Non-negative analytic lag that evaluates the window this far in the past. Use this for timing
@@ -7707,6 +7454,20 @@ class Stream:
     description: Optional[str] = None
     """User-provided description."""
 
+    excluded_columns: Optional[List[str]] = None
+    """Column paths (dot notation, e.g. "value.email" for Kafka) to drop. A path may reference a
+    struct, in which case all of its nested fields are dropped (e.g. "value.address" drops
+    "value.address.city" and "value.address.zip"). These columns are not written to the ingestion
+    table and cannot be referenced by any feature. They are dropped from ingestion, backfill, and
+    materialization. For direct schemas, each column must exist in the relevant key or payload
+    schema. With a schema registry, a column can be excluded before it exists. A column cannot also
+    be a deduplication column in the ingestion_config."""
+
+    record_type_filter: Optional[str] = None
+    """Optional SQL predicate to filter which record types from a streaming channel (e.g. a topic for
+    Kafka) belong to this Stream. Events that do not match are not written to the ingestion table
+    and are not used in materialization. Example: "value.event_type = 'transaction'"."""
+
     update_time: Optional[Timestamp] = None
     """Time at which this Stream was last modified."""
 
@@ -7726,10 +7487,14 @@ class Stream:
             body["created_by"] = self.created_by
         if self.description is not None:
             body["description"] = self.description
+        if self.excluded_columns:
+            body["excluded_columns"] = [v for v in self.excluded_columns]
         if self.ingestion_config:
             body["ingestion_config"] = self.ingestion_config.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.record_type_filter is not None:
+            body["record_type_filter"] = self.record_type_filter
         if self.schema_config:
             body["schema_config"] = self.schema_config.as_dict()
         if self.source_config:
@@ -7753,10 +7518,14 @@ class Stream:
             body["created_by"] = self.created_by
         if self.description is not None:
             body["description"] = self.description
+        if self.excluded_columns:
+            body["excluded_columns"] = self.excluded_columns
         if self.ingestion_config:
             body["ingestion_config"] = self.ingestion_config
         if self.name is not None:
             body["name"] = self.name
+        if self.record_type_filter is not None:
+            body["record_type_filter"] = self.record_type_filter
         if self.schema_config:
             body["schema_config"] = self.schema_config
         if self.source_config:
@@ -7776,8 +7545,10 @@ class Stream:
             create_time=_timestamp(d, "create_time"),
             created_by=d.get("created_by", None),
             description=d.get("description", None),
+            excluded_columns=d.get("excluded_columns", None),
             ingestion_config=_from_dict(d, "ingestion_config", IngestionConfig),
             name=d.get("name", None),
+            record_type_filter=d.get("record_type_filter", None),
             schema_config=_from_dict(d, "schema_config", StreamSchemaConfig),
             source_config=_from_dict(d, "source_config", StreamSourceConfig),
             update_time=_timestamp(d, "update_time"),
@@ -8184,8 +7955,6 @@ class TestRegistryWebhookResponse:
 
 @dataclass
 class TimeWindow:
-    continuous: Optional[ContinuousWindow] = None
-
     rolling: Optional[RollingWindow] = None
 
     sawtooth: Optional[SawtoothWindow] = None
@@ -8206,8 +7975,6 @@ class TimeWindow:
     def as_dict(self) -> dict:
         """Serializes the TimeWindow into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.continuous:
-            body["continuous"] = self.continuous.as_dict()
         if self.rolling:
             body["rolling"] = self.rolling.as_dict()
         if self.sawtooth:
@@ -8223,8 +7990,6 @@ class TimeWindow:
     def as_shallow_dict(self) -> dict:
         """Serializes the TimeWindow into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.continuous:
-            body["continuous"] = self.continuous
         if self.rolling:
             body["rolling"] = self.rolling
         if self.sawtooth:
@@ -8241,7 +8006,6 @@ class TimeWindow:
     def from_dict(cls, d: Dict[str, Any]) -> TimeWindow:
         """Deserializes the TimeWindow from a dictionary."""
         return cls(
-            continuous=_from_dict(d, "continuous", ContinuousWindow),
             rolling=_from_dict(d, "rolling", RollingWindow),
             sawtooth=_from_dict(d, "sawtooth", SawtoothWindow),
             sliding=_from_dict(d, "sliding", SlidingWindow),
@@ -9164,29 +8928,6 @@ class ExperimentsAPI:
 
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
-
-    def get_logged_models(self, *, model_ids: Optional[List[str]] = None) -> GetLoggedModelsRequestResponse:
-        """Batch endpoint for getting logged models from a list of model IDs
-
-        :param model_ids: List[str] (optional)
-          The IDs of the logged models to retrieve. Max threshold is 100.
-
-        :returns: :class:`GetLoggedModelsRequestResponse`
-        """
-
-        query = {}
-        if model_ids is not None:
-            query["model_ids"] = [v for v in model_ids]
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", "/api/2.0/mlflow/logged-models:batchGet", query=query, headers=headers)
-        return GetLoggedModelsRequestResponse.from_dict(res)
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.

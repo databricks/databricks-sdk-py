@@ -5,7 +5,9 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from databricks.sdk import WorkspaceClient
+from databricks.sdk import AccountClient, WorkspaceClient
+
+from .conftest import noop_credentials
 
 
 def test_autospec_fails_on_unknown_service():
@@ -35,6 +37,18 @@ def test_workspace_client_init_does_not_build_dbutils(config, mocker):
     WorkspaceClient(config=config)
 
     spy.assert_not_called()
+
+
+@pytest.mark.parametrize("client_type", [WorkspaceClient, AccountClient])
+def test_client_forwards_group_id_to_config(client_type):
+    """Verifies public clients preserve group_id in their underlying configuration."""
+    client = client_type(
+        host="https://example.cloud.databricks.com",
+        group_id="test-group",
+        credentials_strategy=noop_credentials,
+    )
+
+    assert client.config.group_id == "test-group"
 
 
 def test_dbutils_first_access_builds_exactly_once(config, mocker):

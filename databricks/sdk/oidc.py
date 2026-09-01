@@ -163,6 +163,7 @@ class DatabricksOidcTokenSource(oauth.Refreshable):
         audience: Optional[str] = None,
         disable_async: bool = False,
         scopes: Optional[str] = None,
+        group_id: Optional[str] = None,
     ):
         self._host = host
         self._id_token_source = id_token_source
@@ -171,6 +172,7 @@ class DatabricksOidcTokenSource(oauth.Refreshable):
         self._account_id = account_id
         self._audience = audience
         self._scopes = scopes
+        self._group_id = group_id
         # Refreshable.__init__ stores disable_async as self._disable_async, which
         # _exchange_id_token reads — no need to duplicate it here.
         super().__init__(disable_async=disable_async)
@@ -206,15 +208,19 @@ class DatabricksOidcTokenSource(oauth.Refreshable):
     # This function is used to create the OAuth client.
     # It exists to make it easier to test.
     def _exchange_id_token(self, id_token: IdToken) -> oauth.Token:
+        endpoint_params = {
+            "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+            "subject_token": id_token.jwt,
+            "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+        }
+        if self._group_id:
+            endpoint_params["assume_group"] = self._group_id
+
         client = oauth.ClientCredentials(
             client_id=self._client_id,
             client_secret="",  # there is no (rotatable) secrets in the OIDC flow
             token_url=self._token_endpoint,
-            endpoint_params={
-                "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
-                "subject_token": id_token.jwt,
-                "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
-            },
+            endpoint_params=endpoint_params,
             scopes=self._scopes,
             use_params=True,
             disable_async=self._disable_async,

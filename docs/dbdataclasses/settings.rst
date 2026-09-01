@@ -125,9 +125,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    Compliance standard for SHIELD customers. See README.md for how instructions of how to add new standards.
 
-   .. py:attribute:: ARC_AMPE
-      :value: "ARC_AMPE"
-
    .. py:attribute:: CANADA_PROTECTED_B
       :value: "CANADA_PROTECTED_B"
 
@@ -224,16 +221,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: CustomerFacingIngressNetworkPolicyApiScopeConstraint
-
-   Deprecated: Use ApiScopeQualifier instead.
-
-   .. py:attribute:: ALL
-      :value: "ALL"
-
-   .. py:attribute:: READ
-      :value: "READ"
-
 .. py:class:: CustomerFacingIngressNetworkPolicyApiScopeQualifier
 
    Qualifies the breadth of API access permitted by an ingress network policy rule. API_SCOPE_QUALIFIER_READ narrows matching to read-only variants of the listed scopes; API_SCOPE_QUALIFIER_ALL matches any scope. When unset, scopes match exactly as listed.
@@ -307,10 +294,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination
-   :members:
-   :undoc-members:
-
-.. autoclass:: CustomerFacingIngressNetworkPolicyManagedIpRange
    :members:
    :undoc-members:
 
@@ -855,10 +838,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: REJECTED
       :value: "REJECTED"
-
-.. autoclass:: NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule
-   :members:
-   :undoc-members:
 
 .. autoclass:: NetworkConnectivityConfiguration
    :members:

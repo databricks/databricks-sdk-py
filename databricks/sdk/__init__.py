@@ -225,7 +225,6 @@ from databricks.sdk.service.catalog import TemporaryVolumeCredentialsAPI
 from databricks.sdk.service.settings import TokenManagementAPI
 from databricks.sdk.service.settings import TokensAPI
 from databricks.sdk.service.billing import UsageDashboardsAPI
-from databricks.sdk.service.billing import UsagePolicyAPI
 from databricks.sdk.service.iam import UsersV2API
 from databricks.sdk.service.iam import AccountUsersV2API
 from databricks.sdk.service.vectorsearch import VectorSearchEndpointsAPI
@@ -294,6 +293,7 @@ class WorkspaceClient:
         token: Optional[str] = None,
         profile: Optional[str] = None,
         config_file: Optional[str] = None,
+        group_id: Optional[str] = None,
         azure_workspace_resource_id: Optional[str] = None,
         azure_client_secret: Optional[str] = None,
         azure_client_id: Optional[str] = None,
@@ -327,6 +327,7 @@ class WorkspaceClient:
                 token=token,
                 profile=profile,
                 config_file=config_file,
+                group_id=group_id,
                 azure_workspace_resource_id=azure_workspace_resource_id,
                 azure_client_secret=azure_client_secret,
                 azure_client_id=azure_client_id,
@@ -1217,6 +1218,7 @@ class AccountClient:
         token: Optional[str] = None,
         profile: Optional[str] = None,
         config_file: Optional[str] = None,
+        group_id: Optional[str] = None,
         azure_workspace_resource_id: Optional[str] = None,
         azure_client_secret: Optional[str] = None,
         azure_client_id: Optional[str] = None,
@@ -1247,6 +1249,7 @@ class AccountClient:
                 token=token,
                 profile=profile,
                 config_file=config_file,
+                group_id=group_id,
                 azure_workspace_resource_id=azure_workspace_resource_id,
                 azure_client_secret=azure_client_secret,
                 azure_client_id=azure_client_id,
@@ -1297,7 +1300,6 @@ class AccountClient:
         self._storage = pkg_provisioning.StorageAPI(self._api_client)
         self._storage_credentials = pkg_catalog.AccountStorageCredentialsAPI(self._api_client)
         self._usage_dashboards = pkg_billing.UsageDashboardsAPI(self._api_client)
-        self._usage_policy = pkg_billing.UsagePolicyAPI(self._api_client)
         self._users_v2 = pkg_iam.AccountUsersV2API(self._api_client)
         self._vpc_endpoints = pkg_provisioning.VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = pkg_iam.WorkspaceAssignmentAPI(self._api_client)
@@ -1464,11 +1466,6 @@ class AccountClient:
     def usage_dashboards(self) -> pkg_billing.UsageDashboardsAPI:
         """These APIs manage usage dashboards for this account."""
         return self._usage_dashboards
-
-    @property
-    def usage_policy(self) -> pkg_billing.UsagePolicyAPI:
-        """A service serves REST API about Usage policies."""
-        return self._usage_policy
 
     @property
     def users_v2(self) -> pkg_iam.AccountUsersV2API:
