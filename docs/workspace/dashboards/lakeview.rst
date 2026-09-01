@@ -11,6 +11,8 @@
 
         Create a draft dashboard.
 
+        Requires the Databricks SQL access entitlement.
+
         :param dashboard: :class:`Dashboard`
         :param dataset_catalog: str (optional)
           Sets the default catalog for all datasets in this dashboard. Does not impact table references that
@@ -86,6 +88,8 @@
 
         Get a draft dashboard.
 
+        Requires the Databricks SQL access entitlement.
+
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -95,6 +99,12 @@
     .. py:method:: get_published(dashboard_id: str) -> PublishedDashboard
 
         Get the current published dashboard.
+
+        The caller must be a workspace user with one of the following entitlements: Workspace access,
+        Databricks SQL access, or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.
@@ -131,6 +141,8 @@
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str], show_trashed: Optional[bool], view: Optional[DashboardView]]) -> Iterator[Dashboard]
 
         List dashboards.
+
+        Requires the Databricks SQL access entitlement.
 
         :param page_size: int (optional)
           The number of dashboards to return per page.
@@ -199,6 +211,8 @@
 
         Publish the current draft dashboard.
 
+        Requires the Databricks SQL access entitlement.
+
         :param dashboard_id: str
           UUID identifying the dashboard to be published.
         :param embed_credentials: bool (optional)
@@ -214,6 +228,8 @@
 
         Revert a dashboard's definition in draft mode to the last published version.
 
+        Requires the Databricks SQL access entitlement.
+
         :param dashboard_id: str
           UUID identifying the dashboard.
         :param etag: str (optional)
@@ -227,6 +243,8 @@
 
         Trash a dashboard.
 
+        Requires the Databricks SQL access entitlement.
+
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -237,6 +255,8 @@
 
         Unpublish the dashboard.
 
+        Requires the Databricks SQL access entitlement.
+
         :param dashboard_id: str
           UUID identifying the published dashboard.
 
@@ -246,6 +266,8 @@
     .. py:method:: update(dashboard_id: str, dashboard: Dashboard [, dataset_catalog: Optional[str], dataset_schema: Optional[str]]) -> Dashboard
 
         Update a draft dashboard.
+
+        Requires the Databricks SQL access entitlement.
 
         :param dashboard_id: str
           UUID identifying the dashboard.

@@ -239,8 +239,7 @@
           private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys can
           be specified.
         :param total_initial_remote_disk_size: int (optional)
-          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-          supported for GCP HYPERDISK_BALANCED disks.
+          If set, what the total initial volume size (in GB) of the remote disks should be. Supported for GCP.
         :param use_ml_runtime: bool (optional)
           This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
@@ -480,8 +479,7 @@
           private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys can
           be specified.
         :param total_initial_remote_disk_size: int (optional)
-          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-          supported for GCP HYPERDISK_BALANCED disks.
+          If set, what the total initial volume size (in GB) of the remote disks should be. Supported for GCP.
         :param use_ml_runtime: bool (optional)
           This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
@@ -628,25 +626,6 @@
           The cluster about which to retrieve information.
 
         :returns: :class:`ClusterDetails`
-        
-
-    .. py:method:: get_diagnostic(name: str) -> Diagnostic
-
-        Returns the most recent cluster diagnostics result for a cluster.
-
-        Cluster diagnostics are a set of environment checks -- for example, network reachability to the
-        control plane, storage, DNS, and the SCC tunnel -- that verify the cluster's environment is set up
-        correctly for the cluster to provision. The checks run automatically while the cluster is starting,
-        once per cluster start, and their results are stored.
-
-        This method only reads the latest stored result; it does NOT run the checks. The response reports an
-        overall status plus a per-check breakdown (check status, failure reason, remediation, and
-        description). If diagnostics have not run for the cluster, the overall status is NOT_RUN.
-
-        :param name: str
-          The resource name of the cluster whose diagnostics to retrieve. Format: clusters/{cluster_id}
-
-        :returns: :class:`Diagnostic`
         
 
     .. py:method:: get_permission_levels(cluster_id: str) -> GetClusterPermissionLevelsResponse

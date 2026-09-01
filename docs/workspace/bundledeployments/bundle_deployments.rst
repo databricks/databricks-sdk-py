@@ -34,13 +34,14 @@
         Creates a new deployment in the workspace.
 
         :param deployment: :class:`Deployment`
-          The deployment to create. The caller must set ``initial_parent_path``. Other fields are ignored on
-          input and populated by the service.
+          The deployment to create. ``initial_parent_path`` is required. ``display_name``, ``target_name``,
+          ``deployment_mode``, and ``workspace_info`` may be set; every other field is assigned by the service
+          and ignored on input.
 
         :returns: :class:`Deployment`
         
 
-    .. py:method:: create_version(parent: str, version: Version, version_id: str [, operations: Optional[List[StagedOperation]]]) -> Version
+    .. py:method:: create_version(parent: str, version: Version, version_id: str) -> Version
 
         Creates a new version under a deployment.
 
@@ -66,11 +67,6 @@
           or equal to 1. Must be numerically greater than the deployment's most recent version (see
           ``version.previous_version_id``); it does not need to start at 1 or increase by exactly 1. If the
           value is not numerically greater, the server returns ``INVALID_PARAMETER_VALUE``.
-        :param operations: List[:class:`StagedOperation`] (optional)
-          The full set of resource operations to record for this version. The server creates one operation per
-          entry in ``OPERATION_STATUS_PENDING``, in the same transaction as the version; each outcome is
-          recorded later via UpdateOperation. May be empty for a version that changes no resources. Each
-          ``resource_key`` must be unique within the request.
 
         :returns: :class:`Version`
         
@@ -140,34 +136,10 @@
         :returns: :class:`HeartbeatResponse`
         
 
-    .. py:method:: list_deployments( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Deployment]
+    .. py:method:: list_deployments( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Deployment]
 
         Lists deployments in the workspace.
 
-        :param filter: str (optional)
-          A filter expression restricting which deployments are returned, in the style of AIP-160
-          (https://google.aip.dev/160). The expression is a conjunction of one or more ``field operator
-          value`` terms joined by ``AND`` (case-insensitive); a deployment is returned only when it matches
-          every term. Whitespace around terms is ignored, and a value containing spaces must be wrapped in
-          double quotes. An unset or empty filter returns all deployments. Filtering applies only to live
-          deployments; deleted deployments are never returned regardless of the filter.
-
-          Supported terms:
-
-          - ``status = <STATUS>``: exact match on the deployment status. The value is a ``DeploymentStatus``
-            enum value, with or without the ``DEPLOYMENT_STATUS_`` prefix and case-insensitive (e.g. ``status
-            = ACTIVE``).
-          - ``deployment_mode = <MODE>``: exact match on the deployment mode. The value is a
-            ``DeploymentMode`` enum value, with or without the ``DEPLOYMENT_MODE_`` prefix and
-            case-insensitive (e.g. ``deployment_mode = DEVELOPMENT``).
-          - ``created_by = "<email>"``: exact match on the creator's email or principal name. To list only the
-            deployments you created, pass your own identity (e.g. ``created_by = "me@example.com"``). This
-            term matches the same value the deployment reports in ``created_by``, so a deployment whose
-            creator cannot currently be resolved reports an empty ``created_by`` and does not match this term.
-          - ``display_name = "<name>"``: exact match on the display name.
-          - ``display_name : "<substring>"``: case-insensitive substring match on the display name.
-
-          For example: ``status = ACTIVE AND display_name : "etl"``.
         :param page_size: int (optional)
           The maximum number of deployments to return. The service may return fewer than this value. If
           unspecified, at most 20 deployments will be returned. The maximum value is 1000; values above 1000
@@ -228,6 +200,22 @@
           subsequent page.
 
         :returns: Iterator over :class:`Version`
+        
+
+    .. py:method:: update_deployment(name: str, deployment: Deployment, update_mask: FieldMask) -> Deployment
+
+        Updates a deployment.
+
+        :param name: str
+          Resource name of the deployment. Format: deployments/{deployment_id}
+        :param deployment: :class:`Deployment`
+          The deployment to update. Its ``name`` selects the deployment; the fields named in ``update_mask``
+          carry the new values. All other fields are ignored.
+        :param update_mask: FieldMask
+          The fields to update; supported paths are ``display_name``, ``deployment_mode``, ``target_name``,
+          and ``workspace_info``. An empty mask or any other path returns INVALID_PARAMETER_VALUE.
+
+        :returns: :class:`Deployment`
         
 
     .. py:method:: update_operation(name: str, operation: Operation, update_mask: FieldMask) -> Operation

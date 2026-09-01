@@ -89,10 +89,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ColumnIdentifier
-   :members:
-   :undoc-members:
-
 .. autoclass:: ColumnSelection
    :members:
    :undoc-members:
@@ -121,10 +117,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "REJECT_TRANSITION_REQUEST"
 
 .. autoclass:: CommentObject
-   :members:
-   :undoc-members:
-
-.. autoclass:: ContinuousWindow
    :members:
    :undoc-members:
 
@@ -386,53 +378,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: FunctionExtraParameter
-   :members:
-   :undoc-members:
-
-.. py:class:: FunctionFunctionType
-
-   Deprecated: Use the function-specific messages in AggregationFunction.function_type oneof instead. Kept for backwards compatibility.
-
-   .. py:attribute:: APPROX_COUNT_DISTINCT
-      :value: "APPROX_COUNT_DISTINCT"
-
-   .. py:attribute:: APPROX_PERCENTILE
-      :value: "APPROX_PERCENTILE"
-
-   .. py:attribute:: AVG
-      :value: "AVG"
-
-   .. py:attribute:: COUNT
-      :value: "COUNT"
-
-   .. py:attribute:: FIRST
-      :value: "FIRST"
-
-   .. py:attribute:: LAST
-      :value: "LAST"
-
-   .. py:attribute:: MAX
-      :value: "MAX"
-
-   .. py:attribute:: MIN
-      :value: "MIN"
-
-   .. py:attribute:: STDDEV_POP
-      :value: "STDDEV_POP"
-
-   .. py:attribute:: STDDEV_SAMP
-      :value: "STDDEV_SAMP"
-
-   .. py:attribute:: SUM
-      :value: "SUM"
-
-   .. py:attribute:: VAR_POP
-      :value: "VAR_POP"
-
-   .. py:attribute:: VAR_SAMP
-      :value: "VAR_SAMP"
-
 .. autoclass:: GetExperimentByNameResponse
    :members:
    :undoc-members:
@@ -450,10 +395,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GetLoggedModelResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GetLoggedModelsRequestResponse
    :members:
    :undoc-members:
 

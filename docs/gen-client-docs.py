@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Optional, Any, get_args
 
 from databricks.sdk import AccountClient, WorkspaceClient
-from databricks.sdk.core import credentials_strategy
+from databricks.sdk.core import Config, credentials_strategy
 from packages import Package, PACKAGES
 
 __dir__ = os.path.dirname(__file__)
@@ -238,6 +238,10 @@ class Generator:
         tag_by_name = {t['name']: t for t in spec['tags']}
 
         for tag in spec['tags']:
+            package = pkgs.get(tag['x-databricks-package'])
+            # Tags excluded from the filtered SDK have no generated docs.
+            if package is None:
+                continue
             is_account=tag.get('x-databricks-is-accounts')
             # Unique identifier for the tag. Note that the service name may not be unique.
             key = 'a' if is_account else 'w'
@@ -251,11 +255,10 @@ class Generator:
                 key = f"{key}.{clean_parent_service}"
 
             key = f"{key}.{tag['x-databricks-service'].replace("_", "")}".lower()
-            package = tag['x-databricks-package']
             t = Tag(name=tag['name'],
                     service=tag['x-databricks-service'],
                     is_account=tag.get('x-databricks-is-accounts', False),
-                    package=pkgs[package])
+                    package=package)
             mapping[key] = t
         return mapping
 
@@ -462,10 +465,24 @@ if __name__ == '__main__':
 
     gen = Generator()
 
-    w = WorkspaceClient(credentials_provider=noop_credentials)
+    w = WorkspaceClient(
+        config=Config(
+            host='http://localhost',
+            credentials_strategy=noop_credentials,
+            retry_timeout_seconds=1,
+            http_timeout_seconds=1,
+        )
+    )
     gen.load_client(w, 'workspace', 'Workspace APIs', 'These APIs are available from WorkspaceClient')
 
-    a = AccountClient(credentials_provider=noop_credentials)
+    a = AccountClient(
+        config=Config(
+            host='http://localhost',
+            credentials_strategy=noop_credentials,
+            retry_timeout_seconds=1,
+            http_timeout_seconds=1,
+        )
+    )
     gen.load_client(a, 'account', 'Account APIs', 'These APIs are available from AccountClient')
 
     gen.write_dataclass_docs()
