@@ -86,32 +86,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ComputeInstance
-   :members:
-   :undoc-members:
-
-.. py:class:: ComputeInstanceComputeState
-
-   .. py:attribute:: ACTIVE
-      :value: "ACTIVE"
-
-   .. py:attribute:: IDLE
-      :value: "IDLE"
-
-   .. py:attribute:: INIT
-      :value: "INIT"
-
-.. py:class:: ComputeInstanceComputeType
-
-   .. py:attribute:: HOT_STANDBY
-      :value: "HOT_STANDBY"
-
-   .. py:attribute:: READ_ONLY
-      :value: "READ_ONLY"
-
-   .. py:attribute:: READ_WRITE
-      :value: "READ_WRITE"
-
 .. autoclass:: DailySchedule
    :members:
    :undoc-members:
@@ -181,15 +155,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WEDNESDAY
       :value: "WEDNESDAY"
 
-.. autoclass:: DeleteForwardEtlConfigurationResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeltaTableSyncInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: DisableForwardEtlResponse
    :members:
    :undoc-members:
 
@@ -498,43 +464,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKSPACE_TEMPORARILY_UNAVAILABLE
       :value: "WORKSPACE_TEMPORARILY_UNAVAILABLE"
 
-.. autoclass:: ForwardEtlConfig
-   :members:
-   :undoc-members:
-
-.. autoclass:: ForwardEtlDatabase
-   :members:
-   :undoc-members:
-
-.. autoclass:: ForwardEtlMetadata
-   :members:
-   :undoc-members:
-
-.. autoclass:: ForwardEtlSchema
-   :members:
-   :undoc-members:
-
-.. autoclass:: ForwardEtlStatus
-   :members:
-   :undoc-members:
-
-.. autoclass:: ForwardEtlTableMapping
-   :members:
-   :undoc-members:
-
 .. autoclass:: InitialBranchSpec
    :members:
    :undoc-members:
 
-.. autoclass:: InitialDatabaseSpec
-   :members:
-   :undoc-members:
-
 .. autoclass:: InitialEndpointSpec
-   :members:
-   :undoc-members:
-
-.. autoclass:: InitialRoleSpec
    :members:
    :undoc-members:
 
@@ -550,10 +484,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ListComputeInstancesResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: ListDatabasesResponse
    :members:
    :undoc-members:
@@ -563,14 +493,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListProjectsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ListRecoveryBranchPreviewsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ListReplicationGroupPreviewsResponse
    :members:
    :undoc-members:
 
@@ -671,80 +593,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PROVISIONING_PHASE_MAIN
       :value: "PROVISIONING_PHASE_MAIN"
 
-.. autoclass:: RecoveryBranchPreview
-   :members:
-   :undoc-members:
-
-.. autoclass:: RecoveryBranchPreviewStatus
-   :members:
-   :undoc-members:
-
-.. py:class:: RecoveryBranchPreviewStatusState
-
-   .. py:attribute:: PENDING_HOME_SYNC
-      :value: "PENDING_HOME_SYNC"
-
-   .. py:attribute:: READY_FOR_INSPECTION
-      :value: "READY_FOR_INSPECTION"
-
-   .. py:attribute:: RECONCILED
-      :value: "RECONCILED"
-
-.. autoclass:: ReplicationGroupPreview
-   :members:
-   :undoc-members:
-
-.. autoclass:: ReplicationGroupPreviewOperationMetadata
-   :members:
-   :undoc-members:
-
-.. py:class:: ReplicationGroupPreviewState
-
-   .. py:attribute:: REPLICATION_GROUP_PREVIEW_STATE_DEGRADED
-      :value: "REPLICATION_GROUP_PREVIEW_STATE_DEGRADED"
-
-   .. py:attribute:: REPLICATION_GROUP_PREVIEW_STATE_DELETING
-      :value: "REPLICATION_GROUP_PREVIEW_STATE_DELETING"
-
-   .. py:attribute:: REPLICATION_GROUP_PREVIEW_STATE_FAILING_OVER
-      :value: "REPLICATION_GROUP_PREVIEW_STATE_FAILING_OVER"
-
-   .. py:attribute:: REPLICATION_GROUP_PREVIEW_STATE_PROVISIONING
-      :value: "REPLICATION_GROUP_PREVIEW_STATE_PROVISIONING"
-
-   .. py:attribute:: REPLICATION_GROUP_PREVIEW_STATE_READY
-      :value: "REPLICATION_GROUP_PREVIEW_STATE_READY"
-
-   .. py:attribute:: REPLICATION_GROUP_PREVIEW_STATE_SWITCHING_OVER
-      :value: "REPLICATION_GROUP_PREVIEW_STATE_SWITCHING_OVER"
-
-.. autoclass:: ReplicationMetricsPreview
-   :members:
-   :undoc-members:
-
-.. py:class:: ReplicationModePreview
-
-   How changes are propagated from the primary workspace to its secondaries in a replication group: on a fixed schedule or continuously as they occur.
-
-   .. py:attribute:: REPLICATION_MODE_PREVIEW_LIVE
-      :value: "REPLICATION_MODE_PREVIEW_LIVE"
-
-   .. py:attribute:: REPLICATION_MODE_PREVIEW_PERIODIC
-      :value: "REPLICATION_MODE_PREVIEW_PERIODIC"
-
-.. py:class:: ReplicationRolePreview
-
-   The replication role of the project in its current workspace. Populated only when cross-workspace replication is configured for the project.
-
-   .. py:attribute:: REPLICATION_ROLE_PREVIEW_DEMOTING
-      :value: "REPLICATION_ROLE_PREVIEW_DEMOTING"
-
-   .. py:attribute:: REPLICATION_ROLE_PREVIEW_PRIMARY
-      :value: "REPLICATION_ROLE_PREVIEW_PRIMARY"
-
-   .. py:attribute:: REPLICATION_ROLE_PREVIEW_SECONDARY
-      :value: "REPLICATION_ROLE_PREVIEW_SECONDARY"
-
 .. autoclass:: RequestedClaims
    :members:
    :undoc-members:
@@ -827,6 +675,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SnapshotScheduleOperationMetadata
+   :members:
+   :undoc-members:
+
 .. autoclass:: SnapshotSpec
    :members:
    :undoc-members:
@@ -900,9 +752,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    How the column's value is populated and kept up to date.
 
-   .. py:attribute:: DEFAULT_VALUE
-      :value: "DEFAULT_VALUE"
-
    .. py:attribute:: STORED_GENERATED
       :value: "STORED_GENERATED"
 
@@ -918,17 +767,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PG_SPECIFIC_TYPE_VECTOR
       :value: "PG_SPECIFIC_TYPE_VECTOR"
-
-.. autoclass:: SyncedTableSyncedTableSpecSecondaryIndex
-   :members:
-   :undoc-members:
-
-.. py:class:: SyncedTableSyncedTableSpecSecondaryIndexCreationPoint
-
-   Controls when the index is created relative to the initial data load.
-
-   .. py:attribute:: CREATION_POINT_AFTER_DATA_LOAD
-      :value: "CREATION_POINT_AFTER_DATA_LOAD"
 
 .. py:class:: SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy
 
@@ -948,10 +786,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SyncedTableSyncedTableStatus
-   :members:
-   :undoc-members:
-
-.. autoclass:: Table
    :members:
    :undoc-members:
 

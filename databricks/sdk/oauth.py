@@ -762,6 +762,7 @@ class OAuthClient:
         client_id: str,
         scopes: List[str] = None,
         client_secret: str = None,
+        group_id: str = None,
     ):
         if not scopes:
             # Default for direct OAuthClient users (e.g., via from_host()).
@@ -775,6 +776,7 @@ class OAuthClient:
         self._client_secret = client_secret
         self._oidc_endpoints = oidc_endpoints
         self._scopes = scopes
+        self._group_id = group_id
 
     @staticmethod
     def from_host(
@@ -815,6 +817,8 @@ class OAuthClient:
             "code_challenge": challenge,
             "code_challenge_method": "S256",
         }
+        if self._group_id:
+            params["assume_group"] = self._group_id
         auth_url = f"{self._oidc_endpoints.authorization_endpoint}?{urllib.parse.urlencode(params)}"
         return Consent(
             state,
@@ -896,6 +900,7 @@ class PATOAuthTokenExchange(Refreshable):
     host: str
     scopes: str
     authorization_details: str = None
+    group_id: str = None
     disable_async: bool = True
 
     def __post_init__(self):
@@ -912,6 +917,8 @@ class PATOAuthTokenExchange(Refreshable):
         }
         if self.authorization_details:
             params["authorization_details"] = self.authorization_details
+        if self.group_id:
+            params["assume_group"] = self.group_id
 
         resp = requests.post(token_exchange_url, params)
         if not resp.ok:
@@ -947,6 +954,7 @@ class TokenCache:
         client_secret: Optional[str] = None,
         scopes: Optional[List[str]] = None,
         profile: Optional[str] = None,
+        group_id: Optional[str] = None,
     ) -> None:
         self._host = host
         self._client_id = client_id
@@ -955,6 +963,7 @@ class TokenCache:
         self._client_secret = client_secret
         self._scopes = scopes or []
         self._profile = profile
+        self._group_id = group_id
 
     @property
     def filename(self) -> str:
@@ -966,6 +975,8 @@ class TokenCache:
             "scopes": self._scopes,
             "profile": self._profile or "",
         }
+        if self._group_id:
+            key["group_id"] = self._group_id
         h = hashlib.sha256(json.dumps(key, sort_keys=True).encode("utf-8"))
         return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, h.hexdigest() + ".json"))
 

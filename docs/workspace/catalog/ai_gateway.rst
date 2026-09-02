@@ -9,27 +9,6 @@
     foundation models and external LLMs), model provider services (governed connections to external model
     providers), and MCP services (governed Model Context Protocol servers).
 
-    .. py:method:: create_agent_service(agent_service: AgentService, parent: str, agent_service_id: str) -> AgentService
-
-        Creates an agent service in a Unity Catalog schema. An agent service is a governed securable that
-        registers an AI agent and exposes it for discovery, access control, and auditing. The caller supplies
-        the leaf name in ``agent_service_id`` and the agent service type, which is immutable after creation.
-
-        You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
-
-        :param agent_service: :class:`AgentService`
-          The agent service to create. The server populates ``name`` from ``parent`` + ``agent_service_id``;
-          clients should leave it unset.
-        :param parent: str
-          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
-          capped at 255 characters individually.
-        :param agent_service_id: str
-          Name for the agent service, e.g. "support_agent".
-
-        :returns: :class:`AgentService`
-        
-
     .. py:method:: create_mcp_service(mcp_service: McpService, parent: str, mcp_service_id: str) -> McpService
 
         Creates an MCP service in a Unity Catalog schema. An MCP (Model Context Protocol) service is a
@@ -42,7 +21,7 @@
 
         :param mcp_service: :class:`McpService`
           The MCP service to create. The server populates ``name`` from ``parent`` + ``mcp_service_id``;
-          clients should leave it unset.
+          clients should leave it unset. ``source_connection`` is required.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -95,24 +74,6 @@
         :returns: :class:`ModelService`
         
 
-    .. py:method:: delete_agent_service(name: str [, etag: Optional[str]])
-
-        Deletes the agent service identified by its resource name. Optionally supply an ``etag`` to make the
-        delete conditional on the agent service not having changed since it was read.
-
-        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
-
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually.
-        :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
-
-
-        
-
     .. py:method:: delete_mcp_service(name: str [, etag: Optional[str]])
 
         Deletes the MCP service identified by its resource name. Optionally supply an ``etag`` to make the
@@ -125,8 +86,9 @@
           Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
           ``{...}`` component is capped at 255 characters individually.
         :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
+          Optimistic concurrency token from the most recent read. When set, the delete succeeds only if the
+          resource has not changed. Leave unset for an unconditional delete. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
 
         
@@ -144,8 +106,9 @@
           ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
+          Optimistic concurrency token from the most recent read. When set, the delete succeeds only if the
+          resource has not changed. Leave unset for an unconditional delete. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
 
         
@@ -162,24 +125,11 @@
           Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
           Each ``{...}`` component is capped at 255 characters individually.
         :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
+          Optimistic concurrency token from the most recent read. When set, the delete succeeds only if the
+          resource has not changed. Leave unset for an unconditional delete. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
 
-        
-
-    .. py:method:: get_agent_service(name: str) -> AgentService
-
-        Returns the agent service identified by its resource name.
-
-        You must be the owner of the agent service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on
-        it, plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
-
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually.
-
-        :returns: :class:`AgentService`
         
 
     .. py:method:: get_mcp_service(name: str) -> McpService
@@ -225,28 +175,6 @@
         :returns: :class:`ModelService`
         
 
-    .. py:method:: list_agent_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[AgentService]
-
-        Lists the agent services in a Unity Catalog schema. Provide ``parent`` as
-        ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
-        subsequent pages.
-
-        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only agent
-        services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
-        returned.
-
-        :param page_size: int (optional)
-          Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
-          ``page_token`` to retrieve additional pages.
-        :param page_token: str (optional)
-          Opaque pagination token from a previous request.
-        :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
-          component is capped at 255 characters individually.
-
-        :returns: Iterator over :class:`AgentService`
-        
-
     .. py:method:: list_mcp_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListMcpServicesRequestView]]) -> Iterator[McpService]
 
         Lists the MCP services in a Unity Catalog schema. Provide ``parent`` as
@@ -263,12 +191,12 @@
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListMcpServicesRequestView` (optional)
-          View selector controlling which fields are populated per row. ``FULL`` returns the full
-          representation of the service; ``BASIC`` returns a more compact version. Defaults to ``BASIC`` when
-          unset.
+          Fields to return for each service. ``FULL`` includes source-connection details and rate-limit
+          principal names. ``BASIC`` omits the source connection and omits principal names from rate limits.
+          Defaults to ``BASIC`` when unset or ``VIEW_UNSPECIFIED``.
 
         :returns: Iterator over :class:`McpService`
         
@@ -289,12 +217,12 @@
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelProviderServicesRequestView` (optional)
-          View selector controlling which fields are populated per row. ``FULL`` returns the full
-          representation of the service; ``BASIC`` returns a more compact version. Defaults to ``BASIC`` when
-          unset.
+          Fields to return for each service. ``FULL`` includes inference-table details and rate-limit
+          principal names. ``BASIC`` omits inference-table details and omits principal names from rate limits.
+          Defaults to ``BASIC`` when unset or ``VIEW_UNSPECIFIED``.
 
         :returns: Iterator over :class:`ModelProviderService`
         
@@ -315,41 +243,14 @@
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
         :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelServicesRequestView` (optional)
-          View selector controlling which fields are populated per row. ``FULL`` returns the full
-          representation of the service; ``BASIC`` returns a more compact version. Defaults to ``BASIC`` when
-          unset.
+          Fields to return for each service. ``FULL`` includes destinations, inference-table details, and
+          rate-limit principal names. ``BASIC`` omits destinations and inference-table details and omits
+          principal names from rate limits. Defaults to ``BASIC`` when unset or ``VIEW_UNSPECIFIED``.
 
         :returns: Iterator over :class:`ModelService`
-        
-
-    .. py:method:: update_agent_service(name: str, agent_service: AgentService, update_mask: FieldMask [, etag: Optional[str]]) -> AgentService
-
-        Updates an agent service. Only the fields named in ``update_mask`` are changed; the resource name and
-        agent service type are immutable. Optionally supply an ``etag`` to make the update conditional on the
-        agent service not having changed since it was read.
-
-        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
-
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
-          ``parent`` + ``agent_service_id``; required and immutable on Update/Get/Delete.
-        :param agent_service: :class:`AgentService`
-          The agent service with the updated field values. ``name`` identifies the resource
-          (``agent-services/{catalog}.{schema}.{agent_service}``); only fields listed in ``update_mask`` are
-          applied.
-        :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the ``agent_service`` field
-          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
-        :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
-
-        :returns: :class:`AgentService`
         
 
     .. py:method:: update_mcp_service(name: str, mcp_service: McpService, update_mask: FieldMask [, etag: Optional[str]]) -> McpService
@@ -370,11 +271,15 @@
           (``mcp-services/{catalog}.{schema}.{mcp_service}``); only fields listed in ``update_mask`` are
           applied.
         :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the ``mcp_service`` field
-          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
+          Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
+          every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
+          more granular paths: ``comment``, ``config.source_connection.name``,
+          ``config.include_tool_selectors``, or ``config.rate_limits``. Wildcard paths such as ``*`` are not
+          supported.
         :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
+          Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
+          resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
         :returns: :class:`McpService`
         
@@ -398,12 +303,16 @@
           (``model-provider-services/{catalog}.{schema}.{model_provider_service}``); only fields listed in
           ``update_mask`` are applied.
         :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the
-          ``model_provider_service`` field above. Wildcard paths (``paths: ["*"]``) are not supported; list
-          each field path explicitly.
+          Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
+          every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
+          more granular paths: ``comment``, ``config.provider``, ``config.allow_all_targets``,
+          ``config.targets``, ``config.forward_headers``, ``config.forward_query_parameters``,
+          ``config.forward_unmanaged_paths``, ``config.rate_limits``, or ``config.inference_table``. The
+          provider type is immutable, and wildcard paths such as ``*`` are not supported.
         :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
+          Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
+          resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
         :returns: :class:`ModelProviderService`
         
@@ -426,11 +335,16 @@
           (``model-services/{catalog}.{schema}.{model_service}``); only fields listed in ``update_mask`` are
           applied.
         :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the ``model_service`` field
-          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
+          Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
+          every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
+          more granular paths: ``comment``, ``config.routing.destinations``,
+          ``config.routing.fallback.destinations``, ``config.routing.first_token_timeout``,
+          ``config.rate_limits``, or ``config.inference_table``. Intermediate paths such as ``config.routing``
+          and ``config.routing.fallback``, and wildcard paths such as ``*``, are not supported.
         :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
+          Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
+          resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
         :returns: :class:`ModelService`
         

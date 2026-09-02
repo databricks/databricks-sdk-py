@@ -69,10 +69,7 @@
 
     .. py:method:: create_workspace_assignment_detail_proxy(workspace_assignment_detail: WorkspaceAssignmentDetail) -> WorkspaceAssignmentDetail
 
-        Creates a workspace assignment detail for a principal in the calling workspace. Entitlements are
-        granted one at a time rather than atomically. If the request fails partway through, the principal
-        stays assigned to the workspace with only some of the requested entitlements. Get the assignment
-        detail afterwards to confirm which entitlements were granted.
+        Creates a workspace assignment detail for a principal in the calling workspace.
 
         :param workspace_assignment_detail: :class:`WorkspaceAssignmentDetail`
           Required. Workspace assignment detail to be created in <Databricks>.
@@ -304,7 +301,8 @@
           Required. Internal ID of the group in Databricks whose direct members are being listed.
         :param page_size: int (optional)
           The maximum number of members to return. The service may return fewer than this value. If not
-          provided, defaults to 1000 (also the maximum allowed).
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
@@ -319,7 +317,9 @@
         :param filter: str (optional)
           Optional. Allows filtering groups by group name or external id.
         :param page_size: int (optional)
-          The maximum number of groups to return. The service may return fewer than this value.
+          The maximum number of groups to return. The service may return fewer than this value. If not
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
           page.
@@ -335,7 +335,9 @@
         :param filter: str (optional)
           Optional. Allows filtering service principals by application id or external id.
         :param page_size: int (optional)
-          The maximum number of SPs to return. The service may return fewer than this value.
+          The maximum number of SPs to return. The service may return fewer than this value. If not provided,
+          defaults to 1000, which is also the maximum allowed. Requests for more than the maximum are clamped
+          to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
           subsequent page.
@@ -352,7 +354,8 @@
           listed.
         :param page_size: int (optional)
           The maximum number of parent groups to return. The service may return fewer than this value. If not
-          provided, defaults to 1000 (also the maximum allowed).
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListTransitiveParentGroups call. Provide this to retrieve the
           subsequent page.
@@ -368,29 +371,13 @@
         :param filter: str (optional)
           Optional. Allows filtering users by username or external id.
         :param page_size: int (optional)
-          The maximum number of users to return. The service may return fewer than this value.
+          The maximum number of users to return. The service may return fewer than this value. If not
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
 
         :returns: Iterator over :class:`User`
-        
-
-    .. py:method:: list_workspace_access_details_local( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceAccessDetail]
-
-        Lists the access details of every provisioned principal (user, service principal, or group) with
-        access to the current workspace, returning one page per call.
-
-        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
-          IdP or added explicitly to Databricks via SCIM/UI.
-
-        :param page_size: int (optional)
-          The maximum number of workspace access details to return. The service may return fewer than this
-          value.
-        :param page_token: str (optional)
-          A page token, received from a previous ListWorkspaceAccessDetails call. Provide this to retrieve the
-          subsequent page.
-
-        :returns: Iterator over :class:`WorkspaceAccessDetail`
         
 
     .. py:method:: list_workspace_assignment_details_proxy( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceAssignmentDetail]
@@ -401,7 +388,8 @@
 
         :param page_size: int (optional)
           The maximum number of workspace assignment details to return. The service may return fewer than this
-          value.
+          value. If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than
+          the maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
@@ -416,6 +404,8 @@
 
         :param page_size: int (optional)
           The maximum number of workspace assignments to return. The service may return fewer than this value.
+          If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than the
+          maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 

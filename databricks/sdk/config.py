@@ -95,6 +95,7 @@ class Config:
     # can route to the right workspace. Accepts a classic numeric workspace ID
     # or another workspace identifier format that the server understands.
     workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
+    group_id: str = ConfigAttribute(env="DATABRICKS_GROUP_ID")
 
     # Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly
     # instead of inferring from hostname. Populated automatically from /.well-known/databricks-config.

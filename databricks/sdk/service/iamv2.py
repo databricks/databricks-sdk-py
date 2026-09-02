@@ -28,116 +28,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
-class AccountAccessIdentityRule:
-    """An identity rule that controls which principals can access an account."""
-
-    action: AccountAccessRuleAction
-    """Currently, only DENY action is supported."""
-
-    display_name: Optional[str] = None
-    """Display name of the principal."""
-
-    external_principal_id: Optional[str] = None
-    """External ID of the principal in the customer's IdP."""
-
-    name: Optional[str] = None
-    """Fully qualified name for the rule. Format:
-    accounts/{account_id}/account-access-identity-rules/{external_principal_id}"""
-
-    principal_type: Optional[PrincipalType] = None
-    """The type of the principal (user/service principal/group). This field is populated by the server
-    based on the external_principal_id."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AccountAccessIdentityRule into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.action is not None:
-            body["action"] = self.action.value
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.external_principal_id is not None:
-            body["external_principal_id"] = self.external_principal_id
-        if self.name is not None:
-            body["name"] = self.name
-        if self.principal_type is not None:
-            body["principal_type"] = self.principal_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AccountAccessIdentityRule into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.action is not None:
-            body["action"] = self.action
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.external_principal_id is not None:
-            body["external_principal_id"] = self.external_principal_id
-        if self.name is not None:
-            body["name"] = self.name
-        if self.principal_type is not None:
-            body["principal_type"] = self.principal_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AccountAccessIdentityRule:
-        """Deserializes the AccountAccessIdentityRule from a dictionary."""
-        return cls(
-            action=_enum(d, "action", AccountAccessRuleAction),
-            display_name=d.get("display_name", None),
-            external_principal_id=d.get("external_principal_id", None),
-            name=d.get("name", None),
-            principal_type=_enum(d, "principal_type", PrincipalType),
-        )
-
-
-class AccountAccessRuleAction(Enum):
-    """The action type for an account access identity rule (currently DENY only)."""
-
-    DENY = "DENY"
-
-
-@dataclass
-class AttributeControlEntry:
-    """A single entry in an account's identity attribute control list. The presence of an entry means
-    the governed attribute (the last segment of ``name``) is controlled across all write sources
-    (SCIM, Identity APIs, AIM); is_allowed records whether the attribute is permitted (always true
-    in the Identity Attributes PrPr). For the Identity Attributes PrPr the control list is an
-    explicit allowlist: an attribute that is NOT present in the control list is treated as not
-    allowed. This may change post-PrPr."""
-
-    is_allowed: Optional[bool] = None
-    """Whether the attribute is permitted. Always true in the Identity Attributes PrPr."""
-
-    name: Optional[str] = None
-    """The resource name of the entry. Format:
-    accounts/{account_id}/attribute-control-entries/{attribute_name} where {attribute_name} is the
-    IdP attribute being governed (e.g. "department")."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AttributeControlEntry into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.is_allowed is not None:
-            body["is_allowed"] = self.is_allowed
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AttributeControlEntry into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.is_allowed is not None:
-            body["is_allowed"] = self.is_allowed
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AttributeControlEntry:
-        """Deserializes the AttributeControlEntry from a dictionary."""
-        return cls(is_allowed=d.get("is_allowed", None), name=d.get("name", None))
-
-
-@dataclass
 class DirectGroupMember:
     """Represents a principal that is a direct member of a group, with its source of membership."""
 
@@ -553,79 +443,6 @@ class GroupMembershipSource(Enum):
 
 
 @dataclass
-class ListAccountAccessIdentityRulesResponse:
-    """Response message for listing account access identity rules."""
-
-    account_access_identity_rules: Optional[List[AccountAccessIdentityRule]] = None
-
-    next_page_token: Optional[str] = None
-    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ListAccountAccessIdentityRulesResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.account_access_identity_rules:
-            body["account_access_identity_rules"] = [v.as_dict() for v in self.account_access_identity_rules]
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListAccountAccessIdentityRulesResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.account_access_identity_rules:
-            body["account_access_identity_rules"] = self.account_access_identity_rules
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListAccountAccessIdentityRulesResponse:
-        """Deserializes the ListAccountAccessIdentityRulesResponse from a dictionary."""
-        return cls(
-            account_access_identity_rules=_repeated_dict(d, "account_access_identity_rules", AccountAccessIdentityRule),
-            next_page_token=d.get("next_page_token", None),
-        )
-
-
-@dataclass
-class ListAttributeControlEntriesResponse:
-    """Response message for listing identity attribute control-list entries."""
-
-    attribute_control_entries: Optional[List[AttributeControlEntry]] = None
-
-    next_page_token: Optional[str] = None
-    """A token to retrieve the next page; empty when there are no more results."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ListAttributeControlEntriesResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.attribute_control_entries:
-            body["attribute_control_entries"] = [v.as_dict() for v in self.attribute_control_entries]
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListAttributeControlEntriesResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.attribute_control_entries:
-            body["attribute_control_entries"] = self.attribute_control_entries
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListAttributeControlEntriesResponse:
-        """Deserializes the ListAttributeControlEntriesResponse from a dictionary."""
-        return cls(
-            attribute_control_entries=_repeated_dict(d, "attribute_control_entries", AttributeControlEntry),
-            next_page_token=d.get("next_page_token", None),
-        )
-
-
-@dataclass
 class ListDirectGroupMembersResponse:
     """Response message for listing direct group members."""
 
@@ -802,43 +619,6 @@ class ListUsersResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListUsersResponse:
         """Deserializes the ListUsersResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), users=_repeated_dict(d, "users", User))
-
-
-@dataclass
-class ListWorkspaceAccessDetailsResponse:
-    """Response message containing a page of workspace access details."""
-
-    next_page_token: Optional[str] = None
-    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
-
-    workspace_access_details: Optional[List[WorkspaceAccessDetail]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ListWorkspaceAccessDetailsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        if self.workspace_access_details:
-            body["workspace_access_details"] = [v.as_dict() for v in self.workspace_access_details]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListWorkspaceAccessDetailsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        if self.workspace_access_details:
-            body["workspace_access_details"] = self.workspace_access_details
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListWorkspaceAccessDetailsResponse:
-        """Deserializes the ListWorkspaceAccessDetailsResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            workspace_access_details=_repeated_dict(d, "workspace_access_details", WorkspaceAccessDetail),
-        )
 
 
 @dataclass
@@ -1561,70 +1341,6 @@ class AccountIamV2API:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_account_access_identity_rule(
-        self, parent: str, account_access_identity_rule: AccountAccessIdentityRule, external_principal_id: str
-    ) -> AccountAccessIdentityRule:
-        """Creates a new account access identity rule for a given account. This allows administrators to
-        explicitly allow or deny specific principals from accessing the account.
-
-        :param parent: str
-          Required. The account under which to create the rule. Format: accounts/{account_id}
-        :param account_access_identity_rule: :class:`AccountAccessIdentityRule`
-          Required. The rule to create.
-        :param external_principal_id: str
-          Required. The external ID of the principal in the customer's IdP.
-
-        :returns: :class:`AccountAccessIdentityRule`
-        """
-
-        body = account_access_identity_rule.as_dict()
-        query = {}
-        if external_principal_id is not None:
-            query["external_principal_id"] = external_principal_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do(
-            "POST", f"/api/2.0/{parent}/account-access-identity-rules", query=query, body=body, headers=headers
-        )
-        return AccountAccessIdentityRule.from_dict(res)
-
-    def create_attribute_control_entry(
-        self,
-        parent: str,
-        attribute_control_entry: AttributeControlEntry,
-        *,
-        attribute_control_entry_id: Optional[str] = None,
-    ) -> AttributeControlEntry:
-        """Creates (allows) an identity attribute control-list entry for an account.
-
-        :param parent: str
-          Required. The account under which to create the entry. Format: accounts/{account_id}
-        :param attribute_control_entry: :class:`AttributeControlEntry`
-          Required. The entry to create.
-        :param attribute_control_entry_id: str (optional)
-          Optional. The ID to use for the entry, which becomes the last segment of its resource name: the IdP
-          attribute being governed (e.g. "department").
-
-        :returns: :class:`AttributeControlEntry`
-        """
-
-        body = attribute_control_entry.as_dict()
-        query = {}
-        if attribute_control_entry_id is not None:
-            query["attribute_control_entry_id"] = attribute_control_entry_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do(
-            "POST", f"/api/2.0/{parent}/attribute-control-entries", query=query, body=body, headers=headers
-        )
-        return AttributeControlEntry.from_dict(res)
-
     def create_direct_group_member(self, group_id: int, direct_group_member: DirectGroupMember) -> DirectGroupMember:
         """Creates a group membership (assigns a principal to a group).
 
@@ -1766,10 +1482,7 @@ class AccountIamV2API:
     def create_workspace_assignment_detail(
         self, workspace_id: int, workspace_assignment_detail: WorkspaceAssignmentDetail
     ) -> WorkspaceAssignmentDetail:
-        """Creates a workspace assignment detail for a principal. Entitlements are granted one at a time rather
-        than atomically. If the request fails partway through, the principal stays assigned to the workspace
-        with only some of the requested entitlements. Get the assignment detail afterwards to confirm which
-        entitlements were granted.
+        """Creates a workspace assignment detail for a principal.
 
         :param workspace_id: int
           Required. The workspace ID for which the workspace assignment detail is being created.
@@ -1793,41 +1506,6 @@ class AccountIamV2API:
             headers=headers,
         )
         return WorkspaceAssignmentDetail.from_dict(res)
-
-    def delete_account_access_identity_rule(self, parent: str, external_principal_id: str):
-        """Deletes an account access identity rule for a given principal.
-
-        :param parent: str
-          Required. The account for which to delete the rule. Format: accounts/{account_id}
-        :param external_principal_id: str
-          Required. The external ID of the principal whose rule should be deleted.
-
-
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        self._api.do(
-            "DELETE", f"/api/2.0/{parent}/account-access-identity-rules/{external_principal_id}", headers=headers
-        )
-
-    def delete_attribute_control_entry(self, name: str):
-        """Deletes an identity attribute control-list entry.
-
-        :param name: str
-          Required. The resource name of the entry to delete. Format:
-          accounts/{account_id}/attribute-control-entries/{attribute_name}
-
-
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        self._api.do("DELETE", f"/api/2.0/{name}", headers=headers)
 
     def delete_direct_group_member(self, group_id: int, principal_id: int):
         """Deletes a group membership (unassigns a principal from a group).
@@ -1944,43 +1622,6 @@ class AccountIamV2API:
             f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignment-details/{principal_id}",
             headers=headers,
         )
-
-    def get_account_access_identity_rule(self, parent: str, external_principal_id: str) -> AccountAccessIdentityRule:
-        """Gets an account access identity rule for a given principal.
-
-        :param parent: str
-          Required. The account for which to get the rule. Format: accounts/{account_id}
-        :param external_principal_id: str
-          Required. The external ID of the principal whose rule should be retrieved.
-
-        :returns: :class:`AccountAccessIdentityRule`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do(
-            "GET", f"/api/2.0/{parent}/account-access-identity-rules/{external_principal_id}", headers=headers
-        )
-        return AccountAccessIdentityRule.from_dict(res)
-
-    def get_attribute_control_entry(self, name: str) -> AttributeControlEntry:
-        """Gets an identity attribute control-list entry.
-
-        :param name: str
-          Required. The resource name of the entry to get. Format:
-          accounts/{account_id}/attribute-control-entries/{attribute_name}
-
-        :returns: :class:`AttributeControlEntry`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/{name}", headers=headers)
-        return AttributeControlEntry.from_dict(res)
 
     def get_direct_group_member(self, group_id: int, principal_id: int) -> DirectGroupMember:
         """Gets a provisioned direct member of a group.
@@ -2197,71 +1838,6 @@ class AccountIamV2API:
         )
         return WorkspaceAssignmentDetail.from_dict(res)
 
-    def list_account_access_identity_rules(
-        self,
-        parent: str,
-        *,
-        filter: Optional[str] = None,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> ListAccountAccessIdentityRulesResponse:
-        """Lists all account access identity rules for a given account. These rules control which principals
-        (users, service principals, groups) from the customer's IdP are allowed or denied access to the
-        Databricks account.
-
-        :param parent: str
-          Required. The account for which to list the rules. Format: accounts/{account_id}
-        :param filter: str (optional)
-          Optional. Filter to apply to the list. Supports filtering by displayName.
-        :param page_size: int (optional)
-          Optional. The maximum number of rules to return. The service may return fewer than this value.
-        :param page_token: str (optional)
-          Optional. A page token, received from a previous call. Provide this to retrieve the subsequent page.
-
-        :returns: :class:`ListAccountAccessIdentityRulesResponse`
-        """
-
-        query = {}
-        if filter is not None:
-            query["filter"] = filter
-        if page_size is not None:
-            query["page_size"] = page_size
-        if page_token is not None:
-            query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/{parent}/account-access-identity-rules", query=query, headers=headers)
-        return ListAccountAccessIdentityRulesResponse.from_dict(res)
-
-    def list_attribute_control_entries(
-        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> ListAttributeControlEntriesResponse:
-        """Lists the identity attribute control-list entries for an account.
-
-        :param parent: str
-          Required. The account for which to list entries. Format: accounts/{account_id}
-        :param page_size: int (optional)
-          Optional. The maximum number of entries to return.
-        :param page_token: str (optional)
-          Optional. A page token from a previous call, to retrieve the next page.
-
-        :returns: :class:`ListAttributeControlEntriesResponse`
-        """
-
-        query = {}
-        if page_size is not None:
-            query["page_size"] = page_size
-        if page_token is not None:
-            query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/{parent}/attribute-control-entries", query=query, headers=headers)
-        return ListAttributeControlEntriesResponse.from_dict(res)
-
     def list_direct_group_members(
         self, group_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DirectGroupMember]:
@@ -2272,7 +1848,8 @@ class AccountIamV2API:
           Required. Internal ID of the group in Databricks whose direct members are being listed.
         :param page_size: int (optional)
           The maximum number of members to return. The service may return fewer than this value. If not
-          provided, defaults to 1000 (also the maximum allowed).
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListDirectGroupMembers call. Provide this to retrieve the
           subsequent page.
@@ -2312,7 +1889,9 @@ class AccountIamV2API:
         :param filter: str (optional)
           Optional. Allows filtering groups by group name or external id.
         :param page_size: int (optional)
-          The maximum number of groups to return. The service may return fewer than this value.
+          The maximum number of groups to return. The service may return fewer than this value. If not
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
           page.
@@ -2351,7 +1930,9 @@ class AccountIamV2API:
         :param filter: str (optional)
           Optional. Allows filtering service principals by application id or external id.
         :param page_size: int (optional)
-          The maximum number of service principals to return. The service may return fewer than this value.
+          The maximum number of service principals to return. The service may return fewer than this value. If
+          not provided, defaults to 1000, which is also the maximum allowed. Requests for more than the
+          maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
           subsequent page.
@@ -2394,7 +1975,8 @@ class AccountIamV2API:
           listed.
         :param page_size: int (optional)
           The maximum number of parent groups to return. The service may return fewer than this value. If not
-          provided, defaults to 1000 (also the maximum allowed).
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListTransitiveParentGroups call. Provide this to retrieve the
           subsequent page.
@@ -2428,7 +2010,9 @@ class AccountIamV2API:
         :param filter: str (optional)
           Optional. Allows filtering users by username or external id.
         :param page_size: int (optional)
-          The maximum number of users to return. The service may return fewer than this value.
+          The maximum number of users to return. The service may return fewer than this value. If not
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
 
@@ -2457,50 +2041,6 @@ class AccountIamV2API:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def list_workspace_access_details(
-        self, workspace_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> Iterator[WorkspaceAccessDetail]:
-        """Lists the access details of every provisioned principal (user, service principal, or group) with
-        access to the given workspace, returning one page per call.
-
-        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
-          IdP or added explicitly to Databricks via SCIM/UI.
-
-        :param workspace_id: int
-          The workspace ID for which the workspace access details are being fetched.
-        :param page_size: int (optional)
-          The maximum number of workspace access details to return. The service may return fewer than this
-          value.
-        :param page_token: str (optional)
-          A page token, received from a previous ListWorkspaceAccessDetails call. Provide this to retrieve the
-          subsequent page.
-
-        :returns: Iterator over :class:`WorkspaceAccessDetail`
-        """
-
-        query = {}
-        if page_size is not None:
-            query["page_size"] = page_size
-        if page_token is not None:
-            query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
-
-        while True:
-            json = self._api.do(
-                "GET",
-                f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-access-details",
-                query=query,
-                headers=headers,
-            )
-            if "workspace_access_details" in json:
-                for v in json["workspace_access_details"]:
-                    yield WorkspaceAccessDetail.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
-                return
-            query["page_token"] = json["next_page_token"]
-
     def list_workspace_assignment_details(
         self, workspace_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[WorkspaceAssignmentDetail]:
@@ -2512,7 +2052,8 @@ class AccountIamV2API:
           Required. The workspace ID for which the workspace assignment details are being fetched.
         :param page_size: int (optional)
           The maximum number of workspace assignment details to return. The service may return fewer than this
-          value.
+          value. If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than
+          the maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListWorkspaceAssignmentDetails call. Provide this to retrieve
           the subsequent page.
@@ -2554,6 +2095,8 @@ class AccountIamV2API:
           Required. The workspace ID for which the workspace assignments are being fetched.
         :param page_size: int (optional)
           The maximum number of workspace assignments to return. The service may return fewer than this value.
+          If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than the
+          maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListWorkspaceAssignments call. Provide this to retrieve the
           subsequent page.
@@ -2664,36 +2207,6 @@ class AccountIamV2API:
             headers=headers,
         )
         return ResolveUserResponse.from_dict(res)
-
-    def update_attribute_control_entry(
-        self, name: str, attribute_control_entry: AttributeControlEntry, update_mask: FieldMask
-    ) -> AttributeControlEntry:
-        """Updates an identity attribute control-list entry for an account.
-
-        :param name: str
-          The resource name of the entry. Format:
-          accounts/{account_id}/attribute-control-entries/{attribute_name} where {attribute_name} is the IdP
-          attribute being governed (e.g. "department").
-        :param attribute_control_entry: :class:`AttributeControlEntry`
-          Required. The entry to update; its ``name`` identifies the existing entry.
-        :param update_mask: FieldMask
-          Required. The fields to update. For the PrPr only is_allowed is mutable, so the backend currently
-          applies the full entry regardless of the mask.
-
-        :returns: :class:`AttributeControlEntry`
-        """
-
-        body = attribute_control_entry.as_dict()
-        query = {}
-        if update_mask is not None:
-            query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do("PATCH", f"/api/2.0/{name}", query=query, body=body, headers=headers)
-        return AttributeControlEntry.from_dict(res)
 
     def update_group(self, group_id: str, group: Group, update_mask: str) -> Group:
         """Updates an existing group in the Databricks account. Only the fields named in the update mask are
@@ -3006,10 +2519,7 @@ class WorkspaceIamV2API:
     def create_workspace_assignment_detail_proxy(
         self, workspace_assignment_detail: WorkspaceAssignmentDetail
     ) -> WorkspaceAssignmentDetail:
-        """Creates a workspace assignment detail for a principal in the calling workspace. Entitlements are
-        granted one at a time rather than atomically. If the request fails partway through, the principal
-        stays assigned to the workspace with only some of the requested entitlements. Get the assignment
-        detail afterwards to confirm which entitlements were granted.
+        """Creates a workspace assignment detail for a principal in the calling workspace.
 
         :param workspace_assignment_detail: :class:`WorkspaceAssignmentDetail`
           Required. Workspace assignment detail to be created in <Databricks>.
@@ -3440,7 +2950,8 @@ class WorkspaceIamV2API:
           Required. Internal ID of the group in Databricks whose direct members are being listed.
         :param page_size: int (optional)
           The maximum number of members to return. The service may return fewer than this value. If not
-          provided, defaults to 1000 (also the maximum allowed).
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
@@ -3480,7 +2991,9 @@ class WorkspaceIamV2API:
         :param filter: str (optional)
           Optional. Allows filtering groups by group name or external id.
         :param page_size: int (optional)
-          The maximum number of groups to return. The service may return fewer than this value.
+          The maximum number of groups to return. The service may return fewer than this value. If not
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
           page.
@@ -3521,7 +3034,9 @@ class WorkspaceIamV2API:
         :param filter: str (optional)
           Optional. Allows filtering service principals by application id or external id.
         :param page_size: int (optional)
-          The maximum number of SPs to return. The service may return fewer than this value.
+          The maximum number of SPs to return. The service may return fewer than this value. If not provided,
+          defaults to 1000, which is also the maximum allowed. Requests for more than the maximum are clamped
+          to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
           subsequent page.
@@ -3563,7 +3078,8 @@ class WorkspaceIamV2API:
           listed.
         :param page_size: int (optional)
           The maximum number of parent groups to return. The service may return fewer than this value. If not
-          provided, defaults to 1000 (also the maximum allowed).
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListTransitiveParentGroups call. Provide this to retrieve the
           subsequent page.
@@ -3598,7 +3114,9 @@ class WorkspaceIamV2API:
         :param filter: str (optional)
           Optional. Allows filtering users by username or external id.
         :param page_size: int (optional)
-          The maximum number of users to return. The service may return fewer than this value.
+          The maximum number of users to return. The service may return fewer than this value. If not
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
 
@@ -3629,47 +3147,6 @@ class WorkspaceIamV2API:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def list_workspace_access_details_local(
-        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> Iterator[WorkspaceAccessDetail]:
-        """Lists the access details of every provisioned principal (user, service principal, or group) with
-        access to the current workspace, returning one page per call.
-
-        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
-          IdP or added explicitly to Databricks via SCIM/UI.
-
-        :param page_size: int (optional)
-          The maximum number of workspace access details to return. The service may return fewer than this
-          value.
-        :param page_token: str (optional)
-          A page token, received from a previous ListWorkspaceAccessDetails call. Provide this to retrieve the
-          subsequent page.
-
-        :returns: Iterator over :class:`WorkspaceAccessDetail`
-        """
-
-        query = {}
-        if page_size is not None:
-            query["page_size"] = page_size
-        if page_token is not None:
-            query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        while True:
-            json = self._api.do("GET", "/api/2.0/identity/workspace-access-details", query=query, headers=headers)
-            if "workspace_access_details" in json:
-                for v in json["workspace_access_details"]:
-                    yield WorkspaceAccessDetail.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
-                return
-            query["page_token"] = json["next_page_token"]
-
     def list_workspace_assignment_details_proxy(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[WorkspaceAssignmentDetail]:
@@ -3679,7 +3156,8 @@ class WorkspaceIamV2API:
 
         :param page_size: int (optional)
           The maximum number of workspace assignment details to return. The service may return fewer than this
-          value.
+          value. If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than
+          the maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
@@ -3717,6 +3195,8 @@ class WorkspaceIamV2API:
 
         :param page_size: int (optional)
           The maximum number of workspace assignments to return. The service may return fewer than this value.
+          If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than the
+          maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 

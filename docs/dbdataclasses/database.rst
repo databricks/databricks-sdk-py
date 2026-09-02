@@ -73,9 +73,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UPDATING
       :value: "UPDATING"
 
-   .. py:attribute:: UPGRADING
-      :value: "UPGRADING"
-
 .. autoclass:: DatabaseTable
    :members:
    :undoc-members:
@@ -103,16 +100,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: NewPipelineSpec
    :members:
    :undoc-members:
-
-.. py:class:: PipelineChannel
-
-   Release channel of the underlying pipeline's runtime. PREVIEW provides early access to the latest features but may be less stable. Some source table configurations (e.g., read-time CDF) require PREVIEW. Defaults to CURRENT if not specified.
-
-   .. py:attribute:: CURRENT
-      :value: "CURRENT"
-
-   .. py:attribute:: PREVIEW
-      :value: "PREVIEW"
 
 .. py:class:: ProvisioningInfoState
 
@@ -199,20 +186,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SyncedTableSpecExtraColumn
-   :members:
-   :undoc-members:
-
-.. py:class:: SyncedTableSpecExtraColumnMaintenance
-
-   How the column's value is populated and kept up to date.
-
-   .. py:attribute:: DEFAULT_VALUE
-      :value: "DEFAULT_VALUE"
-
-   .. py:attribute:: STORED_GENERATED
-      :value: "STORED_GENERATED"
-
 .. py:class:: SyncedTableSpecPgSpecificType
 
    PostgreSQL-specific target types that can override the default Delta-to-PG mapping.
@@ -225,17 +198,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PG_SPECIFIC_TYPE_VECTOR
       :value: "PG_SPECIFIC_TYPE_VECTOR"
-
-.. autoclass:: SyncedTableSpecSecondaryIndex
-   :members:
-   :undoc-members:
-
-.. py:class:: SyncedTableSpecSecondaryIndexCreationPoint
-
-   Controls when the index is created relative to the initial data load.
-
-   .. py:attribute:: CREATION_POINT_AFTER_DATA_LOAD
-      :value: "CREATION_POINT_AFTER_DATA_LOAD"
 
 .. autoclass:: SyncedTableSpecTypeOverride
    :members:
