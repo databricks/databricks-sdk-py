@@ -113,6 +113,7 @@ AUTO_PACKAGES = [
         "Agent Bricks Service",
         "The Custom LLMs service manages state and powers the UI for the Custom LLM product.",
     ),
+    Package("aifunctions", "AI Functions", "Transform and enrich data with AI on Databricks."),
     Package(
         "aisearch",
         "AISearch",

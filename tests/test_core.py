@@ -38,6 +38,21 @@ def test_parse_dsn():
     assert "basic" == cfg.auth_type
 
 
+def test_group_id_does_not_change_api_request_headers(requests_mock):
+    """Verifies role selection changes authentication without adding API request headers."""
+    requests_mock.get("/test", json={})
+
+    normal_config = Config(host="http://localhost", credentials_strategy=noop_credentials)
+    ApiClient(normal_config).do("GET", "/test")
+    normal_headers = dict(requests_mock.last_request.headers)
+
+    grouped_config = Config(host="http://localhost", group_id="group-id", credentials_strategy=noop_credentials)
+    ApiClient(grouped_config).do("GET", "/test")
+    grouped_headers = dict(requests_mock.last_request.headers)
+
+    assert grouped_headers == normal_headers
+
+
 def test_databricks_cli_token_source_relative_path(config):
     config.databricks_cli_path = "./relative/path/to/cli"
     ts = DatabricksCliTokenSource(config)
