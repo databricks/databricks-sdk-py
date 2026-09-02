@@ -6,6 +6,20 @@
 
     [description]
 
+    .. py:method:: backfill_features(feature_full_names: List[str], backfill_ranges: List[BackfillRange] [, request_id: Optional[str]]) -> BackfillFeaturesOperation
+
+        Backfill features.
+
+        :param feature_full_names: List[str]
+          Full names of the features to backfill.
+        :param backfill_ranges: List[:class:`BackfillRange`]
+          Output ranges to backfill.
+        :param request_id: str (optional)
+          Idempotency token for the request.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: batch_create_materialized_features(requests: List[CreateMaterializedFeatureRequest]) -> BatchCreateMaterializedFeaturesResponse
 
         Batch create materialized features.
@@ -14,6 +28,16 @@
           The requests to create materialized features.
 
         :returns: :class:`BatchCreateMaterializedFeaturesResponse`
+        
+
+    .. py:method:: cancel_operation(name: str)
+
+        Cancel an operation.
+
+        :param name: str
+          The name of the operation resource to be cancelled.
+
+
         
 
     .. py:method:: create_feature(feature: Feature) -> Feature
@@ -126,6 +150,16 @@
           The ID of the materialized feature.
 
         :returns: :class:`MaterializedFeature`
+        
+
+    .. py:method:: get_operation(name: str) -> Operation
+
+        Get an operation.
+
+        :param name: str
+          The name of the operation resource.
+
+        :returns: :class:`Operation`
         
 
     .. py:method:: get_stream(name: str) -> Stream

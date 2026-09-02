@@ -170,6 +170,22 @@
         :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
         
 
+    .. py:method:: genie_cancel_response(agent_id: str, conversation_id: str, response_id: str) -> GenieMessage
+
+        Cancels an in-flight agent-mode response. ``response_id`` is the id returned in the
+        ``response.created`` event from the agent-mode responses endpoint. The response stops at the next
+        agent boundary and its terminal state is returned.
+
+        :param agent_id: str
+          The ID of the Genie agent (synonymous with the Genie space ID).
+        :param conversation_id: str
+          The ID of the conversation containing the response.
+        :param response_id: str
+          The ID of the response to cancel (the id from the ``response.created`` event).
+
+        :returns: :class:`GenieMessage`
+        
+
     .. py:method:: genie_create_eval_run(space_id: str [, benchmark_question_ids: Optional[List[str]]]) -> GenieEvalRunResponse
 
         Create and run evaluations for multiple benchmark questions in a Genie space.

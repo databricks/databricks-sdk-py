@@ -6,6 +6,7 @@ Dataclasses
    :maxdepth: 1
    
    agentbricks
+   aifunctions
    aisearch
    apps
    billing

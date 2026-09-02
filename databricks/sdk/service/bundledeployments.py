@@ -34,7 +34,8 @@ class DashboardMetadata:
 
     definition_path: Optional[str] = None
     """Path of the file that declares this dashboard, relative to the bundle's workspace.file_path
-    (Version.workspace_info.file_path) — join the two to get the file's absolute workspace path.
+    (Deployment.workspace_info.file_path) — join the two to get the file's absolute workspace
+    path.
     
     For now this lives only on the dashboard metadata, and is a single string because it was a
     single string (``relative_path``) in the legacy bundle metadata.json. We may generalize it in
@@ -81,8 +82,7 @@ class Deployment:
     metadata does not identify a creator or the principal cannot be resolved."""
 
     deployment_mode: Optional[DeploymentMode] = None
-    """Bundle target deployment mode (development or production), derived from the most recent
-    version's mode."""
+    """Bundle target deployment mode (development or production)."""
 
     destroy_time: Optional[Timestamp] = None
     """When deletion was recorded. Unset if deletion has not been recorded. This response metadata does
@@ -93,8 +93,7 @@ class Deployment:
     been destroyed."""
 
     display_name: Optional[str] = None
-    """Human-readable name for the deployment, up to 256 characters. Output only: clients update it by
-    setting ``display_name`` when creating a version."""
+    """Human-readable name for the deployment, up to 256 characters."""
 
     git_info: Optional[GitInfo] = None
     """Git provenance of the deployment's source, derived from the latest version."""
@@ -122,8 +121,7 @@ class Deployment:
     """Current status of the deployment."""
 
     target_name: Optional[str] = None
-    """The bundle target name associated with this deployment. Output only: it is denormalized from the
-    latest version, not set directly on the deployment."""
+    """The bundle target name associated with this deployment."""
 
     update_time: Optional[Timestamp] = None
     """When the deployment was last updated."""
@@ -134,7 +132,7 @@ class Deployment:
     resolved."""
 
     workspace_info: Optional[WorkspaceInfo] = None
-    """Workspace location of the deployment, derived from the latest version."""
+    """Workspace location of the deployment."""
 
     def as_dict(self) -> dict:
         """Serializes the Deployment into a dictionary suitable for use as a JSON request body."""
@@ -794,7 +792,7 @@ class StagedOperation:
     resource_key: str
     """The key identifying the resource this operation applies to (e.g. "jobs.foo", "pipelines.bar").
     Becomes the final component of the operation's name and must be unique among the operations in
-    the request."""
+    the version."""
 
     action_type: OperationActionType
     """The type of operation planned for this resource."""
@@ -865,6 +863,11 @@ class Version:
     name: Optional[str] = None
     """Resource name of the version. Format: deployments/{deployment_id}/versions/{version_id}"""
 
+    operations: Optional[List[StagedOperation]] = None
+    """The full operation plan for this version: one PENDING operation per entry, recorded in the same
+    transaction. Input only -- supplied on create and never returned by create/get/list; read the
+    recorded operations via ListOperations."""
+
     previous_version_id: Optional[str] = None
     """The version_id this version was created on top of — the deployment's most recent version at
     creation time. Leave unset when creating the first version (the deployment has no prior
@@ -913,6 +916,8 @@ class Version:
             body["git_info"] = self.git_info.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.operations:
+            body["operations"] = [v.as_dict() for v in self.operations]
         if self.previous_version_id is not None:
             body["previous_version_id"] = self.previous_version_id
         if self.status is not None:
@@ -950,6 +955,8 @@ class Version:
             body["git_info"] = self.git_info
         if self.name is not None:
             body["name"] = self.name
+        if self.operations:
+            body["operations"] = self.operations
         if self.previous_version_id is not None:
             body["previous_version_id"] = self.previous_version_id
         if self.status is not None:
@@ -978,6 +985,7 @@ class Version:
             display_name=d.get("display_name", None),
             git_info=_from_dict(d, "git_info", GitInfo),
             name=d.get("name", None),
+            operations=_repeated_dict(d, "operations", StagedOperation),
             previous_version_id=d.get("previous_version_id", None),
             status=_enum(d, "status", VersionStatus),
             target_name=d.get("target_name", None),
@@ -1127,8 +1135,9 @@ class BundleDeploymentsAPI:
         """Creates a new deployment in the workspace.
 
         :param deployment: :class:`Deployment`
-          The deployment to create. The caller must set ``initial_parent_path``. Other fields are ignored on
-          input and populated by the service.
+          The deployment to create. ``initial_parent_path`` is required. ``display_name``, ``target_name``,
+          ``deployment_mode``, and ``workspace_info`` may be set; every other field is assigned by the service
+          and ignored on input.
 
         :returns: :class:`Deployment`
         """
@@ -1147,9 +1156,7 @@ class BundleDeploymentsAPI:
         res = self._api.do("POST", "/api/2.0/bundle/deployments", body=body, headers=headers)
         return Deployment.from_dict(res)
 
-    def create_version(
-        self, parent: str, version: Version, version_id: str, *, operations: Optional[List[StagedOperation]] = None
-    ) -> Version:
+    def create_version(self, parent: str, version: Version, version_id: str) -> Version:
         """Creates a new version under a deployment.
 
         Creating a version acquires an exclusive lock on the deployment, preventing concurrent deploys. The
@@ -1174,19 +1181,12 @@ class BundleDeploymentsAPI:
           or equal to 1. Must be numerically greater than the deployment's most recent version (see
           ``version.previous_version_id``); it does not need to start at 1 or increase by exactly 1. If the
           value is not numerically greater, the server returns ``INVALID_PARAMETER_VALUE``.
-        :param operations: List[:class:`StagedOperation`] (optional)
-          The full set of resource operations to record for this version. The server creates one operation per
-          entry in ``OPERATION_STATUS_PENDING``, in the same transaction as the version; each outcome is
-          recorded later via UpdateOperation. May be empty for a version that changes no resources. Each
-          ``resource_key`` must be unique within the request.
 
         :returns: :class:`Version`
         """
 
         body = version.as_dict()
         query = {}
-        if operations is not None:
-            query["operations"] = [v.as_dict() for v in operations]
         if version_id is not None:
             query["version_id"] = version_id
         headers = {
@@ -1328,34 +1328,10 @@ class BundleDeploymentsAPI:
         return HeartbeatResponse.from_dict(res)
 
     def list_deployments(
-        self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Deployment]:
         """Lists deployments in the workspace.
 
-        :param filter: str (optional)
-          A filter expression restricting which deployments are returned, in the style of AIP-160
-          (https://google.aip.dev/160). The expression is a conjunction of one or more ``field operator
-          value`` terms joined by ``AND`` (case-insensitive); a deployment is returned only when it matches
-          every term. Whitespace around terms is ignored, and a value containing spaces must be wrapped in
-          double quotes. An unset or empty filter returns all deployments. Filtering applies only to live
-          deployments; deleted deployments are never returned regardless of the filter.
-
-          Supported terms:
-
-          - ``status = <STATUS>``: exact match on the deployment status. The value is a ``DeploymentStatus``
-            enum value, with or without the ``DEPLOYMENT_STATUS_`` prefix and case-insensitive (e.g. ``status
-            = ACTIVE``).
-          - ``deployment_mode = <MODE>``: exact match on the deployment mode. The value is a
-            ``DeploymentMode`` enum value, with or without the ``DEPLOYMENT_MODE_`` prefix and
-            case-insensitive (e.g. ``deployment_mode = DEVELOPMENT``).
-          - ``created_by = "<email>"``: exact match on the creator's email or principal name. To list only the
-            deployments you created, pass your own identity (e.g. ``created_by = "me@example.com"``). This
-            term matches the same value the deployment reports in ``created_by``, so a deployment whose
-            creator cannot currently be resolved reports an empty ``created_by`` and does not match this term.
-          - ``display_name = "<name>"``: exact match on the display name.
-          - ``display_name : "<substring>"``: case-insensitive substring match on the display name.
-
-          For example: ``status = ACTIVE AND display_name : "etl"``.
         :param page_size: int (optional)
           The maximum number of deployments to return. The service may return fewer than this value. If
           unspecified, at most 20 deployments will be returned. The maximum value is 1000; values above 1000
@@ -1368,8 +1344,6 @@ class BundleDeploymentsAPI:
         """
 
         query = {}
-        if filter is not None:
-            query["filter"] = filter
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -1510,6 +1484,37 @@ class BundleDeploymentsAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def update_deployment(self, name: str, deployment: Deployment, update_mask: FieldMask) -> Deployment:
+        """Updates a deployment.
+
+        :param name: str
+          Resource name of the deployment. Format: deployments/{deployment_id}
+        :param deployment: :class:`Deployment`
+          The deployment to update. Its ``name`` selects the deployment; the fields named in ``update_mask``
+          carry the new values. All other fields are ignored.
+        :param update_mask: FieldMask
+          The fields to update; supported paths are ``display_name``, ``deployment_mode``, ``target_name``,
+          and ``workspace_info``. An empty mask or any other path returns INVALID_PARAMETER_VALUE.
+
+        :returns: :class:`Deployment`
+        """
+
+        body = deployment.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/bundle/{name}", query=query, body=body, headers=headers)
+        return Deployment.from_dict(res)
 
     def update_operation(self, name: str, operation: Operation, update_mask: FieldMask) -> Operation:
         """Updates a resource operation's mutable fields.
