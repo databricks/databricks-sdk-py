@@ -30,7 +30,7 @@ def test_ensure_cluster_is_running(w, env_or_skip):
     w.clusters.ensure_cluster_is_running(cluster_id)
 
 
-def test_create_cluster(w, env_or_skip, random):
+def test_create_cluster(skip_aws_uc_workspace, w, env_or_skip, random):
     info = w.clusters.create(
         cluster_name=f"databricks-sdk-py-{random(8)}",
         spark_version=w.clusters.select_spark_version(long_term_support=True),

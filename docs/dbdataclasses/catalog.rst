@@ -60,25 +60,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: AgentService
-   :members:
-   :undoc-members:
-
-.. py:class:: AgentServiceAgentServiceType
-
-   Type of agent service. Determines how the backing agent surface is provisioned and how invocation routes to the runtime. Nested to scope enum values (guardrail: avoid-generic-enum-names).
-
-   .. py:attribute:: AGENT_SERVICE_TYPE_EXTERNAL
-      :value: "AGENT_SERVICE_TYPE_EXTERNAL"
-
-.. autoclass:: AgentServiceConfig
-   :members:
-   :undoc-members:
-
-.. autoclass:: AgentServiceConfigSourceConnection
-   :members:
-   :undoc-members:
-
 .. autoclass:: ArtifactAllowlistInfo
    :members:
    :undoc-members:
@@ -164,10 +145,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CatalogFederationConfig
-   :members:
-   :undoc-members:
-
 .. autoclass:: CatalogInfo
    :members:
    :undoc-members:
@@ -179,9 +156,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: OPEN
       :value: "OPEN"
-
-   .. py:attribute:: OPEN_IN_ACCOUNT
-      :value: "OPEN_IN_ACCOUNT"
 
 .. py:class:: CatalogType
 
@@ -255,9 +229,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DOUBLE
       :value: "DOUBLE"
 
-   .. py:attribute:: FILE
-      :value: "FILE"
-
    .. py:attribute:: FLOAT
       :value: "FLOAT"
 
@@ -291,14 +262,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: STRUCT
       :value: "STRUCT"
 
-   .. py:attribute:: TABLEREF_TYPE
-      :value: "TABLEREF_TYPE"
-
    .. py:attribute:: TABLE_TYPE
       :value: "TABLE_TYPE"
-
-   .. py:attribute:: TIME
-      :value: "TIME"
 
    .. py:attribute:: TIMESTAMP
       :value: "TIMESTAMP"
@@ -312,10 +277,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VARIANT
       :value: "VARIANT"
 
-.. autoclass:: ConditionalDisplay
-   :members:
-   :undoc-members:
-
 .. autoclass:: ConnectionDependency
    :members:
    :undoc-members:
@@ -326,47 +287,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   .. py:attribute:: ADOBE_COMMERCE
-      :value: "ADOBE_COMMERCE"
-
-   .. py:attribute:: ADP_WORKFORCE_NOW
-      :value: "ADP_WORKFORCE_NOW"
-
-   .. py:attribute:: AHA
-      :value: "AHA"
-
-   .. py:attribute:: AIRTABLE
-      :value: "AIRTABLE"
-
-   .. py:attribute:: AMPLITUDE
-      :value: "AMPLITUDE"
-
-   .. py:attribute:: APPFIGURES
-      :value: "APPFIGURES"
-
-   .. py:attribute:: APPLE_APP_STORE
-      :value: "APPLE_APP_STORE"
-
-   .. py:attribute:: APPLE_SEARCH_ADS
-      :value: "APPLE_SEARCH_ADS"
-
-   .. py:attribute:: ATLASSIAN_ORGANIZATION
-      :value: "ATLASSIAN_ORGANIZATION"
-
-   .. py:attribute:: AWIN
-      :value: "AWIN"
-
-   .. py:attribute:: AZURE_MONITOR_LOGS
-      :value: "AZURE_MONITOR_LOGS"
-
-   .. py:attribute:: BIGLAKE
-      :value: "BIGLAKE"
-
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
-
-   .. py:attribute:: CERIDIAN_DAYFORCE
-      :value: "CERIDIAN_DAYFORCE"
 
    .. py:attribute:: CONFLUENCE
       :value: "CONFLUENCE"
@@ -374,59 +296,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
 
-   .. py:attribute:: DELIGHTED
-      :value: "DELIGHTED"
-
    .. py:attribute:: DYNAMICS365
       :value: "DYNAMICS365"
-
-   .. py:attribute:: EPIC_CLARITY
-      :value: "EPIC_CLARITY"
-
-   .. py:attribute:: FRESHSERVICE
-      :value: "FRESHSERVICE"
-
-   .. py:attribute:: FRONT
-      :value: "FRONT"
 
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
 
-   .. py:attribute:: GENESYS
-      :value: "GENESYS"
-
    .. py:attribute:: GITHUB
       :value: "GITHUB"
 
-   .. py:attribute:: GITLAB
-      :value: "GITLAB"
-
    .. py:attribute:: GLUE
       :value: "GLUE"
-
-   .. py:attribute:: GMAIL
-      :value: "GMAIL"
-
-   .. py:attribute:: GONG
-      :value: "GONG"
-
-   .. py:attribute:: GOOGLE_ANALYTICS
-      :value: "GOOGLE_ANALYTICS"
-
-   .. py:attribute:: GOOGLE_CALENDAR
-      :value: "GOOGLE_CALENDAR"
-
-   .. py:attribute:: GOOGLE_CLOUD_LAKEHOUSE
-      :value: "GOOGLE_CLOUD_LAKEHOUSE"
-
-   .. py:attribute:: GOOGLE_WORKSPACE
-      :value: "GOOGLE_WORKSPACE"
-
-   .. py:attribute:: GURU
-      :value: "GURU"
-
-   .. py:attribute:: HIBOB
-      :value: "HIBOB"
 
    .. py:attribute:: HIVE_METASTORE
       :value: "HIVE_METASTORE"
@@ -437,80 +317,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: HUBSPOT
       :value: "HUBSPOT"
 
-   .. py:attribute:: ICEBERG_REST
-      :value: "ICEBERG_REST"
-
-   .. py:attribute:: IRONCLAD
-      :value: "IRONCLAD"
-
    .. py:attribute:: JDBC
       :value: "JDBC"
-
-   .. py:attribute:: KINESIS
-      :value: "KINESIS"
-
-   .. py:attribute:: LINEAR
-      :value: "LINEAR"
-
-   .. py:attribute:: MARKETO
-      :value: "MARKETO"
 
    .. py:attribute:: META_MARKETING
       :value: "META_MARKETING"
 
-   .. py:attribute:: MICROSOFT_ENTRA_ID
-      :value: "MICROSOFT_ENTRA_ID"
-
-   .. py:attribute:: MONDAY_COM
-      :value: "MONDAY_COM"
-
    .. py:attribute:: MYSQL
       :value: "MYSQL"
-
-   .. py:attribute:: NETSKOPE_LOGS
-      :value: "NETSKOPE_LOGS"
 
    .. py:attribute:: NETSUITE
       :value: "NETSUITE"
 
-   .. py:attribute:: NOTION
-      :value: "NOTION"
-
    .. py:attribute:: ORACLE
       :value: "ORACLE"
 
-   .. py:attribute:: ORACLE_ELOQUA
-      :value: "ORACLE_ELOQUA"
-
-   .. py:attribute:: ORACLE_FUSION_CLOUD
-      :value: "ORACLE_FUSION_CLOUD"
-
    .. py:attribute:: OUTLOOK
       :value: "OUTLOOK"
-
-   .. py:attribute:: PAGERDUTY
-      :value: "PAGERDUTY"
-
-   .. py:attribute:: PALANTIR
-      :value: "PALANTIR"
-
-   .. py:attribute:: PARTNERSTACK
-      :value: "PARTNERSTACK"
-
-   .. py:attribute:: PENDO
-      :value: "PENDO"
 
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
 
    .. py:attribute:: POWER_BI
       :value: "POWER_BI"
-
-   .. py:attribute:: PUBSUB
-      :value: "PUBSUB"
-
-   .. py:attribute:: QUICKBOOKS
-      :value: "QUICKBOOKS"
 
    .. py:attribute:: REDSHIFT
       :value: "REDSHIFT"
@@ -521,38 +350,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SALESFORCE_DATA_CLOUD
       :value: "SALESFORCE_DATA_CLOUD"
 
-   .. py:attribute:: SALESLOFT
-      :value: "SALESLOFT"
-
-   .. py:attribute:: SAP_SUCCESSFACTORS
-      :value: "SAP_SUCCESSFACTORS"
-
-   .. py:attribute:: SAS
-      :value: "SAS"
-
-   .. py:attribute:: SENDGRID
-      :value: "SENDGRID"
-
    .. py:attribute:: SERVICENOW
       :value: "SERVICENOW"
-
-   .. py:attribute:: SHOPIFY
-      :value: "SHOPIFY"
-
-   .. py:attribute:: SLACK_ACCESS_AND_INTEGRATION_LOGS
-      :value: "SLACK_ACCESS_AND_INTEGRATION_LOGS"
 
    .. py:attribute:: SMARTSHEET
       :value: "SMARTSHEET"
 
-   .. py:attribute:: SNAPCHAT_ADS
-      :value: "SNAPCHAT_ADS"
-
    .. py:attribute:: SNOWFLAKE
       :value: "SNOWFLAKE"
-
-   .. py:attribute:: SPLUNK
-      :value: "SPLUNK"
 
    .. py:attribute:: SQLDW
       :value: "SQLDW"
@@ -560,54 +365,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SQLSERVER
       :value: "SQLSERVER"
 
-   .. py:attribute:: SQUARE
-      :value: "SQUARE"
-
    .. py:attribute:: TERADATA
       :value: "TERADATA"
 
    .. py:attribute:: UNKNOWN_CONNECTION_TYPE
       :value: "UNKNOWN_CONNECTION_TYPE"
 
-   .. py:attribute:: VERKADA
-      :value: "VERKADA"
-
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
-
-   .. py:attribute:: YOUTUBE_ANALYTICS
-      :value: "YOUTUBE_ANALYTICS"
 
    .. py:attribute:: ZENDESK
       :value: "ZENDESK"
 
-   .. py:attribute:: ZIP
-      :value: "ZIP"
-
-   .. py:attribute:: ZOHO_BOOKS
-      :value: "ZOHO_BOOKS"
-
-   .. py:attribute:: ZOOM
-      :value: "ZOOM"
-
-   .. py:attribute:: ZOOM_LOGS
-      :value: "ZOOM_LOGS"
-
 .. autoclass:: ContinuousUpdateStatus
    :members:
    :undoc-members:
-
-.. autoclass:: ConversionInfo
-   :members:
-   :undoc-members:
-
-.. py:class:: ConversionInfoState
-
-   .. py:attribute:: COMPLETED
-      :value: "COMPLETED"
-
-   .. py:attribute:: IN_PROGRESS
-      :value: "IN_PROGRESS"
 
 .. autoclass:: CreateAccessRequest
    :members:
@@ -693,23 +465,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EDGEGRID_AKAMAI
       :value: "EDGEGRID_AKAMAI"
 
-   .. py:attribute:: GENERIC_TOKEN_EXCHANGE
-      :value: "GENERIC_TOKEN_EXCHANGE"
-
-   .. py:attribute:: INLINE_YAML
-      :value: "INLINE_YAML"
-
-   .. py:attribute:: MUTUAL_TLS
-      :value: "MUTUAL_TLS"
-
    .. py:attribute:: OAUTH_ACCESS_TOKEN
       :value: "OAUTH_ACCESS_TOKEN"
-
-   .. py:attribute:: OAUTH_DCR
-      :value: "OAUTH_DCR"
-
-   .. py:attribute:: OAUTH_GOOGLE_SERVICE_ACCOUNT
-      :value: "OAUTH_GOOGLE_SERVICE_ACCOUNT"
 
    .. py:attribute:: OAUTH_M2M
       :value: "OAUTH_M2M"
@@ -893,10 +650,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INTERNAL_AND_EXTERNAL
       :value: "INTERNAL_AND_EXTERNAL"
 
-.. autoclass:: DenyOptions
-   :members:
-   :undoc-members:
-
 .. autoclass:: Dependency
    :members:
    :undoc-members:
@@ -925,18 +678,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: DisableResponse
    :members:
    :undoc-members:
-
-.. autoclass:: DrReplicationInfo
-   :members:
-   :undoc-members:
-
-.. py:class:: DrReplicationStatus
-
-   .. py:attribute:: DR_REPLICATION_STATUS_PRIMARY
-      :value: "DR_REPLICATION_STATUS_PRIMARY"
-
-   .. py:attribute:: DR_REPLICATION_STATUS_SECONDARY
-      :value: "DR_REPLICATION_STATUS_SECONDARY"
 
 .. autoclass:: EffectivePermissionsList
    :members:
@@ -1038,14 +779,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ExternalLineageTableInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: ExternalLineageVolume
-   :members:
-   :undoc-members:
-
-.. autoclass:: ExternalLineageVolumeInfo
    :members:
    :undoc-members:
 
@@ -1183,10 +916,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: GovernedTagReference
-   :members:
-   :undoc-members:
-
 .. autoclass:: GrantOptions
    :members:
    :undoc-members:
@@ -1203,9 +932,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ISOLATION_MODE_OPEN
       :value: "ISOLATION_MODE_OPEN"
 
-   .. py:attribute:: ISOLATION_MODE_OPEN_IN_ACCOUNT
-      :value: "ISOLATION_MODE_OPEN_IN_ACCOUNT"
-
 .. py:class:: LineageDirection
 
    .. py:attribute:: DOWNSTREAM
@@ -1219,10 +945,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListAccountStorageCredentialsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ListAgentServicesResponse
    :members:
    :undoc-members:
 
@@ -1415,16 +1137,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: ModelProviderServiceConfigAnthropicProviderRelayedConfigAnthropicRelayedPlanType
-
-   Which Anthropic subscription tier the relayed OAuth token belongs to. Immutable after Create (switching tiers changes which governance controls the platform enforces). Only MAX and TEAM_ENTERPRISE differ in the governance surface the gateway can enforce, not in how the token is relayed.
-
-   .. py:attribute:: ANTHROPIC_RELAYED_PLAN_TYPE_MAX
-      :value: "ANTHROPIC_RELAYED_PLAN_TYPE_MAX"
-
-   .. py:attribute:: ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE
-      :value: "ANTHROPIC_RELAYED_PLAN_TYPE_TEAM_ENTERPRISE"
-
 .. autoclass:: ModelProviderServiceConfigAwsAccessKey
    :members:
    :undoc-members:
@@ -1552,10 +1264,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ModelServiceConfigRoutingConfig
-   :members:
-   :undoc-members:
-
-.. autoclass:: ModelServiceConfigRoutingConfigTrafficSplitting
    :members:
    :undoc-members:
 
@@ -1714,10 +1422,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: OneLakeEventQueue
-   :members:
-   :undoc-members:
-
 .. autoclass:: OnlineTable
    :members:
    :undoc-members:
@@ -1811,9 +1515,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: OPTION_SERVICE_CREDENTIAL
       :value: "OPTION_SERVICE_CREDENTIAL"
 
-   .. py:attribute:: OPTION_STORAGE_CREDENTIAL
-      :value: "OPTION_STORAGE_CREDENTIAL"
-
    .. py:attribute:: OPTION_STRING
       :value: "OPTION_STRING"
 
@@ -1848,9 +1549,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: POLICY_TYPE_COLUMN_MASK
       :value: "POLICY_TYPE_COLUMN_MASK"
-
-   .. py:attribute:: POLICY_TYPE_DENY
-      :value: "POLICY_TYPE_DENY"
 
    .. py:attribute:: POLICY_TYPE_GRANT
       :value: "POLICY_TYPE_GRANT"
@@ -1894,9 +1592,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE
       :value: "CREATE"
 
-   .. py:attribute:: CREATE_CASE_COLLECTION
-      :value: "CREATE_CASE_COLLECTION"
-
    .. py:attribute:: CREATE_CATALOG
       :value: "CREATE_CATALOG"
 
@@ -1906,9 +1601,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_CONNECTION
       :value: "CREATE_CONNECTION"
 
-   .. py:attribute:: CREATE_DATASOURCE
-      :value: "CREATE_DATASOURCE"
-
    .. py:attribute:: CREATE_EXTERNAL_LOCATION
       :value: "CREATE_EXTERNAL_LOCATION"
 
@@ -1917,12 +1609,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CREATE_EXTERNAL_VOLUME
       :value: "CREATE_EXTERNAL_VOLUME"
-
-   .. py:attribute:: CREATE_FEATURE
-      :value: "CREATE_FEATURE"
-
-   .. py:attribute:: CREATE_FLOW
-      :value: "CREATE_FLOW"
 
    .. py:attribute:: CREATE_FOREIGN_CATALOG
       :value: "CREATE_FOREIGN_CATALOG"
@@ -1939,9 +1625,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_MATERIALIZED_VIEW
       :value: "CREATE_MATERIALIZED_VIEW"
 
-   .. py:attribute:: CREATE_MEMORY_STORE
-      :value: "CREATE_MEMORY_STORE"
-
    .. py:attribute:: CREATE_MODEL
       :value: "CREATE_MODEL"
 
@@ -1951,17 +1634,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_RECIPIENT
       :value: "CREATE_RECIPIENT"
 
-   .. py:attribute:: CREATE_RULE
-      :value: "CREATE_RULE"
-
    .. py:attribute:: CREATE_SCHEMA
       :value: "CREATE_SCHEMA"
-
-   .. py:attribute:: CREATE_SEMANTIC_GRAPH
-      :value: "CREATE_SEMANTIC_GRAPH"
-
-   .. py:attribute:: CREATE_SERVICE
-      :value: "CREATE_SERVICE"
 
    .. py:attribute:: CREATE_SERVICE_CREDENTIAL
       :value: "CREATE_SERVICE_CREDENTIAL"
@@ -1969,14 +1643,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_SHARE
       :value: "CREATE_SHARE"
 
-   .. py:attribute:: CREATE_SKILL
-      :value: "CREATE_SKILL"
-
    .. py:attribute:: CREATE_STORAGE_CREDENTIAL
       :value: "CREATE_STORAGE_CREDENTIAL"
-
-   .. py:attribute:: CREATE_STREAM
-      :value: "CREATE_STREAM"
 
    .. py:attribute:: CREATE_TABLE
       :value: "CREATE_TABLE"
@@ -1987,44 +1655,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_VOLUME
       :value: "CREATE_VOLUME"
 
-   .. py:attribute:: DELETE
-      :value: "DELETE"
-
-   .. py:attribute:: DELETE_EVENTS
-      :value: "DELETE_EVENTS"
-
-   .. py:attribute:: DELETE_SECURITY_DATA
-      :value: "DELETE_SECURITY_DATA"
-
    .. py:attribute:: EXECUTE
       :value: "EXECUTE"
 
    .. py:attribute:: EXECUTE_CLEAN_ROOM_TASK
       :value: "EXECUTE_CLEAN_ROOM_TASK"
 
+   .. py:attribute:: EXTERNAL_USE_LOCATION
+      :value: "EXTERNAL_USE_LOCATION"
+
    .. py:attribute:: EXTERNAL_USE_SCHEMA
       :value: "EXTERNAL_USE_SCHEMA"
-
-   .. py:attribute:: INSERT
-      :value: "INSERT"
-
-   .. py:attribute:: INSERT_SECURITY_DATA
-      :value: "INSERT_SECURITY_DATA"
 
    .. py:attribute:: MANAGE
       :value: "MANAGE"
 
-   .. py:attribute:: MANAGE_ACCESS
-      :value: "MANAGE_ACCESS"
-
-   .. py:attribute:: MANAGE_ACCESS_CONTROL
-      :value: "MANAGE_ACCESS_CONTROL"
-
    .. py:attribute:: MANAGE_ALLOWLIST
       :value: "MANAGE_ALLOWLIST"
-
-   .. py:attribute:: MANAGE_GRANTS
-      :value: "MANAGE_GRANTS"
 
    .. py:attribute:: MODIFY
       :value: "MODIFY"
@@ -2032,20 +1679,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MODIFY_CLEAN_ROOM
       :value: "MODIFY_CLEAN_ROOM"
 
-   .. py:attribute:: READ_EVENTS
-      :value: "READ_EVENTS"
-
-   .. py:attribute:: READ_FEATURE
-      :value: "READ_FEATURE"
-
    .. py:attribute:: READ_FILES
       :value: "READ_FILES"
-
-   .. py:attribute:: READ_FLOW
-      :value: "READ_FLOW"
-
-   .. py:attribute:: READ_MEMORY_STORE
-      :value: "READ_MEMORY_STORE"
 
    .. py:attribute:: READ_METADATA
       :value: "READ_METADATA"
@@ -2053,41 +1688,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: READ_PRIVATE_FILES
       :value: "READ_PRIVATE_FILES"
 
-   .. py:attribute:: READ_SECURITY_DATA
-      :value: "READ_SECURITY_DATA"
-
-   .. py:attribute:: READ_SEMANTIC_GRAPH
-      :value: "READ_SEMANTIC_GRAPH"
-
-   .. py:attribute:: READ_SKILL
-      :value: "READ_SKILL"
-
-   .. py:attribute:: READ_STREAM
-      :value: "READ_STREAM"
-
    .. py:attribute:: READ_VOLUME
       :value: "READ_VOLUME"
 
    .. py:attribute:: REFRESH
       :value: "REFRESH"
 
-   .. py:attribute:: REFRESH_FLOW
-      :value: "REFRESH_FLOW"
-
    .. py:attribute:: SELECT
       :value: "SELECT"
 
    .. py:attribute:: SET_SHARE_PERMISSION
       :value: "SET_SHARE_PERMISSION"
-
-   .. py:attribute:: UPDATE
-      :value: "UPDATE"
-
-   .. py:attribute:: UPDATE_EVENTS
-      :value: "UPDATE_EVENTS"
-
-   .. py:attribute:: UPDATE_SECURITY_DATA
-      :value: "UPDATE_SECURITY_DATA"
 
    .. py:attribute:: USAGE
       :value: "USAGE"
@@ -2113,35 +1724,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: USE_SHARE
       :value: "USE_SHARE"
 
-   .. py:attribute:: USE_VOLUME
-      :value: "USE_VOLUME"
-
-   .. py:attribute:: VIEW_ADMIN_METADATA
-      :value: "VIEW_ADMIN_METADATA"
-
-   .. py:attribute:: VIEW_METADATA
-      :value: "VIEW_METADATA"
-
-   .. py:attribute:: VIEW_OBJECT
-      :value: "VIEW_OBJECT"
-
    .. py:attribute:: WRITE_FILES
       :value: "WRITE_FILES"
 
-   .. py:attribute:: WRITE_FLOW
-      :value: "WRITE_FLOW"
-
-   .. py:attribute:: WRITE_MEMORY_STORE
-      :value: "WRITE_MEMORY_STORE"
-
    .. py:attribute:: WRITE_PRIVATE_FILES
       :value: "WRITE_PRIVATE_FILES"
-
-   .. py:attribute:: WRITE_SEMANTIC_GRAPH
-      :value: "WRITE_SEMANTIC_GRAPH"
-
-   .. py:attribute:: WRITE_SKILL
-      :value: "WRITE_SKILL"
 
    .. py:attribute:: WRITE_VOLUME
       :value: "WRITE_VOLUME"
@@ -2238,19 +1825,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: SchemaFilterType
-
-   Determines how a FOREIGN catalog's schema filter items are interpreted.
-
-   .. py:attribute:: SCHEMA_FILTER_TYPE_EXCLUDE
-      :value: "SCHEMA_FILTER_TYPE_EXCLUDE"
-
-   .. py:attribute:: SCHEMA_FILTER_TYPE_INCLUDE
-      :value: "SCHEMA_FILTER_TYPE_INCLUDE"
-
-   .. py:attribute:: SCHEMA_FILTER_TYPE_INCLUDE_ALL
-      :value: "SCHEMA_FILTER_TYPE_INCLUDE_ALL"
-
 .. autoclass:: SchemaInfo
    :members:
    :undoc-members:
@@ -2259,66 +1833,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SecretDependency
-   :members:
-   :undoc-members:
-
 .. autoclass:: Securable
    :members:
    :undoc-members:
 
 .. py:class:: SecurableKind
-
-   .. py:attribute:: CATALOG_FOREIGN_BIGLAKE
-      :value: "CATALOG_FOREIGN_BIGLAKE"
-
-   .. py:attribute:: CATALOG_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE
-      :value: "CATALOG_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE"
-
-   .. py:attribute:: CATALOG_FOREIGN_ICEBERG_REST
-      :value: "CATALOG_FOREIGN_ICEBERG_REST"
-
-   .. py:attribute:: CONNECTION_BIGLAKE_SERVICE_ACCOUNT
-      :value: "CONNECTION_BIGLAKE_SERVICE_ACCOUNT"
-
-   .. py:attribute:: CONNECTION_COMMUNITY_OAUTH_M2M
-      :value: "CONNECTION_COMMUNITY_OAUTH_M2M"
-
-   .. py:attribute:: CONNECTION_COMMUNITY_OAUTH_U2M
-      :value: "CONNECTION_COMMUNITY_OAUTH_U2M"
-
-   .. py:attribute:: CONNECTION_COMMUNITY_OAUTH_U2M_MAPPING
-      :value: "CONNECTION_COMMUNITY_OAUTH_U2M_MAPPING"
-
-   .. py:attribute:: CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_OAUTH_U2M
-      :value: "CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_OAUTH_U2M"
-
-   .. py:attribute:: CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_SERVICE_ACCOUNT
-      :value: "CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_SERVICE_ACCOUNT"
-
-   .. py:attribute:: CONNECTION_ICEBERG_REST_BEARER_TOKEN
-      :value: "CONNECTION_ICEBERG_REST_BEARER_TOKEN"
-
-   .. py:attribute:: CONNECTION_ICEBERG_REST_OAUTH_M2M
-      :value: "CONNECTION_ICEBERG_REST_OAUTH_M2M"
-
-   .. py:attribute:: RECIPIENT_EMAIL
-      :value: "RECIPIENT_EMAIL"
-
-   .. py:attribute:: RECIPIENT_EMAIL_DATABRICKS
-      :value: "RECIPIENT_EMAIL_DATABRICKS"
-
-   .. py:attribute:: RECIPIENT_EMAIL_TOKEN
-      :value: "RECIPIENT_EMAIL_TOKEN"
-
-   .. py:attribute:: SCHEMA_FOREIGN_BIGLAKE
-      :value: "SCHEMA_FOREIGN_BIGLAKE"
-
-   .. py:attribute:: SCHEMA_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE
-      :value: "SCHEMA_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE"
-
-   .. py:attribute:: SCHEMA_FOREIGN_ICEBERG_REST
-      :value: "SCHEMA_FOREIGN_ICEBERG_REST"
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -2374,9 +1893,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TABLE_FEATURE_STORE_EXTERNAL
       :value: "TABLE_FEATURE_STORE_EXTERNAL"
 
-   .. py:attribute:: TABLE_FOREIGN_BIGLAKE
-      :value: "TABLE_FOREIGN_BIGLAKE"
-
    .. py:attribute:: TABLE_FOREIGN_BIGQUERY
       :value: "TABLE_FOREIGN_BIGQUERY"
 
@@ -2385,12 +1901,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_FOREIGN_DELTASHARING
       :value: "TABLE_FOREIGN_DELTASHARING"
-
-   .. py:attribute:: TABLE_FOREIGN_DELTA_DELTASHARING
-      :value: "TABLE_FOREIGN_DELTA_DELTASHARING"
-
-   .. py:attribute:: TABLE_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE
-      :value: "TABLE_FOREIGN_GOOGLE_CLOUD_LAKEHOUSE"
 
    .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE
       :value: "TABLE_FOREIGN_HIVE_METASTORE"
@@ -2425,9 +1935,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_VIEW
       :value: "TABLE_FOREIGN_HIVE_METASTORE_VIEW"
 
-   .. py:attribute:: TABLE_FOREIGN_ICEBERG_REST
-      :value: "TABLE_FOREIGN_ICEBERG_REST"
-
    .. py:attribute:: TABLE_FOREIGN_MONGODB
       :value: "TABLE_FOREIGN_MONGODB"
 
@@ -2439,9 +1946,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_FOREIGN_ORACLE
       :value: "TABLE_FOREIGN_ORACLE"
-
-   .. py:attribute:: TABLE_FOREIGN_PALANTIR
-      :value: "TABLE_FOREIGN_PALANTIR"
 
    .. py:attribute:: TABLE_FOREIGN_POSTGRESQL
       :value: "TABLE_FOREIGN_POSTGRESQL"
@@ -2560,8 +2064,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FUNCTION
       :value: "FUNCTION"
 
+   .. py:attribute:: MCP_SERVICE
+      :value: "MCP_SERVICE"
+
    .. py:attribute:: METASTORE
       :value: "METASTORE"
+
+   .. py:attribute:: MODEL
+      :value: "MODEL"
+
+   .. py:attribute:: MODEL_PROVIDER_SERVICE
+      :value: "MODEL_PROVIDER_SERVICE"
+
+   .. py:attribute:: MODEL_SERVICE
+      :value: "MODEL_SERVICE"
 
    .. py:attribute:: PIPELINE
       :value: "PIPELINE"
@@ -2801,10 +2317,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UcEncryptedToken
-   :members:
-   :undoc-members:
-
 .. autoclass:: UnassignResponse
    :members:
    :undoc-members:
@@ -2901,10 +2413,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SKIP
       :value: "SKIP"
-
-.. autoclass:: VolumeDependency
-   :members:
-   :undoc-members:
 
 .. autoclass:: VolumeInfo
    :members:

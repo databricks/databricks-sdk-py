@@ -113,6 +113,7 @@ AUTO_PACKAGES = [
         "Agent Bricks Service",
         "The Custom LLMs service manages state and powers the UI for the Custom LLM product.",
     ),
+    Package("aifunctions", "AI Functions", "Transform and enrich data with AI on Databricks."),
     Package(
         "aisearch",
         "AISearch",
@@ -172,6 +173,11 @@ AUTO_PACKAGES = [
         "qualitymonitorv2",
         "Quality Monitor V2",
         "Deprecated: Please use the Data Quality Monitoring API instead (REST: /api/data-quality/v1/monitors). Manage data quality of UC objects (currently support `schema`).",
+    ),
+    Package(
+        "sandbox",
+        "Sandbox",
+        "Create, manage, and control the lifecycle of sandboxes -- isolated, pre-configured, low-latency Serverless compute environments for running code.",
     ),
     Package("serving", "", ""),
     Package("settings", "", ""),

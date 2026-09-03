@@ -137,18 +137,6 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_replication_group_preview(parent: str, replication_group_preview: ReplicationGroupPreview, replication_group_preview_id: str [, request_id: Optional[str]]) -> CreateReplicationGroupPreviewOperation
-
-        Creates a new replication group for the project.
-
-        :param parent: str
-        :param replication_group_preview: :class:`ReplicationGroupPreview`
-        :param replication_group_preview_id: str
-        :param request_id: str (optional)
-
-        :returns: :class:`Operation`
-        
-
     .. py:method:: create_role(parent: str, role: Role [, replace_existing: Optional[bool], role_id: Optional[str]]) -> CreateRoleOperation
 
         Creates a new Postgres role in the branch.
@@ -211,24 +199,12 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_table(table: Table) -> Table
-
-        Create a Table (non-synced database table for Autoscaling v2 Lakebase projects).
-
-        :param table: :class:`Table`
-
-        :returns: :class:`Table`
-        
-
-    .. py:method:: delete_branch(name: str [, allow_missing: Optional[bool], purge: Optional[bool]]) -> DeleteBranchOperation
+    .. py:method:: delete_branch(name: str [, purge: Optional[bool]]) -> DeleteBranchOperation
 
         Deletes the specified database branch.
 
         :param name: str
           The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
-        :param allow_missing: bool (optional)
-          If true, if branch does not exists, the request will succeed and no action will be taken. If false
-          (default value) and branch does not exists, the request will fail with NOT_FOUND error.
         :param purge: bool (optional)
           If true, permanently delete the branch; if false, soft delete.
 
@@ -295,26 +271,6 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: delete_forward_etl_configuration(parent: str [, pg_database_oid: Optional[int], pg_schema_oid: Optional[int], tenant_id: Optional[str], timeline_id: Optional[str]]) -> DeleteForwardEtlConfigurationResponse
-
-        Hard delete a Forward ETL configuration and all associated table mappings. Unlike DisableForwardEtl,
-        this permanently removes the config and mapping rows.
-
-        :param parent: str
-          The Branch to delete Forward ETL configuration for. Format:
-          projects/{project_id}/branches/{branch_id}
-        :param pg_database_oid: int (optional)
-          PostgreSQL database OID to delete configuration for.
-        :param pg_schema_oid: int (optional)
-          PostgreSQL schema OID to delete configuration for.
-        :param tenant_id: str (optional)
-          Tenant ID (dashless UUID format).
-        :param timeline_id: str (optional)
-          Timeline ID (dashless UUID format).
-
-        :returns: :class:`DeleteForwardEtlConfigurationResponse`
-        
-
     .. py:method:: delete_project(name: str [, purge: Optional[bool]]) -> DeleteProjectOperation
 
         Deletes the specified database project.
@@ -323,27 +279,6 @@
           The full resource path of the project to delete. Format: projects/{project_id}
         :param purge: bool (optional)
           If true, permanently deletes the project (hard delete). If false or unset, performs a soft delete.
-
-        :returns: :class:`Operation`
-        
-
-    .. py:method:: delete_recovery_branch_preview(name: str [, request_id: Optional[str]]) -> DeleteRecoveryBranchPreviewOperation
-
-        Deletes the specified recovery branch after reconciliation is complete.
-
-        :param name: str
-        :param request_id: str (optional)
-
-        :returns: :class:`Operation`
-        
-
-    .. py:method:: delete_replication_group_preview(name: str [, etag: Optional[str], request_id: Optional[str]]) -> DeleteReplicationGroupPreviewOperation
-
-        Deletes the specified replication group.
-
-        :param name: str
-        :param etag: str (optional)
-        :param request_id: str (optional)
 
         :returns: :class:`Operation`
         
@@ -385,47 +320,7 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: delete_table(name: str)
-
-        Delete a Table (non-synced database table for Autoscaling v2 Lakebase projects).
-
-        :param name: str
-          Full three-part (catalog, schema, table) name of the table.
-
-
-        
-
-    .. py:method:: disable_forward_etl(parent: str [, pg_database_oid: Optional[int], pg_schema_oid: Optional[int], tenant_id: Optional[str], timeline_id: Optional[str]]) -> DisableForwardEtlResponse
-
-        Disable Forward ETL for a branch.
-
-        :param parent: str
-          The Branch to disable Forward ETL for. Format: projects/{project_id}/branches/{branch_id}
-        :param pg_database_oid: int (optional)
-          PostgreSQL database OID to disable.
-        :param pg_schema_oid: int (optional)
-          PostgreSQL schema OID to disable.
-        :param tenant_id: str (optional)
-          Tenant ID (dashless UUID format).
-        :param timeline_id: str (optional)
-          Timeline ID (dashless UUID format).
-
-        :returns: :class:`DisableForwardEtlResponse`
-        
-
-    .. py:method:: failover_replication_group_preview(name: str, target_workspace: str [, etag: Optional[str], request_id: Optional[str]]) -> FailoverReplicationGroupPreviewOperation
-
-        Fails over the replication group to a target workspace, promoting the secondary to primary.
-
-        :param name: str
-        :param target_workspace: str
-        :param etag: str (optional)
-        :param request_id: str (optional)
-
-        :returns: :class:`Operation`
-        
-
-    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]], expire_time: Optional[Timestamp], group_name: Optional[str], ttl: Optional[Duration]]) -> DatabaseCredential
+    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]], expire_time: Optional[Timestamp], ttl: Optional[Duration]]) -> DatabaseCredential
 
         Generate OAuth credentials for a Postgres database.
 
@@ -437,10 +332,6 @@
         :param expire_time: Timestamp (optional)
           Timestamp in UTC of when this credential should expire. Must be at least 300 seconds (5 minutes) and
           at most 1 hour from the current time.
-        :param group_name: str (optional)
-          The display name of a ``Databricks`` workspace group. When set, the returned credential is scoped to
-          this group, so the caller connects directly as the group's Postgres role. The caller must be a
-          member of the group. When omitted, the credential is scoped to the caller's own identity.
         :param ttl: Duration (optional)
           The requested time-to-live for the generated credential token. Must be at least 300 seconds (5
           minutes) and at most 3600 seconds (1 hour).
@@ -494,18 +385,6 @@
         :returns: :class:`CdfStatus`
         
 
-    .. py:method:: get_compute_instance(name: str) -> ComputeInstance
-
-        Lists the specific compute instance under an endpoint. Note: ComputeInstances are managed via the
-        parent Endpoint resource, and cannot be created, updated, or deleted directly.
-
-        :param name: str
-          The full resource path of the compute instance to retrieve. Format:
-          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}/compute-instances/{compute_instance_id}
-
-        :returns: :class:`ComputeInstance`
-        
-
     .. py:method:: get_data_api(name: str) -> DataApi
 
         Get Data API configuration for a database.
@@ -539,34 +418,6 @@
         :returns: :class:`Endpoint`
         
 
-    .. py:method:: get_forward_etl_metadata(parent: str [, tenant_id: Optional[str], timeline_id: Optional[str]]) -> ForwardEtlMetadata
-
-        Get Forward ETL metadata (database and schema OIDs).
-
-        :param parent: str
-          The Branch to get metadata for. Format: projects/{project_id}/branches/{branch_id}
-        :param tenant_id: str (optional)
-          Tenant ID (dashless UUID format).
-        :param timeline_id: str (optional)
-          Timeline ID (dashless UUID format).
-
-        :returns: :class:`ForwardEtlMetadata`
-        
-
-    .. py:method:: get_forward_etl_status(parent: str [, tenant_id: Optional[str], timeline_id: Optional[str]]) -> ForwardEtlStatus
-
-        Get Forward ETL configuration and status for a branch.
-
-        :param parent: str
-          The Branch to get Forward ETL status for. Format: projects/{project_id}/branches/{branch_id}
-        :param tenant_id: str (optional)
-          Tenant ID (dashless UUID format).
-        :param timeline_id: str (optional)
-          Timeline ID (dashless UUID format).
-
-        :returns: :class:`ForwardEtlStatus`
-        
-
     .. py:method:: get_operation(name: str) -> Operation
 
         Retrieves the status of a long-running operation.
@@ -585,24 +436,6 @@
           The full resource path of the project to retrieve. Format: projects/{project_id}
 
         :returns: :class:`Project`
-        
-
-    .. py:method:: get_recovery_branch_preview(name: str) -> RecoveryBranchPreview
-
-        Retrieves information about the specified recovery branch.
-
-        :param name: str
-
-        :returns: :class:`RecoveryBranchPreview`
-        
-
-    .. py:method:: get_replication_group_preview(name: str) -> ReplicationGroupPreview
-
-        Retrieves information about the specified replication group.
-
-        :param name: str
-
-        :returns: :class:`ReplicationGroupPreview`
         
 
     .. py:method:: get_role(name: str) -> Role
@@ -648,29 +481,6 @@
           where (catalog, schema, table) are the entity names in the Unity Catalog.
 
         :returns: :class:`SyncedTable`
-        
-
-    .. py:method:: get_table(name: str) -> Table
-
-        Get a Table (non-synced database table for Autoscaling v2 Lakebase projects).
-
-        :param name: str
-          Full three-part (catalog, schema, table) name of the table.
-
-        :returns: :class:`Table`
-        
-
-    .. py:method:: inspect_recovery_branch_preview(name: str, branch_id: str [, request_id: Optional[str]]) -> InspectRecoveryBranchPreviewOperation
-
-        Materializes a temporary inspection branch from the specified recovery branch for data examination.
-
-        :param name: str
-          The recovery branch from which to create the inspection branch.
-        :param branch_id: str
-          Caller-supplied id for the inspection Branch this custom method materializes.
-        :param request_id: str (optional)
-
-        :returns: :class:`Operation`
         
 
     .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str], show_deleted: Optional[bool]]) -> Iterator[Branch]
@@ -722,29 +532,6 @@
         :returns: Iterator over :class:`CdfStatus`
         
 
-    .. py:method:: list_compute_instances(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ComputeInstance]
-
-        Lists all compute instances that have been created under the specified endpoint. Note:
-        ComputeInstances are managed via the parent Endpoint resource, and cannot be created, updated, or
-        deleted directly.
-
-        :param parent: str
-          The parent, which owns the compute instances.
-        :param page_size: int (optional)
-          The maximum number of compute instances to return. The service may return fewer than this value.
-
-          If unspecified, at most 50 compute instances will be returned. The maximum value is 1000; values
-          above 1000 will be coerced to 1000.
-        :param page_token: str (optional)
-          A page token, received from a previous ``ListInstances`` call. Provide this to retrieve the
-          subsequent page.
-
-          When paginating, all other parameters provided to ``ListInstances`` must match the call that
-          provided the page token.
-
-        :returns: Iterator over :class:`ComputeInstance`
-        
-
     .. py:method:: list_databases(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Database]
 
         List Databases.
@@ -790,28 +577,6 @@
         :returns: Iterator over :class:`Project`
         
 
-    .. py:method:: list_recovery_branch_previews(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[RecoveryBranchPreview]
-
-        Returns a paginated list of recovery branches for the project.
-
-        :param parent: str
-        :param page_size: int (optional)
-        :param page_token: str (optional)
-
-        :returns: Iterator over :class:`RecoveryBranchPreview`
-        
-
-    .. py:method:: list_replication_group_previews(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ReplicationGroupPreview]
-
-        Returns a paginated list of replication groups for the project.
-
-        :param parent: str
-        :param page_size: int (optional)
-        :param page_token: str (optional)
-
-        :returns: Iterator over :class:`ReplicationGroupPreview`
-        
-
     .. py:method:: list_roles(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Role]
 
         Returns a paginated list of Postgres roles in the branch.
@@ -838,18 +603,6 @@
           Page token from a previous response; omit for the first page.
 
         :returns: Iterator over :class:`Snapshot`
-        
-
-    .. py:method:: switchover_replication_group_preview(name: str, target_workspace: str [, etag: Optional[str], request_id: Optional[str]]) -> SwitchoverReplicationGroupPreviewOperation
-
-        Switches over the replication group to a target workspace with a coordinated failover.
-
-        :param name: str
-        :param target_workspace: str
-        :param etag: str (optional)
-        :param request_id: str (optional)
-
-        :returns: :class:`Operation`
         
 
     .. py:method:: undelete_branch(name: str) -> UndeleteBranchOperation
@@ -959,29 +712,6 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: update_replication_group_preview(name: str, replication_group_preview: ReplicationGroupPreview, update_mask: FieldMask [, request_id: Optional[str]]) -> UpdateReplicationGroupPreviewOperation
-
-        Updates the specified replication group.
-
-        :param name: str
-          The resource name of the replication group. Format:
-          projects/{project_id}/preview/replication-groups/{replication_group_id}
-        :param replication_group_preview: :class:`ReplicationGroupPreview`
-        :param update_mask: FieldMask
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
-        :param request_id: str (optional)
-
-        :returns: :class:`Operation`
-        
-
     .. py:method:: update_role(name: str, role: Role, update_mask: FieldMask) -> UpdateRoleOperation
 
         Update a role for a branch.
@@ -1000,7 +730,7 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: update_snapshot_schedule(name: str, snapshot_schedule: SnapshotSchedule, update_mask: FieldMask) -> SnapshotSchedule
+    .. py:method:: update_snapshot_schedule(name: str, snapshot_schedule: SnapshotSchedule, update_mask: FieldMask) -> UpdateSnapshotScheduleOperation
 
         Sets the snapshot schedule for a branch. The ``schedule`` field is replaced wholesale; an empty
         schedule disables automatic snapshots.
@@ -1015,5 +745,5 @@
           Fields to update. The only updatable path is ``schedule``, which replaces the entire set of
           cadences.
 
-        :returns: :class:`SnapshotSchedule`
+        :returns: :class:`Operation`
         

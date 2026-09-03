@@ -10,6 +10,7 @@ import databricks.sdk.dbutils as dbutils
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.data_plane import DataPlaneTokenSource
 from databricks.sdk.service import agentbricks as pkg_agentbricks
+from databricks.sdk.service import aifunctions as pkg_aifunctions
 from databricks.sdk.service import aisearch as pkg_aisearch
 from databricks.sdk.service import apps as pkg_apps
 from databricks.sdk.service import billing as pkg_billing
@@ -36,6 +37,7 @@ from databricks.sdk.service import pipelines as pkg_pipelines
 from databricks.sdk.service import postgres as pkg_postgres
 from databricks.sdk.service import provisioning as pkg_provisioning
 from databricks.sdk.service import qualitymonitorv2 as pkg_qualitymonitorv2
+from databricks.sdk.service import sandbox as pkg_sandbox
 from databricks.sdk.service import serving as pkg_serving
 from databricks.sdk.service import settings as pkg_settings
 from databricks.sdk.service import settingsv2 as pkg_settingsv2
@@ -56,6 +58,7 @@ from databricks.sdk.service.iam import AccessControlAPI
 from databricks.sdk.service.iam import AccountAccessControlAPI
 from databricks.sdk.service.iam import AccountAccessControlProxyAPI
 from databricks.sdk.service.agentbricks import AgentBricksAPI
+from databricks.sdk.service.aifunctions import AiFunctionsAPI
 from databricks.sdk.service.catalog import AiGatewayAPI
 from databricks.sdk.service.aisearch import AiSearchAPI
 from databricks.sdk.service.settings import AibiDashboardEmbeddingAccessPolicyAPI
@@ -195,6 +198,7 @@ from databricks.sdk.service.workspace import ReposAPI
 from databricks.sdk.service.catalog import ResourceQuotasAPI
 from databricks.sdk.service.settings import RestrictWorkspaceAdminsAPI
 from databricks.sdk.service.catalog import RfaAPI
+from databricks.sdk.service.sandbox import SandboxAPI
 from databricks.sdk.service.catalog import SchemasAPI
 from databricks.sdk.service.workspace import SecretsAPI
 from databricks.sdk.service.catalog import SecretsUcAPI
@@ -225,7 +229,6 @@ from databricks.sdk.service.catalog import TemporaryVolumeCredentialsAPI
 from databricks.sdk.service.settings import TokenManagementAPI
 from databricks.sdk.service.settings import TokensAPI
 from databricks.sdk.service.billing import UsageDashboardsAPI
-from databricks.sdk.service.billing import UsagePolicyAPI
 from databricks.sdk.service.iam import UsersV2API
 from databricks.sdk.service.iam import AccountUsersV2API
 from databricks.sdk.service.vectorsearch import VectorSearchEndpointsAPI
@@ -294,6 +297,7 @@ class WorkspaceClient:
         token: Optional[str] = None,
         profile: Optional[str] = None,
         config_file: Optional[str] = None,
+        group_id: Optional[str] = None,
         azure_workspace_resource_id: Optional[str] = None,
         azure_client_secret: Optional[str] = None,
         azure_client_id: Optional[str] = None,
@@ -327,6 +331,7 @@ class WorkspaceClient:
                 token=token,
                 profile=profile,
                 config_file=config_file,
+                group_id=group_id,
                 azure_workspace_resource_id=azure_workspace_resource_id,
                 azure_client_secret=azure_client_secret,
                 azure_client_id=azure_client_id,
@@ -358,6 +363,7 @@ class WorkspaceClient:
         self._access_control = pkg_iam.AccessControlAPI(self._api_client)
         self._account_access_control_proxy = pkg_iam.AccountAccessControlProxyAPI(self._api_client)
         self._agent_bricks = pkg_agentbricks.AgentBricksAPI(self._api_client)
+        self._ai_functions = pkg_aifunctions.AiFunctionsAPI(self._api_client)
         self._ai_gateway = pkg_catalog.AiGatewayAPI(self._api_client)
         self._ai_search = pkg_aisearch.AiSearchAPI(self._api_client)
         self._alerts = pkg_sql.AlertsAPI(self._api_client)
@@ -456,6 +462,7 @@ class WorkspaceClient:
         self._repos = pkg_workspace.ReposAPI(self._api_client)
         self._resource_quotas = pkg_catalog.ResourceQuotasAPI(self._api_client)
         self._rfa = pkg_catalog.RfaAPI(self._api_client)
+        self._sandbox = pkg_sandbox.SandboxAPI(self._api_client)
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
         self._secrets_uc = pkg_catalog.SecretsUcAPI(self._api_client)
@@ -526,6 +533,11 @@ class WorkspaceClient:
     def agent_bricks(self) -> pkg_agentbricks.AgentBricksAPI:
         """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
         return self._agent_bricks
+
+    @property
+    def ai_functions(self) -> pkg_aifunctions.AiFunctionsAPI:
+        """Transform and enrich data with AI on Databricks."""
+        return self._ai_functions
 
     @property
     def ai_gateway(self) -> pkg_catalog.AiGatewayAPI:
@@ -1003,6 +1015,11 @@ class WorkspaceClient:
         return self._rfa
 
     @property
+    def sandbox(self) -> pkg_sandbox.SandboxAPI:
+        """Create, manage, and control the lifecycle of sandboxes -- isolated, pre-configured, low-latency Serverless compute environments for running code."""
+        return self._sandbox
+
+    @property
     def schemas(self) -> pkg_catalog.SchemasAPI:
         """A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace."""
         return self._schemas
@@ -1217,6 +1234,7 @@ class AccountClient:
         token: Optional[str] = None,
         profile: Optional[str] = None,
         config_file: Optional[str] = None,
+        group_id: Optional[str] = None,
         azure_workspace_resource_id: Optional[str] = None,
         azure_client_secret: Optional[str] = None,
         azure_client_id: Optional[str] = None,
@@ -1247,6 +1265,7 @@ class AccountClient:
                 token=token,
                 profile=profile,
                 config_file=config_file,
+                group_id=group_id,
                 azure_workspace_resource_id=azure_workspace_resource_id,
                 azure_client_secret=azure_client_secret,
                 azure_client_id=azure_client_id,
@@ -1297,7 +1316,6 @@ class AccountClient:
         self._storage = pkg_provisioning.StorageAPI(self._api_client)
         self._storage_credentials = pkg_catalog.AccountStorageCredentialsAPI(self._api_client)
         self._usage_dashboards = pkg_billing.UsageDashboardsAPI(self._api_client)
-        self._usage_policy = pkg_billing.UsagePolicyAPI(self._api_client)
         self._users_v2 = pkg_iam.AccountUsersV2API(self._api_client)
         self._vpc_endpoints = pkg_provisioning.VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = pkg_iam.WorkspaceAssignmentAPI(self._api_client)
@@ -1464,11 +1482,6 @@ class AccountClient:
     def usage_dashboards(self) -> pkg_billing.UsageDashboardsAPI:
         """These APIs manage usage dashboards for this account."""
         return self._usage_dashboards
-
-    @property
-    def usage_policy(self) -> pkg_billing.UsagePolicyAPI:
-        """A service serves REST API about Usage policies."""
-        return self._usage_policy
 
     @property
     def users_v2(self) -> pkg_iam.AccountUsersV2API:

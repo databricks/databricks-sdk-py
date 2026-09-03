@@ -165,10 +165,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ListUsagePoliciesResponse
-   :members:
-   :undoc-members:
-
 .. py:class:: LogDeliveryConfigStatus
 
    Log Delivery Status
@@ -248,10 +244,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: USAGE_DASHBOARD_TYPE_WORKSPACE
       :value: "USAGE_DASHBOARD_TYPE_WORKSPACE"
-
-.. autoclass:: UsagePolicy
-   :members:
-   :undoc-members:
 
 .. autoclass:: WrappedLogDeliveryConfiguration
    :members:

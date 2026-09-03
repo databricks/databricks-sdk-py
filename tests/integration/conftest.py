@@ -164,6 +164,16 @@ def env_or_skip():
 
 
 @pytest.fixture(scope="session")
+def skip_aws_uc_workspace():
+    if (
+        os.getenv("CLOUD_PROVIDER") == "AWS"
+        and os.getenv("CLOUD_ENV") == "ucws"
+        and os.getenv("TEST_ENVIRONMENT_TYPE") == "UC_WORKSPACE"
+    ):
+        pytest.skip("Slow test causes automated releases to fail")
+
+
+@pytest.fixture(scope="session")
 def schema(ucws, random):
     schema = ucws.schemas.create("dbfs-" + random(), "main")
     yield schema

@@ -11,9 +11,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
 
-   .. py:attribute:: EMAIL
-      :value: "EMAIL"
-
    .. py:attribute:: OAUTH_CLIENT_CREDENTIALS
       :value: "OAUTH_CLIENT_CREDENTIALS"
 
@@ -53,12 +50,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: FLOAT
       :value: "FLOAT"
-
-   .. py:attribute:: GEOGRAPHY
-      :value: "GEOGRAPHY"
-
-   .. py:attribute:: GEOMETRY
-      :value: "GEOMETRY"
 
    .. py:attribute:: INT
       :value: "INT"
@@ -161,18 +152,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: GetSharePermissionsResponse
    :members:
    :undoc-members:
-
-.. autoclass:: GlobalDistributionStatus
-   :members:
-   :undoc-members:
-
-.. py:class:: GlobalDistributionStatusStatus
-
-   .. py:attribute:: DISABLED
-      :value: "DISABLED"
-
-   .. py:attribute:: ENABLED
-      :value: "ENABLED"
 
 .. autoclass:: IpAccessList
    :members:
@@ -392,18 +371,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RegisteredModelAlias
-   :members:
-   :undoc-members:
-
-.. autoclass:: ReplicationConfig
-   :members:
-   :undoc-members:
-
-.. autoclass:: ReplicationInterval
-   :members:
-   :undoc-members:
-
-.. autoclass:: ReplicationSchedule
    :members:
    :undoc-members:
 

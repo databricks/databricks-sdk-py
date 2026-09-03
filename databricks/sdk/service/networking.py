@@ -245,7 +245,6 @@ class EndpointState(Enum):
 
 
 class EndpointUseCase(Enum):
-    GENERAL_ACCESS = "GENERAL_ACCESS"
     SERVICE_DIRECT = "SERVICE_DIRECT"
 
 

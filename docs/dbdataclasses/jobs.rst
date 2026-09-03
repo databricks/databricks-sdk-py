@@ -4,22 +4,6 @@ Jobs
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.jobs`` module.
 
 .. py:currentmodule:: databricks.sdk.service.jobs
-.. autoclass:: AgentTool
-   :members:
-   :undoc-members:
-
-.. autoclass:: AgenticTask
-   :members:
-   :undoc-members:
-
-.. autoclass:: AgenticTaskContext
-   :members:
-   :undoc-members:
-
-.. autoclass:: AgenticTaskOutput
-   :members:
-   :undoc-members:
-
 .. autoclass:: AiRuntimeTask
    :members:
    :undoc-members:
@@ -56,10 +40,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: AppTool
-   :members:
-   :undoc-members:
-
 .. py:class:: AuthenticationMethod
 
    .. py:attribute:: OAUTH
@@ -73,10 +53,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: BaseRun
-   :members:
-   :undoc-members:
-
-.. autoclass:: CatalogTool
    :members:
    :undoc-members:
 
@@ -199,9 +175,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GPU_1X_H100
       :value: "GPU_1X_H100"
 
-   .. py:attribute:: GPU_8X_B300
-      :value: "GPU_8X_B300"
-
    .. py:attribute:: GPU_8X_H100
       :value: "GPU_8X_H100"
 
@@ -273,10 +246,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DashboardTaskOutput
-   :members:
-   :undoc-members:
-
-.. autoclass:: DashboardTool
    :members:
    :undoc-members:
 
@@ -411,26 +380,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: GenieCodeApi
-   :members:
-   :undoc-members:
-
-.. autoclass:: GenieCodeOutput
-   :members:
-   :undoc-members:
-
-.. autoclass:: GenieSpaceTool
-   :members:
-   :undoc-members:
-
-.. autoclass:: GenieTask
-   :members:
-   :undoc-members:
-
-.. autoclass:: GenieTaskOutput
-   :members:
-   :undoc-members:
-
 .. autoclass:: GetJobPermissionLevelsResponse
    :members:
    :undoc-members:
@@ -470,10 +419,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GitSource
-   :members:
-   :undoc-members:
-
-.. autoclass:: IncrementalRefreshConfig
    :members:
    :undoc-members:
 
@@ -527,10 +472,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: JobEnvironment
-   :members:
-   :undoc-members:
-
-.. autoclass:: JobEnvironmentVariables
    :members:
    :undoc-members:
 
@@ -630,10 +571,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: JobsHealthRules
-   :members:
-   :undoc-members:
-
-.. autoclass:: KnowledgeAssistantTool
    :members:
    :undoc-members:
 
@@ -744,37 +681,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: PowerBiTableTableType
-
-   The Unity Catalog table type of a table. Values mirror the Unity Catalog TableType enum so classification stays aligned across the two APIs.
-
-   .. py:attribute:: EXTERNAL
-      :value: "EXTERNAL"
-
-   .. py:attribute:: EXTERNAL_SHALLOW_CLONE
-      :value: "EXTERNAL_SHALLOW_CLONE"
-
-   .. py:attribute:: FOREIGN
-      :value: "FOREIGN"
-
-   .. py:attribute:: MANAGED
-      :value: "MANAGED"
-
-   .. py:attribute:: MANAGED_SHALLOW_CLONE
-      :value: "MANAGED_SHALLOW_CLONE"
-
-   .. py:attribute:: MATERIALIZED_VIEW
-      :value: "MATERIALIZED_VIEW"
-
-   .. py:attribute:: METRIC_VIEW
-      :value: "METRIC_VIEW"
-
-   .. py:attribute:: STREAMING_TABLE
-      :value: "STREAMING_TABLE"
-
-   .. py:attribute:: VIEW
-      :value: "VIEW"
-
 .. autoclass:: PowerBiTask
    :members:
    :undoc-members:
@@ -812,32 +718,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: QueueSettings
    :members:
    :undoc-members:
-
-.. py:class:: RefreshGranularity
-
-   Granularity for incremental refresh windows.
-
-   .. py:attribute:: REFRESH_GRANULARITY_DAY
-      :value: "REFRESH_GRANULARITY_DAY"
-
-   .. py:attribute:: REFRESH_GRANULARITY_MONTH
-      :value: "REFRESH_GRANULARITY_MONTH"
-
-   .. py:attribute:: REFRESH_GRANULARITY_QUARTER
-      :value: "REFRESH_GRANULARITY_QUARTER"
-
-   .. py:attribute:: REFRESH_GRANULARITY_YEAR
-      :value: "REFRESH_GRANULARITY_YEAR"
-
-.. py:class:: RefreshPolicyMode
-
-   The refresh policy mode for incremental refresh.
-
-   .. py:attribute:: REFRESH_POLICY_MODE_HYBRID
-      :value: "REFRESH_POLICY_MODE_HYBRID"
-
-   .. py:attribute:: REFRESH_POLICY_MODE_IMPORT_ONLY
-      :value: "REFRESH_POLICY_MODE_IMPORT_ONLY"
 
 .. autoclass:: RepairHistoryItem
    :members:
@@ -893,19 +773,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ResolvedValuesAgenticTaskResolvedValues
-   :members:
-   :undoc-members:
-
 .. autoclass:: ResolvedValuesAiRuntimeTaskResolvedValues
-   :members:
-   :undoc-members:
-
-.. autoclass:: ResolvedValuesAlertTaskResolvedValues
-   :members:
-   :undoc-members:
-
-.. autoclass:: ResolvedValuesGenieTaskResolvedValues
    :members:
    :undoc-members:
 
@@ -1087,14 +955,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SchemaTool
-   :members:
-   :undoc-members:
-
-.. autoclass:: ServingEndpointTool
-   :members:
-   :undoc-members:
-
 .. py:class:: Source
 
    Optional location type of the SQL file. When set to ``WORKSPACE``, the SQL file will be retrieved from the local Databricks workspace. When set to ``GIT``, the SQL file will be retrieved from a Git repository defined in ``git_source``. If the value is empty, the task will use ``GIT`` if ``git_source`` is defined and ``WORKSPACE`` otherwise.
@@ -1255,27 +1115,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SupervisorAgent
-   :members:
-   :undoc-members:
-
-.. autoclass:: SupervisorAgentTool
-   :members:
-   :undoc-members:
-
-.. autoclass:: SupervisorApi
-   :members:
-   :undoc-members:
-
-.. autoclass:: SupervisorOutput
-   :members:
-   :undoc-members:
-
 .. autoclass:: TableState
-   :members:
-   :undoc-members:
-
-.. autoclass:: TableTool
    :members:
    :undoc-members:
 
@@ -1300,14 +1140,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TaskNotificationSettings
-   :members:
-   :undoc-members:
-
-.. autoclass:: TaskOutputSchema
-   :members:
-   :undoc-members:
-
-.. autoclass:: TaskOutputSchemaProperty
    :members:
    :undoc-members:
 
@@ -1344,9 +1176,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CLUSTER_REQUEST_LIMIT_EXCEEDED
       :value: "CLUSTER_REQUEST_LIMIT_EXCEEDED"
-
-   .. py:attribute:: CLUSTER_TERMINATED_BY_USER
-      :value: "CLUSTER_TERMINATED_BY_USER"
 
    .. py:attribute:: DISABLED
       :value: "DISABLED"
@@ -1428,10 +1257,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
 
-.. autoclass:: TraceDestination
-   :members:
-   :undoc-members:
-
 .. autoclass:: TriggerConfiguration
    :members:
    :undoc-members:
@@ -1463,7 +1288,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: TriggerType
 
    The type of trigger that fired this run.
-   - ``PERIODIC``: Schedules that periodically trigger runs, such as a cron scheduler. - ``ONE_TIME``: One time triggers that fire a single run. This occurs you triggered a single run on demand through the UI or the API. - ``RETRY``: Indicates a run that is triggered as a retry of a previously failed run. This occurs when you request to re-run the job in case of failures. - ``RUN_JOB_TASK``: Indicates a run that is triggered using a Run Job task. - ``FILE_ARRIVAL``: Indicates a run that is triggered by a file arrival. - ``CONTINUOUS``: Indicates a run that is triggered by a continuous job. - ``TABLE``: Indicates a run that is triggered by a table update. - ``CONTINUOUS_RESTART``: Indicates a run created by user to manually restart a continuous job run. - ``MODEL``: Indicates a run that is triggered by a model update.
+   - ``PERIODIC``: Schedules that periodically trigger runs, such as a cron scheduler. - ``ONE_TIME``: One time triggers that fire a single run. This occurs you triggered a single run on demand through the UI or the API. - ``RETRY``: Indicates a run that is triggered as a retry of a previously failed run. This occurs when you request to re-run the job in case of failures. - ``RUN_JOB_TASK``: Indicates a run that is triggered using a Run Job task. - ``FILE_ARRIVAL``: Indicates a run that is triggered by a file arrival. - ``CONTINUOUS``: Indicates a run that is triggered by a continuous job. - ``TABLE``: Indicates a run that is triggered by a table update. - ``CONTINUOUS_RESTART``: Indicates a run created by user to manually restart a continuous job run. - ``MODEL``: Indicates a run that is triggered by a model update. - ``JOB_COMPLETION``: Indicates a run that is triggered by an upstream job completion.
 
    .. py:attribute:: CONTINUOUS
       :value: "CONTINUOUS"
@@ -1488,22 +1313,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE
       :value: "TABLE"
-
-.. autoclass:: UcConnectionTool
-   :members:
-   :undoc-members:
-
-.. autoclass:: UcFunctionTool
-   :members:
-   :undoc-members:
-
-.. autoclass:: UcMcpTool
-   :members:
-   :undoc-members:
-
-.. autoclass:: VectorSearchIndexTool
-   :members:
-   :undoc-members:
 
 .. autoclass:: ViewItem
    :members:
@@ -1531,14 +1340,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DASHBOARDS
       :value: "DASHBOARDS"
-
-.. autoclass:: VolumeTool
-   :members:
-   :undoc-members:
-
-.. autoclass:: WebSearchTool
-   :members:
-   :undoc-members:
 
 .. autoclass:: Webhook
    :members:

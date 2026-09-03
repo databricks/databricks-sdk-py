@@ -8,6 +8,7 @@ These APIs are available from WorkspaceClient
    :maxdepth: 1
 
    agentbricks/index
+   aifunctions/index
    aisearch/index
    apps/index
    bundledeployments/index
@@ -30,6 +31,7 @@ These APIs are available from WorkspaceClient
    pipelines/index
    postgres/index
    qualitymonitorv2/index
+   sandbox/index
    serving/index
    settings/index
    settingsv2/index
