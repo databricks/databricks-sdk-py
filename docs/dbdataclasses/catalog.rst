@@ -287,6 +287,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
+   .. py:attribute:: AWS_SECRETS_MANAGER
+      :value: "AWS_SECRETS_MANAGER"
+
+   .. py:attribute:: AZURE_KEY_VAULT
+      :value: "AZURE_KEY_VAULT"
+
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
 

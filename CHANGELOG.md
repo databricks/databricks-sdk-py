@@ -1,6 +1,6 @@
 # Version changelog
 
-## Release v1.0.0 (2026-09-03)
+## Release v0.134.0 (2026-09-03)
 
 ### Breaking Changes
 * `TableSpec.source_table` and `SchemaSpec.source_schema` in the Pipelines API (`databricks.sdk.service.pipelines`) are now optional. Previously required, they may be absent for source types — such as streaming or message-bus connectors — that do not use a source table or schema name. Code that assumes these fields are always present should handle their absence.
@@ -32,16 +32,17 @@
 * Add `rabbitmq_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
 * Add `source_snapshot` field for `databricks.sdk.service.postgres.BranchSpec`.
 * Add `source_snapshot` field for `databricks.sdk.service.postgres.BranchStatus`.
-* Add `deployment_resource_type_vector_search_endpoint`, `deployment_resource_type_vector_search_index`, `deployment_resource_type_job_run`, `deployment_resource_type_postgres_catalog`, `deployment_resource_type_postgres_synced_table`, `deployment_resource_type_genie_space`, `deployment_resource_type_instance_pool`, `deployment_resource_type_postgres_database` and `deployment_resource_type_postgres_role` enum values for `databricks.sdk.service.bundledeployments.DeploymentResourceType`.
+* Add `deployment_resource_type_vector_search_endpoint`, `deployment_resource_type_vector_search_index`, `deployment_resource_type_job_run`, `deployment_resource_type_postgres_catalog`, `deployment_resource_type_postgres_synced_table`, `deployment_resource_type_genie_space`, `deployment_resource_type_instance_pool`, `deployment_resource_type_postgres_database`, `deployment_resource_type_postgres_role`, `deployment_resource_type_secret` and `deployment_resource_type_cluster_policy` enum values for `databricks.sdk.service.bundledeployments.DeploymentResourceType`.
 * Add `operation_status_pending` enum value for `databricks.sdk.service.bundledeployments.OperationStatus`.
+* Add `aws_secrets_manager` and `azure_key_vault` enum values for `databricks.sdk.service.catalog.ConnectionType`.
 * Add `external_use_location` enum value for `databricks.sdk.service.catalog.Privilege`.
 * Add `model`, `model_service`, `mcp_service` and `model_provider_service` enum values for `databricks.sdk.service.catalog.SecurableType`.
 * Add `gpu_1x_h100` and `gpu_8x_b300` enum values for `databricks.sdk.service.compute.HardwareAcceleratorType`.
 * Add `rabbitmq` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
-* [Breaking] Change `source_schema` field for `databricks.sdk.service.pipelines.SchemaSpec` to no longer be required.
 * Change `source_schema` field for `databricks.sdk.service.pipelines.SchemaSpec` to no longer be required.
-* Change `source_table` field for `databricks.sdk.service.pipelines.TableSpec` to no longer be required.
+* [Breaking] Change `source_schema` field for `databricks.sdk.service.pipelines.SchemaSpec` to no longer be required.
 * [Breaking] Change `source_table` field for `databricks.sdk.service.pipelines.TableSpec` to no longer be required.
+* Change `source_table` field for `databricks.sdk.service.pipelines.TableSpec` to no longer be required.
 * [Breaking] Remove `disabled` field for `databricks.sdk.service.catalog.InferenceTableConfig`.
 * [Breaking] Remove `owner` field for `databricks.sdk.service.catalog.McpService`.
 * [Breaking] Remove `owner` field for `databricks.sdk.service.catalog.ModelProviderService`.

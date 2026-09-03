@@ -38,6 +38,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DEPLOYMENT_RESOURCE_TYPE_CLUSTER
       :value: "DEPLOYMENT_RESOURCE_TYPE_CLUSTER"
 
+   .. py:attribute:: DEPLOYMENT_RESOURCE_TYPE_CLUSTER_POLICY
+      :value: "DEPLOYMENT_RESOURCE_TYPE_CLUSTER_POLICY"
+
    .. py:attribute:: DEPLOYMENT_RESOURCE_TYPE_DASHBOARD
       :value: "DEPLOYMENT_RESOURCE_TYPE_DASHBOARD"
 
@@ -103,6 +106,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DEPLOYMENT_RESOURCE_TYPE_SCHEMA
       :value: "DEPLOYMENT_RESOURCE_TYPE_SCHEMA"
+
+   .. py:attribute:: DEPLOYMENT_RESOURCE_TYPE_SECRET
+      :value: "DEPLOYMENT_RESOURCE_TYPE_SECRET"
 
    .. py:attribute:: DEPLOYMENT_RESOURCE_TYPE_SECRET_SCOPE
       :value: "DEPLOYMENT_RESOURCE_TYPE_SECRET_SCOPE"

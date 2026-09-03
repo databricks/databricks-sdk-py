@@ -1073,7 +1073,10 @@ class CronSchedule:
     """A cron-based schedule trigger for the materialization pipeline."""
 
     cron_expression: Optional[str] = None
-    """The cron expression defining the schedule (e.g., "0 0 * * *" for daily at midnight)."""
+    """The cron expression defining the schedule (e.g., "0 0 * * *" for daily at midnight). The
+    schedule is interpreted in the UTC time zone. Required when mode is MANUAL (or unset). Left
+    empty when mode is DERIVED, where the service computes it (aligned to UTC) from the features'
+    window timing and fills it in on the response."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
