@@ -9,7 +9,6 @@ from datetime import timedelta
 from enum import Enum
 from typing import Dict, List, Any, Iterator, Callable, Optional
 
-from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
 import time
@@ -18,7 +17,6 @@ import logging
 
 from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    _duration,
     _enum,
     _from_dict,
     _int64,
@@ -5739,21 +5737,18 @@ class GrantOptions:
 
 @dataclass
 class InferenceTableConfig:
-    """Inference table configuration for payload logging on a model service.
-
-    ``parent`` is always REQUIRED when the sub-message is set; the destination UC schema is needed
-    to construct or rebind the payload TABLE regardless of whether payload logging is currently
-    active. Payload logging is active by default; set ``disabled = true`` to pause runtime logging
-    without dropping the table or the binding."""
+    """Configuration for logging request and response payloads to a Unity Catalog inference table. When
+    this configuration is present, payload logging is enabled by default."""
 
     parent: str
-    """Parent UC schema where the inference table is created. Format: ``schemas/{catalog}.{schema}``.
-    Set at create time and immutable thereafter; changing it on an existing service is rejected."""
+    """Parent Unity Catalog schema where the inference table is created, in the form
+    ``schemas/{catalog}.{schema}``. Required when configuring an inference table. After the
+    inference table is created, this field cannot be changed."""
 
     is_deleted: Optional[bool] = None
-    """True when the bound inference TABLE has been deleted but the parent service still references it.
-    The dangling reference is surfaced (not silently dropped) so callers can see the broken
-    dependency. AI Gateway payload logging fails closed in this state."""
+    """Whether the referenced inference table has been deleted. The configuration remains visible so
+    you can identify the broken dependency. Payload logging cannot continue until the table is
+    restored or the configuration is updated."""
 
     table: Optional[str] = None
     """Resolved UC table for payload logs. Format: ``tables/{catalog}.{schema}.{table}``."""
@@ -5761,8 +5756,8 @@ class InferenceTableConfig:
     table_name_prefix: Optional[str] = None
     """Prefix used to form the inference table's registered name. AI Gateway appends ``_payload``; for
     example, ``table_name_prefix = "orders"`` creates ``orders_payload``. If unset, the prefix
-    defaults to the service name. Read ``table`` from the response for the resolved resource name.
-    Set at create time and immutable thereafter."""
+    defaults to the service name. Read ``table`` from the response for the resulting resource name.
+    After the inference table is created, this field cannot be changed."""
 
     def as_dict(self) -> dict:
         """Serializes the InferenceTableConfig into a dictionary suitable for use as a JSON request body."""
@@ -6177,9 +6172,9 @@ class ListFunctionsResponse:
 
 
 class ListMcpServicesRequestView(Enum):
-    """Controls which fields are populated on each McpService in the response. The server treats unset
-    / VIEW_UNSPECIFIED as BASIC. Callers needing the full configuration must request it explicitly
-    with ``view = FULL``."""
+    """Controls which fields are populated on each McpService in the response. The server uses
+    ``BASIC`` when ``view`` is unset. Callers needing the full configuration must request it
+    explicitly with ``view = FULL``."""
 
     BASIC = "BASIC"
     FULL = "FULL"
@@ -6193,7 +6188,7 @@ class ListMcpServicesResponse:
     """The list of MCP services."""
 
     next_page_token: Optional[str] = None
-    """Pagination token for retrieving the next page of results."""
+    """Pagination token for retrieving the next page. Empty when there are no more results."""
 
     def as_dict(self) -> dict:
         """Serializes the ListMcpServicesResponse into a dictionary suitable for use as a JSON request body."""
@@ -6258,7 +6253,7 @@ class ListMetastoresResponse:
 
 class ListModelProviderServicesRequestView(Enum):
     """Controls which fields are populated on each ModelProviderService in the response. The server
-    treats unset / VIEW_UNSPECIFIED as BASIC. Callers needing the full configuration must request it
+    uses ``BASIC`` when ``view`` is unset. Callers needing the full configuration must request it
     explicitly with ``view = FULL``."""
 
     BASIC = "BASIC"
@@ -6273,7 +6268,7 @@ class ListModelProviderServicesResponse:
     """The list of model provider services."""
 
     next_page_token: Optional[str] = None
-    """Pagination token for retrieving the next page of results."""
+    """Pagination token for retrieving the next page. Empty when there are no more results."""
 
     def as_dict(self) -> dict:
         """Serializes the ListModelProviderServicesResponse into a dictionary suitable for use as a JSON request body."""
@@ -6303,8 +6298,8 @@ class ListModelProviderServicesResponse:
 
 
 class ListModelServicesRequestView(Enum):
-    """Controls which fields are populated on each ModelService in the response. The server treats
-    unset / VIEW_UNSPECIFIED as BASIC. Callers needing the full configuration must request it
+    """Controls which fields are populated on each ModelService in the response. The server uses
+    ``BASIC`` when ``view`` is unset. Callers needing the full configuration must request it
     explicitly with ``view = FULL``."""
 
     BASIC = "BASIC"
@@ -6319,7 +6314,7 @@ class ListModelServicesResponse:
     """The list of model services."""
 
     next_page_token: Optional[str] = None
-    """Pagination token for retrieving the next page of results."""
+    """Pagination token for retrieving the next page. Empty when there are no more results."""
 
     def as_dict(self) -> dict:
         """Serializes the ListModelServicesResponse into a dictionary suitable for use as a JSON request body."""
@@ -6813,8 +6808,7 @@ class McpService:
     """Creator identity."""
 
     effective_owner: Optional[str] = None
-    """The resolved owner of the MCP service. Falls back to the caller's identity when ``owner`` is not
-    explicitly set on creation."""
+    """Owner of the MCP service."""
 
     etag: Optional[str] = None
     """Optimistic concurrency token returned on every read. To make an Update or Delete conditional,
@@ -6909,13 +6903,13 @@ class McpServiceConfig:
 
     include_tool_selectors: Optional[List[str]] = None
     """Tool names or prefix patterns to expose from the MCP server. Use exact tool names or prefix
-    patterns such as ``read_*``. An empty list exposes all tools. Each selector can contain at most
-    256 characters."""
+    patterns such as ``read_*``. An empty list exposes all tools. At most 1,024 selectors are
+    allowed, and each selector can contain at most 256 characters."""
 
     rate_limits: Optional[List[RateLimit]] = None
-    """Rate limits for tool invocations, scoped to a user, group, service principal, the service as a
-    whole, or each user by default. Request-tag rate limits are not supported for MCP services.
-    Empty when no rate limit is configured."""
+    """Rate limits for tool invocations. Supported scopes are user, group, service principal, the
+    service as a whole, and each user by default. Request and token limits are supported. Empty when
+    no rate limit is configured."""
 
     source_connection: Optional[McpServiceConfigSourceConnection] = None
     """Unity Catalog connection referencing the MCP server. Required on Create."""
@@ -6954,13 +6948,13 @@ class McpServiceConfig:
 
 @dataclass
 class McpServiceConfigSourceConnection:
-    """Unity Catalog connection that hosts the MCP server. On Create, provide ``name`` in the
+    """Unity Catalog connection that points to the MCP server. On Create, provide ``name`` in the
     schema-scoped form ``connections/{catalog}.{schema}.{connection}``. On read, the service
-    populates the resolved connection metadata and preserves a dangling source so callers can
-    diagnose a deleted backing connection."""
+    populates the resolved connection metadata. If the connection is deleted, its reference remains
+    visible so you can identify the broken dependency."""
 
     name: str
-    """Name of the Unity Catalog connection that hosts the MCP server, as
+    """Resource name of the Unity Catalog connection used to access the MCP server, in the form
     ``connections/{catalog}.{schema}.{connection}``."""
 
     is_deleted: Optional[bool] = None
@@ -7217,19 +7211,18 @@ class MetastoreInfo:
 
 @dataclass
 class ModelProviderService:
-    """A governed connection to an external model provider stored in Unity Catalog, such as an OpenAI
-    account, Azure OpenAI deployment, or Amazon Bedrock account. It stores the provider type,
-    authentication, and connection configuration used by model service destinations.
+    """A Unity Catalog securable that stores authentication and request configuration for an external
+    model provider, such as OpenAI, Azure OpenAI, or Amazon Bedrock. Model service destinations
+    reference it to send requests to that provider.
 
-    One ModelProviderService can back many ModelServices (e.g. an ``openai_prod`` provider serving
-    multiple models); a single ModelService can fan out across multiple ModelProviderServices for
-    traffic split or failover."""
+    A model provider service can be referenced by multiple model services. A model service can route
+    across multiple model provider services for traffic splitting or failover."""
 
     comment: Optional[str] = None
     """User-provided description."""
 
     config: Optional[ModelProviderServiceConfig] = None
-    """Provider connection, exposed models, request-forwarding controls, rate limits, and payload
+    """Provider authentication, exposed models, request-forwarding controls, rate limits, and payload
     logging. Required on Create. On Update, it is required only when ``config`` or one of its
     subpaths appears in ``update_mask``."""
 
@@ -7240,8 +7233,7 @@ class ModelProviderService:
     """Creator identity."""
 
     effective_owner: Optional[str] = None
-    """The resolved owner of the model provider service. Falls back to the caller's identity when
-    ``owner`` is not explicitly set on creation."""
+    """Owner of the model provider service."""
 
     etag: Optional[str] = None
     """Optimistic concurrency token returned on every read. To make an Update or Delete conditional,
@@ -7332,14 +7324,15 @@ class ModelProviderService:
 
 @dataclass
 class ModelProviderServiceConfig:
-    """Behavioral configuration for a ModelProviderService: provider connection (auth +
-    provider-specific fields), the catalog of models this provider service can route to, and the
+    """Behavioral configuration for a ModelProviderService: provider authentication and
+    provider-specific fields, the catalog of models this provider service can route to, and the
     passthrough policy that governs how request headers, query parameters, and unmanaged subpaths
     cross the trust boundary to the upstream provider."""
 
     allow_all_targets: Optional[bool] = None
     """When true, accepts any model exposed by the upstream provider; ``targets`` is not required and
-    does not restrict routability. When false, only models listed in ``targets`` are routable."""
+    does not restrict routability. When false, only models listed in ``targets`` are routable.
+    Defaults to false."""
 
     amazon_bedrock: Optional[ModelProviderServiceConfigAmazonBedrockProviderConfig] = None
 
@@ -7350,19 +7343,19 @@ class ModelProviderServiceConfig:
     custom: Optional[ModelProviderServiceConfigCustomProviderConfig] = None
 
     forward_headers: Optional[bool] = None
-    """Whether to forward incoming HTTP headers to the upstream provider. Applies to translated and
-    passthrough requests and is configured for the entire provider service, not per request.
-    Upstream authentication is configured separately in ``provider``."""
+    """Whether to forward incoming HTTP headers to the upstream provider. Defaults to false and is
+    configured for the entire provider service, not per request. Upstream authentication is
+    configured separately in the provider-specific configuration."""
 
     forward_query_parameters: Optional[bool] = None
-    """Whether incoming query parameters are forwarded to the upstream provider. Applies to translated
-    and passthrough requests and is configured for the entire provider service, not per request."""
+    """Whether to forward incoming query parameters to the upstream provider. Defaults to false and is
+    configured for the entire provider service, not per request."""
 
     forward_unmanaged_paths: Optional[bool] = None
     """Whether to proxy paths that AI Gateway does not recognize as configured provider-native API
-    types. When true, these paths are forwarded unchanged over the provider connection. When false,
-    only recognized API paths are served. Enabling this broadens the upstream API surface exposed
-    through the provider service."""
+    types. Defaults to false. When true, these paths are forwarded unchanged to the upstream
+    provider. When false, only recognized API paths are served. Enabling this broadens the upstream
+    API surface exposed through the provider service."""
 
     gemini_enterprise: Optional[ModelProviderServiceConfigGeminiEnterpriseProviderConfig] = None
 
@@ -7375,11 +7368,8 @@ class ModelProviderServiceConfig:
     openai: Optional[ModelProviderServiceConfigOpenAiProviderConfig] = None
 
     provider_type: Optional[ModelProviderServiceConfigExternalModelProviderType] = None
-    """Provider type discriminator. Required at create time; immutable after. Determines which variant
-    of the ``provider`` oneof must be set. May not be changed via Update; attempts to include
-    ``config.provider_type`` in ``UpdateModelProviderServiceRequest.update_mask`` are rejected.
-    
-    Required on CreateModelProviderService and immutable thereafter."""
+    """External model provider. Required on Create and immutable thereafter. Set the matching
+    provider-specific configuration, such as ``openai``, ``azure_openai``, or ``amazon_bedrock``."""
 
     rate_limits: Optional[List[RateLimit]] = None
     """Rate limits for requests sent directly to this provider service. Requests routed through a model
@@ -7493,6 +7483,7 @@ class ModelProviderServiceConfigAmazonBedrockProviderConfig:
     """Amazon Bedrock provider configuration."""
 
     direct: Optional[ModelProviderServiceConfigAmazonBedrockProviderDirectConfig] = None
+    """Amazon Bedrock region and authentication configuration."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAmazonBedrockProviderConfig into a dictionary suitable for use as a JSON request body."""
@@ -7528,7 +7519,8 @@ class ModelProviderServiceConfigAmazonBedrockProviderDirectConfig:
       rejected."""
 
     aws_access_key: Optional[ModelProviderServiceConfigAwsAccessKey] = None
-    """AWS access-key-pair auth. Mutually exclusive with ``service_credential``."""
+    """AWS access-key-pair authentication. Set ``access_key_id`` and ``secret_access_key.plaintext``.
+    Mutually exclusive with ``service_credential``."""
 
     region: Optional[str] = None
     """AWS region where the Bedrock endpoint is hosted (e.g., ``us-east-1``). Required on Create."""
@@ -7537,9 +7529,7 @@ class ModelProviderServiceConfigAmazonBedrockProviderDirectConfig:
     """Reference to a Unity Catalog service credential authorizing Bedrock requests. On Create, supply
     ``service_credential.name`` in the form ``credentials/{name}``. Required on Create when using
     service-credential authentication; mutually exclusive with ``aws_access_key``. The credential is
-    referenced by name; its value is not carried here. On read, the resolved ``id`` and
-    ``is_deleted`` are also populated. Only supported on AWS-hosted workspaces; Create requests from
-    other clouds are rejected with INVALID_PARAMETER_VALUE."""
+    referenced by name; its value is not carried here. Only supported on AWS-hosted workspaces."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAmazonBedrockProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
@@ -7579,13 +7569,12 @@ class ModelProviderServiceConfigAnthropicProviderConfig:
     Create; the two are mutually exclusive."""
 
     direct: Optional[ModelProviderServiceConfigAnthropicProviderDirectConfig] = None
-    """Direct (inline-credentials) form: caller supplies the API key in the request body. Required on
-    Create unless ``relayed`` is set."""
+    """Direct authentication with an API key supplied in ``direct.api_key.plaintext``. Required unless
+    ``relayed`` is set."""
 
     relayed: Optional[ModelProviderServiceConfigAnthropicProviderRelayedConfig] = None
-    """Relayed (credential-less) form: no Anthropic credential is stored. Each inference request
-    instead carries the caller's own OAuth token, which the platform forwards to Anthropic on
-    outbound requests. Mutually exclusive with ``direct``; no ``api_key`` is required or persisted."""
+    """Relayed authentication. Each inference request supplies the caller's OAuth token, which is
+    forwarded to Anthropic. No Anthropic credential is stored. Mutually exclusive with ``direct``."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAnthropicProviderConfig into a dictionary suitable for use as a JSON request body."""
@@ -7619,8 +7608,8 @@ class ModelProviderServiceConfigAnthropicProviderDirectConfig:
     """Direct form of Anthropic provider config."""
 
     api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Anthropic API key. Required on Create. Sent as the ``x-api-key`` header on outbound requests.
-    Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+    """Anthropic API key. Required when creating the service. Supply the value in
+    ``api_key.plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAnthropicProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
@@ -7644,10 +7633,8 @@ class ModelProviderServiceConfigAnthropicProviderDirectConfig:
 
 @dataclass
 class ModelProviderServiceConfigAnthropicProviderRelayedConfig:
-    """Relayed form of Anthropic provider config: no credential is stored. Authentication is the
-    caller's own OAuth token, forwarded to Anthropic on outbound requests, so there is no persisted
-    secret. Presence of this variant is the signal that the provider service uses relayed auth;
-    ``plan_type`` further distinguishes which Anthropic subscription tier the token belongs to."""
+    """Relayed Anthropic provider configuration. Each inference request supplies the caller's OAuth
+    token, which is forwarded to Anthropic. No Anthropic credential is stored."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAnthropicProviderRelayedConfig into a dictionary suitable for use as a JSON request body."""
@@ -7674,8 +7661,8 @@ class ModelProviderServiceConfigAwsAccessKey:
     (not a secret value): round-trips on reads and is scrubbed from audit logs."""
 
     secret_access_key: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """AWS secret access key paired with ``access_key_id``. Required on Create when using access-key
-    auth. Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+    """AWS secret access key paired with ``access_key_id``. Required when creating a service with
+    access-key authentication. Supply the value in ``secret_access_key.plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAwsAccessKey into a dictionary suitable for use as a JSON request body."""
@@ -7709,6 +7696,7 @@ class ModelProviderServiceConfigAzureOpenAiProviderConfig:
     """Azure OpenAI provider configuration."""
 
     direct: Optional[ModelProviderServiceConfigAzureOpenAiProviderDirectConfig] = None
+    """Azure OpenAI endpoint and authentication configuration."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAzureOpenAiProviderConfig into a dictionary suitable for use as a JSON request body."""
@@ -7744,25 +7732,23 @@ class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
       Only supported on Azure-hosted workspaces. Setting more than one mode is rejected."""
 
     api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Azure OpenAI API key. Mutually exclusive with the Entra and service-credential modes. Supplied
-    as inline plaintext via ``ProviderSecret.plaintext``."""
+    """Azure OpenAI API key. Supply the value in ``api_key.plaintext``. Mutually exclusive with Entra
+    ID and Unity Catalog service credential authentication."""
 
     base_url: Optional[str] = None
     """Full Azure OpenAI endpoint base URL, e.g. ``https://myresource.openai.azure.com``. Required on
     Create."""
 
     entra_service_principal: Optional[ModelProviderServiceConfigEntraServicePrincipal] = None
-    """Entra ID (service principal) auth. Mutually exclusive with ``api_key`` and
-    ``service_credential``."""
+    """Entra ID service-principal authentication. Set ``tenant_id``, ``client_id``, and
+    ``client_secret.plaintext``. Mutually exclusive with ``api_key`` and ``service_credential``."""
 
     service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
     """Reference to a Unity Catalog service credential authorizing Azure OpenAI requests. On Create,
     supply ``service_credential.name`` in the form ``credentials/{name}``. Required on Create when
     using service-credential authentication; mutually exclusive with ``api_key`` and
     ``entra_service_principal``. The credential is referenced by name; its value is not carried
-    here. On read, the resolved ``id`` and ``is_deleted`` are also populated. Only supported on
-    Azure-hosted workspaces; Create requests from other clouds are rejected with
-    INVALID_PARAMETER_VALUE."""
+    here. Only supported on Azure-hosted workspaces."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigAzureOpenAiProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
@@ -7805,9 +7791,10 @@ class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
 
 @dataclass
 class ModelProviderServiceConfigCustomProviderConfig:
-    """Custom provider configuration: arbitrary HTTP endpoint with bearer-token auth."""
+    """Custom OpenAI-compatible provider configuration with bearer-token authentication."""
 
     direct: Optional[ModelProviderServiceConfigCustomProviderDirectConfig] = None
+    """Endpoint and authentication configuration for the custom provider."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigCustomProviderConfig into a dictionary suitable for use as a JSON request body."""
@@ -7831,19 +7818,12 @@ class ModelProviderServiceConfigCustomProviderConfig:
 
 @dataclass
 class ModelProviderServiceConfigCustomProviderDirectConfig:
-    """Direct form of custom provider config.
-
-    Authentication is one of two mutually exclusive modes, exactly one of which must be supplied on
-    Create:
-
-    - Bearer: set ``api_key``, leave ``header_auth`` unset. The secret is forwarded as
-      ``Authorization: Bearer <secret>``.
-    - Header: set ``header_auth``, leave ``api_key`` unset. The secret is forwarded as
-      ``<api_key_name>: <api_key_value>``. Setting both modes or neither mode is rejected."""
+    """Direct form of a custom provider configuration. Set ``api_key`` to the bearer token sent in the
+    ``Authorization`` header."""
 
     api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Bearer token forwarded as the ``Authorization: Bearer ...`` header on outbound requests.
-    Supplied as inline plaintext via ``ProviderSecret.plaintext``. Set this for bearer-token auth."""
+    """Bearer token forwarded in the ``Authorization`` header. Supply the value in
+    ``api_key.plaintext``."""
 
     base_url: Optional[str] = None
     """Endpoint URL of the OpenAI-compatible service (e.g., ``https://api.example.com/v1``). Required
@@ -7877,16 +7857,15 @@ class ModelProviderServiceConfigCustomProviderDirectConfig:
 
 @dataclass
 class ModelProviderServiceConfigEntraServicePrincipal:
-    """Entra ID (Azure AD) service-principal auth: AI Gateway exchanges the ``tenant_id`` +
-    ``client_id`` identify the service principal, and the ``credential`` oneof proves that identity,
-    exchanged for an Entra bearer token on outbound requests via the OAuth2 client-credentials
-    grant. Shared by the Azure OpenAI and Microsoft Foundry provider configs."""
+    """Entra ID (Azure AD) service-principal authentication. The ``tenant_id`` and ``client_id``
+    identify the service principal, and ``client_secret`` authenticates it. AI Gateway exchanges
+    these credentials for an Entra bearer token for requests to Azure OpenAI or Microsoft Foundry."""
 
     client_id: Optional[str] = None
     """Entra ID client (application) ID. Required on Create."""
 
     client_secret: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Entra ID client secret. Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+    """Entra ID client secret. Supply the value in ``client_secret.plaintext``."""
 
     tenant_id: Optional[str] = None
     """Entra ID (Azure AD) tenant ID. Required on Create."""
@@ -7940,6 +7919,7 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderConfig:
     """Gemini Enterprise provider configuration."""
 
     direct: Optional[ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig] = None
+    """Gemini Enterprise project, region, and authentication configuration."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigGeminiEnterpriseProviderConfig into a dictionary suitable for use as a JSON request body."""
@@ -7963,16 +7943,12 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderConfig:
 
 @dataclass
 class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
-    """Direct form of Gemini Enterprise provider config.
-
-    Authentication is one of two mutually exclusive modes; exactly one must be supplied on Create:
-
-    - API key: set ``api_key``, leave ``service_credential`` unset.
-    - Unity Catalog service credential: set ``service_credential``, leave ``api_key`` unset."""
+    """Direct Gemini Enterprise provider configuration. An API key is required when creating the
+    service."""
 
     api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Google Gemini Enterprise API key. Required on Create when using API-key auth; mutually exclusive
-    with ``service_credential``. Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+    """Google Gemini Enterprise API key. Required when creating the service. Supply the value in
+    ``api_key.plaintext``."""
 
     project_id: Optional[str] = None
     """GCP project ID hosting the Gemini Enterprise endpoint. Required on Create."""
@@ -8017,6 +7993,7 @@ class ModelProviderServiceConfigMicrosoftFoundryProviderConfig:
     """Microsoft Foundry provider configuration."""
 
     direct: Optional[ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig] = None
+    """Microsoft Foundry endpoint and authentication configuration."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigMicrosoftFoundryProviderConfig into a dictionary suitable for use as a JSON request body."""
@@ -8055,24 +8032,22 @@ class ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig:
       Only supported on Azure-hosted workspaces. Setting more than one mode is rejected."""
 
     api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Microsoft Foundry API key. Mutually exclusive with the Entra and service-credential modes.
-    Supplied as inline plaintext via ``ProviderSecret.plaintext``."""
+    """Microsoft Foundry API key. Supply the value in ``api_key.plaintext``. Mutually exclusive with
+    Entra ID and Unity Catalog service credential authentication."""
 
     base_url: Optional[str] = None
     """Microsoft Foundry endpoint URL. Required on Create."""
 
     entra_service_principal: Optional[ModelProviderServiceConfigEntraServicePrincipal] = None
-    """Entra ID (service principal) auth. Mutually exclusive with ``api_key`` and
-    ``service_credential``."""
+    """Entra ID service-principal authentication. Set ``tenant_id``, ``client_id``, and
+    ``client_secret.plaintext``. Mutually exclusive with ``api_key`` and ``service_credential``."""
 
     service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
     """Reference to a Unity Catalog service credential authorizing Microsoft Foundry requests. On
     Create, supply ``service_credential.name`` in the form ``credentials/{name}``. Required on
     Create when using service-credential authentication; mutually exclusive with ``api_key`` and
     ``entra_service_principal``. The credential is referenced by name; its value is not carried
-    here. On read, the resolved ``id`` and ``is_deleted`` are also populated. Only supported on
-    Azure-hosted workspaces; Create requests from other clouds are rejected with
-    INVALID_PARAMETER_VALUE."""
+    here. Only supported on Azure-hosted workspaces."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigMicrosoftFoundryProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
@@ -8122,9 +8097,9 @@ class ModelProviderServiceConfigModelTargetConfig:
     model at the upstream provider; it is not a Unity Catalog model resource."""
 
     native_api_types: Optional[List[str]] = None
-    """Provider-native API types supported by this model, such as ``openai/v1/chat/completions``. AI
-    Gateway uses these values to translate requests and responses. At most 64 entries of 256
-    characters each are allowed."""
+    """Provider-native API types supported by this model, such as ``openai/v1/chat/completions``. At
+    least one value is required. AI Gateway uses these values to translate requests and responses.
+    At most 64 entries of 256 characters each are allowed."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigModelTargetConfig into a dictionary suitable for use as a JSON request body."""
@@ -8155,6 +8130,7 @@ class ModelProviderServiceConfigOpenAiProviderConfig:
     """OpenAI provider configuration."""
 
     direct: Optional[ModelProviderServiceConfigOpenAiProviderDirectConfig] = None
+    """OpenAI configuration with an API key supplied in the request."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigOpenAiProviderConfig into a dictionary suitable for use as a JSON request body."""
@@ -8181,8 +8157,7 @@ class ModelProviderServiceConfigOpenAiProviderDirectConfig:
     """Direct (inline-credentials) form of the OpenAI provider config."""
 
     api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """OpenAI API key. Required on Create. Supplied as inline plaintext via
-    ``ProviderSecret.plaintext``."""
+    """OpenAI API key. Required when creating the service. Supply the value in ``api_key.plaintext``."""
 
     base_url: Optional[str] = None
     """Optional custom base URL. Defaults to ``https://api.openai.com/v1``. Use for
@@ -8232,7 +8207,7 @@ class ModelProviderServiceConfigProviderSecret:
 
     plaintext: Optional[str] = None
     """Inline plaintext credential. INPUT_ONLY: the value never round-trips on reads. Get and List
-    responses omit ``plaintext``; the field's presence in the read shape only indicates that a
+    responses omit ``plaintext``; the enclosing secret object remains present to indicate that a
     secret is configured."""
 
     def as_dict(self) -> dict:
@@ -8263,7 +8238,8 @@ class ModelProviderServiceConfigServiceCredential:
 
     name: str
     """Resource name of the bound Unity Catalog service credential, in the form ``credentials/{name}``.
-    On Create, supply the name here. On read, this field reflects the credential's current name."""
+    Supply this field when creating the service or rebinding its credential. On read, it reflects
+    the credential's current name."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigServiceCredential into a dictionary suitable for use as a JSON request body."""
@@ -8305,8 +8281,7 @@ class ModelService:
     """Creator identity."""
 
     effective_owner: Optional[str] = None
-    """The resolved owner of the ModelService. Falls back to the caller's identity when ``owner`` is
-    not explicitly set on creation."""
+    """Owner of the model service."""
 
     etag: Optional[str] = None
     """Optimistic concurrency token returned on every read. To make an Update or Delete conditional,
@@ -8410,7 +8385,7 @@ class ModelServiceConfig:
     """Operational configuration wrapped around the ModelService resource."""
 
     inference_table: Optional[InferenceTableConfig] = None
-    """Inference table config for payload logging."""
+    """Inference table configuration for payload logging."""
 
     rate_limits: Optional[List[RateLimit]] = None
     """Rate limits applied to requests routed through this model service."""
@@ -8463,17 +8438,18 @@ class ModelServiceConfigDestinationConfig:
     type-specific configurations unset."""
 
     external_model_config: Optional[ModelServiceConfigExternalModelConfig] = None
+    """Configuration for an external model reached through a model provider service."""
 
     is_deleted: Optional[bool] = None
-    """True when the destination's backing UC entity (MODEL for foundation-model destinations,
-    MODEL_PROVIDER_SERVICE for external destinations) has been deleted but the destination row still
-    references it. The dangling destination is surfaced (not silently dropped) so callers can see
-    the broken routing. Inference traffic through this destination fails closed (BAD_REQUEST /
-    FAILED_PRECONDITION)."""
+    """Whether the destination's backing model or model provider service has been deleted. The
+    destination remains visible so you can identify the broken dependency. Requests cannot use this
+    destination until the backing resource is restored or the destination is replaced."""
 
     pay_per_token_config: Optional[ModelServiceConfigPayPerTokenConfig] = None
+    """Configuration for a pay-per-token Databricks foundation model."""
 
     provisioned_throughput_config: Optional[ModelServiceConfigProvisionedThroughputConfig] = None
+    """Configuration for a provisioned-throughput Databricks foundation model."""
 
     traffic_percentage: Optional[int] = None
     """Percentage of primary traffic sent to this destination, from 0 to 100. Required when there is
@@ -8592,12 +8568,11 @@ class ModelServiceConfigExternalModelConfig:
 
 @dataclass
 class ModelServiceConfigFallbackConfig:
-    """Fallback routing, applied after the primary destination returns a retryable error. Traversal is
-    in list order; the attempt count is the length of the list."""
+    """Fallback routing applied after a primary destination fails. Fallback destinations are tried in
+    the listed order."""
 
     destinations: Optional[List[ModelServiceConfigDestinationConfig]] = None
-    """Ordered list of fallback destinations. Traversal is in list order; the attempt count is the
-    length of the list. At most 5 are allowed."""
+    """Fallback destinations, tried in the listed order. At most 5 are allowed."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelServiceConfigFallbackConfig into a dictionary suitable for use as a JSON request body."""
@@ -8702,11 +8677,6 @@ class ModelServiceConfigRoutingConfig:
     """Fallback routing applied after a primary destination fails. Fallback destinations are tried in
     the listed order."""
 
-    first_token_timeout: Optional[Duration] = None
-    """Timeout for the first token of a streaming response. If a destination does not return its first
-    token within this duration, AI Gateway aborts the attempt and fails over to the next
-    destination. Applies to streaming requests only. Leave unset for no first-token timeout."""
-
     def as_dict(self) -> dict:
         """Serializes the ModelServiceConfigRoutingConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8714,8 +8684,6 @@ class ModelServiceConfigRoutingConfig:
             body["destinations"] = [v.as_dict() for v in self.destinations]
         if self.fallback:
             body["fallback"] = self.fallback.as_dict()
-        if self.first_token_timeout is not None:
-            body["first_token_timeout"] = self.first_token_timeout.ToJsonString()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8725,8 +8693,6 @@ class ModelServiceConfigRoutingConfig:
             body["destinations"] = self.destinations
         if self.fallback:
             body["fallback"] = self.fallback
-        if self.first_token_timeout is not None:
-            body["first_token_timeout"] = self.first_token_timeout
         return body
 
     @classmethod
@@ -8735,7 +8701,6 @@ class ModelServiceConfigRoutingConfig:
         return cls(
             destinations=_repeated_dict(d, "destinations", ModelServiceConfigDestinationConfig),
             fallback=_from_dict(d, "fallback", ModelServiceConfigFallbackConfig),
-            first_token_timeout=_duration(d, "first_token_timeout"),
         )
 
 
@@ -10759,24 +10724,15 @@ class RateLimit:
 
     key: RateLimitRateLimitKey
     """Scope of the rate limit. Depending on this value, the limit applies to a principal, the service
-    as a whole, each user by default, or a request tag."""
+    as a whole, or each user by default."""
 
     renewal_period: RateLimitRateLimitRenewalPeriod
     """Renewal period."""
 
     principal: Optional[str] = None
     """Principal this limit applies to: user email, group name, or service principal application ID.
-    Required unless ``key`` is ``RATE_LIMIT_KEY_SERVICE``, ``RATE_LIMIT_KEY_USER_DEFAULT``, or
-    ``RATE_LIMIT_KEY_REQUEST_TAG`` (which must not set a principal)."""
-
-    request_tag_key: Optional[str] = None
-    """Request tag key this limit applies to. Required when ``key`` is ``RATE_LIMIT_KEY_REQUEST_TAG``,
-    forbidden otherwise."""
-
-    request_tag_value: Optional[str] = None
-    """Request tag value this limit applies to. Only valid when ``key`` is
-    ``RATE_LIMIT_KEY_REQUEST_TAG``. Leave unset to apply the limit to every value of
-    ``request_tag_key`` (an any-value default); a set value is a specific override for that value."""
+    Required when ``key`` applies to a user, group, or service principal; otherwise it must be
+    unset."""
 
     requests: Optional[int] = None
     """Maximum requests allowed in one renewal period. Leave unset for no request limit. Set to ``0``
@@ -10795,10 +10751,6 @@ class RateLimit:
             body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period.value
-        if self.request_tag_key is not None:
-            body["request_tag_key"] = self.request_tag_key
-        if self.request_tag_value is not None:
-            body["request_tag_value"] = self.request_tag_value
         if self.requests is not None:
             body["requests"] = self.requests
         if self.tokens is not None:
@@ -10814,10 +10766,6 @@ class RateLimit:
             body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period
-        if self.request_tag_key is not None:
-            body["request_tag_key"] = self.request_tag_key
-        if self.request_tag_value is not None:
-            body["request_tag_value"] = self.request_tag_value
         if self.requests is not None:
             body["requests"] = self.requests
         if self.tokens is not None:
@@ -10831,8 +10779,6 @@ class RateLimit:
             key=_enum(d, "key", RateLimitRateLimitKey),
             principal=d.get("principal", None),
             renewal_period=_enum(d, "renewal_period", RateLimitRateLimitRenewalPeriod),
-            request_tag_key=d.get("request_tag_key", None),
-            request_tag_value=d.get("request_tag_value", None),
             requests=_int64(d, "requests"),
             tokens=_int64(d, "tokens"),
         )
@@ -10841,7 +10787,6 @@ class RateLimit:
 class RateLimitRateLimitKey(Enum):
     """Scope key for a rate limit."""
 
-    RATE_LIMIT_KEY_REQUEST_TAG = "RATE_LIMIT_KEY_REQUEST_TAG"
     RATE_LIMIT_KEY_SERVICE = "RATE_LIMIT_KEY_SERVICE"
     RATE_LIMIT_KEY_SERVICE_PRINCIPAL = "RATE_LIMIT_KEY_SERVICE_PRINCIPAL"
     RATE_LIMIT_KEY_USER = "RATE_LIMIT_KEY_USER"
@@ -13830,7 +13775,7 @@ class AccountStorageCredentialsAPI:
 class AiGatewayAPI:
     """Govern AI workloads in Unity Catalog. This API manages the Unity Catalog securables that bring centralized
     access control, lineage, and auditing to AI-serving entities: model services (governed access to
-    foundation models and external LLMs), model provider services (governed connections to external model
+    foundation models and external LLMs), model provider services (governed resources for external model
     providers), and MCP services (governed Model Context Protocol servers)."""
 
     def __init__(self, api_client):
@@ -13839,15 +13784,15 @@ class AiGatewayAPI:
     def create_mcp_service(self, mcp_service: McpService, parent: str, mcp_service_id: str) -> McpService:
         """Creates an MCP service in a Unity Catalog schema. An MCP (Model Context Protocol) service is a
         governed securable that registers an MCP server and exposes its tools for discovery, access control,
-        and invocation. The caller supplies the leaf name in ``mcp_service_id``.
+        and invocation. Specify its name in ``mcp_service_id``.
 
         You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
         privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. You also need
         ``USE_CONNECTION`` on the connection the MCP service references.
 
         :param mcp_service: :class:`McpService`
-          The MCP service to create. The server populates ``name`` from ``parent`` + ``mcp_service_id``;
-          clients should leave it unset. ``source_connection`` is required.
+          The MCP service to create. Do not set ``name``; the server derives it from ``parent`` and
+          ``mcp_service_id``. ``source_connection`` is required.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -13878,17 +13823,19 @@ class AiGatewayAPI:
     def create_model_provider_service(
         self, model_provider_service: ModelProviderService, parent: str, model_provider_service_id: str
     ) -> ModelProviderService:
-        """Creates a model provider service in a Unity Catalog schema. A model provider service is a governed
-        connection to an external model provider (for example OpenAI, Azure OpenAI, or Amazon Bedrock) that
-        model services reference to invoke that provider. The caller supplies the leaf name in
+        """Creates a model provider service in a Unity Catalog schema. A model provider service stores
+        authentication and request configuration for an external model provider, such as OpenAI, Azure OpenAI,
+        or Amazon Bedrock. Model services reference it to invoke the provider. Specify its name in
         ``model_provider_service_id``.
 
         You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. Inline credentials
+        additionally require ``CREATE_CONNECTION`` on the parent schema. When using a Unity Catalog service
+        credential, you must have ``ACCESS`` on that credential.
 
         :param model_provider_service: :class:`ModelProviderService`
-          The model provider service to create. The server populates ``name`` from ``parent`` +
-          ``model_provider_service_id``; clients should leave it unset.
+          The model provider service to create. Do not set ``name``; the server derives it from ``parent`` and
+          ``model_provider_service_id``.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -13920,15 +13867,19 @@ class AiGatewayAPI:
 
     def create_model_service(self, model_service: ModelService, parent: str, model_service_id: str) -> ModelService:
         """Creates a model service in a Unity Catalog schema. A model service is a governed AI Gateway endpoint
-        that routes inference requests to one or more model destinations. The caller supplies the leaf name in
+        that routes inference requests to one or more model destinations. Specify its name in
         ``model_service_id``.
 
         You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. For every destination, you
+        also need ``USE_CATALOG`` and ``USE_SCHEMA`` on its parent and ``EXECUTE`` on the referenced Unity
+        Catalog model or model provider service. A provisioned-throughput destination additionally requires
+        ``CAN_MANAGE`` on its Model Serving endpoint. Configuring an inference table additionally requires
+        ``CREATE_TABLE``.
 
         :param model_service: :class:`ModelService`
-          The model service to create. The server populates ``name`` from ``parent`` + ``model_service_id``;
-          clients should leave it unset.
+          The model service to create. Do not set ``name``; the server derives it from ``parent`` and
+          ``model_service_id``.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -14143,14 +14094,14 @@ class AiGatewayAPI:
           Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
-          Opaque pagination token from a previous request.
+          Opaque pagination token from the previous response.
         :param parent: str (optional)
           Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListMcpServicesRequestView` (optional)
           Fields to return for each service. ``FULL`` includes source-connection details and rate-limit
           principal names. ``BASIC`` omits the source connection and omits principal names from rate limits.
-          Defaults to ``BASIC`` when unset or ``VIEW_UNSPECIFIED``.
+          Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`McpService`
         """
@@ -14201,14 +14152,14 @@ class AiGatewayAPI:
           Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
           Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
-          Opaque pagination token from a previous request.
+          Opaque pagination token from the previous response.
         :param parent: str (optional)
           Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelProviderServicesRequestView` (optional)
-          Fields to return for each service. ``FULL`` includes inference-table details and rate-limit
-          principal names. ``BASIC`` omits inference-table details and omits principal names from rate limits.
-          Defaults to ``BASIC`` when unset or ``VIEW_UNSPECIFIED``.
+          Fields to return for each service. ``FULL`` includes resolved service-credential and inference-table
+          details and rate-limit principal names. ``BASIC`` omits those details and principal names from rate
+          limits. Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`ModelProviderService`
         """
@@ -14259,14 +14210,14 @@ class AiGatewayAPI:
           Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
-          Opaque pagination token from a previous request.
+          Opaque pagination token from the previous response.
         :param parent: str (optional)
           Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelServicesRequestView` (optional)
           Fields to return for each service. ``FULL`` includes destinations, inference-table details, and
           rate-limit principal names. ``BASIC`` omits destinations and inference-table details and omits
-          principal names from rate limits. Defaults to ``BASIC`` when unset or ``VIEW_UNSPECIFIED``.
+          principal names from rate limits. Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`ModelService`
         """
@@ -14305,7 +14256,8 @@ class AiGatewayAPI:
         changed since it was read.
 
         You must be the owner of the MCP service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
-        catalog and ``USE_SCHEMA`` on the parent schema.
+        catalog and ``USE_SCHEMA`` on the parent schema. When changing ``config.source_connection.name``, the
+        MCP service owner must also have ``USE_CONNECTION`` on the new connection.
 
         :param name: str
           Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
@@ -14362,6 +14314,9 @@ class AiGatewayAPI:
         You must be the owner of the model provider service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on
         the parent catalog and ``USE_SCHEMA`` on the parent schema.
 
+        Updating ``config.provider`` cannot change the provider type or switch between Unity Catalog
+        service-credential authentication and inline authentication.
+
         :param name: str
           Resource name of the provider service. Format:
           ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
@@ -14374,10 +14329,12 @@ class AiGatewayAPI:
         :param update_mask: FieldMask
           Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
           every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
-          more granular paths: ``comment``, ``config.provider``, ``config.allow_all_targets``,
-          ``config.targets``, ``config.forward_headers``, ``config.forward_query_parameters``,
-          ``config.forward_unmanaged_paths``, ``config.rate_limits``, or ``config.inference_table``. The
-          provider type is immutable, and wildcard paths such as ``*`` are not supported.
+          more granular paths: ``comment``; ``config.provider`` to replace the active provider-specific value
+          (for example, ``config.openai``; the mask path remains ``config.provider``);
+          ``config.allow_all_targets``, ``config.targets``, ``config.forward_headers``,
+          ``config.forward_query_parameters``, ``config.forward_unmanaged_paths``, ``config.rate_limits``, or
+          ``config.inference_table``. The provider type is immutable, and wildcard paths such as ``*`` are not
+          supported.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
@@ -14412,7 +14369,11 @@ class AiGatewayAPI:
         having changed since it was read.
 
         You must be the owner of the model service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
+        parent catalog and ``USE_SCHEMA`` on the parent schema. When changing destinations, both you and the
+        model service owner need ``USE_CATALOG`` and ``USE_SCHEMA`` on each destination's parent and
+        ``EXECUTE`` on the referenced Unity Catalog model or model provider service. A provisioned-throughput
+        destination additionally requires ``CAN_MANAGE`` for you and ``CAN_QUERY`` for the model service
+        owner. Adding an inference table additionally requires ``CREATE_TABLE``.
 
         :param name: str
           Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
@@ -14426,9 +14387,9 @@ class AiGatewayAPI:
           Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
           every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
           more granular paths: ``comment``, ``config.routing.destinations``,
-          ``config.routing.fallback.destinations``, ``config.routing.first_token_timeout``,
-          ``config.rate_limits``, or ``config.inference_table``. Intermediate paths such as ``config.routing``
-          and ``config.routing.fallback``, and wildcard paths such as ``*``, are not supported.
+          ``config.routing.fallback.destinations``, ``config.rate_limits``, or ``config.inference_table``.
+          Intermediate paths such as ``config.routing`` and ``config.routing.fallback``, and wildcard paths
+          such as ``*``, are not supported.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the

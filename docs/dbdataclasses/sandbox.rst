@@ -8,6 +8,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ExecuteCommandStatus
+
+   Terminal status of a unary command execution.
+
+   .. py:attribute:: EXECUTE_COMMAND_STATUS_COMPLETED
+      :value: "EXECUTE_COMMAND_STATUS_COMPLETED"
+
+   .. py:attribute:: EXECUTE_COMMAND_STATUS_FAILED
+      :value: "EXECUTE_COMMAND_STATUS_FAILED"
+
+   .. py:attribute:: EXECUTE_COMMAND_STATUS_TIMED_OUT
+      :value: "EXECUTE_COMMAND_STATUS_TIMED_OUT"
+
+.. autoclass:: ExecuteCommandSyncResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListSandboxesResponse
    :members:
    :undoc-members:

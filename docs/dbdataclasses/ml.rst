@@ -199,6 +199,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: CronScheduleMode
+
+   The way a materialization schedule is arrived at.
+
+   .. py:attribute:: DERIVED
+      :value: "DERIVED"
+
+   .. py:attribute:: MANUAL
+      :value: "MANUAL"
+
 .. autoclass:: CustomUdf
    :members:
    :undoc-members:

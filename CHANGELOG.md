@@ -1,5 +1,16 @@
 # Version changelog
 
+## Release v0.135.0 (2026-09-04)
+
+### API Changes
+* Add `execute_command_sync()` method for [w.sandbox](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sandbox/sandbox.html) workspace-level service.
+* Add `mode` field for `databricks.sdk.service.ml.CronSchedule`.
+* Add `time_window` field for `databricks.sdk.service.ml.Feature`.
+* Add `full_feature_name` field for `databricks.sdk.service.ml.PublishSpec`.
+* [Breaking] Remove `first_token_timeout` field for `databricks.sdk.service.catalog.ModelServiceConfigRoutingConfig`.
+* [Breaking] Remove `request_tag_key` and `request_tag_value` fields for `databricks.sdk.service.catalog.RateLimit`.
+* [Breaking] Remove `rate_limit_key_request_tag` enum value for `databricks.sdk.service.catalog.RateLimitRateLimitKey`.
+
 ## Release v0.134.0 (2026-09-03)
 
 ### Breaking Changes

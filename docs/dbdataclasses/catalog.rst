@@ -992,7 +992,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ListMcpServicesRequestView
 
-   Controls which fields are populated on each McpService in the response. The server treats unset / VIEW_UNSPECIFIED as BASIC. Callers needing the full configuration must request it explicitly with ``view = FULL``.
+   Controls which fields are populated on each McpService in the response. The server uses ``BASIC`` when ``view`` is unset. Callers needing the full configuration must request it explicitly with ``view = FULL``.
 
    .. py:attribute:: BASIC
       :value: "BASIC"
@@ -1010,7 +1010,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ListModelProviderServicesRequestView
 
-   Controls which fields are populated on each ModelProviderService in the response. The server treats unset / VIEW_UNSPECIFIED as BASIC. Callers needing the full configuration must request it explicitly with ``view = FULL``.
+   Controls which fields are populated on each ModelProviderService in the response. The server uses ``BASIC`` when ``view`` is unset. Callers needing the full configuration must request it explicitly with ``view = FULL``.
 
    .. py:attribute:: BASIC
       :value: "BASIC"
@@ -1024,7 +1024,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ListModelServicesRequestView
 
-   Controls which fields are populated on each ModelService in the response. The server treats unset / VIEW_UNSPECIFIED as BASIC. Callers needing the full configuration must request it explicitly with ``view = FULL``.
+   Controls which fields are populated on each ModelService in the response. The server uses ``BASIC`` when ``view`` is unset. Callers needing the full configuration must request it explicitly with ``view = FULL``.
 
    .. py:attribute:: BASIC
       :value: "BASIC"
@@ -1786,9 +1786,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: RateLimitRateLimitKey
 
    Scope key for a rate limit.
-
-   .. py:attribute:: RATE_LIMIT_KEY_REQUEST_TAG
-      :value: "RATE_LIMIT_KEY_REQUEST_TAG"
 
    .. py:attribute:: RATE_LIMIT_KEY_SERVICE
       :value: "RATE_LIMIT_KEY_SERVICE"

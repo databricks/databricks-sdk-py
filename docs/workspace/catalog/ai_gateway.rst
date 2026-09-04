@@ -6,22 +6,22 @@
 
     Govern AI workloads in Unity Catalog. This API manages the Unity Catalog securables that bring centralized
     access control, lineage, and auditing to AI-serving entities: model services (governed access to
-    foundation models and external LLMs), model provider services (governed connections to external model
+    foundation models and external LLMs), model provider services (governed resources for external model
     providers), and MCP services (governed Model Context Protocol servers).
 
     .. py:method:: create_mcp_service(mcp_service: McpService, parent: str, mcp_service_id: str) -> McpService
 
         Creates an MCP service in a Unity Catalog schema. An MCP (Model Context Protocol) service is a
         governed securable that registers an MCP server and exposes its tools for discovery, access control,
-        and invocation. The caller supplies the leaf name in ``mcp_service_id``.
+        and invocation. Specify its name in ``mcp_service_id``.
 
         You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
         privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. You also need
         ``USE_CONNECTION`` on the connection the MCP service references.
 
         :param mcp_service: :class:`McpService`
-          The MCP service to create. The server populates ``name`` from ``parent`` + ``mcp_service_id``;
-          clients should leave it unset. ``source_connection`` is required.
+          The MCP service to create. Do not set ``name``; the server derives it from ``parent`` and
+          ``mcp_service_id``. ``source_connection`` is required.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -33,17 +33,19 @@
 
     .. py:method:: create_model_provider_service(model_provider_service: ModelProviderService, parent: str, model_provider_service_id: str) -> ModelProviderService
 
-        Creates a model provider service in a Unity Catalog schema. A model provider service is a governed
-        connection to an external model provider (for example OpenAI, Azure OpenAI, or Amazon Bedrock) that
-        model services reference to invoke that provider. The caller supplies the leaf name in
+        Creates a model provider service in a Unity Catalog schema. A model provider service stores
+        authentication and request configuration for an external model provider, such as OpenAI, Azure OpenAI,
+        or Amazon Bedrock. Model services reference it to invoke the provider. Specify its name in
         ``model_provider_service_id``.
 
         You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. Inline credentials
+        additionally require ``CREATE_CONNECTION`` on the parent schema. When using a Unity Catalog service
+        credential, you must have ``ACCESS`` on that credential.
 
         :param model_provider_service: :class:`ModelProviderService`
-          The model provider service to create. The server populates ``name`` from ``parent`` +
-          ``model_provider_service_id``; clients should leave it unset.
+          The model provider service to create. Do not set ``name``; the server derives it from ``parent`` and
+          ``model_provider_service_id``.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -56,15 +58,19 @@
     .. py:method:: create_model_service(model_service: ModelService, parent: str, model_service_id: str) -> ModelService
 
         Creates a model service in a Unity Catalog schema. A model service is a governed AI Gateway endpoint
-        that routes inference requests to one or more model destinations. The caller supplies the leaf name in
+        that routes inference requests to one or more model destinations. Specify its name in
         ``model_service_id``.
 
         You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. For every destination, you
+        also need ``USE_CATALOG`` and ``USE_SCHEMA`` on its parent and ``EXECUTE`` on the referenced Unity
+        Catalog model or model provider service. A provisioned-throughput destination additionally requires
+        ``CAN_MANAGE`` on its Model Serving endpoint. Configuring an inference table additionally requires
+        ``CREATE_TABLE``.
 
         :param model_service: :class:`ModelService`
-          The model service to create. The server populates ``name`` from ``parent`` + ``model_service_id``;
-          clients should leave it unset.
+          The model service to create. Do not set ``name``; the server derives it from ``parent`` and
+          ``model_service_id``.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -189,14 +195,14 @@
           Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
-          Opaque pagination token from a previous request.
+          Opaque pagination token from the previous response.
         :param parent: str (optional)
           Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListMcpServicesRequestView` (optional)
           Fields to return for each service. ``FULL`` includes source-connection details and rate-limit
           principal names. ``BASIC`` omits the source connection and omits principal names from rate limits.
-          Defaults to ``BASIC`` when unset or ``VIEW_UNSPECIFIED``.
+          Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`McpService`
         
@@ -215,14 +221,14 @@
           Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
           Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
-          Opaque pagination token from a previous request.
+          Opaque pagination token from the previous response.
         :param parent: str (optional)
           Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelProviderServicesRequestView` (optional)
-          Fields to return for each service. ``FULL`` includes inference-table details and rate-limit
-          principal names. ``BASIC`` omits inference-table details and omits principal names from rate limits.
-          Defaults to ``BASIC`` when unset or ``VIEW_UNSPECIFIED``.
+          Fields to return for each service. ``FULL`` includes resolved service-credential and inference-table
+          details and rate-limit principal names. ``BASIC`` omits those details and principal names from rate
+          limits. Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`ModelProviderService`
         
@@ -241,14 +247,14 @@
           Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
-          Opaque pagination token from a previous request.
+          Opaque pagination token from the previous response.
         :param parent: str (optional)
           Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelServicesRequestView` (optional)
           Fields to return for each service. ``FULL`` includes destinations, inference-table details, and
           rate-limit principal names. ``BASIC`` omits destinations and inference-table details and omits
-          principal names from rate limits. Defaults to ``BASIC`` when unset or ``VIEW_UNSPECIFIED``.
+          principal names from rate limits. Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`ModelService`
         
@@ -260,7 +266,8 @@
         changed since it was read.
 
         You must be the owner of the MCP service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
-        catalog and ``USE_SCHEMA`` on the parent schema.
+        catalog and ``USE_SCHEMA`` on the parent schema. When changing ``config.source_connection.name``, the
+        MCP service owner must also have ``USE_CONNECTION`` on the new connection.
 
         :param name: str
           Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
@@ -293,6 +300,9 @@
         You must be the owner of the model provider service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on
         the parent catalog and ``USE_SCHEMA`` on the parent schema.
 
+        Updating ``config.provider`` cannot change the provider type or switch between Unity Catalog
+        service-credential authentication and inline authentication.
+
         :param name: str
           Resource name of the provider service. Format:
           ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
@@ -305,10 +315,12 @@
         :param update_mask: FieldMask
           Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
           every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
-          more granular paths: ``comment``, ``config.provider``, ``config.allow_all_targets``,
-          ``config.targets``, ``config.forward_headers``, ``config.forward_query_parameters``,
-          ``config.forward_unmanaged_paths``, ``config.rate_limits``, or ``config.inference_table``. The
-          provider type is immutable, and wildcard paths such as ``*`` are not supported.
+          more granular paths: ``comment``; ``config.provider`` to replace the active provider-specific value
+          (for example, ``config.openai``; the mask path remains ``config.provider``);
+          ``config.allow_all_targets``, ``config.targets``, ``config.forward_headers``,
+          ``config.forward_query_parameters``, ``config.forward_unmanaged_paths``, ``config.rate_limits``, or
+          ``config.inference_table``. The provider type is immutable, and wildcard paths such as ``*`` are not
+          supported.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
@@ -324,7 +336,11 @@
         having changed since it was read.
 
         You must be the owner of the model service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
+        parent catalog and ``USE_SCHEMA`` on the parent schema. When changing destinations, both you and the
+        model service owner need ``USE_CATALOG`` and ``USE_SCHEMA`` on each destination's parent and
+        ``EXECUTE`` on the referenced Unity Catalog model or model provider service. A provisioned-throughput
+        destination additionally requires ``CAN_MANAGE`` for you and ``CAN_QUERY`` for the model service
+        owner. Adding an inference table additionally requires ``CREATE_TABLE``.
 
         :param name: str
           Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
@@ -338,9 +354,9 @@
           Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
           every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
           more granular paths: ``comment``, ``config.routing.destinations``,
-          ``config.routing.fallback.destinations``, ``config.routing.first_token_timeout``,
-          ``config.rate_limits``, or ``config.inference_table``. Intermediate paths such as ``config.routing``
-          and ``config.routing.fallback``, and wildcard paths such as ``*``, are not supported.
+          ``config.routing.fallback.destinations``, ``config.rate_limits``, or ``config.inference_table``.
+          Intermediate paths such as ``config.routing`` and ``config.routing.fallback``, and wildcard paths
+          such as ``*``, are not supported.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the

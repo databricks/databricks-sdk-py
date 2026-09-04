@@ -28,6 +28,34 @@
 
         
 
+    .. py:method:: execute_command_sync(name: str, cmd: str [, args: Optional[List[str]], envs: Optional[Dict[str, str]], execution_timeout: Optional[Duration]]) -> ExecuteCommandSyncResponse
+
+        Runs a command in the sandbox and blocks until it exits, returning the captured stdout, stderr and
+        exit code in a single response. Unary convenience variant of the streaming command-execution API for
+        callers that only need a command's final result (e.g. ``curl``, the SDK's ``sandbox.exec``). The
+        streaming ``ExecuteCommand`` RPC remains for interactive and long-running use.
+
+        :param name: str
+          Resource name of the sandbox to run the command in, in the form ``sandboxes/{sandbox_id}``. Bound
+          from the URL path.
+        :param cmd: str
+          Executable or command to run (e.g. ``/bin/echo``, ``python3``). A request with no ``cmd`` is
+          rejected with ``INVALID_ARGUMENT``. Not audited (no ``compliance.audit_mode``): the command can
+          carry secrets, and as a data-plane service lakebox must not record privileged customer content in
+          its audit log.
+        :param args: List[str] (optional)
+          Arguments passed to ``cmd``.
+        :param envs: Dict[str,str] (optional)
+          Extra environment variables for the command's process, merged over the sandbox's default
+          environment.
+        :param execution_timeout: Duration (optional)
+          Maximum time to wait for the command to finish. When it elapses the command is terminated and the
+          response carries status ``TIMED_OUT``. The server applies a default when unset and clamps to an
+          upper bound; negative or otherwise invalid durations are rejected with ``INVALID_ARGUMENT``.
+
+        :returns: :class:`ExecuteCommandSyncResponse`
+        
+
     .. py:method:: get_sandbox(name: str) -> Sandbox
 
         Retrieves a Sandbox by name.

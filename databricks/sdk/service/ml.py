@@ -1078,11 +1078,16 @@ class CronSchedule:
     empty when mode is DERIVED, where the service computes it (aligned to UTC) from the features'
     window timing and fills it in on the response."""
 
+    mode: Optional[CronScheduleMode] = None
+    """How the schedule is determined. Defaults to MANUAL when unset."""
+
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cron_expression is not None:
             body["cron_expression"] = self.cron_expression
+        if self.mode is not None:
+            body["mode"] = self.mode.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1090,12 +1095,21 @@ class CronSchedule:
         body = {}
         if self.cron_expression is not None:
             body["cron_expression"] = self.cron_expression
+        if self.mode is not None:
+            body["mode"] = self.mode
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
-        return cls(cron_expression=d.get("cron_expression", None))
+        return cls(cron_expression=d.get("cron_expression", None), mode=_enum(d, "mode", CronScheduleMode))
+
+
+class CronScheduleMode(Enum):
+    """The way a materialization schedule is arrived at."""
+
+    DERIVED = "DERIVED"
+    MANUAL = "MANUAL"
 
 
 @dataclass
@@ -2272,6 +2286,8 @@ class Feature:
     schema_name: Optional[str] = None
     """Name of parent schema relative to its parent catalog."""
 
+    time_window: Optional[TimeWindow] = None
+
     timeseries_column: Optional[TimeseriesColumn] = None
     """Column recording time, used for point-in-time joins, backfills, and aggregations."""
 
@@ -2300,6 +2316,8 @@ class Feature:
             body["schema_name"] = self.schema_name
         if self.source:
             body["source"] = self.source.as_dict()
+        if self.time_window:
+            body["time_window"] = self.time_window.as_dict()
         if self.timeseries_column:
             body["timeseries_column"] = self.timeseries_column.as_dict()
         return body
@@ -2329,6 +2347,8 @@ class Feature:
             body["schema_name"] = self.schema_name
         if self.source:
             body["source"] = self.source
+        if self.time_window:
+            body["time_window"] = self.time_window
         if self.timeseries_column:
             body["timeseries_column"] = self.timeseries_column
         return body
@@ -2348,6 +2368,7 @@ class Feature:
             name=d.get("name", None),
             schema_name=d.get("schema_name", None),
             source=_from_dict(d, "source", DataSource),
+            time_window=_from_dict(d, "time_window", TimeWindow),
             timeseries_column=_from_dict(d, "timeseries_column", TimeseriesColumn),
         )
 
@@ -6068,9 +6089,16 @@ class PublishSpec:
     publish_mode: PublishSpecPublishMode
     """The publish mode of the pipeline that syncs the online table with the source table."""
 
+    full_feature_name: Optional[str] = None
+    """Full Unity Catalog name of one of the features materialized in the source table, used to derive
+    the synced online table's entity and timeseries columns. Required for view sources without a UC
+    PrimaryKeyConstraint; ignored when the source already has one."""
+
     def as_dict(self) -> dict:
         """Serializes the PublishSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.full_feature_name is not None:
+            body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
             body["online_store"] = self.online_store
         if self.online_table_name is not None:
@@ -6082,6 +6110,8 @@ class PublishSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the PublishSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.full_feature_name is not None:
+            body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
             body["online_store"] = self.online_store
         if self.online_table_name is not None:
@@ -6094,6 +6124,7 @@ class PublishSpec:
     def from_dict(cls, d: Dict[str, Any]) -> PublishSpec:
         """Deserializes the PublishSpec from a dictionary."""
         return cls(
+            full_feature_name=d.get("full_feature_name", None),
             online_store=d.get("online_store", None),
             online_table_name=d.get("online_table_name", None),
             publish_mode=_enum(d, "publish_mode", PublishSpecPublishMode),

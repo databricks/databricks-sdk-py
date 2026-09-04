@@ -54,6 +54,91 @@ class ComputeSpec:
         return cls(inactivity_timeout=_duration(d, "inactivity_timeout"))
 
 
+class ExecuteCommandStatus(Enum):
+    """Terminal status of a unary command execution."""
+
+    EXECUTE_COMMAND_STATUS_COMPLETED = "EXECUTE_COMMAND_STATUS_COMPLETED"
+    EXECUTE_COMMAND_STATUS_FAILED = "EXECUTE_COMMAND_STATUS_FAILED"
+    EXECUTE_COMMAND_STATUS_TIMED_OUT = "EXECUTE_COMMAND_STATUS_TIMED_OUT"
+
+
+@dataclass
+class ExecuteCommandSyncResponse:
+    """Result of a completed unary command execution: captured output, exit code, and terminal status."""
+
+    command_id: Optional[str] = None
+    """Daemon-generated identifier for this command execution, for correlation (for example in
+    ``ListCommands``)."""
+
+    exit_code: Optional[int] = None
+    """Process exit code. Unset when the process was terminated by a signal (e.g. on ``TIMED_OUT``) or
+    never started (``FAILED``) rather than exiting normally."""
+
+    status: Optional[ExecuteCommandStatus] = None
+    """Terminal status of the command execution. Always set on a successful response; never
+    ``EXECUTE_COMMAND_STATUS_UNSPECIFIED``."""
+
+    stderr: Optional[str] = None
+    """Captured standard error, with the same UTF-8 semantics as ``stdout``."""
+
+    stdout: Optional[str] = None
+    """Captured standard output as UTF-8 text. Invalid UTF-8 bytes are replaced with the Unicode
+    replacement character rather than failing the request; use the streaming ``ExecuteCommand`` RPC
+    for byte-exact output."""
+
+    truncated: Optional[bool] = None
+    """True when ``stdout`` / ``stderr`` were truncated because the captured output exceeded the
+    server's per-response size cap. The dropped output is not included in this response and is not
+    recoverable through this unary API; for commands that can produce large output, use the
+    streaming ``ExecuteCommand`` RPC, which is not subject to this cap."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExecuteCommandSyncResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.command_id is not None:
+            body["command_id"] = self.command_id
+        if self.exit_code is not None:
+            body["exit_code"] = self.exit_code
+        if self.status is not None:
+            body["status"] = self.status.value
+        if self.stderr is not None:
+            body["stderr"] = self.stderr
+        if self.stdout is not None:
+            body["stdout"] = self.stdout
+        if self.truncated is not None:
+            body["truncated"] = self.truncated
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExecuteCommandSyncResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.command_id is not None:
+            body["command_id"] = self.command_id
+        if self.exit_code is not None:
+            body["exit_code"] = self.exit_code
+        if self.status is not None:
+            body["status"] = self.status
+        if self.stderr is not None:
+            body["stderr"] = self.stderr
+        if self.stdout is not None:
+            body["stdout"] = self.stdout
+        if self.truncated is not None:
+            body["truncated"] = self.truncated
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExecuteCommandSyncResponse:
+        """Deserializes the ExecuteCommandSyncResponse from a dictionary."""
+        return cls(
+            command_id=d.get("command_id", None),
+            exit_code=d.get("exit_code", None),
+            status=_enum(d, "status", ExecuteCommandStatus),
+            stderr=d.get("stderr", None),
+            stdout=d.get("stdout", None),
+            truncated=d.get("truncated", None),
+        )
+
+
 @dataclass
 class ListSandboxesResponse:
     """A list of Sandboxes."""
@@ -268,6 +353,62 @@ class SandboxAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/{name}", headers=headers)
+
+    def execute_command_sync(
+        self,
+        name: str,
+        cmd: str,
+        *,
+        args: Optional[List[str]] = None,
+        envs: Optional[Dict[str, str]] = None,
+        execution_timeout: Optional[Duration] = None,
+    ) -> ExecuteCommandSyncResponse:
+        """Runs a command in the sandbox and blocks until it exits, returning the captured stdout, stderr and
+        exit code in a single response. Unary convenience variant of the streaming command-execution API for
+        callers that only need a command's final result (e.g. ``curl``, the SDK's ``sandbox.exec``). The
+        streaming ``ExecuteCommand`` RPC remains for interactive and long-running use.
+
+        :param name: str
+          Resource name of the sandbox to run the command in, in the form ``sandboxes/{sandbox_id}``. Bound
+          from the URL path.
+        :param cmd: str
+          Executable or command to run (e.g. ``/bin/echo``, ``python3``). A request with no ``cmd`` is
+          rejected with ``INVALID_ARGUMENT``. Not audited (no ``compliance.audit_mode``): the command can
+          carry secrets, and as a data-plane service lakebox must not record privileged customer content in
+          its audit log.
+        :param args: List[str] (optional)
+          Arguments passed to ``cmd``.
+        :param envs: Dict[str,str] (optional)
+          Extra environment variables for the command's process, merged over the sandbox's default
+          environment.
+        :param execution_timeout: Duration (optional)
+          Maximum time to wait for the command to finish. When it elapses the command is terminated and the
+          response carries status ``TIMED_OUT``. The server applies a default when unset and clamps to an
+          upper bound; negative or otherwise invalid durations are rejected with ``INVALID_ARGUMENT``.
+
+        :returns: :class:`ExecuteCommandSyncResponse`
+        """
+
+        body = {}
+        if args is not None:
+            body["args"] = [v for v in args]
+        if cmd is not None:
+            body["cmd"] = cmd
+        if envs is not None:
+            body["envs"] = envs
+        if execution_timeout is not None:
+            body["execution_timeout"] = execution_timeout.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/sandbox-exec/{name}/exec-sync", body=body, headers=headers)
+        return ExecuteCommandSyncResponse.from_dict(res)
 
     def get_sandbox(self, name: str) -> Sandbox:
         """Retrieves a Sandbox by name.
