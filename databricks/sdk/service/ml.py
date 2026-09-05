@@ -673,6 +673,31 @@ class BatchCreateMaterializedFeaturesResponse:
 
 
 @dataclass
+class ColumnIdentifier:
+    variant_expr_path: str
+    """String representation of the column name using dot-prefixed path notation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnIdentifier into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.variant_expr_path is not None:
+            body["variant_expr_path"] = self.variant_expr_path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnIdentifier into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.variant_expr_path is not None:
+            body["variant_expr_path"] = self.variant_expr_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnIdentifier:
+        """Deserializes the ColumnIdentifier from a dictionary."""
+        return cls(variant_expr_path=d.get("variant_expr_path", None))
+
+
+@dataclass
 class ColumnSelection:
     """A ColumnSelection function, equivalent to the LAST() record of an entity over a lifetime window"""
 
@@ -788,6 +813,38 @@ class CommentObject:
             last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             user_id=d.get("user_id", None),
         )
+
+
+@dataclass
+class ContinuousWindow:
+    window_duration: str
+    """The duration of the continuous window (must be positive)."""
+
+    offset: Optional[str] = None
+    """The offset of the continuous window (must be non-positive)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ContinuousWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.offset is not None:
+            body["offset"] = self.offset
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ContinuousWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.offset is not None:
+            body["offset"] = self.offset
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ContinuousWindow:
+        """Deserializes the ContinuousWindow from a dictionary."""
+        return cls(offset=d.get("offset", None), window_duration=d.get("window_duration", None))
 
 
 @dataclass
@@ -1627,9 +1684,13 @@ class DeltaTableSource:
     df.schema.json()). Required if transformation_sql is specified. Example:
     {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}"""
 
+    entity_columns: Optional[List[str]] = None
+
     filter_condition: Optional[str] = None
     """Single WHERE clause to filter delta table before applying transformations. Will be row-wise
     evaluated, so should only include conditionals and projections."""
+
+    timeseries_column: Optional[str] = None
 
     transformation_sql: Optional[str] = None
     """A single SQL SELECT expression applied after filter_condition. Should contains all the columns
@@ -1642,10 +1703,14 @@ class DeltaTableSource:
         body = {}
         if self.dataframe_schema is not None:
             body["dataframe_schema"] = self.dataframe_schema
+        if self.entity_columns:
+            body["entity_columns"] = [v for v in self.entity_columns]
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
+        if self.timeseries_column is not None:
+            body["timeseries_column"] = self.timeseries_column
         if self.transformation_sql is not None:
             body["transformation_sql"] = self.transformation_sql
         return body
@@ -1655,10 +1720,14 @@ class DeltaTableSource:
         body = {}
         if self.dataframe_schema is not None:
             body["dataframe_schema"] = self.dataframe_schema
+        if self.entity_columns:
+            body["entity_columns"] = self.entity_columns
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
+        if self.timeseries_column is not None:
+            body["timeseries_column"] = self.timeseries_column
         if self.transformation_sql is not None:
             body["transformation_sql"] = self.transformation_sql
         return body
@@ -1668,8 +1737,10 @@ class DeltaTableSource:
         """Deserializes the DeltaTableSource from a dictionary."""
         return cls(
             dataframe_schema=d.get("dataframe_schema", None),
+            entity_columns=d.get("entity_columns", None),
             filter_condition=d.get("filter_condition", None),
             full_name=d.get("full_name", None),
+            timeseries_column=d.get("timeseries_column", None),
             transformation_sql=d.get("transformation_sql", None),
         )
 
@@ -2273,6 +2344,10 @@ class Feature:
     entities: Optional[List[EntityColumn]] = None
     """The entity columns for the feature, used as aggregation keys and for query-time lookup."""
 
+    filter_condition: Optional[str] = None
+
+    inputs: Optional[List[str]] = None
+
     lineage_context: Optional[LineageContext] = None
     """Lineage context information for this feature. WARNING: This field is primarily intended for
     internal use by Databricks systems and is automatically populated when features are created
@@ -2304,10 +2379,14 @@ class Feature:
             body["description"] = self.description
         if self.entities:
             body["entities"] = [v.as_dict() for v in self.entities]
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.function:
             body["function"] = self.function.as_dict()
+        if self.inputs:
+            body["inputs"] = [v for v in self.inputs]
         if self.lineage_context:
             body["lineage_context"] = self.lineage_context.as_dict()
         if self.name is not None:
@@ -2335,10 +2414,14 @@ class Feature:
             body["description"] = self.description
         if self.entities:
             body["entities"] = self.entities
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.function:
             body["function"] = self.function
+        if self.inputs:
+            body["inputs"] = self.inputs
         if self.lineage_context:
             body["lineage_context"] = self.lineage_context
         if self.name is not None:
@@ -2362,8 +2445,10 @@ class Feature:
             created_by=d.get("created_by", None),
             description=d.get("description", None),
             entities=_repeated_dict(d, "entities", EntityColumn),
+            filter_condition=d.get("filter_condition", None),
             full_name=d.get("full_name", None),
             function=_from_dict(d, "function", Function),
+            inputs=d.get("inputs", None),
             lineage_context=_from_dict(d, "lineage_context", LineageContext),
             name=d.get("name", None),
             schema_name=d.get("schema_name", None),
@@ -2851,6 +2936,10 @@ class Function:
     custom_udf: Optional[CustomUdf] = None
     """Applies a registered Unity Catalog function row-wise to source columns."""
 
+    extra_parameters: Optional[List[FunctionExtraParameter]] = None
+
+    function_type: Optional[FunctionFunctionType] = None
+
     def as_dict(self) -> dict:
         """Serializes the Function into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2860,6 +2949,10 @@ class Function:
             body["column_selection"] = self.column_selection.as_dict()
         if self.custom_udf:
             body["custom_udf"] = self.custom_udf.as_dict()
+        if self.extra_parameters:
+            body["extra_parameters"] = [v.as_dict() for v in self.extra_parameters]
+        if self.function_type is not None:
+            body["function_type"] = self.function_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2871,6 +2964,10 @@ class Function:
             body["column_selection"] = self.column_selection
         if self.custom_udf:
             body["custom_udf"] = self.custom_udf
+        if self.extra_parameters:
+            body["extra_parameters"] = self.extra_parameters
+        if self.function_type is not None:
+            body["function_type"] = self.function_type
         return body
 
     @classmethod
@@ -2880,7 +2977,58 @@ class Function:
             aggregation_function=_from_dict(d, "aggregation_function", AggregationFunction),
             column_selection=_from_dict(d, "column_selection", ColumnSelection),
             custom_udf=_from_dict(d, "custom_udf", CustomUdf),
+            extra_parameters=_repeated_dict(d, "extra_parameters", FunctionExtraParameter),
+            function_type=_enum(d, "function_type", FunctionFunctionType),
         )
+
+
+@dataclass
+class FunctionExtraParameter:
+    key: str
+    """The name of the parameter."""
+
+    value: str
+    """The value of the parameter."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FunctionExtraParameter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FunctionExtraParameter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionExtraParameter:
+        """Deserializes the FunctionExtraParameter from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+class FunctionFunctionType(Enum):
+    APPROX_COUNT_DISTINCT = "APPROX_COUNT_DISTINCT"
+    APPROX_PERCENTILE = "APPROX_PERCENTILE"
+    AVG = "AVG"
+    COUNT = "COUNT"
+    FIRST = "FIRST"
+    FUNCTION_TYPE_UNSPECIFIED = "FUNCTION_TYPE_UNSPECIFIED"
+    LAST = "LAST"
+    MAX = "MAX"
+    MIN = "MIN"
+    STDDEV_POP = "STDDEV_POP"
+    STDDEV_SAMP = "STDDEV_SAMP"
+    SUM = "SUM"
+    VAR_POP = "VAR_POP"
+    VAR_SAMP = "VAR_SAMP"
 
 
 @dataclass
@@ -3651,31 +3799,48 @@ class KafkaSource:
     """Name of the Kafka source, used to identify it. This is used to look up the corresponding
     KafkaConfig object. Can be distinct from topic name."""
 
+    entity_column_identifiers: Optional[List[ColumnIdentifier]] = None
+
     filter_condition: Optional[str] = None
     """The filter condition applied to the source data before aggregation."""
+
+    timeseries_column_identifier: Optional[ColumnIdentifier] = None
 
     def as_dict(self) -> dict:
         """Serializes the KafkaSource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.entity_column_identifiers:
+            body["entity_column_identifiers"] = [v.as_dict() for v in self.entity_column_identifiers]
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.name is not None:
             body["name"] = self.name
+        if self.timeseries_column_identifier:
+            body["timeseries_column_identifier"] = self.timeseries_column_identifier.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the KafkaSource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.entity_column_identifiers:
+            body["entity_column_identifiers"] = self.entity_column_identifiers
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.name is not None:
             body["name"] = self.name
+        if self.timeseries_column_identifier:
+            body["timeseries_column_identifier"] = self.timeseries_column_identifier
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> KafkaSource:
         """Deserializes the KafkaSource from a dictionary."""
-        return cls(filter_condition=d.get("filter_condition", None), name=d.get("name", None))
+        return cls(
+            entity_column_identifiers=_repeated_dict(d, "entity_column_identifiers", ColumnIdentifier),
+            filter_condition=d.get("filter_condition", None),
+            name=d.get("name", None),
+            timeseries_column_identifier=_from_dict(d, "timeseries_column_identifier", ColumnIdentifier),
+        )
 
 
 @dataclass
@@ -4794,6 +4959,8 @@ class MaterializedFeature:
     feature_name: str
     """The full name of the feature in Unity Catalog."""
 
+    cron_schedule: Optional[str] = None
+
     cron_schedule_trigger: Optional[CronSchedule] = None
     """A cron-based schedule trigger for the materialization pipeline."""
 
@@ -4836,6 +5003,8 @@ class MaterializedFeature:
     def as_dict(self) -> dict:
         """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.cron_schedule is not None:
+            body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
             body["cron_schedule_trigger"] = self.cron_schedule_trigger.as_dict()
         if self.feature_name is not None:
@@ -4865,6 +5034,8 @@ class MaterializedFeature:
     def as_shallow_dict(self) -> dict:
         """Serializes the MaterializedFeature into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.cron_schedule is not None:
+            body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
             body["cron_schedule_trigger"] = self.cron_schedule_trigger
         if self.feature_name is not None:
@@ -4895,6 +5066,7 @@ class MaterializedFeature:
     def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeature:
         """Deserializes the MaterializedFeature from a dictionary."""
         return cls(
+            cron_schedule=d.get("cron_schedule", None),
             cron_schedule_trigger=_from_dict(d, "cron_schedule_trigger", CronSchedule),
             feature_name=d.get("feature_name", None),
             is_online=d.get("is_online", None),
@@ -8312,6 +8484,8 @@ class TestRegistryWebhookResponse:
 
 @dataclass
 class TimeWindow:
+    continuous: Optional[ContinuousWindow] = None
+
     rolling: Optional[RollingWindow] = None
 
     sawtooth: Optional[SawtoothWindow] = None
@@ -8333,6 +8507,8 @@ class TimeWindow:
     def as_dict(self) -> dict:
         """Serializes the TimeWindow into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.continuous:
+            body["continuous"] = self.continuous.as_dict()
         if self.rolling:
             body["rolling"] = self.rolling.as_dict()
         if self.sawtooth:
@@ -8348,6 +8524,8 @@ class TimeWindow:
     def as_shallow_dict(self) -> dict:
         """Serializes the TimeWindow into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.continuous:
+            body["continuous"] = self.continuous
         if self.rolling:
             body["rolling"] = self.rolling
         if self.sawtooth:
@@ -8364,6 +8542,7 @@ class TimeWindow:
     def from_dict(cls, d: Dict[str, Any]) -> TimeWindow:
         """Deserializes the TimeWindow from a dictionary."""
         return cls(
+            continuous=_from_dict(d, "continuous", ContinuousWindow),
             rolling=_from_dict(d, "rolling", RollingWindow),
             sawtooth=_from_dict(d, "sawtooth", SawtoothWindow),
             sliding=_from_dict(d, "sliding", SlidingWindow),
