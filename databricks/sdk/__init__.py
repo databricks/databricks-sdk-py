@@ -23,6 +23,7 @@ from databricks.sdk.service import database as pkg_database
 from databricks.sdk.service import dataclassification as pkg_dataclassification
 from databricks.sdk.service import dataquality as pkg_dataquality
 from databricks.sdk.service import disasterrecovery as pkg_disasterrecovery
+from databricks.sdk.service import domains as pkg_domains
 from databricks.sdk.service import environments as pkg_environments
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
@@ -111,6 +112,7 @@ from databricks.sdk.service.settings import DisableLegacyAccessAPI
 from databricks.sdk.service.settings import DisableLegacyDbfsAPI
 from databricks.sdk.service.settings import DisableLegacyFeaturesAPI
 from databricks.sdk.service.disasterrecovery import DisasterRecoveryAPI
+from databricks.sdk.service.domains import DomainsAPI
 from databricks.sdk.service.settings import EnableExportNotebookAPI
 from databricks.sdk.service.settings import EnableIpAccessListsAPI
 from databricks.sdk.service.settings import EnableNotebookTableClipboardAPI
@@ -399,6 +401,7 @@ class WorkspaceClient:
         self._database = pkg_database.DatabaseAPI(self._api_client)
         self._dbfs = DbfsExt(self._api_client)
         self._dbsql_permissions = pkg_sql.DbsqlPermissionsAPI(self._api_client)
+        self._domains = pkg_domains.DomainsAPI(self._api_client)
         self._entity_tag_assignments = pkg_catalog.EntityTagAssignmentsAPI(self._api_client)
         self._environments = pkg_environments.EnvironmentsAPI(self._api_client)
         self._experiments = pkg_ml.ExperimentsAPI(self._api_client)
@@ -713,6 +716,11 @@ class WorkspaceClient:
     def dbsql_permissions(self) -> pkg_sql.DbsqlPermissionsAPI:
         """The SQL Permissions API is similar to the endpoints of the :method:permissions/set."""
         return self._dbsql_permissions
+
+    @property
+    def domains(self) -> pkg_domains.DomainsAPI:
+        """Manage domains for organizing and discovering data assets."""
+        return self._domains
 
     @property
     def entity_tag_assignments(self) -> pkg_catalog.EntityTagAssignmentsAPI:

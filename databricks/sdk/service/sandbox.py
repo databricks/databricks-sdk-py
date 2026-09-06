@@ -83,14 +83,12 @@ class ExecuteCommandSyncResponse:
 
     stdout: Optional[str] = None
     """Captured standard output as UTF-8 text. Invalid UTF-8 bytes are replaced with the Unicode
-    replacement character rather than failing the request; use the streaming ``ExecuteCommand`` RPC
-    for byte-exact output."""
+    replacement character (U+FFFD)."""
 
     truncated: Optional[bool] = None
     """True when ``stdout`` / ``stderr`` were truncated because the captured output exceeded the
     server's per-response size cap. The dropped output is not included in this response and is not
-    recoverable through this unary API; for commands that can produce large output, use the
-    streaming ``ExecuteCommand`` RPC, which is not subject to this cap."""
+    recoverable through this unary API."""
 
     def as_dict(self) -> dict:
         """Serializes the ExecuteCommandSyncResponse into a dictionary suitable for use as a JSON request body."""
@@ -179,8 +177,7 @@ class Sandbox:
     """Output only. The creation time of the sandbox."""
 
     display_name: Optional[str] = None
-    """Customer-supplied display label. Mutable via UpdateSandbox. Bounds enforced at the RPC boundary
-    (<=256 bytes, mirrors lakebox MAX_SANDBOX_NAME_LEN)."""
+    """Human-readable display label for the sandbox. At most 256 bytes."""
 
     name: Optional[str] = None
     """The AIP-compliant resource name, such as "sandboxes/my-sandbox"."""
@@ -267,9 +264,9 @@ class SandboxSpec:
 
 
 class SandboxState(Enum):
-    """Lifecycle state of a Sandbox resource. STOPPING is the transient state surfaced while a teardown
-    (Stop, DeleteSandbox, auto-terminate, provisioning failure) is in flight but the sandbox row
-    still exists; the row settles to STOPPED once the workflow finishes."""
+    """Lifecycle state of a Sandbox resource. STOPPING is the transient state while the sandbox is
+    being stopped -- by a Stop request or inactivity auto-termination -- and settles to STOPPED once
+    the operation completes."""
 
     SANDBOX_STATE_PENDING = "SANDBOX_STATE_PENDING"
     SANDBOX_STATE_RUNNING = "SANDBOX_STATE_RUNNING"
@@ -364,18 +361,13 @@ class SandboxAPI:
         execution_timeout: Optional[Duration] = None,
     ) -> ExecuteCommandSyncResponse:
         """Runs a command in the sandbox and blocks until it exits, returning the captured stdout, stderr and
-        exit code in a single response. Unary convenience variant of the streaming command-execution API for
-        callers that only need a command's final result (e.g. ``curl``, the SDK's ``sandbox.exec``). The
-        streaming ``ExecuteCommand`` RPC remains for interactive and long-running use.
+        exit code in a single response.
 
         :param name: str
           Resource name of the sandbox to run the command in, in the form ``sandboxes/{sandbox_id}``. Bound
           from the URL path.
         :param cmd: str
-          Executable or command to run (e.g. ``/bin/echo``, ``python3``). A request with no ``cmd`` is
-          rejected with ``INVALID_ARGUMENT``. Not audited (no ``compliance.audit_mode``): the command can
-          carry secrets, and as a data-plane service lakebox must not record privileged customer content in
-          its audit log.
+          Executable or command to run (e.g. ``/bin/echo``, ``python3``).
         :param args: List[str] (optional)
           Arguments passed to ``cmd``.
         :param envs: Dict[str,str] (optional)
@@ -461,13 +453,8 @@ class SandboxAPI:
             query["page_token"] = json["next_page_token"]
 
     def start_sandbox(self, name: str) -> Sandbox:
-        """Starts a stopped Sandbox by atomically restoring the TerminatedSandbox tombstone to the active table
-        in PENDING and re-running the provisioning workflow. The provisioning workflow's claimWarmPoolSandbox
-        step re-mints the app_instance_name (deterministic from sandbox_id, so equal to the prior life's
-        name). The tombstone's volume_id is preserved so the new AppInstance binds to the same backing device
-        file. The restored sandbox gets a fresh uid and create_time. Returns NOT_FOUND if no tombstone exists
-        for the given (workspace_id, sandbox_id) — the sandbox may not exist or may currently be active;
-        clients can disambiguate via Get.
+        """Starts a previously stopped Sandbox under the same sandbox name. Returns NOT_FOUND if there is no
+        stopped sandbox to start for the given name.
 
         :param name: str
           Resource name of the sandbox to start, in the form ``sandboxes/{sandbox_id}``.
@@ -489,10 +476,7 @@ class SandboxAPI:
         return Sandbox.from_dict(res)
 
     def stop_sandbox(self, name: str) -> Sandbox:
-        """Stops a Sandbox, terminating the sandbox while allowing future use of StartSandbox to re-provision the
-        same Sandbox without re-creating a brand new one. Transitions the active row to TERMINATING with
-        USER_REQUEST_STOP; the termination workflow settles to a TerminatedSandbox tombstone (no row drop) so
-        the sandbox can later be restarted via StartSandbox.
+        """Stops a running Sandbox, preserving it so it can later be restarted with a Start request.
 
         :param name: str
           Resource name of the sandbox to stop, in the form ``sandboxes/{sandbox_id}``.
@@ -514,10 +498,9 @@ class SandboxAPI:
         return Sandbox.from_dict(res)
 
     def update_sandbox(self, name: str, sandbox: Sandbox, update_mask: FieldMask) -> Sandbox:
-        """Updates mutable fields on an existing Sandbox. Allowlisted update_mask paths today:
-        metadata.display_name, spec.compute.inactivity_timeout. Returns INVALID_PARAMETER_VALUE for empty
-        masks or unknown paths; NOT_FOUND if no active row or tombstone exists for the given sandbox.
-        Concurrent-update conflicts surface as ABORTED via EStore OccConflict.
+        """Updates mutable fields on an existing Sandbox. Allowlisted update_mask paths today: display_name,
+        spec.compute.inactivity_timeout. Returns INVALID_PARAMETER_VALUE for empty masks or unknown paths;
+        NOT_FOUND if the sandbox does not exist.
 
         :param name: str
           Resource name of the sandbox to update, in the form ``sandboxes/{sandbox_id}``.
@@ -527,7 +510,7 @@ class SandboxAPI:
         :param update_mask: FieldMask
           Field paths to update. Must be a non-empty subset of:
 
-          - metadata.display_name
+          - display_name
           - spec.compute.inactivity_timeout Any other path returns INVALID_PARAMETER_VALUE.
 
         :returns: :class:`Sandbox`
