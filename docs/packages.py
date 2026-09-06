@@ -144,6 +144,7 @@ AUTO_PACKAGES = [
         "Disaster Recovery",
         "Manage disaster recovery configurations and execute failover operations.",
     ),
+    Package("domains", "Domains", "Manage domains for organizing and discovering data assets."),
     Package(
         "environments",
         "Environments API",

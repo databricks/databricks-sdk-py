@@ -1,5 +1,17 @@
 # Version changelog
 
+## Release v0.136.0 (2026-09-06)
+
+### API Changes
+* Add `databricks.sdk.service.domains` package.
+* Add [w.domains](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/domains/domains.html) workspace-level service.
+* Add `entity_columns` and `timeseries_column` fields for `databricks.sdk.service.ml.DeltaTableSource`.
+* Add `filter_condition` and `inputs` fields for `databricks.sdk.service.ml.Feature`.
+* Add `extra_parameters` and `function_type` fields for `databricks.sdk.service.ml.Function`.
+* Add `entity_column_identifiers` and `timeseries_column_identifier` fields for `databricks.sdk.service.ml.KafkaSource`.
+* Add `cron_schedule` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `continuous` field for `databricks.sdk.service.ml.TimeWindow`.
+
 ## Release v0.135.0 (2026-09-04)
 
 ### API Changes
