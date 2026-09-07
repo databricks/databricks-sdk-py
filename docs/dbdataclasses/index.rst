@@ -19,6 +19,7 @@ Dataclasses
    dataclassification
    dataquality
    disasterrecovery
+   domains
    environments
    files
    iam
