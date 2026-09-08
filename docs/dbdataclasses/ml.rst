@@ -1113,6 +1113,50 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PurgeFeatureEntitiesMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: PurgeFeatureEntitiesMetadataState
+
+   Lifecycle state of a feature entity purge.
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
+
+.. autoclass:: PurgeFeatureEntitiesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: PurgeFeatureEntitiesResult
+   :members:
+   :undoc-members:
+
+.. py:class:: PurgeFeatureEntitiesResultState
+
+   Terminal state of a purge for one store type.
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: NOT_APPLICABLE
+      :value: "NOT_APPLICABLE"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
+
 .. autoclass:: RegisteredModelAccessControlRequest
    :members:
    :undoc-members:
