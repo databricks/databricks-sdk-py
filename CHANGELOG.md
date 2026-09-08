@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.137.0 (2026-09-08)
+
+### API Changes
+* Add `purge_feature_entities()` method for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.IngestionConfig`.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.MaterializedFeature`.
+
 ## Release v0.136.0 (2026-09-07)
 
 ### API Changes
