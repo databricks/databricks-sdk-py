@@ -163,10 +163,6 @@ class CatalogConfigSchemaNames:
 
 
 class DataClassificationAPI:
-    """Manage data classification for Unity Catalog catalogs. Data classification automatically identifies and
-    tags sensitive data (PII) in Unity Catalog tables. Each catalog can have at most one configuration
-    resource that controls scanning behavior and auto-tagging rules."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -187,10 +183,7 @@ class DataClassificationAPI:
 
         body = catalog_config.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -208,9 +201,7 @@ class DataClassificationAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -227,9 +218,7 @@ class DataClassificationAPI:
         :returns: :class:`CatalogConfig`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -260,10 +249,7 @@ class DataClassificationAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

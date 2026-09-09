@@ -656,10 +656,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INTERNAL_AND_EXTERNAL
       :value: "INTERNAL_AND_EXTERNAL"
 
-.. autoclass:: DenyOptions
-   :members:
-   :undoc-members:
-
 .. autoclass:: Dependency
    :members:
    :undoc-members:
@@ -1559,9 +1555,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: POLICY_TYPE_COLUMN_MASK
       :value: "POLICY_TYPE_COLUMN_MASK"
-
-   .. py:attribute:: POLICY_TYPE_DENY
-      :value: "POLICY_TYPE_DENY"
 
    .. py:attribute:: POLICY_TYPE_GRANT
       :value: "POLICY_TYPE_GRANT"

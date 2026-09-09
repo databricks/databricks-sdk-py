@@ -200,7 +200,7 @@ class Table:
 
 
 class AgentBricksAPI:
-    """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
+    """See http://go/protostyleguide/services."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -213,17 +213,13 @@ class AgentBricksAPI:
 
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize/cancel", body=body, headers=headers)
+        self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize/cancel", headers=headers)
 
     def create_custom_llm(
         self,
@@ -264,10 +260,7 @@ class AgentBricksAPI:
             body["instructions"] = instructions
         if name is not None:
             body["name"] = name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -285,9 +278,7 @@ class AgentBricksAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -304,9 +295,7 @@ class AgentBricksAPI:
         :returns: :class:`CustomLlm`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -324,17 +313,13 @@ class AgentBricksAPI:
         :returns: :class:`CustomLlm`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize", body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize", headers=headers)
         return CustomLlm.from_dict(res)
 
     def update_custom_llm(self, id: str, custom_llm: CustomLlm, update_mask: str) -> CustomLlm:
@@ -348,16 +333,6 @@ class AgentBricksAPI:
           The list of the CustomLlm fields to update. These should correspond to the values (or lack thereof)
           present in ``custom_llm``.
 
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
-
         :returns: :class:`CustomLlm`
         """
 
@@ -366,10 +341,7 @@ class AgentBricksAPI:
             body["custom_llm"] = custom_llm.as_dict()
         if update_mask is not None:
             body["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

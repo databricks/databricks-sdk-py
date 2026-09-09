@@ -13,8 +13,6 @@ from typing import Dict, List, Any, Iterator, Callable, Optional, BinaryIO
 import time
 import random
 import logging
-import requests
-import threading
 
 from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
@@ -36,7 +34,7 @@ _LOG = logging.getLogger("databricks.sdk")
 @dataclass
 class Ai21LabsConfig:
     ai21labs_api_key: Optional[str] = None
-    """The Databricks secret key reference for an AI21 Labs API key. If you prefer to paste your API
+    """The <Databricks> secret key reference for an AI21 Labs API key. If you prefer to paste your API
     key directly, see ``ai21labs_api_key_plaintext``. You must provide an API key using one of the
     following fields: ``ai21labs_api_key`` or ``ai21labs_api_key_plaintext``."""
 
@@ -415,7 +413,7 @@ class AmazonBedrockConfig:
     Anthropic, Cohere, AI21Labs, Amazon."""
 
     aws_access_key_id: Optional[str] = None
-    """The Databricks secret key reference for an AWS access key ID with permissions to interact with
+    """The <Databricks> secret key reference for an AWS access key ID with permissions to interact with
     Bedrock services. If you prefer to paste your API key directly, see
     ``aws_access_key_id_plaintext``. You must provide an API key using one of the following fields:
     ``aws_access_key_id`` or ``aws_access_key_id_plaintext``."""
@@ -427,8 +425,8 @@ class AmazonBedrockConfig:
     ``aws_access_key_id_plaintext``."""
 
     aws_secret_access_key: Optional[str] = None
-    """The Databricks secret key reference for an AWS secret access key paired with the access key ID,
-    with permissions to interact with Bedrock services. If you prefer to paste your API key
+    """The <Databricks> secret key reference for an AWS secret access key paired with the access key
+    ID, with permissions to interact with Bedrock services. If you prefer to paste your API key
     directly, see ``aws_secret_access_key_plaintext``. You must provide an API key using one of the
     following fields: ``aws_secret_access_key`` or ``aws_secret_access_key_plaintext``."""
 
@@ -506,7 +504,7 @@ class AmazonBedrockConfigBedrockProvider(Enum):
 @dataclass
 class AnthropicConfig:
     anthropic_api_key: Optional[str] = None
-    """The Databricks secret key reference for an Anthropic API key. If you prefer to paste your API
+    """The <Databricks> secret key reference for an Anthropic API key. If you prefer to paste your API
     key directly, see ``anthropic_api_key_plaintext``. You must provide an API key using one of the
     following fields: ``anthropic_api_key`` or ``anthropic_api_key_plaintext``."""
 
@@ -548,8 +546,8 @@ class ApiKeyAuth:
     """The name of the API key parameter used for authentication."""
 
     value: Optional[str] = None
-    """The Databricks secret key reference for an API Key. If you prefer to paste your token directly,
-    see ``value_plaintext``."""
+    """The <Databricks> secret key reference for an API Key. If you prefer to paste your token
+    directly, see ``value_plaintext``."""
 
     value_plaintext: Optional[str] = None
     """The API Key provided as a plaintext string. If you prefer to reference your token using
@@ -731,8 +729,8 @@ class AutoCaptureState:
 @dataclass
 class BearerTokenAuth:
     token: Optional[str] = None
-    """The Databricks secret key reference for a token. If you prefer to paste your token directly, see
-    ``token_plaintext``."""
+    """The <Databricks> secret key reference for a token. If you prefer to paste your token directly,
+    see ``token_plaintext``."""
 
     token_plaintext: Optional[str] = None
     """The token provided as a plaintext string. If you prefer to reference your token using Databricks
@@ -834,7 +832,7 @@ class CohereConfig:
     unspecified, the standard Cohere base URL is used."""
 
     cohere_api_key: Optional[str] = None
-    """The Databricks secret key reference for a Cohere API key. If you prefer to paste your API key
+    """The <Databricks> secret key reference for a Cohere API key. If you prefer to paste your API key
     directly, see ``cohere_api_key_plaintext``. You must provide an API key using one of the
     following fields: ``cohere_api_key`` or ``cohere_api_key_plaintext``."""
 
@@ -959,11 +957,11 @@ class DataPlaneInfo:
 @dataclass
 class DatabricksModelServingConfig:
     databricks_workspace_url: str
-    """The URL of the Databricks workspace containing the model serving endpoint pointed to by this
+    """The URL of the <Databricks> workspace containing the model serving endpoint pointed to by this
     external model."""
 
     databricks_api_token: Optional[str] = None
-    """The Databricks secret key reference for a Databricks API token that corresponds to a user or
+    """The <Databricks> secret key reference for a Databricks API token that corresponds to a user or
     service principal with Can Query access to the model serving endpoint pointed to by this
     external model. If you prefer to paste your API key directly, see
     ``databricks_api_token_plaintext``. You must provide an API key using one of the following
@@ -1472,6 +1470,14 @@ class EndpointTags:
 
 @dataclass
 class ExportMetricsResponse:
+    """Proto version of com.databricks.rpc.HttpOverRpcResponse.
+
+    This message can be specially handled in UnaryRpcService with JettyRPC when the advanced feature
+    CustomHandlingForHttpOverRpcProtoResponse is enabled - bypass the RPC serializer and populate
+    HTTP status, response headers and response body from the proto message directly.
+
+    Don't add/modify the fields before being aware of the implications."""
+
     contents: Optional[BinaryIO] = None
 
     def as_dict(self) -> dict:
@@ -1757,6 +1763,8 @@ class FoundationModel:
 
 @dataclass
 class GetOpenApiResponse:
+    """The top level proto message that represents an OpenAPI 3.0 document."""
+
     contents: Optional[BinaryIO] = None
 
     def as_dict(self) -> dict:
@@ -1780,31 +1788,6 @@ class GetOpenApiResponse:
 
 
 @dataclass
-class GetServingEndpointPermissionLevelsResponse:
-    permission_levels: Optional[List[ServingEndpointPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetServingEndpointPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetServingEndpointPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetServingEndpointPermissionLevelsResponse:
-        """Deserializes the GetServingEndpointPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", ServingEndpointPermissionsDescription))
-
-
-@dataclass
 class GoogleCloudVertexAiConfig:
     project_id: str
     """This is the Google Cloud project id that the service account is associated with."""
@@ -1815,7 +1798,7 @@ class GoogleCloudVertexAiConfig:
     only available in specific regions."""
 
     private_key: Optional[str] = None
-    """The Databricks secret key reference for a private key for the service account which has access
+    """The <Databricks> secret key reference for a private key for the service account which has access
     to the Google Cloud Vertex AI Service. See `Bestpractices for managing service account keys
     <https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys>`__. If you
     prefer to paste your API key directly, see ``private_key_plaintext``. You must provide an API
@@ -1950,7 +1933,7 @@ class OpenAiConfig:
     """This field is only required for Azure AD OpenAI and is the Microsoft Entra Client ID."""
 
     microsoft_entra_client_secret: Optional[str] = None
-    """The Databricks secret key reference for a client secret used for Microsoft Entra ID
+    """The <Databricks> secret key reference for a client secret used for Microsoft Entra ID
     authentication. If you prefer to paste your client secret directly, see
     ``microsoft_entra_client_secret_plaintext``. You must provide an API key using one of the
     following fields: ``microsoft_entra_client_secret`` or
@@ -1972,9 +1955,10 @@ class OpenAiConfig:
     base URL is used."""
 
     openai_api_key: Optional[str] = None
-    """The Databricks secret key reference for an OpenAI API key using the OpenAI or Azure service. If
-    you prefer to paste your API key directly, see ``openai_api_key_plaintext``. You must provide an
-    API key using one of the following fields: ``openai_api_key`` or ``openai_api_key_plaintext``."""
+    """The <Databricks> secret key reference for an OpenAI API key using the OpenAI or Azure service.
+    If you prefer to paste your API key directly, see ``openai_api_key_plaintext``. You must provide
+    an API key using one of the following fields: ``openai_api_key`` or
+    ``openai_api_key_plaintext``."""
 
     openai_api_key_plaintext: Optional[str] = None
     """The OpenAI API key using the OpenAI or Azure service provided as a plaintext string. If you
@@ -2074,7 +2058,7 @@ class OpenAiConfig:
 @dataclass
 class PaLmConfig:
     palm_api_key: Optional[str] = None
-    """The Databricks secret key reference for a PaLM API key. If you prefer to paste your API key
+    """The <Databricks> secret key reference for a PaLM API key. If you prefer to paste your API key
     directly, see ``palm_api_key_plaintext``. You must provide an API key using one of the following
     fields: ``palm_api_key`` or ``palm_api_key_plaintext``."""
 
@@ -2563,13 +2547,13 @@ class ServedEntityInput:
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
-    entity environment variables that refer to Databricks secrets: ``{"OPENAI_API_KEY":
+    entity environment variables that refer to <Databricks> secrets: ``{"OPENAI_API_KEY":
     "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}``"""
 
     external_model: Optional[ExternalModel] = None
     """The external model to be served. NOTE: Only one of external_model and (entity_name,
     entity_version, workload_size, workload_type, and scale_to_zero_enabled) can be specified with
-    the latter set being used for custom model serving for a Databricks registered model. For an
+    the latter set being used for custom model serving for a <Databricks> registered model. For an
     existing endpoint with external_model, it cannot be updated to an endpoint without
     external_model. If the endpoint is created without external_model, users cannot update it to add
     external_model later. The task type of all external models within an endpoint must be the same."""
@@ -2613,11 +2597,6 @@ class ServedEntityInput:
     is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServingModelWorkloadType] = None
-    """The workload type of the served entity. The workload type selects which type of compute to use
-    in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
-    acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available `GPU types
-    <https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedEntityInput into a dictionary suitable for use as a JSON request body."""
@@ -2733,13 +2712,13 @@ class ServedEntityOutput:
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
-    entity environment variables that refer to Databricks secrets: ``{"OPENAI_API_KEY":
+    entity environment variables that refer to <Databricks> secrets: ``{"OPENAI_API_KEY":
     "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}``"""
 
     external_model: Optional[ExternalModel] = None
     """The external model to be served. NOTE: Only one of external_model and (entity_name,
     entity_version, workload_size, workload_type, and scale_to_zero_enabled) can be specified with
-    the latter set being used for custom model serving for a Databricks registered model. For an
+    the latter set being used for custom model serving for a <Databricks> registered model. For an
     existing endpoint with external_model, it cannot be updated to an endpoint without
     external_model. If the endpoint is created without external_model, users cannot update it to add
     external_model later. The task type of all external models within an endpoint must be the same."""
@@ -2787,11 +2766,6 @@ class ServedEntityOutput:
     is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServingModelWorkloadType] = None
-    """The workload type of the served entity. The workload type selects which type of compute to use
-    in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
-    acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available `GPU types
-    <https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedEntityOutput into a dictionary suitable for use as a JSON request body."""
@@ -2976,7 +2950,7 @@ class ServedModelInput:
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
-    entity environment variables that refer to Databricks secrets: ``{"OPENAI_API_KEY":
+    entity environment variables that refer to <Databricks> secrets: ``{"OPENAI_API_KEY":
     "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}``"""
 
     instance_profile_arn: Optional[str] = None
@@ -3015,11 +2989,6 @@ class ServedModelInput:
     is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServedModelInputWorkloadType] = None
-    """The workload type of the served entity. The workload type selects which type of compute to use
-    in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
-    acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available `GPU types
-    <https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelInput into a dictionary suitable for use as a JSON request body."""
@@ -3109,8 +3078,6 @@ class ServedModelInput:
 
 
 class ServedModelInputWorkloadType(Enum):
-    """Please keep this in sync with workload types in InferenceEndpointEntities.scala."""
-
     CPU = "CPU"
     CPU_LARGE = "CPU_LARGE"
     CPU_MEDIUM = "CPU_MEDIUM"
@@ -3136,7 +3103,7 @@ class ServedModelOutput:
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
-    entity environment variables that refer to Databricks secrets: ``{"OPENAI_API_KEY":
+    entity environment variables that refer to <Databricks> secrets: ``{"OPENAI_API_KEY":
     "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}``"""
 
     instance_profile_arn: Optional[str] = None
@@ -3178,11 +3145,6 @@ class ServedModelOutput:
     is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServingModelWorkloadType] = None
-    """The workload type of the served entity. The workload type selects which type of compute to use
-    in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
-    acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available `GPU types
-    <https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelOutput into a dictionary suitable for use as a JSON request body."""
@@ -3516,115 +3478,6 @@ class ServingEndpoint:
 
 
 @dataclass
-class ServingEndpointAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[ServingEndpointPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ServingEndpointAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ServingEndpointAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointAccessControlRequest:
-        """Deserializes the ServingEndpointAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", ServingEndpointPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class ServingEndpointAccessControlResponse:
-    all_permissions: Optional[List[ServingEndpointPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ServingEndpointAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ServingEndpointAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointAccessControlResponse:
-        """Deserializes the ServingEndpointAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", ServingEndpointPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
 class ServingEndpointDetailed:
     ai_gateway: Optional[AiGatewayConfig] = None
     """The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned
@@ -3804,130 +3657,7 @@ class ServingEndpointDetailedPermissionLevel(Enum):
     CAN_VIEW = "CAN_VIEW"
 
 
-@dataclass
-class ServingEndpointPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[ServingEndpointPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ServingEndpointPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ServingEndpointPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermission:
-        """Deserializes the ServingEndpointPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", ServingEndpointPermissionLevel),
-        )
-
-
-class ServingEndpointPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_QUERY = "CAN_QUERY"
-    CAN_VIEW = "CAN_VIEW"
-
-
-@dataclass
-class ServingEndpointPermissions:
-    access_control_list: Optional[List[ServingEndpointAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ServingEndpointPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ServingEndpointPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermissions:
-        """Deserializes the ServingEndpointPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", ServingEndpointAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class ServingEndpointPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[ServingEndpointPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ServingEndpointPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ServingEndpointPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermissionsDescription:
-        """Deserializes the ServingEndpointPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", ServingEndpointPermissionLevel),
-        )
-
-
 class ServingModelWorkloadType(Enum):
-    """Please keep this in sync with workload types in InferenceEndpointEntities.scala."""
-
     CPU = "CPU"
     CPU_LARGE = "CPU_LARGE"
     CPU_MEDIUM = "CPU_MEDIUM"
@@ -4210,17 +3940,6 @@ class V1ResponseChoiceElement:
 
 
 class ServingEndpointsAPI:
-    """The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
-
-    You can use a serving endpoint to serve models from the Databricks Model Registry or from Unity Catalog.
-    Endpoints expose the underlying models as scalable REST API endpoints using serverless compute. This means
-    the endpoints and associated compute resources are fully managed by Databricks and will not appear in your
-    cloud account. A serving endpoint can consist of one or more MLflow models from the Databricks Model
-    Registry, called served entities. A serving endpoint can have at most ten served entities. You can
-    configure traffic settings to define how requests should be routed to your served entities behind an
-    endpoint. Additionally, you can configure the scale of resources that should be applied to each served
-    entity."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -4270,9 +3989,7 @@ class ServingEndpointsAPI:
         :returns: :class:`BuildLogsResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4300,8 +4017,8 @@ class ServingEndpointsAPI:
         """Create a new serving endpoint.
 
         :param name: str
-          The name of the serving endpoint. This field is required and must be unique across a Databricks
-          workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
+          The name of the serving endpoint. This field is required and must be unique across a <Workspace>. An
+          endpoint name can consist of alphanumeric characters, dashes, and underscores.
         :param ai_gateway: :class:`AiGatewayConfig` (optional)
           The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned throughput,
           and pay-per-token endpoints are fully supported; agent endpoints currently only support inference
@@ -4349,10 +4066,7 @@ class ServingEndpointsAPI:
             body["tags"] = [v.as_dict() for v in tags]
         if telemetry_config is not None:
             body["telemetry_config"] = telemetry_config.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4362,7 +4076,7 @@ class ServingEndpointsAPI:
         return Wait(
             self.wait_get_serving_endpoint_not_updating,
             response=ServingEndpointDetailed.from_dict(op_response),
-            name=op_response["name"],
+            name=name,
         )
 
     def create_and_wait(
@@ -4406,8 +4120,8 @@ class ServingEndpointsAPI:
         """Create a new PT serving endpoint.
 
         :param name: str
-          The name of the serving endpoint. This field is required and must be unique across a Databricks
-          workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
+          The name of the serving endpoint. This field is required and must be unique across a <Workspace>. An
+          endpoint name can consist of alphanumeric characters, dashes, and underscores.
         :param config: :class:`PtEndpointCoreConfig`
           The core config of the serving endpoint.
         :param ai_gateway: :class:`AiGatewayConfig` (optional)
@@ -4437,10 +4151,7 @@ class ServingEndpointsAPI:
             body["name"] = name
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4450,7 +4161,7 @@ class ServingEndpointsAPI:
         return Wait(
             self.wait_get_serving_endpoint_not_updating,
             response=ServingEndpointDetailed.from_dict(op_response),
-            name=op_response["name"],
+            name=name,
         )
 
     def create_provisioned_throughput_endpoint_and_wait(
@@ -4499,15 +4210,13 @@ class ServingEndpointsAPI:
         :returns: :class:`ExportMetricsResponse`
         """
 
-        headers = {
-            "Accept": "text/plain",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/metrics", headers=headers, raw=True)
+        res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/metrics", headers=headers)
         return ExportMetricsResponse.from_dict(res)
 
     def get(self, name: str) -> ServingEndpointDetailed:
@@ -4519,9 +4228,7 @@ class ServingEndpointsAPI:
         :returns: :class:`ServingEndpointDetailed`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4540,59 +4247,14 @@ class ServingEndpointsAPI:
         :returns: :class:`GetOpenApiResponse`
         """
 
-        headers = {
-            "Accept": "text/plain",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/openapi", headers=headers, raw=True)
+        res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/openapi", headers=headers)
         return GetOpenApiResponse.from_dict(res)
-
-    def get_permission_levels(self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param serving_endpoint_id: str
-          The serving endpoint for which to get or manage permissions.
-
-        :returns: :class:`GetServingEndpointPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "GET", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels", headers=headers
-        )
-        return GetServingEndpointPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, serving_endpoint_id: str) -> ServingEndpointPermissions:
-        """Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
-        object.
-
-        :param serving_endpoint_id: str
-          The serving endpoint for which to get or manage permissions.
-
-        :returns: :class:`ServingEndpointPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", headers=headers)
-        return ServingEndpointPermissions.from_dict(res)
 
     def http_request(
         self,
@@ -4644,16 +4306,13 @@ class ServingEndpointsAPI:
             body["path"] = path
         if sub_domain is not None:
             body["sub_domain"] = sub_domain
-        headers = {
-            "Accept": "text/plain",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", "/api/2.0/external-function", body=body, headers=headers, raw=True)
+        res = self._api.do("POST", "/api/2.0/external-function", body=body, headers=headers)
         return HttpRequestResponse.from_dict(res)
 
     def list(self) -> Iterator[ServingEndpoint]:
@@ -4663,9 +4322,7 @@ class ServingEndpointsAPI:
         :returns: Iterator over :class:`ServingEndpoint`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4686,9 +4343,7 @@ class ServingEndpointsAPI:
         :returns: :class:`ServerLogsResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4719,10 +4374,7 @@ class ServingEndpointsAPI:
             body["add_tags"] = [v.as_dict() for v in add_tags]
         if delete_tags is not None:
             body["delete_tags"] = [v for v in delete_tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4751,10 +4403,7 @@ class ServingEndpointsAPI:
         body = {}
         if telemetry_config is not None:
             body["telemetry_config"] = telemetry_config.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4777,10 +4426,7 @@ class ServingEndpointsAPI:
         body = {}
         if rate_limits is not None:
             body["rate_limits"] = [v.as_dict() for v in rate_limits]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4832,10 +4478,7 @@ class ServingEndpointsAPI:
             body["rate_limits"] = [v.as_dict() for v in rate_limits]
         if usage_tracking_config is not None:
             body["usage_tracking_config"] = usage_tracking_config.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4949,10 +4592,7 @@ class ServingEndpointsAPI:
             body["temperature"] = temperature
         if usage_context is not None:
             body["usage_context"] = usage_context
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4969,39 +4609,6 @@ class ServingEndpointsAPI:
             response_headers=response_headers,
         )
         return QueryEndpointResponse.from_dict(res)
-
-    def set_permissions(
-        self,
-        serving_endpoint_id: str,
-        *,
-        access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None,
-    ) -> ServingEndpointPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param serving_endpoint_id: str
-          The serving endpoint for which to get or manage permissions.
-        :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
-
-        :returns: :class:`ServingEndpointPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PUT", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", body=body, headers=headers
-        )
-        return ServingEndpointPermissions.from_dict(res)
 
     def update_config(
         self,
@@ -5044,10 +4651,7 @@ class ServingEndpointsAPI:
             body["served_models"] = [v.as_dict() for v in served_models]
         if traffic_config is not None:
             body["traffic_config"] = traffic_config.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5057,7 +4661,7 @@ class ServingEndpointsAPI:
         return Wait(
             self.wait_get_serving_endpoint_not_updating,
             response=ServingEndpointDetailed.from_dict(op_response),
-            name=op_response["name"],
+            name=name,
         )
 
     def update_config_and_wait(
@@ -5095,10 +4699,7 @@ class ServingEndpointsAPI:
         body = {}
         if email_notifications is not None:
             body["email_notifications"] = email_notifications.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5106,39 +4707,6 @@ class ServingEndpointsAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/notifications", body=body, headers=headers)
         return UpdateInferenceEndpointNotificationsResponse.from_dict(res)
-
-    def update_permissions(
-        self,
-        serving_endpoint_id: str,
-        *,
-        access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None,
-    ) -> ServingEndpointPermissions:
-        """Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
-        root object.
-
-        :param serving_endpoint_id: str
-          The serving endpoint for which to get or manage permissions.
-        :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
-
-        :returns: :class:`ServingEndpointPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PATCH", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", body=body, headers=headers
-        )
-        return ServingEndpointPermissions.from_dict(res)
 
     def update_provisioned_throughput_endpoint_config(
         self, name: str, config: PtEndpointCoreConfig
@@ -5159,10 +4727,7 @@ class ServingEndpointsAPI:
         body = {}
         if config is not None:
             body["config"] = config.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5172,178 +4737,10 @@ class ServingEndpointsAPI:
         return Wait(
             self.wait_get_serving_endpoint_not_updating,
             response=ServingEndpointDetailed.from_dict(op_response),
-            name=op_response["name"],
+            name=name,
         )
 
     def update_provisioned_throughput_endpoint_config_and_wait(
         self, name: str, config: PtEndpointCoreConfig, timeout=timedelta(minutes=20)
     ) -> ServingEndpointDetailed:
         return self.update_provisioned_throughput_endpoint_config(config=config, name=name).result(timeout=timeout)
-
-
-class ServingEndpointsDataPlaneAPI:
-    """Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving
-    endpoints service."""
-
-    def __init__(self, api_client, control_plane_service, dpts):
-        self._api = api_client
-        self._lock = threading.Lock()
-        self._control_plane_service = control_plane_service
-        self._dpts = dpts
-        self._data_plane_details = {}
-
-    def _data_plane_info_query(self, name: str) -> DataPlaneInfo:
-        key = "query" + "/".join(
-            [
-                str(name),
-            ]
-        )
-        with self._lock:
-            if key in self._data_plane_details:
-                return self._data_plane_details[key]
-        response = self._control_plane_service.get(
-            name=name,
-        )
-        if response.data_plane_info is None:
-            raise Exception("Resource does not support direct Data Plane access")
-        result = response.data_plane_info.query_info
-        with self._lock:
-            self._data_plane_details[key] = result
-        return result
-
-    def query(
-        self,
-        name: str,
-        *,
-        client_request_id: Optional[str] = None,
-        dataframe_records: Optional[List[Any]] = None,
-        dataframe_split: Optional[DataframeSplitInput] = None,
-        extra_params: Optional[Dict[str, str]] = None,
-        input: Optional[Any] = None,
-        inputs: Optional[Any] = None,
-        instances: Optional[List[Any]] = None,
-        max_tokens: Optional[int] = None,
-        messages: Optional[List[ChatMessage]] = None,
-        n: Optional[int] = None,
-        prompt: Optional[Any] = None,
-        stop: Optional[List[str]] = None,
-        stream: Optional[bool] = None,
-        temperature: Optional[float] = None,
-        usage_context: Optional[Dict[str, str]] = None,
-    ) -> QueryEndpointResponse:
-        """Query a serving endpoint
-
-        :param name: str
-          The name of the serving endpoint. This field is required and is provided via the path parameter.
-        :param client_request_id: str (optional)
-          Optional user-provided request identifier that will be recorded in the inference table and the usage
-          tracking table.
-        :param dataframe_records: List[Any] (optional)
-          Pandas Dataframe input in the records orientation.
-        :param dataframe_split: :class:`DataframeSplitInput` (optional)
-          Pandas Dataframe input in the split orientation.
-        :param extra_params: Dict[str,str] (optional)
-          The extra parameters field used ONLY for **completions, chat,** and **embeddings external &
-          foundation model** serving endpoints. This is a map of strings and should only be used with other
-          external/foundation model query fields.
-        :param input: Any (optional)
-          The input string (or array of strings) field used ONLY for **embeddings external & foundation
-          model** serving endpoints and is the only field (along with extra_params if needed) used by
-          embeddings queries.
-        :param inputs: Any (optional)
-          Tensor-based input in columnar format.
-        :param instances: List[Any] (optional)
-          Tensor-based input in row format.
-        :param max_tokens: int (optional)
-          The max tokens field used ONLY for **completions** and **chat external & foundation model** serving
-          endpoints. This is an integer and should only be used with other chat/completions query fields.
-        :param messages: List[:class:`ChatMessage`] (optional)
-          The messages field used ONLY for **chat external & foundation model** serving endpoints. This is an
-          array of ChatMessage objects and should only be used with other chat query fields.
-        :param n: int (optional)
-          The n (number of candidates) field used ONLY for **completions** and **chat external & foundation
-          model** serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
-          used with other chat/completions query fields.
-        :param prompt: Any (optional)
-          The prompt string (or array of strings) field used ONLY for **completions external & foundation
-          model** serving endpoints and should only be used with other completions query fields.
-        :param stop: List[str] (optional)
-          The stop sequences field used ONLY for **completions** and **chat external & foundation model**
-          serving endpoints. This is a list of strings and should only be used with other chat/completions
-          query fields.
-        :param stream: bool (optional)
-          The stream field used ONLY for **completions** and **chat external & foundation model** serving
-          endpoints. This is a boolean defaulting to false and should only be used with other chat/completions
-          query fields.
-        :param temperature: float (optional)
-          The temperature field used ONLY for **completions** and **chat external & foundation model** serving
-          endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
-          other chat/completions query fields.
-        :param usage_context: Dict[str,str] (optional)
-          Optional user-provided context that will be recorded in the usage tracking table.
-
-        :returns: :class:`QueryEndpointResponse`
-        """
-
-        body = {}
-        if client_request_id is not None:
-            body["client_request_id"] = client_request_id
-        if dataframe_records is not None:
-            body["dataframe_records"] = [v for v in dataframe_records]
-        if dataframe_split is not None:
-            body["dataframe_split"] = dataframe_split.as_dict()
-        if extra_params is not None:
-            body["extra_params"] = extra_params
-        if input is not None:
-            body["input"] = input
-        if inputs is not None:
-            body["inputs"] = inputs
-        if instances is not None:
-            body["instances"] = [v for v in instances]
-        if max_tokens is not None:
-            body["max_tokens"] = max_tokens
-        if messages is not None:
-            body["messages"] = [v.as_dict() for v in messages]
-        if n is not None:
-            body["n"] = n
-        if prompt is not None:
-            body["prompt"] = prompt
-        if stop is not None:
-            body["stop"] = [v for v in stop]
-        if stream is not None:
-            body["stream"] = stream
-        if temperature is not None:
-            body["temperature"] = temperature
-        if usage_context is not None:
-            body["usage_context"] = usage_context
-        data_plane_info = self._data_plane_info_query(
-            name=name,
-        )
-        token = self._dpts.token(data_plane_info.endpoint_url, data_plane_info.authorization_details)
-
-        def auth(r: requests.PreparedRequest) -> requests.PreparedRequest:
-            authorization = f"{token.token_type} {token.access_token}"
-            r.headers["Authorization"] = authorization
-            return r
-
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        response_headers = [
-            "served-model-name",
-        ]
-        res = self._api.do(
-            "POST",
-            url=data_plane_info.endpoint_url,
-            body=body,
-            headers=headers,
-            response_headers=response_headers,
-            auth=auth,
-        )
-        return QueryEndpointResponse.from_dict(res)

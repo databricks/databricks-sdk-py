@@ -1639,7 +1639,7 @@ class SyncedTableTriggeredUpdateStatus:
 
 
 class DatabaseAPI:
-    """Database Instances provide access to a database via REST API or direct SQL."""
+    """Front-door (customer facing) service for Brickstore."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1679,10 +1679,7 @@ class DatabaseAPI:
 
         body = catalog.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1704,10 +1701,7 @@ class DatabaseAPI:
 
         body = database_instance.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1745,10 +1739,7 @@ class DatabaseAPI:
         query = {}
         if database_instance_name is not None:
             query["database_instance_name"] = database_instance_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1770,10 +1761,7 @@ class DatabaseAPI:
 
         body = table.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1792,10 +1780,7 @@ class DatabaseAPI:
 
         body = synced_table.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1812,9 +1797,7 @@ class DatabaseAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1842,9 +1825,7 @@ class DatabaseAPI:
             query["force"] = force
         if purge is not None:
             query["purge"] = purge
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1876,9 +1857,7 @@ class DatabaseAPI:
             query["allow_missing"] = allow_missing
         if reassign_owned_to is not None:
             query["reassign_owned_to"] = reassign_owned_to
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1896,9 +1875,7 @@ class DatabaseAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1919,9 +1896,7 @@ class DatabaseAPI:
         query = {}
         if purge_data is not None:
             query["purge_data"] = purge_data
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1941,9 +1916,7 @@ class DatabaseAPI:
         query = {}
         if uid is not None:
             query["uid"] = uid
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1983,10 +1956,7 @@ class DatabaseAPI:
             body["instance_names"] = [v for v in instance_names]
         if request_id is not None:
             body["request_id"] = request_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2003,9 +1973,7 @@ class DatabaseAPI:
         :returns: :class:`DatabaseCatalog`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2023,9 +1991,7 @@ class DatabaseAPI:
         :returns: :class:`DatabaseInstance`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2043,9 +2009,7 @@ class DatabaseAPI:
         :returns: :class:`DatabaseInstanceRole`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2062,9 +2026,7 @@ class DatabaseAPI:
         :returns: :class:`DatabaseTable`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2081,9 +2043,7 @@ class DatabaseAPI:
         :returns: :class:`SyncedDatabaseTable`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2112,9 +2072,7 @@ class DatabaseAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2152,9 +2110,7 @@ class DatabaseAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2189,9 +2145,7 @@ class DatabaseAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2226,9 +2180,7 @@ class DatabaseAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2264,10 +2216,7 @@ class DatabaseAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2295,10 +2244,7 @@ class DatabaseAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2326,10 +2272,7 @@ class DatabaseAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

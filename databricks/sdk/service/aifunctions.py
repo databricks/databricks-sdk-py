@@ -624,8 +624,6 @@ class AiParseDocumentResponseMetadata:
 
 
 class AiFunctionsAPI:
-    """Transform and enrich data with AI on Databricks."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -654,10 +652,7 @@ class AiFunctionsAPI:
             body["labels"] = labels
         if options is not None:
             body["options"] = options.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -691,10 +686,7 @@ class AiFunctionsAPI:
             body["options"] = options.as_dict()
         if schema is not None:
             body["schema"] = schema
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -723,10 +715,7 @@ class AiFunctionsAPI:
             body["content"] = content
         if options is not None:
             body["options"] = options.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

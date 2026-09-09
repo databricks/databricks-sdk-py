@@ -558,31 +558,6 @@ class GetCredentialsResponse:
 
 
 @dataclass
-class GetRepoPermissionLevelsResponse:
-    permission_levels: Optional[List[RepoPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetRepoPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetRepoPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetRepoPermissionLevelsResponse:
-        """Deserializes the GetRepoPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", RepoPermissionsDescription))
-
-
-@dataclass
 class GetRepoResponse:
     branch: Optional[str] = None
     """Branch that the local version of the repo is checked out to."""
@@ -698,31 +673,6 @@ class GetSecretResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetSecretResponse:
         """Deserializes the GetSecretResponse from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
-
-
-@dataclass
-class GetWorkspaceObjectPermissionLevelsResponse:
-    permission_levels: Optional[List[WorkspaceObjectPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetWorkspaceObjectPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetWorkspaceObjectPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetWorkspaceObjectPermissionLevelsResponse:
-        """Deserializes the GetWorkspaceObjectPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", WorkspaceObjectPermissionsDescription))
 
 
 class ImportFormat(Enum):
@@ -1053,115 +1003,6 @@ class ObjectType(Enum):
 
 
 @dataclass
-class RepoAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[RepoPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the RepoAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RepoAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RepoAccessControlRequest:
-        """Deserializes the RepoAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", RepoPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class RepoAccessControlResponse:
-    all_permissions: Optional[List[RepoPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the RepoAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RepoAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RepoAccessControlResponse:
-        """Deserializes the RepoAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", RepoPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
 class RepoInfo:
     """Git folder (repo) information."""
 
@@ -1237,127 +1078,6 @@ class RepoInfo:
             provider=d.get("provider", None),
             sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
             url=d.get("url", None),
-        )
-
-
-@dataclass
-class RepoPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[RepoPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the RepoPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RepoPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RepoPermission:
-        """Deserializes the RepoPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", RepoPermissionLevel),
-        )
-
-
-class RepoPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_EDIT = "CAN_EDIT"
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_READ = "CAN_READ"
-    CAN_RUN = "CAN_RUN"
-
-
-@dataclass
-class RepoPermissions:
-    access_control_list: Optional[List[RepoAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the RepoPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RepoPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissions:
-        """Deserializes the RepoPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", RepoAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class RepoPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[RepoPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the RepoPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RepoPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissionsDescription:
-        """Deserializes the RepoPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None), permission_level=_enum(d, "permission_level", RepoPermissionLevel)
         )
 
 
@@ -1543,242 +1263,7 @@ class UpdateRepoResponse:
         return cls()
 
 
-@dataclass
-class WorkspaceObjectAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[WorkspaceObjectPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceObjectAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkspaceObjectAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectAccessControlRequest:
-        """Deserializes the WorkspaceObjectAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", WorkspaceObjectPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class WorkspaceObjectAccessControlResponse:
-    all_permissions: Optional[List[WorkspaceObjectPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceObjectAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkspaceObjectAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectAccessControlResponse:
-        """Deserializes the WorkspaceObjectAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", WorkspaceObjectPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class WorkspaceObjectPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[WorkspaceObjectPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermission:
-        """Deserializes the WorkspaceObjectPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", WorkspaceObjectPermissionLevel),
-        )
-
-
-class WorkspaceObjectPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_EDIT = "CAN_EDIT"
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_READ = "CAN_READ"
-    CAN_RUN = "CAN_RUN"
-
-
-@dataclass
-class WorkspaceObjectPermissions:
-    access_control_list: Optional[List[WorkspaceObjectAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissions:
-        """Deserializes the WorkspaceObjectPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", WorkspaceObjectAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class WorkspaceObjectPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[WorkspaceObjectPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissionsDescription:
-        """Deserializes the WorkspaceObjectPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", WorkspaceObjectPermissionLevel),
-        )
-
-
 class GitCredentialsAPI:
-    """Registers personal access token for Databricks to do operations on behalf of the user.
-
-    See `more info <https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html>`__."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -1841,10 +1326,7 @@ class GitCredentialsAPI:
             body["personal_access_token"] = personal_access_token
         if principal_id is not None:
             body["principal_id"] = principal_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1868,9 +1350,7 @@ class GitCredentialsAPI:
         query = {}
         if principal_id is not None:
             query["principal_id"] = principal_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1893,9 +1373,7 @@ class GitCredentialsAPI:
         query = {}
         if principal_id is not None:
             query["principal_id"] = principal_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1917,9 +1395,7 @@ class GitCredentialsAPI:
         query = {}
         if principal_id is not None:
             query["principal_id"] = principal_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1990,10 +1466,7 @@ class GitCredentialsAPI:
             body["personal_access_token"] = personal_access_token
         if principal_id is not None:
             body["principal_id"] = principal_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2003,16 +1476,6 @@ class GitCredentialsAPI:
 
 
 class ReposAPI:
-    """The Repos API allows users to manage their git repos. Users can use the API to access all repos that they
-    have manage permissions on.
-
-    Databricks Repos is a visual Git client in Databricks. It supports common Git operations such a cloning a
-    repository, committing and pushing, pulling, branch management, and visual comparison of diffs when
-    committing.
-
-    Within Repos you can develop code in notebooks or other files and follow data science and engineering code
-    development best practices using Git for version control, collaboration, and CI/CD."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2059,10 +1522,7 @@ class ReposAPI:
             body["sparse_checkout"] = sparse_checkout.as_dict()
         if url is not None:
             body["url"] = url
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2080,9 +1540,7 @@ class ReposAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2099,9 +1557,7 @@ class ReposAPI:
         :returns: :class:`GetRepoResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2109,46 +1565,6 @@ class ReposAPI:
 
         res = self._api.do("GET", f"/api/2.0/repos/{repo_id}", headers=headers)
         return GetRepoResponse.from_dict(res)
-
-    def get_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param repo_id: str
-          The repo for which to get or manage permissions.
-
-        :returns: :class:`GetRepoPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}/permissionLevels", headers=headers)
-        return GetRepoPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, repo_id: str) -> RepoPermissions:
-        """Gets the permissions of a repo. Repos can inherit permissions from their root object.
-
-        :param repo_id: str
-          The repo for which to get or manage permissions.
-
-        :returns: :class:`RepoPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}", headers=headers)
-        return RepoPermissions.from_dict(res)
 
     def list(self, *, next_page_token: Optional[str] = None, path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
         """Returns repos that the calling user has Manage permissions on. Use ``next_page_token`` to iterate
@@ -2174,9 +1590,7 @@ class ReposAPI:
             query["next_page_token"] = next_page_token
         if path_prefix is not None:
             query["path_prefix"] = path_prefix
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2190,34 +1604,6 @@ class ReposAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["next_page_token"] = json["next_page_token"]
-
-    def set_permissions(
-        self, repo_id: str, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None
-    ) -> RepoPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param repo_id: str
-          The repo for which to get or manage permissions.
-        :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
-
-        :returns: :class:`RepoPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PUT", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
-        return RepoPermissions.from_dict(res)
 
     def update(
         self,
@@ -2272,10 +1658,7 @@ class ReposAPI:
             body["sparse_checkout"] = sparse_checkout.as_dict()
         if tag is not None:
             body["tag"] = tag
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2283,45 +1666,8 @@ class ReposAPI:
 
         self._api.do("PATCH", f"/api/2.0/repos/{repo_id}", body=body, headers=headers)
 
-    def update_permissions(
-        self, repo_id: str, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None
-    ) -> RepoPermissions:
-        """Updates the permissions on a repo. Repos can inherit permissions from their root object.
-
-        :param repo_id: str
-          The repo for which to get or manage permissions.
-        :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
-
-        :returns: :class:`RepoPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
-        return RepoPermissions.from_dict(res)
-
 
 class SecretsAPI:
-    """The Secrets API allows you to manage secrets, secret scopes, and access permissions.
-
-    Sometimes accessing data requires that you authenticate to external data sources through JDBC. Instead of
-    directly entering your credentials into a notebook, use Databricks secrets to store your credentials and
-    reference them in notebooks and jobs.
-
-    Administrators, secret creators, and users granted permission can read Databricks secrets. While
-    Databricks makes an effort to redact secret values that might be displayed in notebooks, it is not
-    possible to prevent such users from reading secrets."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2342,15 +1688,6 @@ class SecretsAPI:
 
         .. code::
 
-        { "scope": "my-simple-databricks-scope", "initial_manage_principal": "users" "scope_backend_type":
-        "databricks|azure_keyvault",
-
-        below is only required if scope type is azure_keyvault
-
-        "backend_azure_keyvault": { "resource_id":
-        "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxx/providers/Microsoft.KeyVault/vaults/xxxx",
-        "tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "dns_name": "https://xxxx.vault.azure.net/", } }
-
         If ``initial_manage_principal`` is specified, the initial ACL applied to the scope is applied to the
         supplied principal (user or group) with ``MANAGE`` permissions. The only supported principal for this
         option is the group ``users``, which contains all users in the workspace. If
@@ -2360,7 +1697,7 @@ class SecretsAPI:
         If ``scope_backend_type`` is ``azure_keyvault``, a secret scope is created with secrets from a given
         Azure KeyVault. The caller must provide the keyvault_resource_id and the tenant_id for the key vault.
         If ``scope_backend_type`` is ``databricks`` or is unspecified, an empty secret scope is created and
-        stored in Databricks's own storage.
+        stored in <Databricks>'s own storage.
 
         Throws ``RESOURCE_ALREADY_EXISTS`` if a scope with the given name already exists. Throws
         ``RESOURCE_LIMIT_EXCEEDED`` if maximum number of scopes in the workspace is exceeded. Throws
@@ -2390,9 +1727,7 @@ class SecretsAPI:
             body["scope"] = scope
         if scope_backend_type is not None:
             body["scope_backend_type"] = scope_backend_type.value
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2408,8 +1743,6 @@ class SecretsAPI:
         Example request:
 
         .. code::
-
-        { "scope": "my-secret-scope", "principal": "data-scientists" }
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope, principal, or ACL exists. Throws
         ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
@@ -2428,9 +1761,7 @@ class SecretsAPI:
             body["principal"] = principal
         if scope is not None:
             body["scope"] = scope
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2445,8 +1776,6 @@ class SecretsAPI:
 
         .. code::
 
-        { "scope": "my-secret-scope" }
-
         Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does not exist. Throws ``PERMISSION_DENIED`` if the
         user does not have permission to make this API call. Throws ``BAD_REQUEST`` if system user attempts to
         delete internal secret scope.
@@ -2460,9 +1789,7 @@ class SecretsAPI:
         body = {}
         if scope is not None:
             body["scope"] = scope
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2477,8 +1804,6 @@ class SecretsAPI:
         Example request:
 
         .. code::
-
-        { "scope": "my-secret-scope", "key": "my-secret-key" }
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists. Throws
         ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
@@ -2498,10 +1823,7 @@ class SecretsAPI:
             body["key"] = key
         if scope is not None:
             body["scope"] = scope
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2517,8 +1839,6 @@ class SecretsAPI:
         Example response:
 
         .. code::
-
-        { "principal": "data-scientists", "permission": "READ" }
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the
         user does not have permission to make this API call. Throws ``INVALID_PARAMETER_VALUE`` if the
@@ -2537,9 +1857,7 @@ class SecretsAPI:
             query["principal"] = principal
         if scope is not None:
             query["scope"] = scope
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2587,9 +1905,7 @@ class SecretsAPI:
             query["key"] = key
         if scope is not None:
             query["scope"] = scope
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2607,9 +1923,6 @@ class SecretsAPI:
 
         .. code::
 
-        { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal": "data-scientists",
-        "permission": "READ" }] }
-
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the
         user does not have permission to make this API call.
 
@@ -2622,9 +1935,7 @@ class SecretsAPI:
         query = {}
         if scope is not None:
             query["scope"] = scope
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2641,18 +1952,13 @@ class SecretsAPI:
 
         .. code::
 
-        { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS" },{ "name": "mount-points",
-        "backend_type": "DATABRICKS" }] }
-
         Throws ``PERMISSION_DENIED`` if the user does not have permission to make this API call.
 
 
         :returns: Iterator over :class:`SecretScope`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2670,9 +1976,6 @@ class SecretsAPI:
 
         .. code::
 
-        { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp": "1520467595000" }, { "key":
-        "my-byte-key", "last_updated_timestamp": "1520467595000" }, ] }
-
         The lastUpdatedTimestamp returned is in milliseconds since epoch.
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the
@@ -2687,9 +1990,7 @@ class SecretsAPI:
         query = {}
         if scope is not None:
             query["scope"] = scope
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2719,10 +2020,8 @@ class SecretsAPI:
 
         .. code::
 
-        { "scope": "my-secret-scope", "principal": "data-scientists", "permission": "READ" }
-
-        The principal is a user or group name corresponding to an existing Databricks principal to be granted
-        or revoked access.
+        The principal is a user or group name corresponding to an existing <Databricks> principal to be
+        granted or revoked access.
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``RESOURCE_ALREADY_EXISTS``
         if a permission for the principal already exists. Throws ``INVALID_PARAMETER_VALUE`` if the permission
@@ -2746,9 +2045,7 @@ class SecretsAPI:
             body["principal"] = principal
         if scope is not None:
             body["scope"] = scope
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2771,8 +2068,6 @@ class SecretsAPI:
         Example request:
 
         .. code::
-
-        { "scope": "my-databricks-scope", "key": "my-string-key", "string_value": "foobar" }
 
         The input fields "string_value" or "bytes_value" specify the type of the secret, which will determine
         the value returned when the secret value is requested. Exactly one must be specified.
@@ -2804,9 +2099,7 @@ class SecretsAPI:
             body["scope"] = scope
         if string_value is not None:
             body["string_value"] = string_value
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2816,13 +2109,6 @@ class SecretsAPI:
 
 
 class WorkspaceAPI:
-    """The Workspace API allows you to list, import, export, and delete workspace objects such as notebooks,
-    files, folders, and dashboards. Additionally, it provides endpoints to manage permissions for any
-    workspace object.
-
-    A notebook is a web-based interface to a document that contains runnable code, visualizations, and
-    explanatory text."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2850,10 +2136,7 @@ class WorkspaceAPI:
             body["path"] = path
         if recursive is not None:
             body["recursive"] = recursive
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2881,8 +2164,8 @@ class WorkspaceAPI:
             non-notebook entries.
           - ``HTML``: The notebook is exported as an HTML file.
           - ``JUPYTER``: The notebook is exported as a Jupyter/IPython Notebook file.
-          - ``DBC``: The notebook is exported in Databricks archive format. Directory exports will not include
-            non-notebook entries.
+          - ``DBC``: The notebook is exported in <Databricks> archive format. Directory exports will not
+            include non-notebook entries.
           - ``R_MARKDOWN``: The notebook is exported to R Markdown format.
           - ``AUTO``: The object or directory is exported depending on the objects type. Directory exports
             will include notebooks and workspace files.
@@ -2895,9 +2178,7 @@ class WorkspaceAPI:
             query["format"] = format.value
         if path is not None:
             query["path"] = path
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2905,63 +2186,6 @@ class WorkspaceAPI:
 
         res = self._api.do("GET", "/api/2.0/workspace/export", query=query, headers=headers)
         return ExportResponse.from_dict(res)
-
-    def get_permission_levels(
-        self, workspace_object_type: str, workspace_object_id: str
-    ) -> GetWorkspaceObjectPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions. Could be one of the following:
-          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
-          queries
-        :param workspace_object_id: str
-          The workspace object for which to get or manage permissions.
-
-        :returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}/permissionLevels",
-            headers=headers,
-        )
-        return GetWorkspaceObjectPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, workspace_object_type: str, workspace_object_id: str) -> WorkspaceObjectPermissions:
-        """Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
-        parent objects or root object.
-
-        :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions. Could be one of the following:
-          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
-          queries
-        :param workspace_object_id: str
-          The workspace object for which to get or manage permissions.
-
-        :returns: :class:`WorkspaceObjectPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "GET", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", headers=headers
-        )
-        return WorkspaceObjectPermissions.from_dict(res)
 
     def get_status(self, path: str) -> ObjectInfo:
         """Gets the status of an object or a directory. If ``path`` does not exist, this call returns an error
@@ -2976,9 +2200,7 @@ class WorkspaceAPI:
         query = {}
         if path is not None:
             query["path"] = path
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3021,7 +2243,7 @@ class WorkspaceAPI:
           - ``SOURCE``: The notebook or directory is imported as source code.
           - ``HTML``: The notebook is imported as an HTML file.
           - ``JUPYTER``: The notebook is imported as a Jupyter/IPython Notebook file.
-          - ``DBC``: The notebook is imported in Databricks archive format. Required for directories.
+          - ``DBC``: The notebook is imported in <Databricks> archive format. Required for directories.
           - ``R_MARKDOWN``: The notebook is imported from R Markdown format.
         :param language: :class:`Language` (optional)
           The language of the object. This value is set only if the object type is ``NOTEBOOK``.
@@ -3043,10 +2265,7 @@ class WorkspaceAPI:
             body["overwrite"] = overwrite
         if path is not None:
             body["path"] = path
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3071,9 +2290,7 @@ class WorkspaceAPI:
             query["notebooks_modified_after"] = notebooks_modified_after
         if path is not None:
             query["path"] = path
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3101,90 +2318,10 @@ class WorkspaceAPI:
         body = {}
         if path is not None:
             body["path"] = path
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/workspace/mkdirs", body=body, headers=headers)
-
-    def set_permissions(
-        self,
-        workspace_object_type: str,
-        workspace_object_id: str,
-        *,
-        access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None,
-    ) -> WorkspaceObjectPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their parent objects or root
-        object.
-
-        :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions. Could be one of the following:
-          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
-          queries
-        :param workspace_object_id: str
-          The workspace object for which to get or manage permissions.
-        :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
-
-        :returns: :class:`WorkspaceObjectPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PUT", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", body=body, headers=headers
-        )
-        return WorkspaceObjectPermissions.from_dict(res)
-
-    def update_permissions(
-        self,
-        workspace_object_type: str,
-        workspace_object_id: str,
-        *,
-        access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None,
-    ) -> WorkspaceObjectPermissions:
-        """Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
-        parent objects or root object.
-
-        :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions. Could be one of the following:
-          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
-          queries
-        :param workspace_object_id: str
-          The workspace object for which to get or manage permissions.
-        :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
-
-        :returns: :class:`WorkspaceObjectPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PATCH", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", body=body, headers=headers
-        )
-        return WorkspaceObjectPermissions.from_dict(res)

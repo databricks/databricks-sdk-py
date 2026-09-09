@@ -145,7 +145,7 @@ class EnvironmentSpec:
     dependency is a valid pip requirements file line per
     https://pip.pypa.io/en/stable/reference/requirements-file-format/. Allowed dependencies include
     a requirement specifier, an archive URL, a local project path (such as WSFS or UC Volumes in
-    Databricks), or a VCS project URL."""
+    <Databricks>), or a VCS project URL."""
 
     environment_version: Optional[str] = None
     """Environment version used by the environment. Each version comes with a specific Python version
@@ -516,11 +516,8 @@ class WorkspaceBaseEnvironmentOperationMetadata:
 
 
 class EnvironmentsAPI:
-    """APIs to manage environment resources.
-
-    The Environments API provides management capabilities for different types of environments including
-    workspace-level base environments that define the environment version and dependencies to be used in
-    serverless notebooks and jobs."""
+    """Service for managing environment resources. This service provides APIs for managing different types of
+    environments including workspace-level base environments."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -556,10 +553,7 @@ class EnvironmentsAPI:
             query["request_id"] = request_id
         if workspace_base_environment_id is not None:
             query["workspace_base_environment_id"] = workspace_base_environment_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -583,9 +577,7 @@ class EnvironmentsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -604,9 +596,7 @@ class EnvironmentsAPI:
         :returns: :class:`DefaultWorkspaceBaseEnvironment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -624,9 +614,7 @@ class EnvironmentsAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -645,9 +633,7 @@ class EnvironmentsAPI:
         :returns: :class:`WorkspaceBaseEnvironment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -661,7 +647,7 @@ class EnvironmentsAPI:
     ) -> Iterator[WorkspaceBaseEnvironment]:
         """Lists all WorkspaceBaseEnvironments in the workspace.
 
-        Databricks provides the following base environments:
+        <Databricks> provides the following base environments:
 
         - ``workspace-base-environments/databricks_ai_...``: includes popular AI and deep learning packages
           for serverless GPU compute.
@@ -685,9 +671,7 @@ class EnvironmentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -715,17 +699,13 @@ class EnvironmentsAPI:
         :returns: :class:`Operation`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/environments/v1/{name}/refresh", body=body, headers=headers)
+        res = self._api.do("POST", f"/api/environments/v1/{name}/refresh", headers=headers)
         operation = Operation.from_dict(res)
         return RefreshWorkspaceBaseEnvironmentOperation(self, operation)
 
@@ -755,10 +735,7 @@ class EnvironmentsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -785,10 +762,7 @@ class EnvironmentsAPI:
 
         body = workspace_base_environment.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

@@ -154,9 +154,9 @@ class DirectoryEntry:
     def from_dict(cls, d: Dict[str, Any]) -> DirectoryEntry:
         """Deserializes the DirectoryEntry from a dictionary."""
         return cls(
-            file_size=_int64(d, "file_size"),
+            file_size=d.get("file_size", None),
             is_directory=d.get("is_directory", None),
-            last_modified=_int64(d, "last_modified"),
+            last_modified=d.get("last_modified", None),
             name=d.get("name", None),
             path=d.get("path", None),
         )
@@ -213,6 +213,8 @@ class DownloadResponse:
 
 @dataclass
 class FileInfo:
+    """Stores the attributes of a file or directory."""
+
     file_size: Optional[int] = None
     """The length of the file in bytes. Set to 0 for directories."""
 
@@ -451,8 +453,9 @@ class ReadResponse:
 
 
 class DbfsAPI:
-    """DBFS API makes it simple to interact with various data sources without having to include a users
-    credentials every time to read a file."""
+    """This service allows users to interact with the Databricks File System (DBFS), which is a distributed file
+    system layer on top of S3. For example, users can create new files or list the contents of a given path in
+    DBFS."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -476,10 +479,7 @@ class DbfsAPI:
             body["data"] = data
         if handle is not None:
             body["handle"] = handle
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -500,10 +500,7 @@ class DbfsAPI:
         body = {}
         if handle is not None:
             body["handle"] = handle
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -535,10 +532,7 @@ class DbfsAPI:
             body["overwrite"] = overwrite
         if path is not None:
             body["path"] = path
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -577,10 +571,7 @@ class DbfsAPI:
             body["path"] = path
         if recursive is not None:
             body["recursive"] = recursive
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -601,9 +592,7 @@ class DbfsAPI:
         query = {}
         if path is not None:
             query["path"] = path
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -632,9 +621,7 @@ class DbfsAPI:
         query = {}
         if path is not None:
             query["path"] = path
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -659,10 +646,7 @@ class DbfsAPI:
         body = {}
         if path is not None:
             body["path"] = path
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -689,10 +673,7 @@ class DbfsAPI:
             body["destination_path"] = destination_path
         if source_path is not None:
             body["source_path"] = source_path
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -729,10 +710,7 @@ class DbfsAPI:
             body["overwrite"] = overwrite
         if path is not None:
             body["path"] = path
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -767,9 +745,7 @@ class DbfsAPI:
             query["offset"] = offset
         if path is not None:
             query["path"] = path
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -780,22 +756,6 @@ class DbfsAPI:
 
 
 class FilesAPI:
-    """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and
-    directories by referring to their URI. The API makes working with file content as raw bytes easier and
-    more efficient.
-
-    The API supports `Unity Catalog volumes
-    <https://docs.databricks.com/en/connect/unity-catalog/volumes.html>`__, where files and directories to
-    operate on are specified using their volume URI path, which follows the format
-    /Volumes/&lt;catalog_name&gt;/&lt;schema_name&gt;/&lt;volume_name&gt;/&lt;path_to_file&gt;.
-
-    The Files API has two distinct endpoints, one for working with files (``/fs/files``) and another one for
-    working with directories (``/fs/directories``). Both endpoints use the standard HTTP methods GET, HEAD,
-    PUT, and DELETE to manage files and directories specified using their URI path. The path is always
-    absolute.
-
-    Use of Files API may incur Databricks data transfer charges."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -869,9 +829,7 @@ class FilesAPI:
         :returns: :class:`DownloadResponse`
         """
 
-        headers = {
-            "Accept": "application/octet-stream",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -887,7 +845,6 @@ class FilesAPI:
             f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}",
             headers=headers,
             response_headers=response_headers,
-            raw=True,
         )
         return DownloadResponse.from_dict(res)
 
@@ -978,9 +935,7 @@ class FilesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1019,18 +974,12 @@ class FilesAPI:
         query = {}
         if overwrite is not None:
             query["overwrite"] = overwrite
-        headers = {
-            "Content-Type": "application/octet-stream",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
-            "PUT",
-            f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}",
-            query=query,
-            headers=headers,
-            data=contents,
+            "PUT", f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}", query=query, headers=headers
         )

@@ -1087,7 +1087,7 @@ class WorkspaceInfo:
 
 
 class BundleDeploymentsAPI:
-    """Service for managing bundle deployment metadata."""
+    """See http://go/protostyleguide/services."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1121,10 +1121,7 @@ class BundleDeploymentsAPI:
             body["completion_reason"] = completion_reason.value
         if force is not None:
             body["force"] = force
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1146,10 +1143,7 @@ class BundleDeploymentsAPI:
 
         body = deployment.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1191,10 +1185,7 @@ class BundleDeploymentsAPI:
         query = {}
         if version_id is not None:
             query["version_id"] = version_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1212,9 +1203,7 @@ class BundleDeploymentsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1231,9 +1220,7 @@ class BundleDeploymentsAPI:
         :returns: :class:`Deployment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1252,9 +1239,7 @@ class BundleDeploymentsAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1272,9 +1257,7 @@ class BundleDeploymentsAPI:
         :returns: :class:`Resource`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1292,9 +1275,7 @@ class BundleDeploymentsAPI:
         :returns: :class:`Version`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1316,17 +1297,13 @@ class BundleDeploymentsAPI:
         :returns: :class:`HeartbeatResponse`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/bundle/{name}/heartbeat", body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/bundle/{name}/heartbeat", headers=headers)
         return HeartbeatResponse.from_dict(res)
 
     def list_deployments(
@@ -1350,9 +1327,7 @@ class BundleDeploymentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1390,9 +1365,7 @@ class BundleDeploymentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1430,9 +1403,7 @@ class BundleDeploymentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1470,9 +1441,7 @@ class BundleDeploymentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1506,10 +1475,7 @@ class BundleDeploymentsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1551,10 +1517,7 @@ class BundleDeploymentsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

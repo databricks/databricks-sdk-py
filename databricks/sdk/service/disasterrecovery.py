@@ -516,7 +516,7 @@ class WorkspaceSet:
 
 
 class DisasterRecoveryAPI:
-    """Manage disaster recovery configurations and execute failover operations."""
+    """Service for managing failover groups for disaster recovery."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -550,10 +550,7 @@ class DisasterRecoveryAPI:
             query["failover_group_id"] = failover_group_id
         if validate_only is not None:
             query["validate_only"] = validate_only
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/disaster-recovery/v1/{parent}/failover-groups", query=query, body=body, headers=headers
@@ -584,10 +581,7 @@ class DisasterRecoveryAPI:
             query["stable_url_id"] = stable_url_id
         if validate_only is not None:
             query["validate_only"] = validate_only
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/disaster-recovery/v1/{parent}/stable-urls", query=query, body=body, headers=headers
@@ -610,9 +604,7 @@ class DisasterRecoveryAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/disaster-recovery/v1/{name}", query=query, headers=headers)
 
@@ -625,9 +617,7 @@ class DisasterRecoveryAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/disaster-recovery/v1/{name}", headers=headers)
 
@@ -663,10 +653,7 @@ class DisasterRecoveryAPI:
             body["failover_type"] = failover_type.value
         if target_primary_region is not None:
             body["target_primary_region"] = target_primary_region
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("POST", f"/api/disaster-recovery/v1/{name}/failover", body=body, headers=headers)
         return FailoverGroup.from_dict(res)
@@ -681,9 +668,7 @@ class DisasterRecoveryAPI:
         :returns: :class:`FailoverGroup`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("GET", f"/api/disaster-recovery/v1/{name}", headers=headers)
         return FailoverGroup.from_dict(res)
@@ -697,9 +682,7 @@ class DisasterRecoveryAPI:
         :returns: :class:`StableUrl`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("GET", f"/api/disaster-recovery/v1/{name}", headers=headers)
         return StableUrl.from_dict(res)
@@ -733,9 +716,7 @@ class DisasterRecoveryAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -774,9 +755,7 @@ class DisasterRecoveryAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do("GET", f"/api/disaster-recovery/v1/{parent}/stable-urls", query=query, headers=headers)
@@ -814,10 +793,7 @@ class DisasterRecoveryAPI:
             query["etag"] = etag
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("PATCH", f"/api/disaster-recovery/v1/{name}", query=query, body=body, headers=headers)
         return FailoverGroup.from_dict(res)

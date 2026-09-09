@@ -314,9 +314,6 @@ class ValidityCheckConfiguration:
 
 
 class QualityMonitorV2API:
-    """Deprecated: Please use the Data Quality Monitoring API instead (REST: /api/data-quality/v1/monitors).
-    Manage data quality of UC objects (currently support ``schema``)."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -331,10 +328,7 @@ class QualityMonitorV2API:
 
         body = quality_monitor.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -355,9 +349,7 @@ class QualityMonitorV2API:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -377,9 +369,7 @@ class QualityMonitorV2API:
         :returns: :class:`QualityMonitor`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -405,9 +395,7 @@ class QualityMonitorV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -439,10 +427,7 @@ class QualityMonitorV2API:
 
         body = quality_monitor.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

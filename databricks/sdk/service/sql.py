@@ -97,13 +97,13 @@ class Alert:
     """The timestamp indicating when the alert was created."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom body of alert notification, if it exists. See [here](/sql/user/alerts/index.html) for
+    custom templating instructions."""
 
     custom_subject: Optional[str] = None
     """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    Slack notification headers, for example. See [here](/sql/user/alerts/index.html) for custom
+    templating instructions."""
 
     display_name: Optional[str] = None
     """The display name of the alert."""
@@ -1497,13 +1497,13 @@ class CreateAlertRequestAlert:
     """Trigger conditions of the alert."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom body of alert notification, if it exists. See [here](/sql/user/alerts/index.html) for
+    custom templating instructions."""
 
     custom_subject: Optional[str] = None
     """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    Slack notification headers, for example. See [here](/sql/user/alerts/index.html) for custom
+    templating instructions."""
 
     display_name: Optional[str] = None
     """The display name of the alert."""
@@ -3116,31 +3116,6 @@ class GetResponse:
 
 
 @dataclass
-class GetWarehousePermissionLevelsResponse:
-    permission_levels: Optional[List[WarehousePermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetWarehousePermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetWarehousePermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetWarehousePermissionLevelsResponse:
-        """Deserializes the GetWarehousePermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", WarehousePermissionsDescription))
-
-
-@dataclass
 class GetWarehouseResponse:
     auto_stop_mins: Optional[int] = None
     """The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries)
@@ -3956,13 +3931,13 @@ class ListAlertsResponseAlert:
     """The timestamp indicating when the alert was created."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom body of alert notification, if it exists. See [here](/sql/user/alerts/index.html) for
+    custom templating instructions."""
 
     custom_subject: Optional[str] = None
     """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    Slack notification headers, for example. See [here](/sql/user/alerts/index.html) for custom
+    templating instructions."""
 
     display_name: Optional[str] = None
     """The display name of the alert."""
@@ -5046,9 +5021,9 @@ class QueryInfo:
     """The query ID."""
 
     query_source: Optional[ExternalQuerySource] = None
-    """A struct that contains key-value pairs representing Databricks entities that were involved in
+    """A struct that contains key-value pairs representing <Databricks> entities that were involved in
     the execution of this statement, such as jobs, notebooks, or dashboards. This field only records
-    Databricks entities."""
+    <Databricks> entities."""
 
     query_start_time_ms: Optional[int] = None
     """The time the query started."""
@@ -6793,13 +6768,13 @@ class UpdateAlertRequestAlert:
     """Trigger conditions of the alert."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom body of alert notification, if it exists. See [here](/sql/user/alerts/index.html) for
+    custom templating instructions."""
 
     custom_subject: Optional[str] = None
     """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    Slack notification headers, for example. See [here](/sql/user/alerts/index.html) for custom
+    templating instructions."""
 
     display_name: Optional[str] = None
     """The display name of the alert."""
@@ -7173,238 +7148,6 @@ class Visualization:
 
 
 @dataclass
-class WarehouseAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[WarehousePermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the WarehouseAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WarehouseAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WarehouseAccessControlRequest:
-        """Deserializes the WarehouseAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", WarehousePermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class WarehouseAccessControlResponse:
-    all_permissions: Optional[List[WarehousePermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the WarehouseAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WarehouseAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WarehouseAccessControlResponse:
-        """Deserializes the WarehouseAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", WarehousePermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class WarehousePermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[WarehousePermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the WarehousePermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WarehousePermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WarehousePermission:
-        """Deserializes the WarehousePermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", WarehousePermissionLevel),
-        )
-
-
-class WarehousePermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_MONITOR = "CAN_MONITOR"
-    CAN_USE = "CAN_USE"
-    CAN_VIEW = "CAN_VIEW"
-    IS_OWNER = "IS_OWNER"
-
-
-@dataclass
-class WarehousePermissions:
-    access_control_list: Optional[List[WarehouseAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the WarehousePermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WarehousePermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WarehousePermissions:
-        """Deserializes the WarehousePermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", WarehouseAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class WarehousePermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[WarehousePermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the WarehousePermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WarehousePermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WarehousePermissionsDescription:
-        """Deserializes the WarehousePermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", WarehousePermissionLevel),
-        )
-
-
-@dataclass
 class WarehouseTypePair:
     """Configuration values to enable or disable the access to specific warehouse types in the
     workspace."""
@@ -7640,11 +7383,6 @@ class WidgetPosition:
 
 
 class AlertsAPI:
-    """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
-    periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
-    notification destinations if the condition was met. Alerts can be scheduled using the ``sql_task`` type of
-    the Jobs API, e.g. :method:jobs/create."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7666,10 +7404,7 @@ class AlertsAPI:
             body["alert"] = alert.as_dict()
         if auto_resolve_display_name is not None:
             body["auto_resolve_display_name"] = auto_resolve_display_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7688,9 +7423,7 @@ class AlertsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7706,9 +7439,7 @@ class AlertsAPI:
         :returns: :class:`Alert`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7734,9 +7465,7 @@ class AlertsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7763,15 +7492,6 @@ class AlertsAPI:
 
         :param id: str
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
@@ -7787,10 +7507,7 @@ class AlertsAPI:
             body["auto_resolve_display_name"] = auto_resolve_display_name
         if update_mask is not None:
             body["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7801,14 +7518,6 @@ class AlertsAPI:
 
 
 class AlertsLegacyAPI:
-    """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
-    periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
-    notification destinations if the condition was met. Alerts can be scheduled using the ``sql_task`` type of
-    the Jobs API, e.g. :method:jobs/create.
-
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
-    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7853,10 +7562,7 @@ class AlertsLegacyAPI:
             body["query_id"] = query_id
         if rearm is not None:
             body["rearm"] = rearm
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7877,9 +7583,7 @@ class AlertsLegacyAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7898,9 +7602,7 @@ class AlertsLegacyAPI:
         :returns: :class:`LegacyAlert`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7919,9 +7621,7 @@ class AlertsLegacyAPI:
         :returns: Iterator over :class:`LegacyAlert`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7959,10 +7659,7 @@ class AlertsLegacyAPI:
             body["query_id"] = query_id
         if rearm is not None:
             body["rearm"] = rearm
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7972,8 +7669,6 @@ class AlertsLegacyAPI:
 
 
 class AlertsV2API:
-    """New version of SQL Alerts"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7987,10 +7682,7 @@ class AlertsV2API:
 
         body = alert.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8007,9 +7699,7 @@ class AlertsV2API:
         :returns: :class:`AlertV2`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8032,9 +7722,7 @@ class AlertsV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8064,9 +7752,7 @@ class AlertsV2API:
         query = {}
         if purge is not None:
             query["purge"] = purge
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8081,15 +7767,6 @@ class AlertsV2API:
           The canonical identifier of the alert to retrieve information about.
         :param alert: :class:`AlertV2`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`AlertV2`
         """
@@ -8098,10 +7775,7 @@ class AlertsV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8112,9 +7786,6 @@ class AlertsV2API:
 
 
 class DashboardWidgetsAPI:
-    """This is an evolving API that facilitates the addition and removal of widgets from existing dashboards
-    within the Databricks Workspace. Data structures may change over time."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8154,10 +7825,7 @@ class DashboardWidgetsAPI:
             body["visualization_id"] = visualization_id
         if width is not None:
             body["width"] = width
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8175,9 +7843,7 @@ class DashboardWidgetsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8224,10 +7890,7 @@ class DashboardWidgetsAPI:
             body["visualization_id"] = visualization_id
         if width is not None:
             body["width"] = width
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8238,15 +7901,6 @@ class DashboardWidgetsAPI:
 
 
 class DashboardsAPI:
-    """In general, there is little need to modify dashboards using the API. However, it can be useful to use
-    dashboard objects to look-up a collection of related query IDs. The API can also be used to duplicate
-    multiple dashboards at once since you can get a dashboard definition with a GET request and then POST it
-    to create a new one. Dashboards can be scheduled using the ``sql_task`` type of the Jobs API, e.g.
-    :method:jobs/create.
-
-    **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
-    <https://docs.databricks.com/en/dashboards/>`__"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8262,9 +7916,7 @@ class DashboardsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8283,9 +7935,7 @@ class DashboardsAPI:
         :returns: :class:`Dashboard`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8331,9 +7981,7 @@ class DashboardsAPI:
             query["page_size"] = page_size
         if q is not None:
             query["q"] = q
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8360,9 +8008,7 @@ class DashboardsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8404,10 +8050,7 @@ class DashboardsAPI:
             body["run_as_role"] = run_as_role.value
         if tags is not None:
             body["tags"] = [v for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8418,17 +8061,6 @@ class DashboardsAPI:
 
 
 class DataSourcesAPI:
-    """This API is provided to assist you in making new query objects. When creating a query object, you may
-    optionally specify a ``data_source_id`` for the SQL warehouse against which it will run. If you don't
-    already know the ``data_source_id`` for your desired SQL warehouse, this API will help you find it.
-
-    This API does not support searches. It returns the full list of SQL warehouses in your workspace. We
-    advise you to use any text editor, REST client, or ``grep`` to search the response from this API for the
-    name of your SQL warehouse as it appears in Databricks SQL.
-
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
-    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8444,9 +8076,7 @@ class DataSourcesAPI:
         :returns: Iterator over :class:`DataSource`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8457,40 +8087,24 @@ class DataSourcesAPI:
 
 
 class DbsqlPermissionsAPI:
-    """The SQL Permissions API is similar to the endpoints of the :method:permissions/set. However, this exposes
-    only one endpoint, which gets the Access Control List for a given object. You cannot modify any
-    permissions using this API.
-
-    There are three levels of permission:
-
-    - ``CAN_VIEW``: Allows read-only access
-    - ``CAN_RUN``: Allows read access and run access (superset of ``CAN_VIEW``)
-    - ``CAN_MANAGE``: Allows all actions: read, run, edit, delete, modify permissions (superset of
-      ``CAN_RUN``)
-
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
-    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
-
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, object_type: ObjectTypePlural, object_id: str) -> GetResponse:
+    def get(self, object_id: str, object_type: ObjectTypePlural) -> GetResponse:
         """Gets a JSON representation of the access control list (ACL) for a specified object.
 
         **Warning**: This API is deprecated. Please use :method:workspace/getpermissions instead. `Learn more
         <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
-        :param object_type: :class:`ObjectTypePlural`
-          The type of object permissions to check.
         :param object_id: str
           Object ID. An ACL is returned for the object with this UUID.
+        :param object_type: :class:`ObjectTypePlural`
+          The type of object permissions to check.
 
         :returns: :class:`GetResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8501,8 +8115,8 @@ class DbsqlPermissionsAPI:
 
     def set(
         self,
-        object_type: ObjectTypePlural,
         object_id: str,
+        object_type: ObjectTypePlural,
         *,
         access_control_list: Optional[List[AccessControl]] = None,
     ) -> SetResponse:
@@ -8512,10 +8126,10 @@ class DbsqlPermissionsAPI:
         **Warning**: This API is deprecated. Please use :method:workspace/setpermissions instead. `Learn more
         <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
-        :param object_type: :class:`ObjectTypePlural`
-          The type of object permission to set.
         :param object_id: str
           Object ID. The ACL for the object with this UUID is overwritten by this request's POST content.
+        :param object_type: :class:`ObjectTypePlural`
+          The type of object permission to set.
         :param access_control_list: List[:class:`AccessControl`] (optional)
 
         :returns: :class:`SetResponse`
@@ -8524,10 +8138,7 @@ class DbsqlPermissionsAPI:
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8539,7 +8150,7 @@ class DbsqlPermissionsAPI:
         return SetResponse.from_dict(res)
 
     def transfer_ownership(
-        self, object_type: OwnableObjectType, object_id: TransferOwnershipObjectId, *, new_owner: Optional[str] = None
+        self, object_id: TransferOwnershipObjectId, object_type: OwnableObjectType, *, new_owner: Optional[str] = None
     ) -> Success:
         """Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
 
@@ -8547,10 +8158,10 @@ class DbsqlPermissionsAPI:
         :method:alerts/update respectively instead. `Learn more
         <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
-        :param object_type: :class:`OwnableObjectType`
-          The type of object on which to change ownership.
         :param object_id: :class:`TransferOwnershipObjectId`
           The ID of the object on which to change ownership.
+        :param object_type: :class:`OwnableObjectType`
+          The type of object on which to change ownership.
         :param new_owner: str (optional)
           Email address for the new owner, who must exist in the workspace.
 
@@ -8560,10 +8171,7 @@ class DbsqlPermissionsAPI:
         body = {}
         if new_owner is not None:
             body["new_owner"] = new_owner
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8579,10 +8187,6 @@ class DbsqlPermissionsAPI:
 
 
 class QueriesAPI:
-    """The queries API can be used to perform CRUD operations on queries. A query is a Databricks SQL object that
-    includes the target SQL warehouse, query text, name, description, tags, and parameters. Queries can be
-    scheduled using the ``sql_task`` type of the Jobs API, e.g. :method:jobs/create."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8604,10 +8208,7 @@ class QueriesAPI:
             body["auto_resolve_display_name"] = auto_resolve_display_name
         if query is not None:
             body["query"] = query.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8626,9 +8227,7 @@ class QueriesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8644,9 +8243,7 @@ class QueriesAPI:
         :returns: :class:`Query`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8672,9 +8269,7 @@ class QueriesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8706,9 +8301,7 @@ class QueriesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8735,15 +8328,6 @@ class QueriesAPI:
 
         :param id: str
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
           alert's display name conflicts with an existing alert's display name.
@@ -8759,10 +8343,7 @@ class QueriesAPI:
             body["query"] = query.as_dict()
         if update_mask is not None:
             body["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8773,13 +8354,6 @@ class QueriesAPI:
 
 
 class QueriesLegacyAPI:
-    """These endpoints are used for CRUD operations on query definitions. Query definitions include the target
-    SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
-    scheduled using the ``sql_task`` type of the Jobs API, e.g. :method:jobs/create.
-
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
-    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8847,10 +8421,7 @@ class QueriesLegacyAPI:
             body["run_as_role"] = run_as_role.value
         if tags is not None:
             body["tags"] = [v for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8871,9 +8442,7 @@ class QueriesLegacyAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8893,9 +8462,7 @@ class QueriesLegacyAPI:
         :returns: :class:`LegacyQuery`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8949,9 +8516,7 @@ class QueriesLegacyAPI:
             query["page_size"] = page_size
         if q is not None:
             query["q"] = q
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8979,9 +8544,7 @@ class QueriesLegacyAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9045,10 +8608,7 @@ class QueriesLegacyAPI:
             body["run_as_role"] = run_as_role.value
         if tags is not None:
             body["tags"] = [v for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9059,8 +8619,7 @@ class QueriesLegacyAPI:
 
 
 class QueryHistoryAPI:
-    """A service responsible for storing and retrieving the list of queries run against SQL endpoints and
-    serverless compute."""
+    """History service API"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -9105,9 +8664,7 @@ class QueryHistoryAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9118,9 +8675,6 @@ class QueryHistoryAPI:
 
 
 class QueryVisualizationsAPI:
-    """This is an evolving API that facilitates the addition and removal of visualizations from existing queries
-    in the Databricks Workspace. Data structures can change over time."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9135,10 +8689,7 @@ class QueryVisualizationsAPI:
         body = {}
         if visualization is not None:
             body["visualization"] = visualization.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9155,9 +8706,7 @@ class QueryVisualizationsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9172,15 +8721,6 @@ class QueryVisualizationsAPI:
 
         :param id: str
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
         :param visualization: :class:`UpdateVisualizationRequestVisualization` (optional)
 
         :returns: :class:`Visualization`
@@ -9191,10 +8731,7 @@ class QueryVisualizationsAPI:
             body["update_mask"] = update_mask
         if visualization is not None:
             body["visualization"] = visualization.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9205,12 +8742,6 @@ class QueryVisualizationsAPI:
 
 
 class QueryVisualizationsLegacyAPI:
-    """This is an evolving API that facilitates the addition and removal of visualizations from existing queries
-    within the Databricks Workspace. Data structures may change over time.
-
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
-    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9248,10 +8779,7 @@ class QueryVisualizationsLegacyAPI:
             body["query_id"] = query_id
         if type is not None:
             body["type"] = type
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9272,9 +8800,7 @@ class QueryVisualizationsLegacyAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9322,8 +8848,6 @@ class QueryVisualizationsLegacyAPI:
             body["created_at"] = created_at
         if description is not None:
             body["description"] = description
-        if id is not None:
-            body["id"] = id
         if name is not None:
             body["name"] = name
         if options is not None:
@@ -9334,10 +8858,7 @@ class QueryVisualizationsLegacyAPI:
             body["type"] = type
         if updated_at is not None:
             body["updated_at"] = updated_at
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9348,8 +8869,6 @@ class QueryVisualizationsLegacyAPI:
 
 
 class RedashConfigAPI:
-    """Redash V2 service for workspace configurations (internal)"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9360,9 +8879,7 @@ class RedashConfigAPI:
         :returns: :class:`ClientConfig`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9373,97 +8890,6 @@ class RedashConfigAPI:
 
 
 class StatementExecutionAPI:
-    """The Databricks SQL Statement Execution API can be used to execute SQL statements on a SQL warehouse and
-    fetch the result.
-
-    **Getting started**
-
-    We suggest beginning with the `Databricks SQL Statement Execution API tutorial
-    <https://docs.databricks.com/sql/api/sql-execution-tutorial.html>`__.
-
-    **Overview of statement execution and result fetching**
-
-    Statement execution begins by issuing a :method:statementexecution/executeStatement request with a valid
-    SQL statement and warehouse ID, along with optional parameters such as the data catalog and output format.
-    If no other parameters are specified, the server will wait for up to 10s before returning a response. If
-    the statement has completed within this timespan, the response will include the result data as a JSON
-    array and metadata. Otherwise, if no result is available after the 10s timeout expired, the response will
-    provide the statement ID that can be used to poll for results by using a
-    :method:statementexecution/getStatement request.
-
-    You can specify whether the call should behave synchronously, asynchronously or start synchronously with a
-    fallback to asynchronous execution. This is controlled with the ``wait_timeout`` and ``on_wait_timeout``
-    settings. If ``wait_timeout`` is set between 5-50 seconds (default: 10s), the call waits for results up to
-    the specified timeout; when set to ``0s``, the call is asynchronous and responds immediately with a
-    statement ID. The ``on_wait_timeout`` setting specifies what should happen when the timeout is reached
-    while the statement execution has not yet finished. This can be set to either ``CONTINUE``, to fallback to
-    asynchronous mode, or it can be set to ``CANCEL``, which cancels the statement.
-
-    In summary:
-
-    - **Synchronous mode** (``wait_timeout=30s`` and ``on_wait_timeout=CANCEL``): The call waits up to 30
-      seconds; if the statement execution finishes within this time, the result data is returned directly in
-      the response. If the execution takes longer than 30 seconds, the execution is canceled and the call
-      returns with a ``CANCELED`` state.
-    - **Asynchronous mode** (``wait_timeout=0s`` and ``on_wait_timeout`` is ignored): The call doesn't wait
-      for the statement to finish but returns directly with a statement ID. The status of the statement
-      execution can be polled by issuing :method:statementexecution/getStatement with the statement ID. Once
-      the execution has succeeded, this call also returns the result and metadata in the response.
-    - **[Default] Hybrid mode** (``wait_timeout=10s`` and ``on_wait_timeout=CONTINUE``): The call waits for up
-      to 10 seconds; if the statement execution finishes within this time, the result data is returned
-      directly in the response. If the execution takes longer than 10 seconds, a statement ID is returned. The
-      statement ID can be used to fetch status and results in the same way as in the asynchronous mode.
-
-    Depending on the size, the result can be split into multiple chunks. If the statement execution is
-    successful, the statement response contains a manifest and the first chunk of the result. The manifest
-    contains schema information and provides metadata for each chunk in the result. Result chunks can be
-    retrieved by index with :method:statementexecution/getStatementResultChunkN which may be called in any
-    order and in parallel. For sequential fetching, each chunk, apart from the last, also contains a
-    ``next_chunk_index`` and ``next_chunk_internal_link`` that point to the next chunk.
-
-    A statement can be canceled with :method:statementexecution/cancelExecution.
-
-    **Fetching result data: format and disposition**
-
-    To specify the format of the result data, use the ``format`` field, which can be set to one of the
-    following options: ``JSON_ARRAY`` (JSON), ``ARROW_STREAM`` (`Apache Arrow Columnar
-    <https://arrow.apache.org/overview/>`__), or ``CSV``.
-
-    There are two ways to receive statement results, controlled by the ``disposition`` setting, which can be
-    either ``INLINE`` or ``EXTERNAL_LINKS``:
-
-    - ``INLINE``: In this mode, the result data is directly included in the response. It's best suited for
-      smaller results. This mode can only be used with the ``JSON_ARRAY`` format.
-    - ``EXTERNAL_LINKS``: In this mode, the response provides links that can be used to download the result
-      data in chunks separately. This approach is ideal for larger results and offers higher throughput. This
-      mode can be used with all the formats: ``JSON_ARRAY``, ``ARROW_STREAM``, and ``CSV``.
-
-    By default, the API uses ``format=JSON_ARRAY`` and ``disposition=INLINE``.
-
-    **Limits and limitations**
-
-    Note: The byte limit for INLINE disposition is based on internal storage metrics and will not exactly
-    match the byte count of the actual payload.
-
-    - Statements with ``disposition=INLINE`` are limited to 25 MiB and will fail when this limit is exceeded.
-    - Statements with ``disposition=EXTERNAL_LINKS`` are limited to 100 GiB. Result sets larger than this
-      limit will be truncated. Truncation is indicated by the ``truncated`` field in the result manifest.
-    - The maximum query text size is 16 MiB.
-    - Cancelation might silently fail. A successful response from a cancel request indicates that the cancel
-      request was successfully received and sent to the processing engine. However, an outstanding statement
-      might have already completed execution when the cancel request arrives. Polling for status until a
-      terminal state is reached is a reliable way to determine the final state.
-    - Wait timeouts are approximate, occur server-side, and cannot account for things such as caller delays
-      and network latency from caller to service.
-    - To keep a statement alive, poll for its status at least once every 15 minutes. Regular polling
-      guarantees the statement stays alive.
-    - To stop a statement you no longer need, cancel it explicitly with
-      :method:statementexecution/cancelExecution. Stopping polling does not cancel a statement. Explicit
-      cancellation is the only way to end statement execution on demand.
-    - The results are only available for one hour after success; polling does not extend this.
-    - The SQL Execution API must be used for the entire lifecycle of the statement. For example, you cannot
-      use the Jobs API to execute the command, and then the SQL Execution API to cancel it."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9478,16 +8904,13 @@ class StatementExecutionAPI:
 
         """
 
-        body = {}
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.0/sql/statements/{statement_id}/cancel", body=body, headers=headers)
+        self._api.do("POST", f"/api/2.0/sql/statements/{statement_id}/cancel", headers=headers)
 
     def execute_statement(
         self,
@@ -9538,8 +8961,7 @@ class StatementExecutionAPI:
 
         The ``EXTERNAL_LINKS`` disposition can be disabled upon request by creating a support case.
 
-        See also `Security best practices
-        <https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices>`__.
+        See also [Security best practices](/sql/admin/sql-execution-tutorial.html#security-best-practices).
 
         StatementResponse contains ``statement_id`` and ``status``; other fields might be absent or present
         depending on context. If the SQL warehouse fails to execute the provided statement, a 200 response is
@@ -9577,7 +8999,7 @@ class StatementExecutionAPI:
           allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
           resulting links have two important properties:
 
-          1. They point to resources *external* to the Databricks compute; therefore any associated
+          1. They point to resources *external* to the <Databricks> compute; therefore any associated
              authentication information (typically a personal access token, OAuth token, or similar) *must be
              removed* when fetching from these links.
           2. These are URLs with a specific expiration, indicated in the response. The behavior when
@@ -9596,11 +9018,11 @@ class StatementExecutionAPI:
 
           .. code-block::
 
-             [
-             [ "id-1", "1", null ],
-             [ "id-2", "2", null ],
-             [ "id-3", "3", null ],
-             ]
+              [
+              [ "id-1", "1", null ],
+              [ "id-2", "2", null ],
+              [ "id-3", "3", null ],
+              ]
 
           When specifying ``format=JSON_ARRAY`` and ``disposition=EXTERNAL_LINKS``, each chunk in the result
           contains compact JSON with no indentation or extra whitespace.
@@ -9645,7 +9067,7 @@ class StatementExecutionAPI:
 
           .. code-block::
 
-             SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
+                 SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
 
           The parameters can be passed in the request body as follows:
 
@@ -9665,8 +9087,6 @@ class StatementExecutionAPI:
           to ``null`` or white space. Refer to the SQL language reference for the format specification of
           query tags. There's no significance to the order of tags. Only one value per key will be recorded. A
           sequence in excess of 20 query tags will be coerced to 20. Example:
-
-          { ..., "query_tags": [ { "key": "team", "value": "eng" }, { "key": "some key only tag" } ] }
         :param row_limit: int (optional)
           Applies the given row limit to the statement's result set, but unlike the ``LIMIT`` clause in SQL,
           it also sets the ``truncated`` field in the response to indicate whether the result was trimmed due
@@ -9716,10 +9136,7 @@ class StatementExecutionAPI:
             body["wait_timeout"] = wait_timeout
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9745,9 +9162,7 @@ class StatementExecutionAPI:
         :returns: :class:`StatementResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9773,9 +9188,7 @@ class StatementExecutionAPI:
         :returns: :class:`ResultData`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9788,9 +9201,6 @@ class StatementExecutionAPI:
 
 
 class WarehousesAPI:
-    """A SQL warehouse is a compute resource that lets you run SQL commands on data objects within Databricks
-    SQL. Compute resources are infrastructure resources that provide processing capabilities in the cloud."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9985,10 +9395,7 @@ class WarehousesAPI:
             body["tags"] = tags.as_dict()
         if warehouse_type is not None:
             body["warehouse_type"] = warehouse_type.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10054,10 +9461,7 @@ class WarehousesAPI:
         query = {}
         if default_warehouse_override_id is not None:
             query["default_warehouse_override_id"] = default_warehouse_override_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10077,9 +9481,7 @@ class WarehousesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10099,9 +9501,7 @@ class WarehousesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10242,10 +9642,7 @@ class WarehousesAPI:
             body["tags"] = tags.as_dict()
         if warehouse_type is not None:
             body["warehouse_type"] = warehouse_type.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10299,9 +9696,7 @@ class WarehousesAPI:
         :returns: :class:`GetWarehouseResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10323,9 +9718,7 @@ class WarehousesAPI:
         :returns: :class:`DefaultWarehouseOverride`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10334,47 +9727,6 @@ class WarehousesAPI:
         res = self._api.do("GET", f"/api/warehouses/v1/{name}", headers=headers)
         return DefaultWarehouseOverride.from_dict(res)
 
-    def get_permission_levels(self, warehouse_id: str) -> GetWarehousePermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param warehouse_id: str
-          The SQL warehouse for which to get or manage permissions.
-
-        :returns: :class:`GetWarehousePermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels", headers=headers)
-        return GetWarehousePermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, warehouse_id: str) -> WarehousePermissions:
-        """Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root
-        object.
-
-        :param warehouse_id: str
-          The SQL warehouse for which to get or manage permissions.
-
-        :returns: :class:`WarehousePermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}", headers=headers)
-        return WarehousePermissions.from_dict(res)
-
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
         """Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
 
@@ -10382,9 +9734,7 @@ class WarehousesAPI:
         :returns: :class:`GetWorkspaceWarehouseConfigResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10420,9 +9770,7 @@ class WarehousesAPI:
             query["page_token"] = page_token
         if run_as_user_id is not None:
             query["run_as_user_id"] = run_as_user_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10462,9 +9810,7 @@ class WarehousesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10478,34 +9824,6 @@ class WarehousesAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
-
-    def set_permissions(
-        self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
-    ) -> WarehousePermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param warehouse_id: str
-          The SQL warehouse for which to get or manage permissions.
-        :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
-
-        :returns: :class:`WarehousePermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PUT", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
-        return WarehousePermissions.from_dict(res)
 
     def set_workspace_warehouse_config(
         self,
@@ -10573,10 +9891,7 @@ class WarehousesAPI:
             body["security_policy"] = security_policy.value
         if sql_configuration_parameters is not None:
             body["sql_configuration_parameters"] = sql_configuration_parameters.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10595,17 +9910,13 @@ class WarehousesAPI:
           See :method:wait_get_warehouse_running for more details.
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", body=body, headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
         return Wait(self.wait_get_warehouse_running, id=id)
 
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
@@ -10622,17 +9933,13 @@ class WarehousesAPI:
           See :method:wait_get_warehouse_stopped for more details.
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", body=body, headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
         return Wait(self.wait_get_warehouse_stopped, id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
@@ -10673,10 +9980,7 @@ class WarehousesAPI:
             query["allow_missing"] = allow_missing
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10684,31 +9988,3 @@ class WarehousesAPI:
 
         res = self._api.do("PATCH", f"/api/warehouses/v1/{name}", query=query, body=body, headers=headers)
         return DefaultWarehouseOverride.from_dict(res)
-
-    def update_permissions(
-        self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
-    ) -> WarehousePermissions:
-        """Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root
-        object.
-
-        :param warehouse_id: str
-          The SQL warehouse for which to get or manage permissions.
-        :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
-
-        :returns: :class:`WarehousePermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
-        return WarehousePermissions.from_dict(res)

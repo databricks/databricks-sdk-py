@@ -25,9 +25,6 @@ from databricks.sdk.service._internal import (
 )
 
 
-from databricks.sdk.service import compute
-
-
 _LOG = logging.getLogger("databricks.sdk")
 
 
@@ -883,31 +880,6 @@ class Filters:
     def from_dict(cls, d: Dict[str, Any]) -> Filters:
         """Deserializes the Filters from a dictionary."""
         return cls(exclude=d.get("exclude", None), include=d.get("include", None))
-
-
-@dataclass
-class GetPipelinePermissionLevelsResponse:
-    permission_levels: Optional[List[PipelinePermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetPipelinePermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetPipelinePermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetPipelinePermissionLevelsResponse:
-        """Deserializes the GetPipelinePermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", PipelinePermissionsDescription))
 
 
 @dataclass
@@ -2097,10 +2069,10 @@ class ListPipelineEventsResponse:
 @dataclass
 class ListPipelinesResponse:
     next_page_token: Optional[str] = None
-    """If present, a token to fetch the next page of pipelines."""
+    """If present, a token to fetch the next page of events."""
 
     statuses: Optional[List[PipelineStateInfo]] = None
-    """The list of pipelines matching the request criteria."""
+    """The list of events matching the request criteria."""
 
     def as_dict(self) -> dict:
         """Serializes the ListPipelinesResponse into a dictionary suitable for use as a JSON request body."""
@@ -2867,115 +2839,6 @@ class PathPattern:
 
 
 @dataclass
-class PipelineAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[PipelinePermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the PipelineAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PipelineAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PipelineAccessControlRequest:
-        """Deserializes the PipelineAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", PipelinePermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class PipelineAccessControlResponse:
-    all_permissions: Optional[List[PipelinePermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the PipelineAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PipelineAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PipelineAccessControlResponse:
-        """Deserializes the PipelineAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", PipelinePermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
 class PipelineCluster:
     apply_policy_default_values: Optional[bool] = None
     """Note: This field won't be persisted. Only API users will check this field."""
@@ -3000,10 +2863,10 @@ class PipelineCluster:
     ``$destination/$clusterId/executor``."""
 
     custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    """Additional tags for cluster resources. <Databricks> will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
-    - Currently, Databricks allows at most 45 custom tags
+    - Currently, <Databricks> allows at most 45 custom tags
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
       tags"""
 
@@ -3417,7 +3280,7 @@ class PipelineLibrary:
     """Specification of a maven library to be installed."""
 
     notebook: Optional[NotebookLibrary] = None
-    """The path to a notebook that defines a pipeline and is stored in the Databricks workspace."""
+    """The path to a notebook that defines a pipeline and is stored in the <Databricks> workspace."""
 
     whl: Optional[str] = None
     """URI of the whl to be installed."""
@@ -3466,128 +3329,6 @@ class PipelineLibrary:
             maven=_from_dict(d, "maven", compute.MavenLibrary),
             notebook=_from_dict(d, "notebook", NotebookLibrary),
             whl=d.get("whl", None),
-        )
-
-
-@dataclass
-class PipelinePermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[PipelinePermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the PipelinePermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PipelinePermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermission:
-        """Deserializes the PipelinePermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", PipelinePermissionLevel),
-        )
-
-
-class PipelinePermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_RUN = "CAN_RUN"
-    CAN_VIEW = "CAN_VIEW"
-    IS_OWNER = "IS_OWNER"
-
-
-@dataclass
-class PipelinePermissions:
-    access_control_list: Optional[List[PipelineAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the PipelinePermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PipelinePermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissions:
-        """Deserializes the PipelinePermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", PipelineAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class PipelinePermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[PipelinePermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the PipelinePermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PipelinePermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissionsDescription:
-        """Deserializes the PipelinePermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", PipelinePermissionLevel),
         )
 
 
@@ -3663,7 +3404,7 @@ class PipelineSpec:
 
     root_path: Optional[str] = None
     """Root path for this pipeline. This is used as the root directory when editing the pipeline in the
-    Databricks user interface and it is added to sys.path when executing Python sources during
+    <Databricks> user interface and it is added to sys.path when executing Python sources during
     pipeline execution."""
 
     schema: Optional[str] = None
@@ -4001,7 +3742,7 @@ class PipelinesEnvironment:
     dependency is a pip requirement file line
     https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be
     <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
-    Databricks), <vcs project url>"""
+    <Databricks>), <vcs project url>"""
 
     environment_version: Optional[str] = None
     """The environment version of the serverless Python environment used to execute customer Python
@@ -4009,8 +3750,8 @@ class PipelinesEnvironment:
     pre-installed libraries with defined versions, providing a stable and reproducible execution
     environment.
     
-    Databricks supports a three-year lifecycle for each environment version. For available versions
-    and their included packages, see
+    <Databricks> supports a three-year lifecycle for each environment version. For available
+    versions and their included packages, see
     https://docs.databricks.com/aws/en/release-notes/serverless/environment-version/
     
     The value should be a string representing the environment version number, for example: ``"4"``."""
@@ -5714,18 +5455,6 @@ class ZendeskSupportOptions:
 
 
 class PipelinesAPI:
-    """The Lakeflow Spark Declarative Pipelines API allows you to create, edit, delete, start, and view details
-    about pipelines.
-
-    Spark Declarative Pipelines is a framework for building reliable, maintainable, and testable data
-    processing pipelines. You define the transformations to perform on your data, and Spark Declarative
-    Pipelines manages task orchestration, cluster management, monitoring, data quality, and error handling.
-
-    Instead of defining your data pipelines using a series of separate Apache Spark tasks, Spark Declarative
-    Pipelines manages how your data is transformed based on a target schema you define for each processing
-    step. You can also enforce data quality with Spark Declarative Pipelines expectations. Expectations allow
-    you to define expected data quality and specify how to handle records that fail those expectations."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -5770,9 +5499,7 @@ class PipelinesAPI:
         :returns: :class:`ApplyEnvironmentRequestResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5881,8 +5608,8 @@ class PipelinesAPI:
           Restart window of this pipeline.
         :param root_path: str (optional)
           Root path for this pipeline. This is used as the root directory when editing the pipeline in the
-          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
-          execution.
+          <Databricks> user interface and it is added to sys.path when executing Python sources during
+          pipeline execution.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
@@ -5971,10 +5698,7 @@ class PipelinesAPI:
             body["trigger"] = trigger.as_dict()
         if usage_policy_id is not None:
             body["usage_policy_id"] = usage_policy_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6079,8 +5803,8 @@ class PipelinesAPI:
           Restart window of this pipeline.
         :param root_path: str (optional)
           Root path for this pipeline. This is used as the root directory when editing the pipeline in the
-          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
-          execution.
+          <Databricks> user interface and it is added to sys.path when executing Python sources during
+          pipeline execution.
         :param run_as: :class:`RunAs` (optional)
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
@@ -6172,10 +5896,7 @@ class PipelinesAPI:
             body["trigger"] = trigger.as_dict()
         if usage_policy_id is not None:
             body["usage_policy_id"] = usage_policy_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6186,7 +5907,7 @@ class PipelinesAPI:
 
     def delete(self, pipeline_id: str, *, cascade: Optional[bool] = None, force: Optional[bool] = None):
         """Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
-        pipeline tables. Please reach out to Databricks support for assistance to undo this action.
+        pipeline tables. Please reach out to <Databricks> support for assistance to undo this action.
 
         :param pipeline_id: str
         :param cascade: bool (optional)
@@ -6204,9 +5925,7 @@ class PipelinesAPI:
             query["cascade"] = cascade
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6222,9 +5941,7 @@ class PipelinesAPI:
         :returns: :class:`GetPipelineResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6232,46 +5949,6 @@ class PipelinesAPI:
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}", headers=headers)
         return GetPipelineResponse.from_dict(res)
-
-    def get_permission_levels(self, pipeline_id: str) -> GetPipelinePermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param pipeline_id: str
-          The pipeline for which to get or manage permissions.
-
-        :returns: :class:`GetPipelinePermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels", headers=headers)
-        return GetPipelinePermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, pipeline_id: str) -> PipelinePermissions:
-        """Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
-
-        :param pipeline_id: str
-          The pipeline for which to get or manage permissions.
-
-        :returns: :class:`PipelinePermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}", headers=headers)
-        return PipelinePermissions.from_dict(res)
 
     def get_update(self, pipeline_id: str, update_id: str) -> GetUpdateResponse:
         """Gets an update from an active pipeline.
@@ -6284,9 +5961,7 @@ class PipelinesAPI:
         :returns: :class:`GetUpdateResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6343,9 +6018,7 @@ class PipelinesAPI:
             query["order_by"] = [v for v in order_by]
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6380,9 +6053,9 @@ class PipelinesAPI:
           Composite filters are not supported. This field is optional.
         :param max_results: int (optional)
           The maximum number of entries to return in a single page. The system may return fewer than
-          max_results pipelines in a response, even if there are more pipelines available. This field is
-          optional. The default value is 25. The maximum value is 100. An error is returned if the value of
-          max_results is greater than 100.
+          max_results events in a response, even if there are more events available. This field is optional.
+          The default value is 25. The maximum value is 100. An error is returned if the value of max_results
+          is greater than 100.
         :param order_by: List[str] (optional)
           A list of strings specifying the order of results. Supported order_by fields are id and name. The
           default is id asc. This field is optional.
@@ -6401,9 +6074,7 @@ class PipelinesAPI:
             query["order_by"] = [v for v in order_by]
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6447,9 +6118,7 @@ class PipelinesAPI:
             query["page_token"] = page_token
         if until_update_id is not None:
             query["until_update_id"] = until_update_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6457,34 +6126,6 @@ class PipelinesAPI:
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
-
-    def set_permissions(
-        self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
-    ) -> PipelinePermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param pipeline_id: str
-          The pipeline for which to get or manage permissions.
-        :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
-
-        :returns: :class:`PipelinePermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PUT", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
-        return PipelinePermissions.from_dict(res)
 
     def start_update(
         self,
@@ -6552,10 +6193,7 @@ class PipelinesAPI:
             body["rewind_spec"] = rewind_spec.as_dict()
         if validate_only is not None:
             body["validate_only"] = validate_only
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6575,9 +6213,7 @@ class PipelinesAPI:
           See :method:wait_get_pipeline_idle for more details.
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6689,8 +6325,8 @@ class PipelinesAPI:
           Restart window of this pipeline.
         :param root_path: str (optional)
           Root path for this pipeline. This is used as the root directory when editing the pipeline in the
-          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
-          execution.
+          <Databricks> user interface and it is added to sys.path when executing Python sources during
+          pipeline execution.
         :param run_as: :class:`RunAs` (optional)
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
@@ -6782,40 +6418,10 @@ class PipelinesAPI:
             body["trigger"] = trigger.as_dict()
         if usage_policy_id is not None:
             body["usage_policy_id"] = usage_policy_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", body=body, headers=headers)
-
-    def update_permissions(
-        self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
-    ) -> PipelinePermissions:
-        """Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
-
-        :param pipeline_id: str
-          The pipeline for which to get or manage permissions.
-        :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
-
-        :returns: :class:`PipelinePermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
-        return PipelinePermissions.from_dict(res)

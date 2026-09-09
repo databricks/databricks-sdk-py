@@ -867,8 +867,6 @@ class TimeSeriesConfig:
 
 
 class DataQualityAPI:
-    """Manage the data quality of Unity Catalog objects (currently support ``schema`` and ``table``)"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -908,11 +906,7 @@ class DataQualityAPI:
         :returns: :class:`CancelRefreshResponse`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -921,7 +915,6 @@ class DataQualityAPI:
         res = self._api.do(
             "POST",
             f"/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}/cancel",
-            body=body,
             headers=headers,
         )
         return CancelRefreshResponse.from_dict(res)
@@ -954,10 +947,7 @@ class DataQualityAPI:
 
         body = monitor.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1004,10 +994,7 @@ class DataQualityAPI:
 
         body = refresh.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1056,9 +1043,7 @@ class DataQualityAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1093,9 +1078,7 @@ class DataQualityAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1147,9 +1130,7 @@ class DataQualityAPI:
         :returns: :class:`Monitor`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1199,9 +1180,7 @@ class DataQualityAPI:
         :returns: :class:`Refresh`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1226,9 +1205,7 @@ class DataQualityAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1291,9 +1268,7 @@ class DataQualityAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1360,10 +1335,7 @@ class DataQualityAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1411,10 +1383,7 @@ class DataQualityAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

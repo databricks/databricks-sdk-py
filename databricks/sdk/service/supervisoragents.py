@@ -5,7 +5,6 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from enum import Enum
 from typing import Dict, List, Any, Iterator, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -13,7 +12,6 @@ from google.protobuf.timestamp_pb2 import Timestamp
 import logging
 
 from databricks.sdk.service._internal import (
-    _enum,
     _from_dict,
     _repeated_dict,
     _timestamp,
@@ -29,7 +27,7 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class App:
-    """Databricks app. Supported app: custom mcp, custom agent."""
+    """<Databricks> app. Supported app: custom mcp, custom agent."""
 
     name: str
     """App name"""
@@ -132,31 +130,6 @@ class GenieSpace:
     def from_dict(cls, d: Dict[str, Any]) -> GenieSpace:
         """Deserializes the GenieSpace from a dictionary."""
         return cls(id=d.get("id", None))
-
-
-@dataclass
-class GetSupervisorAgentPermissionLevelsResponse:
-    permission_levels: Optional[List[SupervisorAgentPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetSupervisorAgentPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetSupervisorAgentPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetSupervisorAgentPermissionLevelsResponse:
-        """Deserializes the GetSupervisorAgentPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", SupervisorAgentPermissionsDescription))
 
 
 @dataclass
@@ -391,235 +364,6 @@ class SupervisorAgent:
 
 
 @dataclass
-class SupervisorAgentAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[SupervisorAgentPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the SupervisorAgentAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SupervisorAgentAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SupervisorAgentAccessControlRequest:
-        """Deserializes the SupervisorAgentAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", SupervisorAgentPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class SupervisorAgentAccessControlResponse:
-    all_permissions: Optional[List[SupervisorAgentPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the SupervisorAgentAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SupervisorAgentAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SupervisorAgentAccessControlResponse:
-        """Deserializes the SupervisorAgentAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", SupervisorAgentPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class SupervisorAgentPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[SupervisorAgentPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the SupervisorAgentPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SupervisorAgentPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SupervisorAgentPermission:
-        """Deserializes the SupervisorAgentPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", SupervisorAgentPermissionLevel),
-        )
-
-
-class SupervisorAgentPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_QUERY = "CAN_QUERY"
-
-
-@dataclass
-class SupervisorAgentPermissions:
-    access_control_list: Optional[List[SupervisorAgentAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the SupervisorAgentPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SupervisorAgentPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SupervisorAgentPermissions:
-        """Deserializes the SupervisorAgentPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", SupervisorAgentAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class SupervisorAgentPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[SupervisorAgentPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the SupervisorAgentPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SupervisorAgentPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SupervisorAgentPermissionsDescription:
-        """Deserializes the SupervisorAgentPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", SupervisorAgentPermissionLevel),
-        )
-
-
-@dataclass
 class Tool:
     tool_type: str
     """Tool type. Must be one of: "genie_space", "knowledge_assistant", "uc_function", "uc_connection",
@@ -802,8 +546,6 @@ class Volume:
 
 
 class SupervisorAgentsAPI:
-    """Manage Supervisor Agents and related resources."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -820,10 +562,7 @@ class SupervisorAgentsAPI:
 
         body = example.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -843,10 +582,7 @@ class SupervisorAgentsAPI:
 
         body = supervisor_agent.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -876,10 +612,7 @@ class SupervisorAgentsAPI:
         query = {}
         if tool_id is not None:
             query["tool_id"] = tool_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -898,9 +631,7 @@ class SupervisorAgentsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -917,9 +648,7 @@ class SupervisorAgentsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -936,9 +665,7 @@ class SupervisorAgentsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -956,9 +683,7 @@ class SupervisorAgentsAPI:
         :returns: :class:`Example`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -966,49 +691,6 @@ class SupervisorAgentsAPI:
 
         res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
         return Example.from_dict(res)
-
-    def get_permission_levels(self, supervisor_agent_id: str) -> GetSupervisorAgentPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param supervisor_agent_id: str
-          The supervisor agent for which to get or manage permissions.
-
-        :returns: :class:`GetSupervisorAgentPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "GET", f"/api/2.0/permissions/supervisor-agents/{supervisor_agent_id}/permissionLevels", headers=headers
-        )
-        return GetSupervisorAgentPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, supervisor_agent_id: str) -> SupervisorAgentPermissions:
-        """Gets the permissions of a supervisor agent. Supervisor agents can inherit permissions from their root
-        object.
-
-        :param supervisor_agent_id: str
-          The supervisor agent for which to get or manage permissions.
-
-        :returns: :class:`SupervisorAgentPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/supervisor-agents/{supervisor_agent_id}", headers=headers)
-        return SupervisorAgentPermissions.from_dict(res)
 
     def get_supervisor_agent(self, name: str) -> SupervisorAgent:
         """Gets a Supervisor Agent.
@@ -1019,9 +701,7 @@ class SupervisorAgentsAPI:
         :returns: :class:`SupervisorAgent`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1039,9 +719,7 @@ class SupervisorAgentsAPI:
         :returns: :class:`Tool`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1072,9 +750,7 @@ class SupervisorAgentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1109,9 +785,7 @@ class SupervisorAgentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1144,9 +818,7 @@ class SupervisorAgentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1160,39 +832,6 @@ class SupervisorAgentsAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
-
-    def set_permissions(
-        self,
-        supervisor_agent_id: str,
-        *,
-        access_control_list: Optional[List[SupervisorAgentAccessControlRequest]] = None,
-    ) -> SupervisorAgentPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param supervisor_agent_id: str
-          The supervisor agent for which to get or manage permissions.
-        :param access_control_list: List[:class:`SupervisorAgentAccessControlRequest`] (optional)
-
-        :returns: :class:`SupervisorAgentPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PUT", f"/api/2.0/permissions/supervisor-agents/{supervisor_agent_id}", body=body, headers=headers
-        )
-        return SupervisorAgentPermissions.from_dict(res)
 
     def update_example(self, name: str, example: Example, update_mask: FieldMask) -> Example:
         """Updates an example in a Supervisor Agent.
@@ -1215,10 +854,7 @@ class SupervisorAgentsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1226,39 +862,6 @@ class SupervisorAgentsAPI:
 
         res = self._api.do("PATCH", f"/api/2.1/{name}", query=query, body=body, headers=headers)
         return Example.from_dict(res)
-
-    def update_permissions(
-        self,
-        supervisor_agent_id: str,
-        *,
-        access_control_list: Optional[List[SupervisorAgentAccessControlRequest]] = None,
-    ) -> SupervisorAgentPermissions:
-        """Updates the permissions on a supervisor agent. Supervisor agents can inherit permissions from their
-        root object.
-
-        :param supervisor_agent_id: str
-          The supervisor agent for which to get or manage permissions.
-        :param access_control_list: List[:class:`SupervisorAgentAccessControlRequest`] (optional)
-
-        :returns: :class:`SupervisorAgentPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PATCH", f"/api/2.0/permissions/supervisor-agents/{supervisor_agent_id}", body=body, headers=headers
-        )
-        return SupervisorAgentPermissions.from_dict(res)
 
     def update_supervisor_agent(
         self, name: str, supervisor_agent: SupervisorAgent, update_mask: FieldMask
@@ -1280,10 +883,7 @@ class SupervisorAgentsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1310,10 +910,7 @@ class SupervisorAgentsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

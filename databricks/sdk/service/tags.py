@@ -228,12 +228,6 @@ class Value:
 
 
 class TagPoliciesAPI:
-    """The Tag Policy API allows you to manage policies for governed tags in Databricks. For Terraform usage, see
-    the `Tag Policy Terraform documentation
-    <https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy>`__.
-    Permissions for tag policies can be managed using the `Account Access Control Proxy API
-    <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -251,10 +245,7 @@ class TagPoliciesAPI:
 
         body = tag_policy.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -273,9 +264,7 @@ class TagPoliciesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -295,9 +284,7 @@ class TagPoliciesAPI:
         :returns: :class:`TagPolicy`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -330,9 +317,7 @@ class TagPoliciesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -357,15 +342,6 @@ class TagPoliciesAPI:
         :param tag_key: str
         :param tag_policy: :class:`TagPolicy`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`TagPolicy`
         """
@@ -374,10 +350,7 @@ class TagPoliciesAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -388,8 +361,6 @@ class TagPoliciesAPI:
 
 
 class WorkspaceEntityTagAssignmentsAPI:
-    """Manage tag assignments on workspace-scoped objects."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -403,10 +374,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         body = tag_assignment.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -429,9 +397,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -455,9 +421,7 @@ class WorkspaceEntityTagAssignmentsAPI:
         :returns: :class:`TagAssignment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -491,9 +455,7 @@ class WorkspaceEntityTagAssignmentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -524,15 +486,6 @@ class WorkspaceEntityTagAssignmentsAPI:
           The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed
         :param tag_assignment: :class:`TagAssignment`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`TagAssignment`
         """
@@ -541,10 +494,7 @@ class WorkspaceEntityTagAssignmentsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

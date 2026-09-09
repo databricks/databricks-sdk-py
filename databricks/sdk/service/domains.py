@@ -296,8 +296,6 @@ class ListDomainsResponse:
 
 
 class DomainsAPI:
-    """Manage domains for organizing and discovering data assets."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -315,10 +313,7 @@ class DomainsAPI:
         query = {}
         if domain_id is not None:
             query["domain_id"] = domain_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -335,7 +330,8 @@ class DomainsAPI:
           Full resource name of the domain to delete. Format: ``domains/{domain_id}``
         :param force: bool (optional)
           When false (default), DeleteDomain is rejected with FAILED_PRECONDITION if the domain still has
-          Glossary pages. When true, those pages are deleted first and then the domain is removed.
+          Glossary pages. When true, those pages are deleted first and then the domain is removed. Forwarded
+          to the central service.
 
 
         """
@@ -343,9 +339,7 @@ class DomainsAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -364,9 +358,7 @@ class DomainsAPI:
         :returns: :class:`Domain`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -406,9 +398,7 @@ class DomainsAPI:
             query["page_token"] = page_token
         if parent_domain_id is not None:
             query["parent_domain_id"] = parent_domain_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -433,15 +423,6 @@ class DomainsAPI:
           to choose the id, set ``CreateDomainRequest.domain_id``.
         :param domain: :class:`Domain`
         :param update_mask: FieldMask
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`Domain`
         """
@@ -450,10 +431,7 @@ class DomainsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

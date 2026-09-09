@@ -25,9 +25,6 @@ from databricks.sdk.service._internal import (
 )
 
 
-from databricks.sdk.service import compute
-
-
 _LOG = logging.getLogger("databricks.sdk")
 
 
@@ -61,7 +58,7 @@ class AiRuntimeTask:
 
     docker_image_url: Optional[str] = None
     """Optional Docker image URL for a custom container image. When set, the task runs on the specified
-    container image instead of the default Databricks client image. Format:
+    container image instead of the default <Databricks> client image. Format:
     ``{organization}/{repository}:{tag}``"""
 
     mlflow_artifact_location: Optional[str] = None
@@ -1139,7 +1136,7 @@ class ComputeSpec:
     provisioned_capacity_id: Optional[str] = None
     """Optional ID of a pre-provisioned accelerator capacity reservation to run this AI Runtime
     workload on. When set, the workload is scheduled onto the referenced reserved capacity instead
-    of the on-demand capacity shared among all Databricks customers."""
+    of the on-demand capacity shared among all <Databricks> customers."""
 
     def as_dict(self) -> dict:
         """Serializes the ComputeSpec into a dictionary suitable for use as a JSON request body."""
@@ -1999,11 +1996,11 @@ class DbtTask:
 
     source: Optional[Source] = None
     """Optional location type of the project directory. When set to ``WORKSPACE``, the project will be
-    retrieved from the local Databricks workspace. When set to ``GIT``, the project will be
+    retrieved from the local <Databricks> workspace. When set to ``GIT``, the project will be
     retrieved from a Git repository defined in ``git_source``. If the value is empty, the task will
     use ``GIT`` if ``git_source`` is defined and ``WORKSPACE`` otherwise.
     
-    - ``WORKSPACE``: Project is located in Databricks workspace.
+    - ``WORKSPACE``: Project is located in <Databricks> workspace.
     - ``GIT``: Project is located in cloud Git provider."""
 
     warehouse_id: Optional[str] = None
@@ -2230,8 +2227,6 @@ class EnforcePolicyComplianceResponse:
 
 @dataclass
 class ExportRunOutput:
-    """Run was exported successfully."""
-
     views: Optional[List[ViewItem]] = None
     """The exported content in HTML format (one for every view item). To extract the HTML notebook from
     the JSON response, download and run this [Python script](/_static/examples/extract.py)."""
@@ -2541,16 +2536,16 @@ class GenAiComputeTask:
 
     source: Optional[Source] = None
     """Optional location type of the training script. When set to ``WORKSPACE``, the script will be
-    retrieved from the local Databricks workspace. When set to ``GIT``, the script will be retrieved
-    from a Git repository defined in ``git_source``. If the value is empty, the task will use
-    ``GIT`` if ``git_source`` is defined and ``WORKSPACE`` otherwise.
+    retrieved from the local <Databricks> workspace. When set to ``GIT``, the script will be
+    retrieved from a Git repository defined in ``git_source``. If the value is empty, the task will
+    use ``GIT`` if ``git_source`` is defined and ``WORKSPACE`` otherwise.
     
-    - ``WORKSPACE``: Script is located in Databricks workspace.
+    - ``WORKSPACE``: Script is located in <Databricks> workspace.
     - ``GIT``: Script is located in cloud Git provider."""
 
     training_script_path: Optional[str] = None
     """The training script file path to be executed. Cloud file URIs (such as dbfs:/, s3:/, adls:/,
-    gcs:/) and workspace paths are supported. For python files stored in the Databricks workspace,
+    gcs:/) and workspace paths are supported. For python files stored in the <Databricks> workspace,
     the path must be absolute and begin with ``/``. For files stored in a remote repository, the
     path must be relative. This field is required."""
 
@@ -2616,31 +2611,6 @@ class GenAiComputeTask:
             yaml_parameters=d.get("yaml_parameters", None),
             yaml_parameters_file_path=d.get("yaml_parameters_file_path", None),
         )
-
-
-@dataclass
-class GetJobPermissionLevelsResponse:
-    permission_levels: Optional[List[JobPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetJobPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetJobPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetJobPermissionLevelsResponse:
-        """Deserializes the GetJobPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", JobPermissionsDescription))
 
 
 @dataclass
@@ -2816,8 +2786,6 @@ class GitSource:
 
 @dataclass
 class Job:
-    """Job was retrieved successfully."""
-
     created_time: Optional[int] = None
     """The time at which this job was created in epoch milliseconds (milliseconds since 1/1/1970 UTC)."""
 
@@ -2846,7 +2814,6 @@ class Job:
     """The canonical identifier for this job."""
 
     next_page_token: Optional[str] = None
-    """A token that can be used to list the next page of array properties."""
 
     run_as_user_name: Optional[str] = None
     """The email of an active workspace user or the application ID of a service principal that the job
@@ -2945,15 +2912,12 @@ class Job:
 @dataclass
 class JobAccessControlRequest:
     group_name: Optional[str] = None
-    """name of the group"""
 
     permission_level: Optional[JobPermissionLevel] = None
 
     service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
 
     user_name: Optional[str] = None
-    """name of the user"""
 
     def as_dict(self) -> dict:
         """Serializes the JobAccessControlRequest into a dictionary suitable for use as a JSON request body."""
@@ -2987,65 +2951,6 @@ class JobAccessControlRequest:
         return cls(
             group_name=d.get("group_name", None),
             permission_level=_enum(d, "permission_level", JobPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class JobAccessControlResponse:
-    all_permissions: Optional[List[JobPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the JobAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the JobAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> JobAccessControlResponse:
-        """Deserializes the JobAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", JobPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
             service_principal_name=d.get("service_principal_name", None),
             user_name=d.get("user_name", None),
         )
@@ -3148,7 +3053,7 @@ class JobDeployment:
     """The kind of deployment that manages the job.
     
     - ``BUNDLE``: The job is managed by Databricks Asset Bundle.
-    - ``SYSTEM_MANAGED``: The job is managed by Databricks and is read-only."""
+    - ``SYSTEM_MANAGED``: The job is managed by <Databricks> and is read-only."""
 
     deployment_id: Optional[str] = None
     """ID of the deployment that manages this job. Only set when ``kind`` is ``BUNDLE``. Used to look
@@ -3200,7 +3105,7 @@ class JobDeployment:
 
 class JobDeploymentKind(Enum):
     """- ``BUNDLE``: The job is managed by Databricks Asset Bundle.
-    - ``SYSTEM_MANAGED``: The job is managed by Databricks and is read-only."""
+    - ``SYSTEM_MANAGED``: The job is managed by <Databricks> and is read-only."""
 
     BUNDLE = "BUNDLE"
     SYSTEM_MANAGED = "SYSTEM_MANAGED"
@@ -3440,125 +3345,11 @@ class JobParameterDefinition:
         return cls(default=d.get("default", None), name=d.get("name", None))
 
 
-@dataclass
-class JobPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[JobPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the JobPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the JobPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> JobPermission:
-        """Deserializes the JobPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", JobPermissionLevel),
-        )
-
-
 class JobPermissionLevel(Enum):
-    """Permission level"""
-
     CAN_MANAGE = "CAN_MANAGE"
     CAN_MANAGE_RUN = "CAN_MANAGE_RUN"
     CAN_VIEW = "CAN_VIEW"
     IS_OWNER = "IS_OWNER"
-
-
-@dataclass
-class JobPermissions:
-    access_control_list: Optional[List[JobAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the JobPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the JobPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> JobPermissions:
-        """Deserializes the JobPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", JobAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class JobPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[JobPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the JobPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the JobPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> JobPermissionsDescription:
-        """Deserializes the JobPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None), permission_level=_enum(d, "permission_level", JobPermissionLevel)
-        )
 
 
 @dataclass
@@ -4361,7 +4152,7 @@ class NotebookOutput:
     result: Optional[str] = None
     """The value passed to
     [dbutils.notebook.exit()](/notebooks/notebook-workflows.html#notebook-workflows-exit).
-    Databricks restricts this API to return the first 5 MB of the value. For a larger result, your
+    <Databricks> restricts this API to return the first 5 MB of the value. For a larger result, your
     job can store the results in a cloud storage service. This field is absent if
     ``dbutils.notebook.exit()`` was never called."""
 
@@ -4395,32 +4186,33 @@ class NotebookOutput:
 @dataclass
 class NotebookTask:
     notebook_path: str
-    """The path of the notebook to be run in the Databricks workspace or remote repository. For
-    notebooks stored in the Databricks workspace, the path must be absolute and begin with a slash.
-    For notebooks stored in a remote repository, the path must be relative. This field is required."""
+    """The path of the notebook to be run in the <Databricks> workspace or remote repository. For
+    notebooks stored in the <Databricks> workspace, the path must be absolute and begin with a
+    slash. For notebooks stored in a remote repository, the path must be relative. This field is
+    required."""
 
     base_parameters: Optional[Dict[str, str]] = None
     """Base parameters to be used for each run of this job. If the run is initiated by a call to
     :method:jobs/run Now with parameters specified, the two parameters maps are merged. If the same
     key is specified in ``base_parameters`` and in ``run-now``, the value from ``run-now`` is used.
-    Use `Task parameter variables <https://docs.databricks.com/jobs.html#parameter-variables>`__ to
-    set parameters containing information about job runs.
+    Use [Task parameter variables](/jobs.html#parameter-variables) to set parameters containing
+    information about job runs.
     
     If the notebook takes a parameter that is not specified in the job’s ``base_parameters`` or
     the ``run-now`` override parameters, the default value from the notebook is used.
     
-    Retrieve these parameters in a notebook using `dbutils.widgets.get
-    <https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets>`__.
+    Retrieve these parameters in a notebook using
+    [dbutils.widgets.get](/dev-tools/databricks-utils.html#dbutils-widgets).
     
     The JSON representation of this field cannot exceed 1MB."""
 
     source: Optional[Source] = None
     """Optional location type of the notebook. When set to ``WORKSPACE``, the notebook will be
-    retrieved from the local Databricks workspace. When set to ``GIT``, the notebook will be
+    retrieved from the local <Databricks> workspace. When set to ``GIT``, the notebook will be
     retrieved from a Git repository defined in ``git_source``. If the value is empty, the task will
     use ``GIT`` if ``git_source`` is defined and ``WORKSPACE`` otherwise.
     
-    - ``WORKSPACE``: Notebook is located in Databricks workspace.
+    - ``WORKSPACE``: Notebook is located in <Databricks> workspace.
     - ``GIT``: Notebook is located in cloud Git provider."""
 
     warehouse_id: Optional[str] = None
@@ -4599,9 +4391,7 @@ class PerTriggerState:
 
 
 class PerformanceTarget(Enum):
-    """PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run
-    on serverless compute should be. The performance mode on the job or pipeline should map to a
-    performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."""
+    """Provide different scheduling options for CreateCluster."""
 
     PERFORMANCE_OPTIMIZED = "PERFORMANCE_OPTIMIZED"
     STANDARD = "STANDARD"
@@ -4810,7 +4600,7 @@ class PipelineTask:
 @dataclass
 class PowerBiModel:
     authentication_method: Optional[AuthenticationMethod] = None
-    """How the published Power BI model authenticates to Databricks"""
+    """How the published Power BI model authenticates to <Databricks>"""
 
     model_name: Optional[str] = None
     """The name of the Power BI model"""
@@ -4869,13 +4659,13 @@ class PowerBiModel:
 @dataclass
 class PowerBiTable:
     catalog: Optional[str] = None
-    """The catalog name in Databricks"""
+    """The catalog name in <Databricks>"""
 
     name: Optional[str] = None
-    """The table name in Databricks"""
+    """The table name in <Databricks>"""
 
     schema: Optional[str] = None
-    """The schema name in Databricks"""
+    """The schema name in <Databricks>"""
 
     storage_mode: Optional[StorageMode] = None
     """The Power BI storage mode of the table"""
@@ -4920,7 +4710,7 @@ class PowerBiTable:
 @dataclass
 class PowerBiTask:
     connection_resource_name: Optional[str] = None
-    """The resource name of the UC connection to authenticate from Databricks to Power BI"""
+    """The resource name of the UC connection to authenticate from <Databricks> to Power BI"""
 
     power_bi_model: Optional[PowerBiModel] = None
     """The semantic model to update"""
@@ -5628,8 +5418,6 @@ class ResolvedValuesAiRuntimeTaskResolvedValues:
 
 @dataclass
 class Run:
-    """Run was retrieved successfully"""
-
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
     has an attempt_number of 0. If the initial run attempt fails, and the job has a retry policy
@@ -5702,7 +5490,6 @@ class Run:
     :method:jobs/listruns requests with ``expand_tasks=true``."""
 
     iterations: Optional[List[RunTask]] = None
-    """Only populated by for-each iterations. The parent for-each task is located in tasks array."""
 
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
@@ -5722,7 +5509,6 @@ class Run:
     that the task run belongs to."""
 
     next_page_token: Optional[str] = None
-    """A token that can be used to list the next page of array properties."""
 
     number_in_job: Optional[int] = None
     """A unique identifier for this job run. This is set to the same value as ``run_id``."""
@@ -6166,9 +5952,8 @@ class RunJobTask:
     """An array of commands to execute for jobs with the dbt task, for example ``"dbt_commands": ["dbt
     deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]``
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks."""
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks."""
 
     jar_params: Optional[List[str]] = None
     """A list of parameters for jobs with Spark JAR tasks, for example ``"jar_params": ["john doe",
@@ -6177,9 +5962,8 @@ class RunJobTask:
     cannot be specified in conjunction with notebook_params. The JSON representation of this field
     (for example ``{"jar_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks."""
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks."""
 
     job_parameters: Optional[Dict[str, str]] = None
     """Job-level parameters used to trigger the job."""
@@ -6187,15 +5971,14 @@ class RunJobTask:
     notebook_params: Optional[Dict[str, str]] = None
     """A map from keys to values for jobs with notebook task, for example ``"notebook_params": {"name":
     "john doe", "age": "35"}``. The map is passed to the notebook and is accessible through the
-    `dbutils.widgets.get <https://docs.databricks.com/dev-tools/databricks-utils.html>`__ function.
+    [dbutils.widgets.get](/dev-tools/databricks-utils.html) function.
     
     If not specified upon ``run-now``, the triggered run uses the job’s base parameters.
     
     notebook_params cannot be specified in conjunction with jar_params.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks.
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks.
     
     The JSON representation of this field (for example ``{"notebook_params":{"name":"john
     doe","age":"35"}}``) cannot exceed 10,000 bytes."""
@@ -6211,9 +5994,8 @@ class RunJobTask:
     ``run-now``, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example ``{"python_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks.
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks.
     
     Important
     
@@ -6228,9 +6010,8 @@ class RunJobTask:
     parameters specified in job setting. The JSON representation of this field (for example
     ``{"python_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks.
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks.
     
     Important
     
@@ -6242,9 +6023,8 @@ class RunJobTask:
     """A map from keys to values for jobs with SQL task, for example ``"sql_params": {"name": "john
     doe", "age": "35"}``. The SQL alert task does not support custom parameters.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks."""
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks."""
 
     def as_dict(self) -> dict:
         """Serializes the RunJobTask into a dictionary suitable for use as a JSON request body."""
@@ -6391,8 +6171,6 @@ class RunNowResponse:
 
 @dataclass
 class RunOutput:
-    """Run output was retrieved successfully."""
-
     ai_runtime_task_output: Optional[AiRuntimeTaskOutput] = None
     """The output of an AiRuntimeTask, if available — MLflow identifiers, artifact paths, and
     per-replica allocated compute. Run lifecycle / termination status lives on the surrounding
@@ -6431,21 +6209,20 @@ class RunOutput:
     
     It's not supported for the notebook_task, pipeline_task or spark_submit_task.
     
-    Databricks restricts this API to return the last 5 MB of these logs."""
+    <Databricks> restricts this API to return the last 5 MB of these logs."""
 
     logs_truncated: Optional[bool] = None
     """Whether the logs are truncated."""
 
     metadata: Optional[Run] = None
-    """All details of the run except for its output."""
 
     notebook_output: Optional[NotebookOutput] = None
     """The output of a notebook task, if available. A notebook task that terminates (either
     successfully or with a failure) without calling ``dbutils.notebook.exit()`` is considered to
-    have an empty output. This field is set but its result value is empty. Databricks restricts this
-    API to return the first 5 MB of the output. To return a larger result, use the `ClusterLogConf
-    <https://docs.databricks.com/dev-tools/api/latest/clusters.html#clusterlogconf>`__ field to
-    configure log storage for the job cluster."""
+    have an empty output. This field is set but its result value is empty. <Databricks> restricts
+    this API to return the first 5 MB of the output. To return a larger result, use the
+    [ClusterLogConf](/dev-tools/api/latest/clusters.html#clusterlogconf) field to configure log
+    storage for the job cluster."""
 
     run_job_output: Optional[RunJobOutput] = None
     """The output of a run job task, if available"""
@@ -6558,9 +6335,8 @@ class RunParameters:
     """An array of commands to execute for jobs with the dbt task, for example ``"dbt_commands": ["dbt
     deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]``
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks."""
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks."""
 
     jar_params: Optional[List[str]] = None
     """A list of parameters for jobs with Spark JAR tasks, for example ``"jar_params": ["john doe",
@@ -6569,22 +6345,20 @@ class RunParameters:
     cannot be specified in conjunction with notebook_params. The JSON representation of this field
     (for example ``{"jar_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks."""
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks."""
 
     notebook_params: Optional[Dict[str, str]] = None
     """A map from keys to values for jobs with notebook task, for example ``"notebook_params": {"name":
     "john doe", "age": "35"}``. The map is passed to the notebook and is accessible through the
-    `dbutils.widgets.get <https://docs.databricks.com/dev-tools/databricks-utils.html>`__ function.
+    [dbutils.widgets.get](/dev-tools/databricks-utils.html) function.
     
     If not specified upon ``run-now``, the triggered run uses the job’s base parameters.
     
     notebook_params cannot be specified in conjunction with jar_params.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks.
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks.
     
     The JSON representation of this field (for example ``{"notebook_params":{"name":"john
     doe","age":"35"}}``) cannot exceed 10,000 bytes."""
@@ -6600,9 +6374,8 @@ class RunParameters:
     ``run-now``, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example ``{"python_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks.
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks.
     
     Important
     
@@ -6617,9 +6390,8 @@ class RunParameters:
     parameters specified in job setting. The JSON representation of this field (for example
     ``{"python_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks.
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks.
     
     Important
     
@@ -6631,9 +6403,8 @@ class RunParameters:
     """A map from keys to values for jobs with SQL task, for example ``"sql_params": {"name": "john
     doe", "age": "35"}``. The SQL alert task does not support custom parameters.
     
-    ⚠ **Deprecation note** Use `job parameters
-    <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass
-    information down to tasks."""
+    ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown)
+    to pass information down to tasks."""
 
     def as_dict(self) -> dict:
         """Serializes the RunParameters into a dictionary suitable for use as a JSON request body."""
@@ -6844,7 +6615,7 @@ class RunTask:
     type and count, the command to run, and where the workload's code and MLflow output are stored."""
 
     alert_task: Optional[AlertTask] = None
-    """The task evaluates a Databricks alert and sends notifications to subscribers when the
+    """The task evaluates a <Databricks> alert and sends notifications to subscribers when the
     ``alert_task`` field is present."""
 
     attempt_number: Optional[int] = None
@@ -6856,8 +6627,8 @@ class RunTask:
     job."""
 
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
-    """The task runs a `clean rooms <https://docs.databricks.com/clean-rooms/index.html>`__ notebook
-    when the ``clean_rooms_notebook_task`` field is present."""
+    """The task runs a [clean rooms](/clean-rooms/index.html) notebook when the
+    ``clean_rooms_notebook_task`` field is present."""
 
     cleanup_duration: Optional[int] = None
     """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
@@ -7363,8 +7134,8 @@ class RunType(Enum):
     """The type of a run.
 
     - ``JOB_RUN``: Normal job run. A run created with :method:jobs/runNow.
-    - ``WORKFLOW_RUN``: Workflow run. A run created with `dbutils.notebook.run
-      <https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow>`__.
+    - ``WORKFLOW_RUN``: Workflow run. A run created with
+      [dbutils.notebook.run](/dev-tools/databricks-utils.html#dbutils-workflow).
     - ``SUBMIT_RUN``: Submit run. A run created with :method:jobs/submit."""
 
     JOB_RUN = "JOB_RUN"
@@ -7395,11 +7166,11 @@ class ScheduleTriggerState:
 
 class Source(Enum):
     """Optional location type of the SQL file. When set to ``WORKSPACE``, the SQL file will be
-    retrieved from the local Databricks workspace. When set to ``GIT``, the SQL file will be
+    retrieved from the local <Databricks> workspace. When set to ``GIT``, the SQL file will be
     retrieved from a Git repository defined in ``git_source``. If the value is empty, the task will
     use ``GIT`` if ``git_source`` is defined and ``WORKSPACE`` otherwise.
 
-    - ``WORKSPACE``: SQL file is located in Databricks workspace.
+    - ``WORKSPACE``: SQL file is located in <Databricks> workspace.
     - ``GIT``: SQL file is located in cloud Git provider."""
 
     GIT = "GIT"
@@ -7425,8 +7196,8 @@ class SparkJarTask:
     parameters: Optional[List[str]] = None
     """Parameters passed to the main method.
     
-    Use `Task parameter variables <https://docs.databricks.com/jobs.html#parameter-variables>`__ to
-    set parameters containing information about job runs."""
+    Use [Task parameter variables](/jobs.html#parameter-variables) to set parameters containing
+    information about job runs."""
 
     run_as_repl: Optional[bool] = None
     """Deprecated. A value of ``false`` is no longer supported."""
@@ -7472,23 +7243,23 @@ class SparkJarTask:
 class SparkPythonTask:
     python_file: str
     """The Python file to be executed. Cloud file URIs (such as dbfs:/, s3:/, adls:/, gcs:/) and
-    workspace paths are supported. For python files stored in the Databricks workspace, the path
+    workspace paths are supported. For python files stored in the <Databricks> workspace, the path
     must be absolute and begin with ``/``. For files stored in a remote repository, the path must be
     relative. This field is required."""
 
     parameters: Optional[List[str]] = None
     """Command line parameters passed to the Python file.
     
-    Use `Task parameter variables <https://docs.databricks.com/jobs.html#parameter-variables>`__ to
-    set parameters containing information about job runs."""
+    Use [Task parameter variables](/jobs.html#parameter-variables) to set parameters containing
+    information about job runs."""
 
     source: Optional[Source] = None
     """Optional location type of the Python file. When set to ``WORKSPACE`` or not specified, the file
-    will be retrieved from the local Databricks workspace or cloud location (if the ``python_file``
-    has a URI format). When set to ``GIT``, the Python file will be retrieved from a Git repository
-    defined in ``git_source``.
+    will be retrieved from the local <Databricks> workspace or cloud location (if the
+    ``python_file`` has a URI format). When set to ``GIT``, the Python file will be retrieved from a
+    Git repository defined in ``git_source``.
     
-    - ``WORKSPACE``: The Python file is located in a Databricks workspace or at a cloud filesystem
+    - ``WORKSPACE``: The Python file is located in a <Databricks> workspace or at a cloud filesystem
       URI.
     - ``GIT``: The Python file is located in a remote Git repository."""
 
@@ -7529,8 +7300,8 @@ class SparkSubmitTask:
     parameters: Optional[List[str]] = None
     """Command-line parameters passed to spark submit.
     
-    Use `Task parameter variables <https://docs.databricks.com/jobs.html#parameter-variables>`__ to
-    set parameters containing information about job runs."""
+    Use [Task parameter variables](/jobs.html#parameter-variables) to set parameters containing
+    information about job runs."""
 
     def as_dict(self) -> dict:
         """Serializes the SparkSubmitTask into a dictionary suitable for use as a JSON request body."""
@@ -8244,11 +8015,11 @@ class SqlTaskFile:
 
     source: Optional[Source] = None
     """Optional location type of the SQL file. When set to ``WORKSPACE``, the SQL file will be
-    retrieved from the local Databricks workspace. When set to ``GIT``, the SQL file will be
+    retrieved from the local <Databricks> workspace. When set to ``GIT``, the SQL file will be
     retrieved from a Git repository defined in ``git_source``. If the value is empty, the task will
     use ``GIT`` if ``git_source`` is defined and ``WORKSPACE`` otherwise.
     
-    - ``WORKSPACE``: SQL file is located in Databricks workspace.
+    - ``WORKSPACE``: SQL file is located in <Databricks> workspace.
     - ``GIT``: SQL file is located in cloud Git provider."""
 
     def as_dict(self) -> dict:
@@ -8380,12 +8151,12 @@ class SubmitTask:
     type and count, the command to run, and where the workload's code and MLflow output are stored."""
 
     alert_task: Optional[AlertTask] = None
-    """The task evaluates a Databricks alert and sends notifications to subscribers when the
+    """The task evaluates a <Databricks> alert and sends notifications to subscribers when the
     ``alert_task`` field is present."""
 
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
-    """The task runs a `clean rooms <https://docs.databricks.com/clean-rooms/index.html>`__ notebook
-    when the ``clean_rooms_notebook_task`` field is present."""
+    """The task runs a [clean rooms](/clean-rooms/index.html) notebook when the
+    ``clean_rooms_notebook_task`` field is present."""
 
     compute: Optional[Compute] = None
     """Task level compute configuration."""
@@ -8938,12 +8709,12 @@ class Task:
     type and count, the command to run, and where the workload's code and MLflow output are stored."""
 
     alert_task: Optional[AlertTask] = None
-    """The task evaluates a Databricks alert and sends notifications to subscribers when the
+    """The task evaluates a <Databricks> alert and sends notifications to subscribers when the
     ``alert_task`` field is present."""
 
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
-    """The task runs a `clean rooms <https://docs.databricks.com/clean-rooms/index.html>`__ notebook
-    when the ``clean_rooms_notebook_task`` field is present."""
+    """The task runs a [clean rooms](/clean-rooms/index.html) notebook when the
+    ``clean_rooms_notebook_task`` field is present."""
 
     compute: Optional[Compute] = None
     """Task level compute configuration."""
@@ -9483,7 +9254,7 @@ class TerminationCodeCode(Enum):
     - ``SUCCESS``: The run was completed successfully.
     - ``SUCCESS_WITH_FAILURES``: The run was completed successfully but some child runs failed.
     - ``USER_CANCELED``: The run was successfully canceled during execution by a user.
-    - ``CANCELED``: The run was canceled during execution by the Databricks platform; for example,
+    - ``CANCELED``: The run was canceled during execution by the <Databricks> platform; for example,
       if the maximum run duration was exceeded.
     - ``SKIPPED``: Run was never executed, for example, if the upstream task run failed, the
       dependency type condition was not met, or there were no material tasks to execute.
@@ -9605,7 +9376,7 @@ class TerminationDetails:
 
 class TerminationTypeType(Enum):
     """- ``SUCCESS``: The run terminated without any issues
-    - ``INTERNAL_ERROR``: An error occurred in the Databricks platform. Please look at the `status
+    - ``INTERNAL_ERROR``: An error occurred in the <Databricks> platform. Please look at the `status
       page <https://status.databricks.com/>`__ or contact support if the issue persists.
     - ``CLIENT_ERROR``: The run was terminated because of an error caused by user input or the job
       configuration.
@@ -10185,21 +9956,6 @@ class WidgetErrorDetail:
 
 
 class JobsAPI:
-    """The Jobs API allows you to create, edit, and delete jobs.
-
-    You can use a Databricks job to run a data processing or data analysis task in a Databricks cluster with
-    scalable resources. Your job can consist of a single task or can be a large, multi-task workflow with
-    complex dependencies. Databricks manages the task orchestration, cluster management, monitoring, and error
-    reporting for all of your jobs. You can run your jobs immediately or periodically through an easy-to-use
-    scheduling system. You can implement job tasks using notebooks, JARS, Spark Declarative Pipelines, or
-    Python, Scala, Spark submit, and Java applications.
-
-    You should never hard code secrets or store them in plain text. Use the `Secrets CLI
-    <https://docs.databricks.com/dev-tools/cli/secrets-cli.html>`__ to manage secrets in the `Databricks CLI
-    <https://docs.databricks.com/dev-tools/cli/index.html>`__. Use the `Secrets utility
-    <https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets>`__ to reference secrets in
-    notebooks and jobs."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -10255,9 +10011,7 @@ class JobsAPI:
             body["all_queued_runs"] = all_queued_runs
         if job_id is not None:
             body["job_id"] = job_id
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10280,9 +10034,7 @@ class JobsAPI:
         body = {}
         if run_id is not None:
             body["run_id"] = run_id
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10497,10 +10249,7 @@ class JobsAPI:
             body["usage_policy_id"] = usage_policy_id
         if webhook_notifications is not None:
             body["webhook_notifications"] = webhook_notifications.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10521,9 +10270,7 @@ class JobsAPI:
         body = {}
         if job_id is not None:
             body["job_id"] = job_id
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10543,9 +10290,7 @@ class JobsAPI:
         body = {}
         if run_id is not None:
             body["run_id"] = run_id
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10569,9 +10314,7 @@ class JobsAPI:
             query["run_id"] = run_id
         if views_to_export is not None:
             query["views_to_export"] = views_to_export.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10610,9 +10353,7 @@ class JobsAPI:
             query["job_id"] = job_id
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10620,46 +10361,6 @@ class JobsAPI:
 
         res = self._api.do("GET", "/api/2.2/jobs/get", query=query, headers=headers)
         return Job.from_dict(res)
-
-    def get_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param job_id: str
-          The job for which to get or manage permissions.
-
-        :returns: :class:`GetJobPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/jobs/{job_id}/permissionLevels", headers=headers)
-        return GetJobPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, job_id: str) -> JobPermissions:
-        """Gets the permissions of a job. Jobs can inherit permissions from their root object.
-
-        :param job_id: str
-          The job for which to get or manage permissions.
-
-        :returns: :class:`JobPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/jobs/{job_id}", headers=headers)
-        return JobPermissions.from_dict(res)
 
     def get_run(
         self,
@@ -10700,9 +10401,7 @@ class JobsAPI:
             query["page_token"] = page_token
         if run_id is not None:
             query["run_id"] = run_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10713,7 +10412,7 @@ class JobsAPI:
 
     def get_run_output(self, run_id: int) -> RunOutput:
         """Retrieve the output and metadata of a single task run. When a notebook task returns a value through
-        the ``dbutils.notebook.exit()`` call, you can use this endpoint to retrieve that value. Databricks
+        the ``dbutils.notebook.exit()`` call, you can use this endpoint to retrieve that value. <Databricks>
         restricts this API to returning the first 5 MB of the output. To return a larger result, you can store
         job results in a cloud storage service.
 
@@ -10730,9 +10429,7 @@ class JobsAPI:
         query = {}
         if run_id is not None:
             query["run_id"] = run_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10781,9 +10478,7 @@ class JobsAPI:
             query["offset"] = offset
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10868,9 +10563,7 @@ class JobsAPI:
             query["start_time_from"] = start_time_from
         if start_time_to is not None:
             query["start_time_to"] = start_time_to
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10913,9 +10606,8 @@ class JobsAPI:
           An array of commands to execute for jobs with the dbt task, for example ``"dbt_commands": ["dbt
           deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]``
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
         :param jar_params: List[str] (optional)
           A list of parameters for jobs with Spark JAR tasks, for example ``"jar_params": ["john doe",
           "35"]``. The parameters are used to invoke the main function of the main class specified in the
@@ -10923,9 +10615,8 @@ class JobsAPI:
           be specified in conjunction with notebook_params. The JSON representation of this field (for example
           ``{"jar_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example ``"param": "overriding_val"``
         :param latest_repair_id: int (optional)
@@ -10934,15 +10625,14 @@ class JobsAPI:
         :param notebook_params: Dict[str,str] (optional)
           A map from keys to values for jobs with notebook task, for example ``"notebook_params": {"name":
           "john doe", "age": "35"}``. The map is passed to the notebook and is accessible through the
-          `dbutils.widgets.get <https://docs.databricks.com/dev-tools/databricks-utils.html>`__ function.
+          [dbutils.widgets.get](/dev-tools/databricks-utils.html) function.
 
           If not specified upon ``run-now``, the triggered run uses the job’s base parameters.
 
           notebook_params cannot be specified in conjunction with jar_params.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
 
           The JSON representation of this field (for example ``{"notebook_params":{"name":"john
           doe","age":"35"}}``) cannot exceed 10,000 bytes.
@@ -10963,9 +10653,8 @@ class JobsAPI:
           ``run-now``, it would overwrite the parameters specified in job setting. The JSON representation of
           this field (for example ``{"python_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
 
           Important
 
@@ -10987,9 +10676,8 @@ class JobsAPI:
           specified in job setting. The JSON representation of this field (for example
           ``{"python_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
 
           Important
 
@@ -11000,9 +10688,8 @@ class JobsAPI:
           A map from keys to values for jobs with SQL task, for example ``"sql_params": {"name": "john doe",
           "age": "35"}``. The SQL alert task does not support custom parameters.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
 
         :returns:
           Long-running operation waiter for :class:`Run`.
@@ -11040,10 +10727,7 @@ class JobsAPI:
             body["spark_submit_params"] = [v for v in spark_submit_params]
         if sql_params is not None:
             body["sql_params"] = sql_params
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11114,9 +10798,7 @@ class JobsAPI:
             body["job_id"] = job_id
         if new_settings is not None:
             body["new_settings"] = new_settings.as_dict()
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11150,16 +10832,15 @@ class JobsAPI:
           An array of commands to execute for jobs with the dbt task, for example ``"dbt_commands": ["dbt
           deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]``
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
         :param idempotency_token: str (optional)
           An optional token to guarantee the idempotency of job run requests. If a run with the provided token
           already exists, the request does not create a new run but returns the ID of the existing run
           instead. If a run with the provided token is deleted, an error is returned.
 
           If you specify the idempotency token, upon failure you can retry until the request succeeds.
-          Databricks guarantees that exactly one run is launched with that idempotency token.
+          <Databricks> guarantees that exactly one run is launched with that idempotency token.
 
           This token must have at most 64 characters.
         :param jar_params: List[str] (optional)
@@ -11169,23 +10850,21 @@ class JobsAPI:
           be specified in conjunction with notebook_params. The JSON representation of this field (for example
           ``{"jar_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example ``"param": "overriding_val"``
         :param notebook_params: Dict[str,str] (optional)
           A map from keys to values for jobs with notebook task, for example ``"notebook_params": {"name":
           "john doe", "age": "35"}``. The map is passed to the notebook and is accessible through the
-          `dbutils.widgets.get <https://docs.databricks.com/dev-tools/databricks-utils.html>`__ function.
+          [dbutils.widgets.get](/dev-tools/databricks-utils.html) function.
 
           If not specified upon ``run-now``, the triggered run uses the job’s base parameters.
 
           notebook_params cannot be specified in conjunction with jar_params.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
 
           The JSON representation of this field (for example ``{"notebook_params":{"name":"john
           doe","age":"35"}}``) cannot exceed 10,000 bytes.
@@ -11214,9 +10893,8 @@ class JobsAPI:
           ``run-now``, it would overwrite the parameters specified in job setting. The JSON representation of
           this field (for example ``{"python_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
 
           Important
 
@@ -11232,9 +10910,8 @@ class JobsAPI:
           specified in job setting. The JSON representation of this field (for example
           ``{"python_params":["john doe","35"]}``) cannot exceed 10,000 bytes.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
 
           Important
 
@@ -11245,9 +10922,8 @@ class JobsAPI:
           A map from keys to values for jobs with SQL task, for example ``"sql_params": {"name": "john doe",
           "age": "35"}``. The SQL alert task does not support custom parameters.
 
-          ⚠ **Deprecation note** Use `job parameters
-          <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
-          down to tasks.
+          ⚠ **Deprecation note** Use [job parameters](/jobs/job-parameters.html#job-parameter-pushdown) to
+          pass information down to tasks.
 
         :returns:
           Long-running operation waiter for :class:`Run`.
@@ -11283,10 +10959,7 @@ class JobsAPI:
             body["spark_submit_params"] = [v for v in spark_submit_params]
         if sql_params is not None:
             body["sql_params"] = sql_params
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11335,34 +11008,6 @@ class JobsAPI:
             sql_params=sql_params,
         ).result(timeout=timeout)
 
-    def set_permissions(
-        self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
-    ) -> JobPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param job_id: str
-          The job for which to get or manage permissions.
-        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
-
-        :returns: :class:`JobPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PUT", f"/api/2.0/permissions/jobs/{job_id}", body=body, headers=headers)
-        return JobPermissions.from_dict(res)
-
     def submit(
         self,
         *,
@@ -11388,10 +11033,10 @@ class JobsAPI:
         the run state after the job is submitted.
 
         **Important:** Jobs submitted using this endpoint are not saved as a job. They do not show up in the
-        Jobs UI, and do not retry when they fail. Because they are not saved, Databricks cannot auto-optimize
-        serverless compute in case of failure. If your job fails, you may want to use classic compute to
-        specify the compute needs for the job. Alternatively, use the ``POST /jobs/create`` and ``POST
-        /jobs/run-now`` endpoints to create and run a saved job.
+        Jobs UI, and do not retry when they fail. Because they are not saved, <Databricks> cannot
+        auto-optimize serverless compute in case of failure. If your job fails, you may want to use classic
+        compute to specify the compute needs for the job. Alternatively, use the ``POST /jobs/create`` and
+        ``POST /jobs/run-now`` endpoints to create and run a saved job.
 
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
@@ -11418,7 +11063,7 @@ class JobsAPI:
           existing run instead. If a run with the provided token is deleted, an error is returned.
 
           If you specify the idempotency token, upon failure you can retry until the request succeeds.
-          Databricks guarantees that exactly one run is launched with that idempotency token.
+          <Databricks> guarantees that exactly one run is launched with that idempotency token.
 
           This token must have at most 64 characters.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
@@ -11486,10 +11131,7 @@ class JobsAPI:
             body["usage_policy_id"] = usage_policy_id
         if webhook_notifications is not None:
             body["webhook_notifications"] = webhook_notifications.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11575,9 +11217,7 @@ class JobsAPI:
             body["job_id"] = job_id
         if new_settings is not None:
             body["new_settings"] = new_settings.as_dict()
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11585,45 +11225,9 @@ class JobsAPI:
 
         self._api.do("POST", "/api/2.2/jobs/update", body=body, headers=headers)
 
-    def update_permissions(
-        self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
-    ) -> JobPermissions:
-        """Updates the permissions on a job. Jobs can inherit permissions from their root object.
-
-        :param job_id: str
-          The job for which to get or manage permissions.
-        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
-
-        :returns: :class:`JobPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.0/permissions/jobs/{job_id}", body=body, headers=headers)
-        return JobPermissions.from_dict(res)
-
 
 class PolicyComplianceForJobsAPI:
-    """The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace.
-    This API currently only supports compliance controls for cluster policies.
-
-    A job is in compliance if its cluster configurations satisfy the rules of all their respective cluster
-    policies. A job could be out of compliance if a cluster policy it uses was updated after the job was last
-    edited. The job is considered out of compliance if any of its clusters no longer comply with their updated
-    policies.
-
-    The get and list compliance APIs allow you to view the policy compliance status of a job. The enforce
-    compliance API allows you to update a job so that it becomes compliant with all of its policies."""
+    """This proto is documentation only. Keep this in sync with policies.proto for these methods."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -11648,10 +11252,7 @@ class PolicyComplianceForJobsAPI:
             body["job_id"] = job_id
         if validate_only is not None:
             body["validate_only"] = validate_only
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11674,9 +11275,7 @@ class PolicyComplianceForJobsAPI:
         query = {}
         if job_id is not None:
             query["job_id"] = job_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11711,9 +11310,7 @@ class PolicyComplianceForJobsAPI:
             query["page_token"] = page_token
         if policy_id is not None:
             query["policy_id"] = policy_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

@@ -2026,236 +2026,6 @@ class Experiment:
 
 
 @dataclass
-class ExperimentAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[ExperimentPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ExperimentAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExperimentAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExperimentAccessControlRequest:
-        """Deserializes the ExperimentAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", ExperimentPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class ExperimentAccessControlResponse:
-    all_permissions: Optional[List[ExperimentPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ExperimentAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExperimentAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExperimentAccessControlResponse:
-        """Deserializes the ExperimentAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", ExperimentPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class ExperimentPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[ExperimentPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ExperimentPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExperimentPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermission:
-        """Deserializes the ExperimentPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", ExperimentPermissionLevel),
-        )
-
-
-class ExperimentPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_EDIT = "CAN_EDIT"
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_READ = "CAN_READ"
-
-
-@dataclass
-class ExperimentPermissions:
-    access_control_list: Optional[List[ExperimentAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ExperimentPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExperimentPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissions:
-        """Deserializes the ExperimentPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", ExperimentAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class ExperimentPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[ExperimentPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ExperimentPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExperimentPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissionsDescription:
-        """Deserializes the ExperimentPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", ExperimentPermissionLevel),
-        )
-
-
-@dataclass
 class ExperimentTag:
     """A tag for an experiment."""
 
@@ -2350,8 +2120,8 @@ class Feature:
 
     lineage_context: Optional[LineageContext] = None
     """Lineage context information for this feature. WARNING: This field is primarily intended for
-    internal use by Databricks systems and is automatically populated when features are created
-    through Databricks notebooks or jobs. Users should not manually set this field as incorrect
+    internal use by <Databricks> systems and is automatically populated when features are created
+    through <Databricks> notebooks or jobs. Users should not manually set this field as incorrect
     values may lead to inaccurate lineage tracking or unexpected behavior. This field will be set by
     feature-engineering client and should be left unset by SDK and terraform users."""
 
@@ -3057,31 +2827,6 @@ class GetExperimentByNameResponse:
 
 
 @dataclass
-class GetExperimentPermissionLevelsResponse:
-    permission_levels: Optional[List[ExperimentPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetExperimentPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetExperimentPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetExperimentPermissionLevelsResponse:
-        """Deserializes the GetExperimentPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", ExperimentPermissionsDescription))
-
-
-@dataclass
 class GetExperimentResponse:
     experiment: Optional[Experiment] = None
     """Experiment details."""
@@ -3266,31 +3011,6 @@ class GetModelVersionResponse:
 
 
 @dataclass
-class GetRegisteredModelPermissionLevelsResponse:
-    permission_levels: Optional[List[RegisteredModelPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetRegisteredModelPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetRegisteredModelPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetRegisteredModelPermissionLevelsResponse:
-        """Deserializes the GetRegisteredModelPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", RegisteredModelPermissionsDescription))
-
-
-@dataclass
 class GetRunResponse:
     run: Optional[Run] = None
     """Run metadata (name, start time, etc) and data (metrics, params, and tags)."""
@@ -3411,14 +3131,14 @@ class HttpUrlSpecWithoutSecret:
 
 @dataclass
 class IngestionConfig:
-    """Configuration for the Databricks-managed ingestion pipeline. Groups the ingestion destination
+    """Configuration for the <Databricks>-managed ingestion pipeline. Groups the ingestion destination
     (required) and optional backfill source."""
 
     ingestion_destination: IngestionDestination
-    """Destination for the Databricks-managed Delta table that holds an offline copy of the streaming
+    """Destination for the <Databricks>-managed Delta table that holds an offline copy of the streaming
     data for querying and training. This table contains both 1) forward-filled data from the Stream
     and 2) backfilled data from the BackfillSource (if provided). This table is created and managed
-    by Databricks and is deleted when the Stream is deleted."""
+    by <Databricks> and is deleted when the Stream is deleted."""
 
     backfill_job_id: Optional[int] = None
     """The ID of the Databricks Job that performs the historical backfill of the ingestion Delta table."""
@@ -3513,7 +3233,7 @@ class IngestionConfig:
 
 @dataclass
 class IngestionDestination:
-    """Destination for the Databricks-managed Delta table that holds an offline copy of the streaming
+    """Destination for the <Databricks>-managed Delta table that holds an offline copy of the streaming
     data for querying and training."""
 
     delta_table_name: Optional[str] = None
@@ -3735,15 +3455,15 @@ class KafkaConfig:
     backfill_source: Optional[BackfillSource] = None
     """A user-provided and managed source for backfilling data. Historical data is used when creating a
     training set from streaming features linked to this Kafka config. In the future, a separate
-    table will be maintained by Databricks for forward filling data. The schema for this source must
-    match exactly that of the key and value schemas specified for this Kafka config."""
+    table will be maintained by <Databricks> for forward filling data. The schema for this source
+    must match exactly that of the key and value schemas specified for this Kafka config."""
 
     extra_options: Optional[Dict[str, str]] = None
     """Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options
     (kafka.*)"""
 
     ingestion_config: Optional[IngestionConfig] = None
-    """Configuration for ingesting Kafka data into a Databricks-managed Delta table."""
+    """Configuration for ingesting Kafka data into a <Databricks>-managed Delta table."""
 
     key_schema: Optional[SchemaConfig] = None
     """Schema configuration for extracting message keys from topics. At least one of key_schema and
@@ -3965,7 +3685,7 @@ class KafkaSubscriptionMode:
 @dataclass
 class KinesisStreamConfig:
     """Kinesis-specific configuration for a Stream. For the underlying connector and its source
-    options, see the Databricks documentation on connecting to Amazon Kinesis
+    options, see the <Databricks> documentation on connecting to Amazon Kinesis
     (https://docs.databricks.com/aws/en/connect/streaming/kinesis)."""
 
     extra_options: Optional[Dict[str, str]] = None
@@ -5867,7 +5587,7 @@ class ModelVersionTag:
 class MtlsConfig:
     """Mutual-TLS (mTLS) authentication configuration. The keystore (client certificate + private key)
     and truststore (CAs trusted to verify the broker) live as JKS files on Unity Catalog volumes,
-    with their passwords stored in Databricks secret scopes. This matches the SSL setup pattern
+    with their passwords stored in <Databricks> secret scopes. This matches the SSL setup pattern
     documented at
     https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
 
@@ -6569,238 +6289,6 @@ class PurgeFeatureEntitiesResultState(Enum):
     FAILED = "FAILED"
     NOT_APPLICABLE = "NOT_APPLICABLE"
     SUCCEEDED = "SUCCEEDED"
-
-
-@dataclass
-class RegisteredModelAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[RegisteredModelPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the RegisteredModelAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RegisteredModelAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAccessControlRequest:
-        """Deserializes the RegisteredModelAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", RegisteredModelPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class RegisteredModelAccessControlResponse:
-    all_permissions: Optional[List[RegisteredModelPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the RegisteredModelAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RegisteredModelAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAccessControlResponse:
-        """Deserializes the RegisteredModelAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", RegisteredModelPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class RegisteredModelPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[RegisteredModelPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the RegisteredModelPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RegisteredModelPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermission:
-        """Deserializes the RegisteredModelPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", RegisteredModelPermissionLevel),
-        )
-
-
-class RegisteredModelPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_EDIT = "CAN_EDIT"
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_MANAGE_PRODUCTION_VERSIONS = "CAN_MANAGE_PRODUCTION_VERSIONS"
-    CAN_MANAGE_STAGING_VERSIONS = "CAN_MANAGE_STAGING_VERSIONS"
-    CAN_READ = "CAN_READ"
-
-
-@dataclass
-class RegisteredModelPermissions:
-    access_control_list: Optional[List[RegisteredModelAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the RegisteredModelPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RegisteredModelPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissions:
-        """Deserializes the RegisteredModelPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", RegisteredModelAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class RegisteredModelPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[RegisteredModelPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the RegisteredModelPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RegisteredModelPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissionsDescription:
-        """Deserializes the RegisteredModelPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", RegisteredModelPermissionLevel),
-        )
 
 
 class RegistryEmailSubscriptionType(Enum):
@@ -7590,7 +7078,7 @@ class SchemaRegistryConfig:
     """Configuration for resolving a Stream's schema from an external schema registry (e.g. Confluent)."""
 
     api_secret_ref: SecretScopeReference
-    """Reference to the schema registry API secret in a Databricks secret scope."""
+    """Reference to the schema registry API secret in a <Databricks> secret scope."""
 
     key_schema_locator: Optional[SchemaLocator] = None
     """Schema locator for the message key. Only used for Kafka streams. At least one of
@@ -7898,11 +7386,11 @@ class SearchRunsResponse:
 
 @dataclass
 class SecretScopeReference:
-    """Reference to an entry in a Databricks secret scope. The referenced value is fetched on the Spark
-    cluster at materialization time via dbutils.secrets.get(scope, key)."""
+    """Reference to an entry in a <Databricks> secret scope. The referenced value is fetched on the
+    Spark cluster at materialization time via dbutils.secrets.get(scope, key)."""
 
     scope: str
-    """The Databricks secret scope name."""
+    """The <Databricks> secret scope name."""
 
     key: str
     """The key within the scope."""
@@ -9220,13 +8708,6 @@ class ViewType(Enum):
 
 
 class ExperimentsAPI:
-    """Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment. Each
-    experiment lets you visualize, search, and compare runs, as well as download run artifacts or metadata for
-    analysis in other tools. Experiments are maintained in a Databricks hosted MLflow tracking server.
-
-    Experiments are located in the workspace file tree. You manage experiments using the same tools you use to
-    manage other workspace objects such as folders, notebooks, and libraries."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9273,10 +8754,7 @@ class ExperimentsAPI:
             body["tags"] = [v.as_dict() for v in tags]
         if trace_location is not None:
             body["trace_location"] = trace_location.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9326,10 +8804,7 @@ class ExperimentsAPI:
             body["source_run_id"] = source_run_id
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9377,10 +8852,7 @@ class ExperimentsAPI:
             body["tags"] = [v.as_dict() for v in tags]
         if user_id is not None:
             body["user_id"] = user_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9402,10 +8874,7 @@ class ExperimentsAPI:
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9422,9 +8891,7 @@ class ExperimentsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9443,9 +8910,7 @@ class ExperimentsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9465,10 +8930,7 @@ class ExperimentsAPI:
         body = {}
         if run_id is not None:
             body["run_id"] = run_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9502,10 +8964,7 @@ class ExperimentsAPI:
             body["max_runs"] = max_runs
         if max_timestamp_millis is not None:
             body["max_timestamp_millis"] = max_timestamp_millis
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9531,10 +8990,7 @@ class ExperimentsAPI:
             body["key"] = key
         if run_id is not None:
             body["run_id"] = run_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9557,10 +9013,7 @@ class ExperimentsAPI:
         body = {}
         if status is not None:
             body["status"] = status.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9587,9 +9040,7 @@ class ExperimentsAPI:
         query = {}
         if experiment_name is not None:
             query["experiment_name"] = experiment_name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9610,9 +9061,7 @@ class ExperimentsAPI:
         query = {}
         if experiment_id is not None:
             query["experiment_id"] = experiment_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9659,9 +9108,7 @@ class ExperimentsAPI:
             query["run_id"] = run_id
         if run_uuid is not None:
             query["run_uuid"] = run_uuid
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9685,9 +9132,7 @@ class ExperimentsAPI:
         :returns: :class:`GetLoggedModelResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9695,46 +9140,6 @@ class ExperimentsAPI:
 
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
-
-    def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-
-        :returns: :class:`GetExperimentPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}/permissionLevels", headers=headers)
-        return GetExperimentPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, experiment_id: str) -> ExperimentPermissions:
-        """Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
-
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-
-        :returns: :class:`ExperimentPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}", headers=headers)
-        return ExperimentPermissions.from_dict(res)
 
     def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
         """Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
@@ -9756,9 +9161,7 @@ class ExperimentsAPI:
             query["run_id"] = run_id
         if run_uuid is not None:
             query["run_uuid"] = run_uuid
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9807,9 +9210,7 @@ class ExperimentsAPI:
             query["run_id"] = run_id
         if run_uuid is not None:
             query["run_uuid"] = run_uuid
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9852,9 +9253,7 @@ class ExperimentsAPI:
             query["page_token"] = page_token
         if view_type is not None:
             query["view_type"] = view_type.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9937,10 +9336,7 @@ class ExperimentsAPI:
             body["run_id"] = run_id
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9970,10 +9366,7 @@ class ExperimentsAPI:
             body["models"] = [v.as_dict() for v in models]
         if run_id is not None:
             body["run_id"] = run_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9997,10 +9390,7 @@ class ExperimentsAPI:
         body = {}
         if params is not None:
             body["params"] = [v.as_dict() for v in params]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10069,10 +9459,7 @@ class ExperimentsAPI:
             body["timestamp"] = timestamp
         if value is not None:
             body["value"] = value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10099,10 +9486,7 @@ class ExperimentsAPI:
             body["model_json"] = model_json
         if run_id is not None:
             body["run_id"] = run_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10126,10 +9510,7 @@ class ExperimentsAPI:
             body["models"] = [v.as_dict() for v in models]
         if run_id is not None:
             body["run_id"] = run_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10164,10 +9545,7 @@ class ExperimentsAPI:
             body["run_uuid"] = run_uuid
         if value is not None:
             body["value"] = value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10191,10 +9569,7 @@ class ExperimentsAPI:
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10216,10 +9591,7 @@ class ExperimentsAPI:
         body = {}
         if run_id is not None:
             body["run_id"] = run_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10253,10 +9625,7 @@ class ExperimentsAPI:
             body["max_runs"] = max_runs
         if min_timestamp_millis is not None:
             body["min_timestamp_millis"] = min_timestamp_millis
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10303,10 +9672,7 @@ class ExperimentsAPI:
             body["page_token"] = page_token
         if view_type is not None:
             body["view_type"] = view_type.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10369,10 +9735,7 @@ class ExperimentsAPI:
             body["order_by"] = [v.as_dict() for v in order_by]
         if page_token is not None:
             body["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10437,10 +9800,7 @@ class ExperimentsAPI:
             body["page_token"] = page_token
         if run_view_type is not None:
             body["run_view_type"] = run_view_type.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10475,10 +9835,7 @@ class ExperimentsAPI:
             body["key"] = key
         if value is not None:
             body["value"] = value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10500,44 +9857,13 @@ class ExperimentsAPI:
         body = {}
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}/tags", body=body, headers=headers)
-
-    def set_permissions(
-        self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
-    ) -> ExperimentPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-        :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
-
-        :returns: :class:`ExperimentPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PUT", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
-        return ExperimentPermissions.from_dict(res)
 
     def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
         """Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
@@ -10564,10 +9890,7 @@ class ExperimentsAPI:
             body["run_uuid"] = run_uuid
         if value is not None:
             body["value"] = value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10591,43 +9914,13 @@ class ExperimentsAPI:
             body["experiment_id"] = experiment_id
         if new_name is not None:
             body["new_name"] = new_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/update", body=body, headers=headers)
-
-    def update_permissions(
-        self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
-    ) -> ExperimentPermissions:
-        """Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
-
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-        :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
-
-        :returns: :class:`ExperimentPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
-        return ExperimentPermissions.from_dict(res)
 
     def update_run(
         self,
@@ -10666,10 +9959,7 @@ class ExperimentsAPI:
             body["run_uuid"] = run_uuid
         if status is not None:
             body["status"] = status.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10680,8 +9970,6 @@ class ExperimentsAPI:
 
 
 class FeatureEngineeringAPI:
-    """[description]"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -10709,10 +9997,7 @@ class FeatureEngineeringAPI:
             body["feature_full_names"] = [v for v in feature_full_names]
         if request_id is not None:
             body["request_id"] = request_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10736,10 +10021,7 @@ class FeatureEngineeringAPI:
         body = {}
         if requests is not None:
             body["requests"] = [v.as_dict() for v in requests]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10759,17 +10041,13 @@ class FeatureEngineeringAPI:
 
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.0/feature-engineering/{name}:cancel", body=body, headers=headers)
+        self._api.do("POST", f"/api/2.0/feature-engineering/{name}:cancel", headers=headers)
 
     def create_feature(self, feature: Feature) -> Feature:
         """Create a Feature.
@@ -10782,10 +10060,7 @@ class FeatureEngineeringAPI:
 
         body = feature.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10805,10 +10080,7 @@ class FeatureEngineeringAPI:
 
         body = kafka_config.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10828,10 +10100,7 @@ class FeatureEngineeringAPI:
 
         body = materialized_feature.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10851,10 +10120,7 @@ class FeatureEngineeringAPI:
 
         body = stream.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10872,9 +10138,7 @@ class FeatureEngineeringAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10892,9 +10156,7 @@ class FeatureEngineeringAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10911,9 +10173,7 @@ class FeatureEngineeringAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10932,9 +10192,7 @@ class FeatureEngineeringAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10951,9 +10209,7 @@ class FeatureEngineeringAPI:
         :returns: :class:`Feature`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10972,9 +10228,7 @@ class FeatureEngineeringAPI:
         :returns: :class:`KafkaConfig`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10992,9 +10246,7 @@ class FeatureEngineeringAPI:
         :returns: :class:`MaterializedFeature`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11014,9 +10266,7 @@ class FeatureEngineeringAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11034,9 +10284,7 @@ class FeatureEngineeringAPI:
         :returns: :class:`Stream`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11071,9 +10319,7 @@ class FeatureEngineeringAPI:
             query["page_token"] = page_token
         if schema_name is not None:
             query["schema_name"] = schema_name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11107,9 +10353,7 @@ class FeatureEngineeringAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11150,9 +10394,7 @@ class FeatureEngineeringAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11191,9 +10433,7 @@ class FeatureEngineeringAPI:
             query["page_token"] = page_token
         if parent is not None:
             query["parent"] = parent
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11236,10 +10476,7 @@ class FeatureEngineeringAPI:
             body["features"] = [v for v in features]
         if request_id is not None:
             body["request_id"] = request_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11270,10 +10507,7 @@ class FeatureEngineeringAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11304,10 +10538,7 @@ class FeatureEngineeringAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11342,10 +10573,7 @@ class FeatureEngineeringAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11377,10 +10605,7 @@ class FeatureEngineeringAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11553,13 +10778,6 @@ class PurgeFeatureEntitiesOperation:
 
 
 class FeatureStoreAPI:
-    """A feature store is a centralized repository that enables data scientists to find and share features. Using
-    a feature store also ensures that the code used to compute feature values is the same during model
-    training and when the model is used for inference.
-
-    An online store is a low-latency database used for feature lookup during real-time model inference or
-    serve feature for real-time applications."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -11574,10 +10792,7 @@ class FeatureStoreAPI:
 
         body = online_store.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11595,9 +10810,7 @@ class FeatureStoreAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11614,9 +10827,7 @@ class FeatureStoreAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11633,9 +10844,7 @@ class FeatureStoreAPI:
         :returns: :class:`OnlineStore`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11662,9 +10871,7 @@ class FeatureStoreAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11693,10 +10900,7 @@ class FeatureStoreAPI:
         body = {}
         if publish_spec is not None:
             body["publish_spec"] = publish_spec.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11724,10 +10928,7 @@ class FeatureStoreAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11740,15 +10941,13 @@ class FeatureStoreAPI:
 
 
 class ForecastingAPI:
-    """The Forecasting API allows you to create and get serverless forecasting experiments"""
-
     def __init__(self, api_client):
         self._api = api_client
 
     def wait_get_experiment_forecasting_succeeded(
         self,
         experiment_id: str,
-        timeout=timedelta(minutes=120),
+        timeout=timedelta(minutes=20),
         callback: Optional[Callable[[ForecastingExperiment], None]] = None,
     ) -> ForecastingExperiment:
         deadline = time.time() + timeout.total_seconds()
@@ -11894,10 +11093,7 @@ class ForecastingAPI:
             body["train_data_path"] = train_data_path
         if training_frameworks is not None:
             body["training_frameworks"] = [v for v in training_frameworks]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11930,7 +11126,7 @@ class ForecastingAPI:
         split_column: Optional[str] = None,
         timeseries_identifier_columns: Optional[List[str]] = None,
         training_frameworks: Optional[List[str]] = None,
-        timeout=timedelta(minutes=120),
+        timeout=timedelta(minutes=20),
     ) -> ForecastingExperiment:
         return self.create_experiment(
             custom_weights_column=custom_weights_column,
@@ -11961,9 +11157,7 @@ class ForecastingAPI:
         :returns: :class:`ForecastingExperiment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11974,9 +11168,6 @@ class ForecastingAPI:
 
 
 class MaterializedFeaturesAPI:
-    """Materialized Features are columns in tables and views that can be directly used as features to train and
-    serve ML models."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -11992,10 +11183,7 @@ class MaterializedFeaturesAPI:
 
         body = feature_tag.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12022,9 +11210,7 @@ class MaterializedFeaturesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12047,9 +11233,7 @@ class MaterializedFeaturesAPI:
         :returns: :class:`FeatureLineage`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12072,9 +11256,7 @@ class MaterializedFeaturesAPI:
         :returns: :class:`FeatureTag`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12107,9 +11289,7 @@ class MaterializedFeaturesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12154,10 +11334,7 @@ class MaterializedFeaturesAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12174,14 +11351,6 @@ class MaterializedFeaturesAPI:
 
 
 class ModelRegistryAPI:
-    """Note: This API reference documents APIs for the Workspace Model Registry. Databricks recommends using
-    [Models in Unity Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog provides
-    centralized model governance, cross-workspace access, lineage, and deployment. Workspace Model Registry
-    will be deprecated in the future.
-
-    The Workspace Model Registry is a centralized model repository and a UI and set of APIs that enable you to
-    manage the full lifecycle of MLflow Models."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -12220,10 +11389,7 @@ class ModelRegistryAPI:
             body["stage"] = stage
         if version is not None:
             body["version"] = version
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12253,10 +11419,7 @@ class ModelRegistryAPI:
             body["name"] = name
         if version is not None:
             body["version"] = version
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12288,10 +11451,7 @@ class ModelRegistryAPI:
             body["name"] = name
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12343,10 +11503,7 @@ class ModelRegistryAPI:
             body["source"] = source
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12386,10 +11543,7 @@ class ModelRegistryAPI:
             body["stage"] = stage
         if version is not None:
             body["version"] = version
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12463,10 +11617,7 @@ class ModelRegistryAPI:
             body["model_name"] = model_name
         if status is not None:
             body["status"] = status.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12487,9 +11638,7 @@ class ModelRegistryAPI:
         query = {}
         if id is not None:
             query["id"] = id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12509,9 +11658,7 @@ class ModelRegistryAPI:
         query = {}
         if name is not None:
             query["name"] = name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12536,9 +11683,7 @@ class ModelRegistryAPI:
             query["key"] = key
         if name is not None:
             query["name"] = name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12562,9 +11707,7 @@ class ModelRegistryAPI:
             query["name"] = name
         if version is not None:
             query["version"] = version
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12593,9 +11736,7 @@ class ModelRegistryAPI:
             query["name"] = name
         if version is not None:
             query["version"] = version
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12639,9 +11780,7 @@ class ModelRegistryAPI:
             query["stage"] = stage
         if version is not None:
             query["version"] = version
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12662,9 +11801,7 @@ class ModelRegistryAPI:
         query = {}
         if id is not None:
             query["id"] = id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12688,10 +11825,7 @@ class ModelRegistryAPI:
             body["name"] = name
         if stages is not None:
             body["stages"] = [v for v in stages]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12702,9 +11836,9 @@ class ModelRegistryAPI:
         return parsed if parsed is not None else []
 
     def get_model(self, name: str) -> GetModelResponse:
-        """Get the details of a model. This is a Databricks workspace version of the `MLflow endpoint
+        """Get the details of a model. This is a <Databricks> workspace version of the `MLflow endpoint
         <https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel>`__ that also returns the
-        model's Databricks workspace ID and the permission level of the requesting user on the model.
+        model's <Databricks> workspace ID and the permission level of the requesting user on the model.
 
         :param name: str
           Registered model unique name identifier.
@@ -12715,9 +11849,7 @@ class ModelRegistryAPI:
         query = {}
         if name is not None:
             query["name"] = name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12742,9 +11874,7 @@ class ModelRegistryAPI:
             query["name"] = name
         if version is not None:
             query["version"] = version
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12769,9 +11899,7 @@ class ModelRegistryAPI:
             query["name"] = name
         if version is not None:
             query["version"] = version
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12779,49 +11907,6 @@ class ModelRegistryAPI:
 
         res = self._api.do("GET", "/api/2.0/mlflow/model-versions/get-download-uri", query=query, headers=headers)
         return GetModelVersionDownloadUriResponse.from_dict(res)
-
-    def get_permission_levels(self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param registered_model_id: str
-          The registered model for which to get or manage permissions.
-
-        :returns: :class:`GetRegisteredModelPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "GET", f"/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels", headers=headers
-        )
-        return GetRegisteredModelPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
-        """Gets the permissions of a registered model. Registered models can inherit permissions from their root
-        object.
-
-        :param registered_model_id: str
-          The registered model for which to get or manage permissions.
-
-        :returns: :class:`RegisteredModelPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/registered-models/{registered_model_id}", headers=headers)
-        return RegisteredModelPermissions.from_dict(res)
 
     def list_models(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Model]:
         """Lists all available registered models, up to the limit specified in **max_results**.
@@ -12839,9 +11924,7 @@ class ModelRegistryAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12872,9 +11955,7 @@ class ModelRegistryAPI:
             query["name"] = name
         if version is not None:
             query["version"] = version
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12936,9 +12017,7 @@ class ModelRegistryAPI:
             query["model_name"] = model_name
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -12984,10 +12063,7 @@ class ModelRegistryAPI:
             body["stage"] = stage
         if version is not None:
             body["version"] = version
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13012,10 +12088,7 @@ class ModelRegistryAPI:
             body["name"] = name
         if new_name is not None:
             body["new_name"] = new_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13058,9 +12131,7 @@ class ModelRegistryAPI:
             query["order_by"] = [v for v in order_by]
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13110,9 +12181,7 @@ class ModelRegistryAPI:
             query["order_by"] = [v for v in order_by]
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13150,10 +12219,7 @@ class ModelRegistryAPI:
             body["name"] = name
         if value is not None:
             body["value"] = value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13188,49 +12254,13 @@ class ModelRegistryAPI:
             body["value"] = value
         if version is not None:
             body["version"] = version
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/model-versions/set-tag", body=body, headers=headers)
-
-    def set_permissions(
-        self,
-        registered_model_id: str,
-        *,
-        access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None,
-    ) -> RegisteredModelPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param registered_model_id: str
-          The registered model for which to get or manage permissions.
-        :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
-
-        :returns: :class:`RegisteredModelPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PUT", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
-        )
-        return RegisteredModelPermissions.from_dict(res)
 
     def test_registry_webhook(
         self, id: str, *, event: Optional[RegistryWebhookEvent] = None
@@ -13251,10 +12281,7 @@ class ModelRegistryAPI:
             body["event"] = event.value
         if id is not None:
             body["id"] = id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13266,7 +12293,7 @@ class ModelRegistryAPI:
     def transition_stage(
         self, name: str, version: str, stage: str, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> TransitionStageResponse:
-        """Transition a model version's stage. This is a Databricks workspace version of the `MLflow endpoint
+        """Transition a model version's stage. This is a <Databricks> workspace version of the `MLflow endpoint
         <https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage>`__ that also accepts
         a comment associated with the transition to be recorded.
 
@@ -13300,10 +12327,7 @@ class ModelRegistryAPI:
             body["stage"] = stage
         if version is not None:
             body["version"] = version
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13330,10 +12354,7 @@ class ModelRegistryAPI:
             body["comment"] = comment
         if id is not None:
             body["id"] = id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13358,10 +12379,7 @@ class ModelRegistryAPI:
             body["description"] = description
         if name is not None:
             body["name"] = name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13392,10 +12410,7 @@ class ModelRegistryAPI:
             body["name"] = name
         if version is not None:
             body["version"] = version
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13403,39 +12418,6 @@ class ModelRegistryAPI:
 
         res = self._api.do("PATCH", "/api/2.0/mlflow/model-versions/update", body=body, headers=headers)
         return UpdateModelVersionResponse.from_dict(res)
-
-    def update_permissions(
-        self,
-        registered_model_id: str,
-        *,
-        access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None,
-    ) -> RegisteredModelPermissions:
-        """Updates the permissions on a registered model. Registered models can inherit permissions from their
-        root object.
-
-        :param registered_model_id: str
-          The registered model for which to get or manage permissions.
-        :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
-
-        :returns: :class:`RegisteredModelPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PATCH", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
-        )
-        return RegisteredModelPermissions.from_dict(res)
 
     def update_webhook(
         self,
@@ -13492,10 +12474,7 @@ class ModelRegistryAPI:
             body["job_spec"] = job_spec.as_dict()
         if status is not None:
             body["status"] = status.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

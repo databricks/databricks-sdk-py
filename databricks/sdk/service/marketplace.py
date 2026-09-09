@@ -2927,7 +2927,9 @@ class Visibility(Enum):
 
 
 class ConsumerFulfillmentsAPI:
-    """Fulfillments are entities that allow consumers to preview installations."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2949,9 +2951,7 @@ class ConsumerFulfillmentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2988,9 +2988,7 @@ class ConsumerFulfillmentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3009,7 +3007,9 @@ class ConsumerFulfillmentsAPI:
 
 
 class ConsumerInstallationsAPI:
-    """Installations are entities that allow consumers to interact with Databricks Marketplace listings."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3048,10 +3048,7 @@ class ConsumerInstallationsAPI:
             body["repo_detail"] = repo_detail.as_dict()
         if share_name is not None:
             body["share_name"] = share_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3071,9 +3068,7 @@ class ConsumerInstallationsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3101,9 +3096,7 @@ class ConsumerInstallationsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3135,9 +3128,7 @@ class ConsumerInstallationsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3184,10 +3175,7 @@ class ConsumerInstallationsAPI:
             body["installation"] = installation.as_dict()
         if rotate_token is not None:
             body["rotate_token"] = rotate_token
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3203,8 +3191,9 @@ class ConsumerInstallationsAPI:
 
 
 class ConsumerListingsAPI:
-    """Listings are the core entities in the Marketplace. They represent the products that are available for
-    consumption."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3220,9 +3209,7 @@ class ConsumerListingsAPI:
         query = {}
         if ids is not None:
             query["ids"] = [v for v in ids]
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3239,9 +3226,7 @@ class ConsumerListingsAPI:
         :returns: :class:`GetListingResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3304,9 +3289,7 @@ class ConsumerListingsAPI:
             query["provider_ids"] = [v for v in provider_ids]
         if tags is not None:
             query["tags"] = tags.as_dict()
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3369,9 +3352,7 @@ class ConsumerListingsAPI:
             query["provider_ids"] = [v for v in provider_ids]
         if query is not None:
             query["query"] = query
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3388,7 +3369,9 @@ class ConsumerListingsAPI:
 
 
 class ConsumerPersonalizationRequestsAPI:
-    """Personalization Requests allow customers to interact with the individualized Marketplace listing flow."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3438,10 +3421,7 @@ class ConsumerPersonalizationRequestsAPI:
             body["last_name"] = last_name
         if recipient_type is not None:
             body["recipient_type"] = recipient_type.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3464,9 +3444,7 @@ class ConsumerPersonalizationRequestsAPI:
         :returns: :class:`GetPersonalizationRequestResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3493,9 +3471,7 @@ class ConsumerPersonalizationRequestsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3514,7 +3490,9 @@ class ConsumerPersonalizationRequestsAPI:
 
 
 class ConsumerProvidersAPI:
-    """Providers are the entities that publish listings to the Marketplace."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3530,9 +3508,7 @@ class ConsumerProvidersAPI:
         query = {}
         if ids is not None:
             query["ids"] = [v for v in ids]
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3549,9 +3525,7 @@ class ConsumerProvidersAPI:
         :returns: :class:`GetProviderResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3579,9 +3553,7 @@ class ConsumerProvidersAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3598,7 +3570,9 @@ class ConsumerProvidersAPI:
 
 
 class ProviderExchangeFiltersAPI:
-    """Marketplace exchanges filters curate which groups can access an exchange."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3614,10 +3588,7 @@ class ProviderExchangeFiltersAPI:
         body = {}
         if filter is not None:
             body["filter"] = filter.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3634,9 +3605,7 @@ class ProviderExchangeFiltersAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3663,9 +3632,7 @@ class ProviderExchangeFiltersAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3692,10 +3659,7 @@ class ProviderExchangeFiltersAPI:
         body = {}
         if filter is not None:
             body["filter"] = filter.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3706,7 +3670,9 @@ class ProviderExchangeFiltersAPI:
 
 
 class ProviderExchangesAPI:
-    """Marketplace exchanges allow providers to share their listings with a curated set of customers."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3725,10 +3691,7 @@ class ProviderExchangesAPI:
             body["exchange_id"] = exchange_id
         if listing_id is not None:
             body["listing_id"] = listing_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3748,10 +3711,7 @@ class ProviderExchangesAPI:
         body = {}
         if exchange is not None:
             body["exchange"] = exchange.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3768,9 +3728,7 @@ class ProviderExchangesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3786,9 +3744,7 @@ class ProviderExchangesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3804,9 +3760,7 @@ class ProviderExchangesAPI:
         :returns: :class:`GetExchangeResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3829,9 +3783,7 @@ class ProviderExchangesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3865,9 +3817,7 @@ class ProviderExchangesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3903,9 +3853,7 @@ class ProviderExchangesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3934,10 +3882,7 @@ class ProviderExchangesAPI:
         body = {}
         if exchange is not None:
             body["exchange"] = exchange.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3948,7 +3893,9 @@ class ProviderExchangesAPI:
 
 
 class ProviderFilesAPI:
-    """Marketplace offers a set of file APIs for various purposes such as preview notebooks and provider icons."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3980,10 +3927,7 @@ class ProviderFilesAPI:
             body["marketplace_file_type"] = marketplace_file_type.value
         if mime_type is not None:
             body["mime_type"] = mime_type
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4000,9 +3944,7 @@ class ProviderFilesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4018,9 +3960,7 @@ class ProviderFilesAPI:
         :returns: :class:`GetFileResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4048,9 +3988,7 @@ class ProviderFilesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4067,8 +4005,9 @@ class ProviderFilesAPI:
 
 
 class ProviderListingsAPI:
-    """Listings are the core entities in the Marketplace. They represent the products that are available for
-    consumption."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4084,10 +4023,7 @@ class ProviderListingsAPI:
         body = {}
         if listing is not None:
             body["listing"] = listing.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4104,9 +4040,7 @@ class ProviderListingsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4122,9 +4056,7 @@ class ProviderListingsAPI:
         :returns: :class:`GetListingResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4147,9 +4079,7 @@ class ProviderListingsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4176,10 +4106,7 @@ class ProviderListingsAPI:
         body = {}
         if listing is not None:
             body["listing"] = listing.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4190,8 +4117,9 @@ class ProviderListingsAPI:
 
 
 class ProviderPersonalizationRequestsAPI:
-    """Personalization requests are an alternate to instantly available listings. Control the lifecycle of
-    personalized solutions."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4213,9 +4141,7 @@ class ProviderPersonalizationRequestsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4259,10 +4185,7 @@ class ProviderPersonalizationRequestsAPI:
             body["share"] = share.as_dict()
         if status is not None:
             body["status"] = status.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4278,7 +4201,9 @@ class ProviderPersonalizationRequestsAPI:
 
 
 class ProviderProviderAnalyticsDashboardsAPI:
-    """Manage templated analytics solution for providers."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4291,17 +4216,13 @@ class ProviderProviderAnalyticsDashboardsAPI:
         :returns: :class:`ProviderAnalyticsDashboard`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", body=body, headers=headers)
+        res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
         return ProviderAnalyticsDashboard.from_dict(res)
 
     def get(self) -> ListProviderAnalyticsDashboardResponse:
@@ -4311,9 +4232,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         :returns: :class:`ListProviderAnalyticsDashboardResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4329,9 +4248,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4355,10 +4272,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         body = {}
         if version is not None:
             body["version"] = version
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4369,7 +4283,9 @@ class ProviderProviderAnalyticsDashboardsAPI:
 
 
 class ProviderProvidersAPI:
-    """Providers are entities that manage assets in Marketplace."""
+    """Check Databricks Protobuf Style Guide
+    (https://docs.google.com/document/d/1ukom2tCkQbNCAmjk3vHONaXp1n-I741tQjOMTipLbO4/edit?usp=sharing) about
+    recommended Protobuf practices."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4385,10 +4301,7 @@ class ProviderProvidersAPI:
         body = {}
         if provider is not None:
             body["provider"] = provider.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4405,9 +4318,7 @@ class ProviderProvidersAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4423,9 +4334,7 @@ class ProviderProvidersAPI:
         :returns: :class:`GetProviderResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4448,9 +4357,7 @@ class ProviderProvidersAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4477,10 +4384,7 @@ class ProviderProvidersAPI:
         body = {}
         if provider is not None:
             body["provider"] = provider.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

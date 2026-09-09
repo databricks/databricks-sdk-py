@@ -32,13 +32,13 @@ class DirectGroupMember:
     """Represents a principal that is a direct member of a group, with its source of membership."""
 
     principal_id: int
-    """Internal ID of the principal in Databricks."""
+    """Internal ID of the principal in <Databricks>."""
 
     display_name: Optional[str] = None
     """Display name of the principal."""
 
     external_id: Optional[str] = None
-    """The external ID of the principal in Databricks."""
+    """The external ID of the principal in <Databricks>."""
 
     group_id: Optional[int] = None
     """The internal ID of the group this member belongs to."""
@@ -107,12 +107,12 @@ class Entitlement(Enum):
 
 @dataclass
 class ExternalGroup:
-    """An external group from the customer's Identity Provider, resolved into Databricks. This is a
+    """An external group from the customer's Identity Provider, resolved into <Databricks>. This is a
     read-only resource keyed by the IdP external ID. The Get method may trigger an idempotent sync
-    from the customer's IdP to provision or refresh the group's data in Databricks."""
+    from the customer's IdP to provision or refresh the group's data in <Databricks>."""
 
     account_id: Optional[str] = None
-    """The parent account ID, from Databricks."""
+    """The parent account ID, from <Databricks>."""
 
     display_name: Optional[str] = None
     """Display name of the group from the customer's IdP."""
@@ -121,7 +121,7 @@ class ExternalGroup:
     """The external ID of the group in the customer's IdP."""
 
     internal_id: Optional[str] = None
-    """Internal groupId of the group in Databricks."""
+    """Internal groupId of the group in <Databricks>."""
 
     name: Optional[str] = None
     """The resource name of the external group. The format depends on the API that returned it:
@@ -173,16 +173,16 @@ class ExternalGroup:
 
 @dataclass
 class ExternalServicePrincipal:
-    """An external service principal from the customer's Identity Provider, resolved into Databricks.
+    """An external service principal from the customer's Identity Provider, resolved into <Databricks>.
     This is a read-only resource keyed by the IdP external ID. The Get method may trigger an
     idempotent sync from the customer's IdP to provision or refresh the service principal's data in
-    Databricks."""
+    <Databricks>."""
 
     account_id: Optional[str] = None
-    """The parent account ID, from Databricks."""
+    """The parent account ID, from <Databricks>."""
 
     account_sp_status: Optional[State] = None
-    """The activity status of the service principal in the Databricks account."""
+    """The activity status of the service principal in the <Databricks> account."""
 
     application_id: Optional[str] = None
     """Application ID of the service principal, from the customer's IdP."""
@@ -194,7 +194,7 @@ class ExternalServicePrincipal:
     """The external ID of the service principal in the customer's IdP."""
 
     internal_id: Optional[str] = None
-    """Internal servicePrincipalId of the service principal in Databricks."""
+    """Internal servicePrincipalId of the service principal in <Databricks>."""
 
     name: Optional[str] = None
     """The resource name of the external service principal. The format depends on the API that returned
@@ -258,17 +258,17 @@ class ExternalServicePrincipal:
 
 @dataclass
 class ExternalUser:
-    """An external user from the customer's Identity Provider, resolved into Databricks. This is a
+    """An external user from the customer's Identity Provider, resolved into <Databricks>. This is a
     read-only resource that allows customers to look up external user identities by their IdP
-    external ID and retrieve the corresponding Databricks internal ID and metadata. The Get method
+    external ID and retrieve the corresponding <Databricks> internal ID and metadata. The Get method
     may trigger an idempotent sync from the customer's IdP to provision or refresh the user's data
-    in Databricks."""
+    in <Databricks>."""
 
     account_id: Optional[str] = None
-    """The parent account ID, from Databricks."""
+    """The parent account ID, from <Databricks>."""
 
     account_user_status: Optional[State] = None
-    """The activity status of the user in the Databricks account."""
+    """The activity status of the user in the <Databricks> account."""
 
     display_name: Optional[str] = None
     """Display name of the user from the customer's IdP."""
@@ -280,7 +280,7 @@ class ExternalUser:
     """The full name of the user, from the customer's IdP."""
 
     internal_id: Optional[str] = None
-    """Internal userId of the user in Databricks."""
+    """Internal userId of the user in <Databricks>."""
 
     name: Optional[str] = None
     """The resource name of the external user. The format depends on the API that returned it:
@@ -289,7 +289,7 @@ class ExternalUser:
     - Workspace-scoped: external-users/{external_user_id}"""
 
     username: Optional[str] = None
-    """Username/email of the user, from Databricks."""
+    """Username/email of the user, from <Databricks>."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalUser into a dictionary suitable for use as a JSON request body."""
@@ -387,13 +387,13 @@ class Group:
     """The details of a Group resource."""
 
     account_id: Optional[str] = None
-    """The parent account ID for group in Databricks."""
+    """The parent account ID for group in <Databricks>."""
 
     external_id: Optional[str] = None
     """ExternalId of the group in the customer's IdP."""
 
     group_id: Optional[str] = None
-    """Internal group ID of the group in Databricks."""
+    """Internal group ID of the group in <Databricks>."""
 
     group_name: Optional[str] = None
     """Display name of the group."""
@@ -786,10 +786,10 @@ class ServicePrincipal:
     """Display name of the service principal."""
 
     account_sp_status: State
-    """The activity status of a service principal in a Databricks account."""
+    """The activity status of a service principal in a <Databricks> account."""
 
     account_id: Optional[str] = None
-    """The parent account ID for the service principal in Databricks."""
+    """The parent account ID for the service principal in <Databricks>."""
 
     application_id: Optional[str] = None
     """Application ID of the service principal. Set at creation time and cannot be changed afterwards;
@@ -799,7 +799,7 @@ class ServicePrincipal:
     """ExternalId of the service principal in the customer's IdP."""
 
     service_principal_id: Optional[str] = None
-    """Internal service principal ID of the service principal in Databricks."""
+    """Internal service principal ID of the service principal in <Databricks>."""
 
     def as_dict(self) -> dict:
         """Serializes the ServicePrincipal into a dictionary suitable for use as a JSON request body."""
@@ -849,7 +849,7 @@ class ServicePrincipal:
 
 
 class State(Enum):
-    """The activity status of a user or service principal in a Databricks account or workspace."""
+    """The activity status of a user or service principal in a <Databricks> account or workspace."""
 
     ACTIVE = "ACTIVE"
     INACTIVE = "INACTIVE"
@@ -860,13 +860,13 @@ class TransitiveParentGroup:
     """Represents a group that is a transitive parent of a principal."""
 
     account_id: Optional[str] = None
-    """The parent account ID for group in Databricks."""
+    """The parent account ID for group in <Databricks>."""
 
     external_id: Optional[str] = None
     """ExternalId of the group in the customer's IdP."""
 
     group_id: Optional[str] = None
-    """Internal group ID of the group in Databricks."""
+    """Internal group ID of the group in <Databricks>."""
 
     def as_dict(self) -> dict:
         """Serializes the TransitiveParentGroup into a dictionary suitable for use as a JSON request body."""
@@ -910,16 +910,16 @@ class User:
     full_name: UserFullName
 
     account_user_status: State
-    """The activity status of a user in a Databricks account."""
+    """The activity status of a user in a <Databricks> account."""
 
     account_id: Optional[str] = None
-    """The accountId parent of the user in Databricks."""
+    """The accountId parent of the user in <Databricks>."""
 
     external_id: Optional[str] = None
     """ExternalId of the user in the customer's IdP."""
 
     user_id: Optional[str] = None
-    """Internal userId of the user in Databricks."""
+    """Internal userId of the user in <Databricks>."""
 
     def as_dict(self) -> dict:
         """Serializes the User into a dictionary suitable for use as a JSON request body."""
@@ -1011,7 +1011,7 @@ class WorkspaceAccessDetail:
     """The permissions granted to the principal in the workspace."""
 
     principal_id: Optional[int] = None
-    """The internal ID of the principal (user/sp/group) in Databricks."""
+    """The internal ID of the principal (user/sp/group) in <Databricks>."""
 
     principal_type: Optional[PrincipalType] = None
 
@@ -1110,7 +1110,7 @@ class WorkspaceAssignment:
     permission-assignment APIs, and is intended for account and workspace admins."""
 
     principal_id: int
-    """The internal ID of the principal (user/sp/group) in Databricks."""
+    """The internal ID of the principal (user/sp/group) in <Databricks>."""
 
     account_id: Optional[str] = None
     """The account ID parent of the workspace where the principal is assigned"""
@@ -1201,7 +1201,7 @@ class WorkspaceAssignmentDetail:
     permission-assignment APIs, and is intended for account and workspace admins."""
 
     principal_id: int
-    """The internal ID of the principal (user/sp/group) in Databricks."""
+    """The internal ID of the principal (user/sp/group) in <Databricks>."""
 
     account_id: Optional[str] = None
     """The account ID parent of the workspace where the principal is assigned"""
@@ -1276,13 +1276,13 @@ class WorkspaceIdentityDetail:
     """The type of assignment the principal has to the workspace (direct or indirect)."""
 
     principal_id: Optional[int] = None
-    """The internal ID of the principal (user/sp/group) in Databricks."""
+    """The internal ID of the principal (user/sp/group) in <Databricks>."""
 
     principal_type: Optional[PrincipalType] = None
     """The type of the principal (user/service principal/group)."""
 
     workspace_identity_status: Optional[State] = None
-    """The activity status of an identity in a Databricks workspace."""
+    """The activity status of an identity in a <Databricks> workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceIdentityDetail into a dictionary suitable for use as a JSON request body."""
@@ -1336,7 +1336,7 @@ class WorkspacePermission(Enum):
 
 
 class AccountIamV2API:
-    """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
+    """Handles group management operations for an account."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1345,7 +1345,7 @@ class AccountIamV2API:
         """Creates a group membership (assigns a principal to a group).
 
         :param group_id: int
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
         :param direct_group_member: :class:`DirectGroupMember`
           Required. The direct group member to be added to the group.
 
@@ -1354,10 +1354,7 @@ class AccountIamV2API:
 
         body = direct_group_member.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST",
@@ -1368,7 +1365,7 @@ class AccountIamV2API:
         return DirectGroupMember.from_dict(res)
 
     def create_group(self, group: Group) -> Group:
-        """Creates a local group in the Databricks account and returns the created group. A local group is one
+        """Creates a local group in the <Databricks> account and returns the created group. A local group is one
         that is not synced from the customer's identity provider, and can be created whether or not Account
         Identity Management (AIM) is enabled.
 
@@ -1384,10 +1381,7 @@ class AccountIamV2API:
 
         body = group.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/2.0/identity/accounts/{self._api.account_id}/groups", body=body, headers=headers
@@ -1395,9 +1389,9 @@ class AccountIamV2API:
         return Group.from_dict(res)
 
     def create_service_principal(self, service_principal: ServicePrincipal) -> ServicePrincipal:
-        """Creates a local service principal in the Databricks account and returns the created service principal.
-        A local service principal is one that is not synced from the customer's identity provider, and can be
-        created whether or not Account Identity Management (AIM) is enabled.
+        """Creates a local service principal in the <Databricks> account and returns the created service
+        principal. A local service principal is one that is not synced from the customer's identity provider,
+        and can be created whether or not Account Identity Management (AIM) is enabled.
 
         When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
         identity provider, resolve it by its external ID with ResolveServicePrincipal; to read an existing
@@ -1411,10 +1405,7 @@ class AccountIamV2API:
 
         body = service_principal.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/2.0/identity/accounts/{self._api.account_id}/service-principals", body=body, headers=headers
@@ -1422,8 +1413,8 @@ class AccountIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def create_user(self, user: User) -> User:
-        """Creates a local user in the Databricks account and returns the created user. A local user is one that
-        is not synced from the customer's identity provider, and can be created whether or not Account
+        """Creates a local user in the <Databricks> account and returns the created user. A local user is one
+        that is not synced from the customer's identity provider, and can be created whether or not Account
         Identity Management (AIM) is enabled.
 
         When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
@@ -1438,10 +1429,7 @@ class AccountIamV2API:
 
         body = user.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/2.0/identity/accounts/{self._api.account_id}/users", body=body, headers=headers
@@ -1466,10 +1454,7 @@ class AccountIamV2API:
 
         body = workspace_assignment.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST",
@@ -1494,10 +1479,7 @@ class AccountIamV2API:
 
         body = workspace_assignment_detail.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST",
@@ -1511,16 +1493,14 @@ class AccountIamV2API:
         """Deletes a group membership (unassigns a principal from a group).
 
         :param group_id: int
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
         :param principal_id: int
           Required. Internal ID of the principal to be unassigned from the group.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "DELETE",
@@ -1529,32 +1509,28 @@ class AccountIamV2API:
         )
 
     def delete_group(self, group_id: str):
-        """Deletes a group from the Databricks account by its internal ID.
+        """Deletes a group from the <Databricks> account by its internal ID.
 
         :param group_id: str
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{group_id}", headers=headers)
 
     def delete_service_principal(self, service_principal_id: str):
-        """Deletes a service principal from the Databricks account by its internal ID.
+        """Deletes a service principal from the <Databricks> account by its internal ID.
 
         :param service_principal_id: str
-          Required. Internal ID of the service principal in Databricks.
+          Required. Internal ID of the service principal in <Databricks>.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "DELETE",
@@ -1563,36 +1539,32 @@ class AccountIamV2API:
         )
 
     def delete_user(self, user_id: str):
-        """Deletes a user from the Databricks account by its internal ID.
+        """Deletes a user from the <Databricks> account by its internal ID.
 
         :param user_id: str
-          Required. Internal ID of the user in Databricks.
+          Required. Internal ID of the user in <Databricks>.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.0/identity/accounts/{self._api.account_id}/users/{user_id}", headers=headers)
 
-    def delete_workspace_assignment(self, workspace_id: int, principal_id: int):
+    def delete_workspace_assignment(self, principal_id: int, workspace_id: int):
         """Deletes a workspace assignment for a principal, revoking all of its entitlements. Entitlements are
         revoked one at a time rather than atomically. If the request fails partway through, the principal
         stays assigned with some of its original entitlements. Retrying is safe.
 
+        :param principal_id: int
+          Required. ID of the principal in <Databricks> to delete workspace assignment for.
         :param workspace_id: int
           The workspace ID where the principal has access.
-        :param principal_id: int
-          Required. ID of the principal in Databricks to delete workspace assignment for.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "DELETE",
@@ -1600,22 +1572,20 @@ class AccountIamV2API:
             headers=headers,
         )
 
-    def delete_workspace_assignment_detail(self, workspace_id: int, principal_id: int):
+    def delete_workspace_assignment_detail(self, principal_id: int, workspace_id: int):
         """Deletes a workspace assignment detail for a principal, revoking all of its entitlements. Entitlements
         are revoked one at a time rather than atomically. If the request fails partway through, the principal
         stays assigned with some of its original entitlements. Retrying is safe.
 
+        :param principal_id: int
+          Required. ID of the principal in <Databricks> to delete workspace assignment for.
         :param workspace_id: int
           The workspace ID where the principal has access.
-        :param principal_id: int
-          Required. ID of the principal in Databricks to delete workspace assignment for.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "DELETE",
@@ -1627,16 +1597,14 @@ class AccountIamV2API:
         """Gets a provisioned direct member of a group.
 
         :param group_id: int
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
         :param principal_id: int
-          Required. Internal ID of the principal belonging to the group in Databricks.
+          Required. Internal ID of the principal belonging to the group in <Databricks>.
 
         :returns: :class:`DirectGroupMember`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -1657,9 +1625,7 @@ class AccountIamV2API:
         :returns: :class:`ExternalGroup`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("GET", f"/api/2.0/identity/{name}", headers=headers)
         return ExternalGroup.from_dict(res)
@@ -1676,9 +1642,7 @@ class AccountIamV2API:
         :returns: :class:`ExternalServicePrincipal`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("GET", f"/api/2.0/identity/{name}", headers=headers)
         return ExternalServicePrincipal.from_dict(res)
@@ -1695,25 +1659,21 @@ class AccountIamV2API:
         :returns: :class:`ExternalUser`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("GET", f"/api/2.0/identity/{name}", headers=headers)
         return ExternalUser.from_dict(res)
 
     def get_group(self, group_id: str) -> Group:
-        """Fetches a group from the Databricks account by its internal ID.
+        """Fetches a group from the <Databricks> account by its internal ID.
 
         :param group_id: str
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
 
         :returns: :class:`Group`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET", f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{group_id}", headers=headers
@@ -1721,17 +1681,15 @@ class AccountIamV2API:
         return Group.from_dict(res)
 
     def get_service_principal(self, service_principal_id: str) -> ServicePrincipal:
-        """Fetches a service principal from the Databricks account by its internal ID.
+        """Fetches a service principal from the <Databricks> account by its internal ID.
 
         :param service_principal_id: str
-          Required. Internal ID of the service principal in Databricks.
+          Required. Internal ID of the service principal in <Databricks>.
 
         :returns: :class:`ServicePrincipal`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -1741,17 +1699,15 @@ class AccountIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def get_user(self, user_id: str) -> User:
-        """Fetches a user from the Databricks account by its internal ID.
+        """Fetches a user from the <Databricks> account by its internal ID.
 
         :param user_id: str
-          Required. Internal ID of the user in Databricks.
+          Required. Internal ID of the user in <Databricks>.
 
         :returns: :class:`User`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("GET", f"/api/2.0/identity/accounts/{self._api.account_id}/users/{user_id}", headers=headers)
         return User.from_dict(res)
@@ -1762,8 +1718,8 @@ class AccountIamV2API:
         """Returns the access details for a principal in a workspace. Allows for checking access details for any
         provisioned principal (user, service principal, or group) in a workspace.
 
-        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
-          IdP or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to
+        - Provisioned principal here refers to one that has been synced into <Databricks> from the customer's
+          IdP or added explicitly to <Databricks> via SCIM/UI. Allows for passing in a "view" parameter to
           control what fields are returned (BASIC by default or FULL).
 
         :param workspace_id: int
@@ -1780,9 +1736,7 @@ class AccountIamV2API:
         query = {}
         if view is not None:
             query["view"] = view.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -1804,9 +1758,7 @@ class AccountIamV2API:
         :returns: :class:`WorkspaceAssignment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -1827,9 +1779,7 @@ class AccountIamV2API:
         :returns: :class:`WorkspaceAssignmentDetail`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -1845,7 +1795,7 @@ class AccountIamV2API:
         provider).
 
         :param group_id: int
-          Required. Internal ID of the group in Databricks whose direct members are being listed.
+          Required. Internal ID of the group in <Databricks> whose direct members are being listed.
         :param page_size: int (optional)
           The maximum number of members to return. The service may return fewer than this value. If not
           provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
@@ -1862,9 +1812,7 @@ class AccountIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -1883,7 +1831,7 @@ class AccountIamV2API:
     def list_groups(
         self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Group]:
-        """Lists the groups in the Databricks account, returning one page per call. Supports filtering by group
+        """Lists the groups in the <Databricks> account, returning one page per call. Supports filtering by group
         name or external ID.
 
         :param filter: str (optional)
@@ -1906,9 +1854,7 @@ class AccountIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -1924,7 +1870,7 @@ class AccountIamV2API:
     def list_service_principals(
         self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ServicePrincipal]:
-        """Lists the service principals in the Databricks account, returning one page per call. Supports
+        """Lists the service principals in the <Databricks> account, returning one page per call. Supports
         filtering by application ID or external ID.
 
         :param filter: str (optional)
@@ -1947,9 +1893,7 @@ class AccountIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -1971,7 +1915,7 @@ class AccountIamV2API:
         """Lists all transitive parent groups of a principal.
 
         :param principal_id: int
-          Required. Internal ID of the principal in Databricks whose transitive parent groups are being
+          Required. Internal ID of the principal in <Databricks> whose transitive parent groups are being
           listed.
         :param page_size: int (optional)
           The maximum number of parent groups to return. The service may return fewer than this value. If not
@@ -1989,9 +1933,7 @@ class AccountIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -2004,8 +1946,8 @@ class AccountIamV2API:
     def list_users(
         self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[User]:
-        """Lists the users in the Databricks account, returning one page per call. Supports filtering by username
-        or external ID.
+        """Lists the users in the <Databricks> account, returning one page per call. Supports filtering by
+        username or external ID.
 
         :param filter: str (optional)
           Optional. Allows filtering users by username or external id.
@@ -2026,9 +1968,7 @@ class AccountIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -2066,9 +2006,7 @@ class AccountIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -2109,9 +2047,7 @@ class AccountIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -2141,10 +2077,7 @@ class AccountIamV2API:
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST",
@@ -2168,10 +2101,7 @@ class AccountIamV2API:
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST",
@@ -2195,10 +2125,7 @@ class AccountIamV2API:
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST",
@@ -2209,14 +2136,14 @@ class AccountIamV2API:
         return ResolveUserResponse.from_dict(res)
 
     def update_group(self, group_id: str, group: Group, update_mask: str) -> Group:
-        """Updates an existing group in the Databricks account. Only the fields named in the update mask are
+        """Updates an existing group in the <Databricks> account. Only the fields named in the update mask are
         modified. Returns the updated Group resource.
 
         When AIM is enabled and the group is an external identity (its external_id is set), only external_id
         can be updated; its other fields are sourced from your identity provider.
 
         :param group_id: str
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
         :param group: :class:`Group`
           Required. Group to be updated in <Databricks>
         :param update_mask: str
@@ -2229,10 +2156,7 @@ class AccountIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -2246,14 +2170,14 @@ class AccountIamV2API:
     def update_service_principal(
         self, service_principal_id: str, service_principal: ServicePrincipal, update_mask: str
     ) -> ServicePrincipal:
-        """Updates an existing service principal in the Databricks account. Only the fields named in the update
+        """Updates an existing service principal in the <Databricks> account. Only the fields named in the update
         mask are modified. Returns the updated ServicePrincipal resource.
 
         When AIM is enabled and the service principal is an external identity (its external_id is set), only
         external_id can be updated; its other fields are sourced from your identity provider.
 
         :param service_principal_id: str
-          Required. Internal ID of the service principal in Databricks.
+          Required. Internal ID of the service principal in <Databricks>.
         :param service_principal: :class:`ServicePrincipal`
           Required. Service Principal to be updated in <Databricks>
         :param update_mask: str
@@ -2266,10 +2190,7 @@ class AccountIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -2281,15 +2202,15 @@ class AccountIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def update_user(self, user_id: str, user: User, update_mask: str) -> User:
-        """Updates an existing user in the Databricks account and returns the updated user. Only the fields named
-        in the update mask are modified. The updatable fields are fullName.givenName, fullName.familyName,
-        status, and externalId.
+        """Updates an existing user in the <Databricks> account and returns the updated user. Only the fields
+        named in the update mask are modified. The updatable fields are fullName.givenName,
+        fullName.familyName, status, and externalId.
 
         When AIM is enabled and the user is an external identity (its external_id is set), only external_id
         can be updated; its other fields are sourced from your identity provider.
 
         :param user_id: str
-          Required. Internal ID of the user in Databricks.
+          Required. Internal ID of the user in <Databricks>.
         :param user: :class:`User`
           Required. User to be updated in <Databricks>
         :param update_mask: str
@@ -2302,10 +2223,7 @@ class AccountIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -2326,7 +2244,7 @@ class AccountIamV2API:
         :param workspace_id: int
           Required. The workspace ID for which the workspace assignment is being updated.
         :param principal_id: int
-          Required. ID of the principal in Databricks.
+          Required. ID of the principal in <Databricks>.
         :param workspace_assignment: :class:`WorkspaceAssignment`
           Required. Workspace assignment to be updated in <Databricks>.
         :param update_mask: FieldMask
@@ -2339,10 +2257,7 @@ class AccountIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -2367,7 +2282,7 @@ class AccountIamV2API:
         :param workspace_id: int
           Required. The workspace ID for which the workspace assignment detail is being updated.
         :param principal_id: int
-          Required. ID of the principal in Databricks.
+          Required. ID of the principal in <Databricks>.
         :param workspace_assignment_detail: :class:`WorkspaceAssignmentDetail`
           Required. Workspace assignment detail to be updated in <Databricks>.
         :param update_mask: FieldMask
@@ -2380,10 +2295,7 @@ class AccountIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -2396,7 +2308,7 @@ class AccountIamV2API:
 
 
 class WorkspaceIamV2API:
-    """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
+    """Handles group management operations for an account."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2407,7 +2319,7 @@ class WorkspaceIamV2API:
         """Creates a group membership (assigns a principal to a group).
 
         :param group_id: int
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
         :param direct_group_member: :class:`DirectGroupMember`
           Required. The group membership to create.
 
@@ -2416,10 +2328,7 @@ class WorkspaceIamV2API:
 
         body = direct_group_member.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2429,7 +2338,7 @@ class WorkspaceIamV2API:
         return DirectGroupMember.from_dict(res)
 
     def create_group_proxy(self, group: Group) -> Group:
-        """Creates a local group in the Databricks account that parents the calling workspace and returns the
+        """Creates a local group in the <Databricks> account that parents the calling workspace and returns the
         created group. A local group is one that is not synced from the customer's identity provider, and can
         be created whether or not Account Identity Management (AIM) is enabled.
 
@@ -2445,10 +2354,7 @@ class WorkspaceIamV2API:
 
         body = group.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2458,7 +2364,7 @@ class WorkspaceIamV2API:
         return Group.from_dict(res)
 
     def create_service_principal_proxy(self, service_principal: ServicePrincipal) -> ServicePrincipal:
-        """Creates a local service principal in the Databricks account that parents the calling workspace and
+        """Creates a local service principal in the <Databricks> account that parents the calling workspace and
         returns the created service principal. A local service principal is one that is not synced from the
         customer's identity provider, and can be created whether or not Account Identity Management (AIM) is
         enabled.
@@ -2475,10 +2381,7 @@ class WorkspaceIamV2API:
 
         body = service_principal.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2488,7 +2391,7 @@ class WorkspaceIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def create_user_proxy(self, user: User) -> User:
-        """Creates a local user in the Databricks account that parents the calling workspace and returns the
+        """Creates a local user in the <Databricks> account that parents the calling workspace and returns the
         created user. A local user is one that is not synced from the customer's identity provider, and can be
         created whether or not Account Identity Management (AIM) is enabled.
 
@@ -2504,10 +2407,7 @@ class WorkspaceIamV2API:
 
         body = user.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2529,10 +2429,7 @@ class WorkspaceIamV2API:
 
         body = workspace_assignment_detail.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2555,10 +2452,7 @@ class WorkspaceIamV2API:
 
         body = workspace_assignment.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2571,16 +2465,14 @@ class WorkspaceIamV2API:
         """Deletes a group membership (unassigns a principal from a group).
 
         :param group_id: int
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
         :param principal_id: int
           Required. Internal ID of the principal to be unassigned from the group.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2589,17 +2481,15 @@ class WorkspaceIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/groups/{group_id}/direct-members/{principal_id}", headers=headers)
 
     def delete_group_proxy(self, group_id: str):
-        """Deletes a group by its internal ID from the Databricks account that parents the calling workspace.
+        """Deletes a group by its internal ID from the <Databricks> account that parents the calling workspace.
 
         :param group_id: str
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2608,18 +2498,16 @@ class WorkspaceIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/groups/{group_id}", headers=headers)
 
     def delete_service_principal_proxy(self, service_principal_id: str):
-        """Deletes a service principal by its internal ID from the Databricks account that parents the calling
+        """Deletes a service principal by its internal ID from the <Databricks> account that parents the calling
         workspace.
 
         :param service_principal_id: str
-          Required. Internal ID of the service principal in Databricks.
+          Required. Internal ID of the service principal in <Databricks>.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2628,17 +2516,15 @@ class WorkspaceIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/service-principals/{service_principal_id}", headers=headers)
 
     def delete_user_proxy(self, user_id: str):
-        """Deletes a user by its internal ID from the Databricks account that parents the calling workspace.
+        """Deletes a user by its internal ID from the <Databricks> account that parents the calling workspace.
 
         :param user_id: str
-          Required. Internal ID of the user in Databricks.
+          Required. Internal ID of the user in <Databricks>.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2653,14 +2539,12 @@ class WorkspaceIamV2API:
         safe.
 
         :param principal_id: int
-          Required. ID of the principal in Databricks to delete workspace assignment for.
+          Required. ID of the principal in <Databricks> to delete workspace assignment for.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2675,14 +2559,12 @@ class WorkspaceIamV2API:
         safe.
 
         :param principal_id: int
-          Required. ID of the principal in Databricks to delete workspace assignment for.
+          Required. ID of the principal in <Databricks> to delete workspace assignment for.
 
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2694,16 +2576,14 @@ class WorkspaceIamV2API:
         """Gets a provisioned direct member of a group.
 
         :param group_id: int
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
         :param principal_id: int
-          Required. Internal ID of the principal belonging to the group in Databricks.
+          Required. Internal ID of the principal belonging to the group in <Databricks>.
 
         :returns: :class:`DirectGroupMember`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2724,9 +2604,7 @@ class WorkspaceIamV2API:
         :returns: :class:`ExternalGroup`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2748,9 +2626,7 @@ class WorkspaceIamV2API:
         :returns: :class:`ExternalServicePrincipal`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2770,9 +2646,7 @@ class WorkspaceIamV2API:
         :returns: :class:`ExternalUser`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2782,17 +2656,15 @@ class WorkspaceIamV2API:
         return ExternalUser.from_dict(res)
 
     def get_group_proxy(self, group_id: str) -> Group:
-        """Fetches a group by its internal ID from the Databricks account that parents the calling workspace.
+        """Fetches a group by its internal ID from the <Databricks> account that parents the calling workspace.
 
         :param group_id: str
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
 
         :returns: :class:`Group`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2802,18 +2674,16 @@ class WorkspaceIamV2API:
         return Group.from_dict(res)
 
     def get_service_principal_proxy(self, service_principal_id: str) -> ServicePrincipal:
-        """Fetches a service principal by its internal ID from the Databricks account that parents the calling
+        """Fetches a service principal by its internal ID from the <Databricks> account that parents the calling
         workspace.
 
         :param service_principal_id: str
-          Required. Internal ID of the service principal in Databricks.
+          Required. Internal ID of the service principal in <Databricks>.
 
         :returns: :class:`ServicePrincipal`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2823,17 +2693,15 @@ class WorkspaceIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def get_user_proxy(self, user_id: str) -> User:
-        """Fetches a user by its internal ID from the Databricks account that parents the calling workspace.
+        """Fetches a user by its internal ID from the <Databricks> account that parents the calling workspace.
 
         :param user_id: str
-          Required. Internal ID of the user in Databricks.
+          Required. Internal ID of the user in <Databricks>.
 
         :returns: :class:`User`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2848,8 +2716,8 @@ class WorkspaceIamV2API:
         """Returns the access details for a principal in the current workspace. Allows for checking access
         details for any provisioned principal (user, service principal, or group) in the current workspace.
 
-        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
-          IdP or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to
+        - Provisioned principal here refers to one that has been synced into <Databricks> from the customer's
+          IdP or added explicitly to <Databricks> via SCIM/UI. Allows for passing in a "view" parameter to
           control what fields are returned (BASIC by default or FULL).
 
         :param principal_id: int
@@ -2864,9 +2732,7 @@ class WorkspaceIamV2API:
         query = {}
         if view is not None:
             query["view"] = view.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2887,9 +2753,7 @@ class WorkspaceIamV2API:
         :returns: :class:`WorkspaceAssignmentDetail`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2908,9 +2772,7 @@ class WorkspaceIamV2API:
         :returns: :class:`WorkspaceAssignment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2929,9 +2791,7 @@ class WorkspaceIamV2API:
         :returns: :class:`WorkspaceIdentityDetail`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2947,7 +2807,7 @@ class WorkspaceIamV2API:
         provider).
 
         :param group_id: int
-          Required. Internal ID of the group in Databricks whose direct members are being listed.
+          Required. Internal ID of the group in <Databricks> whose direct members are being listed.
         :param page_size: int (optional)
           The maximum number of members to return. The service may return fewer than this value. If not
           provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
@@ -2963,9 +2823,7 @@ class WorkspaceIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2985,8 +2843,8 @@ class WorkspaceIamV2API:
     def list_groups_proxy(
         self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Group]:
-        """Lists the groups in the Databricks account that parents the calling workspace, returning one page per
-        call. Supports filtering by group name or external ID.
+        """Lists the groups in the <Databricks> account that parents the calling workspace, returning one page
+        per call. Supports filtering by group name or external ID.
 
         :param filter: str (optional)
           Optional. Allows filtering groups by group name or external id.
@@ -3008,9 +2866,7 @@ class WorkspaceIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3028,7 +2884,7 @@ class WorkspaceIamV2API:
     def list_service_principals_proxy(
         self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ServicePrincipal]:
-        """Lists the service principals in the Databricks account that parents the calling workspace, returning
+        """Lists the service principals in the <Databricks> account that parents the calling workspace, returning
         one page per call. Supports filtering by application ID or external ID.
 
         :param filter: str (optional)
@@ -3051,9 +2907,7 @@ class WorkspaceIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3074,7 +2928,7 @@ class WorkspaceIamV2API:
         """Lists all transitive parent groups of a principal.
 
         :param principal_id: int
-          Required. Internal ID of the principal in Databricks whose transitive parent groups are being
+          Required. Internal ID of the principal in <Databricks> whose transitive parent groups are being
           listed.
         :param page_size: int (optional)
           The maximum number of parent groups to return. The service may return fewer than this value. If not
@@ -3092,9 +2946,7 @@ class WorkspaceIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3108,7 +2960,7 @@ class WorkspaceIamV2API:
     def list_users_proxy(
         self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[User]:
-        """Lists the users in the Databricks account that parents the calling workspace, returning one page per
+        """Lists the users in the <Databricks> account that parents the calling workspace, returning one page per
         call. Supports filtering by username or external ID.
 
         :param filter: str (optional)
@@ -3130,9 +2982,7 @@ class WorkspaceIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3169,9 +3019,7 @@ class WorkspaceIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3208,9 +3056,7 @@ class WorkspaceIamV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3239,10 +3085,7 @@ class WorkspaceIamV2API:
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3265,10 +3108,7 @@ class WorkspaceIamV2API:
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3293,10 +3133,7 @@ class WorkspaceIamV2API:
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3306,14 +3143,14 @@ class WorkspaceIamV2API:
         return ResolveUserResponse.from_dict(res)
 
     def update_group_proxy(self, group_id: str, group: Group, update_mask: str) -> Group:
-        """Updates an existing group in the Databricks account that parents the calling workspace. Only the
+        """Updates an existing group in the <Databricks> account that parents the calling workspace. Only the
         fields named in the update mask are modified. Returns the updated Group resource.
 
         When AIM is enabled and the group is an external identity (its external_id is set), only external_id
         can be updated; its other fields are sourced from your identity provider.
 
         :param group_id: str
-          Required. Internal ID of the group in Databricks.
+          Required. Internal ID of the group in <Databricks>.
         :param group: :class:`Group`
           Required. Group to be updated in <Databricks>
         :param update_mask: str
@@ -3326,10 +3163,7 @@ class WorkspaceIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3341,14 +3175,14 @@ class WorkspaceIamV2API:
     def update_service_principal_proxy(
         self, service_principal_id: str, service_principal: ServicePrincipal, update_mask: str
     ) -> ServicePrincipal:
-        """Updates an existing service principal in the Databricks account that parents the calling workspace.
+        """Updates an existing service principal in the <Databricks> account that parents the calling workspace.
         Only the fields named in the update mask are modified. Returns the updated ServicePrincipal resource.
 
         When AIM is enabled and the service principal is an external identity (its external_id is set), only
         external_id can be updated; its other fields are sourced from your identity provider.
 
         :param service_principal_id: str
-          Required. Internal ID of the service principal in Databricks.
+          Required. Internal ID of the service principal in <Databricks>.
         :param service_principal: :class:`ServicePrincipal`
           Required. Service principal to be updated in <Databricks>
         :param update_mask: str
@@ -3361,10 +3195,7 @@ class WorkspaceIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3380,15 +3211,15 @@ class WorkspaceIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def update_user_proxy(self, user_id: str, user: User, update_mask: str) -> User:
-        """Updates an existing user in the Databricks account that parents the calling workspace and returns the
-        updated user. Only the fields named in the update mask are modified. The updatable fields are
+        """Updates an existing user in the <Databricks> account that parents the calling workspace and returns
+        the updated user. Only the fields named in the update mask are modified. The updatable fields are
         fullName.givenName, fullName.familyName, status, and externalId.
 
         When AIM is enabled and the user is an external identity (its external_id is set), only external_id
         can be updated; its other fields are sourced from your identity provider.
 
         :param user_id: str
-          Required. Internal ID of the user in Databricks.
+          Required. Internal ID of the user in <Databricks>.
         :param user: :class:`User`
           Required. User to be updated in <Databricks>
         :param update_mask: str
@@ -3401,10 +3232,7 @@ class WorkspaceIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3421,7 +3249,7 @@ class WorkspaceIamV2API:
         requested changes take effect. Get the assignment detail afterwards to confirm the final state.
 
         :param principal_id: int
-          Required. ID of the principal in Databricks.
+          Required. ID of the principal in <Databricks>.
         :param workspace_assignment_detail: :class:`WorkspaceAssignmentDetail`
           Required. Workspace assignment detail to be updated in <Databricks>.
         :param update_mask: FieldMask
@@ -3434,10 +3262,7 @@ class WorkspaceIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3460,7 +3285,7 @@ class WorkspaceIamV2API:
         requested changes take effect. Get the assignment afterwards to confirm the final state.
 
         :param principal_id: int
-          Required. ID of the principal in Databricks.
+          Required. ID of the principal in <Databricks>.
         :param workspace_assignment: :class:`WorkspaceAssignment`
           Required. Workspace assignment to be updated in <Databricks>.
         :param update_mask: FieldMask
@@ -3473,10 +3298,7 @@ class WorkspaceIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3493,7 +3315,7 @@ class WorkspaceIamV2API:
         """Updates a workspace identity detail for a principal.
 
         :param principal_id: int
-          Required. ID of the principal in Databricks.
+          Required. ID of the principal in <Databricks>.
         :param workspace_identity_detail: :class:`WorkspaceIdentityDetail`
           Required. Workspace identity detail to be updated in <Databricks>.
         :param update_mask: FieldMask
@@ -3506,10 +3328,7 @@ class WorkspaceIamV2API:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

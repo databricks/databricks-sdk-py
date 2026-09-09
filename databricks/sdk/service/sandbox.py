@@ -300,8 +300,7 @@ class SandboxStatus:
 
 
 class SandboxAPI:
-    """Create, manage, and control the lifecycle of sandboxes -- isolated, pre-configured, low-latency Serverless
-    compute environments for running code."""
+    """See http://go/protostyleguide/services."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -321,10 +320,7 @@ class SandboxAPI:
         query = {}
         if sandbox_id is not None:
             query["sandbox_id"] = sandbox_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -341,9 +337,7 @@ class SandboxAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -390,10 +384,7 @@ class SandboxAPI:
             body["envs"] = envs
         if execution_timeout is not None:
             body["execution_timeout"] = execution_timeout.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -410,9 +401,7 @@ class SandboxAPI:
         :returns: :class:`Sandbox`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -435,9 +424,7 @@ class SandboxAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -462,17 +449,13 @@ class SandboxAPI:
         :returns: :class:`Sandbox`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/{name}/start", body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/{name}/start", headers=headers)
         return Sandbox.from_dict(res)
 
     def stop_sandbox(self, name: str) -> Sandbox:
@@ -484,17 +467,13 @@ class SandboxAPI:
         :returns: :class:`Sandbox`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/{name}/stop", body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/{name}/stop", headers=headers)
         return Sandbox.from_dict(res)
 
     def update_sandbox(self, name: str, sandbox: Sandbox, update_mask: FieldMask) -> Sandbox:
@@ -520,10 +499,7 @@ class SandboxAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

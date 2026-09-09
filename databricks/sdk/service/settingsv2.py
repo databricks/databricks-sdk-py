@@ -1056,8 +1056,6 @@ class UserPreference:
 
 
 class AccountSettingsV2API:
-    """APIs to manage account level settings"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -1070,9 +1068,7 @@ class AccountSettingsV2API:
         :returns: :class:`Setting`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("GET", f"/api/2.1/accounts/{self._api.account_id}/settings/{name}", headers=headers)
         return Setting.from_dict(res)
@@ -1091,9 +1087,7 @@ class AccountSettingsV2API:
         :returns: :class:`UserPreference`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET", f"/api/2.1/accounts/{self._api.account_id}/users/{user_id}/settings/{name}", headers=headers
@@ -1125,9 +1119,7 @@ class AccountSettingsV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -1169,9 +1161,7 @@ class AccountSettingsV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -1203,10 +1193,7 @@ class AccountSettingsV2API:
 
         body = setting.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH", f"/api/2.1/accounts/{self._api.account_id}/settings/{name}", body=body, headers=headers
@@ -1231,10 +1218,7 @@ class AccountSettingsV2API:
 
         body = setting.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -1246,8 +1230,6 @@ class AccountSettingsV2API:
 
 
 class WorkspaceSettingsV2API:
-    """APIs to manage workspace level settings"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -1261,9 +1243,7 @@ class WorkspaceSettingsV2API:
         :returns: :class:`Setting`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1298,9 +1278,7 @@ class WorkspaceSettingsV2API:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1332,10 +1310,7 @@ class WorkspaceSettingsV2API:
 
         body = setting.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

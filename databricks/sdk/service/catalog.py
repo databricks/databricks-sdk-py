@@ -587,7 +587,7 @@ class AwsIamRole:
     """The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials."""
 
     unity_catalog_iam_arn: Optional[str] = None
-    """The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity
+    """The Amazon Resource Name (ARN) of the AWS IAM user managed by <Databricks>. This is the identity
     that is going to assume the AWS IAM role."""
 
     def as_dict(self) -> dict:
@@ -660,7 +660,7 @@ class AwsIamRoleResponse:
     """The external ID used in role assumption to prevent the confused deputy problem."""
 
     unity_catalog_iam_arn: Optional[str] = None
-    """The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity
+    """The Amazon Resource Name (ARN) of the AWS IAM user managed by <Databricks>. This is the identity
     that is going to assume the AWS IAM role."""
 
     def as_dict(self) -> dict:
@@ -807,7 +807,7 @@ class AzureManagedIdentity:
     ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     credential_id: Optional[str] = None
-    """The Databricks internal ID that represents this managed identity."""
+    """The <Databricks> internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
@@ -899,7 +899,7 @@ class AzureManagedIdentityResponse:
     ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     credential_id: Optional[str] = None
-    """The Databricks internal ID that represents this managed identity."""
+    """The <Databricks> internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
@@ -2131,7 +2131,7 @@ class CreateAccountsStorageCredential:
     """Comment associated with the credential."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
-    """The Databricks managed GCP service account configuration."""
+    """The <Databricks> managed GCP service account configuration."""
 
     read_only: Optional[bool] = None
     """Whether the credential is usable only for read operations. Only applicable when purpose is
@@ -2416,7 +2416,7 @@ class CreateMetastoreAssignment:
 
     default_catalog_name: str
     """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
-    Namespace API" to configure the default catalog for a Databricks workspace."""
+    Namespace API" to configure the default catalog for a <Databricks> workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateMetastoreAssignment into a dictionary suitable for use as a JSON request body."""
@@ -2557,7 +2557,7 @@ class CredentialInfo:
     """Username of credential creator."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None
-    """The Databricks managed GCP service account configuration."""
+    """The <Databricks> managed GCP service account configuration."""
 
     full_name: Optional[str] = None
     """The full name of the credential."""
@@ -2579,7 +2579,6 @@ class CredentialInfo:
     """Username of current owner of credential."""
 
     purpose: Optional[CredentialPurpose] = None
-    """Indicates the purpose of the credential."""
 
     read_only: Optional[bool] = None
     """Whether the credential is usable only for read operations. Only applicable when purpose is
@@ -2795,10 +2794,10 @@ class DataSourceFormat(Enum):
 
 @dataclass
 class DatabricksGcpServiceAccount:
-    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
+    """GCP long-lived credential. <Databricks>-created Google Cloud Storage service account."""
 
     credential_id: Optional[str] = None
-    """The Databricks internal ID that represents this managed identity."""
+    """The <Databricks> internal ID that represents this managed identity."""
 
     email: Optional[str] = None
     """The email of the service account."""
@@ -2840,7 +2839,7 @@ class DatabricksGcpServiceAccount:
 
 @dataclass
 class DatabricksGcpServiceAccountRequest:
-    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
+    """GCP long-lived credential. <Databricks>-created Google Cloud Storage service account."""
 
     def as_dict(self) -> dict:
         """Serializes the DatabricksGcpServiceAccountRequest into a dictionary suitable for use as a JSON request body."""
@@ -2860,10 +2859,10 @@ class DatabricksGcpServiceAccountRequest:
 
 @dataclass
 class DatabricksGcpServiceAccountResponse:
-    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
+    """GCP long-lived credential. <Databricks>-created Google Cloud Storage service account."""
 
     credential_id: Optional[str] = None
-    """The Databricks internal ID that represents this managed identity."""
+    """The <Databricks> internal ID that represents this managed identity."""
 
     email: Optional[str] = None
     """The email of the service account."""
@@ -3059,32 +3058,6 @@ class DeltaSharingScopeEnum(Enum):
 
 
 @dataclass
-class DenyOptions:
-    privileges: List[str]
-    """List of privileges to deny. When any of these privileges are requested, the policy will deny
-    access if the principal and condition match. Required on create and update."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DenyOptions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.privileges:
-            body["privileges"] = [v for v in self.privileges]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DenyOptions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.privileges:
-            body["privileges"] = self.privileges
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DenyOptions:
-        """Deserializes the DenyOptions from a dictionary."""
-        return cls(privileges=d.get("privileges", None))
-
-
-@dataclass
 class Dependency:
     """A dependency of a SQL object. One of the following fields must be defined: **table**,
     **function**, **connection**, **credential**, **volume**, or **secret**."""
@@ -3190,8 +3163,6 @@ class DisableResponse:
 @dataclass
 class EffectivePermissionsList:
     next_page_token: Optional[str] = None
-    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     privilege_assignments: Optional[List[EffectivePrivilegeAssignment]] = None
     """The privileges conveyed to each principal (either directly or via inheritance)"""
@@ -7015,14 +6986,14 @@ class McpServiceConfigSourceConnection:
 @dataclass
 class MetastoreAssignment:
     workspace_id: int
-    """The unique ID of the Databricks workspace."""
+    """The unique ID of the <Databricks> workspace."""
 
     metastore_id: str
     """The unique ID of the metastore."""
 
     default_catalog_name: Optional[str] = None
     """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
-    Namespace API" to configure the default catalog for a Databricks workspace."""
+    Namespace API" to configure the default catalog for a <Databricks> workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the MetastoreAssignment into a dictionary suitable for use as a JSON request body."""
@@ -8289,8 +8260,9 @@ class ModelProviderServiceConfigServiceCredential:
 @dataclass
 class ModelService:
     """A governed AI Gateway endpoint in Unity Catalog that routes inference requests to one or more
-    destinations, such as a Databricks foundation model or an external model reached through a model
-    provider service. Applies centralized access control, rate limits, and auditing to its traffic."""
+    destinations, such as a <Databricks> foundation model or an external model reached through a
+    model provider service. Applies centralized access control, rate limits, and auditing to its
+    traffic."""
 
     comment: Optional[str] = None
     """User-provided description."""
@@ -8471,10 +8443,10 @@ class ModelServiceConfigDestinationConfig:
     destination until the backing resource is restored or the destination is replaced."""
 
     pay_per_token_config: Optional[ModelServiceConfigPayPerTokenConfig] = None
-    """Configuration for a pay-per-token Databricks foundation model."""
+    """Configuration for a pay-per-token <Databricks> foundation model."""
 
     provisioned_throughput_config: Optional[ModelServiceConfigProvisionedThroughputConfig] = None
-    """Configuration for a provisioned-throughput Databricks foundation model."""
+    """Configuration for a provisioned-throughput <Databricks> foundation model."""
 
     traffic_percentage: Optional[int] = None
     """Percentage of primary traffic sent to this destination, from 0 to 100. Required when there is
@@ -8762,7 +8734,7 @@ class ModelVersionInfo:
     run stored in an MLflow tracking server"""
 
     run_workspace_id: Optional[int] = None
-    """ID of the Databricks workspace containing the MLflow run that generated this model version, if
+    """ID of the <Databricks> workspace containing the MLflow run that generated this model version, if
     applicable"""
 
     schema_name: Optional[str] = None
@@ -8883,14 +8855,14 @@ class ModelVersionInfo:
             model_name=d.get("model_name", None),
             model_version_dependencies=_from_dict(d, "model_version_dependencies", DependencyList),
             run_id=d.get("run_id", None),
-            run_workspace_id=d.get("run_workspace_id", None),
+            run_workspace_id=_int64(d, "run_workspace_id"),
             schema_name=d.get("schema_name", None),
             source=d.get("source", None),
             status=_enum(d, "status", ModelVersionInfoStatus),
             storage_location=d.get("storage_location", None),
             updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
-            version=d.get("version", None),
+            version=_int64(d, "version"),
         )
 
 
@@ -9589,7 +9561,7 @@ class NamedTableConstraint:
 class NotificationDestination:
     destination_id: Optional[str] = None
     """The identifier for the destination. This is the email address for EMAIL destinations, the URL
-    for URL destinations, or the unique Databricks notification destination ID for all other
+    for URL destinations, or the unique <Databricks> notification destination ID for all other
     external destinations."""
 
     destination_type: Optional[DestinationType] = None
@@ -10234,11 +10206,6 @@ class PolicyInfo:
     created_by: Optional[str] = None
     """Username of the user who created the policy. Output only."""
 
-    deny: Optional[DenyOptions] = None
-    """Options for deny policies. Valid only if ``policy_type`` is ``POLICY_TYPE_DENY``. Required on
-    create and optional on update. When specified on update, the new options will replace the
-    existing options as a whole."""
-
     except_principals: Optional[List[str]] = None
     """Optional list of user or group names that should be excluded from the policy."""
 
@@ -10291,8 +10258,6 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
-        if self.deny:
-            body["deny"] = self.deny.as_dict()
         if self.except_principals:
             body["except_principals"] = [v for v in self.except_principals]
         if self.for_securable_type is not None:
@@ -10334,8 +10299,6 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
-        if self.deny:
-            body["deny"] = self.deny
         if self.except_principals:
             body["except_principals"] = self.except_principals
         if self.for_securable_type is not None:
@@ -10374,7 +10337,6 @@ class PolicyInfo:
             comment=d.get("comment", None),
             created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
-            deny=_from_dict(d, "deny", DenyOptions),
             except_principals=d.get("except_principals", None),
             for_securable_type=_enum(d, "for_securable_type", SecurableType),
             grant=_from_dict(d, "grant", GrantOptions),
@@ -10394,7 +10356,6 @@ class PolicyInfo:
 
 class PolicyType(Enum):
     POLICY_TYPE_COLUMN_MASK = "POLICY_TYPE_COLUMN_MASK"
-    POLICY_TYPE_DENY = "POLICY_TYPE_DENY"
     POLICY_TYPE_GRANT = "POLICY_TYPE_GRANT"
     POLICY_TYPE_ROW_FILTER = "POLICY_TYPE_ROW_FILTER"
 
@@ -10453,7 +10414,7 @@ class PrimaryKeyConstraint:
 @dataclass
 class Principal:
     id: Optional[str] = None
-    """Databricks user, group or service principal ID."""
+    """<Databricks> user, group or service principal ID."""
 
     principal_type: Optional[PrincipalType] = None
 
@@ -10931,7 +10892,7 @@ class RegisteredModelAlias:
             id=d.get("id", None),
             model_name=d.get("model_name", None),
             schema_name=d.get("schema_name", None),
-            version_num=d.get("version_num", None),
+            version_num=_int64(d, "version_num"),
         )
 
 
@@ -11747,7 +11708,7 @@ class StorageCredentialInfo:
     """Username of credential creator."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountResponse] = None
-    """The Databricks managed GCP service account configuration."""
+    """The <Databricks> managed GCP service account configuration."""
 
     full_name: Optional[str] = None
     """The full name of the credential."""
@@ -12766,7 +12727,7 @@ class UpdateAccountsStorageCredential:
     """Comment associated with the credential."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
-    """The Databricks managed GCP service account configuration."""
+    """The <Databricks> managed GCP service account configuration."""
 
     isolation_mode: Optional[IsolationMode] = None
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
@@ -12892,7 +12853,7 @@ class UpdateMetastoreAssignment:
 
     default_catalog_name: Optional[str] = None
     """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
-    Namespace API" to configure the default catalog for a Databricks workspace."""
+    Namespace API" to configure the default catalog for a <Databricks> workspace."""
 
     metastore_id: Optional[str] = None
     """The unique ID of the metastore."""
@@ -13402,20 +13363,18 @@ class WorkspaceBindingBindingType(Enum):
 
 
 class AccountMetastoreAssignmentsAPI:
-    """These APIs manage metastore assignments to a workspace."""
-
     def __init__(self, api_client):
         self._api = api_client
 
     def create(
-        self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[CreateMetastoreAssignment] = None
+        self, metastore_id: str, workspace_id: int, *, metastore_assignment: Optional[CreateMetastoreAssignment] = None
     ) -> AccountsCreateMetastoreAssignmentResponse:
         """Creates an assignment to a metastore for a workspace
 
-        :param workspace_id: int
-          Workspace ID.
         :param metastore_id: str
           Unity Catalog metastore ID
+        :param workspace_id: int
+          Workspace ID.
         :param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)
 
         :returns: :class:`AccountsCreateMetastoreAssignmentResponse`
@@ -13424,10 +13383,7 @@ class AccountMetastoreAssignmentsAPI:
         body = {}
         if metastore_assignment is not None:
             body["metastore_assignment"] = metastore_assignment.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST",
@@ -13437,20 +13393,18 @@ class AccountMetastoreAssignmentsAPI:
         )
         return AccountsCreateMetastoreAssignmentResponse.from_dict(res)
 
-    def delete(self, workspace_id: int, metastore_id: str) -> AccountsDeleteMetastoreAssignmentResponse:
+    def delete(self, metastore_id: str, workspace_id: int) -> AccountsDeleteMetastoreAssignmentResponse:
         """Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.
 
-        :param workspace_id: int
-          Workspace ID.
         :param metastore_id: str
           Unity Catalog metastore ID
+        :param workspace_id: int
+          Workspace ID.
 
         :returns: :class:`AccountsDeleteMetastoreAssignmentResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "DELETE",
@@ -13470,9 +13424,7 @@ class AccountMetastoreAssignmentsAPI:
         :returns: :class:`AccountsMetastoreAssignment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore", headers=headers
@@ -13480,7 +13432,7 @@ class AccountMetastoreAssignmentsAPI:
         return AccountsMetastoreAssignment.from_dict(res)
 
     def list(self, metastore_id: str) -> Iterator[int]:
-        """Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
+        """Gets a list of all <Databricks> workspace IDs that have been assigned to given metastore.
 
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -13488,9 +13440,7 @@ class AccountMetastoreAssignmentsAPI:
         :returns: Iterator over int
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         json = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces", headers=headers
@@ -13499,15 +13449,15 @@ class AccountMetastoreAssignmentsAPI:
         return parsed if parsed is not None else []
 
     def update(
-        self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[UpdateMetastoreAssignment] = None
+        self, metastore_id: str, workspace_id: int, *, metastore_assignment: Optional[UpdateMetastoreAssignment] = None
     ) -> AccountsUpdateMetastoreAssignmentResponse:
         """Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
         updated.
 
-        :param workspace_id: int
-          Workspace ID.
         :param metastore_id: str
           Unity Catalog metastore ID
+        :param workspace_id: int
+          Workspace ID.
         :param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)
 
         :returns: :class:`AccountsUpdateMetastoreAssignmentResponse`
@@ -13516,10 +13466,7 @@ class AccountMetastoreAssignmentsAPI:
         body = {}
         if metastore_assignment is not None:
             body["metastore_assignment"] = metastore_assignment.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PUT",
@@ -13531,9 +13478,6 @@ class AccountMetastoreAssignmentsAPI:
 
 
 class AccountMetastoresAPI:
-    """These APIs manage Unity Catalog metastores for an account. A metastore contains catalogs that can be
-    associated with workspaces"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -13548,10 +13492,7 @@ class AccountMetastoresAPI:
         body = {}
         if metastore_info is not None:
             body["metastore_info"] = metastore_info.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/metastores", body=body, headers=headers)
         return AccountsCreateMetastoreResponse.from_dict(res)
@@ -13570,9 +13511,7 @@ class AccountMetastoresAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "DELETE",
@@ -13591,9 +13530,7 @@ class AccountMetastoresAPI:
         :returns: :class:`AccountsGetMetastoreResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", headers=headers
@@ -13607,9 +13544,7 @@ class AccountMetastoresAPI:
         :returns: Iterator over :class:`MetastoreInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/metastores", headers=headers)
         parsed = AccountsListMetastoresResponse.from_dict(json).metastores
@@ -13631,10 +13566,7 @@ class AccountMetastoresAPI:
         body = {}
         if metastore_info is not None:
             body["metastore_info"] = metastore_info.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PUT", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", body=body, headers=headers
@@ -13643,8 +13575,6 @@ class AccountMetastoresAPI:
 
 
 class AccountStorageCredentialsAPI:
-    """These APIs manage storage credentials for a particular metastore."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -13679,10 +13609,7 @@ class AccountStorageCredentialsAPI:
             body["credential_info"] = credential_info.as_dict()
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST",
@@ -13711,9 +13638,7 @@ class AccountStorageCredentialsAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "DELETE",
@@ -13735,9 +13660,7 @@ class AccountStorageCredentialsAPI:
         :returns: :class:`AccountsStorageCredentialInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -13755,9 +13678,7 @@ class AccountStorageCredentialsAPI:
         :returns: Iterator over :class:`StorageCredentialInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         json = self._api.do(
             "GET",
@@ -13794,10 +13715,7 @@ class AccountStorageCredentialsAPI:
             body["credential_info"] = credential_info.as_dict()
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PUT",
@@ -13809,10 +13727,7 @@ class AccountStorageCredentialsAPI:
 
 
 class AiGatewayAPI:
-    """Govern AI workloads in Unity Catalog. This API manages the Unity Catalog securables that bring centralized
-    access control, lineage, and auditing to AI-serving entities: model services (governed access to
-    foundation models and external LLMs), model provider services (governed resources for external model
-    providers), and MCP services (governed Model Context Protocol servers)."""
+    """See http://go/protostyleguide/services."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -13844,10 +13759,7 @@ class AiGatewayAPI:
             query["mcp_service_id"] = mcp_service_id
         if parent is not None:
             query["parent"] = parent
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13887,10 +13799,7 @@ class AiGatewayAPI:
             query["model_provider_service_id"] = model_provider_service_id
         if parent is not None:
             query["parent"] = parent
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13931,10 +13840,7 @@ class AiGatewayAPI:
             query["model_service_id"] = model_service_id
         if parent is not None:
             query["parent"] = parent
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13964,9 +13870,7 @@ class AiGatewayAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -13996,9 +13900,7 @@ class AiGatewayAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14027,9 +13929,7 @@ class AiGatewayAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14050,9 +13950,7 @@ class AiGatewayAPI:
         :returns: :class:`McpService`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14075,9 +13973,7 @@ class AiGatewayAPI:
         :returns: :class:`ModelProviderService`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14099,9 +13995,7 @@ class AiGatewayAPI:
         :returns: :class:`ModelService`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14151,9 +14045,7 @@ class AiGatewayAPI:
             query["parent"] = parent
         if view is not None:
             query["view"] = view.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14209,9 +14101,7 @@ class AiGatewayAPI:
             query["parent"] = parent
         if view is not None:
             query["view"] = view.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14267,9 +14157,7 @@ class AiGatewayAPI:
             query["parent"] = parent
         if view is not None:
             query["view"] = view.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14323,10 +14211,7 @@ class AiGatewayAPI:
             query["etag"] = etag
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14385,10 +14270,7 @@ class AiGatewayAPI:
             query["etag"] = etag
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14440,10 +14322,7 @@ class AiGatewayAPI:
             query["etag"] = etag
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14454,9 +14333,6 @@ class AiGatewayAPI:
 
 
 class ArtifactAllowlistsAPI:
-    """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the ``allowlist`` in UC so
-    that users can use these artifacts on compute configured with shared access mode."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -14470,9 +14346,7 @@ class ArtifactAllowlistsAPI:
         :returns: :class:`ArtifactAllowlistInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14517,10 +14391,7 @@ class ArtifactAllowlistsAPI:
             body["created_by"] = created_by
         if metastore_id is not None:
             body["metastore_id"] = metastore_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14533,13 +14404,6 @@ class ArtifactAllowlistsAPI:
 
 
 class CatalogsAPI:
-    """A catalog is the first layer of Unity Catalog’s three-level namespace. It’s used to organize your data
-    assets. Users can see all catalogs on which they have been assigned the USE_CATALOG data permission.
-
-    In Unity Catalog, admins and data stewards manage users and their access to data centrally across all of
-    the workspaces in a Databricks account. Users in different workspaces can share access to the same data,
-    depending on privileges granted centrally in Unity Catalog."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -14607,10 +14471,7 @@ class CatalogsAPI:
             body["share_name"] = share_name
         if storage_root is not None:
             body["storage_root"] = storage_root
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14634,9 +14495,7 @@ class CatalogsAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14660,9 +14519,7 @@ class CatalogsAPI:
         query = {}
         if include_browse is not None:
             query["include_browse"] = include_browse
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14723,9 +14580,7 @@ class CatalogsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14802,10 +14657,7 @@ class CatalogsAPI:
             body["owner"] = owner
         if properties is not None:
             body["properties"] = properties
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14816,14 +14668,6 @@ class CatalogsAPI:
 
 
 class ConnectionsAPI:
-    """A connection represents an external data source for use within Databricks.
-
-    Creating a connection object is the first step to managing external data sources within Unity Catalog. The
-    second step is creating a data object (catalog, schema, or table) using the connection. Data objects
-    derived from a connection can be written to or read from similar to other Unity Catalog data objects based
-    on cloud storage. You can create different types of connections, and each connection has a unique set of
-    configuration options to support credential management and other settings."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -14882,10 +14726,7 @@ class ConnectionsAPI:
             body["properties"] = properties
         if read_only is not None:
             body["read_only"] = read_only
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14903,9 +14744,7 @@ class ConnectionsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14922,9 +14761,7 @@ class ConnectionsAPI:
         :returns: :class:`ConnectionInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -14969,9 +14806,7 @@ class ConnectionsAPI:
             query["page_token"] = page_token
         if parent is not None:
             query["parent"] = parent
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15022,10 +14857,7 @@ class ConnectionsAPI:
             body["options"] = options
         if owner is not None:
             body["owner"] = owner
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15036,14 +14868,6 @@ class ConnectionsAPI:
 
 
 class CredentialsAPI:
-    """A credential represents an authentication and authorization mechanism for accessing services on your cloud
-    tenant. Each credential is subject to Unity Catalog access-control policies that control which users and
-    groups can access the credential.
-
-    To create credentials, you must be a Databricks account admin or have the ``CREATE SERVICE CREDENTIAL``
-    privilege. The user who creates the credential can delegate ownership to another user or group to manage
-    permissions on it."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -15078,9 +14902,8 @@ class CredentialsAPI:
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
-          The Databricks managed GCP service account configuration.
+          The <Databricks> managed GCP service account configuration.
         :param purpose: :class:`CredentialPurpose` (optional)
-          Indicates the purpose of the credential.
         :param read_only: bool (optional)
           Whether the credential is usable only for read operations. Only applicable when purpose is
           **STORAGE**.
@@ -15109,10 +14932,7 @@ class CredentialsAPI:
             body["read_only"] = read_only
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15137,9 +14957,7 @@ class CredentialsAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15172,10 +14990,7 @@ class CredentialsAPI:
             body["credential_name"] = credential_name
         if gcp_options is not None:
             body["gcp_options"] = gcp_options.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15194,9 +15009,7 @@ class CredentialsAPI:
         :returns: :class:`CredentialInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15237,7 +15050,6 @@ class CredentialsAPI:
         :param page_token: str (optional)
           Opaque token to retrieve the next page of results.
         :param purpose: :class:`CredentialPurpose` (optional)
-          Return only credentials for the specified purpose.
 
         :returns: Iterator over :class:`CredentialInfo`
         """
@@ -15251,9 +15063,7 @@ class CredentialsAPI:
             query["page_token"] = page_token
         if purpose is not None:
             query["purpose"] = purpose.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15300,7 +15110,7 @@ class CredentialsAPI:
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
-          The Databricks managed GCP service account configuration.
+          The <Databricks> managed GCP service account configuration.
         :param force: bool (optional)
           Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
           external locations and external tables (when purpose is **STORAGE**).
@@ -15342,10 +15152,7 @@ class CredentialsAPI:
             body["read_only"] = read_only
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15389,7 +15196,6 @@ class CredentialsAPI:
           The name of an existing external location to validate. Only applicable for storage credentials
           (purpose is **STORAGE**.)
         :param purpose: :class:`CredentialPurpose` (optional)
-          The purpose of the credential. This should only be used when the credential is specified.
         :param read_only: bool (optional)
           Whether the credential is only usable for read operations. Only applicable for storage credentials
           (purpose is **STORAGE**.)
@@ -15416,10 +15222,7 @@ class CredentialsAPI:
             body["read_only"] = read_only
         if url is not None:
             body["url"] = url
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15430,11 +15233,6 @@ class CredentialsAPI:
 
 
 class EntityTagAssignmentsAPI:
-    """Tags are attributes that include keys and optional values that you can use to organize and categorize
-    entities in Unity Catalog. Entity tagging is supported on catalogs, schemas, tables (including views),
-    columns, and volumes. With these APIs, you can create, update, delete, and list tag assignments across
-    Unity Catalog entities."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -15458,10 +15256,7 @@ class EntityTagAssignmentsAPI:
 
         body = tag_assignment.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15493,9 +15288,7 @@ class EntityTagAssignmentsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15520,9 +15313,7 @@ class EntityTagAssignmentsAPI:
         :returns: :class:`EntityTagAssignment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15561,9 +15352,7 @@ class EntityTagAssignmentsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15606,15 +15395,6 @@ class EntityTagAssignmentsAPI:
           The key of the tag
         :param tag_assignment: :class:`EntityTagAssignment`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`EntityTagAssignment`
         """
@@ -15623,10 +15403,7 @@ class EntityTagAssignmentsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15643,21 +15420,14 @@ class EntityTagAssignmentsAPI:
 
 
 class ExternalLineageAPI:
-    """External Lineage APIs enable defining and managing lineage relationships between Databricks objects and
-    external systems. These APIs allow users to capture data flows connecting Databricks tables, models, and
-    file paths with external metadata objects.
-
-    With these APIs, users can create, update, delete, and list lineage relationships with support for
-    column-level mappings and custom properties."""
-
     def __init__(self, api_client):
         self._api = api_client
 
     def create_external_lineage_relationship(
         self, external_lineage_relationship: CreateRequestExternalLineage
     ) -> ExternalLineageRelationship:
-        """Creates an external lineage relationship between a Databricks or external metadata object and another
-        external metadata object.
+        """Creates an external lineage relationship between a <Databricks> or external metadata object and
+        another external metadata object.
 
         :param external_lineage_relationship: :class:`CreateRequestExternalLineage`
 
@@ -15666,10 +15436,7 @@ class ExternalLineageAPI:
 
         body = external_lineage_relationship.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15679,8 +15446,8 @@ class ExternalLineageAPI:
         return ExternalLineageRelationship.from_dict(res)
 
     def delete_external_lineage_relationship(self, external_lineage_relationship: DeleteRequestExternalLineage):
-        """Deletes an external lineage relationship between a Databricks or external metadata object and another
-        external metadata object.
+        """Deletes an external lineage relationship between a <Databricks> or external metadata object and
+        another external metadata object.
 
         :param external_lineage_relationship: :class:`DeleteRequestExternalLineage`
 
@@ -15690,9 +15457,7 @@ class ExternalLineageAPI:
         query = {}
         if external_lineage_relationship is not None:
             query["external_lineage_relationship"] = external_lineage_relationship.as_dict()
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15708,7 +15473,7 @@ class ExternalLineageAPI:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ExternalLineageInfo]:
-        """Lists external lineage relationships of a Databricks object or external metadata given a supplied
+        """Lists external lineage relationships of a <Databricks> object or external metadata given a supplied
         direction.
 
         :param object_info: :class:`ExternalLineageObject`
@@ -15735,9 +15500,7 @@ class ExternalLineageAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15755,20 +15518,11 @@ class ExternalLineageAPI:
     def update_external_lineage_relationship(
         self, external_lineage_relationship: UpdateRequestExternalLineage, update_mask: str
     ) -> ExternalLineageRelationship:
-        """Updates an external lineage relationship between a Databricks or external metadata object and another
-        external metadata object.
+        """Updates an external lineage relationship between a <Databricks> or external metadata object and
+        another external metadata object.
 
         :param external_lineage_relationship: :class:`UpdateRequestExternalLineage`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`ExternalLineageRelationship`
         """
@@ -15777,10 +15531,7 @@ class ExternalLineageAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15793,17 +15544,6 @@ class ExternalLineageAPI:
 
 
 class ExternalLocationsAPI:
-    """An external location is an object that combines a cloud storage path with a storage credential that
-    authorizes access to the cloud storage path. Each external location is subject to Unity Catalog
-    access-control policies that control which users and groups can access the credential. If a user does not
-    have access to an external location in Unity Catalog, the request fails and Unity Catalog does not attempt
-    to authenticate to your cloud tenant on the user’s behalf.
-
-    Databricks recommends using external locations rather than using storage credentials directly.
-
-    To create external locations, you must be a metastore admin or a user with the
-    **CREATE_EXTERNAL_LOCATION** privilege."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -15886,10 +15626,7 @@ class ExternalLocationsAPI:
             body["skip_validation"] = skip_validation
         if url is not None:
             body["url"] = url
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15913,9 +15650,7 @@ class ExternalLocationsAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15939,9 +15674,7 @@ class ExternalLocationsAPI:
         query = {}
         if include_browse is not None:
             query["include_browse"] = include_browse
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -15998,9 +15731,7 @@ class ExternalLocationsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16113,10 +15844,7 @@ class ExternalLocationsAPI:
             body["skip_validation"] = skip_validation
         if url is not None:
             body["url"] = url
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16127,13 +15855,6 @@ class ExternalLocationsAPI:
 
 
 class ExternalMetadataAPI:
-    """External Metadata objects enable customers to register and manage metadata about external systems within
-    Unity Catalog.
-
-    These APIs provide a standardized way to create, update, retrieve, list, and delete external metadata
-    objects. Fine-grained authorization ensures that only users with appropriate permissions can view and
-    manage external metadata objects."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -16149,10 +15870,7 @@ class ExternalMetadataAPI:
 
         body = external_metadata.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16170,9 +15888,7 @@ class ExternalMetadataAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16189,9 +15905,7 @@ class ExternalMetadataAPI:
         :returns: :class:`ExternalMetadata`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16222,9 +15936,7 @@ class ExternalMetadataAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16251,15 +15963,6 @@ class ExternalMetadataAPI:
           Name of the external metadata object.
         :param external_metadata: :class:`ExternalMetadata`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`ExternalMetadata`
         """
@@ -16268,10 +15971,7 @@ class ExternalMetadataAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16284,12 +15984,6 @@ class ExternalMetadataAPI:
 
 
 class FunctionsAPI:
-    """Functions implement User-Defined Functions (UDFs) in Unity Catalog.
-
-    The function implementation can be any SQL expression or Query, and it can be invoked wherever a table
-    reference is allowed in a query. In Unity Catalog, a function resides at the same level as a table, so it
-    can be referenced with the form **catalog_name**.**schema_name**.**function_name**."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -16312,10 +16006,7 @@ class FunctionsAPI:
         body = {}
         if function_info is not None:
             body["function_info"] = function_info.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16377,9 +16068,7 @@ class FunctionsAPI:
         query = {}
         if include_browse is not None:
             query["include_browse"] = include_browse
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16441,9 +16130,7 @@ class FunctionsAPI:
             query["page_token"] = page_token
         if schema_name is not None:
             query["schema_name"] = schema_name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16484,10 +16171,7 @@ class FunctionsAPI:
         body = {}
         if owner is not None:
             body["owner"] = owner
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16498,15 +16182,6 @@ class FunctionsAPI:
 
 
 class GrantsAPI:
-    """In Unity Catalog, data is secure by default. Initially, users have no access to data in a metastore.
-    Access can be granted by either a metastore admin, the owner of an object, or the owner of the catalog or
-    schema that contains the object. Securable objects in Unity Catalog are hierarchical and privileges are
-    inherited downward.
-
-    This means that granting a privilege on the catalog automatically grants the privilege to all current and
-    future objects within the catalog. Similarly, privileges granted on a schema are inherited by all current
-    and future objects within that schema."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -16560,9 +16235,7 @@ class GrantsAPI:
             query["page_token"] = page_token
         if principal is not None:
             query["principal"] = principal
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16626,9 +16299,7 @@ class GrantsAPI:
             query["page_token"] = page_token
         if principal is not None:
             query["principal"] = principal
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16686,9 +16357,7 @@ class GrantsAPI:
             query["page_token"] = page_token
         if principal is not None:
             query["principal"] = principal
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16754,9 +16423,7 @@ class GrantsAPI:
             query["page_token"] = page_token
         if principal is not None:
             query["principal"] = principal
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16803,10 +16470,7 @@ class GrantsAPI:
             body["changes"] = [v.as_dict() for v in changes]
         if omit_permissions_in_response is not None:
             body["omit_permissions_in_response"] = omit_permissions_in_response
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16819,18 +16483,6 @@ class GrantsAPI:
 
 
 class MetastoresAPI:
-    """A metastore is the top-level container of objects in Unity Catalog. It stores data assets (tables and
-    views) and the permissions that govern access to them. Databricks account admins can create metastores and
-    assign them to Databricks workspaces to control which workloads use each metastore. For a workspace to use
-    Unity Catalog, it must have a Unity Catalog metastore attached.
-
-    Each metastore is configured with a root storage location in a cloud storage account. This storage
-    location is used for metadata and managed tables data.
-
-    NOTE: This metastore is distinct from the metastore included in Databricks workspaces created before Unity
-    Catalog was released. If your workspace includes a legacy Hive metastore, the data in that metastore is
-    available in a catalog named hive_metastore."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -16845,7 +16497,7 @@ class MetastoresAPI:
           The unique ID of the metastore.
         :param default_catalog_name: str
           The name of the default catalog in the metastore. This field is deprecated. Please use "Default
-          Namespace API" to configure the default catalog for a Databricks workspace.
+          Namespace API" to configure the default catalog for a <Databricks> workspace.
 
 
         """
@@ -16855,10 +16507,7 @@ class MetastoresAPI:
             body["default_catalog_name"] = default_catalog_name
         if metastore_id is not None:
             body["metastore_id"] = metastore_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16900,10 +16549,7 @@ class MetastoresAPI:
             body["region"] = region
         if storage_root is not None:
             body["storage_root"] = storage_root
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16919,9 +16565,7 @@ class MetastoresAPI:
         :returns: :class:`MetastoreAssignment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16944,9 +16588,7 @@ class MetastoresAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -16964,9 +16606,7 @@ class MetastoresAPI:
         :returns: :class:`MetastoreInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17008,9 +16648,7 @@ class MetastoresAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17035,9 +16673,7 @@ class MetastoresAPI:
         :returns: :class:`GetMetastoreSummaryResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17060,9 +16696,7 @@ class MetastoresAPI:
         query = {}
         if metastore_id is not None:
             query["metastore_id"] = metastore_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17130,10 +16764,7 @@ class MetastoresAPI:
             body["privilege_model_version"] = privilege_model_version
         if storage_root_credential_id is not None:
             body["storage_root_credential_id"] = storage_root_credential_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17154,7 +16785,7 @@ class MetastoresAPI:
           A workspace ID.
         :param default_catalog_name: str (optional)
           The name of the default catalog in the metastore. This field is deprecated. Please use "Default
-          Namespace API" to configure the default catalog for a Databricks workspace.
+          Namespace API" to configure the default catalog for a <Databricks> workspace.
         :param metastore_id: str (optional)
           The unique ID of the metastore.
 
@@ -17166,10 +16797,7 @@ class MetastoresAPI:
             body["default_catalog_name"] = default_catalog_name
         if metastore_id is not None:
             body["metastore_id"] = metastore_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17179,13 +16807,6 @@ class MetastoresAPI:
 
 
 class ModelVersionsAPI:
-    """Databricks provides a hosted version of MLflow Model Registry in Unity Catalog. Models in Unity Catalog
-    provide centralized access control, auditing, lineage, and discovery of ML models across Databricks
-    workspaces.
-
-    This API reference documents the REST endpoints for managing model versions in Unity Catalog. For more
-    details, see the [registered models API docs](/api/workspace/registeredmodels)."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -17245,9 +16866,7 @@ class ModelVersionsAPI:
             query["include_aliases"] = include_aliases
         if include_browse is not None:
             query["include_browse"] = include_browse
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17278,9 +16897,7 @@ class ModelVersionsAPI:
         query = {}
         if include_aliases is not None:
             query["include_aliases"] = include_aliases
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17342,9 +16959,7 @@ class ModelVersionsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17417,7 +17032,7 @@ class ModelVersionsAPI:
           MLflow run ID used when creating the model version, if ``source`` was generated by an experiment run
           stored in an MLflow tracking server
         :param run_workspace_id: int (optional)
-          ID of the Databricks workspace containing the MLflow run that generated this model version, if
+          ID of the <Databricks> workspace containing the MLflow run that generated this model version, if
           applicable
         :param schema_name: str (optional)
           The name of the schema containing the model version, relative to parent catalog
@@ -17471,10 +17086,7 @@ class ModelVersionsAPI:
             body["updated_at"] = updated_at
         if updated_by is not None:
             body["updated_by"] = updated_by
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17487,7 +17099,7 @@ class ModelVersionsAPI:
 
 
 class OnlineTablesAPI:
-    """Online tables provide lower latency and higher QPS access to data from Delta tables."""
+    """Front-door (customer facing) service for Brickstore."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -17534,10 +17146,7 @@ class OnlineTablesAPI:
 
         body = table.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17562,9 +17171,7 @@ class OnlineTablesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17581,9 +17188,7 @@ class OnlineTablesAPI:
         :returns: :class:`OnlineTable`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17594,13 +17199,6 @@ class OnlineTablesAPI:
 
 
 class PoliciesAPI:
-    """Attribute-Based Access Control (ABAC) provides high leverage governance for enforcing compliance policies
-    in Unity Catalog. With ABAC policies, access is controlled in a hierarchical and scalable manner, based on
-    data attributes rather than specific resources, enabling more flexible and comprehensive access control.
-    ABAC policies in Unity Catalog support conditions on securable properties, governance tags, and
-    environment contexts. Callers must have the ``MANAGE`` privilege on a securable to view, create, update,
-    or delete ABAC policies."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -17615,10 +17213,7 @@ class PoliciesAPI:
 
         body = policy_info.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17640,9 +17235,7 @@ class PoliciesAPI:
         :returns: :class:`DeletePolicyResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17668,9 +17261,7 @@ class PoliciesAPI:
         :returns: :class:`PolicyInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17725,9 +17316,7 @@ class PoliciesAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17784,10 +17373,7 @@ class PoliciesAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17804,15 +17390,6 @@ class PoliciesAPI:
 
 
 class QualityMonitorsAPI:
-    """Deprecated: Please use the Data Quality Monitors API instead (REST: /api/data-quality/v1/monitors), which
-    manages both Data Profiling and Anomaly Detection.
-
-    A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
-    tables and a dashboard that you can use to monitor table health and set alerts. Most write operations
-    require the user to be the owner of the table (or its parent schema or parent catalog). Viewing the
-    dashboard, computed metrics, or monitor configuration only requires the user to have **SELECT** privileges
-    on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -17828,21 +17405,14 @@ class QualityMonitorsAPI:
 
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
-            "POST",
-            f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel", headers=headers
         )
 
     def create(
@@ -17953,10 +17523,7 @@ class QualityMonitorsAPI:
             body["time_series"] = time_series.as_dict()
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -17979,8 +17546,6 @@ class QualityMonitorsAPI:
         - **USE_SCHEMA** on the table's parent schema
         - be an owner of the table.
 
-        Additionally, the call must be made from the workspace where the monitor was created.
-
         Note that the metric tables and dashboard will not be deleted as part of this call; those assets must
         be manually cleaned up (if desired).
 
@@ -17991,9 +17556,7 @@ class QualityMonitorsAPI:
         :returns: :class:`DeleteMonitorResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18027,9 +17590,7 @@ class QualityMonitorsAPI:
         :returns: :class:`MonitorInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18062,9 +17623,7 @@ class QualityMonitorsAPI:
         :returns: :class:`MonitorRefreshInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18085,9 +17644,9 @@ class QualityMonitorsAPI:
         2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
         3. have the following permissions:
 
-        - **USE_CATALOG** on the table's parent catalog
-        - **USE_SCHEMA** on the table's parent schema
-        - **SELECT** privilege on the table.
+           - **USE_CATALOG** on the table's parent catalog
+           - **USE_SCHEMA** on the table's parent schema
+           - **SELECT** privilege on the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
@@ -18098,9 +17657,7 @@ class QualityMonitorsAPI:
         :returns: :class:`MonitorRefreshListResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18141,10 +17698,7 @@ class QualityMonitorsAPI:
         body = {}
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18178,19 +17732,13 @@ class QualityMonitorsAPI:
         :returns: :class:`MonitorRefreshInfo`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do(
-            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", body=body, headers=headers
-        )
+        res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
         return MonitorRefreshInfo.from_dict(res)
 
     def update(
@@ -18223,8 +17771,7 @@ class QualityMonitorsAPI:
         - **USE_SCHEMA** on the table's parent schema
         - be an owner of the table.
 
-        Additionally, the call must be made from the workspace where the monitor was created, and the caller
-        must be the original creator of the monitor.
+        the original creator of the monitor.
 
         Certain configuration fields, such as output asset identifiers, cannot be updated.
 
@@ -18291,10 +17838,7 @@ class QualityMonitorsAPI:
             body["snapshot"] = snapshot.as_dict()
         if time_series is not None:
             body["time_series"] = time_series.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18305,32 +17849,6 @@ class QualityMonitorsAPI:
 
 
 class RegisteredModelsAPI:
-    """Databricks provides a hosted version of MLflow Model Registry in Unity Catalog. Models in Unity Catalog
-    provide centralized access control, auditing, lineage, and discovery of ML models across Databricks
-    workspaces.
-
-    An MLflow registered model resides in the third layer of Unity Catalog’s three-level namespace.
-    Registered models contain model versions, which correspond to actual ML models (MLflow models). Creating
-    new model versions requires use of the MLflow Python client. After model versions are created, you can
-    load them for batch inference using MLflow Python client APIs, or deploy them for real-time serving using
-    Databricks Model Serving.
-
-    All operations on registered models and model versions require USE_CATALOG permissions on the enclosing
-    catalog and USE_SCHEMA permissions on the enclosing schema. In addition, the following additional
-    privileges are required for various operations:
-
-    - To create a registered model, users must additionally have the CREATE_MODEL permission on the target
-      schema.
-    - To view registered model or model version metadata, model version data files, or invoke a model version,
-      users must additionally have the EXECUTE permission on the registered model
-    - To update registered model or model version tags, users must additionally have APPLY TAG permissions on
-      the registered model
-    - To update other registered model or model version metadata (comments, aliases) create a new model
-      version, or update permissions on the registered model, users must be owners of the registered model.
-
-    Note: The securable type for models is FUNCTION. When using REST APIs (for example, tagging, grants) that
-    specify a securable type, use FUNCTION as the securable type."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -18426,10 +17944,7 @@ class RegisteredModelsAPI:
             body["updated_at"] = updated_at
         if updated_by is not None:
             body["updated_by"] = updated_by
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18507,9 +18022,7 @@ class RegisteredModelsAPI:
             query["include_aliases"] = include_aliases
         if include_browse is not None:
             query["include_browse"] = include_browse
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18588,9 +18101,7 @@ class RegisteredModelsAPI:
             query["page_token"] = page_token
         if schema_name is not None:
             query["schema_name"] = schema_name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18625,10 +18136,7 @@ class RegisteredModelsAPI:
         body = {}
         if version_num is not None:
             body["version_num"] = version_num
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18730,10 +18238,7 @@ class RegisteredModelsAPI:
             body["updated_at"] = updated_at
         if updated_by is not None:
             body["updated_by"] = updated_by
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18744,12 +18249,6 @@ class RegisteredModelsAPI:
 
 
 class ResourceQuotasAPI:
-    """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that
-    can be created. Quotas are expressed in terms of a resource type and a parent (for example, tables per
-    metastore or schemas per catalog). The resource quota APIs enable you to monitor your current usage and
-    limits. For more information on resource quotas see the `Unity Catalog documentation
-    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas>`__."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -18768,9 +18267,7 @@ class ResourceQuotasAPI:
         :returns: :class:`GetQuotaResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18806,9 +18303,7 @@ class ResourceQuotasAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18827,10 +18322,7 @@ class ResourceQuotasAPI:
 
 
 class RfaAPI:
-    """Request for Access enables users to request access for Unity Catalog securables.
-
-    These APIs provide a standardized way for securable owners (or users with MANAGE privileges) to manage
-    access request destinations."""
+    """See http://go/protostyleguide/services."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -18857,10 +18349,7 @@ class RfaAPI:
         body = {}
         if requests is not None:
             body["requests"] = [v.as_dict() for v in requests]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18885,9 +18374,7 @@ class RfaAPI:
         :returns: :class:`AccessRequestDestinations`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18912,15 +18399,6 @@ class RfaAPI:
           The access request destinations to assign to the securable. For each destination, a
           **destination_id** and **destination_type** must be defined.
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`AccessRequestDestinations`
         """
@@ -18929,10 +18407,7 @@ class RfaAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -18943,11 +18418,6 @@ class RfaAPI:
 
 
 class SchemasAPI:
-    """A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace. A schema
-    organizes tables, views, and functions. To access (or list) a table or view in a schema, users must have
-    the USE_SCHEMA data permission on the schema and its parent catalog, and they must have the SELECT
-    permission on the table or view."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -18993,10 +18463,7 @@ class SchemasAPI:
             body["properties"] = properties
         if storage_root is not None:
             body["storage_root"] = storage_root
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19020,9 +18487,7 @@ class SchemasAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19046,9 +18511,7 @@ class SchemasAPI:
         query = {}
         if include_browse is not None:
             query["include_browse"] = include_browse
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19104,9 +18567,7 @@ class SchemasAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19170,10 +18631,7 @@ class SchemasAPI:
             body["owner"] = owner
         if properties is not None:
             body["properties"] = properties
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19184,11 +18642,7 @@ class SchemasAPI:
 
 
 class SecretsUcAPI:
-    """A secret is a Unity Catalog securable object that stores sensitive credential data (such as passwords,
-    tokens, and keys) within a three-level namespace (**catalog_name.schema_name.secret_name**).
-
-    Secrets can be managed using standard Unity Catalog permissions and are scoped to a schema within a
-    catalog."""
+    """See http://go/protostyleguide/services."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -19211,10 +18665,7 @@ class SecretsUcAPI:
 
         body = secret.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19235,9 +18686,7 @@ class SecretsUcAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19267,9 +18716,7 @@ class SecretsUcAPI:
         query = {}
         if include_value is not None:
             query["include_value"] = include_value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19324,9 +18771,7 @@ class SecretsUcAPI:
             query["page_token"] = page_token
         if schema_name is not None:
             query["schema_name"] = schema_name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19371,10 +18816,7 @@ class SecretsUcAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19387,17 +18829,6 @@ class SecretsUcAPI:
 
 
 class StorageCredentialsAPI:
-    """A storage credential represents an authentication and authorization mechanism for accessing data stored on
-    your cloud tenant. Each storage credential is subject to Unity Catalog access-control policies that
-    control which users and groups can access the credential. If a user does not have access to a storage
-    credential in Unity Catalog, the request fails and Unity Catalog does not attempt to authenticate to your
-    cloud tenant on the user’s behalf.
-
-    Databricks recommends using external locations rather than using storage credentials directly.
-
-    To create storage credentials, you must be a Databricks account admin. The account admin who creates the
-    storage credential can delegate ownership to another user or group to manage permissions on it."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -19433,7 +18864,7 @@ class StorageCredentialsAPI:
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The Databricks managed GCP service account configuration.
+          The <Databricks> managed GCP service account configuration.
         :param read_only: bool (optional)
           Whether the credential is usable only for read operations. Only applicable when purpose is
           **STORAGE**.
@@ -19462,10 +18893,7 @@ class StorageCredentialsAPI:
             body["read_only"] = read_only
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19490,9 +18918,7 @@ class StorageCredentialsAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19510,9 +18936,7 @@ class StorageCredentialsAPI:
         :returns: :class:`StorageCredentialInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19564,9 +18988,7 @@ class StorageCredentialsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19618,7 +19040,7 @@ class StorageCredentialsAPI:
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The Databricks managed GCP service account configuration.
+          The <Databricks> managed GCP service account configuration.
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -19661,10 +19083,7 @@ class StorageCredentialsAPI:
             body["read_only"] = read_only
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19705,7 +19124,7 @@ class StorageCredentialsAPI:
         :param cloudflare_api_token: :class:`CloudflareApiToken` (optional)
           The Cloudflare API token configuration.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The Databricks created GCP service account configuration.
+          The <Databricks> created GCP service account configuration.
         :param external_location_name: str (optional)
           The name of an existing external location to validate.
         :param read_only: bool (optional)
@@ -19737,10 +19156,7 @@ class StorageCredentialsAPI:
             body["storage_credential_name"] = storage_credential_name
         if url is not None:
             body["url"] = url
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19751,9 +19167,6 @@ class StorageCredentialsAPI:
 
 
 class SystemSchemasAPI:
-    """A system schema is a schema that lives within the system catalog. A system schema may contain information
-    about customer usage of Unity Catalog such as audit logs, billing logs, and lineage information."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -19769,9 +19182,7 @@ class SystemSchemasAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19798,10 +19209,7 @@ class SystemSchemasAPI:
         body = {}
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19848,9 +19256,7 @@ class SystemSchemasAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19871,17 +19277,6 @@ class SystemSchemasAPI:
 
 
 class TableConstraintsAPI:
-    """Primary key and foreign key constraints encode relationships between fields in tables.
-
-    Primary and foreign keys are informational only and are not enforced. Foreign keys must reference a
-    primary key in another table. This primary key is the parent constraint of the foreign key, and the table
-    this primary key is on is the parent table of the foreign key. Similarly, the foreign key is the child
-    constraint of its referenced primary key. The table of the foreign key is the child table of the primary
-    key.
-
-    You can declare primary keys and foreign keys as part of the table specification during table creation.
-    You can also add or drop constraints on existing tables."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -19908,10 +19303,7 @@ class TableConstraintsAPI:
             body["constraint"] = constraint.as_dict()
         if full_name_arg is not None:
             body["full_name_arg"] = full_name_arg
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19947,9 +19339,7 @@ class TableConstraintsAPI:
             query["cascade"] = cascade
         if constraint_name is not None:
             query["constraint_name"] = constraint_name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -19959,15 +19349,6 @@ class TableConstraintsAPI:
 
 
 class TablesAPI:
-    """A table resides in the third layer of Unity Catalog’s three-level namespace. It contains rows of data.
-    To create a table, users must have CREATE_TABLE and USE_SCHEMA permissions on the schema, and they must
-    have the USE_CATALOG permission on its parent catalog. To query a table, users must have the SELECT
-    permission on the table, and they must have the USE_CATALOG permission on its parent catalog and the
-    USE_SCHEMA permission on its parent schema.
-
-    A table can be managed or external. From an API perspective, a **VIEW** is a particular kind of table
-    (rather than a managed or external table)."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -19998,9 +19379,9 @@ class TablesAPI:
         is not Spark compatible, the tables may not be readable by Databricks Runtime.
 
         NOTE: The Create Table API for external clients only supports creating **external delta tables**. The
-        values shown in the respective enums are all values supported by Databricks, however for this specific
-        Create Table API, only **table_type** **EXTERNAL** and **data_source_format** **DELTA** are supported.
-        Additionally, column masks are not supported when creating tables through this API.
+        values shown in the respective enums are all values supported by <Databricks>, however for this
+        specific Create Table API, only **table_type** **EXTERNAL** and **data_source_format** **DELTA** are
+        supported. Additionally, column masks are not supported when creating tables through this API.
 
         :param name: str
           Name of table, relative to parent schema.
@@ -20037,10 +19418,7 @@ class TablesAPI:
             body["storage_location"] = storage_location
         if table_type is not None:
             body["table_type"] = table_type.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20061,9 +19439,7 @@ class TablesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20089,9 +19465,7 @@ class TablesAPI:
         :returns: :class:`TableExistsResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20137,9 +19511,7 @@ class TablesAPI:
             query["include_delta_metadata"] = include_delta_metadata
         if include_manifest_capabilities is not None:
             query["include_manifest_capabilities"] = include_manifest_capabilities
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20224,9 +19596,7 @@ class TablesAPI:
             query["page_token"] = page_token
         if schema_name is not None:
             query["schema_name"] = schema_name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20305,9 +19675,7 @@ class TablesAPI:
             query["schema_name_pattern"] = schema_name_pattern
         if table_name_pattern is not None:
             query["table_name_pattern"] = table_name_pattern
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20339,10 +19707,7 @@ class TablesAPI:
         body = {}
         if owner is not None:
             body["owner"] = owner
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20352,40 +19717,20 @@ class TablesAPI:
 
 
 class TemporaryPathCredentialsAPI:
-    """Temporary Path Credentials are short-lived, downscoped credentials used to access external cloud storage
-    locations registered in Databricks. These credentials provide secure and time-limited access to data in
-    cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider has its own type of
-    credentials: AWS uses temporary session tokens through AWS Security Token Service (STS), Azure uses Shared
-    Access Signatures (SAS) for its data storage services, and Google Cloud supports temporary credentials
-    through OAuth 2.0.
-
-    Temporary path credentials ensure that data access is limited in scope and duration, reducing the risk of
-    unauthorized access or misuse. To use the temporary path credentials API, a metastore admin must enable
-    the external_access_enabled flag (off by default) at the metastore level. A user must be granted the
-    EXTERNAL USE LOCATION permission by the external location owner. For requests on existing external tables
-    and external volumes, the user must also be granted the EXTERNAL USE SCHEMA permission at the schema level
-    by the catalog owner.
-
-    Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by the catalog owner
-    explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for security reasons.
-    Similarly, EXTERNAL USE LOCATION is an external location level permission that can only be granted by the
-    external location owner explicitly and is not included in external location ownership or ALL PRIVILEGES on
-    the external location for security reasons."""
-
     def __init__(self, api_client):
         self._api = api_client
 
     def generate_temporary_path_credentials(
         self, url: str, operation: PathOperation, *, dry_run: Optional[bool] = None
     ) -> GenerateTemporaryPathCredentialResponse:
-        """Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.
-        The Generate Temporary Path Credentials API is only supported for external storage paths, specifically
-        external locations and external tables. Managed tables are not supported by this API. The metastore
-        must have **external_access_enabled** flag set to true (default false). The caller must have the
-        **EXTERNAL_USE_LOCATION** privilege on the external location; this privilege can only be granted by
-        external location owners. For requests on existing external tables, the caller must also have the
-        **EXTERNAL_USE_SCHEMA** privilege on the parent schema; this privilege can only be granted by catalog
-        owners.
+        """Get a short-lived credential for directly accessing cloud storage locations registered in
+        <Databricks>. The Generate Temporary Path Credentials API is only supported for external storage
+        paths, specifically external locations and external tables. Managed tables are not supported by this
+        API. The metastore must have **external_access_enabled** flag set to true (default false). The caller
+        must have the **EXTERNAL_USE_LOCATION** privilege on the external location; this privilege can only be
+        granted by external location owners. For requests on existing external tables, the caller must also
+        have the **EXTERNAL_USE_SCHEMA** privilege on the parent schema; this privilege can only be granted by
+        catalog owners.
 
         :param url: str
           URL for path-based access.
@@ -20406,10 +19751,7 @@ class TemporaryPathCredentialsAPI:
             body["operation"] = operation.value
         if url is not None:
             body["url"] = url
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20420,20 +19762,6 @@ class TemporaryPathCredentialsAPI:
 
 
 class TemporaryTableCredentialsAPI:
-    """Temporary Table Credentials are short-lived, downscoped credentials used to access cloud storage locations
-    where table data is stored in Databricks. These credentials provide secure and time-limited access to data
-    in cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider has its own type of
-    credentials: AWS uses temporary session tokens through AWS Security Token Service (STS), Azure uses Shared
-    Access Signatures (SAS) for its data storage services, and Google Cloud supports temporary credentials
-    through OAuth 2.0.
-
-    Temporary table credentials ensure that data access is limited in scope and duration, reducing the risk of
-    unauthorized access or misuse. To use the temporary table credentials API, a metastore admin must enable
-    the external_access_enabled flag (off by default) at the metastore level, and the user must be granted the
-    EXTERNAL USE SCHEMA permission at the schema level by the catalog owner. Note that EXTERNAL USE SCHEMA is
-    a schema level permission that can only be granted by the catalog owner explicitly and is not included in
-    schema ownership or ALL PRIVILEGES on the schema for security reasons."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -20459,10 +19787,7 @@ class TemporaryTableCredentialsAPI:
             body["operation"] = operation.value
         if table_id is not None:
             body["table_id"] = table_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20473,20 +19798,6 @@ class TemporaryTableCredentialsAPI:
 
 
 class TemporaryVolumeCredentialsAPI:
-    """Temporary Volume Credentials are short-lived, downscoped credentials used to access cloud storage
-    locations where volume data is stored in Databricks. These credentials provide secure and time-limited
-    access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider has its own
-    type of credentials: AWS uses temporary session tokens through AWS Security Token Service (STS), Azure
-    uses Shared Access Signatures (SAS) for its data storage services, and Google Cloud supports temporary
-    credentials through OAuth 2.0.
-
-    Temporary volume credentials ensure that data access is limited in scope and duration, reducing the risk
-    of unauthorized access or misuse. To use the temporary volume credentials API, a metastore admin must
-    enable the external_access_enabled flag (off by default) at the metastore level, and the user must be
-    granted the EXTERNAL USE SCHEMA permission at the schema level by the catalog owner. Note that EXTERNAL
-    USE SCHEMA is a schema level permission that can only be granted by the catalog owner explicitly and is
-    not included in schema ownership or ALL PRIVILEGES on the schema for security reasons."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -20512,10 +19823,7 @@ class TemporaryVolumeCredentialsAPI:
             body["operation"] = operation.value
         if volume_id is not None:
             body["volume_id"] = volume_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20526,13 +19834,6 @@ class TemporaryVolumeCredentialsAPI:
 
 
 class VolumesAPI:
-    """Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing, and processing
-    files. Use cases include running machine learning on unstructured data such as image, audio, video, or PDF
-    files, organizing data sets during the data exploration stages in data science, working with libraries
-    that require access to the local file system on cluster machines, storing library and config files of
-    arbitrary formats such as .whl or .txt centrally and providing secure access to those files across
-    workspaces, or transforming and querying non-tabular data files in ETL."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -20598,10 +19899,7 @@ class VolumesAPI:
             body["storage_location"] = storage_location
         if volume_type is not None:
             body["volume_type"] = volume_type.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20693,9 +19991,7 @@ class VolumesAPI:
             query["page_token"] = page_token
         if schema_name is not None:
             query["schema_name"] = schema_name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20729,9 +20025,7 @@ class VolumesAPI:
         query = {}
         if include_browse is not None:
             query["include_browse"] = include_browse
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20770,10 +20064,7 @@ class VolumesAPI:
             body["new_name"] = new_name
         if owner is not None:
             body["owner"] = owner
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20784,26 +20075,6 @@ class VolumesAPI:
 
 
 class WorkspaceBindingsAPI:
-    """A securable in Databricks can be configured as **OPEN** or **ISOLATED**. An **OPEN** securable can be
-    accessed from any workspace, while an **ISOLATED** securable can only be accessed from a configured list
-    of workspaces. This API allows you to configure (bind) securables to workspaces.
-
-    NOTE: The **isolation_mode** is configured for the securable itself (using its Update method) and the
-    workspace bindings are only consulted when the securable's **isolation_mode** is set to **ISOLATED**.
-
-    A securable's workspace bindings can be configured by a metastore admin or the owner of the securable.
-
-    The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}) is deprecated. Use the new
-    path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}), which introduces the ability to
-    bind a securable in READ_ONLY mode (catalogs only).
-
-    Securable types that support binding:
-
-    - catalog
-    - storage_credential
-    - credential
-    - external_location"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -20817,9 +20088,7 @@ class WorkspaceBindingsAPI:
         :returns: :class:`GetCatalogWorkspaceBindingsResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20870,9 +20139,7 @@ class WorkspaceBindingsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20919,10 +20186,7 @@ class WorkspaceBindingsAPI:
             body["assign_workspaces"] = [v for v in assign_workspaces]
         if unassign_workspaces is not None:
             body["unassign_workspaces"] = [v for v in unassign_workspaces]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -20964,10 +20228,7 @@ class WorkspaceBindingsAPI:
             body["add"] = [v.as_dict() for v in add]
         if remove is not None:
             body["remove"] = [v.as_dict() for v in remove]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

@@ -142,7 +142,7 @@ class BranchOperationMetadata:
 class BranchSpec:
     expire_time: Optional[Timestamp] = None
     """Absolute expiration timestamp. When set, the branch will expire at this time. Mutually exclusive
-    with ``ttl`` and ``no_expiry``."""
+    with ``ttl`` and ``no_expiry``. When updating, use ``spec.expiration`` in the update_mask."""
 
     is_protected: Optional[bool] = None
     """When set to true, protects the branch from deletion and reset. Associated compute endpoints and
@@ -151,7 +151,7 @@ class BranchSpec:
     no_expiry: Optional[bool] = None
     """Explicitly disable expiration. When set to true, the branch will not expire. If set to false,
     the request is invalid; provide either ttl or expire_time instead. Mutually exclusive with
-    ``expire_time`` and ``ttl``."""
+    ``expire_time`` and ``ttl``. When updating, use ``spec.expiration`` in the update_mask."""
 
     source_branch: Optional[str] = None
     """The name of the source branch from which this branch was created (data lineage for point-in-time
@@ -172,7 +172,8 @@ class BranchSpec:
 
     ttl: Optional[Duration] = None
     """Relative time-to-live duration. When set, the branch will expire at creation_time + ttl.
-    Mutually exclusive with ``expire_time`` and ``no_expiry``."""
+    Mutually exclusive with ``expire_time`` and ``no_expiry``. When updating, use
+    ``spec.expiration`` in the update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the BranchSpec into a dictionary suitable for use as a JSON request body."""
@@ -1721,14 +1722,15 @@ class EndpointSpec:
 
     no_suspension: Optional[bool] = None
     """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
-    true when provided. Mutually exclusive with ``suspend_timeout_duration``."""
+    true when provided. Mutually exclusive with ``suspend_timeout_duration``. When updating, use
+    ``spec.suspension`` in the update_mask."""
 
     settings: Optional[EndpointSettings] = None
 
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
     should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with
-    ``no_suspension``."""
+    ``no_suspension``. When updating, use ``spec.suspension`` in the update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointSpec into a dictionary suitable for use as a JSON request body."""
@@ -2695,7 +2697,8 @@ class ProjectDefaultEndpointSettings:
 
     no_suspension: Optional[bool] = None
     """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
-    true when provided. Mutually exclusive with ``suspend_timeout_duration``."""
+    true when provided. Mutually exclusive with ``suspend_timeout_duration``. When updating, use
+    ``spec.project_default_settings.suspension`` in the update_mask."""
 
     pg_settings: Optional[Dict[str, str]] = None
     """A raw representation of Postgres settings."""
@@ -2703,7 +2706,8 @@ class ProjectDefaultEndpointSettings:
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
     should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with
-    ``no_suspension``."""
+    ``no_suspension``. When updating, use ``spec.project_default_settings.suspension`` in the
+    update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the ProjectDefaultEndpointSettings into a dictionary suitable for use as a JSON request body."""
@@ -3187,8 +3191,8 @@ class RoleAuthMethod(Enum):
 
 
 class RoleIdentityType(Enum):
-    """The type of the Databricks managed identity that this Role represents. Leave empty if you wish
-    to create a regular Postgres role not associated with a Databricks identity."""
+    """The type of the <Databricks> managed identity that this Role represents. Leave empty if you wish
+    to create a regular Postgres role not associated with a <Databricks> identity."""
 
     GROUP = "GROUP"
     SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
@@ -3229,7 +3233,7 @@ class RoleRoleSpec:
     Supported values:
     
     - LAKEBASE_OAUTH_V1: the role authenticates by presenting a Databricks OAuth access token
-      derived from the backing managed identity (the Databricks user, service principal, or group
+      derived from the backing managed identity (the <Databricks> user, service principal, or group
       named by the role's ``postgres_role``). No static password exists for roles using this method.
     - PG_PASSWORD_SCRAM_SHA_256: the role authenticates with a Postgres password verified
       server-side using the SCRAM-SHA-256 mechanism. Lakebase generates a password for the role.
@@ -3242,7 +3246,7 @@ class RoleRoleSpec:
     - For the managed identities, OAUTH is used.
     - For the regular postgres roles, authentication based on postgres passwords is used.
     
-    NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the default auth method
+    NOTE: for the <Databricks> identity type GROUP, LAKEBASE_OAUTH_V1 is the default auth method
     (group can login as well)."""
 
     identity_type: Optional[RoleIdentityType] = None
@@ -3263,12 +3267,8 @@ class RoleRoleSpec:
     
     Required when creating the Role.
     
-    If you wish to create a Postgres Role backed by a managed Databricks identity, then
-    postgres_role must be one of the following:
-    
-    1. user email for IdentityType.USER
-    2. app ID for IdentityType.SERVICE_PRINCIPAL
-    3. group name for IdentityType.GROUP"""
+    If you wish to create a Postgres Role backed by a managed <Databricks> identity, then
+    postgres_role must be one of the following:"""
 
     def as_dict(self) -> dict:
         """Serializes the RoleRoleSpec into a dictionary suitable for use as a JSON request body."""
@@ -4332,18 +4332,7 @@ class WeeklySchedule:
 
 
 class PostgresAPI:
-    """Use the Postgres API to create and manage Lakebase Autoscaling Postgres infrastructure, including
-    projects, branches, compute endpoints, and roles.
-
-    This API manages database infrastructure only. To query or modify data, use the Data API or direct SQL
-    connections.
-
-    **About resource IDs and names**
-
-    Resources are identified by hierarchical resource names like
-    ``projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}``. The ``name`` field on each
-    resource contains this full path and is output-only. Note that ``name`` refers to this resource path, not
-    the user-visible ``display_name``."""
+    """Front-door (customer facing) service for Brickstore."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4374,10 +4363,7 @@ class PostgresAPI:
             query["branch_id"] = branch_id
         if replace_existing is not None:
             query["replace_existing"] = replace_existing
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4402,10 +4388,7 @@ class PostgresAPI:
         query = {}
         if catalog_id is not None:
             query["catalog_id"] = catalog_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4439,10 +4422,7 @@ class PostgresAPI:
         query = {}
         if cdf_config_id is not None:
             query["cdf_config_id"] = cdf_config_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4465,10 +4445,7 @@ class PostgresAPI:
 
         body = data_api.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4514,10 +4491,7 @@ class PostgresAPI:
             query["database_id"] = database_id
         if replace_existing is not None:
             query["replace_existing"] = replace_existing
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4553,10 +4527,7 @@ class PostgresAPI:
             query["endpoint_id"] = endpoint_id
         if replace_existing is not None:
             query["replace_existing"] = replace_existing
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4584,10 +4555,7 @@ class PostgresAPI:
         query = {}
         if project_id is not None:
             query["project_id"] = project_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4631,10 +4599,7 @@ class PostgresAPI:
             query["replace_existing"] = replace_existing
         if role_id is not None:
             query["role_id"] = role_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4662,10 +4627,7 @@ class PostgresAPI:
         query = {}
         if snapshot_id is not None:
             query["snapshot_id"] = snapshot_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4698,10 +4660,7 @@ class PostgresAPI:
         query = {}
         if synced_table_id is not None:
             query["synced_table_id"] = synced_table_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4725,9 +4684,7 @@ class PostgresAPI:
         query = {}
         if purge is not None:
             query["purge"] = purge
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4748,9 +4705,7 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4778,9 +4733,7 @@ class PostgresAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4799,9 +4752,7 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4821,9 +4772,7 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4843,9 +4792,7 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4869,9 +4816,7 @@ class PostgresAPI:
         query = {}
         if purge is not None:
             query["purge"] = purge
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4899,9 +4844,7 @@ class PostgresAPI:
         query = {}
         if reassign_owned_to is not None:
             query["reassign_owned_to"] = reassign_owned_to
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4920,9 +4863,7 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4942,9 +4883,7 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4988,10 +4927,7 @@ class PostgresAPI:
             body["expire_time"] = expire_time.ToJsonString()
         if ttl is not None:
             body["ttl"] = ttl.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5009,9 +4945,7 @@ class PostgresAPI:
         :returns: :class:`Branch`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5031,9 +4965,7 @@ class PostgresAPI:
         :returns: :class:`Catalog`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5053,9 +4985,7 @@ class PostgresAPI:
         :returns: :class:`CdfConfig`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5075,9 +5005,7 @@ class PostgresAPI:
         :returns: :class:`CdfStatus`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5095,9 +5023,7 @@ class PostgresAPI:
         :returns: :class:`DataApi`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5116,9 +5042,7 @@ class PostgresAPI:
         :returns: :class:`Database`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5138,9 +5062,7 @@ class PostgresAPI:
         :returns: :class:`Endpoint`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5158,9 +5080,7 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5178,9 +5098,7 @@ class PostgresAPI:
         :returns: :class:`Project`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5200,9 +5118,7 @@ class PostgresAPI:
         :returns: :class:`Role`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5220,9 +5136,7 @@ class PostgresAPI:
         :returns: :class:`Snapshot`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5242,9 +5156,7 @@ class PostgresAPI:
         :returns: :class:`SnapshotSchedule`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5263,9 +5175,7 @@ class PostgresAPI:
         :returns: :class:`SyncedTable`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5304,9 +5214,7 @@ class PostgresAPI:
             query["page_token"] = page_token
         if show_deleted is not None:
             query["show_deleted"] = show_deleted
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5343,9 +5251,7 @@ class PostgresAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5382,9 +5288,7 @@ class PostgresAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5420,9 +5324,7 @@ class PostgresAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5458,9 +5360,7 @@ class PostgresAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5498,9 +5398,7 @@ class PostgresAPI:
             query["page_token"] = page_token
         if show_deleted is not None:
             query["show_deleted"] = show_deleted
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5535,9 +5433,7 @@ class PostgresAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5572,9 +5468,7 @@ class PostgresAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5598,17 +5492,13 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", headers=headers)
         operation = Operation.from_dict(res)
         return UndeleteBranchOperation(self, operation)
 
@@ -5621,17 +5511,13 @@ class PostgresAPI:
         :returns: :class:`Operation`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", headers=headers)
         operation = Operation.from_dict(res)
         return UndeleteProjectOperation(self, operation)
 
@@ -5657,10 +5543,7 @@ class PostgresAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5687,10 +5570,7 @@ class PostgresAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5721,10 +5601,7 @@ class PostgresAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5756,10 +5633,7 @@ class PostgresAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5789,10 +5663,7 @@ class PostgresAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5823,10 +5694,7 @@ class PostgresAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -5859,10 +5727,7 @@ class PostgresAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

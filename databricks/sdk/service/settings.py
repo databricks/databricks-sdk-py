@@ -22,9 +22,6 @@ from databricks.sdk.service._internal import (
 from databricks.sdk.common.types.fieldmask import FieldMask
 
 
-from databricks.sdk.service import iam
-
-
 _LOG = logging.getLogger("databricks.sdk")
 
 
@@ -2050,7 +2047,7 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
     after initialization."""
 
     account_id: Optional[str] = None
-    """Databricks account ID. You can find your account ID from the Accounts Console."""
+    """<Databricks> account ID. You can find your account ID from the Accounts Console."""
 
     connection_state: Optional[
         CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState
@@ -2114,7 +2111,7 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
     """Time in epoch milliseconds when this object was updated."""
 
     vpc_endpoint_id: Optional[str] = None
-    """The AWS VPC endpoint ID. You can use this ID to identify VPC endpoint created by Databricks."""
+    """The AWS VPC endpoint ID. You can use this ID to identify VPC endpoint created by <Databricks>."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule into a dictionary suitable for use as a JSON request body."""
@@ -2269,10 +2266,10 @@ class DashboardEmailSubscriptions:
 
 @dataclass
 class DefaultNamespaceSetting:
-    """This represents the setting configuration for the default namespace in the Databricks workspace.
-    Setting the default catalog for the workspace determines the catalog that is used when queries
-    do not reference a fully qualified 3 level name. For example, if the default catalog is set to
-    'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
+    """This represents the setting configuration for the default namespace in the <Databricks>
+    workspace. Setting the default catalog for the workspace determines the catalog that is used
+    when queries do not reference a fully qualified 3 level name. For example, if the default
+    catalog is set to 'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
     'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
     restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
     applies when using Unity Catalog-enabled compute."""
@@ -3141,11 +3138,11 @@ class EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType(Enum):
 
 
 class EgressNetworkPolicyInternetAccessPolicyRestrictionMode(Enum):
-    """At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
-    Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
-    only access explicitly allowed internet and storage destinations, as well as UC connections and
-    external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via
-    private link."""
+    """At which level can <Databricks> and <Databricks> managed compute access Internet. FULL_ACCESS:
+    <Databricks> can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: <Databricks>
+    can only access explicitly allowed internet and storage destinations, as well as UC connections
+    and external locations. PRIVATE_ACCESS_ONLY (not used): <Databricks> can only access
+    destinations via private link."""
 
     FULL_ACCESS = "FULL_ACCESS"
     PRIVATE_ACCESS_ONLY = "PRIVATE_ACCESS_ONLY"
@@ -3242,7 +3239,7 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     """The restriction mode that controls how serverless workloads can access the internet."""
 
     allowed_databricks_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination]] = None
-    """List of Databricks workspace destinations that serverless workloads are allowed to access when
+    """List of <Databricks> workspace destinations that serverless workloads are allowed to access when
     in RESTRICTED_ACCESS mode."""
 
     allowed_internet_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyInternetDestination]] = None
@@ -3451,10 +3448,10 @@ class EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode(Enu
 
 
 class EgressNetworkPolicyNetworkAccessPolicyRestrictionMode(Enum):
-    """At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
-    Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
-    only access explicitly allowed internet and storage destinations, as well as UC connections and
-    external locations."""
+    """At which level can <Databricks> and <Databricks> managed compute access Internet. FULL_ACCESS:
+    <Databricks> can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: <Databricks>
+    can only access explicitly allowed internet and storage destinations, as well as UC connections
+    and external locations."""
 
     FULL_ACCESS = "FULL_ACCESS"
     RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
@@ -4123,31 +4120,6 @@ class GetIpAccessListsResponse:
 
 
 @dataclass
-class GetTokenPermissionLevelsResponse:
-    permission_levels: Optional[List[TokenPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetTokenPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetTokenPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetTokenPermissionLevelsResponse:
-        """Deserializes the GetTokenPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", TokenPermissionsDescription))
-
-
-@dataclass
 class GetTokenResponse:
     """Token with specified Token ID was successfully returned."""
 
@@ -4213,7 +4185,7 @@ class IpAccessListInfo:
     """Creation timestamp in milliseconds."""
 
     created_by: Optional[int] = None
-    """User ID of the user who created this list."""
+    """The ID of the user that created this list."""
 
     enabled: Optional[bool] = None
     """Specifies whether this IP access list is enabled."""
@@ -4232,7 +4204,7 @@ class IpAccessListInfo:
     """Update timestamp in milliseconds."""
 
     updated_by: Optional[int] = None
-    """User ID of the user who updated this list."""
+    """The ID of the user that last updated this list."""
 
     def as_dict(self) -> dict:
         """Serializes the IpAccessListInfo into a dictionary suitable for use as a JSON request body."""
@@ -4827,10 +4799,10 @@ class MicrosoftTeamsConfig:
 @dataclass
 class NccAwsStableIpRule:
     """The stable AWS IP CIDR blocks. You can use these to configure the firewall of your resources to
-    allow traffic from your Databricks workspace."""
+    allow traffic from your <Databricks> workspace."""
 
     cidr_blocks: Optional[List[str]] = None
-    """The list of stable IP CIDR blocks from which Databricks network traffic originates when
+    """The list of stable IP CIDR blocks from which <Databricks> network traffic originates when
     accessing your resources."""
 
     def as_dict(self) -> dict:
@@ -5002,10 +4974,10 @@ class NccAzurePrivateEndpointRuleConnectionState(Enum):
 @dataclass
 class NccAzureServiceEndpointRule:
     """The stable Azure service endpoints. You can configure the firewall of your Azure resources to
-    allow traffic from your Databricks serverless compute resources."""
+    allow traffic from your <Databricks> serverless compute resources."""
 
     subnets: Optional[List[str]] = None
-    """The list of subnets from which Databricks network traffic originates when accessing your Azure
+    """The list of subnets from which <Databricks> network traffic originates when accessing your Azure
     resources."""
 
     target_region: Optional[str] = None
@@ -5163,7 +5135,7 @@ class NccPrivateEndpointRule:
     portal after initialization."""
 
     account_id: Optional[str] = None
-    """Databricks account ID. You can find your account ID from the Accounts Console."""
+    """<Databricks> account ID. You can find your account ID from the Accounts Console."""
 
     connection_state: Optional[NccPrivateEndpointRulePrivateLinkConnectionState] = None
     """The current status of this private endpoint. The private endpoint rules are effective only if
@@ -5239,7 +5211,8 @@ class NccPrivateEndpointRule:
     """Time in epoch milliseconds when this object was updated."""
 
     vpc_endpoint_id: Optional[str] = None
-    """The AWS VPC endpoint ID. You can use this ID to identify the VPC endpoint created by Databricks."""
+    """The AWS VPC endpoint ID. You can use this ID to identify the VPC endpoint created by
+    <Databricks>."""
 
     def as_dict(self) -> dict:
         """Serializes the NccPrivateEndpointRule into a dictionary suitable for use as a JSON request body."""
@@ -5363,7 +5336,8 @@ class NetworkConnectivityConfiguration:
     """Properties of the new network connectivity configuration."""
 
     account_id: Optional[str] = None
-    """Your Databricks account ID. You can find your account ID in your Databricks accounts console."""
+    """Your <Databricks> account ID. You can find your account ID in your <Databricks> accounts
+    console."""
 
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when this object was created."""
@@ -5378,7 +5352,7 @@ class NetworkConnectivityConfiguration:
     must match the regular expression ^[0-9a-zA-Z-_]{3,30}$"""
 
     network_connectivity_config_id: Optional[str] = None
-    """Databricks network connectivity configuration ID."""
+    """<Databricks> network connectivity configuration ID."""
 
     region: Optional[str] = None
     """The region for the network connectivity configuration. Only workspaces in the same region can be
@@ -5839,6 +5813,8 @@ class RestrictWorkspaceAdminsSetting:
 
 @dataclass
 class RevokeTokenResponse:
+    """The token was successfully deleted."""
+
     def as_dict(self) -> dict:
         """Serializes the RevokeTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5998,115 +5974,6 @@ class StringMessage:
 
 
 @dataclass
-class TokenAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[TokenPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the TokenAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TokenAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TokenAccessControlRequest:
-        """Deserializes the TokenAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", TokenPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class TokenAccessControlResponse:
-    all_permissions: Optional[List[TokenPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the TokenAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TokenAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TokenAccessControlResponse:
-        """Deserializes the TokenAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", TokenPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
 class TokenInfo:
     autoscope_state: Optional[iam.AutoscopeState] = None
     """Output only. The autoscope state of this token."""
@@ -6226,124 +6093,6 @@ class TokenInfo:
             scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
             workspace_id=_int64(d, "workspace_id"),
-        )
-
-
-@dataclass
-class TokenPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[TokenPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the TokenPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TokenPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TokenPermission:
-        """Deserializes the TokenPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", TokenPermissionLevel),
-        )
-
-
-class TokenPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_USE = "CAN_USE"
-
-
-@dataclass
-class TokenPermissions:
-    access_control_list: Optional[List[TokenAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the TokenPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TokenPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TokenPermissions:
-        """Deserializes the TokenPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", TokenAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class TokenPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[TokenPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the TokenPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TokenPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TokenPermissionsDescription:
-        """Deserializes the TokenPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None), permission_level=_enum(d, "permission_level", TokenPermissionLevel)
         )
 
 
@@ -6483,27 +6232,6 @@ class WorkspaceNetworkOption:
 
 
 class AccountIpAccessListsAPI:
-    """The Accounts IP Access List API enables account admins to configure IP access lists for access to the
-    account console.
-
-    Account IP Access Lists affect web application access and REST API access to the account console and
-    account APIs. If the feature is disabled for the account, all access is allowed for this account. There is
-    support for allow lists (inclusion) and block lists (exclusion).
-
-    When a connection is attempted:
-
-    1. **First, all block lists are checked.** If the connection IP address matches any block list, the
-       connection is rejected.
-    2. **If the connection was not rejected by block lists**, the IP address is compared with the allow lists.
-
-    If there is at least one allow list for the account, the connection is allowed only if the IP address
-    matches an allow list. If there are no allow lists for the account, all IP addresses are allowed.
-
-    For all allow lists and block lists combined, the account supports a maximum of 1000 IP/CIDR values, where
-    one CIDR counts as a single value.
-
-    After changes to the account-level IP access lists, it can take a few minutes for changes to take effect."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -6526,7 +6254,6 @@ class AccountIpAccessListsAPI:
         It can take a few minutes for the changes to take effect.
 
         :param label: str
-          Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
         :param ip_addresses: List[str] (optional)
 
@@ -6540,10 +6267,7 @@ class AccountIpAccessListsAPI:
             body["label"] = label
         if list_type is not None:
             body["list_type"] = list_type.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists", body=body, headers=headers
@@ -6574,9 +6298,7 @@ class AccountIpAccessListsAPI:
         :returns: :class:`GetIpAccessListResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}", headers=headers
@@ -6590,9 +6312,7 @@ class AccountIpAccessListsAPI:
         :returns: Iterator over :class:`IpAccessListInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists", headers=headers)
         parsed = GetIpAccessListsResponse.from_dict(json).ip_access_lists
@@ -6639,9 +6359,7 @@ class AccountIpAccessListsAPI:
             body["label"] = label
         if list_type is not None:
             body["list_type"] = list_type.value
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "PUT",
@@ -6695,9 +6413,7 @@ class AccountIpAccessListsAPI:
             body["label"] = label
         if list_type is not None:
             body["list_type"] = list_type.value
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "PATCH",
@@ -6708,8 +6424,6 @@ class AccountIpAccessListsAPI:
 
 
 class AccountSettingsAPI:
-    """Accounts Settings API allows users to manage settings at the account level."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -6723,44 +6437,34 @@ class AccountSettingsAPI:
 
     @property
     def csp_enablement_account(self) -> CspEnablementAccountAPI:
-        """The compliance security profile settings at the account level control whether to enable it for new workspaces."""
         return self._csp_enablement_account
 
     @property
     def disable_legacy_features(self) -> DisableLegacyFeaturesAPI:
-        """Disable legacy features for new Databricks workspaces."""
         return self._disable_legacy_features
 
     @property
     def enable_ip_access_lists(self) -> EnableIpAccessListsAPI:
-        """Controls the enforcement of IP access lists for accessing the account console."""
         return self._enable_ip_access_lists
 
     @property
     def esm_enablement_account(self) -> EsmEnablementAccountAPI:
-        """The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces."""
         return self._esm_enablement_account
 
     @property
     def llm_proxy_partner_powered_account(self) -> LlmProxyPartnerPoweredAccountAPI:
-        """Determines if partner powered models are enabled or not for a specific account."""
         return self._llm_proxy_partner_powered_account
 
     @property
     def llm_proxy_partner_powered_enforce(self) -> LlmProxyPartnerPoweredEnforceAPI:
-        """Determines if the account-level partner-powered setting value is enforced upon the workspace-level partner-powered setting."""
         return self._llm_proxy_partner_powered_enforce
 
     @property
     def personal_compute(self) -> PersonalComputeAPI:
-        """The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources."""
         return self._personal_compute
 
 
 class AibiDashboardEmbeddingAccessPolicyAPI:
-    """Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the
-    workspace level. By default, this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS)."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -6780,9 +6484,7 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6813,9 +6515,7 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6835,15 +6535,6 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AibiDashboardEmbeddingAccessPolicySetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
         """
@@ -6855,10 +6546,7 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6871,9 +6559,6 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
 
 
 class AibiDashboardEmbeddingApprovedDomainsAPI:
-    """Controls the list of domains approved to host the embedded AI/BI dashboards. The approved domains list
-    can't be mutated when the current access policy is not set to ALLOW_APPROVED_DOMAINS."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -6894,9 +6579,7 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6926,9 +6609,7 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6952,15 +6633,6 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
         """
@@ -6972,10 +6644,7 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -6991,9 +6660,6 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
 
 
 class AutomaticClusterUpdateAPI:
-    """Controls whether automatic cluster update is enabled for the current workspace. By default, it is turned
-    off."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7013,9 +6679,7 @@ class AutomaticClusterUpdateAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7038,15 +6702,6 @@ class AutomaticClusterUpdateAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AutomaticClusterUpdateSetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`AutomaticClusterUpdateSetting`
         """
@@ -7058,10 +6713,7 @@ class AutomaticClusterUpdateAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7074,11 +6726,6 @@ class AutomaticClusterUpdateAPI:
 
 
 class ComplianceSecurityProfileAPI:
-    """Controls whether to enable the compliance security profile for the current workspace. Enabling it on a
-    workspace is permanent. By default, it is turned off.
-
-    This settings can NOT be disabled once it is enabled."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7098,9 +6745,7 @@ class ComplianceSecurityProfileAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7123,15 +6768,6 @@ class ComplianceSecurityProfileAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`ComplianceSecurityProfileSetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`ComplianceSecurityProfileSetting`
         """
@@ -7143,10 +6779,7 @@ class ComplianceSecurityProfileAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7159,9 +6792,6 @@ class ComplianceSecurityProfileAPI:
 
 
 class CredentialsManagerAPI:
-    """Credentials manager interacts with with Identity Providers to to perform token exchanges using stored
-    credentials and refresh tokens."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7197,10 +6827,7 @@ class CredentialsManagerAPI:
             body["scopes"] = [v for v in scopes]
         if token_type is not None:
             body["tokenType"] = [v.value for v in token_type]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7211,13 +6838,6 @@ class CredentialsManagerAPI:
 
 
 class CspEnablementAccountAPI:
-    """The compliance security profile settings at the account level control whether to enable it for new
-    workspaces. By default, this account-level setting is disabled for new workspaces. After workspace
-    creation, account admins can enable the compliance security profile individually for each workspace.
-
-    This settings can be disabled so that new workspaces do not have compliance security profile enabled by
-    default."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7237,9 +6857,7 @@ class CspEnablementAccountAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -7258,15 +6876,6 @@ class CspEnablementAccountAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`CspEnablementAccountSetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`CspEnablementAccountSetting`
         """
@@ -7278,10 +6887,7 @@ class CspEnablementAccountAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -7293,10 +6899,6 @@ class CspEnablementAccountAPI:
 
 
 class DashboardEmailSubscriptionsAPI:
-    """Controls whether schedules or workload tasks for refreshing AI/BI Dashboards in the workspace can send
-    subscription emails containing PDFs and/or images of the dashboard. By default, this setting is enabled
-    (set to ``true``)"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7316,9 +6918,7 @@ class DashboardEmailSubscriptionsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7348,9 +6948,7 @@ class DashboardEmailSubscriptionsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7370,15 +6968,6 @@ class DashboardEmailSubscriptionsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DashboardEmailSubscriptions`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`DashboardEmailSubscriptions`
         """
@@ -7390,10 +6979,7 @@ class DashboardEmailSubscriptionsAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7406,17 +6992,6 @@ class DashboardEmailSubscriptionsAPI:
 
 
 class DefaultNamespaceAPI:
-    """The default namespace setting API allows users to configure the default namespace for a Databricks
-    workspace.
-
-    Through this API, users can retrieve, set, or modify the default namespace used when queries do not
-    reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
-    default catalog, then a query 'SELECT * FROM myTable' would reference the object
-    'retail_prod.default.myTable' (the schema 'default' is always assumed).
-
-    This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
-    namespace only applies when using Unity Catalog-enabled compute."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7439,9 +7014,7 @@ class DefaultNamespaceAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7468,9 +7041,7 @@ class DefaultNamespaceAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7493,15 +7064,6 @@ class DefaultNamespaceAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DefaultNamespaceSetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`DefaultNamespaceSetting`
         """
@@ -7513,10 +7075,7 @@ class DefaultNamespaceAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7529,9 +7088,6 @@ class DefaultNamespaceAPI:
 
 
 class DefaultWarehouseIdAPI:
-    """Warehouse to be selected by default for users in this workspace. Covers SQL workloads only and can be
-    overridden by users."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7551,9 +7107,7 @@ class DefaultWarehouseIdAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7580,9 +7134,7 @@ class DefaultWarehouseIdAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7600,15 +7152,6 @@ class DefaultWarehouseIdAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DefaultWarehouseId`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`DefaultWarehouseId`
         """
@@ -7620,10 +7163,7 @@ class DefaultWarehouseIdAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7636,13 +7176,6 @@ class DefaultWarehouseIdAPI:
 
 
 class DisableLegacyAccessAPI:
-    """'Disabling legacy access' has the following impacts:
-
-    1. Disables direct access to Hive Metastores from the workspace. However, you can still access a Hive
-       Metastore through Hive Metastore federation.
-    2. Disables fallback mode on external location access from the workspace.
-    3. Disables Databricks Runtime versions prior to 13.3LTS."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7662,9 +7195,7 @@ class DisableLegacyAccessAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7691,9 +7222,7 @@ class DisableLegacyAccessAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7711,15 +7240,6 @@ class DisableLegacyAccessAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DisableLegacyAccess`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`DisableLegacyAccess`
         """
@@ -7731,10 +7251,7 @@ class DisableLegacyAccessAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7747,15 +7264,6 @@ class DisableLegacyAccessAPI:
 
 
 class DisableLegacyDbfsAPI:
-    """Disabling legacy DBFS has the following implications:
-
-    1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts).
-    2. Disables Databricks Runtime versions prior to 13.3LTS.
-
-    When the setting is off, all DBFS functionality is enabled and no restrictions are imposed on Databricks
-    Runtime versions. This setting can take up to 20 minutes to take effect and requires a manual restart of
-    all-purpose compute clusters and SQL warehouses."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7775,9 +7283,7 @@ class DisableLegacyDbfsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7804,9 +7310,7 @@ class DisableLegacyDbfsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7824,15 +7328,6 @@ class DisableLegacyDbfsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DisableLegacyDbfs`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`DisableLegacyDbfs`
         """
@@ -7844,10 +7339,7 @@ class DisableLegacyDbfsAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -7860,15 +7352,6 @@ class DisableLegacyDbfsAPI:
 
 
 class DisableLegacyFeaturesAPI:
-    """Disable legacy features for new Databricks workspaces.
-
-    For newly created workspaces:
-
-    1. Disables the use of DBFS root and mounts.
-    2. Hive Metastore will not be provisioned.
-    3. Disables the use of ‘No-isolation clusters’.
-    4. Disables Databricks Runtime versions prior to 13.3LTS."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7888,9 +7371,7 @@ class DisableLegacyFeaturesAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "DELETE",
@@ -7916,9 +7397,7 @@ class DisableLegacyFeaturesAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -7935,15 +7414,6 @@ class DisableLegacyFeaturesAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DisableLegacyFeatures`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`DisableLegacyFeatures`
         """
@@ -7955,10 +7425,7 @@ class DisableLegacyFeaturesAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -7970,9 +7437,6 @@ class DisableLegacyFeaturesAPI:
 
 
 class EnableExportNotebookAPI:
-    """Controls whether users can export notebooks and files from the Workspace UI. By default, this setting is
-    enabled."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -7983,9 +7447,7 @@ class EnableExportNotebookAPI:
         :returns: :class:`EnableExportNotebook`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8004,15 +7466,6 @@ class EnableExportNotebookAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EnableExportNotebook`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`EnableExportNotebook`
         """
@@ -8024,10 +7477,7 @@ class EnableExportNotebookAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8040,9 +7490,6 @@ class EnableExportNotebookAPI:
 
 
 class EnableIpAccessListsAPI:
-    """Controls the enforcement of IP access lists for accessing the account console. Allowing you to enable or
-    disable restricted access based on IP addresses."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8062,9 +7509,7 @@ class EnableIpAccessListsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "DELETE",
@@ -8090,9 +7535,7 @@ class EnableIpAccessListsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -8109,15 +7552,6 @@ class EnableIpAccessListsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AccountIpAccessEnable`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`AccountIpAccessEnable`
         """
@@ -8129,10 +7563,7 @@ class EnableIpAccessListsAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -8144,9 +7575,6 @@ class EnableIpAccessListsAPI:
 
 
 class EnableNotebookTableClipboardAPI:
-    """Controls whether users can copy tabular data to the clipboard via the UI. By default, this setting is
-    enabled."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8157,9 +7585,7 @@ class EnableNotebookTableClipboardAPI:
         :returns: :class:`EnableNotebookTableClipboard`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8180,15 +7606,6 @@ class EnableNotebookTableClipboardAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EnableNotebookTableClipboard`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`EnableNotebookTableClipboard`
         """
@@ -8200,10 +7617,7 @@ class EnableNotebookTableClipboardAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8216,8 +7630,6 @@ class EnableNotebookTableClipboardAPI:
 
 
 class EnableResultsDownloadingAPI:
-    """Controls whether users can download notebook results. By default, this setting is enabled."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8228,9 +7640,7 @@ class EnableResultsDownloadingAPI:
         :returns: :class:`EnableResultsDownloading`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8249,15 +7659,6 @@ class EnableResultsDownloadingAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EnableResultsDownloading`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`EnableResultsDownloading`
         """
@@ -8269,10 +7670,7 @@ class EnableResultsDownloadingAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8285,13 +7683,6 @@ class EnableResultsDownloadingAPI:
 
 
 class EnhancedSecurityMonitoringAPI:
-    """Controls whether enhanced security monitoring is enabled for the current workspace. If the compliance
-    security profile is enabled, this is automatically enabled. By default, it is disabled. However, if the
-    compliance security profile is enabled, this is automatically enabled.
-
-    If the compliance security profile is disabled, you can enable or disable this setting and it is not
-    permanent."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8311,9 +7702,7 @@ class EnhancedSecurityMonitoringAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8336,15 +7725,6 @@ class EnhancedSecurityMonitoringAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EnhancedSecurityMonitoringSetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`EnhancedSecurityMonitoringSetting`
         """
@@ -8356,10 +7736,7 @@ class EnhancedSecurityMonitoringAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8372,10 +7749,6 @@ class EnhancedSecurityMonitoringAPI:
 
 
 class EsmEnablementAccountAPI:
-    """The enhanced security monitoring setting at the account level controls whether to enable the feature on
-    new workspaces. By default, this account-level setting is disabled for new workspaces. After workspace
-    creation, account admins can enable enhanced security monitoring individually for each workspace."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8395,9 +7768,7 @@ class EsmEnablementAccountAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -8416,15 +7787,6 @@ class EsmEnablementAccountAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EsmEnablementAccountSetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`EsmEnablementAccountSetting`
         """
@@ -8436,10 +7798,7 @@ class EsmEnablementAccountAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -8451,26 +7810,6 @@ class EsmEnablementAccountAPI:
 
 
 class IpAccessListsAPI:
-    """IP Access List enables admins to configure IP access lists.
-
-    IP access lists affect web application access and REST API access to this workspace only. If the feature
-    is disabled for a workspace, all access is allowed for this workspace. There is support for allow lists
-    (inclusion) and block lists (exclusion).
-
-    When a connection is attempted:
-
-    1. **First, all block lists are checked.** If the connection IP address matches any block list, the
-       connection is rejected.
-    2. **If the connection was not rejected by block lists**, the IP address is compared with the allow lists.
-
-    If there is at least one allow list for the workspace, the connection is allowed only if the IP address
-    matches an allow list. If there are no allow lists for the workspace, all IP addresses are allowed.
-
-    For all allow lists and block lists combined, the workspace supports a maximum of 1000 IP/CIDR values,
-    where one CIDR counts as a single value.
-
-    After changes to the IP access list feature, it can take a few minutes for changes to take effect."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8495,7 +7834,6 @@ class IpAccessListsAPI:
         <https://docs.databricks.com/api/workspace/workspaceconf/setstatus>`__
 
         :param label: str
-          Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
         :param ip_addresses: List[str] (optional)
 
@@ -8509,10 +7847,7 @@ class IpAccessListsAPI:
             body["label"] = label
         if list_type is not None:
             body["list_type"] = list_type.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8547,9 +7882,7 @@ class IpAccessListsAPI:
         :returns: :class:`FetchIpAccessListResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8565,9 +7898,7 @@ class IpAccessListsAPI:
         :returns: Iterator over :class:`IpAccessListInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8620,9 +7951,7 @@ class IpAccessListsAPI:
             body["label"] = label
         if list_type is not None:
             body["list_type"] = list_type.value
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8677,9 +8006,7 @@ class IpAccessListsAPI:
             body["label"] = label
         if list_type is not None:
             body["list_type"] = list_type.value
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8689,8 +8016,6 @@ class IpAccessListsAPI:
 
 
 class LlmProxyPartnerPoweredAccountAPI:
-    """Determines if partner powered models are enabled or not for a specific account"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8710,9 +8035,7 @@ class LlmProxyPartnerPoweredAccountAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -8731,15 +8054,6 @@ class LlmProxyPartnerPoweredAccountAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`LlmProxyPartnerPoweredAccount`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`LlmProxyPartnerPoweredAccount`
         """
@@ -8751,10 +8065,7 @@ class LlmProxyPartnerPoweredAccountAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -8766,9 +8077,6 @@ class LlmProxyPartnerPoweredAccountAPI:
 
 
 class LlmProxyPartnerPoweredEnforceAPI:
-    """Determines if the account-level partner-powered setting value is enforced upon the workspace-level
-    partner-powered setting"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8788,9 +8096,7 @@ class LlmProxyPartnerPoweredEnforceAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -8809,15 +8115,6 @@ class LlmProxyPartnerPoweredEnforceAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`LlmProxyPartnerPoweredEnforce`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`LlmProxyPartnerPoweredEnforce`
         """
@@ -8829,10 +8126,7 @@ class LlmProxyPartnerPoweredEnforceAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -8844,8 +8138,6 @@ class LlmProxyPartnerPoweredEnforceAPI:
 
 
 class LlmProxyPartnerPoweredWorkspaceAPI:
-    """Determines if partner powered models are enabled or not for a specific workspace"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8865,9 +8157,7 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8894,9 +8184,7 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8916,15 +8204,6 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`LlmProxyPartnerPoweredWorkspace`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`LlmProxyPartnerPoweredWorkspace`
         """
@@ -8936,10 +8215,7 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8952,13 +8228,6 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
 
 
 class NetworkConnectivityAPI:
-    """These APIs provide configurations for the network connectivity of your workspaces for serverless compute
-    resources. This API provides stable subnets for your workspace so that you can configure your firewalls on
-    your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
-    endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
-    Azure Private Link. See `configure serverless secure connectivity
-    <https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security>`__."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8967,13 +8236,13 @@ class NetworkConnectivityAPI:
     ) -> NetworkConnectivityConfiguration:
         """Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
         accessing your Azure Storage accounts. You can also use a network connectivity configuration to create
-        Databricks managed private endpoints so that Databricks serverless compute resources privately access
-        your resources.
+        <Databricks> managed private endpoints so that <Databricks> serverless compute resources privately
+        access your resources.
 
         **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
         workspaces to the new network connectivity configuration. You can share one network connectivity
-        configuration with multiple workspaces from the same Azure region within the same Databricks account.
-        See `configure serverless secure connectivity
+        configuration with multiple workspaces from the same Azure region within the same <Databricks>
+        account. See `configure serverless secure connectivity
         <https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security>`__.
 
         :param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`
@@ -8983,10 +8252,7 @@ class NetworkConnectivityAPI:
 
         body = network_connectivity_config.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs", body=body, headers=headers
@@ -8997,8 +8263,8 @@ class NetworkConnectivityAPI:
         self, network_connectivity_config_id: str, private_endpoint_rule: CreatePrivateEndpointRule
     ) -> NccPrivateEndpointRule:
         """Create a private endpoint rule for the specified network connectivity config object. Once the object
-        is created, Databricks asynchronously provisions a new Azure private endpoint to your specified Azure
-        resource.
+        is created, <Databricks> asynchronously provisions a new Azure private endpoint to your specified
+        Azure resource.
 
         **IMPORTANT**: You must use Azure portal or other Azure tools to approve the private endpoint to
         complete the connection. To get the information of the private endpoint created, make a ``GET``
@@ -9014,10 +8280,7 @@ class NetworkConnectivityAPI:
 
         body = private_endpoint_rule.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST",
@@ -9036,9 +8299,7 @@ class NetworkConnectivityAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "DELETE",
@@ -9062,9 +8323,7 @@ class NetworkConnectivityAPI:
         :returns: :class:`NccPrivateEndpointRule`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "DELETE",
@@ -9084,9 +8343,7 @@ class NetworkConnectivityAPI:
         :returns: :class:`NetworkConnectivityConfiguration`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -9108,9 +8365,7 @@ class NetworkConnectivityAPI:
         :returns: :class:`NccPrivateEndpointRule`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -9133,9 +8388,7 @@ class NetworkConnectivityAPI:
         query = {}
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -9167,9 +8420,7 @@ class NetworkConnectivityAPI:
         query = {}
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -9202,11 +8453,6 @@ class NetworkConnectivityAPI:
           Your private endpoint rule ID.
         :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
 
         :returns: :class:`NccPrivateEndpointRule`
         """
@@ -9215,10 +8461,7 @@ class NetworkConnectivityAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -9231,19 +8474,12 @@ class NetworkConnectivityAPI:
 
 
 class NetworkPoliciesAPI:
-    """These APIs manage network policies for this account. Network policies control which network destinations
-    can be accessed from the Databricks environment. Each Databricks account includes a default policy named
-    'default-policy'. 'default-policy' is associated with any workspace lacking an explicit network policy
-    assignment, and is automatically associated with each newly created workspace. 'default-policy' is
-    reserved and cannot be deleted, but it can be updated to customize the default network access rules for
-    your account."""
-
     def __init__(self, api_client):
         self._api = api_client
 
     def create_network_policy_rpc(self, network_policy: AccountNetworkPolicy) -> AccountNetworkPolicy:
-        """Creates a new network policy to manage which network destinations can be accessed from the Databricks
-        environment.
+        """Creates a new network policy to manage which network destinations can be accessed from the
+        <Databricks> environment.
 
         :param network_policy: :class:`AccountNetworkPolicy`
           Network policy configuration details.
@@ -9253,10 +8489,7 @@ class NetworkPoliciesAPI:
 
         body = network_policy.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/2.0/accounts/{self._api.account_id}/network-policies", body=body, headers=headers
@@ -9272,9 +8505,7 @@ class NetworkPoliciesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "DELETE", f"/api/2.0/accounts/{self._api.account_id}/network-policies/{network_policy_id}", headers=headers
@@ -9289,9 +8520,7 @@ class NetworkPoliciesAPI:
         :returns: :class:`AccountNetworkPolicy`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/network-policies/{network_policy_id}", headers=headers
@@ -9310,9 +8539,7 @@ class NetworkPoliciesAPI:
         query = {}
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         while True:
             json = self._api.do(
@@ -9340,10 +8567,7 @@ class NetworkPoliciesAPI:
 
         body = network_policy.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PUT",
@@ -9355,11 +8579,6 @@ class NetworkPoliciesAPI:
 
 
 class NotificationDestinationsAPI:
-    """The notification destinations API lets you programmatically manage a workspace's notification
-    destinations. Notification destinations are used to send notifications for query alerts and jobs to
-    destinations outside of Databricks. Only workspace admins can create, update, and delete notification
-    destinations."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9379,10 +8598,7 @@ class NotificationDestinationsAPI:
             body["config"] = config.as_dict()
         if display_name is not None:
             body["display_name"] = display_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9399,9 +8615,7 @@ class NotificationDestinationsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9417,9 +8631,7 @@ class NotificationDestinationsAPI:
         :returns: :class:`NotificationDestination`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9444,9 +8656,7 @@ class NotificationDestinationsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9482,10 +8692,7 @@ class NotificationDestinationsAPI:
             body["config"] = config.as_dict()
         if display_name is not None:
             body["display_name"] = display_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9496,14 +8703,6 @@ class NotificationDestinationsAPI:
 
 
 class PersonalComputeAPI:
-    """The Personal Compute enablement setting lets you control which users can use the Personal Compute default
-    policy to create compute resources. By default all users in all workspaces have access (ON), but you can
-    change the setting to instead let individual workspaces configure access control (DELEGATE).
-
-    There is only one instance of this setting per account. Since this setting has a default value, this
-    setting is present on all accounts even though it's never set on a given account. Deletion reverts the
-    value of the setting back to the default value."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9523,9 +8722,7 @@ class PersonalComputeAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "DELETE",
@@ -9551,9 +8748,7 @@ class PersonalComputeAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -9570,15 +8765,6 @@ class PersonalComputeAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`PersonalComputeSetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`PersonalComputeSetting`
         """
@@ -9590,10 +8776,7 @@ class PersonalComputeAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PATCH",
@@ -9605,16 +8788,6 @@ class PersonalComputeAPI:
 
 
 class RestrictWorkspaceAdminsAPI:
-    """The Restrict Workspace Admins setting lets you control the capabilities of workspace admins. With the
-    setting status set to ALLOW_ALL, workspace admins can create service principal personal access tokens on
-    behalf of any service principal in their workspace. Workspace admins can also change a job owner to any
-    user in their workspace. And they can change the job run_as setting to any user in their workspace or to a
-    service principal on which they have the Service Principal User role. With the setting status set to
-    RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins can only create personal access tokens on behalf of
-    service principals they have the Service Principal User role on. They can also only change a job owner to
-    themselves. And they can change the job run_as setting to themselves or to a service principal on which
-    they have the Service Principal User role."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9637,9 +8810,7 @@ class RestrictWorkspaceAdminsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9666,9 +8837,7 @@ class RestrictWorkspaceAdminsAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9691,15 +8860,6 @@ class RestrictWorkspaceAdminsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`RestrictWorkspaceAdminsSetting`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`RestrictWorkspaceAdminsSetting`
         """
@@ -9711,10 +8871,7 @@ class RestrictWorkspaceAdminsAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9727,8 +8884,6 @@ class RestrictWorkspaceAdminsAPI:
 
 
 class SettingsAPI:
-    """Workspace Settings API allows users to manage settings at the workspace level."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9751,89 +8906,70 @@ class SettingsAPI:
 
     @property
     def aibi_dashboard_embedding_access_policy(self) -> AibiDashboardEmbeddingAccessPolicyAPI:
-        """Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level."""
         return self._aibi_dashboard_embedding_access_policy
 
     @property
     def aibi_dashboard_embedding_approved_domains(self) -> AibiDashboardEmbeddingApprovedDomainsAPI:
-        """Controls the list of domains approved to host the embedded AI/BI dashboards."""
         return self._aibi_dashboard_embedding_approved_domains
 
     @property
     def automatic_cluster_update(self) -> AutomaticClusterUpdateAPI:
-        """Controls whether automatic cluster update is enabled for the current workspace."""
         return self._automatic_cluster_update
 
     @property
     def compliance_security_profile(self) -> ComplianceSecurityProfileAPI:
-        """Controls whether to enable the compliance security profile for the current workspace."""
         return self._compliance_security_profile
 
     @property
     def dashboard_email_subscriptions(self) -> DashboardEmailSubscriptionsAPI:
-        """Controls whether schedules or workload tasks for refreshing AI/BI Dashboards in the workspace can send subscription emails containing PDFs and/or images of the dashboard."""
         return self._dashboard_email_subscriptions
 
     @property
     def default_namespace(self) -> DefaultNamespaceAPI:
-        """The default namespace setting API allows users to configure the default namespace for a Databricks workspace."""
         return self._default_namespace
 
     @property
     def default_warehouse_id(self) -> DefaultWarehouseIdAPI:
-        """Warehouse to be selected by default for users in this workspace."""
         return self._default_warehouse_id
 
     @property
     def disable_legacy_access(self) -> DisableLegacyAccessAPI:
-        """'Disabling legacy access' has the following impacts: 1."""
         return self._disable_legacy_access
 
     @property
     def disable_legacy_dbfs(self) -> DisableLegacyDbfsAPI:
-        """Disabling legacy DBFS has the following implications: 1."""
         return self._disable_legacy_dbfs
 
     @property
     def enable_export_notebook(self) -> EnableExportNotebookAPI:
-        """Controls whether users can export notebooks and files from the Workspace UI."""
         return self._enable_export_notebook
 
     @property
     def enable_notebook_table_clipboard(self) -> EnableNotebookTableClipboardAPI:
-        """Controls whether users can copy tabular data to the clipboard via the UI."""
         return self._enable_notebook_table_clipboard
 
     @property
     def enable_results_downloading(self) -> EnableResultsDownloadingAPI:
-        """Controls whether users can download notebook results."""
         return self._enable_results_downloading
 
     @property
     def enhanced_security_monitoring(self) -> EnhancedSecurityMonitoringAPI:
-        """Controls whether enhanced security monitoring is enabled for the current workspace."""
         return self._enhanced_security_monitoring
 
     @property
     def llm_proxy_partner_powered_workspace(self) -> LlmProxyPartnerPoweredWorkspaceAPI:
-        """Determines if partner powered models are enabled or not for a specific workspace."""
         return self._llm_proxy_partner_powered_workspace
 
     @property
     def restrict_workspace_admins(self) -> RestrictWorkspaceAdminsAPI:
-        """The Restrict Workspace Admins setting lets you control the capabilities of workspace admins."""
         return self._restrict_workspace_admins
 
     @property
     def sql_results_download(self) -> SqlResultsDownloadAPI:
-        """Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI Dashboards UIs."""
         return self._sql_results_download
 
 
 class SqlResultsDownloadAPI:
-    """Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI
-    Dashboards UIs. By default, this setting is enabled (set to ``true``)"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9853,9 +8989,7 @@ class SqlResultsDownloadAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9882,9 +9016,7 @@ class SqlResultsDownloadAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9902,15 +9034,6 @@ class SqlResultsDownloadAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`SqlResultsDownload`
         :param field_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`SqlResultsDownload`
         """
@@ -9922,10 +9045,7 @@ class SqlResultsDownloadAPI:
             body["field_mask"] = field_mask
         if setting is not None:
             body["setting"] = setting.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9938,9 +9058,6 @@ class SqlResultsDownloadAPI:
 
 
 class TokenManagementAPI:
-    """Enables administrators to get all tokens and delete tokens for other users. Admins can either get every
-    token, get a specific token by ID, or get all tokens for a particular user."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -9979,10 +9096,7 @@ class TokenManagementAPI:
             body["lifetime_seconds"] = lifetime_seconds
         if scopes is not None:
             body["scopes"] = [v for v in scopes]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10017,9 +9131,7 @@ class TokenManagementAPI:
         :returns: :class:`GetTokenResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10027,42 +9139,6 @@ class TokenManagementAPI:
 
         res = self._api.do("GET", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
         return GetTokenResponse.from_dict(res)
-
-    def get_permission_levels(self) -> GetTokenPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-
-        :returns: :class:`GetTokenPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", "/api/2.0/permissions/authorization/tokens/permissionLevels", headers=headers)
-        return GetTokenPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self) -> TokenPermissions:
-        """Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
-
-
-        :returns: :class:`TokenPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", "/api/2.0/permissions/authorization/tokens", headers=headers)
-        return TokenPermissions.from_dict(res)
 
     def list(
         self, *, created_by_id: Optional[int] = None, created_by_username: Optional[str] = None
@@ -10082,9 +9158,7 @@ class TokenManagementAPI:
             query["created_by_id"] = created_by_id
         if created_by_username is not None:
             query["created_by_username"] = created_by_username
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10093,57 +9167,6 @@ class TokenManagementAPI:
         json = self._api.do("GET", "/api/2.0/token-management/tokens", query=query, headers=headers)
         parsed = ListTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
-
-    def set_permissions(
-        self, *, access_control_list: Optional[List[TokenAccessControlRequest]] = None
-    ) -> TokenPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
-
-        :returns: :class:`TokenPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PUT", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
-        return TokenPermissions.from_dict(res)
-
-    def update_permissions(
-        self, *, access_control_list: Optional[List[TokenAccessControlRequest]] = None
-    ) -> TokenPermissions:
-        """Updates the permissions on all tokens. Tokens can inherit permissions from their root object.
-
-        :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
-
-        :returns: :class:`TokenPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
-        return TokenPermissions.from_dict(res)
 
     def update_token_management(self, token_id: str, token: TokenInfo, update_mask: FieldMask) -> TokenInfo:
         """Updates a token, specified by its ID.
@@ -10154,16 +9177,6 @@ class TokenManagementAPI:
         :param update_mask: FieldMask
           A list of field name under token, For example, {"update_mask": "comment,scopes"}
 
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
-
         :returns: :class:`TokenInfo`
         """
 
@@ -10172,10 +9185,7 @@ class TokenManagementAPI:
             body["token"] = token.as_dict()
         if update_mask is not None:
             body["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10186,9 +9196,6 @@ class TokenManagementAPI:
 
 
 class TokensAPI:
-    """The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access
-    Databricks REST APIs."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -10228,10 +9235,7 @@ class TokensAPI:
             body["lifetime_seconds"] = lifetime_seconds
         if scopes is not None:
             body["scopes"] = [v for v in scopes]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10254,10 +9258,7 @@ class TokensAPI:
         body = {}
         if token_id is not None:
             body["token_id"] = token_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10272,9 +9273,7 @@ class TokensAPI:
         :returns: Iterator over :class:`PublicTokenInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10295,16 +9294,6 @@ class TokensAPI:
         :param update_mask: FieldMask
           A list of field name under token, For example, {"update_mask": "comment,scopes"}
 
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
-
         :returns: :class:`UpdateTokenResponse`
         """
 
@@ -10313,10 +9302,7 @@ class TokensAPI:
             body["token"] = token.as_dict()
         if update_mask is not None:
             body["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10327,8 +9313,6 @@ class TokensAPI:
 
 
 class WorkspaceConfAPI:
-    """This API allows updating known workspace settings for advanced users."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -10343,9 +9327,7 @@ class WorkspaceConfAPI:
         query = {}
         if keys is not None:
             query["keys"] = keys
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10357,9 +9339,7 @@ class WorkspaceConfAPI:
     def set_status(self, contents: Dict[str, str]):
         """Sets the configuration status for a workspace, including enabling or disabling it."""
 
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10369,12 +9349,6 @@ class WorkspaceConfAPI:
 
 
 class WorkspaceNetworkConfigurationAPI:
-    """These APIs allow configuration of network settings for Databricks workspaces by selecting which network
-    policy to associate with the workspace. Each workspace is always associated with exactly one network
-    policy that controls which network destinations can be accessed from the Databricks environment. By
-    default, workspaces are associated with the 'default-policy' network policy. You cannot create or delete a
-    workspace's network option, only update it to associate the workspace with a different policy"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -10388,9 +9362,7 @@ class WorkspaceNetworkConfigurationAPI:
         :returns: :class:`WorkspaceNetworkOption`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/network", headers=headers
@@ -10413,10 +9385,7 @@ class WorkspaceNetworkConfigurationAPI:
 
         body = workspace_network_option.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PUT",

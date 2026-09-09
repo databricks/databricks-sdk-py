@@ -1356,8 +1356,16 @@ class UpsertDataResponse:
 
 
 class AiSearchAPI:
-    """**AI Search Endpoint**: Represents the compute resources to host AI Search indexes. AIP-conformant
-    replacement for the legacy VectorSearchEndpoints API; functionally equivalent."""
+    """Customer-facing AI Search index control plane RPCs. AIP-conformant front door for AI Search index
+    resources; server-side handlers delegate to the existing Vector Search index logic via field-by-field
+    translation.
+
+    This service deliberately has NO ``(databricks.openapi.service)`` option. Its methods are grouped under
+    the single ``AISearch`` SDK tag (via the per-method ``tag: "AISearch"``), which is defined once in
+    service.proto's AISearchService. The Index resource is declared in that same ``AISearch`` tag's
+    ``resources`` block (alongside Endpoint) — declaring a second tag named ``AISearch`` here would make the
+    OpenAPI generator fail spec normalization with a duplicate- tag error when service.proto and indexes.proto
+    are combined into one spec."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1383,10 +1391,7 @@ class AiSearchAPI:
         query = {}
         if endpoint_id is not None:
             query["endpoint_id"] = endpoint_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1417,10 +1422,7 @@ class AiSearchAPI:
         query = {}
         if index_id is not None:
             query["index_id"] = index_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1439,9 +1441,7 @@ class AiSearchAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1459,9 +1459,7 @@ class AiSearchAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1478,9 +1476,7 @@ class AiSearchAPI:
         :returns: :class:`Endpoint`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1499,9 +1495,7 @@ class AiSearchAPI:
         :returns: :class:`Index`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1532,9 +1526,7 @@ class AiSearchAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1572,9 +1564,7 @@ class AiSearchAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1664,10 +1654,7 @@ class AiSearchAPI:
             body["score_threshold"] = score_threshold
         if sort_columns is not None:
             body["sort_columns"] = [v for v in sort_columns]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1691,10 +1678,7 @@ class AiSearchAPI:
         body = {}
         if primary_keys is not None:
             body["primary_keys"] = [v for v in primary_keys]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1724,10 +1708,7 @@ class AiSearchAPI:
             body["page_size"] = page_size
         if page_token is not None:
             body["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1747,17 +1728,13 @@ class AiSearchAPI:
         :returns: :class:`SyncIndexResponse`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/ai-search/{name}:sync", body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/ai-search/{name}:sync", headers=headers)
         return SyncIndexResponse.from_dict(res)
 
     def update_endpoint(self, name: str, endpoint: Endpoint, update_mask: FieldMask) -> Endpoint:
@@ -1783,10 +1760,7 @@ class AiSearchAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1810,10 +1784,7 @@ class AiSearchAPI:
         body = {}
         if inputs_json is not None:
             body["inputs_json"] = inputs_json
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

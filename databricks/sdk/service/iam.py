@@ -138,7 +138,7 @@ class AccessControlResponse:
 @dataclass
 class AccountGroup:
     account_id: Optional[str] = None
-    """Databricks account ID"""
+    """<Databricks> account ID"""
 
     display_name: Optional[str] = None
     """String that represents a human-readable group name"""
@@ -147,7 +147,7 @@ class AccountGroup:
     """external_id should be unique for identifying groups"""
 
     id: Optional[str] = None
-    """Databricks group ID"""
+    """<Databricks> group ID"""
 
     members: Optional[List[ComplexValue]] = None
 
@@ -212,7 +212,7 @@ class AccountGroup:
 @dataclass
 class AccountServicePrincipal:
     account_id: Optional[str] = None
-    """Databricks account ID"""
+    """<Databricks> account ID"""
 
     active: Optional[bool] = None
     """If this user is active"""
@@ -226,7 +226,7 @@ class AccountServicePrincipal:
     external_id: Optional[str] = None
 
     id: Optional[str] = None
-    """Databricks service principal ID."""
+    """<Databricks> service principal ID."""
 
     roles: Optional[List[ComplexValue]] = None
     """Indicates if the group has the admin role."""
@@ -286,7 +286,7 @@ class AccountServicePrincipal:
 @dataclass
 class AccountUser:
     account_id: Optional[str] = None
-    """Databricks account ID"""
+    """<Databricks> account ID"""
 
     active: Optional[bool] = None
     """If this user is active"""
@@ -295,14 +295,14 @@ class AccountUser:
     """String that represents a concatenation of given and family names. For example ``John Smith``."""
 
     emails: Optional[List[ComplexValue]] = None
-    """All the emails associated with the Databricks user. This attribute cannot be updated through the
-    SCIM PATCH or PUT APIs; any supplied change is ignored."""
+    """All the emails associated with the <Databricks> user. This attribute cannot be updated through
+    the SCIM PATCH or PUT APIs; any supplied change is ignored."""
 
     external_id: Optional[str] = None
     """External ID is not currently supported. It is reserved for future use."""
 
     id: Optional[str] = None
-    """Databricks user ID."""
+    """<Databricks> user ID."""
 
     name: Optional[Name] = None
 
@@ -310,8 +310,8 @@ class AccountUser:
     """Indicates if the group has the admin role."""
 
     user_name: Optional[str] = None
-    """Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or
-    PUT APIs; any supplied change is ignored."""
+    """Email address of the <Databricks> user. This attribute cannot be updated through the SCIM PATCH
+    or PUT APIs; any supplied change is ignored."""
 
     def as_dict(self) -> dict:
         """Serializes the AccountUser into a dictionary suitable for use as a JSON request body."""
@@ -679,7 +679,7 @@ class Group:
     groups: Optional[List[ComplexValue]] = None
 
     id: Optional[str] = None
-    """Databricks group ID"""
+    """<Databricks> group ID"""
 
     members: Optional[List[ComplexValue]] = None
 
@@ -802,10 +802,10 @@ class ListAccountGroupsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListAccountGroupsResponse:
         """Deserializes the ListAccountGroupsResponse from a dictionary."""
         return cls(
-            items_per_page=_int64(d, "itemsPerPage"),
+            items_per_page=d.get("itemsPerPage", None),
             resources=_repeated_dict(d, "Resources", AccountGroup),
             start_index=_int64(d, "startIndex"),
-            total_results=_int64(d, "totalResults"),
+            total_results=d.get("totalResults", None),
         )
 
 
@@ -853,10 +853,10 @@ class ListAccountServicePrincipalsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListAccountServicePrincipalsResponse:
         """Deserializes the ListAccountServicePrincipalsResponse from a dictionary."""
         return cls(
-            items_per_page=_int64(d, "itemsPerPage"),
+            items_per_page=d.get("itemsPerPage", None),
             resources=_repeated_dict(d, "Resources", AccountServicePrincipal),
             start_index=_int64(d, "startIndex"),
-            total_results=_int64(d, "totalResults"),
+            total_results=d.get("totalResults", None),
         )
 
 
@@ -904,10 +904,10 @@ class ListAccountUsersResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListAccountUsersResponse:
         """Deserializes the ListAccountUsersResponse from a dictionary."""
         return cls(
-            items_per_page=_int64(d, "itemsPerPage"),
+            items_per_page=d.get("itemsPerPage", None),
             resources=_repeated_dict(d, "Resources", AccountUser),
             start_index=_int64(d, "startIndex"),
-            total_results=_int64(d, "totalResults"),
+            total_results=d.get("totalResults", None),
         )
 
 
@@ -962,11 +962,11 @@ class ListGroupsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListGroupsResponse:
         """Deserializes the ListGroupsResponse from a dictionary."""
         return cls(
-            items_per_page=_int64(d, "itemsPerPage"),
+            items_per_page=d.get("itemsPerPage", None),
             resources=_repeated_dict(d, "Resources", Group),
             schemas=_repeated_enum(d, "schemas", ListResponseSchema),
             start_index=_int64(d, "startIndex"),
-            total_results=_int64(d, "totalResults"),
+            total_results=d.get("totalResults", None),
         )
 
 
@@ -1025,11 +1025,11 @@ class ListServicePrincipalResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListServicePrincipalResponse:
         """Deserializes the ListServicePrincipalResponse from a dictionary."""
         return cls(
-            items_per_page=_int64(d, "itemsPerPage"),
+            items_per_page=d.get("itemsPerPage", None),
             resources=_repeated_dict(d, "Resources", ServicePrincipal),
             schemas=_repeated_enum(d, "schemas", ListResponseSchema),
             start_index=_int64(d, "startIndex"),
-            total_results=_int64(d, "totalResults"),
+            total_results=d.get("totalResults", None),
         )
 
 
@@ -1089,11 +1089,11 @@ class ListUsersResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListUsersResponse:
         """Deserializes the ListUsersResponse from a dictionary."""
         return cls(
-            items_per_page=_int64(d, "itemsPerPage"),
+            items_per_page=d.get("itemsPerPage", None),
             resources=_repeated_dict(d, "Resources", User),
             schemas=_repeated_enum(d, "schemas", ListResponseSchema),
             start_index=_int64(d, "startIndex"),
-            total_results=_int64(d, "totalResults"),
+            total_results=d.get("totalResults", None),
         )
 
 
@@ -1125,10 +1125,10 @@ class MigratePermissionsResponse:
 @dataclass
 class Name:
     family_name: Optional[str] = None
-    """Family name of the Databricks user."""
+    """Family name of the <Databricks> user."""
 
     given_name: Optional[str] = None
-    """Given name of the Databricks user."""
+    """Given name of the <Databricks> user."""
 
     def as_dict(self) -> dict:
         """Serializes the Name into a dictionary suitable for use as a JSON request body."""
@@ -1953,7 +1953,7 @@ class ServicePrincipal:
     groups: Optional[List[ComplexValue]] = None
 
     id: Optional[str] = None
-    """Databricks service principal ID."""
+    """<Databricks> service principal ID."""
 
     roles: Optional[List[ComplexValue]] = None
     """Corresponds to AWS instance profile/arn role."""
@@ -2040,8 +2040,8 @@ class User:
     Use Account SCIM APIs to update ``displayName``."""
 
     emails: Optional[List[ComplexValue]] = None
-    """All the emails associated with the Databricks user. This attribute cannot be updated through the
-    SCIM PATCH or PUT APIs; any supplied change is ignored."""
+    """All the emails associated with the <Databricks> user. This attribute cannot be updated through
+    the SCIM PATCH or PUT APIs; any supplied change is ignored."""
 
     entitlements: Optional[List[ComplexValue]] = None
     """Entitlements assigned to the user. See `assigning entitlements
@@ -2054,7 +2054,7 @@ class User:
     groups: Optional[List[ComplexValue]] = None
 
     id: Optional[str] = None
-    """Databricks user ID."""
+    """<Databricks> user ID."""
 
     name: Optional[Name] = None
 
@@ -2065,8 +2065,8 @@ class User:
     """The schema of the user."""
 
     user_name: Optional[str] = None
-    """Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or
-    PUT APIs; any supplied change is ignored."""
+    """Email address of the <Databricks> user. This attribute cannot be updated through the SCIM PATCH
+    or PUT APIs; any supplied change is ignored."""
 
     def as_dict(self) -> dict:
         """Serializes the User into a dictionary suitable for use as a JSON request body."""
@@ -2179,8 +2179,6 @@ class WorkspacePermissions:
 
 
 class AccessControlAPI:
-    """Rule based Access Control for Databricks Resources."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2221,9 +2219,7 @@ class AccessControlAPI:
             query["resource"] = resource
         if resource_info is not None:
             query["resource_info"] = resource_info.as_dict()
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2234,10 +2230,6 @@ class AccessControlAPI:
 
 
 class AccountAccessControlAPI:
-    """These APIs manage access rules on resources in an account. Currently, only grant rules are supported. A
-    grant rule specifies a role assigned to a set of principals. A list of rules attached to a resource is
-    called a rule set."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2260,9 +2252,7 @@ class AccountAccessControlAPI:
         query = {}
         if resource is not None:
             query["resource"] = resource
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -2306,9 +2296,7 @@ class AccountAccessControlAPI:
             query["etag"] = etag
         if name is not None:
             query["name"] = name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -2334,10 +2322,7 @@ class AccountAccessControlAPI:
             body["name"] = name
         if rule_set is not None:
             body["rule_set"] = rule_set.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PUT",
@@ -2349,10 +2334,6 @@ class AccountAccessControlAPI:
 
 
 class AccountAccessControlProxyAPI:
-    """These APIs manage access rules on resources in an account. Currently, only grant rules are supported. A
-    grant rule specifies a role assigned to a set of principals. A list of rules attached to a resource is
-    called a rule set. A workspace must belong to an account for these APIs to work"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2375,9 +2356,7 @@ class AccountAccessControlProxyAPI:
         query = {}
         if resource is not None:
             query["resource"] = resource
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2422,9 +2401,7 @@ class AccountAccessControlProxyAPI:
             query["etag"] = etag
         if name is not None:
             query["name"] = name
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2449,10 +2426,7 @@ class AccountAccessControlProxyAPI:
             body["name"] = name
         if rule_set is not None:
             body["rule_set"] = rule_set.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2463,13 +2437,6 @@ class AccountAccessControlProxyAPI:
 
 
 class AccountGroupsV2API:
-    """Groups simplify identity management, making it easier to assign access to Databricks account, data, and
-    other securable objects.
-
-    It is best practice to assign access to workspaces and access-control policies in Unity Catalog to groups,
-    instead of to users individually. All Databricks account identities can be assigned as members of groups,
-    and members inherit permissions that are assigned to their group."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2483,13 +2450,13 @@ class AccountGroupsV2API:
         meta: Optional[ResourceMeta] = None,
         roles: Optional[List[ComplexValue]] = None,
     ) -> AccountGroup:
-        """Creates a group in the Databricks account with a unique name, using the supplied group details.
+        """Creates a group in the <Databricks> account with a unique name, using the supplied group details.
 
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param external_id: str (optional)
         :param id: str (optional)
-          Databricks group ID
+          <Databricks> group ID
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
@@ -2512,10 +2479,7 @@ class AccountGroupsV2API:
             body["meta"] = meta.as_dict()
         if roles is not None:
             body["roles"] = [v.as_dict() for v in roles]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups", body=body, headers=headers
@@ -2523,10 +2487,10 @@ class AccountGroupsV2API:
         return AccountGroup.from_dict(res)
 
     def delete(self, id: str):
-        """Deletes a group from the Databricks account.
+        """Deletes a group from the <Databricks> account.
 
         :param id: str
-          Unique ID for a group in the Databricks account.
+          Unique ID for a group in the <Databricks> account.
 
 
         """
@@ -2536,17 +2500,15 @@ class AccountGroupsV2API:
         self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", headers=headers)
 
     def get(self, id: str) -> AccountGroup:
-        """Gets the information for a specific group in the Databricks account.
+        """Gets the information for a specific group in the <Databricks> account.
 
         :param id: str
-          Unique ID for a group in the Databricks account.
+          Unique ID for a group in the <Databricks> account.
 
         :returns: :class:`AccountGroup`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", headers=headers)
         return AccountGroup.from_dict(res)
@@ -2562,10 +2524,10 @@ class AccountGroupsV2API:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[AccountGroup]:
-        """Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint
-        will no longer return members. Instead, members should be retrieved by iterating through ``Get group
-        details``. Existing accounts that rely on this attribute will not be impacted and will continue
-        receiving member data as before.
+        """Gets all details of the groups associated with the <Databricks> account. As of 08/22/2025, this
+        endpoint will no longer return members. Instead, members should be retrieved by iterating through
+        ``Get group details``. Existing accounts that rely on this attribute will not be impacted and will
+        continue receiving member data as before.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -2604,9 +2566,7 @@ class AccountGroupsV2API:
             query["sortOrder"] = sort_order.value
         if start_index is not None:
             query["startIndex"] = start_index
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         query["startIndex"] = 1
         if "count" not in query:
@@ -2626,7 +2586,7 @@ class AccountGroupsV2API:
         """Partially updates the details of a group.
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID in the <Databricks> workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -2639,9 +2599,7 @@ class AccountGroupsV2API:
             body["Operations"] = [v.as_dict() for v in operations]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "PATCH", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", body=body, headers=headers
@@ -2660,7 +2618,7 @@ class AccountGroupsV2API:
         """Updates the details of a group by replacing the entire group entity.
 
         :param id: str
-          Databricks group ID
+          <Databricks> group ID
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param external_id: str (optional)
@@ -2684,21 +2642,12 @@ class AccountGroupsV2API:
             body["meta"] = meta.as_dict()
         if roles is not None:
             body["roles"] = [v.as_dict() for v in roles]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", body=body, headers=headers)
 
 
 class AccountServicePrincipalsV2API:
-    """Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
-    Databricks recommends creating service principals to run production jobs or modify production data. If all
-    processes that act on production data run with service principals, interactive users do not need any
-    write, delete, or modify privileges in production. This eliminates the risk of a user overwriting
-    production data by accident."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2712,7 +2661,7 @@ class AccountServicePrincipalsV2API:
         id: Optional[str] = None,
         roles: Optional[List[ComplexValue]] = None,
     ) -> AccountServicePrincipal:
-        """Creates a new service principal in the Databricks account.
+        """Creates a new service principal in the <Databricks> account.
 
         :param active: bool (optional)
           If this user is active
@@ -2722,7 +2671,7 @@ class AccountServicePrincipalsV2API:
           String that represents a concatenation of given and family names.
         :param external_id: str (optional)
         :param id: str (optional)
-          Databricks service principal ID.
+          <Databricks> service principal ID.
         :param roles: List[:class:`ComplexValue`] (optional)
           Indicates if the group has the admin role.
 
@@ -2742,10 +2691,7 @@ class AccountServicePrincipalsV2API:
             body["id"] = id
         if roles is not None:
             body["roles"] = [v.as_dict() for v in roles]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals", body=body, headers=headers
@@ -2753,10 +2699,10 @@ class AccountServicePrincipalsV2API:
         return AccountServicePrincipal.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a single service principal in the Databricks account.
+        """Delete a single service principal in the <Databricks> account.
 
         :param id: str
-          Unique ID for a service principal in the Databricks account.
+          Unique ID for a service principal in the <Databricks> account.
 
 
         """
@@ -2768,17 +2714,15 @@ class AccountServicePrincipalsV2API:
         )
 
     def get(self, id: str) -> AccountServicePrincipal:
-        """Gets the details for a single service principal define in the Databricks account.
+        """Gets the details for a single service principal define in the <Databricks> account.
 
         :param id: str
-          Unique ID for a service principal in the Databricks account.
+          Unique ID for a service principal in the <Databricks> account.
 
         :returns: :class:`AccountServicePrincipal`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}", headers=headers
@@ -2796,7 +2740,7 @@ class AccountServicePrincipalsV2API:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[AccountServicePrincipal]:
-        """Gets the set of service principals associated with a Databricks account.
+        """Gets the set of service principals associated with a <Databricks> account.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -2835,9 +2779,7 @@ class AccountServicePrincipalsV2API:
             query["sortOrder"] = sort_order.value
         if start_index is not None:
             query["startIndex"] = start_index
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         query["startIndex"] = 1
         if "count" not in query:
@@ -2857,10 +2799,10 @@ class AccountServicePrincipalsV2API:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Partially updates the details of a single service principal in the Databricks account.
+        """Partially updates the details of a single service principal in the <Databricks> account.
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID in the <Databricks> workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -2873,10 +2815,7 @@ class AccountServicePrincipalsV2API:
             body["Operations"] = [v.as_dict() for v in operations]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "PATCH",
@@ -2900,7 +2839,7 @@ class AccountServicePrincipalsV2API:
         This action replaces the existing service principal with the same name.
 
         :param id: str
-          Databricks service principal ID.
+          <Databricks> service principal ID.
         :param active: bool (optional)
           If this user is active
         :param application_id: str (optional)
@@ -2925,10 +2864,7 @@ class AccountServicePrincipalsV2API:
             body["externalId"] = external_id
         if roles is not None:
             body["roles"] = [v.as_dict() for v in roles]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "PUT",
@@ -2939,16 +2875,6 @@ class AccountServicePrincipalsV2API:
 
 
 class AccountUsersV2API:
-    """User identities recognized by Databricks and represented by email addresses.
-
-    Databricks recommends using SCIM provisioning to sync users and groups automatically from your identity
-    provider to your Databricks account. SCIM streamlines onboarding a new employee or team by using your
-    identity provider to create users and groups in Databricks account and give them the proper level of
-    access. When a user leaves your organization or no longer needs access to Databricks account, admins can
-    terminate the user in your identity provider and that user’s account will also be removed from
-    Databricks account. This ensures a consistent offboarding process and prevents unauthorized users from
-    accessing sensitive data."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2964,7 +2890,7 @@ class AccountUsersV2API:
         roles: Optional[List[ComplexValue]] = None,
         user_name: Optional[str] = None,
     ) -> AccountUser:
-        """Creates a new user in the Databricks account. This new user will also be added to the Databricks
+        """Creates a new user in the <Databricks> account. This new user will also be added to the <Databricks>
         account.
 
         :param active: bool (optional)
@@ -2972,16 +2898,16 @@ class AccountUsersV2API:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names. For example ``John Smith``.
         :param emails: List[:class:`ComplexValue`] (optional)
-          All the emails associated with the Databricks user.
+          All the emails associated with the <Databricks> user.
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
         :param id: str (optional)
-          Databricks user ID.
+          <Databricks> user ID.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Indicates if the group has the admin role.
         :param user_name: str (optional)
-          Email address of the Databricks user.
+          Email address of the <Databricks> user.
 
         :returns: :class:`AccountUser`
         """
@@ -3003,10 +2929,7 @@ class AccountUsersV2API:
             body["roles"] = [v.as_dict() for v in roles]
         if user_name is not None:
             body["userName"] = user_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users", body=body, headers=headers
@@ -3014,11 +2937,11 @@ class AccountUsersV2API:
         return AccountUser.from_dict(res)
 
     def delete(self, id: str):
-        """Deletes a user. Deleting a user from a Databricks account also removes objects associated with the
+        """Deletes a user. Deleting a user from a <Databricks> account also removes objects associated with the
         user.
 
         :param id: str
-          Unique ID for a user in the Databricks account.
+          Unique ID for a user in the <Databricks> account.
 
 
         """
@@ -3039,10 +2962,10 @@ class AccountUsersV2API:
         sort_order: Optional[GetSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> AccountUser:
-        """Gets information for a specific user in Databricks account.
+        """Gets information for a specific user in <Databricks> account.
 
         :param id: str
-          Unique ID for a user in the Databricks account.
+          Unique ID for a user in the <Databricks> account.
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
@@ -3081,9 +3004,7 @@ class AccountUsersV2API:
             query["sortOrder"] = sort_order.value
         if start_index is not None:
             query["startIndex"] = start_index
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", query=query, headers=headers
@@ -3101,7 +3022,7 @@ class AccountUsersV2API:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[AccountUser]:
-        """Gets details for all the users associated with a Databricks account.
+        """Gets details for all the users associated with a <Databricks> account.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -3141,9 +3062,7 @@ class AccountUsersV2API:
             query["sortOrder"] = sort_order.value
         if start_index is not None:
             query["startIndex"] = start_index
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         query["startIndex"] = 1
         if "count" not in query:
@@ -3165,7 +3084,7 @@ class AccountUsersV2API:
         them are ignored (no-op).
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID in the <Databricks> workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -3178,10 +3097,7 @@ class AccountUsersV2API:
             body["Operations"] = [v.as_dict() for v in operations]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "PATCH", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", body=body, headers=headers
@@ -3203,13 +3119,13 @@ class AccountUsersV2API:
         attributes cannot be updated through this API; any supplied changes to them are ignored (no-op).
 
         :param id: str
-          Databricks user ID.
+          <Databricks> user ID.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
           String that represents a concatenation of given and family names. For example ``John Smith``.
         :param emails: List[:class:`ComplexValue`] (optional)
-          All the emails associated with the Databricks user. This attribute cannot be updated through the
+          All the emails associated with the <Databricks> user. This attribute cannot be updated through the
           SCIM PATCH or PUT APIs; any supplied change is ignored.
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
@@ -3217,8 +3133,8 @@ class AccountUsersV2API:
         :param roles: List[:class:`ComplexValue`] (optional)
           Indicates if the group has the admin role.
         :param user_name: str (optional)
-          Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or PUT
-          APIs; any supplied change is ignored.
+          Email address of the <Databricks> user. This attribute cannot be updated through the SCIM PATCH or
+          PUT APIs; any supplied change is ignored.
 
 
         """
@@ -3238,17 +3154,12 @@ class AccountUsersV2API:
             body["roles"] = [v.as_dict() for v in roles]
         if user_name is not None:
             body["userName"] = user_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", body=body, headers=headers)
 
 
 class CurrentUserAPI:
-    """This API allows retrieving information about currently authenticated user or service principal."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -3268,9 +3179,7 @@ class CurrentUserAPI:
             query["attributes"] = attributes
         if excluded_attributes is not None:
             query["excludedAttributes"] = excluded_attributes
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3281,13 +3190,6 @@ class CurrentUserAPI:
 
 
 class GroupsV2API:
-    """Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and
-    other securable objects.
-
-    It is best practice to assign access to workspaces and access-control policies in Unity Catalog to groups,
-    instead of to users individually. All Databricks workspace identities can be assigned as members of
-    groups, and members inherit permissions that are assigned to their group."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -3304,7 +3206,7 @@ class GroupsV2API:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[GroupSchema]] = None,
     ) -> Group:
-        """Creates a group in the Databricks workspace with a unique name, using the supplied group details.
+        """Creates a group in the <Databricks> workspace with a unique name, using the supplied group details.
 
         :param display_name: str (optional)
           String that represents a human-readable group name
@@ -3315,7 +3217,7 @@ class GroupsV2API:
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks group ID
+          <Databricks> group ID
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
@@ -3346,10 +3248,7 @@ class GroupsV2API:
             body["roles"] = [v.as_dict() for v in roles]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3359,10 +3258,10 @@ class GroupsV2API:
         return Group.from_dict(res)
 
     def delete(self, id: str):
-        """Deletes a group from the Databricks workspace.
+        """Deletes a group from the <Databricks> workspace.
 
         :param id: str
-          Unique ID for a group in the Databricks workspace.
+          Unique ID for a group in the <Databricks> workspace.
 
 
         """
@@ -3376,17 +3275,15 @@ class GroupsV2API:
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
 
     def get(self, id: str) -> Group:
-        """Gets the information for a specific group in the Databricks workspace.
+        """Gets the information for a specific group in the <Databricks> workspace.
 
         :param id: str
-          Unique ID for a group in the Databricks workspace.
+          Unique ID for a group in the <Databricks> workspace.
 
         :returns: :class:`Group`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3406,7 +3303,7 @@ class GroupsV2API:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[Group]:
-        """Gets all details of the groups associated with the Databricks workspace.
+        """Gets all details of the groups associated with the <Databricks> workspace.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -3445,9 +3342,7 @@ class GroupsV2API:
             query["sortOrder"] = sort_order.value
         if start_index is not None:
             query["startIndex"] = start_index
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3469,7 +3364,7 @@ class GroupsV2API:
         """Partially updates the details of a group.
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID in the <Databricks> workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -3482,10 +3377,7 @@ class GroupsV2API:
             body["Operations"] = [v.as_dict() for v in operations]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3509,7 +3401,7 @@ class GroupsV2API:
         """Updates the details of a group by replacing the entire group entity.
 
         :param id: str
-          Databricks group ID
+          <Databricks> group ID
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
@@ -3546,10 +3438,7 @@ class GroupsV2API:
             body["roles"] = [v.as_dict() for v in roles]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3559,8 +3448,6 @@ class GroupsV2API:
 
 
 class PermissionMigrationAPI:
-    """APIs for migrating acl permissions, used only by the ucx tool: https://github.com/databrickslabs/ucx"""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -3595,10 +3482,7 @@ class PermissionMigrationAPI:
             body["to_account_group_name"] = to_account_group_name
         if workspace_id is not None:
             body["workspace_id"] = workspace_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3609,37 +3493,6 @@ class PermissionMigrationAPI:
 
 
 class PermissionsAPI:
-    """Permissions API are used to create read, write, edit, update and manage access for various users on
-    different objects and endpoints.
-
-    - **[Apps permissions](:service:apps)** — Manage which users can manage or use apps.
-    - **[Cluster permissions](:service:clusters)** — Manage which users can manage, restart, or attach to
-      clusters.
-    - **[Cluster policy permissions](:service:clusterpolicies)** — Manage which users can use cluster
-      policies.
-    - **[Spark Declarative Pipelines permissions](:service:pipelines)** — Manage which users can view,
-      manage, run, cancel, or own a Spark Declarative Pipeline.
-    - **[Job permissions](:service:jobs)** — Manage which users can view, manage, trigger, cancel, or own a
-      job.
-    - **[MLflow experiment permissions](:service:experiments)** — Manage which users can read, edit, or
-      manage MLflow experiments.
-    - **[MLflow registered model permissions](:service:modelregistry)** — Manage which users can read, edit,
-      or manage MLflow registered models.
-    - **[Instance Pool permissions](:service:instancepools)** — Manage which users can manage or attach to
-      pools.
-    - **[Repo permissions](repos)** — Manage which users can read, run, edit, or manage a repo.
-    - **[Serving endpoint permissions](:service:servingendpoints)** — Manage which users can view, query, or
-      manage a serving endpoint.
-    - **[SQL warehouse permissions](:service:warehouses)** — Manage which users can use or manage SQL
-      warehouses.
-    - **[Token permissions](:service:tokenmanagement)** — Manage which users can create or use tokens.
-    - **[Workspace object permissions](:service:workspace)** — Manage which users can read, run, edit, or
-      manage alerts, dbsql-dashboards, directories, files, notebooks and queries. For the mapping of the
-      required permissions for specific actions or abilities and other important information, see `Access
-      Control <https://docs.databricks.com/security/auth-authz/access-control/index.html>`__. Note that to
-      manage access control on service principals, use **[Account Access Control
-      Proxy](:service:accountaccesscontrolproxy)**."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -3659,9 +3512,7 @@ class PermissionsAPI:
         :returns: :class:`ObjectPermissions`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3684,9 +3535,7 @@ class PermissionsAPI:
         :returns: :class:`GetPermissionLevelsResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3724,10 +3573,7 @@ class PermissionsAPI:
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3764,10 +3610,7 @@ class PermissionsAPI:
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3780,12 +3623,6 @@ class PermissionsAPI:
 
 
 class ServicePrincipalsV2API:
-    """Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
-    Databricks recommends creating service principals to run production jobs or modify production data. If all
-    processes that act on production data run with service principals, interactive users do not need any
-    write, delete, or modify privileges in production. This eliminates the risk of a user overwriting
-    production data by accident."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -3802,7 +3639,7 @@ class ServicePrincipalsV2API:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[ServicePrincipalSchema]] = None,
     ) -> ServicePrincipal:
-        """Creates a new service principal in the Databricks workspace.
+        """Creates a new service principal in the <Databricks> workspace.
 
         :param active: bool (optional)
           If this user is active
@@ -3817,7 +3654,7 @@ class ServicePrincipalsV2API:
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks service principal ID.
+          <Databricks> service principal ID.
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
@@ -3845,10 +3682,7 @@ class ServicePrincipalsV2API:
             body["roles"] = [v.as_dict() for v in roles]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3858,10 +3692,10 @@ class ServicePrincipalsV2API:
         return ServicePrincipal.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a single service principal in the Databricks workspace.
+        """Delete a single service principal in the <Databricks> workspace.
 
         :param id: str
-          Unique ID for a service principal in the Databricks workspace.
+          Unique ID for a service principal in the <Databricks> workspace.
 
 
         """
@@ -3875,17 +3709,15 @@ class ServicePrincipalsV2API:
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
 
     def get(self, id: str) -> ServicePrincipal:
-        """Gets the details for a single service principal define in the Databricks workspace.
+        """Gets the details for a single service principal define in the <Databricks> workspace.
 
         :param id: str
-          Unique ID for a service principal in the Databricks workspace.
+          Unique ID for a service principal in the <Databricks> workspace.
 
         :returns: :class:`ServicePrincipal`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3905,7 +3737,7 @@ class ServicePrincipalsV2API:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[ServicePrincipal]:
-        """Gets the set of service principals associated with a Databricks workspace.
+        """Gets the set of service principals associated with a <Databricks> workspace.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -3944,9 +3776,7 @@ class ServicePrincipalsV2API:
             query["sortOrder"] = sort_order.value
         if start_index is not None:
             query["startIndex"] = start_index
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3965,10 +3795,10 @@ class ServicePrincipalsV2API:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Partially updates the details of a single service principal in the Databricks workspace.
+        """Partially updates the details of a single service principal in the <Databricks> workspace.
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID in the <Databricks> workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -3981,10 +3811,7 @@ class ServicePrincipalsV2API:
             body["Operations"] = [v.as_dict() for v in operations]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4010,7 +3837,7 @@ class ServicePrincipalsV2API:
         This action replaces the existing service principal with the same name.
 
         :param id: str
-          Databricks service principal ID.
+          <Databricks> service principal ID.
         :param active: bool (optional)
           If this user is active
         :param application_id: str (optional)
@@ -4048,10 +3875,7 @@ class ServicePrincipalsV2API:
             body["roles"] = [v.as_dict() for v in roles]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4061,16 +3885,6 @@ class ServicePrincipalsV2API:
 
 
 class UsersV2API:
-    """User identities recognized by Databricks and represented by email addresses.
-
-    Databricks recommends using SCIM provisioning to sync users and groups automatically from your identity
-    provider to your Databricks workspace. SCIM streamlines onboarding a new employee or team by using your
-    identity provider to create users and groups in Databricks workspace and give them the proper level of
-    access. When a user leaves your organization or no longer needs access to Databricks workspace, admins can
-    terminate the user in your identity provider and that user’s account will also be removed from
-    Databricks workspace. This ensures a consistent offboarding process and prevents unauthorized users from
-    accessing sensitive data."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -4089,7 +3903,7 @@ class UsersV2API:
         schemas: Optional[List[UserSchema]] = None,
         user_name: Optional[str] = None,
     ) -> User:
-        """Creates a new user in the Databricks workspace. This new user will also be added to the Databricks
+        """Creates a new user in the <Databricks> workspace. This new user will also be added to the <Databricks>
         account.
 
         :param active: bool (optional)
@@ -4100,7 +3914,7 @@ class UsersV2API:
           <https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation>`__.
           Use Account SCIM APIs to update ``displayName``.
         :param emails: List[:class:`ComplexValue`] (optional)
-          All the emails associated with the Databricks user.
+          All the emails associated with the <Databricks> user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See `assigning entitlements
           <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
@@ -4109,14 +3923,14 @@ class UsersV2API:
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID.
+          <Databricks> user ID.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`UserSchema`] (optional)
           The schema of the user.
         :param user_name: str (optional)
-          Email address of the Databricks user.
+          Email address of the <Databricks> user.
 
         :returns: :class:`User`
         """
@@ -4144,10 +3958,7 @@ class UsersV2API:
             body["schemas"] = [v.value for v in schemas]
         if user_name is not None:
             body["userName"] = user_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4157,11 +3968,11 @@ class UsersV2API:
         return User.from_dict(res)
 
     def delete(self, id: str):
-        """Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
+        """Deletes a user. Deleting a user from a <Databricks> workspace also removes objects associated with the
         user.
 
         :param id: str
-          Unique ID for a user in the Databricks workspace.
+          Unique ID for a user in the <Databricks> workspace.
 
 
         """
@@ -4186,10 +3997,10 @@ class UsersV2API:
         sort_order: Optional[GetSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> User:
-        """Gets information for a specific user in Databricks workspace.
+        """Gets information for a specific user in <Databricks> workspace.
 
         :param id: str
-          Unique ID for a user in the Databricks workspace.
+          Unique ID for a user in the <Databricks> workspace.
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
@@ -4228,9 +4039,7 @@ class UsersV2API:
             query["sortOrder"] = sort_order.value
         if start_index is not None:
             query["startIndex"] = start_index
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4246,9 +4055,7 @@ class UsersV2API:
         :returns: :class:`GetPasswordPermissionLevelsResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4264,9 +4071,7 @@ class UsersV2API:
         :returns: :class:`PasswordPermissions`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4286,7 +4091,7 @@ class UsersV2API:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[User]:
-        """Gets details for all the users associated with a Databricks workspace.
+        """Gets details for all the users associated with a <Databricks> workspace.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -4326,9 +4131,7 @@ class UsersV2API:
             query["sortOrder"] = sort_order.value
         if start_index is not None:
             query["startIndex"] = start_index
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4352,7 +4155,7 @@ class UsersV2API:
         them are ignored (no-op).
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID in the <Databricks> workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -4365,10 +4168,7 @@ class UsersV2API:
             body["Operations"] = [v.as_dict() for v in operations]
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4390,10 +4190,7 @@ class UsersV2API:
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4421,7 +4218,7 @@ class UsersV2API:
         attributes cannot be updated through this API; any supplied changes to them are ignored (no-op).
 
         :param id: str
-          Databricks user ID.
+          <Databricks> user ID.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
@@ -4430,7 +4227,7 @@ class UsersV2API:
           <https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation>`__.
           Use Account SCIM APIs to update ``displayName``.
         :param emails: List[:class:`ComplexValue`] (optional)
-          All the emails associated with the Databricks user. This attribute cannot be updated through the
+          All the emails associated with the <Databricks> user. This attribute cannot be updated through the
           SCIM PATCH or PUT APIs; any supplied change is ignored.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See `assigning entitlements
@@ -4445,8 +4242,8 @@ class UsersV2API:
         :param schemas: List[:class:`UserSchema`] (optional)
           The schema of the user.
         :param user_name: str (optional)
-          Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or PUT
-          APIs; any supplied change is ignored.
+          Email address of the <Databricks> user. This attribute cannot be updated through the SCIM PATCH or
+          PUT APIs; any supplied change is ignored.
 
 
         """
@@ -4472,10 +4269,7 @@ class UsersV2API:
             body["schemas"] = [v.value for v in schemas]
         if user_name is not None:
             body["userName"] = user_name
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4496,10 +4290,7 @@ class UsersV2API:
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4510,9 +4301,6 @@ class UsersV2API:
 
 
 class WorkspaceAssignmentAPI:
-    """The Workspace Permission Assignment API allows you to manage workspace permissions for principals in your
-    account."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -4528,9 +4316,7 @@ class WorkspaceAssignmentAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "DELETE",
@@ -4547,9 +4333,7 @@ class WorkspaceAssignmentAPI:
         :returns: :class:`WorkspacePermissions`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "GET",
@@ -4559,7 +4343,7 @@ class WorkspaceAssignmentAPI:
         return WorkspacePermissions.from_dict(res)
 
     def list(self, workspace_id: int) -> Iterator[PermissionAssignment]:
-        """Get the permission assignments for the specified Databricks account and Databricks workspace.
+        """Get the permission assignments for the specified <Account> and <Workspace>.
 
         :param workspace_id: int
           The workspace ID for the account.
@@ -4567,9 +4351,7 @@ class WorkspaceAssignmentAPI:
         :returns: Iterator over :class:`PermissionAssignment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         json = self._api.do(
             "GET",
@@ -4602,10 +4384,7 @@ class WorkspaceAssignmentAPI:
         body = {}
         if permissions is not None:
             body["permissions"] = [v.value for v in permissions]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         res = self._api.do(
             "PUT",

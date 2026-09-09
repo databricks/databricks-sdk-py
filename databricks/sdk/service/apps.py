@@ -339,115 +339,6 @@ class App:
 
 
 @dataclass
-class AppAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[AppPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the AppAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AppAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AppAccessControlRequest:
-        """Deserializes the AppAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", AppPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class AppAccessControlResponse:
-    all_permissions: Optional[List[AppPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the AppAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AppAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AppAccessControlResponse:
-        """Deserializes the AppAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", AppPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
 class AppDeployment:
     command: Optional[List[str]] = None
     """The command with which to run the app. This will override the command specified in the app.yaml
@@ -971,125 +862,6 @@ class AppManifestAppResourceUcSecurableSpecUcSecurableType(Enum):
     FUNCTION = "FUNCTION"
     TABLE = "TABLE"
     VOLUME = "VOLUME"
-
-
-@dataclass
-class AppPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[AppPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the AppPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AppPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AppPermission:
-        """Deserializes the AppPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", AppPermissionLevel),
-        )
-
-
-class AppPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_USE = "CAN_USE"
-
-
-@dataclass
-class AppPermissions:
-    access_control_list: Optional[List[AppAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the AppPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AppPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AppPermissions:
-        """Deserializes the AppPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AppAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class AppPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[AppPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the AppPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AppPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AppPermissionsDescription:
-        """Deserializes the AppPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None), permission_level=_enum(d, "permission_level", AppPermissionLevel)
-        )
 
 
 @dataclass
@@ -2052,7 +1824,7 @@ class EnvVar:
     """The value for the environment variable."""
 
     value_from: Optional[str] = None
-    """The name of an external Databricks resource that contains the value, such as a secret or a
+    """The name of an external <Databricks> resource that contains the value, such as a secret or a
     database table."""
 
     def as_dict(self) -> dict:
@@ -2167,31 +1939,6 @@ class ErrorCode(Enum):
     UNKNOWN = "UNKNOWN"
     UNPARSEABLE_HTTP_ERROR = "UNPARSEABLE_HTTP_ERROR"
     WORKSPACE_TEMPORARILY_UNAVAILABLE = "WORKSPACE_TEMPORARILY_UNAVAILABLE"
-
-
-@dataclass
-class GetAppPermissionLevelsResponse:
-    permission_levels: Optional[List[AppPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetAppPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetAppPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetAppPermissionLevelsResponse:
-        """Deserializes the GetAppPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", AppPermissionsDescription))
 
 
 @dataclass
@@ -2886,8 +2633,7 @@ class UnityCatalog:
 
 
 class AppsAPI:
-    """Apps run directly on a customer's Databricks instance, integrate with their data, use and extend
-    Databricks services, and enable users to interact through single sign-on."""
+    """TODO(LA-129): migrate ``databricks.openapi.method`` to ``google.api.field_behavior`` once it's supported"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3039,10 +2785,7 @@ class AppsAPI:
         query = {}
         if no_compute is not None:
             query["no_compute"] = no_compute
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3064,10 +2807,7 @@ class AppsAPI:
 
         body = space.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3083,15 +2823,6 @@ class AppsAPI:
 
         :param app_name: str
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
         :param app: :class:`App` (optional)
 
         :returns:
@@ -3104,10 +2835,7 @@ class AppsAPI:
             body["app"] = app.as_dict()
         if update_mask is not None:
             body["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3130,9 +2858,7 @@ class AppsAPI:
         :returns: :class:`App`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3150,9 +2876,7 @@ class AppsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3169,9 +2893,7 @@ class AppsAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3196,10 +2918,7 @@ class AppsAPI:
 
         body = app_deployment.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3227,9 +2946,7 @@ class AppsAPI:
         :returns: :class:`App`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3249,9 +2966,7 @@ class AppsAPI:
         :returns: :class:`AppDeployment`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3259,46 +2974,6 @@ class AppsAPI:
 
         res = self._api.do("GET", f"/api/2.0/apps/{app_name}/deployments/{deployment_id}", headers=headers)
         return AppDeployment.from_dict(res)
-
-    def get_permission_levels(self, app_name: str) -> GetAppPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param app_name: str
-          The app for which to get or manage permissions.
-
-        :returns: :class:`GetAppPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}/permissionLevels", headers=headers)
-        return GetAppPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, app_name: str) -> AppPermissions:
-        """Gets the permissions of an app. Apps can inherit permissions from their root object.
-
-        :param app_name: str
-          The app for which to get or manage permissions.
-
-        :returns: :class:`AppPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}", headers=headers)
-        return AppPermissions.from_dict(res)
 
     def get_space(self, name: str) -> Space:
         """Retrieves information for the app space with the supplied name.
@@ -3309,9 +2984,7 @@ class AppsAPI:
         :returns: :class:`Space`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3329,9 +3002,7 @@ class AppsAPI:
         :returns: :class:`Operation`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3349,9 +3020,7 @@ class AppsAPI:
         :returns: :class:`AppUpdate`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3382,9 +3051,7 @@ class AppsAPI:
             query["page_token"] = page_token
         if space is not None:
             query["space"] = space
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3419,9 +3086,7 @@ class AppsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3452,9 +3117,7 @@ class AppsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3469,34 +3132,6 @@ class AppsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def set_permissions(
-        self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None
-    ) -> AppPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param app_name: str
-          The app for which to get or manage permissions.
-        :param access_control_list: List[:class:`AppAccessControlRequest`] (optional)
-
-        :returns: :class:`AppPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PUT", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
-        return AppPermissions.from_dict(res)
-
     def start(self, name: str) -> Wait[App]:
         """Start the last active deployment of the app in the workspace.
 
@@ -3508,18 +3143,14 @@ class AppsAPI:
           See :method:wait_get_app_active for more details.
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", body=body, headers=headers)
-        return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
+        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
+        return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=name)
 
     def start_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.start(name=name).result(timeout=timeout)
@@ -3535,18 +3166,14 @@ class AppsAPI:
           See :method:wait_get_app_stopped for more details.
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", body=body, headers=headers)
-        return Wait(self.wait_get_app_stopped, response=App.from_dict(op_response), name=op_response["name"])
+        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
+        return Wait(self.wait_get_app_stopped, response=App.from_dict(op_response), name=name)
 
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.stop(name=name).result(timeout=timeout)
@@ -3564,10 +3191,7 @@ class AppsAPI:
 
         body = app.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3590,10 +3214,7 @@ class AppsAPI:
         body = {}
         if app_thumbnail is not None:
             body["app_thumbnail"] = app_thumbnail.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3601,33 +3222,6 @@ class AppsAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/apps/{name}/thumbnail", body=body, headers=headers)
         return AppThumbnail.from_dict(res)
-
-    def update_permissions(
-        self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None
-    ) -> AppPermissions:
-        """Updates the permissions on an app. Apps can inherit permissions from their root object.
-
-        :param app_name: str
-          The app for which to get or manage permissions.
-        :param access_control_list: List[:class:`AppAccessControlRequest`] (optional)
-
-        :returns: :class:`AppPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
-        return AppPermissions.from_dict(res)
 
     def update_space(self, name: str, space: Space, update_mask: FieldMask) -> UpdateSpaceOperation:
         """Updates an app space. The update process is asynchronous and the status of the update can be checked
@@ -3638,15 +3232,6 @@ class AppsAPI:
           It must be unique within the workspace.
         :param space: :class:`Space`
         :param update_mask: FieldMask
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
 
         :returns: :class:`Operation`
         """
@@ -3655,10 +3240,7 @@ class AppsAPI:
         query = {}
         if update_mask is not None:
             query["update_mask"] = update_mask.ToJsonString()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3899,7 +3481,7 @@ class UpdateSpaceOperation:
 
 
 class AppsSettingsAPI:
-    """Apps Settings manage the settings for the Apps service on a customer's Databricks instance."""
+    """TODO(LA-129): migrate ``databricks.openapi.method`` to ``google.api.field_behavior`` once it's supported"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3914,10 +3496,7 @@ class AppsSettingsAPI:
 
         body = template.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3935,9 +3514,7 @@ class AppsSettingsAPI:
         :returns: :class:`CustomTemplate`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3955,9 +3532,7 @@ class AppsSettingsAPI:
         :returns: :class:`CustomTemplate`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3984,9 +3559,7 @@ class AppsSettingsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4014,10 +3587,7 @@ class AppsSettingsAPI:
 
         body = template.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

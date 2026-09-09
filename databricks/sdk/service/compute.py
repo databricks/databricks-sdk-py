@@ -128,9 +128,9 @@ class AwsAttributes:
     These EBS volumes will be mounted at ``/ebs0``, ``/ebs1``, and etc. Instance store volumes will
     be mounted at ``/local_disk0``, ``/local_disk1``, and etc.
     
-    If EBS volumes are attached, Databricks will configure Spark to use only the EBS volumes for
+    If EBS volumes are attached, <Databricks> will configure Spark to use only the EBS volumes for
     scratch storage because heterogenously sized scratch devices can lead to inefficient disk
-    utilization. If no EBS volumes are attached, Databricks will configure Spark to use instance
+    utilization. If no EBS volumes are attached, <Databricks> will configure Spark to use instance
     store volumes.
     
     Please note that if EBS volumes are specified, then the Spark configuration ``spark.local.dir``
@@ -164,7 +164,7 @@ class AwsAttributes:
     instance_profile_arn: Optional[str] = None
     """Nodes for this cluster will only be placed on AWS instances with this instance profile. If
     ommitted, nodes will be placed on instances without an IAM instance profile. The instance
-    profile must have previously been added to the Databricks environment by an account
+    profile must have previously been added to the <Databricks> environment by an account
     administrator.
     
     This feature may only be available to certain customer plans."""
@@ -181,7 +181,7 @@ class AwsAttributes:
     zone_id: Optional[str] = None
     """Identifier for the availability zone/datacenter in which the cluster resides. This string will
     be of a form like "us-west-2a". The provided availability zone must be in the same region as the
-    Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
+    <Databricks> deployment. For example, "us-west-2a" is not a valid zone id if the <Databricks>
     deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
     if not specified, the zone "auto" will be used. If the zone specified is "auto", will try to
     place cluster in a zone with high availability, and will retry placement in a different AZ if
@@ -506,115 +506,6 @@ class CloudProviderNodeStatus(Enum):
 
 
 @dataclass
-class ClusterAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[ClusterPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterAccessControlRequest:
-        """Deserializes the ClusterAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", ClusterPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class ClusterAccessControlResponse:
-    all_permissions: Optional[List[ClusterPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterAccessControlResponse:
-        """Deserializes the ClusterAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", ClusterPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
 class ClusterAttributes:
     """Common set of attributes set during cluster creation. These attributes cannot be changed over
     the lifetime of a cluster."""
@@ -651,10 +542,10 @@ class ClusterAttributes:
     automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    """Additional tags for cluster resources. <Databricks> will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
-    - Currently, Databricks allows at most 45 custom tags
+    - Currently, <Databricks> allows at most 45 custom tags
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
       tags"""
 
@@ -703,7 +594,7 @@ class ClusterAttributes:
     is_single_node: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    When set to true, <Databricks> will automatically set single node related ``custom_tags``,
     ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
@@ -1005,7 +896,7 @@ class ClusterCompliance:
 
 @dataclass
 class ClusterDetails:
-    """Describes all of the metadata about a single Spark cluster in Databricks."""
+    """Describes all of the metadata about a single Spark cluster in <Databricks>."""
 
     autoscale: Optional[AutoScale] = None
     """Parameters needed in order to automatically scale clusters up and down based on load. Note:
@@ -1053,31 +944,29 @@ class ClusterDetails:
     automatically set based on the job and job run IDs."""
 
     cluster_source: Optional[ClusterSource] = None
-    """Determines whether the cluster was created by a user through the UI, created by the Databricks
-    Jobs Scheduler, or through an API request."""
 
     creator_user_name: Optional[str] = None
     """Creator user name. The field won't be included in the response if the user has already been
     deleted."""
 
     custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    """Additional tags for cluster resources. <Databricks> will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
-    - Currently, Databricks allows at most 45 custom tags
+    - Currently, <Databricks> allows at most 45 custom tags
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
       tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
 
     default_tags: Optional[Dict[str, str]] = None
-    """Tags that are added by Databricks regardless of any ``custom_tags``, including:
+    """Tags that are added by <Databricks> regardless of any ``custom_tags``, including:
     
-    - Vendor: Databricks
+    - Vendor: <Databricks>
     - Creator: <username_of_creator>
     - ClusterName: <name_of_cluster>
     - ClusterId: <id_of_cluster>
-    - Name: <Databricks internal use>"""
+    - Name: <<Databricks> internal use>"""
 
     dependency_mode: Optional[DependencyMode] = None
     """Controls dependency configuration for the cluster."""
@@ -1087,7 +976,7 @@ class ClusterDetails:
 
     driver: Optional[SparkNode] = None
     """Node on which the Spark driver resides. The driver node contains the Spark master and the
-    Databricks application that manages the per-notebook Spark REPLs."""
+    <Databricks> application that manages the per-notebook Spark REPLs."""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -1129,7 +1018,7 @@ class ClusterDetails:
     is_single_node: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    When set to true, <Databricks> will automatically set single node related ``custom_tags``,
     ``spark_conf``, and ``num_workers``"""
 
     jdbc_port: Optional[int] = None
@@ -1674,355 +1563,6 @@ class ClusterLogConf:
 
 
 @dataclass
-class ClusterPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[ClusterPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPermission:
-        """Deserializes the ClusterPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", ClusterPermissionLevel),
-        )
-
-
-class ClusterPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_ATTACH_TO = "CAN_ATTACH_TO"
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_RESTART = "CAN_RESTART"
-
-
-@dataclass
-class ClusterPermissions:
-    access_control_list: Optional[List[ClusterAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPermissions:
-        """Deserializes the ClusterPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", ClusterAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class ClusterPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[ClusterPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPermissionsDescription:
-        """Deserializes the ClusterPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", ClusterPermissionLevel),
-        )
-
-
-@dataclass
-class ClusterPolicyAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[ClusterPolicyPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPolicyAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPolicyAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyAccessControlRequest:
-        """Deserializes the ClusterPolicyAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", ClusterPolicyPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class ClusterPolicyAccessControlResponse:
-    all_permissions: Optional[List[ClusterPolicyPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPolicyAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPolicyAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyAccessControlResponse:
-        """Deserializes the ClusterPolicyAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", ClusterPolicyPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class ClusterPolicyPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[ClusterPolicyPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPolicyPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPolicyPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyPermission:
-        """Deserializes the ClusterPolicyPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", ClusterPolicyPermissionLevel),
-        )
-
-
-class ClusterPolicyPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_USE = "CAN_USE"
-
-
-@dataclass
-class ClusterPolicyPermissions:
-    access_control_list: Optional[List[ClusterPolicyAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPolicyPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPolicyPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyPermissions:
-        """Deserializes the ClusterPolicyPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", ClusterPolicyAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class ClusterPolicyPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[ClusterPolicyPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPolicyPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPolicyPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyPermissionsDescription:
-        """Deserializes the ClusterPolicyPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", ClusterPolicyPermissionLevel),
-        )
-
-
-@dataclass
 class ClusterSettingsChange:
     """Represents a change to the cluster settings required for the cluster to become compliant with
     its policy."""
@@ -2163,10 +1703,10 @@ class ClusterSpec:
     automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    """Additional tags for cluster resources. <Databricks> will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
-    - Currently, Databricks allows at most 45 custom tags
+    - Currently, <Databricks> allows at most 45 custom tags
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
       tags"""
 
@@ -2215,7 +1755,7 @@ class ClusterSpec:
     is_single_node: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    When set to true, <Databricks> will automatically set single node related ``custom_tags``,
     ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
@@ -2798,8 +2338,8 @@ class DataPlaneEventDetailsEventType(Enum):
 class DataSecurityMode(Enum):
     """Data security mode decides what data governance model to use when accessing data from a cluster.
 
-    - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending
-      on your compute configuration.
+    - ``DATA_SECURITY_MODE_AUTO``: <Databricks> will choose the most appropriate access mode
+      depending on your compute configuration.
     - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users.
       Cluster users are fully isolated so that they cannot see each other’s data and credentials.
       Most data governance features are supported in this mode. But programming languages and
@@ -2938,8 +2478,8 @@ class DeleteResponse:
 class DependencyMode(Enum):
     """Controls dependency configuration for the cluster.
 
-    - ``DEPENDENCY_MODE_AUTO``: Databricks will choose the most appropriate dependency mode based on
-      your compute configuration.
+    - ``DEPENDENCY_MODE_AUTO``: <Databricks> will choose the most appropriate dependency mode based
+      on your compute configuration.
     - ``DEPENDENCY_MODE_ENVIRONMENTS``: Enables a unified dependency management experience across
       classic and serverless, resulting in increased stability and performance. Supported only on
       DBR 19+ in Standard access mode.
@@ -2973,7 +2513,7 @@ class DestroyResponse:
 class DiskSpec:
     """Describes the disks that are launched for each instance in the spark cluster. For example, if
     the cluster has 3 instances, each instance is configured to launch 2 disks, 100 GiB each, then
-    Databricks will launch a total of 6 disks, 100 GiB each, for this cluster."""
+    <Databricks> will launch a total of 6 disks, 100 GiB each, for this cluster."""
 
     disk_count: Optional[int] = None
     """The number of disks launched for each instance:
@@ -2983,9 +2523,9 @@ class DiskSpec:
     - For node types with no OS disk, at least one disk must be specified; otherwise, cluster
       creation will fail.
     
-    If disks are attached, Databricks will configure Spark to use only the disks for scratch
+    If disks are attached, <Databricks> will configure Spark to use only the disks for scratch
     storage, because heterogenously sized scratch devices can lead to inefficient disk utilization.
-    If no disks are attached, Databricks will configure Spark to use instance store disks.
+    If no disks are attached, <Databricks> will configure Spark to use instance store disks.
     
     Note: If disks are specified, then the Spark configuration ``spark.local.dir`` will be
     overridden.
@@ -3094,7 +2634,7 @@ class DiskType:
 
 
 class DiskTypeAzureDiskVolumeType(Enum):
-    """All Azure Disk types that Databricks supports. See
+    """All Azure Disk types that <Databricks> supports. See
     https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks"""
 
     PREMIUM_LRS = "PREMIUM_LRS"
@@ -3102,7 +2642,7 @@ class DiskTypeAzureDiskVolumeType(Enum):
 
 
 class DiskTypeEbsVolumeType(Enum):
-    """All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for
+    """All EBS volume types that <Databricks> supports. See https://aws.amazon.com/ebs/details/ for
     details."""
 
     GENERAL_PURPOSE_SSD = "GENERAL_PURPOSE_SSD"
@@ -3174,7 +2714,7 @@ class DockerImage:
 
 
 class EbsVolumeType(Enum):
-    """All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for
+    """All EBS volume types that <Databricks> supports. See https://aws.amazon.com/ebs/details/ for
     details."""
 
     GENERAL_PURPOSE_SSD = "GENERAL_PURPOSE_SSD"
@@ -3336,10 +2876,10 @@ class EnforcePolicyComplianceForClusterResponseClusterSettings:
     automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    """Additional tags for cluster resources. <Databricks> will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
-    - Currently, Databricks allows at most 45 custom tags
+    - Currently, <Databricks> allows at most 45 custom tags
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
       tags"""
 
@@ -3388,7 +2928,7 @@ class EnforcePolicyComplianceForClusterResponseClusterSettings:
     is_single_node: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    When set to true, <Databricks> will automatically set single node related ``custom_tags``,
     ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
@@ -3675,11 +3215,11 @@ class Environment:
     """The base environment this environment is built on top of. A base environment defines the
     environment version and a list of dependencies for serverless compute. The value can be a file
     path to a custom ``env.yaml`` file (e.g., ``/Workspace/path/to/env.yaml``). Support for a
-    Databricks-provided base environment ID (e.g., ``workspace-base-environments/databricks_ai_v4``)
-    and workspace base environment ID (e.g.,
+    <Databricks>-provided base environment ID (e.g.,
+    ``workspace-base-environments/databricks_ai_v4``) and workspace base environment ID (e.g.,
     ``workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7``) is in Beta. Either
     ``environment_version`` or ``base_environment`` can be provided. For more information about
-    Databricks-provided base environments, see the [list workspace base
+    <Databricks>-provided base environments, see the [list workspace base
     environments](:method:Environments/ListWorkspaceBaseEnvironments) API. For more information, see"""
 
     client: Optional[str] = None
@@ -3690,7 +3230,7 @@ class Environment:
     dependency is a valid pip requirements file line per
     https://pip.pypa.io/en/stable/reference/requirements-file-format/. Allowed dependencies include
     a requirement specifier, an archive URL, a local project path (such as WSFS or UC Volumes in
-    Databricks), or a VCS project URL."""
+    <Databricks>), or a VCS project URL."""
 
     environment_version: Optional[str] = None
     """Either ``environment_version`` or ``base_environment`` needs to be provided. Environment version
@@ -4002,7 +3542,7 @@ class GcpAttributes:
     google_service_account: Optional[str] = None
     """If provided, the cluster will impersonate the google service account when accessing gcloud
     services (like GCS). The google service account must have previously been added to the
-    Databricks environment by an account administrator."""
+    <Databricks> environment by an account administrator."""
 
     local_ssd_count: Optional[int] = None
     """If provided, each node (workers and driver) in the cluster will have this number of local SSDs
@@ -4019,9 +3559,9 @@ class GcpAttributes:
     """Identifier for the availability zone in which the cluster resides. This can be one of the
     following:
     
-    - "HA" => High availability, spread nodes across availability zones for a Databricks deployment
-      region [default].
-    - "AUTO" => Databricks picks an availability zone to schedule the cluster on.
+    - "HA" => High availability, spread nodes across availability zones for a <Databricks>
+      deployment region [default].
+    - "AUTO" => <Databricks> picks an availability zone to schedule the cluster on.
     - A GCP availability zone => Pick One of the available zones for (machine type + region) from
       https://cloud.google.com/compute/docs/regions-zones."""
 
@@ -4163,56 +3703,6 @@ class GetClusterComplianceResponse:
             pending_enforcement=_from_dict(d, "pending_enforcement", PendingEnforcement),
             violations=d.get("violations", None),
         )
-
-
-@dataclass
-class GetClusterPermissionLevelsResponse:
-    permission_levels: Optional[List[ClusterPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetClusterPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetClusterPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetClusterPermissionLevelsResponse:
-        """Deserializes the GetClusterPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", ClusterPermissionsDescription))
-
-
-@dataclass
-class GetClusterPolicyPermissionLevelsResponse:
-    permission_levels: Optional[List[ClusterPolicyPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetClusterPolicyPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetClusterPolicyPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetClusterPolicyPermissionLevelsResponse:
-        """Deserializes the GetClusterPolicyPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", ClusterPolicyPermissionsDescription))
 
 
 @dataclass
@@ -4402,15 +3892,15 @@ class GetInstancePool:
     of default values will be used."""
 
     custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances
-    and EBS volumes) with these tags in addition to ``default_tags``. Notes:
+    """Additional tags for pool resources. <Databricks> will tag all pool resources (e.g., AWS
+    instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
-    - Currently, Databricks allows at most 45 custom tags"""
+    - Currently, <Databricks> allows at most 45 custom tags"""
 
     default_tags: Optional[Dict[str, str]] = None
-    """Tags that are added by Databricks regardless of any ``custom_tags``, including:
+    """Tags that are added by <Databricks> regardless of any ``custom_tags``, including:
     
-    - Vendor: Databricks
+    - Vendor: <Databricks>
     - InstancePoolCreator: <user_id_of_creator>
     - InstancePoolName: <name_of_pool>
     - InstancePoolId: <id_of_pool>"""
@@ -4606,31 +4096,6 @@ class GetInstancePool:
 
 
 @dataclass
-class GetInstancePoolPermissionLevelsResponse:
-    permission_levels: Optional[List[InstancePoolPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetInstancePoolPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetInstancePoolPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetInstancePoolPermissionLevelsResponse:
-        """Deserializes the GetInstancePoolPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", InstancePoolPermissionsDescription))
-
-
-@dataclass
 class GetSparkVersionsResponse:
     versions: Optional[List[SparkVersion]] = None
     """All the available Spark versions."""
@@ -4728,13 +4193,13 @@ class GlobalInitScriptDetails:
     def from_dict(cls, d: Dict[str, Any]) -> GlobalInitScriptDetails:
         """Deserializes the GlobalInitScriptDetails from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             enabled=d.get("enabled", None),
             name=d.get("name", None),
             position=d.get("position", None),
             script_id=d.get("script_id", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -4819,21 +4284,21 @@ class GlobalInitScriptDetailsWithContent:
     def from_dict(cls, d: Dict[str, Any]) -> GlobalInitScriptDetailsWithContent:
         """Deserializes the GlobalInitScriptDetailsWithContent from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             enabled=d.get("enabled", None),
             name=d.get("name", None),
             position=d.get("position", None),
             script=d.get("script", None),
             script_id=d.get("script_id", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
 
 class HardwareAcceleratorType(Enum):
     """HardwareAcceleratorType: The type of hardware accelerator to use for compute workloads. NOTE:
-    This enum is referenced and is intended to be used by other Databricks services that need to
+    This enum is referenced and is intended to be used by other <Databricks> services that need to
     specify hardware accelerator requirements for AI compute workloads."""
 
     GPU_1X_A10 = "GPU_1xA10"
@@ -5125,115 +4590,6 @@ class InstallLibrariesResponse:
 
 
 @dataclass
-class InstancePoolAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[InstancePoolPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the InstancePoolAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InstancePoolAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolAccessControlRequest:
-        """Deserializes the InstancePoolAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", InstancePoolPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class InstancePoolAccessControlResponse:
-    all_permissions: Optional[List[InstancePoolPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the InstancePoolAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InstancePoolAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolAccessControlResponse:
-        """Deserializes the InstancePoolAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", InstancePoolPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
 class InstancePoolAndStats:
     aws_attributes: Optional[InstancePoolAwsAttributes] = None
     """Attributes related to instance pools running on Amazon Web Services. If not specified at pool
@@ -5244,15 +4600,15 @@ class InstancePoolAndStats:
     of default values will be used."""
 
     custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances
-    and EBS volumes) with these tags in addition to ``default_tags``. Notes:
+    """Additional tags for pool resources. <Databricks> will tag all pool resources (e.g., AWS
+    instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
-    - Currently, Databricks allows at most 45 custom tags"""
+    - Currently, <Databricks> allows at most 45 custom tags"""
 
     default_tags: Optional[Dict[str, str]] = None
-    """Tags that are added by Databricks regardless of any ``custom_tags``, including:
+    """Tags that are added by <Databricks> regardless of any ``custom_tags``, including:
     
-    - Vendor: Databricks
+    - Vendor: <Databricks>
     - InstancePoolCreator: <user_id_of_creator>
     - InstancePoolName: <name_of_pool>
     - InstancePoolId: <id_of_pool>"""
@@ -5463,7 +4819,7 @@ class InstancePoolAwsAttributes:
     clusters that use the pool will inherit the instance profile, and must not specify their own
     instance profile on cluster creation or update. If the pool does not specify an instance
     profile, clusters using the pool may specify any instance profile. The instance profile must
-    have previously been added to the Databricks environment by an account administrator.
+    have previously been added to the <Databricks> environment by an account administrator.
     
     This feature may only be available to certain customer plans."""
 
@@ -5479,7 +4835,7 @@ class InstancePoolAwsAttributes:
     zone_id: Optional[str] = None
     """Identifier for the availability zone/datacenter in which the cluster resides. This string will
     be of a form like "us-west-2a". The provided availability zone must be in the same region as the
-    Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
+    <Databricks> deployment. For example, "us-west-2a" is not a valid zone id if the <Databricks>
     deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
     if not specified, a default zone will be used. The list of available zones as well as the
     default value can be found by using the ``List Zones`` method."""
@@ -5522,7 +4878,10 @@ class InstancePoolAwsAttributes:
 
 
 class InstancePoolAwsAttributesAvailability(Enum):
-    """The set of AWS availability types supported when setting up nodes for a cluster."""
+    """Availability type used for all subsequent nodes past the ``first_on_demand`` ones.
+
+    Note: If ``first_on_demand`` is zero, this availability type will be used for the entire
+    cluster."""
 
     ON_DEMAND = "ON_DEMAND"
     SPOT = "SPOT"
@@ -5593,7 +4952,8 @@ class InstancePoolAzureAttributes:
 
 
 class InstancePoolAzureAttributesAvailability(Enum):
-    """The set of Azure availability types supported when setting up nodes for a cluster."""
+    """Availability type used for all subsequent nodes past the ``first_on_demand`` ones. Note: If
+    ``first_on_demand`` is zero, this availability type will be used for the entire cluster."""
 
     ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
     SPOT_AZURE = "SPOT_AZURE"
@@ -5614,18 +4974,18 @@ class InstancePoolGcpAttributes:
     zone_id: Optional[str] = None
     """Identifier for the availability zone/datacenter in which the cluster resides. This string will
     be of a form like "us-west1-a". The provided availability zone must be in the same region as the
-    Databricks workspace. For example, "us-west1-a" is not a valid zone id if the Databricks
+    <Databricks> workspace. For example, "us-west1-a" is not a valid zone id if the <Databricks>
     workspace resides in the "us-east1" region. This is an optional field at instance pool creation,
     and if not specified, a default zone will be used.
     
     This field can be one of the following:
     
-    - "HA" => High availability, spread nodes across availability zones for a Databricks deployment
-      region
+    - "HA" => High availability, spread nodes across availability zones for a <Databricks>
+      deployment region
     - A GCP availability zone => Pick One of the available zones for (machine type + region) from
       https://cloud.google.com/compute/docs/regions-zones (e.g. "us-west1-a").
     
-    If empty, Databricks picks an availability zone to schedule the cluster on."""
+    If empty, <Databricks> picks an availability zone to schedule the cluster on."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolGcpAttributes into a dictionary suitable for use as a JSON request body."""
@@ -5656,126 +5016,6 @@ class InstancePoolGcpAttributes:
             gcp_availability=_enum(d, "gcp_availability", GcpAvailability),
             local_ssd_count=d.get("local_ssd_count", None),
             zone_id=d.get("zone_id", None),
-        )
-
-
-@dataclass
-class InstancePoolPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[InstancePoolPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the InstancePoolPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InstancePoolPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolPermission:
-        """Deserializes the InstancePoolPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", InstancePoolPermissionLevel),
-        )
-
-
-class InstancePoolPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_ATTACH_TO = "CAN_ATTACH_TO"
-    CAN_MANAGE = "CAN_MANAGE"
-
-
-@dataclass
-class InstancePoolPermissions:
-    access_control_list: Optional[List[InstancePoolAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the InstancePoolPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InstancePoolPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolPermissions:
-        """Deserializes the InstancePoolPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", InstancePoolAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class InstancePoolPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[InstancePoolPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the InstancePoolPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InstancePoolPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolPermissionsDescription:
-        """Deserializes the InstancePoolPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", InstancePoolPermissionLevel),
         )
 
 
@@ -5873,12 +5113,12 @@ class InstancePoolStatus:
 @dataclass
 class InstanceProfile:
     instance_profile_arn: str
-    """The AWS ARN of the instance profile to register with Databricks. This field is required."""
+    """The AWS ARN of the instance profile to register with <Databricks>. This field is required."""
 
     iam_role_arn: Optional[str] = None
     """The AWS IAM role ARN of the role associated with the instance profile. This field is required if
     your role name and instance profile name do not match and you want to use the instance profile
-    with `Databricks SQL Serverless <https://docs.databricks.com/sql/admin/serverless.html>`__.
+    with [Databricks SQL Serverless](/sql/admin/serverless.html).
     
     Otherwise, this field is optional."""
 
@@ -6202,16 +5442,12 @@ class ListClusterCompliancesResponse:
 @dataclass
 class ListClustersFilterBy:
     cluster_sources: Optional[List[ClusterSource]] = None
-    """The source of cluster creation."""
 
     cluster_states: Optional[List[State]] = None
-    """The current state of the clusters."""
 
     is_pinned: Optional[bool] = None
-    """Whether the clusters are pinned or not."""
 
     policy_id: Optional[str] = None
-    """The ID of the cluster policy used to create the cluster if applicable."""
 
     def as_dict(self) -> dict:
         """Serializes the ListClustersFilterBy into a dictionary suitable for use as a JSON request body."""
@@ -6297,11 +5533,8 @@ class ListClustersResponse:
 @dataclass
 class ListClustersSortBy:
     direction: Optional[ListClustersSortByDirection] = None
-    """The direction to sort by."""
 
     field: Optional[ListClustersSortByField] = None
-    """The sorting criteria. By default, clusters are sorted by 3 columns from highest to lowest
-    precedence: cluster state, pinned or unpinned, then cluster name."""
 
     def as_dict(self) -> dict:
         """Serializes the ListClustersSortBy into a dictionary suitable for use as a JSON request body."""
@@ -6601,9 +5834,6 @@ class LogSyncStatus:
     def from_dict(cls, d: Dict[str, Any]) -> LogSyncStatus:
         """Deserializes the LogSyncStatus from a dictionary."""
         return cls(last_attempted=_int64(d, "last_attempted"), last_exception=d.get("last_exception", None))
-
-
-MapAny = Dict[str, Any]
 
 
 @dataclass
@@ -7095,7 +6325,7 @@ class Policy:
     """Additional human-readable description of the cluster policy."""
 
     is_default: Optional[bool] = None
-    """If true, policy is a default policy created and managed by Databricks. Default policies cannot
+    """If true, policy is a default policy created and managed by <Databricks>. Default policies cannot
     be deleted, and their policy families cannot be changed."""
 
     libraries: Optional[List[Library]] = None
@@ -8077,10 +7307,10 @@ class UpdateClusterResource:
     automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    """Additional tags for cluster resources. <Databricks> will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
-    - Currently, Databricks allows at most 45 custom tags
+    - Currently, <Databricks> allows at most 45 custom tags
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
       tags"""
 
@@ -8129,7 +7359,7 @@ class UpdateClusterResource:
     is_single_node: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
     
-    When set to true, Databricks will automatically set single node related ``custom_tags``,
+    When set to true, <Databricks> will automatically set single node related ``custom_tags``,
     ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
@@ -8519,30 +7749,6 @@ class WorkspaceStorageInfo:
 
 
 class ClusterPoliciesAPI:
-    """You can use cluster policies to control users' ability to configure clusters based on a set of rules.
-    These rules specify which attributes or attribute values can be used during cluster creation. Cluster
-    policies have ACLs that limit their use to specific users and groups.
-
-    With cluster policies, you can:
-
-    - Auto-install cluster libraries on the next restart by listing them in the policy's "libraries" field
-      (Public Preview).
-    - Limit users to creating clusters with the prescribed settings.
-    - Simplify the user interface, enabling more users to create clusters, by fixing and hiding some fields.
-    - Manage costs by setting limits on attributes that impact the hourly rate.
-
-    Cluster policy permissions limit which policies a user can select in the Policy drop-down when the user
-    creates a cluster:
-
-    - A user who has unrestricted cluster create permission can select the Unrestricted policy and create
-      fully-configurable clusters.
-    - A user who has both unrestricted cluster create permission and access to cluster policies can select the
-      Unrestricted policy and policies they have access to.
-    - A user that has access to only cluster policies, can select the policies they have access to.
-
-    If no policies exist in the workspace, the Policy drop-down doesn't appear. Only admin users can create,
-    edit, and delete policies. Admin users also have access to all policies."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8605,10 +7811,7 @@ class ClusterPoliciesAPI:
             body["policy_family_definition_overrides"] = policy_family_definition_overrides
         if policy_family_id is not None:
             body["policy_family_id"] = policy_family_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8629,10 +7832,7 @@ class ClusterPoliciesAPI:
         body = {}
         if policy_id is not None:
             body["policy_id"] = policy_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8705,10 +7905,7 @@ class ClusterPoliciesAPI:
             body["policy_family_id"] = policy_family_id
         if policy_id is not None:
             body["policy_id"] = policy_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8728,9 +7925,7 @@ class ClusterPoliciesAPI:
         query = {}
         if policy_id is not None:
             query["policy_id"] = policy_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8738,49 +7933,6 @@ class ClusterPoliciesAPI:
 
         res = self._api.do("GET", "/api/2.0/policies/clusters/get", query=query, headers=headers)
         return Policy.from_dict(res)
-
-    def get_permission_levels(self, cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param cluster_policy_id: str
-          The cluster policy for which to get or manage permissions.
-
-        :returns: :class:`GetClusterPolicyPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "GET", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels", headers=headers
-        )
-        return GetClusterPolicyPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, cluster_policy_id: str) -> ClusterPolicyPermissions:
-        """Gets the permissions of a cluster policy. Cluster policies can inherit permissions from their root
-        object.
-
-        :param cluster_policy_id: str
-          The cluster policy for which to get or manage permissions.
-
-        :returns: :class:`ClusterPolicyPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", headers=headers)
-        return ClusterPolicyPermissions.from_dict(res)
 
     def list(
         self, *, sort_column: Optional[ListSortColumn] = None, sort_order: Optional[ListSortOrder] = None
@@ -8806,9 +7958,7 @@ class ClusterPoliciesAPI:
             query["sort_column"] = sort_column.value
         if sort_order is not None:
             query["sort_order"] = sort_order.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -8818,89 +7968,8 @@ class ClusterPoliciesAPI:
         parsed = ListPoliciesResponse.from_dict(json).policies
         return parsed if parsed is not None else []
 
-    def set_permissions(
-        self, cluster_policy_id: str, *, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
-    ) -> ClusterPolicyPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param cluster_policy_id: str
-          The cluster policy for which to get or manage permissions.
-        :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
-
-        :returns: :class:`ClusterPolicyPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PUT", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", body=body, headers=headers
-        )
-        return ClusterPolicyPermissions.from_dict(res)
-
-    def update_permissions(
-        self, cluster_policy_id: str, *, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
-    ) -> ClusterPolicyPermissions:
-        """Updates the permissions on a cluster policy. Cluster policies can inherit permissions from their root
-        object.
-
-        :param cluster_policy_id: str
-          The cluster policy for which to get or manage permissions.
-        :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
-
-        :returns: :class:`ClusterPolicyPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PATCH", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", body=body, headers=headers
-        )
-        return ClusterPolicyPermissions.from_dict(res)
-
 
 class ClustersAPI:
-    """The Clusters API allows you to create, start, edit, list, terminate, and delete clusters.
-
-    Databricks maps cluster node instance types to compute units known as DBUs. See the instance type pricing
-    page for a list of the supported instance types and their corresponding DBUs.
-
-    A Databricks cluster is a set of computation resources and configurations on which you run data
-    engineering, data science, and data analytics workloads, such as production ETL pipelines, streaming
-    analytics, ad-hoc analytics, and machine learning.
-
-    You run these workloads as a set of commands in a notebook or as an automated job. Databricks makes a
-    distinction between all-purpose clusters and job clusters. You use all-purpose clusters to analyze data
-    collaboratively using interactive notebooks. You use job clusters to run fast and robust automated jobs.
-
-    You can create an all-purpose cluster using the UI, CLI, or REST API. You can manually terminate and
-    restart an all-purpose cluster. Multiple users can share such clusters to do collaborative interactive
-    analysis.
-
-    IMPORTANT: Databricks retains cluster configuration information for terminated clusters for 30 days. To
-    keep an all-purpose cluster configuration even after it has been terminated for more than 30 days, an
-    administrator can pin a cluster to the cluster list."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -8988,10 +8057,7 @@ class ClustersAPI:
             body["cluster_id"] = cluster_id
         if owner_username is not None:
             body["owner_username"] = owner_username
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9042,16 +8108,16 @@ class ClustersAPI:
         """Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
         necessary. This method is asynchronous; the returned ``cluster_id`` can be used to poll the cluster
         status. When this method returns, the cluster will be in a ``PENDING`` state. The cluster will be
-        usable once it enters a ``RUNNING`` state. Note: Databricks may not be able to acquire some of the
+        usable once it enters a ``RUNNING`` state. Note: <Databricks> may not be able to acquire some of the
         requested nodes, due to cloud provider limitations (account limits, spot price, etc.) or transient
         network issues.
 
-        If Databricks acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
+        If <Databricks> acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
         Otherwise the cluster will terminate with an informative error message.
 
         Rather than authoring the cluster's JSON definition from scratch, Databricks recommends filling out
-        the `create compute UI <https://docs.databricks.com/compute/configure.html>`__ and then copying the
-        generated JSON definition from the UI.
+        the [create compute UI](/compute/configure.html) and then copying the generated JSON definition from
+        the UI.
 
         :param spark_version: str
           The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions can
@@ -9086,10 +8152,10 @@ class ClustersAPI:
           the cluster name will be an empty string. For job clusters, the cluster name is automatically set
           based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
-          Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+          Additional tags for cluster resources. <Databricks> will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
-          - Currently, Databricks allows at most 45 custom tags
+          - Currently, <Databricks> allows at most 45 custom tags
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
         :param dependency_mode: :class:`DependencyMode` (optional)
@@ -9125,7 +8191,7 @@ class ClustersAPI:
         :param is_single_node: bool (optional)
           This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          When set to true, Databricks will automatically set single node related ``custom_tags``,
+          When set to true, <Databricks> will automatically set single node related ``custom_tags``,
           ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
         :param node_type_id: str (optional)
@@ -9267,10 +8333,7 @@ class ClustersAPI:
             body["worker_node_type_flexibility"] = worker_node_type_flexibility.as_dict()
         if workload_type is not None:
             body["workload_type"] = workload_type.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9379,10 +8442,7 @@ class ClustersAPI:
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9479,10 +8539,10 @@ class ClustersAPI:
           the cluster name will be an empty string. For job clusters, the cluster name is automatically set
           based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
-          Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+          Additional tags for cluster resources. <Databricks> will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
-          - Currently, Databricks allows at most 45 custom tags
+          - Currently, <Databricks> allows at most 45 custom tags
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
         :param dependency_mode: :class:`DependencyMode` (optional)
@@ -9518,7 +8578,7 @@ class ClustersAPI:
         :param is_single_node: bool (optional)
           This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          When set to true, Databricks will automatically set single node related ``custom_tags``,
+          When set to true, <Databricks> will automatically set single node related ``custom_tags``,
           ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
         :param node_type_id: str (optional)
@@ -9660,10 +8720,7 @@ class ClustersAPI:
             body["worker_node_type_flexibility"] = worker_node_type_flexibility.as_dict()
         if workload_type is not None:
             body["workload_type"] = workload_type.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9819,10 +8876,7 @@ class ClustersAPI:
             body["page_token"] = page_token
         if start_time is not None:
             body["start_time"] = start_time
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9850,9 +8904,7 @@ class ClustersAPI:
         query = {}
         if cluster_id is not None:
             query["cluster_id"] = cluster_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9860,46 +8912,6 @@ class ClustersAPI:
 
         res = self._api.do("GET", "/api/2.1/clusters/get", query=query, headers=headers)
         return ClusterDetails.from_dict(res)
-
-    def get_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param cluster_id: str
-          The cluster for which to get or manage permissions.
-
-        :returns: :class:`GetClusterPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}/permissionLevels", headers=headers)
-        return GetClusterPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, cluster_id: str) -> ClusterPermissions:
-        """Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
-
-        :param cluster_id: str
-          The cluster for which to get or manage permissions.
-
-        :returns: :class:`ClusterPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}", headers=headers)
-        return ClusterPermissions.from_dict(res)
 
     def list(
         self,
@@ -9913,7 +8925,6 @@ class ClustersAPI:
         30 days. Clusters terminated prior to this period are not included.
 
         :param filter_by: :class:`ListClustersFilterBy` (optional)
-          Filters to apply to the list of clusters.
         :param page_size: int (optional)
           Use this field to specify the maximum number of results to be returned by the server. The server may
           further constrain the maximum number of results returned in a single page.
@@ -9921,7 +8932,6 @@ class ClustersAPI:
           Use next_page_token or prev_page_token returned from the previous request to list the next or
           previous page of clusters respectively.
         :param sort_by: :class:`ListClustersSortBy` (optional)
-          Sort the list of clusters by a specific criteria.
 
         :returns: Iterator over :class:`ClusterDetails`
         """
@@ -9935,9 +8945,7 @@ class ClustersAPI:
             query["page_token"] = page_token
         if sort_by is not None:
             query["sort_by"] = sort_by.as_dict()
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9959,9 +8967,7 @@ class ClustersAPI:
         :returns: :class:`ListNodeTypesResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -9978,9 +8984,7 @@ class ClustersAPI:
         :returns: :class:`ListAvailableZonesResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10005,10 +9009,7 @@ class ClustersAPI:
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10028,10 +9029,7 @@ class ClustersAPI:
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10072,10 +9070,7 @@ class ClustersAPI:
             body["cluster_id"] = cluster_id
         if num_workers is not None:
             body["num_workers"] = num_workers
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10112,10 +9107,7 @@ class ClustersAPI:
             body["cluster_id"] = cluster_id
         if restart_user is not None:
             body["restart_user"] = restart_user
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10129,34 +9121,6 @@ class ClustersAPI:
     ) -> ClusterDetails:
         return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
-    def set_permissions(
-        self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
-    ) -> ClusterPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param cluster_id: str
-          The cluster for which to get or manage permissions.
-        :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
-
-        :returns: :class:`ClusterPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PUT", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
-        return ClusterPermissions.from_dict(res)
-
     def spark_versions(self) -> GetSparkVersionsResponse:
         """Returns the list of available Spark versions. These versions can be used to launch a cluster.
 
@@ -10164,9 +9128,7 @@ class ClustersAPI:
         :returns: :class:`GetSparkVersionsResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10181,8 +9143,9 @@ class ClustersAPI:
 
         - The previous cluster id and attributes are preserved.
         - The cluster starts with the last specified cluster size.
-        - If the previous cluster was an autoscaling cluster, the current cluster starts with the minimum
-          number of nodes.
+
+          - If the previous cluster was an autoscaling cluster, the current cluster starts with the minimum
+            number of nodes.
         - If the cluster is not currently in a ``TERMINATED`` state, nothing will happen.
         - Clusters launched to run a job cannot be started.
 
@@ -10197,10 +9160,7 @@ class ClustersAPI:
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10225,10 +9185,7 @@ class ClustersAPI:
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10253,16 +9210,6 @@ class ClustersAPI:
         :param update_mask: str
           Used to specify which cluster attributes and size fields to update. See https://google.aip.dev/161
           for more details.
-
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
         :param cluster: :class:`UpdateClusterResource` (optional)
           The cluster to be updated.
 
@@ -10278,10 +9225,7 @@ class ClustersAPI:
             body["cluster_id"] = cluster_id
         if update_mask is not None:
             body["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10300,38 +9244,8 @@ class ClustersAPI:
     ) -> ClusterDetails:
         return self.update(cluster=cluster, cluster_id=cluster_id, update_mask=update_mask).result(timeout=timeout)
 
-    def update_permissions(
-        self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
-    ) -> ClusterPermissions:
-        """Updates the permissions on a cluster. Clusters can inherit permissions from their root object.
-
-        :param cluster_id: str
-          The cluster for which to get or manage permissions.
-        :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
-
-        :returns: :class:`ClusterPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
-        return ClusterPermissions.from_dict(res)
-
 
 class CommandExecutionAPI:
-    """This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters. This API
-    only supports (classic) all-purpose clusters. Serverless compute is not supported."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -10467,10 +9381,7 @@ class CommandExecutionAPI:
             body["commandId"] = command_id
         if context_id is not None:
             body["contextId"] = context_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10513,9 +9424,7 @@ class CommandExecutionAPI:
             query["commandId"] = command_id
         if context_id is not None:
             query["contextId"] = context_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10538,9 +9447,7 @@ class CommandExecutionAPI:
             query["clusterId"] = cluster_id
         if context_id is not None:
             query["contextId"] = context_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10570,10 +9477,7 @@ class CommandExecutionAPI:
             body["clusterId"] = cluster_id
         if language is not None:
             body["language"] = language.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10606,10 +9510,7 @@ class CommandExecutionAPI:
             body["clusterId"] = cluster_id
         if context_id is not None:
             body["contextId"] = context_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10651,10 +9552,7 @@ class CommandExecutionAPI:
             body["contextId"] = context_id
         if language is not None:
             body["language"] = language.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10684,14 +9582,6 @@ class CommandExecutionAPI:
 
 
 class GlobalInitScriptsAPI:
-    """The Global Init Scripts API enables Workspace administrators to configure global initialization scripts
-    for their workspace. These scripts run on every node in every cluster in the workspace.
-
-    **Important:** Existing clusters must be restarted to pick up any changes made to global init scripts.
-    Global init scripts are run in order. If the init script returns with a bad exit code, the Apache Spark
-    container fails to launch and init scripts with later position are skipped. If enough containers fail, the
-    entire cluster fails with a ``GLOBAL_INIT_SCRIPT_FAILURE`` error code."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -10729,10 +9619,7 @@ class GlobalInitScriptsAPI:
             body["position"] = position
         if script is not None:
             body["script"] = script
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10750,9 +9637,7 @@ class GlobalInitScriptsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10769,9 +9654,7 @@ class GlobalInitScriptsAPI:
         :returns: :class:`GlobalInitScriptDetailsWithContent`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10789,9 +9672,7 @@ class GlobalInitScriptsAPI:
         :returns: Iterator over :class:`GlobalInitScriptDetails`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10838,10 +9719,7 @@ class GlobalInitScriptsAPI:
             body["position"] = position
         if script is not None:
             body["script"] = script
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10851,21 +9729,6 @@ class GlobalInitScriptsAPI:
 
 
 class InstancePoolsAPI:
-    """Instance Pools API are used to create, edit, delete and list instance pools by using ready-to-use cloud
-    instances which reduces a cluster start and auto-scaling times.
-
-    Databricks pools reduce cluster start and auto-scaling times by maintaining a set of idle, ready-to-use
-    instances. When a cluster is attached to a pool, cluster nodes are created using the pool’s idle
-    instances. If the pool has no idle instances, the pool expands by allocating a new instance from the
-    instance provider in order to accommodate the cluster’s request. When a cluster releases an instance, it
-    returns to the pool and is free for another cluster to use. Only clusters attached to a pool can use that
-    pool’s idle instances.
-
-    You can specify a different pool for the driver node and worker nodes, or use the same pool for both.
-
-    Databricks does not charge DBUs while instances are idle in the pool. Instance provider billing does
-    apply. See pricing."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -10907,10 +9770,10 @@ class InstancePoolsAPI:
           Attributes related to instance pools running on Azure. If not specified at pool creation, a set of
           default values will be used.
         :param custom_tags: Dict[str,str] (optional)
-          Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to ``default_tags``. Notes:
+          Additional tags for pool resources. <Databricks> will tag all pool resources (e.g., AWS instances
+          and EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
-          - Currently, Databricks allows at most 45 custom tags
+          - Currently, <Databricks> allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
           Defines the specification of the disks that will be attached to all spark containers.
         :param enable_elastic_disk: bool (optional)
@@ -10984,10 +9847,7 @@ class InstancePoolsAPI:
             body["remote_disk_throughput"] = remote_disk_throughput
         if total_initial_remote_disk_size is not None:
             body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11008,10 +9868,7 @@ class InstancePoolsAPI:
         body = {}
         if instance_pool_id is not None:
             body["instance_pool_id"] = instance_pool_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11046,10 +9903,10 @@ class InstancePoolsAPI:
           `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
           call.
         :param custom_tags: Dict[str,str] (optional)
-          Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to ``default_tags``. Notes:
+          Additional tags for pool resources. <Databricks> will tag all pool resources (e.g., AWS instances
+          and EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
-          - Currently, Databricks allows at most 45 custom tags
+          - Currently, <Databricks> allows at most 45 custom tags
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
           in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
@@ -11091,10 +9948,7 @@ class InstancePoolsAPI:
             body["remote_disk_throughput"] = remote_disk_throughput
         if total_initial_remote_disk_size is not None:
             body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11114,9 +9968,7 @@ class InstancePoolsAPI:
         query = {}
         if instance_pool_id is not None:
             query["instance_pool_id"] = instance_pool_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11125,49 +9977,6 @@ class InstancePoolsAPI:
         res = self._api.do("GET", "/api/2.0/instance-pools/get", query=query, headers=headers)
         return GetInstancePool.from_dict(res)
 
-    def get_permission_levels(self, instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param instance_pool_id: str
-          The instance pool for which to get or manage permissions.
-
-        :returns: :class:`GetInstancePoolPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "GET", f"/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels", headers=headers
-        )
-        return GetInstancePoolPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, instance_pool_id: str) -> InstancePoolPermissions:
-        """Gets the permissions of an instance pool. Instance pools can inherit permissions from their root
-        object.
-
-        :param instance_pool_id: str
-          The instance pool for which to get or manage permissions.
-
-        :returns: :class:`InstancePoolPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", headers=headers)
-        return InstancePoolPermissions.from_dict(res)
-
     def list(self) -> Iterator[InstancePoolAndStats]:
         """Gets a list of instance pools with their statistics.
 
@@ -11175,9 +9984,7 @@ class InstancePoolsAPI:
         :returns: Iterator over :class:`InstancePoolAndStats`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11187,72 +9994,8 @@ class InstancePoolsAPI:
         parsed = ListInstancePools.from_dict(json).instance_pools
         return parsed if parsed is not None else []
 
-    def set_permissions(
-        self, instance_pool_id: str, *, access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
-    ) -> InstancePoolPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param instance_pool_id: str
-          The instance pool for which to get or manage permissions.
-        :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
-
-        :returns: :class:`InstancePoolPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PUT", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", body=body, headers=headers)
-        return InstancePoolPermissions.from_dict(res)
-
-    def update_permissions(
-        self, instance_pool_id: str, *, access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
-    ) -> InstancePoolPermissions:
-        """Updates the permissions on an instance pool. Instance pools can inherit permissions from their root
-        object.
-
-        :param instance_pool_id: str
-          The instance pool for which to get or manage permissions.
-        :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
-
-        :returns: :class:`InstancePoolPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PATCH", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", body=body, headers=headers
-        )
-        return InstancePoolPermissions.from_dict(res)
-
 
 class InstanceProfilesAPI:
-    """The Instance Profiles API allows admins to add, list, and remove instance profiles that users can launch
-    clusters with. Regular users can list the instance profiles available to them. See `Secure access to S3
-    buckets
-    <https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html>`__
-    using instance profiles for more information."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -11264,17 +10007,17 @@ class InstanceProfilesAPI:
         is_meta_instance_profile: Optional[bool] = None,
         skip_validation: Optional[bool] = None,
     ):
-        """Registers an instance profile in Databricks. In the UI, you can then give users the permission to use
-        this instance profile when launching clusters.
+        """Registers an instance profile in <Databricks>. In the UI, you can then give users the permission to
+        use this instance profile when launching clusters.
 
         This API is only available to admin users.
 
         :param instance_profile_arn: str
-          The AWS ARN of the instance profile to register with Databricks. This field is required.
+          The AWS ARN of the instance profile to register with <Databricks>. This field is required.
         :param iam_role_arn: str (optional)
           The AWS IAM role ARN of the role associated with the instance profile. This field is required if
           your role name and instance profile name do not match and you want to use the instance profile with
-          `Databricks SQL Serverless <https://docs.databricks.com/sql/admin/serverless.html>`__.
+          [Databricks SQL Serverless](/sql/admin/serverless.html).
 
           Otherwise, this field is optional.
         :param is_meta_instance_profile: bool (optional)
@@ -11283,7 +10026,7 @@ class InstanceProfilesAPI:
           wide range of roles. Therefore it should always be used with authorization. This field is optional,
           the default value is ``false``.
         :param skip_validation: bool (optional)
-          By default, Databricks validates that it has sufficient permissions to launch instances with the
+          By default, <Databricks> validates that it has sufficient permissions to launch instances with the
           instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
           fails with an error message that does not indicate an IAM related permission issue, (e.g. “Your
           requested instance type is not supported in your requested availability zone”), you can pass this
@@ -11301,10 +10044,7 @@ class InstanceProfilesAPI:
             body["is_meta_instance_profile"] = is_meta_instance_profile
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11324,20 +10064,19 @@ class InstanceProfilesAPI:
 
         - Your role name and instance profile name do not match. The name is the part after the last slash in
           each ARN.
-        - You want to use the instance profile with `Databricks SQL Serverless
-          <https://docs.databricks.com/sql/admin/serverless.html>`__.
+        - You want to use the instance profile with [Databricks SQL Serverless](/sql/admin/serverless.html).
 
-        To understand where these fields are in the AWS console, see `Enable serverless SQL warehouses
-        <https://docs.databricks.com/sql/admin/serverless.html>`__.
+        To understand where these fields are in the AWS console, see [Enable serverless SQL
+        warehouses](/sql/admin/serverless.html).
 
         This API is only available to admin users.
 
         :param instance_profile_arn: str
-          The AWS ARN of the instance profile to register with Databricks. This field is required.
+          The AWS ARN of the instance profile to register with <Databricks>. This field is required.
         :param iam_role_arn: str (optional)
           The AWS IAM role ARN of the role associated with the instance profile. This field is required if
           your role name and instance profile name do not match and you want to use the instance profile with
-          `Databricks SQL Serverless <https://docs.databricks.com/sql/admin/serverless.html>`__.
+          [Databricks SQL Serverless](/sql/admin/serverless.html).
 
           Otherwise, this field is optional.
         :param is_meta_instance_profile: bool (optional)
@@ -11356,10 +10095,7 @@ class InstanceProfilesAPI:
             body["instance_profile_arn"] = instance_profile_arn
         if is_meta_instance_profile is not None:
             body["is_meta_instance_profile"] = is_meta_instance_profile
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11376,9 +10112,7 @@ class InstanceProfilesAPI:
         :returns: Iterator over :class:`InstanceProfile`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11403,10 +10137,7 @@ class InstanceProfilesAPI:
         body = {}
         if instance_profile_arn is not None:
             body["instance_profile_arn"] = instance_profile_arn
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11416,20 +10147,6 @@ class InstanceProfilesAPI:
 
 
 class LibrariesAPI:
-    """The Libraries API allows you to install and uninstall libraries and get the status of libraries on a
-    cluster.
-
-    To make third-party or custom code available to notebooks and jobs running on your clusters, you can
-    install a library. Libraries can be written in Python, Java, Scala, and R. You can upload Python, Java,
-    Scala and R libraries and point to external packages in PyPI, Maven, and CRAN repositories.
-
-    Cluster libraries can be used by all notebooks running on a cluster. You can install a cluster library
-    directly from a public repository such as PyPI or Maven, using a previously installed workspace library,
-    or using an init script.
-
-    When you uninstall a library from a cluster, the library is removed only when you restart the cluster.
-    Until you restart the cluster, the status of the uninstalled library appears as Uninstall pending restart."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -11441,9 +10158,7 @@ class LibrariesAPI:
         :returns: Iterator over :class:`ClusterLibraryStatuses`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11471,9 +10186,7 @@ class LibrariesAPI:
         query = {}
         if cluster_id is not None:
             query["cluster_id"] = cluster_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11500,10 +10213,7 @@ class LibrariesAPI:
             body["cluster_id"] = cluster_id
         if libraries is not None:
             body["libraries"] = [v.as_dict() for v in libraries]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11528,10 +10238,7 @@ class LibrariesAPI:
             body["cluster_id"] = cluster_id
         if libraries is not None:
             body["libraries"] = [v.as_dict() for v in libraries]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11541,15 +10248,6 @@ class LibrariesAPI:
 
 
 class PolicyComplianceForClustersAPI:
-    """The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your
-    workspace.
-
-    A cluster is compliant with its policy if its configuration satisfies all its policy rules. Clusters could
-    be out of compliance if their policy was updated after the cluster was last edited.
-
-    The get and list compliance APIs allow you to view the policy compliance status of a cluster. The enforce
-    compliance API allows you to update a cluster to be compliant with the current version of its policy."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -11573,10 +10271,7 @@ class PolicyComplianceForClustersAPI:
             body["allow_missing"] = allow_missing
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11631,10 +10326,7 @@ class PolicyComplianceForClustersAPI:
             body["enforce_mode"] = enforce_mode.value
         if validate_only is not None:
             body["validate_only"] = validate_only
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11656,9 +10348,7 @@ class PolicyComplianceForClustersAPI:
         query = {}
         if cluster_id is not None:
             query["cluster_id"] = cluster_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11692,9 +10382,7 @@ class PolicyComplianceForClustersAPI:
             query["page_token"] = page_token
         if policy_id is not None:
             query["policy_id"] = policy_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11711,16 +10399,6 @@ class PolicyComplianceForClustersAPI:
 
 
 class PolicyFamiliesAPI:
-    """View available policy families. A policy family contains a policy definition providing best practices for
-    configuring clusters for a particular use case.
-
-    Databricks manages and provides policy families for several common cluster use cases. You cannot create,
-    edit, or delete policy families.
-
-    Policy families cannot be used directly to create clusters. Instead, you create cluster policies using a
-    policy family. Cluster policies created using a policy family inherit the policy family's policy
-    definition."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -11738,9 +10416,7 @@ class PolicyFamiliesAPI:
         query = {}
         if version is not None:
             query["version"] = version
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -11766,9 +10442,7 @@ class PolicyFamiliesAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

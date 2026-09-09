@@ -20,9 +20,6 @@ from databricks.sdk.service._internal import (
 )
 
 
-from databricks.sdk.service import catalog
-
-
 _LOG = logging.getLogger("databricks.sdk")
 
 
@@ -987,10 +984,9 @@ class OidcFederationPolicy:
     
     - For Entra ID (AAD):
     
-    - U2M flow (group access): Use ``groups``.
-    - U2M flow (user access): Use ``oid``.
-    - M2M flow (OAuth App access): Use ``azp``.
-    
+      - U2M flow (group access): Use ``groups``.
+      - U2M flow (user access): Use ``oid``.
+      - M2M flow (OAuth App access): Use ``azp``.
     - For other IdPs, refer to the specific IdP documentation.
     
     Supported ``subject_claim`` values are:
@@ -2459,9 +2455,6 @@ class Volume:
 
 
 class ProvidersAPI:
-    """A data provider is an object representing the organization in the real world who shares the data. A
-    provider contains shares which further contain the shared data."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2497,10 +2490,7 @@ class ProvidersAPI:
             body["name"] = name
         if recipient_profile_str is not None:
             body["recipient_profile_str"] = recipient_profile_str
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2537,9 +2527,7 @@ class ProvidersAPI:
         :returns: :class:`ProviderInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2587,9 +2575,7 @@ class ProvidersAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2644,9 +2630,7 @@ class ProvidersAPI:
             query["table_max_results"] = table_max_results
         if volume_max_results is not None:
             query["volume_max_results"] = volume_max_results
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2689,9 +2673,7 @@ class ProvidersAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2745,10 +2727,7 @@ class ProvidersAPI:
             body["owner"] = owner
         if recipient_profile_str is not None:
             body["recipient_profile_str"] = recipient_profile_str
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2759,14 +2738,6 @@ class ProvidersAPI:
 
 
 class RecipientActivationAPI:
-    """The Recipient Activation API is only applicable in the open sharing model where the recipient object has
-    the authentication type of ``TOKEN``. The data recipient follows the activation link shared by the data
-    provider to download the credential file that includes the access token. The recipient will then use the
-    credential file to establish a secure connection with the provider to receive the shared data.
-
-    Note that you can download the credential file only once. Recipients should treat the downloaded
-    credential as a secret and must not share it outside of their organization."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2779,9 +2750,7 @@ class RecipientActivationAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2800,9 +2769,7 @@ class RecipientActivationAPI:
         :returns: :class:`RetrieveTokenResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2815,37 +2782,14 @@ class RecipientActivationAPI:
 
 
 class RecipientFederationPoliciesAPI:
-    """The Recipient Federation Policies APIs are only applicable in the open sharing model where the recipient
-    object has the authentication type of ``OIDC_RECIPIENT``, enabling data sharing from Databricks to
-    non-Databricks recipients. OIDC Token Federation enables secure, secret-less authentication for accessing
-    Delta Sharing servers. Users and applications authenticate using short-lived OIDC tokens issued by their
-    own Identity Provider (IdP), such as Azure Entra ID or Okta, without the need for managing static
-    credentials or client secrets. A federation policy defines how non-Databricks recipients authenticate
-    using OIDC tokens. It validates the OIDC claims in federated tokens and is set at the recipient level. The
-    caller must be the owner of the recipient to create or manage a federation policy. Federation policies
-    support the following scenarios:
-
-    - User-to-Machine (U2M) flow: A user accesses Delta Shares using their own identity, such as connecting
-      through PowerBI Delta Sharing Client.
-    - Machine-to-Machine (M2M) flow: An application accesses Delta Shares using its own identity, typically
-      for automation tasks like nightly jobs through Python Delta Sharing Client. OIDC Token Federation
-      enables fine-grained access control, supports Multi-Factor Authentication (MFA), and enhances security
-      by minimizing the risk of credential leakage through the use of short-lived, expiring tokens. It is
-      designed for strong identity governance, secure cross-platform data sharing, and reduced operational
-      overhead for credential management.
-
-    For more information, see
-    https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security and
-    https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed"""
-
     def __init__(self, api_client):
         self._api = api_client
 
     def create(self, recipient_name: str, policy: FederationPolicy) -> FederationPolicy:
-        """Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to
-        non-Databricks recipients. The caller must be the owner of the recipient. When sharing data from
-        Databricks to non-Databricks clients, you can define a federation policy to authenticate
-        non-Databricks recipients. The federation policy validates OIDC claims in federated tokens and is
+        """Create a federation policy for an OIDC_FEDERATION recipient for sharing data from <Databricks> to
+        non-<Databricks> recipients. The caller must be the owner of the recipient. When sharing data from
+        <Databricks> to non-<Databricks> clients, you can define a federation policy to authenticate
+        non-<Databricks> recipients. The federation policy validates OIDC claims in federated tokens and is
         defined at the recipient level. This enables secretless sharing clients to authenticate using OIDC
         tokens.
 
@@ -2880,10 +2824,7 @@ class RecipientFederationPoliciesAPI:
 
         body = policy.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2906,9 +2847,7 @@ class RecipientFederationPoliciesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2919,8 +2858,8 @@ class RecipientFederationPoliciesAPI:
         )
 
     def get_federation_policy(self, recipient_name: str, name: str) -> FederationPolicy:
-        """Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks
-        to non-Databricks recipients. The caller must have read access to the recipient.
+        """Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from
+        <Databricks> to non-<Databricks> recipients. The caller must have read access to the recipient.
 
         :param recipient_name: str
           Name of the recipient. This is the name of the recipient for which the policy is being retrieved.
@@ -2930,9 +2869,7 @@ class RecipientFederationPoliciesAPI:
         :returns: :class:`FederationPolicy`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2946,8 +2883,8 @@ class RecipientFederationPoliciesAPI:
     def list(
         self, recipient_name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[FederationPolicy]:
-        """Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to
-        non-Databricks recipients. The caller must have read access to the recipient.
+        """Lists federation policies for an OIDC_FEDERATION recipient for sharing data from <Databricks> to
+        non-<Databricks> recipients. The caller must have read access to the recipient.
 
         :param recipient_name: str
           Name of the recipient. This is the name of the recipient for which the policies are being listed.
@@ -2962,9 +2899,7 @@ class RecipientFederationPoliciesAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2986,20 +2921,6 @@ class RecipientFederationPoliciesAPI:
 
 
 class RecipientsAPI:
-    """A recipient is an object you create using :method:recipients/create to represent an organization which you
-    want to allow access shares. The way how sharing works differs depending on whether or not your recipient
-    has access to a Databricks workspace that is enabled for Unity Catalog:
-
-    - For recipients with access to a Databricks workspace that is enabled for Unity Catalog, you can create a
-      recipient object along with a unique sharing identifier you get from the recipient. The sharing
-      identifier is the key identifier that enables the secure connection. This sharing mode is called
-      **Databricks-to-Databricks sharing**.
-    - For recipients without access to a Databricks workspace that is enabled for Unity Catalog, when you
-      create a recipient object, Databricks generates an activation link you can send to the recipient. The
-      recipient follows the activation link to download the credential file, and then uses the credential file
-      to establish a secure connection to receive the shared data. This sharing mode is called **open
-      sharing**."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -3069,10 +2990,7 @@ class RecipientsAPI:
             body["properties_kvpairs"] = properties_kvpairs.as_dict()
         if sharing_code is not None:
             body["sharing_code"] = sharing_code
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3111,9 +3029,7 @@ class RecipientsAPI:
         :returns: :class:`RecipientInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3161,9 +3077,7 @@ class RecipientsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3197,10 +3111,7 @@ class RecipientsAPI:
         body = {}
         if existing_token_expire_in_seconds is not None:
             body["existing_token_expire_in_seconds"] = existing_token_expire_in_seconds
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3239,9 +3150,7 @@ class RecipientsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3305,10 +3214,7 @@ class RecipientsAPI:
             body["owner"] = owner
         if properties_kvpairs is not None:
             body["properties_kvpairs"] = properties_kvpairs.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3319,11 +3225,6 @@ class RecipientsAPI:
 
 
 class SharesAPI:
-    """A share is a container instantiated with :method:shares/create. Once created you can iteratively register
-    a collection of existing data assets defined within the metastore using :method:shares/update. You can
-    register data assets under their original name, qualified by their original schema, or provide alternate
-    exposed names."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -3348,10 +3249,7 @@ class SharesAPI:
             body["name"] = name
         if storage_root is not None:
             body["storage_root"] = storage_root
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3392,9 +3290,7 @@ class SharesAPI:
         query = {}
         if include_shared_data is not None:
             query["include_shared_data"] = include_shared_data
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3432,9 +3328,7 @@ class SharesAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3481,9 +3375,7 @@ class SharesAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3545,10 +3437,7 @@ class SharesAPI:
             body["storage_root"] = storage_root
         if updates is not None:
             body["updates"] = [v.as_dict() for v in updates]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3585,10 +3474,7 @@ class SharesAPI:
             body["changes"] = [v.as_dict() for v in changes]
         if omit_permissions_list is not None:
             body["omit_permissions_list"] = omit_permissions_list
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

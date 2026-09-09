@@ -27,9 +27,6 @@ from databricks.sdk.service._internal import (
 )
 
 
-from databricks.sdk.service import sql
-
-
 _LOG = logging.getLogger("databricks.sdk")
 
 
@@ -268,6 +265,8 @@ class DashboardView(Enum):
 @dataclass
 class DownloadMessageAttachmentVisualizationResponse:
     contents: Optional[BinaryIO] = None
+    """The rendered visualization as a PNG image. Returned as the raw HTTP response body rather than a
+    JSON field."""
 
     def as_dict(self) -> dict:
         """Serializes the DownloadMessageAttachmentVisualizationResponse into a dictionary suitable for use as a JSON request body."""
@@ -430,7 +429,7 @@ class GenieConversation:
             last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             space_id=d.get("space_id", None),
             title=d.get("title", None),
-            user_id=d.get("user_id", None),
+            user_id=_int64(d, "user_id"),
         )
 
 
@@ -2029,17 +2028,21 @@ class MessageStatus(Enum):
 
 @dataclass
 class PublishedDashboard:
+    """Published dashboard resource with a single page. This resource defines a static snapshot of the
+    metadata required for building a published dashboard."""
+
     display_name: Optional[str] = None
-    """The display name of the published dashboard."""
+    """Display name of the dashboard."""
 
     embed_credentials: Optional[bool] = None
-    """Indicates whether credentials are embedded in the published dashboard."""
 
     revision_create_time: Optional[str] = None
-    """The timestamp of when the published dashboard was last revised."""
+    """The timestamp that the revision was created."""
 
     warehouse_id: Optional[str] = None
-    """The warehouse ID used to run the published dashboard."""
+    """The Id of the warehouse the dashboard belongs to. Format: [0-9a-fA-F]{16} Note: This is not an
+    AIP resource and therefore is Id and not a resource path. Client should throw exception if
+    unset."""
 
     def as_dict(self) -> dict:
         """Serializes the PublishedDashboard into a dictionary suitable for use as a JSON request body."""
@@ -2650,11 +2653,6 @@ class UnpublishDashboardResponse:
 
 
 class GenieAPI:
-    """Genie provides a no-code experience for business users, powered by AI/BI. Analysts set up spaces that
-    business users can use to ask questions using natural language. Genie uses data registered to Unity
-    Catalog and requires at least CAN USE permission on a Pro or Serverless SQL warehouse. Also, Databricks
-    Assistant must be enabled."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2717,10 +2715,7 @@ class GenieAPI:
             body["content"] = content
         if enable_visualization is not None:
             body["enable_visualization"] = enable_visualization
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2776,10 +2771,7 @@ class GenieAPI:
         body = {}
         if content is not None:
             body["content"] = content
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2832,10 +2824,7 @@ class GenieAPI:
             body["title"] = title
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2855,9 +2844,7 @@ class GenieAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2878,9 +2865,7 @@ class GenieAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2904,15 +2889,13 @@ class GenieAPI:
         :returns: :class:`DownloadMessageAttachmentVisualizationResponse`
         """
 
-        headers = {
-            "Accept": "application/octet-stream",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.0/genie/{name}/download-visualization", headers=headers, raw=True)
+        res = self._api.do("GET", f"/api/2.0/genie/{name}/download-visualization", headers=headers)
         return DownloadMessageAttachmentVisualizationResponse.from_dict(res)
 
     def execute_message_attachment_query(
@@ -2933,11 +2916,7 @@ class GenieAPI:
         :returns: :class:`GenieGetMessageQueryResultResponse`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2946,7 +2925,6 @@ class GenieAPI:
         res = self._api.do(
             "POST",
             f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/execute-query",
-            body=body,
             headers=headers,
         )
         return GenieGetMessageQueryResultResponse.from_dict(res)
@@ -2967,11 +2945,7 @@ class GenieAPI:
         :returns: :class:`GenieGetMessageQueryResultResponse`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2980,7 +2954,6 @@ class GenieAPI:
         res = self._api.do(
             "POST",
             f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/execute-query",
-            body=body,
             headers=headers,
         )
         return GenieGetMessageQueryResultResponse.from_dict(res)
@@ -3017,11 +2990,7 @@ class GenieAPI:
         :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3030,7 +2999,6 @@ class GenieAPI:
         res = self._api.do(
             "POST",
             f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads",
-            body=body,
             headers=headers,
         )
         return GenieGenerateDownloadFullQueryResultResponse.from_dict(res)
@@ -3050,11 +3018,7 @@ class GenieAPI:
         :returns: :class:`GenieMessage`
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3063,7 +3027,6 @@ class GenieAPI:
         res = self._api.do(
             "POST",
             f"/api/2.0/genie/agents/{agent_id}/conversations/{conversation_id}/responses/{response_id}/cancel",
-            body=body,
             headers=headers,
         )
         return GenieMessage.from_dict(res)
@@ -3085,10 +3048,7 @@ class GenieAPI:
         body = {}
         if benchmark_question_ids is not None:
             body["benchmark_question_ids"] = [v for v in benchmark_question_ids]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3110,9 +3070,7 @@ class GenieAPI:
         :returns: :class:`GenieEvalResultDetails`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3133,9 +3091,7 @@ class GenieAPI:
         :returns: :class:`GenieEvalRunResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3166,9 +3122,7 @@ class GenieAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3199,9 +3153,7 @@ class GenieAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3257,9 +3209,7 @@ class GenieAPI:
         query = {}
         if download_id_signature is not None:
             query["download_id_signature"] = download_id_signature
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3286,9 +3236,7 @@ class GenieAPI:
         :returns: :class:`GenieMessage`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3319,9 +3267,7 @@ class GenieAPI:
         :returns: :class:`GenieGetMessageQueryResultResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3350,9 +3296,7 @@ class GenieAPI:
         :returns: :class:`GenieGetMessageQueryResultResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3383,9 +3327,7 @@ class GenieAPI:
         :returns: :class:`GenieGetMessageQueryResultResponse`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3413,9 +3355,7 @@ class GenieAPI:
         query = {}
         if include_serialized_space is not None:
             query["include_serialized_space"] = include_serialized_space
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3446,9 +3386,7 @@ class GenieAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3484,9 +3422,7 @@ class GenieAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3530,9 +3466,7 @@ class GenieAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3571,9 +3505,7 @@ class GenieAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3605,9 +3537,7 @@ class GenieAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3646,10 +3576,7 @@ class GenieAPI:
             body["comment"] = comment
         if rating is not None:
             body["rating"] = rating.value
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3684,10 +3611,7 @@ class GenieAPI:
             body["content"] = content
         if enable_visualization is not None:
             body["enable_visualization"] = enable_visualization
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3720,9 +3644,7 @@ class GenieAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3778,10 +3700,7 @@ class GenieAPI:
             body["title"] = title
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3792,8 +3711,7 @@ class GenieAPI:
 
 
 class LakeviewAPI:
-    """These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
-    be done with Workspace API (import, export, get-status, list, delete)."""
+    """Lakeview API service provides end-users programmatic access to dashboards."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3824,10 +3742,7 @@ class LakeviewAPI:
             query["dataset_catalog"] = dataset_catalog
         if dataset_schema is not None:
             query["dataset_schema"] = dataset_schema
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3849,10 +3764,7 @@ class LakeviewAPI:
 
         body = schedule.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3876,10 +3788,7 @@ class LakeviewAPI:
 
         body = subscription.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3910,9 +3819,7 @@ class LakeviewAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3946,9 +3853,7 @@ class LakeviewAPI:
         query = {}
         if etag is not None:
             query["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3972,9 +3877,7 @@ class LakeviewAPI:
         :returns: :class:`Dashboard`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -3998,9 +3901,7 @@ class LakeviewAPI:
         :returns: :class:`PublishedDashboard`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4020,9 +3921,7 @@ class LakeviewAPI:
         :returns: :class:`Schedule`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4046,9 +3945,7 @@ class LakeviewAPI:
         :returns: :class:`Subscription`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4096,9 +3993,7 @@ class LakeviewAPI:
             query["show_trashed"] = show_trashed
         if view is not None:
             query["view"] = view.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4134,9 +4029,7 @@ class LakeviewAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4176,9 +4069,7 @@ class LakeviewAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4231,10 +4122,7 @@ class LakeviewAPI:
             body["source_dashboard_id"] = source_dashboard_id
         if update_parameter_syntax is not None:
             body["update_parameter_syntax"] = update_parameter_syntax
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4266,10 +4154,7 @@ class LakeviewAPI:
             body["embed_credentials"] = embed_credentials
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4295,10 +4180,7 @@ class LakeviewAPI:
         body = {}
         if etag is not None:
             body["etag"] = etag
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4318,9 +4200,7 @@ class LakeviewAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4339,9 +4219,7 @@ class LakeviewAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4382,10 +4260,7 @@ class LakeviewAPI:
             query["dataset_catalog"] = dataset_catalog
         if dataset_schema is not None:
             query["dataset_schema"] = dataset_schema
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4411,10 +4286,7 @@ class LakeviewAPI:
 
         body = schedule.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -4427,7 +4299,7 @@ class LakeviewAPI:
 
 
 class LakeviewEmbeddedAPI:
-    """Token-based Lakeview APIs for embedding dashboards in external applications."""
+    """Lakeview API service provides end-users programmatic access to dashboards."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4458,9 +4330,7 @@ class LakeviewEmbeddedAPI:
             query["external_value"] = external_value
         if external_viewer_id is not None:
             query["external_viewer_id"] = external_viewer_id
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

@@ -744,31 +744,6 @@ class FacetResultData:
         return cls(facet_array=d.get("facet_array", None), facet_row_count=d.get("facet_row_count", None))
 
 
-@dataclass
-class GetVectorSearchEndpointPermissionLevelsResponse:
-    permission_levels: Optional[List[VectorSearchEndpointPermissionsDescription]] = None
-    """Specific permission levels"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetVectorSearchEndpointPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetVectorSearchEndpointPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetVectorSearchEndpointPermissionLevelsResponse:
-        """Deserializes the GetVectorSearchEndpointPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", VectorSearchEndpointPermissionsDescription))
-
-
 class IndexSubtype(Enum):
     """The subtype of the AI Search index, determining the indexing and retrieval strategy.
 
@@ -1814,239 +1789,7 @@ class VectorIndexType(Enum):
     DIRECT_ACCESS = "DIRECT_ACCESS"
 
 
-@dataclass
-class VectorSearchEndpointAccessControlRequest:
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    permission_level: Optional[VectorSearchEndpointPermissionLevel] = None
-
-    service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointAccessControlRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointAccessControlRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointAccessControlRequest:
-        """Deserializes the VectorSearchEndpointAccessControlRequest from a dictionary."""
-        return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", VectorSearchEndpointPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class VectorSearchEndpointAccessControlResponse:
-    all_permissions: Optional[List[VectorSearchEndpointPermission]] = None
-    """All permissions."""
-
-    display_name: Optional[str] = None
-    """Display name of the user or service principal."""
-
-    group_name: Optional[str] = None
-    """name of the group"""
-
-    service_principal_name: Optional[str] = None
-    """Name of the service principal."""
-
-    user_name: Optional[str] = None
-    """name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointAccessControlResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointAccessControlResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.group_name is not None:
-            body["group_name"] = self.group_name
-        if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
-        if self.user_name is not None:
-            body["user_name"] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointAccessControlResponse:
-        """Deserializes the VectorSearchEndpointAccessControlResponse from a dictionary."""
-        return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", VectorSearchEndpointPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
-
-
-@dataclass
-class VectorSearchEndpointPermission:
-    inherited: Optional[bool] = None
-
-    inherited_from_object: Optional[List[str]] = None
-
-    permission_level: Optional[VectorSearchEndpointPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointPermission into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointPermission into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.inherited is not None:
-            body["inherited"] = self.inherited
-        if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointPermission:
-        """Deserializes the VectorSearchEndpointPermission from a dictionary."""
-        return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", VectorSearchEndpointPermissionLevel),
-        )
-
-
-class VectorSearchEndpointPermissionLevel(Enum):
-    """Permission level"""
-
-    CAN_CREATE = "CAN_CREATE"
-    CAN_MANAGE = "CAN_MANAGE"
-    CAN_USE = "CAN_USE"
-
-
-@dataclass
-class VectorSearchEndpointPermissions:
-    access_control_list: Optional[List[VectorSearchEndpointAccessControlResponse]] = None
-
-    object_id: Optional[str] = None
-
-    object_type: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["object_id"] = self.object_id
-        if self.object_type is not None:
-            body["object_type"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointPermissions:
-        """Deserializes the VectorSearchEndpointPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", VectorSearchEndpointAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class VectorSearchEndpointPermissionsDescription:
-    description: Optional[str] = None
-
-    permission_level: Optional[VectorSearchEndpointPermissionLevel] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointPermissionsDescription into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VectorSearchEndpointPermissionsDescription into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointPermissionsDescription:
-        """Deserializes the VectorSearchEndpointPermissionsDescription from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", VectorSearchEndpointPermissionLevel),
-        )
-
-
 class VectorSearchEndpointsAPI:
-    """**Endpoint**: Represents the compute resources to host AI Search indexes."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2124,10 +1867,7 @@ class VectorSearchEndpointsAPI:
             body["target_qps"] = target_qps
         if usage_policy_id is not None:
             body["usage_policy_id"] = usage_policy_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2167,9 +1907,7 @@ class VectorSearchEndpointsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2186,9 +1924,7 @@ class VectorSearchEndpointsAPI:
         :returns: :class:`EndpointInfo`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2196,49 +1932,6 @@ class VectorSearchEndpointsAPI:
 
         res = self._api.do("GET", f"/api/2.0/vector-search/endpoints/{endpoint_name}", headers=headers)
         return EndpointInfo.from_dict(res)
-
-    def get_permission_levels(self, endpoint_id: str) -> GetVectorSearchEndpointPermissionLevelsResponse:
-        """Gets the permission levels that a user can have on an object.
-
-        :param endpoint_id: str
-          The vector search endpoint for which to get or manage permissions.
-
-        :returns: :class:`GetVectorSearchEndpointPermissionLevelsResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "GET", f"/api/2.0/permissions/vector-search-endpoints/{endpoint_id}/permissionLevels", headers=headers
-        )
-        return GetVectorSearchEndpointPermissionLevelsResponse.from_dict(res)
-
-    def get_permissions(self, endpoint_id: str) -> VectorSearchEndpointPermissions:
-        """Gets the permissions of a vector search endpoint. Vector search endpoints can inherit permissions from
-        their root object.
-
-        :param endpoint_id: str
-          The vector search endpoint for which to get or manage permissions.
-
-        :returns: :class:`VectorSearchEndpointPermissions`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.0/permissions/vector-search-endpoints/{endpoint_id}", headers=headers)
-        return VectorSearchEndpointPermissions.from_dict(res)
 
     def list_endpoints(self, *, page_token: Optional[str] = None) -> Iterator[EndpointInfo]:
         """List all AI Search endpoints in the workspace.
@@ -2252,9 +1945,7 @@ class VectorSearchEndpointsAPI:
         query = {}
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2283,10 +1974,7 @@ class VectorSearchEndpointsAPI:
         body = {}
         if target_qps is not None:
             body["target_qps"] = target_qps
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2334,10 +2022,7 @@ class VectorSearchEndpointsAPI:
             body["page_token"] = page_token
         if start_time is not None:
             body["start_time"] = start_time
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2345,36 +2030,6 @@ class VectorSearchEndpointsAPI:
 
         res = self._api.do("POST", f"/api/2.0/vector-search/endpoints/{name}/metrics", body=body, headers=headers)
         return RetrieveUserVisibleMetricsResponse.from_dict(res)
-
-    def set_permissions(
-        self, endpoint_id: str, *, access_control_list: Optional[List[VectorSearchEndpointAccessControlRequest]] = None
-    ) -> VectorSearchEndpointPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their root object.
-
-        :param endpoint_id: str
-          The vector search endpoint for which to get or manage permissions.
-        :param access_control_list: List[:class:`VectorSearchEndpointAccessControlRequest`] (optional)
-
-        :returns: :class:`VectorSearchEndpointPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PUT", f"/api/2.0/permissions/vector-search-endpoints/{endpoint_id}", body=body, headers=headers
-        )
-        return VectorSearchEndpointPermissions.from_dict(res)
 
     def update_endpoint_budget_policy(
         self, endpoint_name: str, budget_policy_id: str
@@ -2392,10 +2047,7 @@ class VectorSearchEndpointsAPI:
         body = {}
         if budget_policy_id is not None:
             body["budget_policy_id"] = budget_policy_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2422,10 +2074,7 @@ class VectorSearchEndpointsAPI:
         body = {}
         if custom_tags is not None:
             body["custom_tags"] = [v.as_dict() for v in custom_tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2436,48 +2085,8 @@ class VectorSearchEndpointsAPI:
         )
         return UpdateEndpointCustomTagsResponse.from_dict(res)
 
-    def update_permissions(
-        self, endpoint_id: str, *, access_control_list: Optional[List[VectorSearchEndpointAccessControlRequest]] = None
-    ) -> VectorSearchEndpointPermissions:
-        """Updates the permissions on a vector search endpoint. Vector search endpoints can inherit permissions
-        from their root object.
-
-        :param endpoint_id: str
-          The vector search endpoint for which to get or manage permissions.
-        :param access_control_list: List[:class:`VectorSearchEndpointAccessControlRequest`] (optional)
-
-        :returns: :class:`VectorSearchEndpointPermissions`
-        """
-
-        body = {}
-        if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "PATCH", f"/api/2.0/permissions/vector-search-endpoints/{endpoint_id}", body=body, headers=headers
-        )
-        return VectorSearchEndpointPermissions.from_dict(res)
-
 
 class VectorSearchIndexesAPI:
-    """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient
-    approximate nearest neighbor (ANN) search queries.
-
-    There are 2 types of AI Search indexes:
-
-    - **Delta Sync Index**: An index that automatically syncs with a source Delta Table, automatically and
-      incrementally updating the index as the underlying data in the Delta Table changes.
-    - **Direct Vector Access Index**: An index that supports direct read and write of vectors and metadata
-      through our REST and SDK APIs. With this model, the user manages index updates."""
-
     def __init__(self, api_client):
         self._api = api_client
 
@@ -2526,10 +2135,7 @@ class VectorSearchIndexesAPI:
             body["name"] = name
         if primary_key is not None:
             body["primary_key"] = primary_key
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2552,9 +2158,7 @@ class VectorSearchIndexesAPI:
         query = {}
         if primary_keys is not None:
             query["primary_keys"] = [v for v in primary_keys]
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2574,9 +2178,7 @@ class VectorSearchIndexesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2600,9 +2202,7 @@ class VectorSearchIndexesAPI:
         query = {}
         if ensure_reranker_compatible is not None:
             query["ensure_reranker_compatible"] = ensure_reranker_compatible
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2627,9 +2227,7 @@ class VectorSearchIndexesAPI:
             query["endpoint_name"] = endpoint_name
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2735,10 +2333,7 @@ class VectorSearchIndexesAPI:
             body["score_threshold"] = score_threshold
         if sort_columns is not None:
             body["sort_columns"] = [v for v in sort_columns]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2768,10 +2363,7 @@ class VectorSearchIndexesAPI:
             body["endpoint_name"] = endpoint_name
         if page_token is not None:
             body["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2803,10 +2395,7 @@ class VectorSearchIndexesAPI:
             body["last_primary_key"] = last_primary_key
         if num_results is not None:
             body["num_results"] = num_results
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2824,17 +2413,13 @@ class VectorSearchIndexesAPI:
 
         """
 
-        body = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", body=body, headers=headers)
+        self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", headers=headers)
 
     def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
         """Handles the upserting of data into a specified vector index.
@@ -2850,10 +2435,7 @@ class VectorSearchIndexesAPI:
         body = {}
         if inputs_json is not None:
             body["inputs_json"] = inputs_json
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:

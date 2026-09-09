@@ -24,12 +24,6 @@ from databricks.sdk.service._internal import (
 )
 
 
-from databricks.sdk.service import catalog
-from databricks.sdk.service import jobs
-from databricks.sdk.service import settings
-from databricks.sdk.service import sharing
-
-
 _LOG = logging.getLogger("databricks.sdk")
 
 
@@ -64,7 +58,7 @@ class CleanRoom:
     using the separate CreateCleanRoomOutputCatalog API."""
 
     owner: Optional[str] = None
-    """This is the Databricks username of the owner of the local clean room securable for permission
+    """This is the <Databricks> username of the owner of the local clean room securable for permission
     management."""
 
     remote_detailed_info: Optional[CleanRoomRemoteDetail] = None
@@ -1894,7 +1888,7 @@ class NotebookVersionReview:
 
 
 class CleanRoomAssetRevisionsAPI:
-    """Clean Room Asset Revisions denote new versions of uploaded assets (e.g. notebooks) in the clean room."""
+    """Public Clean Room Service APIs"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1914,9 +1908,7 @@ class CleanRoomAssetRevisionsAPI:
         :returns: :class:`CleanRoomAsset`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1959,9 +1951,7 @@ class CleanRoomAssetRevisionsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -1983,8 +1973,7 @@ class CleanRoomAssetRevisionsAPI:
 
 
 class CleanRoomAssetsAPI:
-    """Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the
-    clean room."""
+    """Public Clean Room Service APIs"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2005,10 +1994,7 @@ class CleanRoomAssetsAPI:
 
         body = asset.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2045,10 +2031,7 @@ class CleanRoomAssetsAPI:
             body["jar_analysis_review"] = jar_analysis_review.as_dict()
         if notebook_review is not None:
             body["notebook_review"] = notebook_review.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2075,9 +2058,7 @@ class CleanRoomAssetsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2100,9 +2081,7 @@ class CleanRoomAssetsAPI:
         :returns: :class:`CleanRoomAsset`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2127,9 +2106,7 @@ class CleanRoomAssetsAPI:
         query = {}
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2172,10 +2149,7 @@ class CleanRoomAssetsAPI:
 
         body = asset.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2191,8 +2165,7 @@ class CleanRoomAssetsAPI:
 
 
 class CleanRoomAutoApprovalRulesAPI:
-    """Clean room auto-approval rules automatically create an approval on your behalf when an asset (e.g.
-    notebook) meeting specific criteria is shared in a clean room."""
+    """Public Clean Room Service APIs"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2210,10 +2183,7 @@ class CleanRoomAutoApprovalRulesAPI:
         body = {}
         if auto_approval_rule is not None:
             body["auto_approval_rule"] = auto_approval_rule.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2233,9 +2203,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2252,9 +2220,7 @@ class CleanRoomAutoApprovalRulesAPI:
         :returns: :class:`CleanRoomAutoApprovalRule`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2284,9 +2250,7 @@ class CleanRoomAutoApprovalRulesAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2320,10 +2284,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         body = auto_approval_rule.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2336,7 +2297,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
 
 class CleanRoomTaskRunsAPI:
-    """Clean room task runs are the executions of notebooks and JAR analyses in a clean room."""
+    """Public Clean Room Service APIs"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2370,9 +2331,7 @@ class CleanRoomTaskRunsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2421,9 +2380,7 @@ class CleanRoomTaskRunsAPI:
             query["page_token"] = page_token
         if task_type is not None:
             query["task_type"] = task_type.value
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2442,9 +2399,7 @@ class CleanRoomTaskRunsAPI:
 
 
 class CleanRoomsAPI:
-    """A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting
-    environment where multiple parties can work together on sensitive enterprise data without direct access to
-    each other's data."""
+    """Public Clean Room Service APIs"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2492,10 +2447,7 @@ class CleanRoomsAPI:
 
         body = clean_room.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2523,10 +2475,7 @@ class CleanRoomsAPI:
 
         body = output_catalog.as_dict()
         query = {}
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2548,9 +2497,7 @@ class CleanRoomsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2566,9 +2513,7 @@ class CleanRoomsAPI:
         :returns: :class:`CleanRoom`
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2594,9 +2539,7 @@ class CleanRoomsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -2627,10 +2570,7 @@ class CleanRoomsAPI:
         body = {}
         if clean_room is not None:
             body["clean_room"] = clean_room.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
+        headers = {}
 
         cfg = self._api._cfg
         if cfg.workspace_id:
