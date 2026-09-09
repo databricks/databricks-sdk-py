@@ -3430,6 +3430,10 @@ class IngestionConfig:
     source must match exactly that of the key and payload schemas specified for this Stream, except
     that it may omit any columns listed in excluded_columns."""
 
+    budget_policy_id: Optional[str] = None
+    """The ID of the budget policy used to attribute the serverless compute cost of this stream's
+    managed ingestion. If not specified, a default budget policy may be applied."""
+
     deduplication_columns: Optional[List[str]] = None
     """Column paths used to identify duplicate rows during ingestion; only one row per distinct
     combination of these values is kept. Use dot notation for nested fields (e.g.
@@ -3442,6 +3446,14 @@ class IngestionConfig:
     """The ID of the SDP pipeline that continuously copies new events from the streaming source into
     the ingestion Delta table."""
 
+    tags: Optional[Dict[str, str]] = None
+    """Custom tags to associate with this stream's managed ingestion. They are applied to the ingestion
+    pipeline and its forward-fill and backfill jobs, and forwarded to the underlying compute as
+    cluster tags, so ingestion cost can be attributed in the billing system tables. These tags apply
+    only to the managed ingestion compute; they are not applied to the Stream entity itself, and are
+    distinct from any Unity Catalog tags on the Stream. A maximum of 25 tags is supported; keys and
+    values are subject to the same limitations as cluster tags."""
+
     def as_dict(self) -> dict:
         """Serializes the IngestionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3449,6 +3461,8 @@ class IngestionConfig:
             body["backfill_job_id"] = self.backfill_job_id
         if self.backfill_source:
             body["backfill_source"] = self.backfill_source.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.deduplication_columns:
             body["deduplication_columns"] = [v for v in self.deduplication_columns]
         if self.ingestion_destination:
@@ -3457,6 +3471,8 @@ class IngestionConfig:
             body["ingestion_job_id"] = self.ingestion_job_id
         if self.ingestion_pipeline_id is not None:
             body["ingestion_pipeline_id"] = self.ingestion_pipeline_id
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3466,6 +3482,8 @@ class IngestionConfig:
             body["backfill_job_id"] = self.backfill_job_id
         if self.backfill_source:
             body["backfill_source"] = self.backfill_source
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.deduplication_columns:
             body["deduplication_columns"] = self.deduplication_columns
         if self.ingestion_destination:
@@ -3474,6 +3492,8 @@ class IngestionConfig:
             body["ingestion_job_id"] = self.ingestion_job_id
         if self.ingestion_pipeline_id is not None:
             body["ingestion_pipeline_id"] = self.ingestion_pipeline_id
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     @classmethod
@@ -3482,10 +3502,12 @@ class IngestionConfig:
         return cls(
             backfill_job_id=_int64(d, "backfill_job_id"),
             backfill_source=_from_dict(d, "backfill_source", BackfillSource),
+            budget_policy_id=d.get("budget_policy_id", None),
             deduplication_columns=d.get("deduplication_columns", None),
             ingestion_destination=_from_dict(d, "ingestion_destination", IngestionDestination),
             ingestion_job_id=_int64(d, "ingestion_job_id"),
             ingestion_pipeline_id=d.get("ingestion_pipeline_id", None),
+            tags=d.get("tags", None),
         )
 
 
@@ -4959,6 +4981,10 @@ class MaterializedFeature:
     feature_name: str
     """The full name of the feature in Unity Catalog."""
 
+    budget_policy_id: Optional[str] = None
+    """The ID of the budget policy used to attribute the serverless compute cost of this
+    materialization. If not specified, a default budget policy may be applied."""
+
     cron_schedule: Optional[str] = None
 
     cron_schedule_trigger: Optional[CronSchedule] = None
@@ -5000,9 +5026,20 @@ class MaterializedFeature:
     table_trigger: Optional[TableTrigger] = None
     """A trigger that fires when the upstream source table changes."""
 
+    tags: Optional[Dict[str, str]] = None
+    """Custom tags to associate with this materialization. They are applied to the materialization job
+    (for batch features) or pipeline (for streaming features) and forwarded to the underlying
+    compute as cluster tags, so materialization cost can be attributed in the billing system tables.
+    These tags apply only to the materialization compute; they are not applied to the Unity Catalog
+    Feature resource itself, whose tags are managed separately through the Unity Catalog tagging
+    API. A maximum of 25 tags is supported; keys and values are subject to the same limitations as
+    cluster tags."""
+
     def as_dict(self) -> dict:
         """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.cron_schedule is not None:
             body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
@@ -5029,11 +5066,15 @@ class MaterializedFeature:
             body["table_name"] = self.table_name
         if self.table_trigger:
             body["table_trigger"] = self.table_trigger.as_dict()
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the MaterializedFeature into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.cron_schedule is not None:
             body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
@@ -5060,12 +5101,15 @@ class MaterializedFeature:
             body["table_name"] = self.table_name
         if self.table_trigger:
             body["table_trigger"] = self.table_trigger
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeature:
         """Deserializes the MaterializedFeature from a dictionary."""
         return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
             cron_schedule=d.get("cron_schedule", None),
             cron_schedule_trigger=_from_dict(d, "cron_schedule_trigger", CronSchedule),
             feature_name=d.get("feature_name", None),
@@ -5079,6 +5123,7 @@ class MaterializedFeature:
             streaming_mode=_from_dict(d, "streaming_mode", StreamingMode),
             table_name=d.get("table_name", None),
             table_trigger=_from_dict(d, "table_trigger", TableTrigger),
+            tags=d.get("tags", None),
         )
 
 
@@ -6339,6 +6384,191 @@ class PublishTableResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PublishTableResponse:
         """Deserializes the PublishTableResponse from a dictionary."""
         return cls(online_table_name=d.get("online_table_name", None), pipeline_id=d.get("pipeline_id", None))
+
+
+@dataclass
+class PurgeFeatureEntitiesMetadata:
+    """Progress and configuration for a feature entity purge."""
+
+    create_time: Optional[Timestamp] = None
+    """Time at which the purge operation was created."""
+
+    entities_table: Optional[str] = None
+    """Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge."""
+
+    entities_table_version: Optional[str] = None
+    """Version of the entities table used by the purge."""
+
+    features: Optional[List[str]] = None
+    """Fully qualified names of the features targeted by the purge."""
+
+    job_id: Optional[int] = None
+    """ID of the job that executes this purge."""
+
+    state: Optional[PurgeFeatureEntitiesMetadataState] = None
+    """Current state of the purge operation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.entities_table is not None:
+            body["entities_table"] = self.entities_table
+        if self.entities_table_version is not None:
+            body["entities_table_version"] = self.entities_table_version
+        if self.features:
+            body["features"] = [v for v in self.features]
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.entities_table is not None:
+            body["entities_table"] = self.entities_table
+        if self.entities_table_version is not None:
+            body["entities_table_version"] = self.entities_table_version
+        if self.features:
+            body["features"] = self.features
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PurgeFeatureEntitiesMetadata:
+        """Deserializes the PurgeFeatureEntitiesMetadata from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            entities_table=d.get("entities_table", None),
+            entities_table_version=d.get("entities_table_version", None),
+            features=d.get("features", None),
+            job_id=_int64(d, "job_id"),
+            state=_enum(d, "state", PurgeFeatureEntitiesMetadataState),
+        )
+
+
+class PurgeFeatureEntitiesMetadataState(Enum):
+    """Lifecycle state of a feature entity purge."""
+
+    CANCELLED = "CANCELLED"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
+
+
+@dataclass
+class PurgeFeatureEntitiesResponse:
+    """Result of a completed feature entity purge."""
+
+    metadata: Optional[PurgeFeatureEntitiesMetadata] = None
+    """Metadata about the purge operation."""
+
+    results: Optional[List[PurgeFeatureEntitiesResult]] = None
+    """Per-feature purge results."""
+
+    state: Optional[PurgeFeatureEntitiesMetadataState] = None
+    """State of the purge operation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metadata:
+            body["metadata"] = self.metadata.as_dict()
+        if self.results:
+            body["results"] = [v.as_dict() for v in self.results]
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metadata:
+            body["metadata"] = self.metadata
+        if self.results:
+            body["results"] = self.results
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PurgeFeatureEntitiesResponse:
+        """Deserializes the PurgeFeatureEntitiesResponse from a dictionary."""
+        return cls(
+            metadata=_from_dict(d, "metadata", PurgeFeatureEntitiesMetadata),
+            results=_repeated_dict(d, "results", PurgeFeatureEntitiesResult),
+            state=_enum(d, "state", PurgeFeatureEntitiesMetadataState),
+        )
+
+
+@dataclass
+class PurgeFeatureEntitiesResult:
+    """Result of purging one feature."""
+
+    error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
+    """Error encountered while purging this feature, if any."""
+
+    feature: Optional[str] = None
+    """Fully qualified name of the feature that was purged."""
+
+    offline_state: Optional[PurgeFeatureEntitiesResultState] = None
+    """State of the offline purge for this feature."""
+
+    online_state: Optional[PurgeFeatureEntitiesResultState] = None
+    """State of the online purge for this feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesResult into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error:
+            body["error"] = self.error.as_dict()
+        if self.feature is not None:
+            body["feature"] = self.feature
+        if self.offline_state is not None:
+            body["offline_state"] = self.offline_state.value
+        if self.online_state is not None:
+            body["online_state"] = self.online_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesResult into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error:
+            body["error"] = self.error
+        if self.feature is not None:
+            body["feature"] = self.feature
+        if self.offline_state is not None:
+            body["offline_state"] = self.offline_state
+        if self.online_state is not None:
+            body["online_state"] = self.online_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PurgeFeatureEntitiesResult:
+        """Deserializes the PurgeFeatureEntitiesResult from a dictionary."""
+        return cls(
+            error=_from_dict(d, "error", DatabricksServiceExceptionWithDetailsProto),
+            feature=d.get("feature", None),
+            offline_state=_enum(d, "offline_state", PurgeFeatureEntitiesResultState),
+            online_state=_enum(d, "online_state", PurgeFeatureEntitiesResultState),
+        )
+
+
+class PurgeFeatureEntitiesResultState(Enum):
+    """Terminal state of a purge for one store type."""
+
+    FAILED = "FAILED"
+    NOT_APPLICABLE = "NOT_APPLICABLE"
+    SUCCEEDED = "SUCCEEDED"
 
 
 @dataclass
@@ -10978,6 +11208,49 @@ class FeatureEngineeringAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def purge_feature_entities(
+        self, features: List[str], entities_table: str, *, request_id: Optional[str] = None
+    ) -> PurgeFeatureEntitiesOperation:
+        """Purge materialized feature values for specified entities.
+
+        :param features: List[str]
+          Fully qualified names of the features to purge. At least one nonempty feature name is required. A
+          request may contain at most 10000 features; submit additional features in separate requests.
+          Duplicate features are rejected.
+        :param entities_table: str
+          Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge. The table
+          may contain a subset of each feature's entity-key columns. A partial key match deletes all feature
+          rows matching the provided key values. Non-key columns are rejected; null key values are allowed.
+        :param request_id: str (optional)
+          Optional UUID4 idempotency token for the request.
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = {}
+        if entities_table is not None:
+            body["entities_table"] = entities_table
+        if features is not None:
+            body["features"] = [v for v in features]
+        if request_id is not None:
+            body["request_id"] = request_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", "/api/2.0/feature-engineering/features:purgeFeatureEntities", body=body, headers=headers
+        )
+        operation = Operation.from_dict(res)
+        return PurgeFeatureEntitiesOperation(self, operation)
+
     def update_feature(self, full_name: str, feature: Feature, update_mask: str) -> Feature:
         """Update a Feature.
 
@@ -11187,6 +11460,83 @@ class BackfillFeaturesOperation:
             return None
 
         return BackfillOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class PurgeFeatureEntitiesOperation:
+    """Long-running operation for purge_feature_entities"""
+
+    def __init__(self, impl: FeatureEngineeringAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> PurgeFeatureEntitiesResponse:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`PurgeFeatureEntitiesResponse`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            purge_feature_entities_response = PurgeFeatureEntitiesResponse.from_dict(operation.response)
+
+            return purge_feature_entities_response, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> PurgeFeatureEntitiesMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`PurgeFeatureEntitiesMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return PurgeFeatureEntitiesMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

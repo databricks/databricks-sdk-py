@@ -142,7 +142,7 @@ class BranchOperationMetadata:
 class BranchSpec:
     expire_time: Optional[Timestamp] = None
     """Absolute expiration timestamp. When set, the branch will expire at this time. Mutually exclusive
-    with ``ttl`` and ``no_expiry``. When updating, use ``spec.expiration`` in the update_mask."""
+    with ``ttl`` and ``no_expiry``."""
 
     is_protected: Optional[bool] = None
     """When set to true, protects the branch from deletion and reset. Associated compute endpoints and
@@ -151,7 +151,7 @@ class BranchSpec:
     no_expiry: Optional[bool] = None
     """Explicitly disable expiration. When set to true, the branch will not expire. If set to false,
     the request is invalid; provide either ttl or expire_time instead. Mutually exclusive with
-    ``expire_time`` and ``ttl``. When updating, use ``spec.expiration`` in the update_mask."""
+    ``expire_time`` and ``ttl``."""
 
     source_branch: Optional[str] = None
     """The name of the source branch from which this branch was created (data lineage for point-in-time
@@ -172,8 +172,7 @@ class BranchSpec:
 
     ttl: Optional[Duration] = None
     """Relative time-to-live duration. When set, the branch will expire at creation_time + ttl.
-    Mutually exclusive with ``expire_time`` and ``no_expiry``. When updating, use
-    ``spec.expiration`` in the update_mask."""
+    Mutually exclusive with ``expire_time`` and ``no_expiry``."""
 
     def as_dict(self) -> dict:
         """Serializes the BranchSpec into a dictionary suitable for use as a JSON request body."""
@@ -1722,15 +1721,14 @@ class EndpointSpec:
 
     no_suspension: Optional[bool] = None
     """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
-    true when provided. Mutually exclusive with ``suspend_timeout_duration``. When updating, use
-    ``spec.suspension`` in the update_mask."""
+    true when provided. Mutually exclusive with ``suspend_timeout_duration``."""
 
     settings: Optional[EndpointSettings] = None
 
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
     should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with
-    ``no_suspension``. When updating, use ``spec.suspension`` in the update_mask."""
+    ``no_suspension``."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointSpec into a dictionary suitable for use as a JSON request body."""
@@ -2697,8 +2695,7 @@ class ProjectDefaultEndpointSettings:
 
     no_suspension: Optional[bool] = None
     """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
-    true when provided. Mutually exclusive with ``suspend_timeout_duration``. When updating, use
-    ``spec.project_default_settings.suspension`` in the update_mask."""
+    true when provided. Mutually exclusive with ``suspend_timeout_duration``."""
 
     pg_settings: Optional[Dict[str, str]] = None
     """A raw representation of Postgres settings."""
@@ -2706,8 +2703,7 @@ class ProjectDefaultEndpointSettings:
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
     should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with
-    ``no_suspension``. When updating, use ``spec.project_default_settings.suspension`` in the
-    update_mask."""
+    ``no_suspension``."""
 
     def as_dict(self) -> dict:
         """Serializes the ProjectDefaultEndpointSettings into a dictionary suitable for use as a JSON request body."""

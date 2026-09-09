@@ -166,7 +166,8 @@ class CleanRoomAsset:
     *shared_catalog*.*shared_schema*.*asset_name*
     
     For notebooks, the name is the notebook file name. For jar analyses, the name is the jar
-    analysis name."""
+    analysis name. For Genie spaces, the name is derived from the clean room; the caller does not
+    choose it."""
 
     asset_type: CleanRoomAssetAssetType
     """The type of the asset."""
@@ -2161,7 +2162,7 @@ class CleanRoomAssetsAPI:
           *shared_catalog*.*shared_schema*.*asset_name*
 
           For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis
-          name.
+          name. For Genie spaces, the name is derived from the clean room; the caller does not choose it.
         :param asset: :class:`CleanRoomAsset`
           The asset to update. The asset's ``name`` and ``asset_type`` fields are used to identify the asset
           to update.
