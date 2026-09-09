@@ -3059,6 +3059,32 @@ class DeltaSharingScopeEnum(Enum):
 
 
 @dataclass
+class DenyOptions:
+    privileges: List[str]
+    """List of privileges to deny. When any of these privileges are requested, the policy will deny
+    access if the principal and condition match. Required on create and update."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DenyOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.privileges:
+            body["privileges"] = [v for v in self.privileges]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DenyOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.privileges:
+            body["privileges"] = self.privileges
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DenyOptions:
+        """Deserializes the DenyOptions from a dictionary."""
+        return cls(privileges=d.get("privileges", None))
+
+
+@dataclass
 class Dependency:
     """A dependency of a SQL object. One of the following fields must be defined: **table**,
     **function**, **connection**, **credential**, **volume**, or **secret**."""
@@ -10208,6 +10234,11 @@ class PolicyInfo:
     created_by: Optional[str] = None
     """Username of the user who created the policy. Output only."""
 
+    deny: Optional[DenyOptions] = None
+    """Options for deny policies. Valid only if ``policy_type`` is ``POLICY_TYPE_DENY``. Required on
+    create and optional on update. When specified on update, the new options will replace the
+    existing options as a whole."""
+
     except_principals: Optional[List[str]] = None
     """Optional list of user or group names that should be excluded from the policy."""
 
@@ -10260,6 +10291,8 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deny:
+            body["deny"] = self.deny.as_dict()
         if self.except_principals:
             body["except_principals"] = [v for v in self.except_principals]
         if self.for_securable_type is not None:
@@ -10301,6 +10334,8 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deny:
+            body["deny"] = self.deny
         if self.except_principals:
             body["except_principals"] = self.except_principals
         if self.for_securable_type is not None:
@@ -10339,6 +10374,7 @@ class PolicyInfo:
             comment=d.get("comment", None),
             created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
+            deny=_from_dict(d, "deny", DenyOptions),
             except_principals=d.get("except_principals", None),
             for_securable_type=_enum(d, "for_securable_type", SecurableType),
             grant=_from_dict(d, "grant", GrantOptions),
@@ -10358,6 +10394,7 @@ class PolicyInfo:
 
 class PolicyType(Enum):
     POLICY_TYPE_COLUMN_MASK = "POLICY_TYPE_COLUMN_MASK"
+    POLICY_TYPE_DENY = "POLICY_TYPE_DENY"
     POLICY_TYPE_GRANT = "POLICY_TYPE_GRANT"
     POLICY_TYPE_ROW_FILTER = "POLICY_TYPE_ROW_FILTER"
 

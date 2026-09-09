@@ -424,9 +424,9 @@
           Composite filters are not supported. This field is optional.
         :param max_results: int (optional)
           The maximum number of entries to return in a single page. The system may return fewer than
-          max_results events in a response, even if there are more events available. This field is optional.
-          The default value is 25. The maximum value is 100. An error is returned if the value of max_results
-          is greater than 100.
+          max_results pipelines in a response, even if there are more pipelines available. This field is
+          optional. The default value is 25. The maximum value is 100. An error is returned if the value of
+          max_results is greater than 100.
         :param order_by: List[str] (optional)
           A list of strings specifying the order of results. Supported order_by fields are id and name. The
           default is id asc. This field is optional.

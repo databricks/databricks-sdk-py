@@ -231,6 +231,24 @@
         :returns: Iterator over :class:`Stream`
         
 
+    .. py:method:: purge_feature_entities(features: List[str], entities_table: str [, request_id: Optional[str]]) -> PurgeFeatureEntitiesOperation
+
+        Purge materialized feature values for specified entities.
+
+        :param features: List[str]
+          Fully qualified names of the features to purge. At least one nonempty feature name is required. A
+          request may contain at most 10000 features; submit additional features in separate requests.
+          Duplicate features are rejected.
+        :param entities_table: str
+          Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge. The table
+          may contain a subset of each feature's entity-key columns. A partial key match deletes all feature
+          rows matching the provided key values. Non-key columns are rejected; null key values are allowed.
+        :param request_id: str (optional)
+          Optional UUID4 idempotency token for the request.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: update_feature(full_name: str, feature: Feature, update_mask: str) -> Feature
 
         Update a Feature.

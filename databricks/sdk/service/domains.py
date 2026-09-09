@@ -335,8 +335,7 @@ class DomainsAPI:
           Full resource name of the domain to delete. Format: ``domains/{domain_id}``
         :param force: bool (optional)
           When false (default), DeleteDomain is rejected with FAILED_PRECONDITION if the domain still has
-          Glossary pages. When true, those pages are deleted first and then the domain is removed. Forwarded
-          to the central service.
+          Glossary pages. When true, those pages are deleted first and then the domain is removed.
 
 
         """
