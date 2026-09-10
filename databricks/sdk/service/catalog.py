@@ -14307,8 +14307,7 @@ class AiGatewayAPI:
           Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
           every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
           more granular paths: ``comment``, ``config.source_connection.name``,
-          ``config.include_tool_selectors``, or ``config.rate_limits``. Wildcard paths such as ``*`` are not
-          supported.
+          ``config.include_tool_selectors``, or ``config.rate_limits``.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
@@ -14369,8 +14368,7 @@ class AiGatewayAPI:
           (for example, ``config.openai``; the mask path remains ``config.provider``);
           ``config.allow_all_targets``, ``config.targets``, ``config.forward_headers``,
           ``config.forward_query_parameters``, ``config.forward_unmanaged_paths``, ``config.rate_limits``, or
-          ``config.inference_table``. The provider type is immutable, and wildcard paths such as ``*`` are not
-          supported.
+          ``config.inference_table``. The provider type is immutable.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
@@ -14424,8 +14422,7 @@ class AiGatewayAPI:
           every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
           more granular paths: ``comment``, ``config.routing.destinations``,
           ``config.routing.fallback.destinations``, ``config.rate_limits``, or ``config.inference_table``.
-          Intermediate paths such as ``config.routing`` and ``config.routing.fallback``, and wildcard paths
-          such as ``*``, are not supported.
+          Intermediate paths such as ``config.routing`` and ``config.routing.fallback`` are not supported.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
@@ -17299,8 +17296,8 @@ class ModelVersionsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ModelVersionInfo]:
-        """List model versions. You can list model versions under a particular schema, or list all model versions
-        in the current metastore.
+        """List the model versions of the specified registered model, identified by its full three-level name
+        (catalog.schema.model).
 
         The returned models are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the model versions. A regular user needs to be the owner or have

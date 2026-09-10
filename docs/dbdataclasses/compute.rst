@@ -1118,7 +1118,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TerminationReasonCode
 
-   The status code indicating why the cluster was terminated
+   The status code indicating why the cluster was terminated.
 
    .. py:attribute:: ABUSE_DETECTED
       :value: "ABUSE_DETECTED"

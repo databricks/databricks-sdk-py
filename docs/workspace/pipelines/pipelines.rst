@@ -464,13 +464,17 @@
         :returns: :class:`PipelinePermissions`
         
 
-    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], parameters: Optional[Dict[str, str]], refresh_selection: Optional[List[str]], replace_where_overrides: Optional[List[ReplaceWhereOverride]], reset_checkpoint_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
+    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], development: Optional[bool], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], parameters: Optional[Dict[str, str]], refresh_selection: Optional[List[str]], replace_where_overrides: Optional[List[ReplaceWhereOverride]], reset_checkpoint_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
 
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
 
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
+        :param development: bool (optional)
+          Whether the update is started in the development mode. This is recommended for interactive
+          development and testing. Reuses compute for faster iteration and disables automatic retries. Not
+          recommended for production.
         :param full_refresh: bool (optional)
           If true, this update will reset all tables before running.
         :param full_refresh_selection: List[str] (optional)

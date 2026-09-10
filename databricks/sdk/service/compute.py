@@ -7804,7 +7804,7 @@ class TerminationReason:
 
 
 class TerminationReasonCode(Enum):
-    """The status code indicating why the cluster was terminated"""
+    """The status code indicating why the cluster was terminated."""
 
     ABUSE_DETECTED = "ABUSE_DETECTED"
     ACCESS_TOKEN_FAILURE = "ACCESS_TOKEN_FAILURE"

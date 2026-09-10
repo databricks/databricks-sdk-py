@@ -177,7 +177,7 @@ class Sandbox:
     """Output only. The creation time of the sandbox."""
 
     display_name: Optional[str] = None
-    """Human-readable display label for the sandbox. At most 256 bytes."""
+    """Human-readable display label for the sandbox. At most 256 characters."""
 
     name: Optional[str] = None
     """The AIP-compliant resource name, such as "sandboxes/my-sandbox"."""
