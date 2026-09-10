@@ -6491,6 +6491,7 @@ class PipelinesAPI:
         pipeline_id: str,
         *,
         cause: Optional[StartUpdateCause] = None,
+        development: Optional[bool] = None,
         full_refresh: Optional[bool] = None,
         full_refresh_selection: Optional[List[str]] = None,
         parameters: Optional[Dict[str, str]] = None,
@@ -6505,6 +6506,10 @@ class PipelinesAPI:
 
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
+        :param development: bool (optional)
+          Whether the update is started in the development mode. This is recommended for interactive
+          development and testing. Reuses compute for faster iteration and disables automatic retries. Not
+          recommended for production.
         :param full_refresh: bool (optional)
           If true, this update will reset all tables before running.
         :param full_refresh_selection: List[str] (optional)
@@ -6536,6 +6541,8 @@ class PipelinesAPI:
         body = {}
         if cause is not None:
             body["cause"] = cause.value
+        if development is not None:
+            body["development"] = development
         if full_refresh is not None:
             body["full_refresh"] = full_refresh
         if full_refresh_selection is not None:

@@ -91,7 +91,7 @@ class ListTagPoliciesResponse:
 class TagAssignment:
     entity_type: str
     """The type of entity to which the tag is assigned. Allowed values are apps, dashboards,
-    geniespaces, notebooks"""
+    designerfiles, geniespaces, notebooks"""
 
     entity_id: str
     """The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app
@@ -419,8 +419,8 @@ class WorkspaceEntityTagAssignmentsAPI:
         """Delete a tag assignment
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces,
-          notebooks
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, designerfiles,
+          geniespaces, notebooks
         :param entity_id: str
           The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param tag_key: str
@@ -445,8 +445,8 @@ class WorkspaceEntityTagAssignmentsAPI:
         """Get a tag assignment
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces,
-          notebooks
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, designerfiles,
+          geniespaces, notebooks
         :param entity_id: str
           The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param tag_key: str
@@ -474,8 +474,8 @@ class WorkspaceEntityTagAssignmentsAPI:
         """List the tag assignments for an entity
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces,
-          notebooks
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, designerfiles,
+          geniespaces, notebooks
         :param entity_id: str
           The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param page_size: int (optional)
@@ -516,8 +516,8 @@ class WorkspaceEntityTagAssignmentsAPI:
         """Update a tag assignment
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces,
-          notebooks
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, designerfiles,
+          geniespaces, notebooks
         :param entity_id: str
           The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param tag_key: str
