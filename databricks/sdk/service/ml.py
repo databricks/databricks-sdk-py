@@ -1214,6 +1214,9 @@ class DataSource:
     delta_table_source: Optional[DeltaTableSource] = None
     """A Delta table data source."""
 
+    feature_view_source: Optional[FeatureViewSource] = None
+    """A data source composed from registered upstream Features."""
+
     kafka_source: Optional[KafkaSource] = None
     """A Kafka stream data source."""
 
@@ -1232,6 +1235,8 @@ class DataSource:
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source.as_dict()
+        if self.feature_view_source:
+            body["feature_view_source"] = self.feature_view_source.as_dict()
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source.as_dict()
         if self.lateness:
@@ -1247,6 +1252,8 @@ class DataSource:
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source
+        if self.feature_view_source:
+            body["feature_view_source"] = self.feature_view_source
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source
         if self.lateness:
@@ -1262,6 +1269,7 @@ class DataSource:
         """Deserializes the DataSource from a dictionary."""
         return cls(
             delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
+            feature_view_source=_from_dict(d, "feature_view_source", FeatureViewSource),
             kafka_source=_from_dict(d, "kafka_source", KafkaSource),
             lateness=_from_dict(d, "lateness", SourceLateness),
             request_source=_from_dict(d, "request_source", RequestSource),
@@ -2617,6 +2625,34 @@ class FeatureList:
 
 
 @dataclass
+class FeatureReference:
+    """A reference to one registered upstream Feature. A message rather than a bare name so an upstream
+    can later be pinned more precisely (e.g. by version) without a breaking type change."""
+
+    feature: str
+    """The three-part full name of the upstream Feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureReference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature is not None:
+            body["feature"] = self.feature
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureReference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature is not None:
+            body["feature"] = self.feature
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureReference:
+        """Deserializes the FeatureReference from a dictionary."""
+        return cls(feature=d.get("feature", None))
+
+
+@dataclass
 class FeatureTag:
     """Represents a tag on a feature in a feature table."""
 
@@ -2646,6 +2682,33 @@ class FeatureTag:
     def from_dict(cls, d: Dict[str, Any]) -> FeatureTag:
         """Deserializes the FeatureTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class FeatureViewSource:
+    """A data source composed from registered upstream Features."""
+
+    feature_references: Optional[List[FeatureReference]] = None
+    """The upstream Features this source reads. Must include at least one feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureViewSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature_references:
+            body["feature_references"] = [v.as_dict() for v in self.feature_references]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureViewSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature_references:
+            body["feature_references"] = self.feature_references
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureViewSource:
+        """Deserializes the FeatureViewSource from a dictionary."""
+        return cls(feature_references=_repeated_dict(d, "feature_references", FeatureReference))
 
 
 @dataclass
@@ -6306,14 +6369,27 @@ class PublishSpec:
     publish_mode: PublishSpecPublishMode
     """The publish mode of the pipeline that syncs the online table with the source table."""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy id used to attribute the serverless compute cost of the synced online-table sync
+    pipeline. Applied only when the sync pipeline is first created (the initial publish of a new
+    online table); republishing to an existing online table does not update it."""
+
     full_feature_name: Optional[str] = None
     """Full Unity Catalog name of one of the features materialized in the source table, used to derive
     the synced online table's entity and timeseries columns. Required for view sources without a UC
     PrimaryKeyConstraint; ignored when the source already has one."""
 
+    tags: Optional[Dict[str, str]] = None
+    """Custom tags to apply to the synced online-table sync pipeline created for this publish. They are
+    forwarded to the pipeline's compute as cluster tags so its cost can be attributed in the billing
+    system tables. Applied only when the sync pipeline is first created (the initial publish of a
+    new online table); republishing to an existing online table does not update them."""
+
     def as_dict(self) -> dict:
         """Serializes the PublishSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.full_feature_name is not None:
             body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
@@ -6322,11 +6398,15 @@ class PublishSpec:
             body["online_table_name"] = self.online_table_name
         if self.publish_mode is not None:
             body["publish_mode"] = self.publish_mode.value
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PublishSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.full_feature_name is not None:
             body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
@@ -6335,16 +6415,20 @@ class PublishSpec:
             body["online_table_name"] = self.online_table_name
         if self.publish_mode is not None:
             body["publish_mode"] = self.publish_mode
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PublishSpec:
         """Deserializes the PublishSpec from a dictionary."""
         return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
             full_feature_name=d.get("full_feature_name", None),
             online_store=d.get("online_store", None),
             online_table_name=d.get("online_table_name", None),
             publish_mode=_enum(d, "publish_mode", PublishSpecPublishMode),
+            tags=d.get("tags", None),
         )
 
 
@@ -6469,6 +6553,9 @@ class PurgeFeatureEntitiesMetadataState(Enum):
 class PurgeFeatureEntitiesResponse:
     """Result of a completed feature entity purge."""
 
+    error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
+    """Operation-level error, if the purge failed outside an individual feature target."""
+
     metadata: Optional[PurgeFeatureEntitiesMetadata] = None
     """Metadata about the purge operation."""
 
@@ -6481,6 +6568,8 @@ class PurgeFeatureEntitiesResponse:
     def as_dict(self) -> dict:
         """Serializes the PurgeFeatureEntitiesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.error:
+            body["error"] = self.error.as_dict()
         if self.metadata:
             body["metadata"] = self.metadata.as_dict()
         if self.results:
@@ -6492,6 +6581,8 @@ class PurgeFeatureEntitiesResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the PurgeFeatureEntitiesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.error:
+            body["error"] = self.error
         if self.metadata:
             body["metadata"] = self.metadata
         if self.results:
@@ -6504,6 +6595,7 @@ class PurgeFeatureEntitiesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PurgeFeatureEntitiesResponse:
         """Deserializes the PurgeFeatureEntitiesResponse from a dictionary."""
         return cls(
+            error=_from_dict(d, "error", DatabricksServiceExceptionWithDetailsProto),
             metadata=_from_dict(d, "metadata", PurgeFeatureEntitiesMetadata),
             results=_repeated_dict(d, "results", PurgeFeatureEntitiesResult),
             state=_enum(d, "state", PurgeFeatureEntitiesMetadataState),

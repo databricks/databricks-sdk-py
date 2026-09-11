@@ -8,7 +8,9 @@
 
     .. py:method:: ai_classify(content: any, labels: any [, options: Optional[AiClassifyOptions]]) -> AiClassifyResponse
 
-        Classifies content according to a set of provided labels.
+        Classifies content according to a set of provided labels. For REST API requests, the default rate
+        limit is 1,200 requests per minute per workspace. Contact your Databricks account team to request a
+        higher limit.
 
         :param content: any
           The content to classify. It accepts a plain string or the response object of
@@ -25,7 +27,9 @@
 
     .. py:method:: ai_extract(content: any, schema: any [, options: Optional[AiExtractOptions]]) -> AiExtractResponse
 
-        Extracts structured data from text and documents according to a provided schema.
+        Extracts structured data from text and documents according to a provided schema. For REST API
+        requests, the default rate limit is 120 requests per minute per workspace. Contact your Databricks
+        account team to request a higher limit.
 
         :param content: any
           The text to extract from. It accepts a plain string or the response object of
@@ -44,7 +48,8 @@
 
     .. py:method:: ai_parse_document(content: str [, options: Optional[AiParseDocumentOptions]]) -> AiParseDocumentResponse
 
-        Parse structured content from unstructured documents.
+        Parse structured content from unstructured documents. For REST API requests, the default rate limit is
+        120 pages per minute per workspace. Contact your Databricks account team to request a higher limit.
 
         :param content: str
           The document to parse, given as a Unity Catalog volume path to the source file (the REST API accepts

@@ -621,7 +621,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FeatureReference
+   :members:
+   :undoc-members:
+
 .. autoclass:: FeatureTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: FeatureViewSource
    :members:
    :undoc-members:
 
