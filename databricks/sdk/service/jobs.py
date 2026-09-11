@@ -81,6 +81,11 @@ class AiRuntimeTask:
     """Optional display name for the MLflow run created under ``experiment``. If omitted, MLflow
     generates a default name."""
 
+    unity_catalog_image_path: Optional[str] = None
+    """Optional Unity Catalog path for a custom container image. When set, the task runs on the
+    specified container image instead of the default Databricks client image. Format:
+    ``{catalog}.{schema}.{image_name}:{tag}``"""
+
     def as_dict(self) -> dict:
         """Serializes the AiRuntimeTask into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -98,6 +103,8 @@ class AiRuntimeTask:
             body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
         if self.mlflow_run is not None:
             body["mlflow_run"] = self.mlflow_run
+        if self.unity_catalog_image_path is not None:
+            body["unity_catalog_image_path"] = self.unity_catalog_image_path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -117,6 +124,8 @@ class AiRuntimeTask:
             body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
         if self.mlflow_run is not None:
             body["mlflow_run"] = self.mlflow_run
+        if self.unity_catalog_image_path is not None:
+            body["unity_catalog_image_path"] = self.unity_catalog_image_path
         return body
 
     @classmethod
@@ -130,6 +139,7 @@ class AiRuntimeTask:
             mlflow_artifact_location=d.get("mlflow_artifact_location", None),
             mlflow_experiment_directory=d.get("mlflow_experiment_directory", None),
             mlflow_run=d.get("mlflow_run", None),
+            unity_catalog_image_path=d.get("unity_catalog_image_path", None),
         )
 
 

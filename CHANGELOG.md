@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.138.0 (2026-09-11)
+
+### API Changes
+* Add `unity_catalog_image_path` field for `databricks.sdk.service.jobs.AiRuntimeTask`.
+* Add `feature_view_source` field for `databricks.sdk.service.ml.DataSource`.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.PublishSpec`.
+* Add `development` field for `databricks.sdk.service.pipelines.StartUpdate`.
+
 ## Release v0.137.0 (2026-09-09)
 
 ### API Changes

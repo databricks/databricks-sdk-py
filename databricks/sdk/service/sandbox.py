@@ -177,10 +177,11 @@ class Sandbox:
     """Output only. The creation time of the sandbox."""
 
     display_name: Optional[str] = None
-    """Human-readable display label for the sandbox. At most 256 bytes."""
+    """Human-readable display label for the sandbox. At most 256 characters."""
 
     name: Optional[str] = None
-    """The AIP-compliant resource name, such as "sandboxes/my-sandbox"."""
+    """The sandbox resource name, in the form ``sandboxes/{sandbox_id}``. Derived from ``sandbox_id``;
+    any value supplied in a create or update request body is ignored."""
 
     spec: Optional[SandboxSpec] = None
     """The desired configuration of the sandbox, supplied by the caller at creation time."""

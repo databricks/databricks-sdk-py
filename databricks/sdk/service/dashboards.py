@@ -361,6 +361,10 @@ class GenieAttachment:
 
 @dataclass
 class GenieConversation:
+    """A Genie conversation. Use chat-mode message endpoints for classic chats and agent-mode response
+    and item endpoints for agent conversations. Conversation management, feedback, comments, and
+    attachment operations support both modes."""
+
     space_id: str
     """Genie space ID"""
 
@@ -770,6 +774,8 @@ class GenieEvalResultDetails:
 
 @dataclass
 class GenieEvalRunResponse:
+    """A benchmark evaluation run. The public benchmark API currently evaluates chat-mode responses."""
+
     eval_run_id: str
     """The unique identifier for the evaluation run."""
 
@@ -2695,8 +2701,8 @@ class GenieAPI:
     def create_message(
         self, space_id: str, conversation_id: str, content: str, *, enable_visualization: Optional[bool] = None
     ) -> Wait[GenieMessage]:
-        """Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
-        previously created messages in the conversation to respond.
+        """Sends a new message in a chat-mode [conversation](:method:genie/startconversation). The AI response
+        uses all previously created messages in the conversation to respond.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is started.
@@ -3071,7 +3077,7 @@ class GenieAPI:
     def genie_create_eval_run(
         self, space_id: str, *, benchmark_question_ids: Optional[List[str]] = None
     ) -> GenieEvalRunResponse:
-        """Create and run evaluations for multiple benchmark questions in a Genie space.
+        """Creates and runs chat-mode evaluations for multiple benchmark questions in a Genie space.
 
         :param space_id: str
           The ID associated with the Genie space where the evaluations will be executed.
@@ -3274,7 +3280,8 @@ class GenieAPI:
         return GenieGetDownloadFullQueryResultResponse.from_dict(res)
 
     def get_message(self, space_id: str, conversation_id: str, message_id: str) -> GenieMessage:
-        """Get message from conversation.
+        """Gets a message from a chat-mode or agent-mode conversation. For a complete agent-mode transcript, use
+        the List conversation items endpoint.
 
         :param space_id: str
           The ID associated with the Genie space where the target conversation is located.
@@ -3465,7 +3472,9 @@ class GenieAPI:
     def list_conversation_messages(
         self, space_id: str, conversation_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> GenieListConversationMessagesResponse:
-        """List messages in a conversation
+        """Lists messages in a chat-mode or agent-mode conversation. Agent-mode messages are returned as
+        GenieMessage projections. Use the List conversation items endpoint for the complete reasoning and
+        tool-call history.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is located
@@ -3625,7 +3634,7 @@ class GenieAPI:
         *,
         comment: Optional[str] = None,
     ):
-        """Send feedback for a message.
+        """Sends feedback for a message in a chat-mode or agent-mode conversation.
 
         :param space_id: str
           The ID associated with the Genie space where the message is located.
@@ -3665,7 +3674,7 @@ class GenieAPI:
     def start_conversation(
         self, space_id: str, content: str, *, enable_visualization: Optional[bool] = None
     ) -> Wait[GenieMessage]:
-        """Start a new conversation.
+        """Starts a new chat-mode conversation and sends its first message.
 
         :param space_id: str
           The ID associated with the Genie space where you want to start a conversation.
