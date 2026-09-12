@@ -444,6 +444,10 @@ class AmazonBedrockConfig:
     access keys, see ``aws_access_key_id``, ``aws_access_key_id_plaintext``,
     ``aws_secret_access_key`` and ``aws_secret_access_key_plaintext``."""
 
+    uc_service_credential_name: Optional[str] = None
+    """The name of the Unity Catalog service credential that the external model uses to access AWS
+    resources."""
+
     def as_dict(self) -> dict:
         """Serializes the AmazonBedrockConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -461,6 +465,8 @@ class AmazonBedrockConfig:
             body["bedrock_provider"] = self.bedrock_provider.value
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -480,6 +486,8 @@ class AmazonBedrockConfig:
             body["bedrock_provider"] = self.bedrock_provider
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
         return body
 
     @classmethod
@@ -493,6 +501,7 @@ class AmazonBedrockConfig:
             aws_secret_access_key_plaintext=d.get("aws_secret_access_key_plaintext", None),
             bedrock_provider=_enum(d, "bedrock_provider", AmazonBedrockConfigBedrockProvider),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            uc_service_credential_name=d.get("uc_service_credential_name", None),
         )
 
 

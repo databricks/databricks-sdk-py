@@ -189,11 +189,14 @@
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
         :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by serverless tasks of
-          this job. For serverless notebook tasks, if the environment_key is not specified, the notebook
-          environment will be used if present. If a jobs environment is specified, it will override the
-          notebook environment. For other serverless tasks, the task environment is required to be specified
-          using environment_key in the task settings.
+          A list of task execution environment specifications that can be referenced by tasks that use
+          serverless compute or a compute resource that uses Environments mode.
+
+          For notebook tasks that use serverless compute or a compute resource that uses Environments mode, if
+          the environment_key is not specified, the notebook environment will be used if present. If a jobs
+          environment is specified, it will override the notebook environment. For other tasks that use
+          serverless compute or a compute resource that uses Environments mode, the task environment is
+          required to be specified using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to ``"MULTI_TASK"``.

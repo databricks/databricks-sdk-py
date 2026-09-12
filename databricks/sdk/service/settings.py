@@ -1962,6 +1962,10 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
 class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     """Matches workspace-level Databricks API endpoints for an ingress network policy rule."""
 
+    excluded_scopes: Optional[List[str]] = None
+    """Inverse of ``scopes``: matches every API scope EXCEPT those listed here ("allow all except").
+    Mutually exclusive with ``scopes`` — a single destination may set at most one of the two."""
+
     scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
     """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
 
@@ -1970,6 +1974,8 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = [v for v in self.excluded_scopes]
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier.value
         if self.scopes:
@@ -1979,6 +1985,8 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def as_shallow_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = self.excluded_scopes
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier
         if self.scopes:
@@ -1989,6 +1997,7 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination from a dictionary."""
         return cls(
+            excluded_scopes=d.get("excluded_scopes", None),
             scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
             scopes=d.get("scopes", None),
         )
