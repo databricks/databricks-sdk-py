@@ -175,6 +175,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GPU_1X_H100
       :value: "GPU_1X_H100"
 
+   .. py:attribute:: GPU_8X_B300
+      :value: "GPU_8X_B300"
+
    .. py:attribute:: GPU_8X_H100
       :value: "GPU_8X_H100"
 

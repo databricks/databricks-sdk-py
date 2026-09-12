@@ -6308,7 +6308,8 @@ class Param:
 
 class PermissionLevel(Enum):
     """Permission level of the requesting user on the object. For what is allowed at each level, see
-    [MLflow Model permissions](..)."""
+    `MLflow Model permissions
+    <https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/workspace-model-registry#permissions>`__."""
 
     CAN_CREATE_REGISTERED_MODEL = "CAN_CREATE_REGISTERED_MODEL"
     CAN_EDIT = "CAN_EDIT"
@@ -9572,8 +9573,8 @@ class ExperimentsAPI:
         self, experiment_id: str, max_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> DeleteRunsResponse:
         """Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
-        most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
-        client code snippet on
+        most max_runs per request. See the cloud-specific MLflow runs documentation for a Python client
+        example.
 
         :param experiment_id: str
           The ID of the experiment containing the runs to delete.
@@ -10323,8 +10324,8 @@ class ExperimentsAPI:
         self, experiment_id: str, min_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> RestoreRunsResponse:
         """Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
-        at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
-        client code snippet on
+        at most max_runs per request. See the cloud-specific MLflow runs documentation for a Python client
+        example.
 
         :param experiment_id: str
           The ID of the experiment containing the runs to restore.
