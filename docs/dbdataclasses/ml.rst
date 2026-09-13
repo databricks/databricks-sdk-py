@@ -1078,7 +1078,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PermissionLevel
 
-   Permission level of the requesting user on the object. For what is allowed at each level, see [MLflow Model permissions](..).
+   Permission level of the requesting user on the object. For what is allowed at each level, see `MLflow Model permissions <https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/workspace-model-registry#permissions>`__.
 
    .. py:attribute:: CAN_CREATE_REGISTERED_MODEL
       :value: "CAN_CREATE_REGISTERED_MODEL"

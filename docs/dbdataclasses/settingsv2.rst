@@ -195,3 +195,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UserPreference
    :members:
    :undoc-members:
+
+.. autoclass:: WorkspaceLabelMessage
+   :members:
+   :undoc-members:

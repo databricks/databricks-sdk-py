@@ -1,5 +1,14 @@
 # Version changelog
 
+## Release v0.139.0 (2026-09-13)
+
+### API Changes
+* Add `priority_class` field for `databricks.sdk.service.jobs.AiRuntimeTask`.
+* Add `uc_service_credential_name` field for `databricks.sdk.service.serving.AmazonBedrockConfig`.
+* Add `excluded_scopes` field for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyWorkspaceApiDestination`.
+* Add `effective_workspace_label` and `workspace_label` fields for `databricks.sdk.service.settingsv2.Setting`.
+* Add `gpu_8x_b300` enum value for `databricks.sdk.service.jobs.ComputeSpecAcceleratorType`.
+
 ## Release v0.138.0 (2026-09-11)
 
 ### API Changes

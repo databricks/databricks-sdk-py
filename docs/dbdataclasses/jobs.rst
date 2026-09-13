@@ -12,6 +12,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: AiRuntimeTaskPriorityClass
+
+   Scheduling priority class for a workload — its priority and preemptability when the scheduler ranks pending work.
+
+   .. py:attribute:: BEST_EFFORT
+      :value: "BEST_EFFORT"
+
+   .. py:attribute:: CRITICAL
+      :value: "CRITICAL"
+
+   .. py:attribute:: NORMAL
+      :value: "NORMAL"
+
 .. py:class:: AlertEvaluationState
 
    Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto
@@ -174,6 +187,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: GPU_1X_H100
       :value: "GPU_1X_H100"
+
+   .. py:attribute:: GPU_8X_B300
+      :value: "GPU_8X_B300"
 
    .. py:attribute:: GPU_8X_H100
       :value: "GPU_8X_H100"
