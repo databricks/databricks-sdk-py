@@ -701,6 +701,10 @@ class Setting:
     """Effective setting value for string type setting. This is the final effective value of setting.
     To set a value use string_val."""
 
+    effective_workspace_label: Optional[WorkspaceLabelMessage] = None
+    """Effective setting value for workspace_label setting. This is the final effective value of
+    setting. To set a value use workspace_label."""
+
     integer_val: Optional[IntegerMessage] = None
     """Setting value for integer type setting. This is the setting value set by consumers, check
     effective_integer_val for final setting value."""
@@ -723,6 +727,10 @@ class Setting:
     string_val: Optional[StringMessage] = None
     """Setting value for string type setting. This is the setting value set by consumers, check
     effective_string_val for final setting value."""
+
+    workspace_label: Optional[WorkspaceLabelMessage] = None
+    """Setting value for workspace_label setting. This is the setting value set by consumers, check
+    effective_workspace_label for final setting value."""
 
     def as_dict(self) -> dict:
         """Serializes the Setting into a dictionary suitable for use as a JSON request body."""
@@ -771,6 +779,8 @@ class Setting:
             body["effective_restrict_workspace_admins"] = self.effective_restrict_workspace_admins.as_dict()
         if self.effective_string_val:
             body["effective_string_val"] = self.effective_string_val.as_dict()
+        if self.effective_workspace_label:
+            body["effective_workspace_label"] = self.effective_workspace_label.as_dict()
         if self.integer_val:
             body["integer_val"] = self.integer_val.as_dict()
         if self.name is not None:
@@ -783,6 +793,8 @@ class Setting:
             body["restrict_workspace_admins"] = self.restrict_workspace_admins.as_dict()
         if self.string_val:
             body["string_val"] = self.string_val.as_dict()
+        if self.workspace_label:
+            body["workspace_label"] = self.workspace_label.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -826,6 +838,8 @@ class Setting:
             body["effective_restrict_workspace_admins"] = self.effective_restrict_workspace_admins
         if self.effective_string_val:
             body["effective_string_val"] = self.effective_string_val
+        if self.effective_workspace_label:
+            body["effective_workspace_label"] = self.effective_workspace_label
         if self.integer_val:
             body["integer_val"] = self.integer_val
         if self.name is not None:
@@ -838,6 +852,8 @@ class Setting:
             body["restrict_workspace_admins"] = self.restrict_workspace_admins
         if self.string_val:
             body["string_val"] = self.string_val
+        if self.workspace_label:
+            body["workspace_label"] = self.workspace_label
         return body
 
     @classmethod
@@ -883,6 +899,7 @@ class Setting:
                 d, "effective_restrict_workspace_admins", RestrictWorkspaceAdminsMessage
             ),
             effective_string_val=_from_dict(d, "effective_string_val", StringMessage),
+            effective_workspace_label=_from_dict(d, "effective_workspace_label", WorkspaceLabelMessage),
             integer_val=_from_dict(d, "integer_val", IntegerMessage),
             name=d.get("name", None),
             operational_email_custom_recipient=_from_dict(
@@ -891,6 +908,7 @@ class Setting:
             personal_compute=_from_dict(d, "personal_compute", PersonalComputeMessage),
             restrict_workspace_admins=_from_dict(d, "restrict_workspace_admins", RestrictWorkspaceAdminsMessage),
             string_val=_from_dict(d, "string_val", StringMessage),
+            workspace_label=_from_dict(d, "workspace_label", WorkspaceLabelMessage),
         )
 
 
@@ -1053,6 +1071,38 @@ class UserPreference:
             string_val=_from_dict(d, "string_val", StringMessage),
             user_id=d.get("user_id", None),
         )
+
+
+@dataclass
+class WorkspaceLabelMessage:
+    """Workspace label and color for display (e.g. in account console)."""
+
+    color: Optional[str] = None
+
+    label: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the WorkspaceLabelMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.color is not None:
+            body["color"] = self.color
+        if self.label is not None:
+            body["label"] = self.label
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WorkspaceLabelMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.color is not None:
+            body["color"] = self.color
+        if self.label is not None:
+            body["label"] = self.label
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceLabelMessage:
+        """Deserializes the WorkspaceLabelMessage from a dictionary."""
+        return cls(color=d.get("color", None), label=d.get("label", None))
 
 
 class AccountSettingsV2API:

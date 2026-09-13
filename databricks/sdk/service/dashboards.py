@@ -3002,12 +3002,9 @@ class GenieAPI:
         **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
         ``EXTERNAL_LINKS`` disposition.**
 
-        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
-        download the results directly from . As a short-lived is embedded in this URL, you should protect the
-        URL.
-
-        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
-        header in the download requests.
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived cloud-storage URL is generated to
+        download the results. The URL contains temporary access credentials, so protect it and do not set an
+        ``Authorization`` header in the download request.
 
         See [Execute Statement](:method:statementexecution/executestatement) for more details.
 
@@ -3234,12 +3231,9 @@ class GenieAPI:
         **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
         ``EXTERNAL_LINKS`` disposition.**
 
-        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
-        download the results directly from . As a short-lived is embedded in this URL, you should protect the
-        URL.
-
-        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
-        header in the download requests.
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived cloud-storage URL is generated to
+        download the results. The URL contains temporary access credentials, so protect it and do not set an
+        ``Authorization`` header in the download request.
 
         See [Execute Statement](:method:statementexecution/executestatement) for more details.
 
