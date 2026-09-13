@@ -81,6 +81,11 @@ class AiRuntimeTask:
     """Optional display name for the MLflow run created under ``experiment``. If omitted, MLflow
     generates a default name."""
 
+    priority_class: Optional[AiRuntimeTaskPriorityClass] = None
+    """Scheduling priority class for the workload. May only be set together with a pre-provisioned
+    capacity reservation (a deployment's ``compute.provisioned_capacity_id``); it is rejected on a
+    workload that runs on on-demand capacity."""
+
     unity_catalog_image_path: Optional[str] = None
     """Optional Unity Catalog path for a custom container image. When set, the task runs on the
     specified container image instead of the default Databricks client image. Format:
@@ -103,6 +108,8 @@ class AiRuntimeTask:
             body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
         if self.mlflow_run is not None:
             body["mlflow_run"] = self.mlflow_run
+        if self.priority_class is not None:
+            body["priority_class"] = self.priority_class.value
         if self.unity_catalog_image_path is not None:
             body["unity_catalog_image_path"] = self.unity_catalog_image_path
         return body
@@ -124,6 +131,8 @@ class AiRuntimeTask:
             body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
         if self.mlflow_run is not None:
             body["mlflow_run"] = self.mlflow_run
+        if self.priority_class is not None:
+            body["priority_class"] = self.priority_class
         if self.unity_catalog_image_path is not None:
             body["unity_catalog_image_path"] = self.unity_catalog_image_path
         return body
@@ -139,6 +148,7 @@ class AiRuntimeTask:
             mlflow_artifact_location=d.get("mlflow_artifact_location", None),
             mlflow_experiment_directory=d.get("mlflow_experiment_directory", None),
             mlflow_run=d.get("mlflow_run", None),
+            priority_class=_enum(d, "priority_class", AiRuntimeTaskPriorityClass),
             unity_catalog_image_path=d.get("unity_catalog_image_path", None),
         )
 
@@ -194,6 +204,15 @@ class AiRuntimeTaskOutput:
             mlflow_run_id=d.get("mlflow_run_id", None),
             status_message=d.get("status_message", None),
         )
+
+
+class AiRuntimeTaskPriorityClass(Enum):
+    """Scheduling priority class for a workload — its priority and preemptability when the scheduler
+    ranks pending work."""
+
+    BEST_EFFORT = "BEST_EFFORT"
+    CRITICAL = "CRITICAL"
+    NORMAL = "NORMAL"
 
 
 class AlertEvaluationState(Enum):
@@ -1189,6 +1208,7 @@ class ComputeSpecAcceleratorType(Enum):
 
     GPU_1X_A10 = "GPU_1xA10"
     GPU_1X_H100 = "GPU_1xH100"
+    GPU_8X_B300 = "GPU_8xB300"
     GPU_8X_H100 = "GPU_8xH100"
 
 
@@ -3654,11 +3674,14 @@ class JobSettings:
     well as when this job is deleted."""
 
     environments: Optional[List[JobEnvironment]] = None
-    """A list of task execution environment specifications that can be referenced by serverless tasks
-    of this job. For serverless notebook tasks, if the environment_key is not specified, the
-    notebook environment will be used if present. If a jobs environment is specified, it will
-    override the notebook environment. For other serverless tasks, the task environment is required
-    to be specified using environment_key in the task settings."""
+    """A list of task execution environment specifications that can be referenced by tasks that use
+    serverless compute or a compute resource that uses Environments mode.
+    
+    For notebook tasks that use serverless compute or a compute resource that uses Environments
+    mode, if the environment_key is not specified, the notebook environment will be used if present.
+    If a jobs environment is specified, it will override the notebook environment. For other tasks
+    that use serverless compute or a compute resource that uses Environments mode, the task
+    environment is required to be specified using environment_key in the task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -6937,7 +6960,8 @@ class RunTask:
 
     environment_key: Optional[str] = None
     """The key that references an environment spec in a job. This field is required for Python script,
-    Python wheel and dbt tasks when using serverless compute."""
+    Python wheel and dbt tasks when using serverless compute or a compute resource that uses
+    Environments mode."""
 
     execution_duration: Optional[int] = None
     """The time in milliseconds it took to execute the commands in the JAR or notebook until they
@@ -8438,7 +8462,8 @@ class SubmitTask:
 
     environment_key: Optional[str] = None
     """The key that references an environment spec in a job. This field is required for Python script,
-    Python wheel and dbt tasks when using serverless compute."""
+    Python wheel and dbt tasks when using serverless compute or a compute resource that uses
+    Environments mode."""
 
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs. When running
@@ -8997,7 +9022,8 @@ class Task:
 
     environment_key: Optional[str] = None
     """The key that references an environment spec in a job. This field is required for Python script,
-    Python wheel and dbt tasks when using serverless compute."""
+    Python wheel and dbt tasks when using serverless compute or a compute resource that uses
+    Environments mode."""
 
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs. When running
@@ -10363,11 +10389,14 @@ class JobsAPI:
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
         :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by serverless tasks of
-          this job. For serverless notebook tasks, if the environment_key is not specified, the notebook
-          environment will be used if present. If a jobs environment is specified, it will override the
-          notebook environment. For other serverless tasks, the task environment is required to be specified
-          using environment_key in the task settings.
+          A list of task execution environment specifications that can be referenced by tasks that use
+          serverless compute or a compute resource that uses Environments mode.
+
+          For notebook tasks that use serverless compute or a compute resource that uses Environments mode, if
+          the environment_key is not specified, the notebook environment will be used if present. If a jobs
+          environment is specified, it will override the notebook environment. For other tasks that use
+          serverless compute or a compute resource that uses Environments mode, the task environment is
+          required to be specified using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to ``"MULTI_TASK"``.
