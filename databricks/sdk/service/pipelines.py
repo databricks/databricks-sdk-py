@@ -4465,6 +4465,11 @@ class RunAs:
     Only ``user_name`` or ``service_principal_name`` can be specified. If both are specified, an
     error is thrown."""
 
+    group_name: Optional[str] = None
+    """Group name of an account group assigned to the workspace. When set, the pipeline runs as the
+    group and the group's permissions are used for data access. Setting this field requires being a
+    member of the group, or having the ``Assume`` permission on the group."""
+
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
     ``servicePrincipal/user`` role."""
@@ -4475,6 +4480,8 @@ class RunAs:
     def as_dict(self) -> dict:
         """Serializes the RunAs into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
@@ -4484,6 +4491,8 @@ class RunAs:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunAs into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
@@ -4493,7 +4502,11 @@ class RunAs:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RunAs:
         """Deserializes the RunAs from a dictionary."""
-        return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
+        return cls(
+            group_name=d.get("group_name", None),
+            service_principal_name=d.get("service_principal_name", None),
+            user_name=d.get("user_name", None),
+        )
 
 
 @dataclass

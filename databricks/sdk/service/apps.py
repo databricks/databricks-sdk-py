@@ -1878,8 +1878,7 @@ class ComputeState(Enum):
 @dataclass
 class ComputeStatus:
     active_instances: Optional[int] = None
-    """The number of compute instances currently serving requests for this application. An instance is
-    considered active if it is reachable and ready to handle requests."""
+    """The number of compute instances used and billed for this application."""
 
     message: Optional[str] = None
     """Compute status message"""
