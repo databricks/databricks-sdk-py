@@ -3,6 +3,7 @@ import re
 from typing import Optional, Pattern
 
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.service import compute, jobs
 
 
 def make_getrun_path_pattern(run_id: int, page_token: Optional[str] = None) -> Pattern[str]:
@@ -53,8 +54,6 @@ def test_get_run_with_no_pagination(config, requests_mock):
 
 
 def test_get_run_pagination_with_tasks(config, requests_mock):
-    from databricks.sdk.service import compute, jobs
-
     cluster_spec = compute.ClusterSpec(
         spark_version="11.3.x-scala2.12",
         custom_tags={"ResourceClass": "SingleNode"},
@@ -199,8 +198,6 @@ def test_get_job_forwards_include_trigger_state(config, requests_mock):
 
 
 def test_get_job_pagination_with_tasks(config, requests_mock):
-    from databricks.sdk.service import compute, jobs
-
     cluster_spec = compute.ClusterSpec(
         spark_version="11.3.x-scala2.12",
         custom_tags={"ResourceClass": "SingleNode"},
@@ -374,8 +371,6 @@ def test_list_jobs_without_task_expansion(config, requests_mock):
 
 
 def test_list_jobs_with_many_tasks(config, requests_mock):
-    from databricks.sdk.service import compute, jobs
-
     cluster_spec = compute.ClusterSpec(
         spark_version="11.3.x-scala2.12",
         custom_tags={"ResourceClass": "SingleNode"},
@@ -816,3 +811,55 @@ def test_list_runs(config, requests_mock):
     history = requests_mock.request_history
     assert all("300" not in request.qs.get("run_id", [""]) for request in history)
     assert all("200" not in request.qs.get("run_id", [""]) for request in history)
+
+
+def test_submit_waiter_polls_real_jobs_service_until_terminal_state(config, monkeypatch, requests_mock):
+    requests_mock.post(
+        "http://localhost/api/2.2/jobs/runs/submit",
+        json={"run_id": 123},
+    )
+    requests_mock.register_uri(
+        "GET",
+        make_getrun_path_pattern(123),
+        [
+            {
+                "json": {
+                    "run_id": 123,
+                    "run_name": "fixture-run",
+                    "state": {"life_cycle_state": "PENDING", "state_message": "Waiting for compute"},
+                }
+            },
+            {
+                "json": {
+                    "run_id": 123,
+                    "run_name": "fixture-run",
+                    "state": {"life_cycle_state": "RUNNING", "state_message": "Running"},
+                }
+            },
+            {
+                "json": {
+                    "run_id": 123,
+                    "run_name": "fixture-run",
+                    "state": {
+                        "life_cycle_state": "TERMINATED",
+                        "result_state": "SUCCESS",
+                        "state_message": "Completed",
+                    },
+                }
+            },
+        ],
+    )
+    monkeypatch.setattr(jobs.time, "sleep", lambda _: None)
+    workspace = WorkspaceClient(config=config)
+    observed_states = []
+
+    run = workspace.jobs.submit(run_name="fixture-run").result(
+        callback=lambda polled: observed_states.append(polled.state.life_cycle_state)
+    )
+
+    assert run.run_id == 123
+    assert run.state.life_cycle_state == jobs.RunLifeCycleState.TERMINATED
+    assert run.state.result_state == jobs.RunResultState.SUCCESS
+    assert observed_states == [jobs.RunLifeCycleState.PENDING, jobs.RunLifeCycleState.RUNNING]
+    assert requests_mock.request_history[0].json() == {"run_name": "fixture-run"}
+    assert [request.method for request in requests_mock.request_history] == ["POST", "GET", "GET", "GET"]

@@ -1,5 +1,10 @@
 # Version changelog
 
+## Release v0.140.0 (2026-09-16)
+
+### API Changes
+* Add `group_name` field for `databricks.sdk.service.pipelines.RunAs`.
+
 ## Release v0.139.0 (2026-09-13)
 
 ### API Changes

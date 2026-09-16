@@ -79,6 +79,10 @@
 
         Update an Online Feature Store.
 
+        This update is not guaranteed to be atomic: when a request changes multiple fields, some may be
+        applied while others fail. On a failed response, treat the update as partially applied and retry until
+        it succeeds.
+
         :param name: str
           The name of the online store. This is the unique identifier for the online store.
         :param online_store: :class:`OnlineStore`
