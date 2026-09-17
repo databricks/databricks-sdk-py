@@ -142,6 +142,58 @@ class AutoFullRefreshPolicy:
         return cls(enabled=d.get("enabled", None), min_interval_hours=d.get("min_interval_hours", None))
 
 
+@dataclass
+class AvroTransformerOptions:
+    parse_mode: Optional[ParseMode] = None
+    """(Optional) Parse mode for Avro data. Valid values: FAILFAST, PERMISSIVE. Defaults to FAILFAST."""
+
+    schema: Optional[str] = None
+    """Inline Avro JSON schema string."""
+
+    schema_file_path: Optional[str] = None
+    """Path to a schema file (.avsc)."""
+
+    schema_registry: Optional[SchemaRegistryConfig] = None
+    """(Optional) Schema registry to resolve the Avro schema at runtime instead of providing it inline
+    or via a file path."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AvroTransformerOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.parse_mode is not None:
+            body["parse_mode"] = self.parse_mode.value
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.schema_file_path is not None:
+            body["schema_file_path"] = self.schema_file_path
+        if self.schema_registry:
+            body["schema_registry"] = self.schema_registry.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AvroTransformerOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.parse_mode is not None:
+            body["parse_mode"] = self.parse_mode
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.schema_file_path is not None:
+            body["schema_file_path"] = self.schema_file_path
+        if self.schema_registry:
+            body["schema_registry"] = self.schema_registry
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AvroTransformerOptions:
+        """Deserializes the AvroTransformerOptions from a dictionary."""
+        return cls(
+            parse_mode=_enum(d, "parse_mode", ParseMode),
+            schema=d.get("schema", None),
+            schema_file_path=d.get("schema_file_path", None),
+            schema_registry=_from_dict(d, "schema_registry", SchemaRegistryConfig),
+        )
+
+
 class CloneMode(Enum):
     """Enum to specify which mode of clone to execute"""
 
@@ -198,6 +250,31 @@ class ConfluenceConnectorOptions:
     def from_dict(cls, d: Dict[str, Any]) -> ConfluenceConnectorOptions:
         """Deserializes the ConfluenceConnectorOptions from a dictionary."""
         return cls(include_confluence_spaces=d.get("include_confluence_spaces", None))
+
+
+@dataclass
+class ConfluentSchemaRegistryOptions:
+    subject: Optional[str] = None
+    """Required: subject name to resolve in the registry."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConfluentSchemaRegistryOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.subject is not None:
+            body["subject"] = self.subject
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConfluentSchemaRegistryOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.subject is not None:
+            body["subject"] = self.subject
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConfluentSchemaRegistryOptions:
+        """Deserializes the ConfluentSchemaRegistryOptions from a dictionary."""
+        return cls(subject=d.get("subject", None))
 
 
 @dataclass
@@ -2841,6 +2918,13 @@ class OutlookOptions:
         )
 
 
+class ParseMode(Enum):
+    """Determines how errors encountered while deserializing records are handled."""
+
+    FAILFAST = "FAILFAST"
+    PERMISSIVE = "PERMISSIVE"
+
+
 @dataclass
 class PathPattern:
     include: Optional[str] = None
@@ -4100,6 +4184,69 @@ class PostgresSlotConfig:
         return cls(publication_name=d.get("publication_name", None), slot_name=d.get("slot_name", None))
 
 
+@dataclass
+class ProtobufTransformerOptions:
+    desc_file_path: Optional[str] = None
+    """Required: path to the .desc file (dbfs:/... or /Volumes/...)."""
+
+    message_name: Optional[str] = None
+    """Required: fully-qualified message type name."""
+
+    parse_mode: Optional[ParseMode] = None
+    """(Optional) Parse mode for Protobuf data. Valid values: FAILFAST, PERMISSIVE. Defaults to
+    FAILFAST."""
+
+    recursive_fields_max_depth: Optional[int] = None
+    """(Optional) Maximum expansion depth for recursive protobuf fields. Spark SQL does not natively
+    support recursive types, so recursive fields are expanded up to this depth and truncated beyond
+    it. Valid values: -1 (disallow recursive fields), 0 (drop), 1-10."""
+
+    schema_registry: Optional[SchemaRegistryConfig] = None
+    """(Optional) Schema registry to resolve the Protobuf schema at runtime instead of providing it via
+    desc_file_path."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ProtobufTransformerOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.desc_file_path is not None:
+            body["desc_file_path"] = self.desc_file_path
+        if self.message_name is not None:
+            body["message_name"] = self.message_name
+        if self.parse_mode is not None:
+            body["parse_mode"] = self.parse_mode.value
+        if self.recursive_fields_max_depth is not None:
+            body["recursive_fields_max_depth"] = self.recursive_fields_max_depth
+        if self.schema_registry:
+            body["schema_registry"] = self.schema_registry.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ProtobufTransformerOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.desc_file_path is not None:
+            body["desc_file_path"] = self.desc_file_path
+        if self.message_name is not None:
+            body["message_name"] = self.message_name
+        if self.parse_mode is not None:
+            body["parse_mode"] = self.parse_mode
+        if self.recursive_fields_max_depth is not None:
+            body["recursive_fields_max_depth"] = self.recursive_fields_max_depth
+        if self.schema_registry:
+            body["schema_registry"] = self.schema_registry
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ProtobufTransformerOptions:
+        """Deserializes the ProtobufTransformerOptions from a dictionary."""
+        return cls(
+            desc_file_path=d.get("desc_file_path", None),
+            message_name=d.get("message_name", None),
+            parse_mode=_enum(d, "parse_mode", ParseMode),
+            recursive_fields_max_depth=d.get("recursive_fields_max_depth", None),
+            schema_registry=_from_dict(d, "schema_registry", SchemaRegistryConfig),
+        )
+
+
 class PublishingMode(Enum):
     """Enum representing the publishing mode of a pipeline."""
 
@@ -4465,6 +4612,11 @@ class RunAs:
     Only ``user_name`` or ``service_principal_name`` can be specified. If both are specified, an
     error is thrown."""
 
+    group_name: Optional[str] = None
+    """Group name of an account group assigned to the workspace. When set, the pipeline runs as the
+    group and the group's permissions are used for data access. Setting this field requires being a
+    member of the group, or having the ``Assume`` permission on the group."""
+
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
     ``servicePrincipal/user`` role."""
@@ -4475,6 +4627,8 @@ class RunAs:
     def as_dict(self) -> dict:
         """Serializes the RunAs into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
@@ -4484,6 +4638,8 @@ class RunAs:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunAs into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
@@ -4493,7 +4649,57 @@ class RunAs:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RunAs:
         """Deserializes the RunAs from a dictionary."""
-        return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
+        return cls(
+            group_name=d.get("group_name", None),
+            service_principal_name=d.get("service_principal_name", None),
+            user_name=d.get("user_name", None),
+        )
+
+
+@dataclass
+class SchemaRegistryConfig:
+    confluent_options: Optional[ConfluentSchemaRegistryOptions] = None
+    """Required: Confluent-compatible schema registry options."""
+
+    connection_name: Optional[str] = None
+    """(Optional) UC connection for registry authentication. Specify if different from the top-level
+    source connection."""
+
+    protobuf_message_name: Optional[str] = None
+    """(Optional, Protobuf only) Selects a specific message from a schema that defines multiple
+    Protobuf messages. Simple ("Location") or fully-qualified ("com.example.protos.Location").
+    Defaults to the first message."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SchemaRegistryConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.confluent_options:
+            body["confluent_options"] = self.confluent_options.as_dict()
+        if self.connection_name is not None:
+            body["connection_name"] = self.connection_name
+        if self.protobuf_message_name is not None:
+            body["protobuf_message_name"] = self.protobuf_message_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SchemaRegistryConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.confluent_options:
+            body["confluent_options"] = self.confluent_options
+        if self.connection_name is not None:
+            body["connection_name"] = self.connection_name
+        if self.protobuf_message_name is not None:
+            body["protobuf_message_name"] = self.protobuf_message_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaRegistryConfig:
+        """Deserializes the SchemaRegistryConfig from a dictionary."""
+        return cls(
+            confluent_options=_from_dict(d, "confluent_options", ConfluentSchemaRegistryOptions),
+            connection_name=d.get("connection_name", None),
+            protobuf_message_name=d.get("protobuf_message_name", None),
+        )
 
 
 @dataclass
@@ -5357,6 +5563,8 @@ class TikTokAdsOptionsTikTokReportType(Enum):
 class Transformer:
     """Specifies how to transform binary data into structured data."""
 
+    avro_options: Optional[AvroTransformerOptions] = None
+
     format: Optional[TransformerFormat] = None
     """Required: the wire format of the data."""
 
@@ -5370,9 +5578,13 @@ class Transformer:
     """Optional output column name. When set, the transformed result is written to this column instead
     of replacing the input column."""
 
+    protobuf_options: Optional[ProtobufTransformerOptions] = None
+
     def as_dict(self) -> dict:
         """Serializes the Transformer into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.avro_options:
+            body["avro_options"] = self.avro_options.as_dict()
         if self.format is not None:
             body["format"] = self.format.value
         if self.input_column is not None:
@@ -5381,11 +5593,15 @@ class Transformer:
             body["json_options"] = self.json_options.as_dict()
         if self.output_column is not None:
             body["output_column"] = self.output_column
+        if self.protobuf_options:
+            body["protobuf_options"] = self.protobuf_options.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Transformer into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.avro_options:
+            body["avro_options"] = self.avro_options
         if self.format is not None:
             body["format"] = self.format
         if self.input_column is not None:
@@ -5394,21 +5610,27 @@ class Transformer:
             body["json_options"] = self.json_options
         if self.output_column is not None:
             body["output_column"] = self.output_column
+        if self.protobuf_options:
+            body["protobuf_options"] = self.protobuf_options
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Transformer:
         """Deserializes the Transformer from a dictionary."""
         return cls(
+            avro_options=_from_dict(d, "avro_options", AvroTransformerOptions),
             format=_enum(d, "format", TransformerFormat),
             input_column=d.get("input_column", None),
             json_options=_from_dict(d, "json_options", JsonTransformerOptions),
             output_column=d.get("output_column", None),
+            protobuf_options=_from_dict(d, "protobuf_options", ProtobufTransformerOptions),
         )
 
 
 class TransformerFormat(Enum):
+    AVRO = "AVRO"
     JSON = "JSON"
+    PROTOBUF = "PROTOBUF"
     STRING = "STRING"
 
 

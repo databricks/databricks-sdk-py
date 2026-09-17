@@ -4,7 +4,7 @@
 
 .. py:class:: WorkspaceIamV2API
 
-    These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
+    These APIs are used to manage identities and the workspace access of these identities in Databricks.
 
     .. py:method:: create_direct_group_member_proxy(group_id: int, direct_group_member: DirectGroupMember) -> DirectGroupMember
 
@@ -29,7 +29,7 @@
         identity, use the ExternalGroup resource.
 
         :param group: :class:`Group`
-          Required. Group to be created in <Databricks>
+          Required. Group to be created in Databricks
 
         :returns: :class:`Group`
         
@@ -46,7 +46,7 @@
         external identity, use the ExternalServicePrincipal resource.
 
         :param service_principal: :class:`ServicePrincipal`
-          Required. Service principal to be created in <Databricks>
+          Required. Service principal to be created in Databricks
 
         :returns: :class:`ServicePrincipal`
         
@@ -62,7 +62,7 @@
         identity, use the ExternalUser resource.
 
         :param user: :class:`User`
-          Required. User to be created in <Databricks>
+          Required. User to be created in Databricks
 
         :returns: :class:`User`
         
@@ -72,7 +72,7 @@
         Creates a workspace assignment detail for a principal in the calling workspace.
 
         :param workspace_assignment_detail: :class:`WorkspaceAssignmentDetail`
-          Required. Workspace assignment detail to be created in <Databricks>.
+          Required. Workspace assignment detail to be created in Databricks.
 
         :returns: :class:`WorkspaceAssignmentDetail`
         
@@ -85,7 +85,7 @@
         confirm which entitlements were granted.
 
         :param workspace_assignment: :class:`WorkspaceAssignment`
-          Required. Workspace assignment to be created in <Databricks>.
+          Required. Workspace assignment to be created in Databricks.
 
         :returns: :class:`WorkspaceAssignment`
         
@@ -459,7 +459,7 @@
         :param group_id: str
           Required. Internal ID of the group in Databricks.
         :param group: :class:`Group`
-          Required. Group to be updated in <Databricks>
+          Required. Group to be updated in Databricks
         :param update_mask: str
           Optional. The list of fields to update.
 
@@ -477,7 +477,7 @@
         :param service_principal_id: str
           Required. Internal ID of the service principal in Databricks.
         :param service_principal: :class:`ServicePrincipal`
-          Required. Service principal to be updated in <Databricks>
+          Required. Service principal to be updated in Databricks
         :param update_mask: str
           Optional. The list of fields to update.
 
@@ -496,7 +496,7 @@
         :param user_id: str
           Required. Internal ID of the user in Databricks.
         :param user: :class:`User`
-          Required. User to be updated in <Databricks>
+          Required. User to be updated in Databricks
         :param update_mask: str
           Optional. The list of fields to update.
 
@@ -512,7 +512,7 @@
         :param principal_id: int
           Required. ID of the principal in Databricks.
         :param workspace_assignment_detail: :class:`WorkspaceAssignmentDetail`
-          Required. Workspace assignment detail to be updated in <Databricks>.
+          Required. Workspace assignment detail to be updated in Databricks.
         :param update_mask: FieldMask
           Required. The list of fields to update.
 
@@ -528,7 +528,7 @@
         :param principal_id: int
           Required. ID of the principal in Databricks.
         :param workspace_assignment: :class:`WorkspaceAssignment`
-          Required. Workspace assignment to be updated in <Databricks>.
+          Required. Workspace assignment to be updated in Databricks.
         :param update_mask: FieldMask
           Required. The list of fields to update.
 
@@ -542,7 +542,7 @@
         :param principal_id: int
           Required. ID of the principal in Databricks.
         :param workspace_identity_detail: :class:`WorkspaceIdentityDetail`
-          Required. Workspace identity detail to be updated in <Databricks>.
+          Required. Workspace identity detail to be updated in Databricks.
         :param update_mask: FieldMask
           Required. The list of fields to update.
 
