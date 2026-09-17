@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.140.0 (2026-09-17)
+
+### API Changes
+* Add `create_mcp_service_user_mapped_credential()`, `delete_mcp_service_user_mapped_credential()` and `get_mcp_service_user_mapped_credential()` methods for [w.ai_gateway](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/ai_gateway.html) workspace-level service.
+* Add `group_name` field for `databricks.sdk.service.pipelines.RunAs`.
+* Add `avro_options` and `protobuf_options` fields for `databricks.sdk.service.pipelines.Transformer`.
+* Add `avro` and `protobuf` enum values for `databricks.sdk.service.pipelines.TransformerFormat`.
+
 ## Release v0.139.0 (2026-09-13)
 
 ### API Changes

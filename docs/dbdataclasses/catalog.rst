@@ -624,6 +624,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteMcpServiceUserMappedCredentialResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteMonitorResponse
    :members:
    :undoc-members:
@@ -1108,6 +1112,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: McpServiceConfigSourceConnection
+   :members:
+   :undoc-members:
+
+.. autoclass:: McpServiceUserMappedCredential
+   :members:
+   :undoc-members:
+
+.. autoclass:: McpServiceUserMappedCredentialLogin
    :members:
    :undoc-members:
 

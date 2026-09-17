@@ -2911,6 +2911,27 @@ class DeleteCredentialResponse:
 
 
 @dataclass
+class DeleteMcpServiceUserMappedCredentialResponse:
+    """Delete returns no resource; a dedicated (empty) response keeps the revoke RPC's shape owned here
+    rather than google.protobuf.Empty."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteMcpServiceUserMappedCredentialResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteMcpServiceUserMappedCredentialResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteMcpServiceUserMappedCredentialResponse:
+        """Deserializes the DeleteMcpServiceUserMappedCredentialResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteMonitorResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteMonitorResponse into a dictionary suitable for use as a JSON request body."""
@@ -7010,6 +7031,72 @@ class McpServiceConfigSourceConnection:
     def from_dict(cls, d: Dict[str, Any]) -> McpServiceConfigSourceConnection:
         """Deserializes the McpServiceConfigSourceConnection from a dictionary."""
         return cls(is_deleted=d.get("is_deleted", None), name=d.get("name", None))
+
+
+@dataclass
+class McpServiceUserMappedCredential:
+    """A caller's per-user OAuth credential for an MCP service."""
+
+    options: Optional[Dict[str, str]] = None
+    """Token-expiry info for the credential, returned as a flat map: ``access_token_expiration``
+    (always set) and ``refresh_token_expiration`` (set when the credential has a refresh token).
+    Both values are timestamps."""
+
+    provisioning_info: Optional[ProvisioningInfo] = None
+    """Provisioning state of the credential. ``ACTIVE`` means the caller is logged in and the
+    credential is usable; any other state means the login has not completed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the McpServiceUserMappedCredential into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.options:
+            body["options"] = self.options
+        if self.provisioning_info:
+            body["provisioning_info"] = self.provisioning_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the McpServiceUserMappedCredential into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.options:
+            body["options"] = self.options
+        if self.provisioning_info:
+            body["provisioning_info"] = self.provisioning_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> McpServiceUserMappedCredential:
+        """Deserializes the McpServiceUserMappedCredential from a dictionary."""
+        return cls(
+            options=d.get("options", None), provisioning_info=_from_dict(d, "provisioning_info", ProvisioningInfo)
+        )
+
+
+@dataclass
+class McpServiceUserMappedCredentialLogin:
+    """Login input for an MCP service user credential. Carries the OAuth exchange fields as a flat map."""
+
+    options: Optional[Dict[str, str]] = None
+    """OAuth exchange fields: ``pkce_verifier``, ``authorization_code``, and ``oauth_redirect_uri``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the McpServiceUserMappedCredentialLogin into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.options:
+            body["options"] = self.options
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the McpServiceUserMappedCredentialLogin into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.options:
+            body["options"] = self.options
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> McpServiceUserMappedCredentialLogin:
+        """Deserializes the McpServiceUserMappedCredentialLogin from a dictionary."""
+        return cls(options=d.get("options", None))
 
 
 @dataclass
@@ -13856,6 +13943,36 @@ class AiGatewayAPI:
         res = self._api.do("POST", "/api/2.1/unity-catalog/mcp-services", query=query, body=body, headers=headers)
         return McpService.from_dict(res)
 
+    def create_mcp_service_user_mapped_credential(
+        self, name: str, login: McpServiceUserMappedCredentialLogin
+    ) -> McpServiceUserMappedCredential:
+        """Logs the caller in to an MCP service: creates their per-user OAuth credential, or re-authenticates it
+        if one already exists. The request body carries the OAuth exchange fields.
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+        :param login: :class:`McpServiceUserMappedCredentialLogin`
+
+        :returns: :class:`McpServiceUserMappedCredential`
+        """
+
+        body = login.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.1/unity-catalog/{name}/user-credentials", body=body, headers=headers)
+        return McpServiceUserMappedCredential.from_dict(res)
+
     def create_model_provider_service(
         self, model_provider_service: ModelProviderService, parent: str, model_provider_service_id: str
     ) -> ModelProviderService:
@@ -13974,6 +14091,29 @@ class AiGatewayAPI:
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
 
+    def delete_mcp_service_user_mapped_credential(self, name: str) -> DeleteMcpServiceUserMappedCredentialResponse:
+        """Revokes (deletes) the caller's per-user OAuth credential for an MCP service (logout).
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+
+        :returns: :class:`DeleteMcpServiceUserMappedCredentialResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}/user-credentials", headers=headers)
+        return DeleteMcpServiceUserMappedCredentialResponse.from_dict(res)
+
     def delete_model_provider_service(self, name: str, *, etag: Optional[str] = None):
         """Deletes the model provider service identified by its resource name. Optionally supply an ``etag`` to
         make the delete conditional on the model provider service not having changed since it was read.
@@ -14060,6 +14200,32 @@ class AiGatewayAPI:
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
         return McpService.from_dict(res)
+
+    def get_mcp_service_user_mapped_credential(self, name: str) -> McpServiceUserMappedCredential:
+        """Returns the caller's per-user OAuth login state for an MCP service. Read ``provisioning_info.state``:
+        ``ACTIVE`` means the caller is logged in and the credential is usable; any other state (for example a
+        failed or still-provisioning login) means the login has not completed and the caller should log in
+        again. If the caller has no credential yet, the RPC returns ``NOT_FOUND``.
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+
+        :returns: :class:`McpServiceUserMappedCredential`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}/user-credentials", headers=headers)
+        return McpServiceUserMappedCredential.from_dict(res)
 
     def get_model_provider_service(self, name: str) -> ModelProviderService:
         """Returns the model provider service identified by its resource name.

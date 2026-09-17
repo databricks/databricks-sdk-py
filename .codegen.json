@@ -10,7 +10,7 @@
       "tagging.py",
       "tagging.py.lock"
     ],
-    "allow_from_source": [
+    "allow_from_packages": [
       "**/*.{md,py,rst,png,svg,gif,tmpl,ps1}",
       "**/py.typed",
       ".codegen/{_last_sha,_openapi_sha}",
