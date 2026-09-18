@@ -31,6 +31,21 @@
         :returns: :class:`McpService`
         
 
+    .. py:method:: create_mcp_service_user_mapped_credential(name: str, login: McpServiceUserMappedCredentialLogin) -> McpServiceUserMappedCredential
+
+        Logs the caller in to an MCP service: creates their per-user OAuth credential, or re-authenticates it
+        if one already exists. The request body carries the OAuth exchange fields.
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+        :param login: :class:`McpServiceUserMappedCredentialLogin`
+
+        :returns: :class:`McpServiceUserMappedCredential`
+        
+
     .. py:method:: create_model_provider_service(model_provider_service: ModelProviderService, parent: str, model_provider_service_id: str) -> ModelProviderService
 
         Creates a model provider service in a Unity Catalog schema. A model provider service stores
@@ -99,6 +114,19 @@
 
         
 
+    .. py:method:: delete_mcp_service_user_mapped_credential(name: str) -> DeleteMcpServiceUserMappedCredentialResponse
+
+        Revokes (deletes) the caller's per-user OAuth credential for an MCP service (logout).
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+
+        :returns: :class:`DeleteMcpServiceUserMappedCredentialResponse`
+        
+
     .. py:method:: delete_model_provider_service(name: str [, etag: Optional[str]])
 
         Deletes the model provider service identified by its resource name. Optionally supply an ``etag`` to
@@ -150,6 +178,22 @@
           ``{...}`` component is capped at 255 characters individually.
 
         :returns: :class:`McpService`
+        
+
+    .. py:method:: get_mcp_service_user_mapped_credential(name: str) -> McpServiceUserMappedCredential
+
+        Returns the caller's per-user OAuth login state for an MCP service. Read ``provisioning_info.state``:
+        ``ACTIVE`` means the caller is logged in and the credential is usable; any other state (for example a
+        failed or still-provisioning login) means the login has not completed and the caller should log in
+        again. If the caller has no credential yet, the RPC returns ``NOT_FOUND``.
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+
+        :returns: :class:`McpServiceUserMappedCredential`
         
 
     .. py:method:: get_model_provider_service(name: str) -> ModelProviderService

@@ -1131,12 +1131,17 @@ class CronSchedule:
 
     cron_expression: Optional[str] = None
     """The cron expression defining the schedule (e.g., "0 0 * * *" for daily at midnight). The
-    schedule is interpreted in the UTC time zone. Required when mode is MANUAL (or unset). Left
-    empty when mode is DERIVED, where the service computes it (aligned to UTC) from the features'
-    window timing and fills it in on the response."""
+    schedule is interpreted in timezone_id (defaults to UTC). Required when mode is MANUAL (or
+    unset). Left empty when mode is DERIVED, where the service computes it (aligned to UTC) from the
+    features' window timing and fills it in on the response."""
 
     mode: Optional[CronScheduleMode] = None
     """How the schedule is determined. Defaults to MANUAL when unset."""
+
+    timezone_id: Optional[str] = None
+    """A Java timezone ID. The schedule is resolved with respect to this timezone. Defaults to UTC when
+    omitted. Can only be configured for MANUAL schedules; DERIVED schedules are always aligned to
+    UTC."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
@@ -1145,6 +1150,8 @@ class CronSchedule:
             body["cron_expression"] = self.cron_expression
         if self.mode is not None:
             body["mode"] = self.mode.value
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1154,12 +1161,18 @@ class CronSchedule:
             body["cron_expression"] = self.cron_expression
         if self.mode is not None:
             body["mode"] = self.mode
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
-        return cls(cron_expression=d.get("cron_expression", None), mode=_enum(d, "mode", CronScheduleMode))
+        return cls(
+            cron_expression=d.get("cron_expression", None),
+            mode=_enum(d, "mode", CronScheduleMode),
+            timezone_id=d.get("timezone_id", None),
+        )
 
 
 class CronScheduleMode(Enum):
@@ -11802,6 +11815,10 @@ class FeatureStoreAPI:
 
     def update_online_store(self, name: str, online_store: OnlineStore, update_mask: str) -> OnlineStore:
         """Update an Online Feature Store.
+
+        This update is not guaranteed to be atomic: when a request changes multiple fields, some may be
+        applied while others fail. On a failed response, treat the update as partially applied and retry until
+        it succeeds.
 
         :param name: str
           The name of the online store. This is the unique identifier for the online store.

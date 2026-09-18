@@ -53,6 +53,7 @@ dev = [
     "openai",
     "langchain-openai",
     "httpx",
+    "grpcio<2", # the sandbox extra's dep; also needed to run the gRPC transport unit tests
     "build", # some integration tests depend on the databricks-sdk-py wheel
     "check-manifest",
 ]
@@ -64,6 +65,17 @@ openai = [
     "openai",
     "langchain-openai",
     "httpx",
+]
+sandbox = [
+    # gRPC transport for the sandbox command-execution mixin. Optional so
+    # users who don't use the sandbox APIs don't pull the large native grpcio
+    # wheel; imported lazily in databricks/sdk/mixins/_grpc_transport.py.
+    #
+    # `<2` caps the major version to guard against a breaking grpcio 2.x. No
+    # lower bound is needed: the transport uses only long-stable grpc APIs, and
+    # pip installs the newest grpcio with wheels for the user's Python (the SDK
+    # requires >=3.10), so a too-old release is never selected.
+    "grpcio<2",
 ]
 
 [tool.setuptools.dynamic]

@@ -1918,6 +1918,7 @@ class ConnectionType(Enum):
     SQLDW = "SQLDW"
     SQLSERVER = "SQLSERVER"
     TERADATA = "TERADATA"
+    TIKTOK_ADS = "TIKTOK_ADS"
     UNKNOWN_CONNECTION_TYPE = "UNKNOWN_CONNECTION_TYPE"
     WORKDAY_RAAS = "WORKDAY_RAAS"
     ZENDESK = "ZENDESK"
@@ -2907,6 +2908,27 @@ class DeleteCredentialResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteCredentialResponse:
         """Deserializes the DeleteCredentialResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteMcpServiceUserMappedCredentialResponse:
+    """Delete returns no resource; a dedicated (empty) response keeps the revoke RPC's shape owned here
+    rather than google.protobuf.Empty."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteMcpServiceUserMappedCredentialResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteMcpServiceUserMappedCredentialResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteMcpServiceUserMappedCredentialResponse:
+        """Deserializes the DeleteMcpServiceUserMappedCredentialResponse from a dictionary."""
         return cls()
 
 
@@ -6988,6 +7010,12 @@ class McpServiceConfigSourceConnection:
     callers can identify the broken dependency; tool invocation fails until the source connection is
     updated."""
 
+    options: Optional[Dict[str, str]] = None
+    """Options needed to build the U2M authorize request, returned as a flat map. When set, it
+    includes: ``authorization_endpoint`` (OAuth authorize URL), ``token_endpoint`` (token-exchange
+    URL), ``oauth_scope`` (space-separated scopes to request), ``client_id`` (OAuth client id), and
+    ``oauth_provider`` (the OAuth provider)."""
+
     def as_dict(self) -> dict:
         """Serializes the McpServiceConfigSourceConnection into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6995,6 +7023,8 @@ class McpServiceConfigSourceConnection:
             body["is_deleted"] = self.is_deleted
         if self.name is not None:
             body["name"] = self.name
+        if self.options:
+            body["options"] = self.options
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7004,12 +7034,80 @@ class McpServiceConfigSourceConnection:
             body["is_deleted"] = self.is_deleted
         if self.name is not None:
             body["name"] = self.name
+        if self.options:
+            body["options"] = self.options
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> McpServiceConfigSourceConnection:
         """Deserializes the McpServiceConfigSourceConnection from a dictionary."""
-        return cls(is_deleted=d.get("is_deleted", None), name=d.get("name", None))
+        return cls(is_deleted=d.get("is_deleted", None), name=d.get("name", None), options=d.get("options", None))
+
+
+@dataclass
+class McpServiceUserMappedCredential:
+    """A caller's per-user OAuth credential for an MCP service."""
+
+    options: Optional[Dict[str, str]] = None
+    """Token-expiry info for the credential, returned as a flat map: ``access_token_expiration``
+    (always set) and ``refresh_token_expiration`` (set when the credential has a refresh token).
+    Both values are timestamps."""
+
+    provisioning_info: Optional[ProvisioningInfo] = None
+    """Provisioning state of the credential. ``ACTIVE`` means the caller is logged in and the
+    credential is usable; any other state means the login has not completed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the McpServiceUserMappedCredential into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.options:
+            body["options"] = self.options
+        if self.provisioning_info:
+            body["provisioning_info"] = self.provisioning_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the McpServiceUserMappedCredential into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.options:
+            body["options"] = self.options
+        if self.provisioning_info:
+            body["provisioning_info"] = self.provisioning_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> McpServiceUserMappedCredential:
+        """Deserializes the McpServiceUserMappedCredential from a dictionary."""
+        return cls(
+            options=d.get("options", None), provisioning_info=_from_dict(d, "provisioning_info", ProvisioningInfo)
+        )
+
+
+@dataclass
+class McpServiceUserMappedCredentialLogin:
+    """Login input for an MCP service user credential. Carries the OAuth exchange fields as a flat map."""
+
+    options: Optional[Dict[str, str]] = None
+    """OAuth exchange fields: ``pkce_verifier``, ``authorization_code``, and ``oauth_redirect_uri``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the McpServiceUserMappedCredentialLogin into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.options:
+            body["options"] = self.options
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the McpServiceUserMappedCredentialLogin into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.options:
+            body["options"] = self.options
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> McpServiceUserMappedCredentialLogin:
+        """Deserializes the McpServiceUserMappedCredentialLogin from a dictionary."""
+        return cls(options=d.get("options", None))
 
 
 @dataclass
@@ -7816,6 +7914,47 @@ class ModelProviderServiceConfigAzureOpenAiProviderDirectConfig:
 
 
 @dataclass
+class ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth:
+    """Header-based API-key authentication for a custom provider: the secret is forwarded on outbound
+    requests under a caller-chosen HTTP header, as ``<api_key_name>: <api_key_value>``."""
+
+    api_key_name: Optional[str] = None
+    """HTTP header name that carries the API key on outbound requests (e.g.,
+    ``Ocp-Apim-Subscription-Key``). The value forwarded under this header is supplied via
+    ``api_key_value``."""
+
+    api_key_value: Optional[ModelProviderServiceConfigProviderSecret] = None
+    """Secret value forwarded under the ``api_key_name`` header on outbound requests. Supplied as
+    inline plaintext via ``ProviderSecret.plaintext``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.api_key_name is not None:
+            body["api_key_name"] = self.api_key_name
+        if self.api_key_value:
+            body["api_key_value"] = self.api_key_value.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.api_key_name is not None:
+            body["api_key_name"] = self.api_key_name
+        if self.api_key_value:
+            body["api_key_value"] = self.api_key_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth:
+        """Deserializes the ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth from a dictionary."""
+        return cls(
+            api_key_name=d.get("api_key_name", None),
+            api_key_value=_from_dict(d, "api_key_value", ModelProviderServiceConfigProviderSecret),
+        )
+
+
+@dataclass
 class ModelProviderServiceConfigCustomProviderConfig:
     """Custom OpenAI-compatible provider configuration with bearer-token authentication."""
 
@@ -7844,8 +7983,9 @@ class ModelProviderServiceConfigCustomProviderConfig:
 
 @dataclass
 class ModelProviderServiceConfigCustomProviderDirectConfig:
-    """Direct form of a custom provider configuration. Set ``api_key`` to the bearer token sent in the
-    ``Authorization`` header."""
+    """Direct form of a custom provider configuration. Set ``api_key`` to send the secret as an
+    ``Authorization`` bearer token, or ``header_auth`` to forward it under a caller-chosen HTTP
+    header."""
 
     api_key: Optional[ModelProviderServiceConfigProviderSecret] = None
     """Bearer token forwarded in the ``Authorization`` header. Supply the value in
@@ -7855,6 +7995,11 @@ class ModelProviderServiceConfigCustomProviderDirectConfig:
     """Endpoint URL of the OpenAI-compatible service (e.g., ``https://api.example.com/v1``). Required
     on Create."""
 
+    header_auth: Optional[ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth] = None
+    """Header-based API-key auth: the secret is forwarded on outbound requests under a caller-chosen
+    HTTP header rather than as an ``Authorization`` bearer token. Set this instead of ``api_key``
+    for header auth."""
+
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigCustomProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -7862,6 +8007,8 @@ class ModelProviderServiceConfigCustomProviderDirectConfig:
             body["api_key"] = self.api_key.as_dict()
         if self.base_url is not None:
             body["base_url"] = self.base_url
+        if self.header_auth:
+            body["header_auth"] = self.header_auth.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7871,13 +8018,17 @@ class ModelProviderServiceConfigCustomProviderDirectConfig:
             body["api_key"] = self.api_key
         if self.base_url is not None:
             body["base_url"] = self.base_url
+        if self.header_auth:
+            body["header_auth"] = self.header_auth
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigCustomProviderDirectConfig:
         """Deserializes the ModelProviderServiceConfigCustomProviderDirectConfig from a dictionary."""
         return cls(
-            api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret), base_url=d.get("base_url", None)
+            api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
+            base_url=d.get("base_url", None),
+            header_auth=_from_dict(d, "header_auth", ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth),
         )
 
 
@@ -11644,6 +11795,7 @@ class SecurablePermissions:
 class SecurableType(Enum):
     """The type of Unity Catalog securable."""
 
+    AGENT_SERVICE = "AGENT_SERVICE"
     CATALOG = "CATALOG"
     CLEAN_ROOM = "CLEAN_ROOM"
     CONNECTION = "CONNECTION"
@@ -11661,6 +11813,7 @@ class SecurableType(Enum):
     RECIPIENT = "RECIPIENT"
     SCHEMA = "SCHEMA"
     SHARE = "SHARE"
+    SKILL = "SKILL"
     STAGING_TABLE = "STAGING_TABLE"
     STORAGE_CREDENTIAL = "STORAGE_CREDENTIAL"
     TABLE = "TABLE"
@@ -13856,6 +14009,36 @@ class AiGatewayAPI:
         res = self._api.do("POST", "/api/2.1/unity-catalog/mcp-services", query=query, body=body, headers=headers)
         return McpService.from_dict(res)
 
+    def create_mcp_service_user_mapped_credential(
+        self, name: str, login: McpServiceUserMappedCredentialLogin
+    ) -> McpServiceUserMappedCredential:
+        """Logs the caller in to an MCP service: creates their per-user OAuth credential, or re-authenticates it
+        if one already exists. The request body carries the OAuth exchange fields.
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+        :param login: :class:`McpServiceUserMappedCredentialLogin`
+
+        :returns: :class:`McpServiceUserMappedCredential`
+        """
+
+        body = login.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.1/unity-catalog/{name}/user-credentials", body=body, headers=headers)
+        return McpServiceUserMappedCredential.from_dict(res)
+
     def create_model_provider_service(
         self, model_provider_service: ModelProviderService, parent: str, model_provider_service_id: str
     ) -> ModelProviderService:
@@ -13974,6 +14157,29 @@ class AiGatewayAPI:
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
 
+    def delete_mcp_service_user_mapped_credential(self, name: str) -> DeleteMcpServiceUserMappedCredentialResponse:
+        """Revokes (deletes) the caller's per-user OAuth credential for an MCP service (logout).
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+
+        :returns: :class:`DeleteMcpServiceUserMappedCredentialResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}/user-credentials", headers=headers)
+        return DeleteMcpServiceUserMappedCredentialResponse.from_dict(res)
+
     def delete_model_provider_service(self, name: str, *, etag: Optional[str] = None):
         """Deletes the model provider service identified by its resource name. Optionally supply an ``etag`` to
         make the delete conditional on the model provider service not having changed since it was read.
@@ -14060,6 +14266,32 @@ class AiGatewayAPI:
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
         return McpService.from_dict(res)
+
+    def get_mcp_service_user_mapped_credential(self, name: str) -> McpServiceUserMappedCredential:
+        """Returns the caller's per-user OAuth login state for an MCP service. Read ``provisioning_info.state``:
+        ``ACTIVE`` means the caller is logged in and the credential is usable; any other state (for example a
+        failed or still-provisioning login) means the login has not completed and the caller should log in
+        again. If the caller has no credential yet, the RPC returns ``NOT_FOUND``.
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+
+        :returns: :class:`McpServiceUserMappedCredential`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}/user-credentials", headers=headers)
+        return McpServiceUserMappedCredential.from_dict(res)
 
     def get_model_provider_service(self, name: str) -> ModelProviderService:
         """Returns the model provider service identified by its resource name.
