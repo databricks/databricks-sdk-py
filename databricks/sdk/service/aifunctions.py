@@ -710,8 +710,7 @@ class AiFunctionsAPI:
     def ai_parse_document(
         self, content: str, *, options: Optional[AiParseDocumentOptions] = None
     ) -> AiParseDocumentResponse:
-        """Parse structured content from unstructured documents. For REST API requests, the default rate limit is
-        120 pages per minute per workspace. Contact your Databricks account team to request a higher limit.
+        """Parse structured content from unstructured documents.
 
         :param content: str
           The document to parse, given as a Unity Catalog volume path to the source file (the REST API accepts

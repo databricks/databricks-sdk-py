@@ -20,6 +20,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AvroTransformerOptions
+   :members:
+   :undoc-members:
+
 .. py:class:: CloneMode
 
    Enum to specify which mode of clone to execute
@@ -32,6 +36,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ConfluenceConnectorOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: ConfluentSchemaRegistryOptions
    :members:
    :undoc-members:
 
@@ -325,11 +333,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SHAREPOINT
       :value: "SHAREPOINT"
 
+   .. py:attribute:: SMARTSHEET
+      :value: "SMARTSHEET"
+
    .. py:attribute:: SQLSERVER
       :value: "SQLSERVER"
 
    .. py:attribute:: TERADATA
       :value: "TERADATA"
+
+   .. py:attribute:: TIKTOK_ADS
+      :value: "TIKTOK_ADS"
 
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
@@ -486,6 +500,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ParseMode
+
+   Determines how errors encountered while deserializing records are handled.
+
+   .. py:attribute:: FAILFAST
+      :value: "FAILFAST"
+
+   .. py:attribute:: PERMISSIVE
+      :value: "PERMISSIVE"
+
 .. autoclass:: PathPattern
    :members:
    :undoc-members:
@@ -621,6 +645,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ProtobufTransformerOptions
+   :members:
+   :undoc-members:
+
 .. py:class:: PublishingMode
 
    Enum representing the publishing mode of a pipeline.
@@ -664,6 +692,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RunAs
+   :members:
+   :undoc-members:
+
+.. autoclass:: SchemaRegistryConfig
    :members:
    :undoc-members:
 
@@ -819,8 +851,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TransformerFormat
 
+   .. py:attribute:: AVRO
+      :value: "AVRO"
+
    .. py:attribute:: JSON
       :value: "JSON"
+
+   .. py:attribute:: PROTOBUF
+      :value: "PROTOBUF"
 
    .. py:attribute:: STRING
       :value: "STRING"

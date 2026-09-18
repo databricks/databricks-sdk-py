@@ -1696,6 +1696,8 @@ class AppUpdate:
 
     status: Optional[AppUpdateUpdateStatus] = None
 
+    telemetry_export_destinations: Optional[List[TelemetryExportDestination]] = None
+
     usage_policy_id: Optional[str] = None
 
     user_api_scopes: Optional[List[str]] = None
@@ -1721,6 +1723,8 @@ class AppUpdate:
             body["resources"] = [v.as_dict() for v in self.resources]
         if self.status:
             body["status"] = self.status.as_dict()
+        if self.telemetry_export_destinations:
+            body["telemetry_export_destinations"] = [v.as_dict() for v in self.telemetry_export_destinations]
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
         if self.user_api_scopes:
@@ -1748,6 +1752,8 @@ class AppUpdate:
             body["resources"] = self.resources
         if self.status:
             body["status"] = self.status
+        if self.telemetry_export_destinations:
+            body["telemetry_export_destinations"] = self.telemetry_export_destinations
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
         if self.user_api_scopes:
@@ -1767,6 +1773,9 @@ class AppUpdate:
             git_repository=_from_dict(d, "git_repository", GitRepository),
             resources=_repeated_dict(d, "resources", AppResource),
             status=_from_dict(d, "status", AppUpdateUpdateStatus),
+            telemetry_export_destinations=_repeated_dict(
+                d, "telemetry_export_destinations", TelemetryExportDestination
+            ),
             usage_policy_id=d.get("usage_policy_id", None),
             user_api_scopes=d.get("user_api_scopes", None),
         )
@@ -1878,8 +1887,7 @@ class ComputeState(Enum):
 @dataclass
 class ComputeStatus:
     active_instances: Optional[int] = None
-    """The number of compute instances currently serving requests for this application. An instance is
-    considered active if it is reachable and ready to handle requests."""
+    """The number of compute instances used and billed for this application."""
 
     message: Optional[str] = None
     """Compute status message"""

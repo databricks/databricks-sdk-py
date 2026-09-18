@@ -374,6 +374,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TERADATA
       :value: "TERADATA"
 
+   .. py:attribute:: TIKTOK_ADS
+      :value: "TIKTOK_ADS"
+
    .. py:attribute:: UNKNOWN_CONNECTION_TYPE
       :value: "UNKNOWN_CONNECTION_TYPE"
 
@@ -621,6 +624,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteCredentialResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteMcpServiceUserMappedCredentialResponse
    :members:
    :undoc-members:
 
@@ -1111,6 +1118,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: McpServiceUserMappedCredential
+   :members:
+   :undoc-members:
+
+.. autoclass:: McpServiceUserMappedCredentialLogin
+   :members:
+   :undoc-members:
+
 .. autoclass:: MetastoreAssignment
    :members:
    :undoc-members:
@@ -1156,6 +1171,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ModelProviderServiceConfigAzureOpenAiProviderDirectConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth
    :members:
    :undoc-members:
 
@@ -2053,6 +2072,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    The type of Unity Catalog securable.
 
+   .. py:attribute:: AGENT_SERVICE
+      :value: "AGENT_SERVICE"
+
    .. py:attribute:: CATALOG
       :value: "CATALOG"
 
@@ -2103,6 +2125,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SHARE
       :value: "SHARE"
+
+   .. py:attribute:: SKILL
+      :value: "SKILL"
 
    .. py:attribute:: STAGING_TABLE
       :value: "STAGING_TABLE"

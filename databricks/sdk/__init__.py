@@ -1179,7 +1179,7 @@ class WorkspaceClient:
 
     @property
     def workspace_iam_v2(self) -> pkg_iamv2.WorkspaceIamV2API:
-        """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
+        """These APIs are used to manage identities and the workspace access of these identities in Databricks."""
         return self._workspace_iam_v2
 
     @property
@@ -1398,7 +1398,7 @@ class AccountClient:
 
     @property
     def iam_v2(self) -> pkg_iamv2.AccountIamV2API:
-        """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
+        """These APIs are used to manage identities and the workspace access of these identities in Databricks."""
         return self._iam_v2
 
     @property

@@ -500,9 +500,11 @@ class BaseRun:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     effective_usage_policy_id: Optional[str] = None
     """The id of the usage policy used by this run for cost attribution purposes."""
@@ -3593,15 +3595,16 @@ class JobPermissionsDescription:
 
 @dataclass
 class JobRunAs:
-    """Write-only setting. Specifies the user or service principal that the job runs as. If not
+    """Write-only setting. Specifies the user, service principal, or group that the job runs as. If not
     specified, the job runs as the user who created the job.
 
-    Either ``user_name`` or ``service_principal_name`` should be specified. If not, an error is
-    thrown."""
+    One of ``user_name``, ``service_principal_name``, or ``group_name`` should be specified. If not,
+    an error is thrown."""
 
     group_name: Optional[str] = None
-    """Group name of an account group assigned to the workspace. Setting this field requires being a
-    member of the group."""
+    """Group name of an account group assigned to the workspace. When set, all tasks run as the group
+    and the group's permissions are used for data access. Setting this field requires being a member
+    of the group, or having the ``Assume`` permission on the group."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
@@ -3733,9 +3736,11 @@ class JobSettings:
     or cost-efficiency for the run. The performance target does not apply to tasks that run on
     Serverless GPU compute.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
@@ -5205,9 +5210,11 @@ class RepairHistoryItem:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     end_time: Optional[int] = None
     """The end time of the (repaired) run."""
@@ -5701,9 +5708,11 @@ class Run:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     effective_usage_policy_id: Optional[str] = None
     """The id of the usage policy used by this run for cost attribution purposes."""
@@ -6942,9 +6951,11 @@ class RunTask:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     effective_serverless_compute_id: Optional[str] = None
     """The id of the serverless compute this task ran on, either explicitly configured on the task or
@@ -10437,9 +10448,11 @@ class JobsAPI:
           cost-efficiency for the run. The performance target does not apply to tasks that run on Serverless
           GPU compute.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -10990,9 +11003,11 @@ class JobsAPI:
           performance or cost-efficiency for the run. This field overrides the performance target defined on
           the job level.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -11241,9 +11256,11 @@ class JobsAPI:
           performance or cost-efficiency for the run. This field overrides the performance target defined on
           the job level.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -11468,9 +11485,11 @@ class JobsAPI:
           performance or cost-efficiency for the run. The performance target does not apply to tasks that run
           on Serverless GPU compute.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
         :param run_as: :class:`JobRunAs` (optional)
