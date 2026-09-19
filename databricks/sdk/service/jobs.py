@@ -500,9 +500,11 @@ class BaseRun:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     effective_usage_policy_id: Optional[str] = None
     """The id of the usage policy used by this run for cost attribution purposes."""
@@ -3265,6 +3267,14 @@ class JobEmailNotifications:
     ``life_cycle_state`` or a ``FAILED``, or ``TIMED_OUT`` result_state. If this is not specified on
     job creation, reset, or update the list is empty, and notifications are not sent."""
 
+    on_maintenance_complete: Optional[List[str]] = None
+    """A list of email addresses to notify when platform-initiated maintenance completes for a
+    continuous job."""
+
+    on_maintenance_start: Optional[List[str]] = None
+    """A list of email addresses to notify when platform-initiated maintenance starts for a continuous
+    job."""
+
     on_start: Optional[List[str]] = None
     """A list of email addresses to be notified when a run begins. If not specified on job creation,
     reset, or update, the list is empty, and notifications are not sent."""
@@ -3292,6 +3302,10 @@ class JobEmailNotifications:
             body["on_duration_warning_threshold_exceeded"] = [v for v in self.on_duration_warning_threshold_exceeded]
         if self.on_failure:
             body["on_failure"] = [v for v in self.on_failure]
+        if self.on_maintenance_complete:
+            body["on_maintenance_complete"] = [v for v in self.on_maintenance_complete]
+        if self.on_maintenance_start:
+            body["on_maintenance_start"] = [v for v in self.on_maintenance_start]
         if self.on_start:
             body["on_start"] = [v for v in self.on_start]
         if self.on_streaming_backlog_exceeded:
@@ -3309,6 +3323,10 @@ class JobEmailNotifications:
             body["on_duration_warning_threshold_exceeded"] = self.on_duration_warning_threshold_exceeded
         if self.on_failure:
             body["on_failure"] = self.on_failure
+        if self.on_maintenance_complete:
+            body["on_maintenance_complete"] = self.on_maintenance_complete
+        if self.on_maintenance_start:
+            body["on_maintenance_start"] = self.on_maintenance_start
         if self.on_start:
             body["on_start"] = self.on_start
         if self.on_streaming_backlog_exceeded:
@@ -3324,6 +3342,8 @@ class JobEmailNotifications:
             no_alert_for_skipped_runs=d.get("no_alert_for_skipped_runs", None),
             on_duration_warning_threshold_exceeded=d.get("on_duration_warning_threshold_exceeded", None),
             on_failure=d.get("on_failure", None),
+            on_maintenance_complete=d.get("on_maintenance_complete", None),
+            on_maintenance_start=d.get("on_maintenance_start", None),
             on_start=d.get("on_start", None),
             on_streaming_backlog_exceeded=d.get("on_streaming_backlog_exceeded", None),
             on_success=d.get("on_success", None),
@@ -3593,15 +3613,16 @@ class JobPermissionsDescription:
 
 @dataclass
 class JobRunAs:
-    """Write-only setting. Specifies the user or service principal that the job runs as. If not
+    """Write-only setting. Specifies the user, service principal, or group that the job runs as. If not
     specified, the job runs as the user who created the job.
 
-    Either ``user_name`` or ``service_principal_name`` should be specified. If not, an error is
-    thrown."""
+    One of ``user_name``, ``service_principal_name``, or ``group_name`` should be specified. If not,
+    an error is thrown."""
 
     group_name: Optional[str] = None
-    """Group name of an account group assigned to the workspace. Setting this field requires being a
-    member of the group."""
+    """Group name of an account group assigned to the workspace. When set, all tasks run as the group
+    and the group's permissions are used for data access. Setting this field requires being a member
+    of the group, or having the ``Assume`` permission on the group."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
@@ -3733,9 +3754,11 @@ class JobSettings:
     or cost-efficiency for the run. The performance target does not apply to tasks that run on
     Serverless GPU compute.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
@@ -5205,9 +5228,11 @@ class RepairHistoryItem:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     end_time: Optional[int] = None
     """The end time of the (repaired) run."""
@@ -5701,9 +5726,11 @@ class Run:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     effective_usage_policy_id: Optional[str] = None
     """The id of the usage policy used by this run for cost attribution purposes."""
@@ -6942,9 +6969,11 @@ class RunTask:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     effective_serverless_compute_id: Optional[str] = None
     """The id of the serverless compute this task ran on, either explicitly configured on the task or
@@ -9388,6 +9417,14 @@ class TaskEmailNotifications:
     ``life_cycle_state`` or a ``FAILED``, or ``TIMED_OUT`` result_state. If this is not specified on
     job creation, reset, or update the list is empty, and notifications are not sent."""
 
+    on_maintenance_complete: Optional[List[str]] = None
+    """A list of email addresses to notify when platform-initiated maintenance completes for a
+    continuous job."""
+
+    on_maintenance_start: Optional[List[str]] = None
+    """A list of email addresses to notify when platform-initiated maintenance starts for a continuous
+    job."""
+
     on_start: Optional[List[str]] = None
     """A list of email addresses to be notified when a run begins. If not specified on job creation,
     reset, or update, the list is empty, and notifications are not sent."""
@@ -9415,6 +9452,10 @@ class TaskEmailNotifications:
             body["on_duration_warning_threshold_exceeded"] = [v for v in self.on_duration_warning_threshold_exceeded]
         if self.on_failure:
             body["on_failure"] = [v for v in self.on_failure]
+        if self.on_maintenance_complete:
+            body["on_maintenance_complete"] = [v for v in self.on_maintenance_complete]
+        if self.on_maintenance_start:
+            body["on_maintenance_start"] = [v for v in self.on_maintenance_start]
         if self.on_start:
             body["on_start"] = [v for v in self.on_start]
         if self.on_streaming_backlog_exceeded:
@@ -9432,6 +9473,10 @@ class TaskEmailNotifications:
             body["on_duration_warning_threshold_exceeded"] = self.on_duration_warning_threshold_exceeded
         if self.on_failure:
             body["on_failure"] = self.on_failure
+        if self.on_maintenance_complete:
+            body["on_maintenance_complete"] = self.on_maintenance_complete
+        if self.on_maintenance_start:
+            body["on_maintenance_start"] = self.on_maintenance_start
         if self.on_start:
             body["on_start"] = self.on_start
         if self.on_streaming_backlog_exceeded:
@@ -9447,6 +9492,8 @@ class TaskEmailNotifications:
             no_alert_for_skipped_runs=d.get("no_alert_for_skipped_runs", None),
             on_duration_warning_threshold_exceeded=d.get("on_duration_warning_threshold_exceeded", None),
             on_failure=d.get("on_failure", None),
+            on_maintenance_complete=d.get("on_maintenance_complete", None),
+            on_maintenance_start=d.get("on_maintenance_start", None),
             on_start=d.get("on_start", None),
             on_streaming_backlog_exceeded=d.get("on_streaming_backlog_exceeded", None),
             on_success=d.get("on_success", None),
@@ -10135,6 +10182,16 @@ class WebhookNotifications:
     """An optional list of system notification IDs to call when the run fails. A maximum of 3
     destinations can be specified for the ``on_failure`` property."""
 
+    on_maintenance_complete: Optional[List[Webhook]] = None
+    """An optional list of system notification IDs to call when platform-initiated maintenance
+    completes for a continuous job. A maximum of 3 destinations can be specified for the
+    ``on_maintenance_complete`` property."""
+
+    on_maintenance_start: Optional[List[Webhook]] = None
+    """An optional list of system notification IDs to call when platform-initiated maintenance starts
+    for a continuous job. A maximum of 3 destinations can be specified for the
+    ``on_maintenance_start`` property."""
+
     on_start: Optional[List[Webhook]] = None
     """An optional list of system notification IDs to call when the run starts. A maximum of 3
     destinations can be specified for the ``on_start`` property."""
@@ -10161,6 +10218,10 @@ class WebhookNotifications:
             ]
         if self.on_failure:
             body["on_failure"] = [v.as_dict() for v in self.on_failure]
+        if self.on_maintenance_complete:
+            body["on_maintenance_complete"] = [v.as_dict() for v in self.on_maintenance_complete]
+        if self.on_maintenance_start:
+            body["on_maintenance_start"] = [v.as_dict() for v in self.on_maintenance_start]
         if self.on_start:
             body["on_start"] = [v.as_dict() for v in self.on_start]
         if self.on_streaming_backlog_exceeded:
@@ -10176,6 +10237,10 @@ class WebhookNotifications:
             body["on_duration_warning_threshold_exceeded"] = self.on_duration_warning_threshold_exceeded
         if self.on_failure:
             body["on_failure"] = self.on_failure
+        if self.on_maintenance_complete:
+            body["on_maintenance_complete"] = self.on_maintenance_complete
+        if self.on_maintenance_start:
+            body["on_maintenance_start"] = self.on_maintenance_start
         if self.on_start:
             body["on_start"] = self.on_start
         if self.on_streaming_backlog_exceeded:
@@ -10190,6 +10255,8 @@ class WebhookNotifications:
         return cls(
             on_duration_warning_threshold_exceeded=_repeated_dict(d, "on_duration_warning_threshold_exceeded", Webhook),
             on_failure=_repeated_dict(d, "on_failure", Webhook),
+            on_maintenance_complete=_repeated_dict(d, "on_maintenance_complete", Webhook),
+            on_maintenance_start=_repeated_dict(d, "on_maintenance_start", Webhook),
             on_start=_repeated_dict(d, "on_start", Webhook),
             on_streaming_backlog_exceeded=_repeated_dict(d, "on_streaming_backlog_exceeded", Webhook),
             on_success=_repeated_dict(d, "on_success", Webhook),
@@ -10437,9 +10504,11 @@ class JobsAPI:
           cost-efficiency for the run. The performance target does not apply to tasks that run on Serverless
           GPU compute.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -10990,9 +11059,11 @@ class JobsAPI:
           performance or cost-efficiency for the run. This field overrides the performance target defined on
           the job level.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -11241,9 +11312,11 @@ class JobsAPI:
           performance or cost-efficiency for the run. This field overrides the performance target defined on
           the job level.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -11468,9 +11541,11 @@ class JobsAPI:
           performance or cost-efficiency for the run. The performance target does not apply to tasks that run
           on Serverless GPU compute.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
         :param run_as: :class:`JobRunAs` (optional)

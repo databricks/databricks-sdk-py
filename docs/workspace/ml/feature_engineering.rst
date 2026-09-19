@@ -6,7 +6,7 @@
 
     [description]
 
-    .. py:method:: backfill_features(feature_full_names: List[str], backfill_ranges: List[BackfillRange] [, request_id: Optional[str]]) -> BackfillFeaturesOperation
+    .. py:method:: backfill_features(feature_full_names: List[str], backfill_ranges: List[BackfillRange] [, budget_policy_id: Optional[str], request_id: Optional[str], tags: Optional[Dict[str, str]]]) -> BackfillFeaturesOperation
 
         Backfill features.
 
@@ -14,8 +14,18 @@
           Full names of the features to backfill.
         :param backfill_ranges: List[:class:`BackfillRange`]
           Output ranges to backfill.
+        :param budget_policy_id: str (optional)
+          The budget policy ID, in UUID format, used to attribute the serverless compute cost of this
+          backfill. If not specified, a default budget policy may be applied.
         :param request_id: str (optional)
           Idempotency token for the request.
+        :param tags: Dict[str,str] (optional)
+          Custom tags to associate with this backfill. They are applied to the backfill job and forwarded to
+          the underlying compute as Databricks resource tags, so backfill cost can be attributed in the
+          billing system tables. These tags apply only to the backfill compute; they are not applied to the
+          Unity Catalog Feature resources themselves, whose tags are managed separately through the Unity
+          Catalog tagging API. A maximum of 25 tags is supported; keys and values are subject to the same
+          limitations as Databricks resource tags.
 
         :returns: :class:`Operation`
         
@@ -231,7 +241,7 @@
         :returns: Iterator over :class:`Stream`
         
 
-    .. py:method:: purge_feature_entities(features: List[str], entities_table: str [, request_id: Optional[str]]) -> PurgeFeatureEntitiesOperation
+    .. py:method:: purge_feature_entities(features: List[str], entities_table: str [, budget_policy_id: Optional[str], request_id: Optional[str], tags: Optional[Dict[str, str]]]) -> PurgeFeatureEntitiesOperation
 
         Purge materialized feature values for specified entities.
 
@@ -243,8 +253,18 @@
           Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge. The table
           may contain a subset of each feature's entity-key columns. A partial key match deletes all feature
           rows matching the provided key values. Non-key columns are rejected; null key values are allowed.
+        :param budget_policy_id: str (optional)
+          The budget policy ID, in UUID format, used to attribute the serverless compute cost of this purge.
+          If not specified, a default budget policy may be applied.
         :param request_id: str (optional)
           Optional UUID4 idempotency token for the request.
+        :param tags: Dict[str,str] (optional)
+          Custom tags to associate with this purge. They are applied to the purge job and forwarded to the
+          underlying compute as Databricks resource tags, so purge cost can be attributed in the billing
+          system tables. These tags apply only to the purge compute; they are not applied to the Unity Catalog
+          Feature resources themselves, whose tags are managed separately through the Unity Catalog tagging
+          API. A maximum of 25 tags is supported; keys and values are subject to the same limitations as
+          Databricks resource tags.
 
         :returns: :class:`Operation`
         
