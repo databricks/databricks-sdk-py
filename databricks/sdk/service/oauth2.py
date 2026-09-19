@@ -221,6 +221,8 @@ class FederationPolicy:
     the request URL."""
 
     oidc_policy: Optional[OidcFederationPolicy] = None
+    """audit_mode INCLUDE is required on both this message field and its leaf fields so the OIDC policy
+    configuration is captured in create/update audit logs (see go/auditlogs)."""
 
     policy_id: Optional[str] = None
     """The ID of the federation policy. Output only."""

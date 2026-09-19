@@ -11,7 +11,8 @@
 
         Create a draft dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard: :class:`Dashboard`
         :param dataset_catalog: str (optional)
@@ -30,6 +31,9 @@
 
         Create dashboard schedule.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule: :class:`Schedule`
@@ -41,6 +45,13 @@
     .. py:method:: create_subscription(dashboard_id: str, schedule_id: str, subscription: Subscription) -> Subscription
 
         Create schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
@@ -56,6 +67,9 @@
 
         Delete dashboard schedule.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
@@ -70,6 +84,13 @@
     .. py:method:: delete_subscription(dashboard_id: str, schedule_id: str, subscription_id: str [, etag: Optional[str]])
 
         Delete schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
@@ -88,7 +109,8 @@
 
         Get a draft dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -116,6 +138,13 @@
 
         Get dashboard schedule.
 
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
@@ -127,6 +156,13 @@
     .. py:method:: get_subscription(dashboard_id: str, schedule_id: str, subscription_id: str) -> Subscription
 
         Get schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
@@ -142,7 +178,8 @@
 
         List dashboards.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param page_size: int (optional)
           The number of dashboards to return per page.
@@ -162,6 +199,13 @@
 
         List dashboard schedules.
 
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedules belongs.
         :param page_size: int (optional)
@@ -176,6 +220,13 @@
     .. py:method:: list_subscriptions(dashboard_id: str, schedule_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Subscription]
 
         List schedule subscriptions.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscriptions belongs.
@@ -212,7 +263,8 @@
 
         Publish the current draft dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard to be published.
@@ -229,7 +281,8 @@
 
         Revert a dashboard's definition in draft mode to the last published version.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -244,7 +297,8 @@
 
         Trash a dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -256,7 +310,8 @@
 
         Unpublish the dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.
@@ -268,7 +323,8 @@
 
         Update a draft dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -288,6 +344,9 @@
     .. py:method:: update_schedule(dashboard_id: str, schedule_id: str, schedule: Schedule) -> Schedule
 
         Update dashboard schedule.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.

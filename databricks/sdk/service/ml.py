@@ -1131,12 +1131,17 @@ class CronSchedule:
 
     cron_expression: Optional[str] = None
     """The cron expression defining the schedule (e.g., "0 0 * * *" for daily at midnight). The
-    schedule is interpreted in the UTC time zone. Required when mode is MANUAL (or unset). Left
-    empty when mode is DERIVED, where the service computes it (aligned to UTC) from the features'
-    window timing and fills it in on the response."""
+    schedule is interpreted in timezone_id (defaults to UTC). Required when mode is MANUAL (or
+    unset). Left empty when mode is DERIVED, where the service computes it (aligned to UTC) from the
+    features' window timing and fills it in on the response."""
 
     mode: Optional[CronScheduleMode] = None
     """How the schedule is determined. Defaults to MANUAL when unset."""
+
+    timezone_id: Optional[str] = None
+    """A Java timezone ID. The schedule is resolved with respect to this timezone. Defaults to UTC when
+    omitted. Can only be configured for MANUAL schedules; DERIVED schedules are always aligned to
+    UTC."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
@@ -1145,6 +1150,8 @@ class CronSchedule:
             body["cron_expression"] = self.cron_expression
         if self.mode is not None:
             body["mode"] = self.mode.value
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1154,12 +1161,18 @@ class CronSchedule:
             body["cron_expression"] = self.cron_expression
         if self.mode is not None:
             body["mode"] = self.mode
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
-        return cls(cron_expression=d.get("cron_expression", None), mode=_enum(d, "mode", CronScheduleMode))
+        return cls(
+            cron_expression=d.get("cron_expression", None),
+            mode=_enum(d, "mode", CronScheduleMode),
+            timezone_id=d.get("timezone_id", None),
+        )
 
 
 class CronScheduleMode(Enum):
@@ -10779,7 +10792,13 @@ class FeatureEngineeringAPI:
         self._api = api_client
 
     def backfill_features(
-        self, feature_full_names: List[str], backfill_ranges: List[BackfillRange], *, request_id: Optional[str] = None
+        self,
+        feature_full_names: List[str],
+        backfill_ranges: List[BackfillRange],
+        *,
+        budget_policy_id: Optional[str] = None,
+        request_id: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
     ) -> BackfillFeaturesOperation:
         """Backfill features.
 
@@ -10787,8 +10806,18 @@ class FeatureEngineeringAPI:
           Full names of the features to backfill.
         :param backfill_ranges: List[:class:`BackfillRange`]
           Output ranges to backfill.
+        :param budget_policy_id: str (optional)
+          The budget policy ID, in UUID format, used to attribute the serverless compute cost of this
+          backfill. If not specified, a default budget policy may be applied.
         :param request_id: str (optional)
           Idempotency token for the request.
+        :param tags: Dict[str,str] (optional)
+          Custom tags to associate with this backfill. They are applied to the backfill job and forwarded to
+          the underlying compute as Databricks resource tags, so backfill cost can be attributed in the
+          billing system tables. These tags apply only to the backfill compute; they are not applied to the
+          Unity Catalog Feature resources themselves, whose tags are managed separately through the Unity
+          Catalog tagging API. A maximum of 25 tags is supported; keys and values are subject to the same
+          limitations as Databricks resource tags.
 
         :returns: :class:`Operation`
         """
@@ -10798,10 +10827,14 @@ class FeatureEngineeringAPI:
         body = {}
         if backfill_ranges is not None:
             body["backfill_ranges"] = [v.as_dict() for v in backfill_ranges]
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
         if feature_full_names is not None:
             body["feature_full_names"] = [v for v in feature_full_names]
         if request_id is not None:
             body["request_id"] = request_id
+        if tags is not None:
+            body["tags"] = tags
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -11302,7 +11335,13 @@ class FeatureEngineeringAPI:
             query["page_token"] = json["next_page_token"]
 
     def purge_feature_entities(
-        self, features: List[str], entities_table: str, *, request_id: Optional[str] = None
+        self,
+        features: List[str],
+        entities_table: str,
+        *,
+        budget_policy_id: Optional[str] = None,
+        request_id: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
     ) -> PurgeFeatureEntitiesOperation:
         """Purge materialized feature values for specified entities.
 
@@ -11314,8 +11353,18 @@ class FeatureEngineeringAPI:
           Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge. The table
           may contain a subset of each feature's entity-key columns. A partial key match deletes all feature
           rows matching the provided key values. Non-key columns are rejected; null key values are allowed.
+        :param budget_policy_id: str (optional)
+          The budget policy ID, in UUID format, used to attribute the serverless compute cost of this purge.
+          If not specified, a default budget policy may be applied.
         :param request_id: str (optional)
           Optional UUID4 idempotency token for the request.
+        :param tags: Dict[str,str] (optional)
+          Custom tags to associate with this purge. They are applied to the purge job and forwarded to the
+          underlying compute as Databricks resource tags, so purge cost can be attributed in the billing
+          system tables. These tags apply only to the purge compute; they are not applied to the Unity Catalog
+          Feature resources themselves, whose tags are managed separately through the Unity Catalog tagging
+          API. A maximum of 25 tags is supported; keys and values are subject to the same limitations as
+          Databricks resource tags.
 
         :returns: :class:`Operation`
         """
@@ -11323,12 +11372,16 @@ class FeatureEngineeringAPI:
         if request_id is None or request_id == "":
             request_id = str(uuid.uuid4())
         body = {}
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
         if entities_table is not None:
             body["entities_table"] = entities_table
         if features is not None:
             body["features"] = [v for v in features]
         if request_id is not None:
             body["request_id"] = request_id
+        if tags is not None:
+            body["tags"] = tags
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -11802,6 +11855,10 @@ class FeatureStoreAPI:
 
     def update_online_store(self, name: str, online_store: OnlineStore, update_mask: str) -> OnlineStore:
         """Update an Online Feature Store.
+
+        This update is not guaranteed to be atomic: when a request changes multiple fields, some may be
+        applied while others fail. On a failed response, treat the update as partially applied and retry until
+        it succeeds.
 
         :param name: str
           The name of the online store. This is the unique identifier for the online store.

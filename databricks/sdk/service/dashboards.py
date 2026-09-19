@@ -3806,7 +3806,8 @@ class LakeviewAPI:
     ) -> Dashboard:
         """Create a draft dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard: :class:`Dashboard`
         :param dataset_catalog: str (optional)
@@ -3842,6 +3843,9 @@ class LakeviewAPI:
     def create_schedule(self, dashboard_id: str, schedule: Schedule) -> Schedule:
         """Create dashboard schedule.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule: :class:`Schedule`
@@ -3866,6 +3870,13 @@ class LakeviewAPI:
 
     def create_subscription(self, dashboard_id: str, schedule_id: str, subscription: Subscription) -> Subscription:
         """Create schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
@@ -3898,6 +3909,9 @@ class LakeviewAPI:
 
     def delete_schedule(self, dashboard_id: str, schedule_id: str, *, etag: Optional[str] = None):
         """Delete dashboard schedule.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
@@ -3933,6 +3947,13 @@ class LakeviewAPI:
     ):
         """Delete schedule subscription.
 
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
         :param schedule_id: str
@@ -3967,7 +3988,8 @@ class LakeviewAPI:
     def get(self, dashboard_id: str) -> Dashboard:
         """Get a draft dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -4015,6 +4037,13 @@ class LakeviewAPI:
     def get_schedule(self, dashboard_id: str, schedule_id: str) -> Schedule:
         """Get dashboard schedule.
 
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
@@ -4038,6 +4067,13 @@ class LakeviewAPI:
 
     def get_subscription(self, dashboard_id: str, schedule_id: str, subscription_id: str) -> Subscription:
         """Get schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
@@ -4074,7 +4110,8 @@ class LakeviewAPI:
     ) -> Iterator[Dashboard]:
         """List dashboards.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param page_size: int (optional)
           The number of dashboards to return per page.
@@ -4121,6 +4158,13 @@ class LakeviewAPI:
     ) -> Iterator[Schedule]:
         """List dashboard schedules.
 
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedules belongs.
         :param page_size: int (optional)
@@ -4160,6 +4204,13 @@ class LakeviewAPI:
         self, dashboard_id: str, schedule_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Subscription]:
         """List schedule subscriptions.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscriptions belongs.
@@ -4251,7 +4302,8 @@ class LakeviewAPI:
     ) -> PublishedDashboard:
         """Publish the current draft dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard to be published.
@@ -4284,7 +4336,8 @@ class LakeviewAPI:
     def revert(self, dashboard_id: str, *, etag: Optional[str] = None) -> RevertDashboardResponse:
         """Revert a dashboard's definition in draft mode to the last published version.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -4313,7 +4366,8 @@ class LakeviewAPI:
     def trash(self, dashboard_id: str):
         """Trash a dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -4334,7 +4388,8 @@ class LakeviewAPI:
     def unpublish(self, dashboard_id: str):
         """Unpublish the dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.
@@ -4362,7 +4417,8 @@ class LakeviewAPI:
     ) -> Dashboard:
         """Update a draft dashboard.
 
-        Requires the Databricks SQL access entitlement.
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -4401,6 +4457,9 @@ class LakeviewAPI:
 
     def update_schedule(self, dashboard_id: str, schedule_id: str, schedule: Schedule) -> Schedule:
         """Update dashboard schedule.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.

@@ -1,5 +1,25 @@
 # Version changelog
 
+## Release v0.140.0 (2026-09-19)
+
+### API Changes
+* Add `create_mcp_service_user_mapped_credential()`, `delete_mcp_service_user_mapped_credential()` and `get_mcp_service_user_mapped_credential()` methods for [w.ai_gateway](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/ai_gateway.html) workspace-level service.
+* Add `telemetry_export_destinations` field for `databricks.sdk.service.apps.AppUpdate`.
+* Add `options` field for `databricks.sdk.service.catalog.McpServiceConfigSourceConnection`.
+* Add `header_auth` field for `databricks.sdk.service.catalog.ModelProviderServiceConfigCustomProviderDirectConfig`.
+* Add `on_maintenance_complete` and `on_maintenance_start` fields for `databricks.sdk.service.jobs.JobEmailNotifications`.
+* Add `on_maintenance_complete` and `on_maintenance_start` fields for `databricks.sdk.service.jobs.TaskEmailNotifications`.
+* Add `on_maintenance_complete` and `on_maintenance_start` fields for `databricks.sdk.service.jobs.WebhookNotifications`.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.BackfillFeaturesRequest`.
+* Add `timezone_id` field for `databricks.sdk.service.ml.CronSchedule`.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.PurgeFeatureEntitiesRequest`.
+* Add `group_name` field for `databricks.sdk.service.pipelines.RunAs`.
+* Add `avro_options` and `protobuf_options` fields for `databricks.sdk.service.pipelines.Transformer`.
+* Add `tiktok_ads` enum value for `databricks.sdk.service.catalog.ConnectionType`.
+* Add `agent_service` and `skill` enum values for `databricks.sdk.service.catalog.SecurableType`.
+* Add `tiktok_ads` and `smartsheet` enum values for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Add `avro` and `protobuf` enum values for `databricks.sdk.service.pipelines.TransformerFormat`.
+
 ## Release v0.139.0 (2026-09-13)
 
 ### API Changes
