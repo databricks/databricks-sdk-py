@@ -18,7 +18,7 @@
       ".gitattributes",
       ".github/actions/**/*.yml",
       ".github/dependabot.yml",
-      ".github/workflows/{external-message,integration-tests,push,sync-label,tagging,test}.yml",
+      ".github/workflows/{push,sync-label,tagging,test}.yml",
       ".gitignore",
       ".package.json",
       ".readthedocs.yaml",

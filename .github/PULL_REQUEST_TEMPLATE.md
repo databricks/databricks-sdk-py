@@ -64,8 +64,8 @@
 ## How is this tested?
 
 <!--
-  Describe any tests you have done, especially tests that are not part of
-  the unit tests (e.g. local tests, integration tests, manual verification).
+  Describe any tests you have done, especially verification that is not part
+  of the unit tests (e.g. local checks or manual verification).
 
   ALWAYS ANSWER THIS QUESTION: answer with "N/A" if tests are not applicable
   to your PR (e.g. if the PR only modifies comments). Do not be afraid of

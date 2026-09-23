@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.141.0 (2026-09-23)
+
+### API Changes
+* Add `databricks.sdk.service.mason` package.
+* Add [w.mason](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/mason/mason.html) workspace-level service.
+* Add `service_credential` field for `databricks.sdk.service.catalog.ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig`.
+* Add `secret_reference` field for `databricks.sdk.service.catalog.ModelProviderServiceConfigProviderSecret`.
+
 ## Release v0.140.0 (2026-09-19)
 
 ### API Changes

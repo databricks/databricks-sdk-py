@@ -1020,7 +1020,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    EndpointSpotInstancePolicy configures whether the endpoint should use spot instances.
    The breakdown of how the EndpointSpotInstancePolicy converts to per cloud configurations is:
-   +-------+--------------------------------------+--------------------------------+ | Cloud | COST_OPTIMIZED | RELIABILITY_OPTIMIZED | +-------+--------------------------------------+--------------------------------+ | AWS | On Demand Driver with Spot Executors | On Demand Driver and Executors | | AZURE | On Demand Driver and Executors | On Demand Driver and Executors | +-------+--------------------------------------+--------------------------------+
+   - AWS, COST_OPTIMIZED: On Demand Driver with Spot Executors. - AWS, RELIABILITY_OPTIMIZED: On Demand Driver and Executors. - AZURE, COST_OPTIMIZED: On Demand Driver and Executors. - AZURE, RELIABILITY_OPTIMIZED: On Demand Driver and Executors.
 
    .. py:attribute:: COST_OPTIMIZED
       :value: "COST_OPTIMIZED"

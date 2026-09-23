@@ -136,7 +136,8 @@
         :param filters_json: str (optional)
           JSON string describing query filters (e.g. ``{"id >": 5}``).
         :param max_results: int (optional)
-          Maximum number of results to return (the legacy ``num_results``). Defaults to 10.
+          Maximum number of results to return (the legacy ``num_results``). Defaults to 10. Prefer
+          ``page_size``; when both are set, ``page_size`` takes precedence.
         :param query_columns: List[str] (optional)
           Text columns to search for ``query_text``. When empty, all text columns are searched.
         :param query_text: str (optional)

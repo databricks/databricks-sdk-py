@@ -8133,6 +8133,13 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
     region: Optional[str] = None
     """GCP region of the Gemini Enterprise endpoint (e.g., ``us-central1``). Required on Create."""
 
+    service_credential: Optional[ModelProviderServiceConfigServiceCredential] = None
+    """Reference to a Unity Catalog service credential authorizing Gemini Enterprise requests. On
+    Create, supply ``service_credential.name`` as ``credentials/{name}``; required when using
+    service-credential authentication and mutually exclusive with ``api_key``. The credential is
+    referenced by name; its value is not carried here. On read, the resolved ``id`` and
+    ``is_deleted`` are also populated. Supported only on GCP-hosted workspaces."""
+
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8142,6 +8149,8 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
             body["project_id"] = self.project_id
         if self.region is not None:
             body["region"] = self.region
+        if self.service_credential:
+            body["service_credential"] = self.service_credential.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8153,6 +8162,8 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
             body["project_id"] = self.project_id
         if self.region is not None:
             body["region"] = self.region
+        if self.service_credential:
+            body["service_credential"] = self.service_credential
         return body
 
     @classmethod
@@ -8162,6 +8173,7 @@ class ModelProviderServiceConfigGeminiEnterpriseProviderDirectConfig:
             api_key=_from_dict(d, "api_key", ModelProviderServiceConfigProviderSecret),
             project_id=d.get("project_id", None),
             region=d.get("region", None),
+            service_credential=_from_dict(d, "service_credential", ModelProviderServiceConfigServiceCredential),
         )
 
 
@@ -8387,11 +8399,19 @@ class ModelProviderServiceConfigProviderSecret:
     responses omit ``plaintext``; the enclosing secret object remains present to indicate that a
     secret is configured."""
 
+    secret_reference: Optional[ModelProviderServiceConfigSecretReference] = None
+    """Reference to a customer-owned UC Secret that carries this secret value. The value is read at
+    invoke time under the model provider service owner's access and is never copied onto the model
+    provider service, so rotating the UC Secret takes effect with no change to the model provider
+    service. On Create, supply ``secret_reference.name`` as ``secrets/{catalog}.{schema}.{secret}``."""
+
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigProviderSecret into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.plaintext is not None:
             body["plaintext"] = self.plaintext
+        if self.secret_reference:
+            body["secret_reference"] = self.secret_reference.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8399,12 +8419,47 @@ class ModelProviderServiceConfigProviderSecret:
         body = {}
         if self.plaintext is not None:
             body["plaintext"] = self.plaintext
+        if self.secret_reference:
+            body["secret_reference"] = self.secret_reference
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigProviderSecret:
         """Deserializes the ModelProviderServiceConfigProviderSecret from a dictionary."""
-        return cls(plaintext=d.get("plaintext", None))
+        return cls(
+            plaintext=d.get("plaintext", None),
+            secret_reference=_from_dict(d, "secret_reference", ModelProviderServiceConfigSecretReference),
+        )
+
+
+@dataclass
+class ModelProviderServiceConfigSecretReference:
+    """Reference to a customer-owned UC Secret backing a secret-bearing provider field, in the
+    ``ProviderSecret.secret_reference`` arm."""
+
+    name: str
+    """Resource name of the bound UC Secret, in the form ``secrets/{catalog}.{schema}.{secret}``. On
+    Create the caller supplies the name here. On read it reflects the secret's current name at read
+    time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigSecretReference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigSecretReference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigSecretReference:
+        """Deserializes the ModelProviderServiceConfigSecretReference from a dictionary."""
+        return cls(name=d.get("name", None))
 
 
 @dataclass

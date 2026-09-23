@@ -48,13 +48,10 @@ dev = [
     "ipywidgets",
     "requests-mock",
     "pyfakefs",
-    "databricks-connect",
-    "pytest-rerunfailures",
     "openai",
     "langchain-openai",
     "httpx",
     "grpcio<2", # the sandbox extra's dep; also needed to run the gRPC transport unit tests
-    "build", # some integration tests depend on the databricks-sdk-py wheel
     "check-manifest",
 ]
 notebook = [

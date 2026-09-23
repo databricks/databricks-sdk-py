@@ -27,6 +27,7 @@ These APIs are available from WorkspaceClient
    jobs/index
    knowledgeassistants/index
    marketplace/index
+   mason/index
    ml/index
    oauth2/index
    pipelines/index
