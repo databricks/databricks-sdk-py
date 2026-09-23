@@ -211,11 +211,11 @@ class CleanRoomAsset:
 
     view: Optional[CleanRoomAssetView] = None
     """View details available to all collaborators of the clean room. Present if and only if
-    **asset_type** is **VIEW**"""
+    **asset_type** is **VIEW** or **METRIC_VIEW**"""
 
     view_local_details: Optional[CleanRoomAssetViewLocalDetails] = None
     """Local details for a view that are only available to its owner. Present if and only if
-    **asset_type** is **VIEW**"""
+    **asset_type** is **VIEW** or **METRIC_VIEW**"""
 
     volume_local_details: Optional[CleanRoomAssetVolumeLocalDetails] = None
     """Local details for a volume that are only available to its owner. Present if and only if
@@ -385,8 +385,8 @@ class CleanRoomAssetJarAnalysis:
     """Optional description of the jar analysis shown to all collaborators."""
 
     environment_version: Optional[str] = None
-    """The serverless environment version used to execute the JAR analysis (e.g. "4"). Defaults to
-    "4-scala-preview" if not specified."""
+    """The serverless environment version used to execute the JAR analysis (e.g. "4"). If not
+    specified, uses the service-configured JAR analysis default."""
 
     etag: Optional[str] = None
     """Server generated etag that represents the jar analysis version."""

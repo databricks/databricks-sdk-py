@@ -31,6 +31,7 @@ from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
 from databricks.sdk.service import knowledgeassistants as pkg_knowledgeassistants
 from databricks.sdk.service import marketplace as pkg_marketplace
+from databricks.sdk.service import mason as pkg_mason
 from databricks.sdk.service import ml as pkg_ml
 from databricks.sdk.service import networking as pkg_networking
 from databricks.sdk.service import oauth2 as pkg_oauth2
@@ -153,6 +154,7 @@ from databricks.sdk.service.settings import LlmProxyPartnerPoweredAccountAPI
 from databricks.sdk.service.settings import LlmProxyPartnerPoweredEnforceAPI
 from databricks.sdk.service.settings import LlmProxyPartnerPoweredWorkspaceAPI
 from databricks.sdk.service.billing import LogDeliveryAPI
+from databricks.sdk.service.mason import MasonAPI
 from databricks.sdk.service.ml import MaterializedFeaturesAPI
 from databricks.sdk.service.catalog import AccountMetastoreAssignmentsAPI
 from databricks.sdk.service.catalog import MetastoresAPI
@@ -426,6 +428,7 @@ class WorkspaceClient:
         self._lakeview = pkg_dashboards.LakeviewAPI(self._api_client)
         self._lakeview_embedded = pkg_dashboards.LakeviewEmbeddedAPI(self._api_client)
         self._libraries = pkg_compute.LibrariesAPI(self._api_client)
+        self._mason = pkg_mason.MasonAPI(self._api_client)
         self._materialized_features = pkg_ml.MaterializedFeaturesAPI(self._api_client)
         self._metastores = pkg_catalog.MetastoresAPI(self._api_client)
         self._model_registry = pkg_ml.ModelRegistryAPI(self._api_client)
@@ -836,6 +839,11 @@ class WorkspaceClient:
     def libraries(self) -> pkg_compute.LibrariesAPI:
         """The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster."""
         return self._libraries
+
+    @property
+    def mason(self) -> pkg_mason.MasonAPI:
+        """APIs for managing agent memory and durable session state."""
+        return self._mason
 
     @property
     def materialized_features(self) -> pkg_ml.MaterializedFeaturesAPI:

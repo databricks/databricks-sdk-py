@@ -27,6 +27,7 @@ Dataclasses
    jobs
    knowledgeassistants
    marketplace
+   mason
    ml
    networking
    oauth2

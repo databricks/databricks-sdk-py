@@ -145,7 +145,7 @@ class AutoFullRefreshPolicy:
 @dataclass
 class AvroTransformerOptions:
     parse_mode: Optional[ParseMode] = None
-    """(Optional) Parse mode for Avro data. Valid values: FAILFAST, PERMISSIVE. Defaults to FAILFAST."""
+    """(Optional) Parse mode for Avro data. Valid values: FAILFAST, PERMISSIVE. Defaults to PERMISSIVE."""
 
     schema: Optional[str] = None
     """Inline Avro JSON schema string."""
@@ -4196,7 +4196,7 @@ class ProtobufTransformerOptions:
 
     parse_mode: Optional[ParseMode] = None
     """(Optional) Parse mode for Protobuf data. Valid values: FAILFAST, PERMISSIVE. Defaults to
-    FAILFAST."""
+    PERMISSIVE."""
 
     recursive_fields_max_depth: Optional[int] = None
     """(Optional) Maximum expansion depth for recursive protobuf fields. Spark SQL does not natively

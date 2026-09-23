@@ -50,10 +50,12 @@ class App:
     budget_policy_id: Optional[str] = None
 
     compute_max_instances: Optional[int] = None
-    """Maximum number of app instances. Must be set together with ``compute_min_instances``."""
+    """Maximum number of app instances the app is configured to run. Must be set together with
+    ``compute_min_instances``."""
 
     compute_min_instances: Optional[int] = None
-    """Minimum number of app instances. Must be set together with ``compute_max_instances``."""
+    """Minimum number of app instances the app is configured to run. Must be set together with
+    ``compute_max_instances``."""
 
     compute_size: Optional[ComputeSize] = None
 
@@ -1677,10 +1679,12 @@ class AppUpdate:
     budget_policy_id: Optional[str] = None
 
     compute_max_instances: Optional[int] = None
-    """Maximum number of app instances. Must be set together with ``compute_min_instances``."""
+    """Maximum number of app instances the app is configured to run. Must be set together with
+    ``compute_min_instances``."""
 
     compute_min_instances: Optional[int] = None
-    """Minimum number of app instances. Must be set together with ``compute_max_instances``."""
+    """Minimum number of app instances the app is configured to run. Must be set together with
+    ``compute_max_instances``."""
 
     compute_size: Optional[ComputeSize] = None
 
@@ -1831,7 +1835,7 @@ class ApplicationStatus:
     """Application status message"""
 
     running_instances: Optional[int] = None
-    """The number of running instances of this application."""
+    """The number of app instances whose application process is running."""
 
     state: Optional[ApplicationState] = None
     """State of the application."""
@@ -1887,7 +1891,7 @@ class ComputeState(Enum):
 @dataclass
 class ComputeStatus:
     active_instances: Optional[int] = None
-    """The number of compute instances used and billed for this application."""
+    """The number of active compute instances currently used and billed for this application."""
 
     message: Optional[str] = None
     """Compute status message"""

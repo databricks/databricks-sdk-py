@@ -17,13 +17,7 @@ lint:
 	uv run ruff format --check databricks tests
 
 test:
-	uv run pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
-
-integration:
-	uv run pytest -n auto -m 'integration and not benchmark' --reruns 4 --dist loadgroup --cov=databricks --cov-report html tests
-
-benchmark:
-	uv run pytest -m 'benchmark' tests
+	uv run pytest --cov=databricks --cov-report html tests
 
 coverage: test
 	open htmlcov/index.html

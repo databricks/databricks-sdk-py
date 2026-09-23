@@ -1107,11 +1107,9 @@ class BundleDeploymentsAPI:
         :param name: str
           The name of the version to complete. Format: deployments/{deployment_id}/versions/{version_id}
         :param completion_reason: :class:`VersionComplete`
-          The reason for completing the version. Must be a terminal reason: VERSION_COMPLETE_SUCCESS,
-          VERSION_COMPLETE_FAILURE, or VERSION_COMPLETE_FORCE_ABORT.
+          The reason for completing the version. Must be VERSION_COMPLETE_SUCCESS or VERSION_COMPLETE_FAILURE.
         :param force: bool (optional)
-          If true, force-completes the version even if the caller is not the original creator. The
-          completion_reason must be VERSION_COMPLETE_FORCE_ABORT when force is true.
+          If true, force-completes the version even if the caller is not the original creator.
 
         :returns: :class:`Version`
         """

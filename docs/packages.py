@@ -156,6 +156,11 @@ AUTO_PACKAGES = [
     Package("jobs", "", ""),
     Package("knowledgeassistants", "Knowledge Assistants", "Manage Knowledge Assistants and related resources."),
     Package("marketplace", "", ""),
+    Package(
+        "mason",
+        "Mason",
+        "APIs for managing agent memory and durable session state. This interface is under active development and may change.",
+    ),
     Package("ml", "", ""),
     Package("networking", "Networking Endpoints", "These APIs manage endpoint configurations for this account."),
     Package("oauth2", "", ""),
