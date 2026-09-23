@@ -1,5 +1,130 @@
 # Version changelog
 
+## Release v0.140.0 (2026-09-19)
+
+### API Changes
+* Add `create_mcp_service_user_mapped_credential()`, `delete_mcp_service_user_mapped_credential()` and `get_mcp_service_user_mapped_credential()` methods for [w.ai_gateway](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/ai_gateway.html) workspace-level service.
+* Add `telemetry_export_destinations` field for `databricks.sdk.service.apps.AppUpdate`.
+* Add `options` field for `databricks.sdk.service.catalog.McpServiceConfigSourceConnection`.
+* Add `header_auth` field for `databricks.sdk.service.catalog.ModelProviderServiceConfigCustomProviderDirectConfig`.
+* Add `on_maintenance_complete` and `on_maintenance_start` fields for `databricks.sdk.service.jobs.JobEmailNotifications`.
+* Add `on_maintenance_complete` and `on_maintenance_start` fields for `databricks.sdk.service.jobs.TaskEmailNotifications`.
+* Add `on_maintenance_complete` and `on_maintenance_start` fields for `databricks.sdk.service.jobs.WebhookNotifications`.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.BackfillFeaturesRequest`.
+* Add `timezone_id` field for `databricks.sdk.service.ml.CronSchedule`.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.PurgeFeatureEntitiesRequest`.
+* Add `group_name` field for `databricks.sdk.service.pipelines.RunAs`.
+* Add `avro_options` and `protobuf_options` fields for `databricks.sdk.service.pipelines.Transformer`.
+* Add `tiktok_ads` enum value for `databricks.sdk.service.catalog.ConnectionType`.
+* Add `agent_service` and `skill` enum values for `databricks.sdk.service.catalog.SecurableType`.
+* Add `tiktok_ads` and `smartsheet` enum values for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Add `avro` and `protobuf` enum values for `databricks.sdk.service.pipelines.TransformerFormat`.
+
+## Release v0.139.0 (2026-09-13)
+
+### API Changes
+* Add `priority_class` field for `databricks.sdk.service.jobs.AiRuntimeTask`.
+* Add `uc_service_credential_name` field for `databricks.sdk.service.serving.AmazonBedrockConfig`.
+* Add `excluded_scopes` field for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyWorkspaceApiDestination`.
+* Add `effective_workspace_label` and `workspace_label` fields for `databricks.sdk.service.settingsv2.Setting`.
+* Add `gpu_8x_b300` enum value for `databricks.sdk.service.jobs.ComputeSpecAcceleratorType`.
+
+## Release v0.138.0 (2026-09-11)
+
+### API Changes
+* Add `unity_catalog_image_path` field for `databricks.sdk.service.jobs.AiRuntimeTask`.
+* Add `feature_view_source` field for `databricks.sdk.service.ml.DataSource`.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.PublishSpec`.
+* Add `development` field for `databricks.sdk.service.pipelines.StartUpdate`.
+
+## Release v0.137.0 (2026-09-09)
+
+### API Changes
+* Add `purge_feature_entities()` method for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service.
+* Add `deny` field for `databricks.sdk.service.catalog.PolicyInfo`.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.IngestionConfig`.
+* Add `budget_policy_id` and `tags` fields for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `policy_type_deny` enum value for `databricks.sdk.service.catalog.PolicyType`.
+
+## Release v0.136.0 (2026-09-07)
+
+### API Changes
+* Add `databricks.sdk.service.domains` package.
+* Add [w.domains](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/domains/domains.html) workspace-level service.
+* Add `entity_columns` and `timeseries_column` fields for `databricks.sdk.service.ml.DeltaTableSource`.
+* Add `filter_condition` and `inputs` fields for `databricks.sdk.service.ml.Feature`.
+* Add `extra_parameters` and `function_type` fields for `databricks.sdk.service.ml.Function`.
+* Add `entity_column_identifiers` and `timeseries_column_identifier` fields for `databricks.sdk.service.ml.KafkaSource`.
+* Add `cron_schedule` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `continuous` field for `databricks.sdk.service.ml.TimeWindow`.
+
+## Release v0.135.0 (2026-09-04)
+
+### API Changes
+* Add `execute_command_sync()` method for [w.sandbox](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sandbox/sandbox.html) workspace-level service.
+* Add `mode` field for `databricks.sdk.service.ml.CronSchedule`.
+* Add `time_window` field for `databricks.sdk.service.ml.Feature`.
+* Add `full_feature_name` field for `databricks.sdk.service.ml.PublishSpec`.
+* [Breaking] Remove `first_token_timeout` field for `databricks.sdk.service.catalog.ModelServiceConfigRoutingConfig`.
+* [Breaking] Remove `request_tag_key` and `request_tag_value` fields for `databricks.sdk.service.catalog.RateLimit`.
+* [Breaking] Remove `rate_limit_key_request_tag` enum value for `databricks.sdk.service.catalog.RateLimitRateLimitKey`.
+
+## Release v0.134.0 (2026-09-03)
+
+### Breaking Changes
+* `TableSpec.source_table` and `SchemaSpec.source_schema` in the Pipelines API (`databricks.sdk.service.pipelines`) are now optional. Previously required, they may be absent for source types — such as streaming or message-bus connectors — that do not use a source table or schema name. Code that assumes these fields are always present should handle their absence.
+
+### API Changes
+* Add `databricks.sdk.service.aifunctions` and `databricks.sdk.service.sandbox` packages.
+* Add [w.ai_functions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/aifunctions/ai_functions.html) workspace-level service.
+* Add [w.sandbox](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sandbox/sandbox.html) workspace-level service.
+* Add `update_deployment()` method for [w.bundle_deployments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/bundledeployments/bundle_deployments.html) workspace-level service.
+* Add `genie_cancel_response()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Add `get_external_group()`, `get_external_service_principal()` and `get_external_user()` methods for [a.account_iam_v2](https://databricks-sdk-py.readthedocs.io/en/latest/account/iamv2/account_iam_v2.html) account-level service.
+* Add `get_external_group_proxy()`, `get_external_service_principal_proxy()` and `get_external_user_proxy()` methods for [w.workspace_iam_v2](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iamv2/workspace_iam_v2.html) workspace-level service.
+* Add `backfill_features()`, `cancel_operation()` and `get_operation()` methods for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service.
+* Add `create_snapshot()`, `delete_snapshot()`, `get_snapshot()`, `get_snapshot_schedule()`, `list_snapshots()` and `update_snapshot_schedule()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `assume_group_id` field for `databricks.sdk.service.apps.Space`.
+* Add `operations` field for `databricks.sdk.service.bundledeployments.Version`.
+* Add `function_arg_expression` field for `databricks.sdk.service.catalog.FunctionArgument`.
+* Add `aws_context_id` field for `databricks.sdk.service.compute.NodeTypeFlexibility`.
+* Add `parameters` field for `databricks.sdk.service.jobs.AlertTask`.
+* Add `provisioned_capacity_id` field for `databricks.sdk.service.jobs.ComputeSpec`.
+* Add `maintenance_window` field for `databricks.sdk.service.jobs.Continuous`.
+* Add `maintenance_window` field for `databricks.sdk.service.jobs.ContinuousTriggerConfiguration`.
+* Add `lateness` field for `databricks.sdk.service.ml.DataSource`.
+* Add `latest_backfill_operation` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `delay` and `offset` fields for `databricks.sdk.service.ml.SlidingWindow`.
+* Add `excluded_columns` and `record_type_filter` fields for `databricks.sdk.service.ml.Stream`.
+* Add `start_time` field for `databricks.sdk.service.ml.TimeWindow`.
+* Add `delay` and `offset` fields for `databricks.sdk.service.ml.TumblingWindow`.
+* Add `rabbitmq_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `source_snapshot` field for `databricks.sdk.service.postgres.BranchSpec`.
+* Add `source_snapshot` field for `databricks.sdk.service.postgres.BranchStatus`.
+* Add `deployment_resource_type_vector_search_endpoint`, `deployment_resource_type_vector_search_index`, `deployment_resource_type_job_run`, `deployment_resource_type_postgres_catalog`, `deployment_resource_type_postgres_synced_table`, `deployment_resource_type_genie_space`, `deployment_resource_type_instance_pool`, `deployment_resource_type_postgres_database`, `deployment_resource_type_postgres_role`, `deployment_resource_type_secret` and `deployment_resource_type_cluster_policy` enum values for `databricks.sdk.service.bundledeployments.DeploymentResourceType`.
+* Add `operation_status_pending` enum value for `databricks.sdk.service.bundledeployments.OperationStatus`.
+* Add `aws_secrets_manager` and `azure_key_vault` enum values for `databricks.sdk.service.catalog.ConnectionType`.
+* Add `external_use_location` enum value for `databricks.sdk.service.catalog.Privilege`.
+* Add `model`, `model_service`, `mcp_service` and `model_provider_service` enum values for `databricks.sdk.service.catalog.SecurableType`.
+* Add `gpu_1x_h100` and `gpu_8x_b300` enum values for `databricks.sdk.service.compute.HardwareAcceleratorType`.
+* Add `rabbitmq` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Change `source_schema` field for `databricks.sdk.service.pipelines.SchemaSpec` to no longer be required.
+* [Breaking] Change `source_schema` field for `databricks.sdk.service.pipelines.SchemaSpec` to no longer be required.
+* [Breaking] Change `source_table` field for `databricks.sdk.service.pipelines.TableSpec` to no longer be required.
+* Change `source_table` field for `databricks.sdk.service.pipelines.TableSpec` to no longer be required.
+* [Breaking] Remove `disabled` field for `databricks.sdk.service.catalog.InferenceTableConfig`.
+* [Breaking] Remove `owner` field for `databricks.sdk.service.catalog.McpService`.
+* [Breaking] Remove `owner` field for `databricks.sdk.service.catalog.ModelProviderService`.
+* [Breaking] Remove `plan_type` field for `databricks.sdk.service.catalog.ModelProviderServiceConfigAnthropicProviderRelayedConfig`.
+* [Breaking] Remove `owner` field for `databricks.sdk.service.catalog.ModelService`.
+* [Breaking] Remove `traffic_splitting` field for `databricks.sdk.service.catalog.ModelServiceConfigRoutingConfig`.
+* [Breaking] Remove `entity_columns` and `timeseries_column` fields for `databricks.sdk.service.ml.DeltaTableSource`.
+* [Breaking] Remove `filter_condition`, `inputs` and `time_window` fields for `databricks.sdk.service.ml.Feature`.
+* [Breaking] Remove `extra_parameters` and `function_type` fields for `databricks.sdk.service.ml.Function`.
+* [Breaking] Remove `entity_column_identifiers` and `timeseries_column_identifier` fields for `databricks.sdk.service.ml.KafkaSource`.
+* [Breaking] Remove `cron_schedule` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* [Breaking] Remove `continuous` field for `databricks.sdk.service.ml.TimeWindow`.
+
 ## Release v0.133.0 (2026-08-19)
 
 ### API Changes

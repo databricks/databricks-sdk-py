@@ -1564,45 +1564,27 @@ class PermissionAssignment:
 
 @dataclass
 class PermissionAssignments:
-    next_page_token: Optional[str] = None
-    """Token to retrieve the next page of results."""
-
     permission_assignments: Optional[List[PermissionAssignment]] = None
     """Array of permissions assignments defined for a workspace."""
-
-    prev_page_token: Optional[str] = None
-    """Token to retrieve the previous page of results."""
 
     def as_dict(self) -> dict:
         """Serializes the PermissionAssignments into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
         if self.permission_assignments:
             body["permission_assignments"] = [v.as_dict() for v in self.permission_assignments]
-        if self.prev_page_token is not None:
-            body["prev_page_token"] = self.prev_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PermissionAssignments into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
         if self.permission_assignments:
             body["permission_assignments"] = self.permission_assignments
-        if self.prev_page_token is not None:
-            body["prev_page_token"] = self.prev_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionAssignments:
         """Deserializes the PermissionAssignments from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            permission_assignments=_repeated_dict(d, "permission_assignments", PermissionAssignment),
-            prev_page_token=d.get("prev_page_token", None),
-        )
+        return cls(permission_assignments=_repeated_dict(d, "permission_assignments", PermissionAssignment))
 
 
 class PermissionLevel(Enum):
@@ -1628,7 +1610,6 @@ class PermissionLevel(Enum):
     CAN_VIEW = "CAN_VIEW"
     CAN_VIEW_METADATA = "CAN_VIEW_METADATA"
     IS_OWNER = "IS_OWNER"
-    UNSPECIFIED = "UNSPECIFIED"
 
 
 @dataclass
@@ -4577,35 +4558,15 @@ class WorkspaceAssignmentAPI:
         )
         return WorkspacePermissions.from_dict(res)
 
-    def list(
-        self,
-        workspace_id: int,
-        *,
-        filter: Optional[str] = None,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[PermissionAssignment]:
+    def list(self, workspace_id: int) -> Iterator[PermissionAssignment]:
         """Get the permission assignments for the specified Databricks account and Databricks workspace.
 
         :param workspace_id: int
           The workspace ID for the account.
-        :param filter: str (optional)
-          Filter string to search principals.
-        :param max_results: int (optional)
-          Maximum number of permission assignments to return.
-        :param page_token: str (optional)
-          Page token returned by previous call to retrieve the next page of results.
 
         :returns: Iterator over :class:`PermissionAssignment`
         """
 
-        query = {}
-        if filter is not None:
-            query["filter"] = filter
-        if max_results is not None:
-            query["max_results"] = max_results
-        if page_token is not None:
-            query["page_token"] = page_token
         headers = {
             "Accept": "application/json",
         }
@@ -4613,7 +4574,6 @@ class WorkspaceAssignmentAPI:
         json = self._api.do(
             "GET",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments",
-            query=query,
             headers=headers,
         )
         parsed = PermissionAssignments.from_dict(json).permission_assignments

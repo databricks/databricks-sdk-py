@@ -15,6 +15,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 import time
 import random
 import logging
+import uuid
 
 from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
@@ -28,6 +29,8 @@ from databricks.sdk.service._internal import (
     Wait,
 )
 from databricks.sdk.common.types.fieldmask import FieldMask
+from databricks.sdk.common import lro
+from databricks.sdk.retries import RetryError, poll
 
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -497,6 +500,116 @@ class AvgFunction:
 
 
 @dataclass
+class BackfillFeaturesResponse:
+    """Result of a completed backfill."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BackfillFeaturesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BackfillFeaturesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BackfillFeaturesResponse:
+        """Deserializes the BackfillFeaturesResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class BackfillOperationMetadata:
+    """Progress and configuration for a backfill."""
+
+    backfill_ranges: Optional[List[BackfillRange]] = None
+    """Output ranges targeted by the backfill."""
+
+    feature_full_names: Optional[List[str]] = None
+    """Full names of the features targeted by the backfill."""
+
+    state: Optional[BackfillOperationMetadataState] = None
+    """Current state of the backfill."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BackfillOperationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.backfill_ranges:
+            body["backfill_ranges"] = [v.as_dict() for v in self.backfill_ranges]
+        if self.feature_full_names:
+            body["feature_full_names"] = [v for v in self.feature_full_names]
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BackfillOperationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.backfill_ranges:
+            body["backfill_ranges"] = self.backfill_ranges
+        if self.feature_full_names:
+            body["feature_full_names"] = self.feature_full_names
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BackfillOperationMetadata:
+        """Deserializes the BackfillOperationMetadata from a dictionary."""
+        return cls(
+            backfill_ranges=_repeated_dict(d, "backfill_ranges", BackfillRange),
+            feature_full_names=d.get("feature_full_names", None),
+            state=_enum(d, "state", BackfillOperationMetadataState),
+        )
+
+
+class BackfillOperationMetadataState(Enum):
+    """Lifecycle state of a backfill."""
+
+    CANCELLED = "CANCELLED"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
+
+
+@dataclass
+class BackfillRange:
+    """A time range for a backfill."""
+
+    end_time: Optional[Timestamp] = None
+    """End of the backfill range, exclusive. If unset, defaults to the current time."""
+
+    start_time: Optional[Timestamp] = None
+    """Start of the backfill range, inclusive. If unset, defaults to the earliest source timestamp of
+    the feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BackfillRange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.end_time is not None:
+            body["end_time"] = self.end_time.ToJsonString()
+        if self.start_time is not None:
+            body["start_time"] = self.start_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BackfillRange into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.end_time is not None:
+            body["end_time"] = self.end_time
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BackfillRange:
+        """Deserializes the BackfillRange from a dictionary."""
+        return cls(end_time=_timestamp(d, "end_time"), start_time=_timestamp(d, "start_time"))
+
+
+@dataclass
 class BackfillSource:
     delta_table_name: Optional[str] = None
     """The full three-part name (catalog, schema, name) of the Delta table containing the historical
@@ -562,10 +675,7 @@ class BatchCreateMaterializedFeaturesResponse:
 @dataclass
 class ColumnIdentifier:
     variant_expr_path: str
-    """String representation of the column name using dot-prefixed path notation. For nested fields,
-    the leaf value is what will be present in materialized tables and expected to match at query
-    time. For example, the leaf node of value.trip_details.location_details.pickup_zip is
-    pickup_zip."""
+    """String representation of the column name using dot-prefixed path notation."""
 
     def as_dict(self) -> dict:
         """Serializes the ColumnIdentifier into a dictionary suitable for use as a JSON request body."""
@@ -589,8 +699,7 @@ class ColumnIdentifier:
 
 @dataclass
 class ColumnSelection:
-    """A ColumnSelection function, equivalent to the LAST() record of an entity over a lifetime
-    ContinuousWindow"""
+    """A ColumnSelection function, equivalent to the LAST() record of an entity over a lifetime window"""
 
     column: str
     """Column name from source to select as the feature value."""
@@ -708,8 +817,6 @@ class CommentObject:
 
 @dataclass
 class ContinuousWindow:
-    """Deprecated: use RollingWindow with ``delay`` instead."""
-
     window_duration: str
     """The duration of the continuous window (must be positive)."""
 
@@ -1023,13 +1130,28 @@ class CronSchedule:
     """A cron-based schedule trigger for the materialization pipeline."""
 
     cron_expression: Optional[str] = None
-    """The cron expression defining the schedule (e.g., "0 0 * * *" for daily at midnight)."""
+    """The cron expression defining the schedule (e.g., "0 0 * * *" for daily at midnight). The
+    schedule is interpreted in timezone_id (defaults to UTC). Required when mode is MANUAL (or
+    unset). Left empty when mode is DERIVED, where the service computes it (aligned to UTC) from the
+    features' window timing and fills it in on the response."""
+
+    mode: Optional[CronScheduleMode] = None
+    """How the schedule is determined. Defaults to MANUAL when unset."""
+
+    timezone_id: Optional[str] = None
+    """A Java timezone ID. The schedule is resolved with respect to this timezone. Defaults to UTC when
+    omitted. Can only be configured for MANUAL schedules; DERIVED schedules are always aligned to
+    UTC."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cron_expression is not None:
             body["cron_expression"] = self.cron_expression
+        if self.mode is not None:
+            body["mode"] = self.mode.value
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1037,12 +1159,27 @@ class CronSchedule:
         body = {}
         if self.cron_expression is not None:
             body["cron_expression"] = self.cron_expression
+        if self.mode is not None:
+            body["mode"] = self.mode
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
-        return cls(cron_expression=d.get("cron_expression", None))
+        return cls(
+            cron_expression=d.get("cron_expression", None),
+            mode=_enum(d, "mode", CronScheduleMode),
+            timezone_id=d.get("timezone_id", None),
+        )
+
+
+class CronScheduleMode(Enum):
+    """The way a materialization schedule is arrived at."""
+
+    DERIVED = "DERIVED"
+    MANUAL = "MANUAL"
 
 
 @dataclass
@@ -1090,6 +1227,9 @@ class DataSource:
     delta_table_source: Optional[DeltaTableSource] = None
     """A Delta table data source."""
 
+    feature_view_source: Optional[FeatureViewSource] = None
+    """A data source composed from registered upstream Features."""
+
     kafka_source: Optional[KafkaSource] = None
     """A Kafka stream data source."""
 
@@ -1108,6 +1248,8 @@ class DataSource:
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source.as_dict()
+        if self.feature_view_source:
+            body["feature_view_source"] = self.feature_view_source.as_dict()
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source.as_dict()
         if self.lateness:
@@ -1123,6 +1265,8 @@ class DataSource:
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source
+        if self.feature_view_source:
+            body["feature_view_source"] = self.feature_view_source
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source
         if self.lateness:
@@ -1138,10 +1282,60 @@ class DataSource:
         """Deserializes the DataSource from a dictionary."""
         return cls(
             delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
+            feature_view_source=_from_dict(d, "feature_view_source", FeatureViewSource),
             kafka_source=_from_dict(d, "kafka_source", KafkaSource),
             lateness=_from_dict(d, "lateness", SourceLateness),
             request_source=_from_dict(d, "request_source", RequestSource),
             stream_source=_from_dict(d, "stream_source", StreamSource),
+        )
+
+
+@dataclass
+class DatabricksServiceExceptionWithDetailsProto:
+    """Databricks Error that is returned by all Databricks APIs."""
+
+    details: Optional[List[dict]] = None
+
+    error_code: Optional[ErrorCode] = None
+
+    message: Optional[str] = None
+
+    stack_trace: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabricksServiceExceptionWithDetailsProto into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.details:
+            body["details"] = [v for v in self.details]
+        if self.error_code is not None:
+            body["error_code"] = self.error_code.value
+        if self.message is not None:
+            body["message"] = self.message
+        if self.stack_trace is not None:
+            body["stack_trace"] = self.stack_trace
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabricksServiceExceptionWithDetailsProto into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.details:
+            body["details"] = self.details
+        if self.error_code is not None:
+            body["error_code"] = self.error_code
+        if self.message is not None:
+            body["message"] = self.message
+        if self.stack_trace is not None:
+            body["stack_trace"] = self.stack_trace
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksServiceExceptionWithDetailsProto:
+        """Deserializes the DatabricksServiceExceptionWithDetailsProto from a dictionary."""
+        return cls(
+            details=d.get("details", None),
+            error_code=_enum(d, "error_code", ErrorCode),
+            message=d.get("message", None),
+            stack_trace=d.get("stack_trace", None),
         )
 
 
@@ -1512,16 +1706,12 @@ class DeltaTableSource:
     {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}"""
 
     entity_columns: Optional[List[str]] = None
-    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity columns of
-    the Delta table."""
 
     filter_condition: Optional[str] = None
     """Single WHERE clause to filter delta table before applying transformations. Will be row-wise
     evaluated, so should only include conditionals and projections."""
 
     timeseries_column: Optional[str] = None
-    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
-    timeseries column of the Delta table."""
 
     transformation_sql: Optional[str] = None
     """A single SQL SELECT expression applied after filter_condition. Should contains all the columns
@@ -1681,6 +1871,92 @@ class EntityColumn:
     def from_dict(cls, d: Dict[str, Any]) -> EntityColumn:
         """Deserializes the EntityColumn from a dictionary."""
         return cls(name=d.get("name", None))
+
+
+class ErrorCode(Enum):
+    """Error codes returned by Databricks APIs to indicate specific failure conditions."""
+
+    ABORTED = "ABORTED"
+    ALREADY_EXISTS = "ALREADY_EXISTS"
+    BAD_REQUEST = "BAD_REQUEST"
+    CANCELLED = "CANCELLED"
+    CATALOG_ALREADY_EXISTS = "CATALOG_ALREADY_EXISTS"
+    CATALOG_DOES_NOT_EXIST = "CATALOG_DOES_NOT_EXIST"
+    CATALOG_NOT_EMPTY = "CATALOG_NOT_EMPTY"
+    COULD_NOT_ACQUIRE_LOCK = "COULD_NOT_ACQUIRE_LOCK"
+    CUSTOMER_UNAUTHORIZED = "CUSTOMER_UNAUTHORIZED"
+    DAC_ALREADY_EXISTS = "DAC_ALREADY_EXISTS"
+    DAC_DOES_NOT_EXIST = "DAC_DOES_NOT_EXIST"
+    DATA_LOSS = "DATA_LOSS"
+    DEADLINE_EXCEEDED = "DEADLINE_EXCEEDED"
+    DEPLOYMENT_TIMEOUT = "DEPLOYMENT_TIMEOUT"
+    DIRECTORY_NOT_EMPTY = "DIRECTORY_NOT_EMPTY"
+    DIRECTORY_PROTECTED = "DIRECTORY_PROTECTED"
+    DRY_RUN_FAILED = "DRY_RUN_FAILED"
+    ENDPOINT_NOT_FOUND = "ENDPOINT_NOT_FOUND"
+    EXTERNAL_LOCATION_ALREADY_EXISTS = "EXTERNAL_LOCATION_ALREADY_EXISTS"
+    EXTERNAL_LOCATION_DOES_NOT_EXIST = "EXTERNAL_LOCATION_DOES_NOT_EXIST"
+    FEATURE_DISABLED = "FEATURE_DISABLED"
+    GIT_CONFLICT = "GIT_CONFLICT"
+    GIT_REMOTE_ERROR = "GIT_REMOTE_ERROR"
+    GIT_SENSITIVE_TOKEN_DETECTED = "GIT_SENSITIVE_TOKEN_DETECTED"
+    GIT_UNKNOWN_REF = "GIT_UNKNOWN_REF"
+    GIT_URL_NOT_ON_ALLOW_LIST = "GIT_URL_NOT_ON_ALLOW_LIST"
+    INSECURE_PARTNER_RESPONSE = "INSECURE_PARTNER_RESPONSE"
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+    INVALID_PARAMETER_VALUE = "INVALID_PARAMETER_VALUE"
+    INVALID_STATE = "INVALID_STATE"
+    INVALID_STATE_TRANSITION = "INVALID_STATE_TRANSITION"
+    IO_ERROR = "IO_ERROR"
+    IPYNB_FILE_IN_REPO = "IPYNB_FILE_IN_REPO"
+    MALFORMED_PARTNER_RESPONSE = "MALFORMED_PARTNER_RESPONSE"
+    MALFORMED_REQUEST = "MALFORMED_REQUEST"
+    MANAGED_RESOURCE_GROUP_DOES_NOT_EXIST = "MANAGED_RESOURCE_GROUP_DOES_NOT_EXIST"
+    MAX_BLOCK_SIZE_EXCEEDED = "MAX_BLOCK_SIZE_EXCEEDED"
+    MAX_CHILD_NODE_SIZE_EXCEEDED = "MAX_CHILD_NODE_SIZE_EXCEEDED"
+    MAX_LIST_SIZE_EXCEEDED = "MAX_LIST_SIZE_EXCEEDED"
+    MAX_NOTEBOOK_SIZE_EXCEEDED = "MAX_NOTEBOOK_SIZE_EXCEEDED"
+    MAX_READ_SIZE_EXCEEDED = "MAX_READ_SIZE_EXCEEDED"
+    METASTORE_ALREADY_EXISTS = "METASTORE_ALREADY_EXISTS"
+    METASTORE_DOES_NOT_EXIST = "METASTORE_DOES_NOT_EXIST"
+    METASTORE_NOT_EMPTY = "METASTORE_NOT_EMPTY"
+    NOT_FOUND = "NOT_FOUND"
+    NOT_IMPLEMENTED = "NOT_IMPLEMENTED"
+    PARTIAL_DELETE = "PARTIAL_DELETE"
+    PERMISSION_DENIED = "PERMISSION_DENIED"
+    PERMISSION_NOT_PROPAGATED = "PERMISSION_NOT_PROPAGATED"
+    PRINCIPAL_DOES_NOT_EXIST = "PRINCIPAL_DOES_NOT_EXIST"
+    PROJECTS_OPERATION_TIMEOUT = "PROJECTS_OPERATION_TIMEOUT"
+    PROVIDER_ALREADY_EXISTS = "PROVIDER_ALREADY_EXISTS"
+    PROVIDER_DOES_NOT_EXIST = "PROVIDER_DOES_NOT_EXIST"
+    PROVIDER_SHARE_NOT_ACCESSIBLE = "PROVIDER_SHARE_NOT_ACCESSIBLE"
+    QUOTA_EXCEEDED = "QUOTA_EXCEEDED"
+    RECIPIENT_ALREADY_EXISTS = "RECIPIENT_ALREADY_EXISTS"
+    RECIPIENT_DOES_NOT_EXIST = "RECIPIENT_DOES_NOT_EXIST"
+    REQUEST_LIMIT_EXCEEDED = "REQUEST_LIMIT_EXCEEDED"
+    RESOURCE_ALREADY_EXISTS = "RESOURCE_ALREADY_EXISTS"
+    RESOURCE_CONFLICT = "RESOURCE_CONFLICT"
+    RESOURCE_DOES_NOT_EXIST = "RESOURCE_DOES_NOT_EXIST"
+    RESOURCE_EXHAUSTED = "RESOURCE_EXHAUSTED"
+    RESOURCE_LIMIT_EXCEEDED = "RESOURCE_LIMIT_EXCEEDED"
+    SCHEMA_ALREADY_EXISTS = "SCHEMA_ALREADY_EXISTS"
+    SCHEMA_DOES_NOT_EXIST = "SCHEMA_DOES_NOT_EXIST"
+    SCHEMA_NOT_EMPTY = "SCHEMA_NOT_EMPTY"
+    SEARCH_QUERY_TOO_LONG = "SEARCH_QUERY_TOO_LONG"
+    SEARCH_QUERY_TOO_SHORT = "SEARCH_QUERY_TOO_SHORT"
+    SERVICE_UNDER_MAINTENANCE = "SERVICE_UNDER_MAINTENANCE"
+    SHARE_ALREADY_EXISTS = "SHARE_ALREADY_EXISTS"
+    SHARE_DOES_NOT_EXIST = "SHARE_DOES_NOT_EXIST"
+    STORAGE_CREDENTIAL_ALREADY_EXISTS = "STORAGE_CREDENTIAL_ALREADY_EXISTS"
+    STORAGE_CREDENTIAL_DOES_NOT_EXIST = "STORAGE_CREDENTIAL_DOES_NOT_EXIST"
+    TABLE_ALREADY_EXISTS = "TABLE_ALREADY_EXISTS"
+    TABLE_DOES_NOT_EXIST = "TABLE_DOES_NOT_EXIST"
+    TEMPORARILY_UNAVAILABLE = "TEMPORARILY_UNAVAILABLE"
+    UNAUTHENTICATED = "UNAUTHENTICATED"
+    UNAVAILABLE = "UNAVAILABLE"
+    UNKNOWN = "UNKNOWN"
+    UNPARSEABLE_HTTP_ERROR = "UNPARSEABLE_HTTP_ERROR"
+    WORKSPACE_TEMPORARILY_UNAVAILABLE = "WORKSPACE_TEMPORARILY_UNAVAILABLE"
 
 
 @dataclass
@@ -2090,12 +2366,8 @@ class Feature:
     """The entity columns for the feature, used as aggregation keys and for query-time lookup."""
 
     filter_condition: Optional[str] = None
-    """Deprecated: Use DeltaTableSource.filter_condition or KafkaSource.filter_condition instead. Kept
-    for backwards compatibility. The filter condition applied to the source data before aggregation."""
 
     inputs: Optional[List[str]] = None
-    """Deprecated: Use AggregationFunction.inputs instead. Kept for backwards compatibility. The input
-    columns from which the feature is computed."""
 
     lineage_context: Optional[LineageContext] = None
     """Lineage context information for this feature. WARNING: This field is primarily intended for
@@ -2111,8 +2383,6 @@ class Feature:
     """Name of parent schema relative to its parent catalog."""
 
     time_window: Optional[TimeWindow] = None
-    """Deprecated: Use Function.aggregation_function.time_window instead. Kept for backwards
-    compatibility. The time window in which the feature is computed."""
 
     timeseries_column: Optional[TimeseriesColumn] = None
     """Column recording time, used for point-in-time joins, backfills, and aggregations."""
@@ -2368,6 +2638,34 @@ class FeatureList:
 
 
 @dataclass
+class FeatureReference:
+    """A reference to one registered upstream Feature. A message rather than a bare name so an upstream
+    can later be pinned more precisely (e.g. by version) without a breaking type change."""
+
+    feature: str
+    """The three-part full name of the upstream Feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureReference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature is not None:
+            body["feature"] = self.feature
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureReference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature is not None:
+            body["feature"] = self.feature
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureReference:
+        """Deserializes the FeatureReference from a dictionary."""
+        return cls(feature=d.get("feature", None))
+
+
+@dataclass
 class FeatureTag:
     """Represents a tag on a feature in a feature table."""
 
@@ -2397,6 +2695,33 @@ class FeatureTag:
     def from_dict(cls, d: Dict[str, Any]) -> FeatureTag:
         """Deserializes the FeatureTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class FeatureViewSource:
+    """A data source composed from registered upstream Features."""
+
+    feature_references: Optional[List[FeatureReference]] = None
+    """The upstream Features this source reads. Must include at least one feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureViewSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature_references:
+            body["feature_references"] = [v.as_dict() for v in self.feature_references]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureViewSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature_references:
+            body["feature_references"] = self.feature_references
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureViewSource:
+        """Deserializes the FeatureViewSource from a dictionary."""
+        return cls(feature_references=_repeated_dict(d, "feature_references", FeatureReference))
 
 
 @dataclass
@@ -2688,12 +3013,8 @@ class Function:
     """Applies a registered Unity Catalog function row-wise to source columns."""
 
     extra_parameters: Optional[List[FunctionExtraParameter]] = None
-    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
-    compatibility. Extra parameters for parameterized functions."""
 
     function_type: Optional[FunctionFunctionType] = None
-    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
-    compatibility. The type of the function."""
 
     def as_dict(self) -> dict:
         """Serializes the Function into a dictionary suitable for use as a JSON request body."""
@@ -2739,10 +3060,6 @@ class Function:
 
 @dataclass
 class FunctionExtraParameter:
-    """Deprecated: Use typed fields on function-specific messages (e.g.
-    ApproxPercentileFunction.percentile) or AggregationFunction.ExtraParameter instead. Kept for
-    backwards compatibility."""
-
     key: str
     """The name of the parameter."""
 
@@ -2774,14 +3091,12 @@ class FunctionExtraParameter:
 
 
 class FunctionFunctionType(Enum):
-    """Deprecated: Use the function-specific messages in AggregationFunction.function_type oneof
-    instead. Kept for backwards compatibility."""
-
     APPROX_COUNT_DISTINCT = "APPROX_COUNT_DISTINCT"
     APPROX_PERCENTILE = "APPROX_PERCENTILE"
     AVG = "AVG"
     COUNT = "COUNT"
     FIRST = "FIRST"
+    FUNCTION_TYPE_UNSPECIFIED = "FUNCTION_TYPE_UNSPECIFIED"
     LAST = "LAST"
     MAX = "MAX"
     MIN = "MIN"
@@ -2916,31 +3231,6 @@ class GetLoggedModelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelResponse:
         """Deserializes the GetLoggedModelResponse from a dictionary."""
         return cls(model=_from_dict(d, "model", LoggedModel))
-
-
-@dataclass
-class GetLoggedModelsRequestResponse:
-    models: Optional[List[LoggedModel]] = None
-    """The retrieved logged models."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetLoggedModelsRequestResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.models:
-            body["models"] = [v.as_dict() for v in self.models]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetLoggedModelsRequestResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.models:
-            body["models"] = self.models
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelsRequestResponse:
-        """Deserializes the GetLoggedModelsRequestResponse from a dictionary."""
-        return cls(models=_repeated_dict(d, "models", LoggedModel))
 
 
 @dataclass
@@ -3213,7 +3503,12 @@ class IngestionConfig:
     """A user-provided source for backfilling data. Historical data is used when creating a training
     set from streaming features linked to this Stream. The backfill data stored in this location
     will be copied into the ingestion table for offline querying and training. The schema for this
-    source must match exactly that of the key and payload schemas specified for this Stream."""
+    source must match exactly that of the key and payload schemas specified for this Stream, except
+    that it may omit any columns listed in excluded_columns."""
+
+    budget_policy_id: Optional[str] = None
+    """The ID of the budget policy used to attribute the serverless compute cost of this stream's
+    managed ingestion. If not specified, a default budget policy may be applied."""
 
     deduplication_columns: Optional[List[str]] = None
     """Column paths used to identify duplicate rows during ingestion; only one row per distinct
@@ -3227,6 +3522,14 @@ class IngestionConfig:
     """The ID of the SDP pipeline that continuously copies new events from the streaming source into
     the ingestion Delta table."""
 
+    tags: Optional[Dict[str, str]] = None
+    """Custom tags to associate with this stream's managed ingestion. They are applied to the ingestion
+    pipeline and its forward-fill and backfill jobs, and forwarded to the underlying compute as
+    cluster tags, so ingestion cost can be attributed in the billing system tables. These tags apply
+    only to the managed ingestion compute; they are not applied to the Stream entity itself, and are
+    distinct from any Unity Catalog tags on the Stream. A maximum of 25 tags is supported; keys and
+    values are subject to the same limitations as cluster tags."""
+
     def as_dict(self) -> dict:
         """Serializes the IngestionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3234,6 +3537,8 @@ class IngestionConfig:
             body["backfill_job_id"] = self.backfill_job_id
         if self.backfill_source:
             body["backfill_source"] = self.backfill_source.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.deduplication_columns:
             body["deduplication_columns"] = [v for v in self.deduplication_columns]
         if self.ingestion_destination:
@@ -3242,6 +3547,8 @@ class IngestionConfig:
             body["ingestion_job_id"] = self.ingestion_job_id
         if self.ingestion_pipeline_id is not None:
             body["ingestion_pipeline_id"] = self.ingestion_pipeline_id
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3251,6 +3558,8 @@ class IngestionConfig:
             body["backfill_job_id"] = self.backfill_job_id
         if self.backfill_source:
             body["backfill_source"] = self.backfill_source
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.deduplication_columns:
             body["deduplication_columns"] = self.deduplication_columns
         if self.ingestion_destination:
@@ -3259,6 +3568,8 @@ class IngestionConfig:
             body["ingestion_job_id"] = self.ingestion_job_id
         if self.ingestion_pipeline_id is not None:
             body["ingestion_pipeline_id"] = self.ingestion_pipeline_id
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     @classmethod
@@ -3267,10 +3578,12 @@ class IngestionConfig:
         return cls(
             backfill_job_id=_int64(d, "backfill_job_id"),
             backfill_source=_from_dict(d, "backfill_source", BackfillSource),
+            budget_policy_id=d.get("budget_policy_id", None),
             deduplication_columns=d.get("deduplication_columns", None),
             ingestion_destination=_from_dict(d, "ingestion_destination", IngestionDestination),
             ingestion_job_id=_int64(d, "ingestion_job_id"),
             ingestion_pipeline_id=d.get("ingestion_pipeline_id", None),
+            tags=d.get("tags", None),
         )
 
 
@@ -3584,30 +3897,16 @@ class KafkaSource:
     """Name of the Kafka source, used to identify it. This is used to look up the corresponding
     KafkaConfig object. Can be distinct from topic name."""
 
-    dataframe_schema: Optional[str] = None
-    """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
-    df.schema.json()). Any subsequent functions operate against this dataframe."""
-
     entity_column_identifiers: Optional[List[ColumnIdentifier]] = None
-    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity column
-    identifiers of the Kafka source."""
 
     filter_condition: Optional[str] = None
     """The filter condition applied to the source data before aggregation."""
 
     timeseries_column_identifier: Optional[ColumnIdentifier] = None
-    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
-    timeseries column identifier of the Kafka source."""
-
-    transformation_sql: Optional[str] = None
-    """The pipeline runs these SQL statements immediately after conversion into the schema specified on
-    the KafkaConfig object."""
 
     def as_dict(self) -> dict:
         """Serializes the KafkaSource into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.dataframe_schema is not None:
-            body["dataframe_schema"] = self.dataframe_schema
         if self.entity_column_identifiers:
             body["entity_column_identifiers"] = [v.as_dict() for v in self.entity_column_identifiers]
         if self.filter_condition is not None:
@@ -3616,15 +3915,11 @@ class KafkaSource:
             body["name"] = self.name
         if self.timeseries_column_identifier:
             body["timeseries_column_identifier"] = self.timeseries_column_identifier.as_dict()
-        if self.transformation_sql is not None:
-            body["transformation_sql"] = self.transformation_sql
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the KafkaSource into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.dataframe_schema is not None:
-            body["dataframe_schema"] = self.dataframe_schema
         if self.entity_column_identifiers:
             body["entity_column_identifiers"] = self.entity_column_identifiers
         if self.filter_condition is not None:
@@ -3633,20 +3928,16 @@ class KafkaSource:
             body["name"] = self.name
         if self.timeseries_column_identifier:
             body["timeseries_column_identifier"] = self.timeseries_column_identifier
-        if self.transformation_sql is not None:
-            body["transformation_sql"] = self.transformation_sql
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> KafkaSource:
         """Deserializes the KafkaSource from a dictionary."""
         return cls(
-            dataframe_schema=d.get("dataframe_schema", None),
             entity_column_identifiers=_repeated_dict(d, "entity_column_identifiers", ColumnIdentifier),
             filter_condition=d.get("filter_condition", None),
             name=d.get("name", None),
             timeseries_column_identifier=_from_dict(d, "timeseries_column_identifier", ColumnIdentifier),
-            transformation_sql=d.get("transformation_sql", None),
         )
 
 
@@ -3754,8 +4045,21 @@ class KinesisStreamConfig:
     (https://docs.databricks.com/aws/en/connect/streaming/kinesis)."""
 
     extra_options: Optional[Dict[str, str]] = None
-    """Optional Kinesis source options, validated against a server-side allowlist at request time. Auth
-    and connection details belong on the parent Stream's ``connection_config``, not here."""
+    """Optional Kinesis source options, validated against a server-side allowlist at request time.
+    Allowed keys:
+    
+    - ``consumerMode``
+    - ``consumerNamePrefix``
+    - ``maxFetchRate``
+    - ``minFetchPeriod``
+    - ``maxFetchDuration``
+    - ``maxRecordsPerFetch``
+    - ``shardsPerTask``
+    - ``fetchBufferSize``
+    - ``shardFetchInterval`` ``consumerMode`` must be ``efo`` or ``polling`` (case-insensitive).
+      ``maxRecordsPerFetch`` applies only during ingestion and does not affect the materialization
+      pipeline. Auth and connection details belong on the parent Stream's ``connection_config``, not
+      here."""
 
     stream_arns: Optional[StreamArnList] = None
     """Kinesis stream ARNs to read from."""
@@ -4753,10 +5057,11 @@ class MaterializedFeature:
     feature_name: str
     """The full name of the feature in Unity Catalog."""
 
+    budget_policy_id: Optional[str] = None
+    """The ID of the budget policy used to attribute the serverless compute cost of this
+    materialization. If not specified, a default budget policy may be applied."""
+
     cron_schedule: Optional[str] = None
-    """The quartz cron expression that defines the schedule of the materialization pipeline. The
-    schedule is evaluated in the UTC timezone. Hidden from GraphQL: superseded by the ``trigger``
-    oneof (cron_schedule_trigger), so not exposed to Catalog Explorer."""
 
     cron_schedule_trigger: Optional[CronSchedule] = None
     """A cron-based schedule trigger for the materialization pipeline."""
@@ -4767,6 +5072,10 @@ class MaterializedFeature:
     last_materialization_time: Optional[str] = None
     """The timestamp when the pipeline last ran and updated the materialized feature values. If the
     pipeline has not run yet, this field will be null."""
+
+    latest_backfill_operation: Optional[str] = None
+    """Name of the latest backfill operation on this materialized feature. Format:
+    operations/{operation_id}."""
 
     materialized_feature_id: Optional[str] = None
     """Server-assigned unique identifier for the materialized feature."""
@@ -4793,9 +5102,20 @@ class MaterializedFeature:
     table_trigger: Optional[TableTrigger] = None
     """A trigger that fires when the upstream source table changes."""
 
+    tags: Optional[Dict[str, str]] = None
+    """Custom tags to associate with this materialization. They are applied to the materialization job
+    (for batch features) or pipeline (for streaming features) and forwarded to the underlying
+    compute as cluster tags, so materialization cost can be attributed in the billing system tables.
+    These tags apply only to the materialization compute; they are not applied to the Unity Catalog
+    Feature resource itself, whose tags are managed separately through the Unity Catalog tagging
+    API. A maximum of 25 tags is supported; keys and values are subject to the same limitations as
+    cluster tags."""
+
     def as_dict(self) -> dict:
         """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.cron_schedule is not None:
             body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
@@ -4806,6 +5126,8 @@ class MaterializedFeature:
             body["is_online"] = self.is_online
         if self.last_materialization_time is not None:
             body["last_materialization_time"] = self.last_materialization_time
+        if self.latest_backfill_operation is not None:
+            body["latest_backfill_operation"] = self.latest_backfill_operation
         if self.materialized_feature_id is not None:
             body["materialized_feature_id"] = self.materialized_feature_id
         if self.offline_store_config:
@@ -4820,11 +5142,15 @@ class MaterializedFeature:
             body["table_name"] = self.table_name
         if self.table_trigger:
             body["table_trigger"] = self.table_trigger.as_dict()
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the MaterializedFeature into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.cron_schedule is not None:
             body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
@@ -4835,6 +5161,8 @@ class MaterializedFeature:
             body["is_online"] = self.is_online
         if self.last_materialization_time is not None:
             body["last_materialization_time"] = self.last_materialization_time
+        if self.latest_backfill_operation is not None:
+            body["latest_backfill_operation"] = self.latest_backfill_operation
         if self.materialized_feature_id is not None:
             body["materialized_feature_id"] = self.materialized_feature_id
         if self.offline_store_config:
@@ -4849,17 +5177,21 @@ class MaterializedFeature:
             body["table_name"] = self.table_name
         if self.table_trigger:
             body["table_trigger"] = self.table_trigger
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeature:
         """Deserializes the MaterializedFeature from a dictionary."""
         return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
             cron_schedule=d.get("cron_schedule", None),
             cron_schedule_trigger=_from_dict(d, "cron_schedule_trigger", CronSchedule),
             feature_name=d.get("feature_name", None),
             is_online=d.get("is_online", None),
             last_materialization_time=d.get("last_materialization_time", None),
+            latest_backfill_operation=d.get("latest_backfill_operation", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
             online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
@@ -4867,6 +5199,7 @@ class MaterializedFeature:
             streaming_mode=_from_dict(d, "streaming_mode", StreamingMode),
             table_name=d.get("table_name", None),
             table_trigger=_from_dict(d, "table_trigger", TableTrigger),
+            tags=d.get("tags", None),
         )
 
 
@@ -5887,6 +6220,72 @@ class OnlineStoreState(Enum):
 
 
 @dataclass
+class Operation:
+    """This resource represents a long-running operation that is the result of a network API call."""
+
+    done: Optional[bool] = None
+    """If the value is ``false``, it means the operation is still in progress. If ``true``, the
+    operation is completed, and either ``error`` or ``response`` is available."""
+
+    error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
+    """The error result of the operation in case of failure or cancellation."""
+
+    metadata: Optional[dict] = None
+    """Service-specific metadata associated with the operation. It typically contains progress
+    information and common metadata such as create time. Some services might not provide such
+    metadata."""
+
+    name: Optional[str] = None
+    """The server-assigned name, which is only unique within the same service that originally returns
+    it. If you use the default HTTP mapping, the ``name`` should be a resource name ending with
+    ``operations/{unique_id}``."""
+
+    response: Optional[dict] = None
+    """The normal, successful response of the operation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Operation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.done is not None:
+            body["done"] = self.done
+        if self.error:
+            body["error"] = self.error.as_dict()
+        if self.metadata:
+            body["metadata"] = self.metadata
+        if self.name is not None:
+            body["name"] = self.name
+        if self.response:
+            body["response"] = self.response
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Operation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.done is not None:
+            body["done"] = self.done
+        if self.error:
+            body["error"] = self.error
+        if self.metadata:
+            body["metadata"] = self.metadata
+        if self.name is not None:
+            body["name"] = self.name
+        if self.response:
+            body["response"] = self.response
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Operation:
+        """Deserializes the Operation from a dictionary."""
+        return cls(
+            done=d.get("done", None),
+            error=_from_dict(d, "error", DatabricksServiceExceptionWithDetailsProto),
+            metadata=d.get("metadata", None),
+            name=d.get("name", None),
+            response=d.get("response", None),
+        )
+
+
+@dataclass
 class Param:
     """Param associated with a run."""
 
@@ -5922,7 +6321,8 @@ class Param:
 
 class PermissionLevel(Enum):
     """Permission level of the requesting user on the object. For what is allowed at each level, see
-    [MLflow Model permissions](..)."""
+    `MLflow Model permissions
+    <https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/workspace-model-registry#permissions>`__."""
 
     CAN_CREATE_REGISTERED_MODEL = "CAN_CREATE_REGISTERED_MODEL"
     CAN_EDIT = "CAN_EDIT"
@@ -5983,14 +6383,27 @@ class PublishSpec:
     publish_mode: PublishSpecPublishMode
     """The publish mode of the pipeline that syncs the online table with the source table."""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy id used to attribute the serverless compute cost of the synced online-table sync
+    pipeline. Applied only when the sync pipeline is first created (the initial publish of a new
+    online table); republishing to an existing online table does not update it."""
+
     full_feature_name: Optional[str] = None
     """Full Unity Catalog name of one of the features materialized in the source table, used to derive
     the synced online table's entity and timeseries columns. Required for view sources without a UC
     PrimaryKeyConstraint; ignored when the source already has one."""
 
+    tags: Optional[Dict[str, str]] = None
+    """Custom tags to apply to the synced online-table sync pipeline created for this publish. They are
+    forwarded to the pipeline's compute as cluster tags so its cost can be attributed in the billing
+    system tables. Applied only when the sync pipeline is first created (the initial publish of a
+    new online table); republishing to an existing online table does not update them."""
+
     def as_dict(self) -> dict:
         """Serializes the PublishSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.full_feature_name is not None:
             body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
@@ -5999,11 +6412,15 @@ class PublishSpec:
             body["online_table_name"] = self.online_table_name
         if self.publish_mode is not None:
             body["publish_mode"] = self.publish_mode.value
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PublishSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.full_feature_name is not None:
             body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
@@ -6012,16 +6429,20 @@ class PublishSpec:
             body["online_table_name"] = self.online_table_name
         if self.publish_mode is not None:
             body["publish_mode"] = self.publish_mode
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PublishSpec:
         """Deserializes the PublishSpec from a dictionary."""
         return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
             full_feature_name=d.get("full_feature_name", None),
             online_store=d.get("online_store", None),
             online_table_name=d.get("online_table_name", None),
             publish_mode=_enum(d, "publish_mode", PublishSpecPublishMode),
+            tags=d.get("tags", None),
         )
 
 
@@ -6061,6 +6482,199 @@ class PublishTableResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PublishTableResponse:
         """Deserializes the PublishTableResponse from a dictionary."""
         return cls(online_table_name=d.get("online_table_name", None), pipeline_id=d.get("pipeline_id", None))
+
+
+@dataclass
+class PurgeFeatureEntitiesMetadata:
+    """Progress and configuration for a feature entity purge."""
+
+    create_time: Optional[Timestamp] = None
+    """Time at which the purge operation was created."""
+
+    entities_table: Optional[str] = None
+    """Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge."""
+
+    entities_table_version: Optional[str] = None
+    """Version of the entities table used by the purge."""
+
+    features: Optional[List[str]] = None
+    """Fully qualified names of the features targeted by the purge."""
+
+    job_id: Optional[int] = None
+    """ID of the job that executes this purge."""
+
+    state: Optional[PurgeFeatureEntitiesMetadataState] = None
+    """Current state of the purge operation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.entities_table is not None:
+            body["entities_table"] = self.entities_table
+        if self.entities_table_version is not None:
+            body["entities_table_version"] = self.entities_table_version
+        if self.features:
+            body["features"] = [v for v in self.features]
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.entities_table is not None:
+            body["entities_table"] = self.entities_table
+        if self.entities_table_version is not None:
+            body["entities_table_version"] = self.entities_table_version
+        if self.features:
+            body["features"] = self.features
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PurgeFeatureEntitiesMetadata:
+        """Deserializes the PurgeFeatureEntitiesMetadata from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            entities_table=d.get("entities_table", None),
+            entities_table_version=d.get("entities_table_version", None),
+            features=d.get("features", None),
+            job_id=_int64(d, "job_id"),
+            state=_enum(d, "state", PurgeFeatureEntitiesMetadataState),
+        )
+
+
+class PurgeFeatureEntitiesMetadataState(Enum):
+    """Lifecycle state of a feature entity purge."""
+
+    CANCELLED = "CANCELLED"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
+
+
+@dataclass
+class PurgeFeatureEntitiesResponse:
+    """Result of a completed feature entity purge."""
+
+    error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
+    """Operation-level error, if the purge failed outside an individual feature target."""
+
+    metadata: Optional[PurgeFeatureEntitiesMetadata] = None
+    """Metadata about the purge operation."""
+
+    results: Optional[List[PurgeFeatureEntitiesResult]] = None
+    """Per-feature purge results."""
+
+    state: Optional[PurgeFeatureEntitiesMetadataState] = None
+    """State of the purge operation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error:
+            body["error"] = self.error.as_dict()
+        if self.metadata:
+            body["metadata"] = self.metadata.as_dict()
+        if self.results:
+            body["results"] = [v.as_dict() for v in self.results]
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error:
+            body["error"] = self.error
+        if self.metadata:
+            body["metadata"] = self.metadata
+        if self.results:
+            body["results"] = self.results
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PurgeFeatureEntitiesResponse:
+        """Deserializes the PurgeFeatureEntitiesResponse from a dictionary."""
+        return cls(
+            error=_from_dict(d, "error", DatabricksServiceExceptionWithDetailsProto),
+            metadata=_from_dict(d, "metadata", PurgeFeatureEntitiesMetadata),
+            results=_repeated_dict(d, "results", PurgeFeatureEntitiesResult),
+            state=_enum(d, "state", PurgeFeatureEntitiesMetadataState),
+        )
+
+
+@dataclass
+class PurgeFeatureEntitiesResult:
+    """Result of purging one feature."""
+
+    error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
+    """Error encountered while purging this feature, if any."""
+
+    feature: Optional[str] = None
+    """Fully qualified name of the feature that was purged."""
+
+    offline_state: Optional[PurgeFeatureEntitiesResultState] = None
+    """State of the offline purge for this feature."""
+
+    online_state: Optional[PurgeFeatureEntitiesResultState] = None
+    """State of the online purge for this feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesResult into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error:
+            body["error"] = self.error.as_dict()
+        if self.feature is not None:
+            body["feature"] = self.feature
+        if self.offline_state is not None:
+            body["offline_state"] = self.offline_state.value
+        if self.online_state is not None:
+            body["online_state"] = self.online_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PurgeFeatureEntitiesResult into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error:
+            body["error"] = self.error
+        if self.feature is not None:
+            body["feature"] = self.feature
+        if self.offline_state is not None:
+            body["offline_state"] = self.offline_state
+        if self.online_state is not None:
+            body["online_state"] = self.online_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PurgeFeatureEntitiesResult:
+        """Deserializes the PurgeFeatureEntitiesResult from a dictionary."""
+        return cls(
+            error=_from_dict(d, "error", DatabricksServiceExceptionWithDetailsProto),
+            feature=d.get("feature", None),
+            offline_state=_enum(d, "offline_state", PurgeFeatureEntitiesResultState),
+            online_state=_enum(d, "online_state", PurgeFeatureEntitiesResultState),
+        )
+
+
+class PurgeFeatureEntitiesResultState(Enum):
+    """Terminal state of a purge for one store type."""
+
+    FAILED = "FAILED"
+    NOT_APPLICABLE = "NOT_APPLICABLE"
+    SUCCEEDED = "SUCCEEDED"
 
 
 @dataclass
@@ -6584,9 +7198,7 @@ class RestoreRunsResponse:
 
 @dataclass
 class RollingWindow:
-    """A rolling time window with an optional delay. This is the SQL-spec-aligned replacement for
-    ContinuousWindow: ``delay`` is the non-negative counterpart of the legacy non-positive
-    ``ContinuousWindow.offset``."""
+    """A rolling time window with an optional non-negative delay."""
 
     delay: Optional[Duration] = None
     """Non-negative analytic lag that evaluates the window this far in the past. Use this for timing
@@ -7707,6 +8319,20 @@ class Stream:
     description: Optional[str] = None
     """User-provided description."""
 
+    excluded_columns: Optional[List[str]] = None
+    """Column paths (dot notation, e.g. "value.email" for Kafka) to drop. A path may reference a
+    struct, in which case all of its nested fields are dropped (e.g. "value.address" drops
+    "value.address.city" and "value.address.zip"). These columns are not written to the ingestion
+    table and cannot be referenced by any feature. They are dropped from ingestion, backfill, and
+    materialization. For direct schemas, each column must exist in the relevant key or payload
+    schema. With a schema registry, a column can be excluded before it exists. A column cannot also
+    be a deduplication column in the ingestion_config."""
+
+    record_type_filter: Optional[str] = None
+    """Optional SQL predicate to filter which record types from a streaming channel (e.g. a topic for
+    Kafka) belong to this Stream. Events that do not match are not written to the ingestion table
+    and are not used in materialization. Example: "value.event_type = 'transaction'"."""
+
     update_time: Optional[Timestamp] = None
     """Time at which this Stream was last modified."""
 
@@ -7726,10 +8352,14 @@ class Stream:
             body["created_by"] = self.created_by
         if self.description is not None:
             body["description"] = self.description
+        if self.excluded_columns:
+            body["excluded_columns"] = [v for v in self.excluded_columns]
         if self.ingestion_config:
             body["ingestion_config"] = self.ingestion_config.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.record_type_filter is not None:
+            body["record_type_filter"] = self.record_type_filter
         if self.schema_config:
             body["schema_config"] = self.schema_config.as_dict()
         if self.source_config:
@@ -7753,10 +8383,14 @@ class Stream:
             body["created_by"] = self.created_by
         if self.description is not None:
             body["description"] = self.description
+        if self.excluded_columns:
+            body["excluded_columns"] = self.excluded_columns
         if self.ingestion_config:
             body["ingestion_config"] = self.ingestion_config
         if self.name is not None:
             body["name"] = self.name
+        if self.record_type_filter is not None:
+            body["record_type_filter"] = self.record_type_filter
         if self.schema_config:
             body["schema_config"] = self.schema_config
         if self.source_config:
@@ -7776,8 +8410,10 @@ class Stream:
             create_time=_timestamp(d, "create_time"),
             created_by=d.get("created_by", None),
             description=d.get("description", None),
+            excluded_columns=d.get("excluded_columns", None),
             ingestion_config=_from_dict(d, "ingestion_config", IngestionConfig),
             name=d.get("name", None),
+            record_type_filter=d.get("record_type_filter", None),
             schema_config=_from_dict(d, "schema_config", StreamSchemaConfig),
             source_config=_from_dict(d, "source_config", StreamSourceConfig),
             update_time=_timestamp(d, "update_time"),
@@ -8199,7 +8835,8 @@ class TimeWindow:
     begins emitting partial-window values on that date instead of waiting for 365 days of data; a
     lifetime window produces no output before start_time. If unset, tumbling and fixed-duration
     sliding windows first emit at an offset-aligned boundary after a full window can be formed. If
-    unset, lifetime sliding windows and rolling windows emit as soon as eligible source data exists."""
+    unset, lifetime sliding windows and rolling windows emit as soon as eligible source data exists.
+    Not currently supported for sawtooth windows or for Features with a stream source."""
 
     tumbling: Optional[TumblingWindow] = None
 
@@ -8949,8 +9586,8 @@ class ExperimentsAPI:
         self, experiment_id: str, max_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> DeleteRunsResponse:
         """Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
-        most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
-        client code snippet on
+        most max_runs per request. See the cloud-specific MLflow runs documentation for a Python client
+        example.
 
         :param experiment_id: str
           The ID of the experiment containing the runs to delete.
@@ -9164,29 +9801,6 @@ class ExperimentsAPI:
 
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
-
-    def get_logged_models(self, *, model_ids: Optional[List[str]] = None) -> GetLoggedModelsRequestResponse:
-        """Batch endpoint for getting logged models from a list of model IDs
-
-        :param model_ids: List[str] (optional)
-          The IDs of the logged models to retrieve. Max threshold is 100.
-
-        :returns: :class:`GetLoggedModelsRequestResponse`
-        """
-
-        query = {}
-        if model_ids is not None:
-            query["model_ids"] = [v for v in model_ids]
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", "/api/2.0/mlflow/logged-models:batchGet", query=query, headers=headers)
-        return GetLoggedModelsRequestResponse.from_dict(res)
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
@@ -9723,8 +10337,8 @@ class ExperimentsAPI:
         self, experiment_id: str, min_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> RestoreRunsResponse:
         """Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
-        at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
-        client code snippet on
+        at most max_runs per request. See the cloud-specific MLflow runs documentation for a Python client
+        example.
 
         :param experiment_id: str
           The ID of the experiment containing the runs to restore.
@@ -10177,6 +10791,63 @@ class FeatureEngineeringAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def backfill_features(
+        self,
+        feature_full_names: List[str],
+        backfill_ranges: List[BackfillRange],
+        *,
+        budget_policy_id: Optional[str] = None,
+        request_id: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+    ) -> BackfillFeaturesOperation:
+        """Backfill features.
+
+        :param feature_full_names: List[str]
+          Full names of the features to backfill.
+        :param backfill_ranges: List[:class:`BackfillRange`]
+          Output ranges to backfill.
+        :param budget_policy_id: str (optional)
+          The budget policy ID, in UUID format, used to attribute the serverless compute cost of this
+          backfill. If not specified, a default budget policy may be applied.
+        :param request_id: str (optional)
+          Idempotency token for the request.
+        :param tags: Dict[str,str] (optional)
+          Custom tags to associate with this backfill. They are applied to the backfill job and forwarded to
+          the underlying compute as Databricks resource tags, so backfill cost can be attributed in the
+          billing system tables. These tags apply only to the backfill compute; they are not applied to the
+          Unity Catalog Feature resources themselves, whose tags are managed separately through the Unity
+          Catalog tagging API. A maximum of 25 tags is supported; keys and values are subject to the same
+          limitations as Databricks resource tags.
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = {}
+        if backfill_ranges is not None:
+            body["backfill_ranges"] = [v.as_dict() for v in backfill_ranges]
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
+        if feature_full_names is not None:
+            body["feature_full_names"] = [v for v in feature_full_names]
+        if request_id is not None:
+            body["request_id"] = request_id
+        if tags is not None:
+            body["tags"] = tags
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/feature-engineering/features:backfill", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return BackfillFeaturesOperation(self, operation)
+
     def batch_create_materialized_features(
         self, requests: List[CreateMaterializedFeatureRequest]
     ) -> BatchCreateMaterializedFeaturesResponse:
@@ -10204,6 +10875,27 @@ class FeatureEngineeringAPI:
             "POST", "/api/2.0/feature-engineering/materialized-features:batchCreate", body=body, headers=headers
         )
         return BatchCreateMaterializedFeaturesResponse.from_dict(res)
+
+    def cancel_operation(self, name: str):
+        """Cancel an operation.
+
+        :param name: str
+          The name of the operation resource to be cancelled.
+
+
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("POST", f"/api/2.0/feature-engineering/{name}:cancel", body=body, headers=headers)
 
     def create_feature(self, feature: Feature) -> Feature:
         """Create a Feature.
@@ -10439,6 +11131,26 @@ class FeatureEngineeringAPI:
         )
         return MaterializedFeature.from_dict(res)
 
+    def get_operation(self, name: str) -> Operation:
+        """Get an operation.
+
+        :param name: str
+          The name of the operation resource.
+
+        :returns: :class:`Operation`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/feature-engineering/{name}", headers=headers)
+        return Operation.from_dict(res)
+
     def get_stream(self, name: str) -> Stream:
         """Get a Stream by its full three-part name (catalog.schema.stream).
 
@@ -10622,6 +11334,69 @@ class FeatureEngineeringAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def purge_feature_entities(
+        self,
+        features: List[str],
+        entities_table: str,
+        *,
+        budget_policy_id: Optional[str] = None,
+        request_id: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+    ) -> PurgeFeatureEntitiesOperation:
+        """Purge materialized feature values for specified entities.
+
+        :param features: List[str]
+          Fully qualified names of the features to purge. At least one nonempty feature name is required. A
+          request may contain at most 10000 features; submit additional features in separate requests.
+          Duplicate features are rejected.
+        :param entities_table: str
+          Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge. The table
+          may contain a subset of each feature's entity-key columns. A partial key match deletes all feature
+          rows matching the provided key values. Non-key columns are rejected; null key values are allowed.
+        :param budget_policy_id: str (optional)
+          The budget policy ID, in UUID format, used to attribute the serverless compute cost of this purge.
+          If not specified, a default budget policy may be applied.
+        :param request_id: str (optional)
+          Optional UUID4 idempotency token for the request.
+        :param tags: Dict[str,str] (optional)
+          Custom tags to associate with this purge. They are applied to the purge job and forwarded to the
+          underlying compute as Databricks resource tags, so purge cost can be attributed in the billing
+          system tables. These tags apply only to the purge compute; they are not applied to the Unity Catalog
+          Feature resources themselves, whose tags are managed separately through the Unity Catalog tagging
+          API. A maximum of 25 tags is supported; keys and values are subject to the same limitations as
+          Databricks resource tags.
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = {}
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
+        if entities_table is not None:
+            body["entities_table"] = entities_table
+        if features is not None:
+            body["features"] = [v for v in features]
+        if request_id is not None:
+            body["request_id"] = request_id
+        if tags is not None:
+            body["tags"] = tags
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", "/api/2.0/feature-engineering/features:purgeFeatureEntities", body=body, headers=headers
+        )
+        operation = Operation.from_dict(res)
+        return PurgeFeatureEntitiesOperation(self, operation)
+
     def update_feature(self, full_name: str, feature: Feature, update_mask: str) -> Feature:
         """Update a Feature.
 
@@ -10761,6 +11536,166 @@ class FeatureEngineeringAPI:
             "PATCH", f"/api/2.0/feature-engineering/streams/{name}", query=query, body=body, headers=headers
         )
         return Stream.from_dict(res)
+
+
+class BackfillFeaturesOperation:
+    """Long-running operation for backfill_features"""
+
+    def __init__(self, impl: FeatureEngineeringAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> BackfillFeaturesResponse:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`BackfillFeaturesResponse`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            backfill_features_response = BackfillFeaturesResponse.from_dict(operation.response)
+
+            return backfill_features_response, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def cancel(self):
+        """Starts asynchronous cancellation on a long-running operation. The server
+        makes a best effort to cancel the operation, but success is not guaranteed.
+        """
+        self._impl.cancel_operation(name=self._operation.name)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> BackfillOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`BackfillOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return BackfillOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class PurgeFeatureEntitiesOperation:
+    """Long-running operation for purge_feature_entities"""
+
+    def __init__(self, impl: FeatureEngineeringAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> PurgeFeatureEntitiesResponse:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`PurgeFeatureEntitiesResponse`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            purge_feature_entities_response = PurgeFeatureEntitiesResponse.from_dict(operation.response)
+
+            return purge_feature_entities_response, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> PurgeFeatureEntitiesMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`PurgeFeatureEntitiesMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return PurgeFeatureEntitiesMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
 
 
 class FeatureStoreAPI:
@@ -10920,6 +11855,10 @@ class FeatureStoreAPI:
 
     def update_online_store(self, name: str, online_store: OnlineStore, update_mask: str) -> OnlineStore:
         """Update an Online Feature Store.
+
+        This update is not guaranteed to be atomic: when a request changes multiple fields, some may be
+        applied while others fail. On a failed response, treat the update as partially applied and retry until
+        it succeeds.
 
         :param name: str
           The name of the online store. This is the unique identifier for the online store.

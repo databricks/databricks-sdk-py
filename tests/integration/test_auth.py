@@ -7,6 +7,7 @@ import subprocess
 import sys
 import typing
 import urllib.parse
+from contextlib import ExitStack
 from functools import partial
 from pathlib import Path
 
@@ -14,10 +15,11 @@ import pytest
 
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.config import Config
+from databricks.sdk.errors import NotFound, PermissionDenied
 from databricks.sdk.service import iam, oauth2
 from databricks.sdk.service.compute import ClusterSpec, DataSecurityMode, Library, ResultType, SparkVersion
 from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
-from databricks.sdk.service.workspace import ImportFormat
+from databricks.sdk.service.workspace import ImportFormat, Language
 
 
 @pytest.fixture
@@ -46,7 +48,7 @@ def fresh_wheel_file(tmp_path) -> Path:
 
 
 @pytest.mark.parametrize("mode", [DataSecurityMode.SINGLE_USER, DataSecurityMode.USER_ISOLATION])
-def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip, random, mode):
+def test_runtime_auth_from_interactive_on_uc(skip_aws_uc_workspace, ucws, fresh_wheel_file, env_or_skip, random, mode):
     instance_pool_id = env_or_skip("TEST_INSTANCE_POOL_ID")
     latest = ucws.clusters.select_spark_version(latest=True)
 
@@ -110,7 +112,9 @@ def _get_lts_versions(w) -> typing.List[SparkVersion]:
     return lts_runtimes
 
 
-def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_or_skip, random, volume):
+def test_runtime_auth_from_jobs_volumes(
+    skip_aws_uc_workspace, ucws, files_api, fresh_wheel_file, env_or_skip, random, volume
+):
     dbr_versions = [v for v in _get_lts_versions(ucws) if int(v.key.split(".")[0]) >= 15]
 
     volume_wheel = f"{volume}/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
@@ -121,7 +125,7 @@ def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_o
     return _test_runtime_auth_from_jobs_inner(ucws, env_or_skip, random, dbr_versions, lib)
 
 
-def test_runtime_auth_from_jobs_dbfs(w, fresh_wheel_file, env_or_skip, random):
+def test_runtime_auth_from_jobs_dbfs(skip_aws_uc_workspace, w, fresh_wheel_file, env_or_skip, random):
     # Library installation from DBFS is not supported past DBR 14.3.
     # DBR < 13 ships Python < 3.10 which is below our requires-python.
     dbr_versions = [v for v in _get_lts_versions(w) if 13 <= int(v.key.split(".")[0]) < 15]
@@ -268,6 +272,154 @@ def test_wif_workspace(ucacct, env_or_skip, random):
     )
 
     ws.current_user.me()
+
+
+def _ignore_not_found(action):
+    try:
+        action()
+    except NotFound:
+        pass
+
+
+def test_wif_workspace_group_role_isolation(ucacct, env_or_skip, random):
+    """Verifies group-role WIF can read a resource that normal WIF credentials cannot."""
+    # Use the GitHub Actions OIDC environment and an account administrator to arrange the test.
+    env_or_skip("ACTIONS_ID_TOKEN_REQUEST_URL")
+    workspace_id = int(env_or_skip("TEST_WORKSPACE_ID"))
+    workspace_url = env_or_skip("TEST_WORKSPACE_URL")
+    audience = "https://github.com/databricks-eng"
+
+    # Use administrator credentials to create the workspace resource and set its permissions.
+    workspace_admin = WorkspaceClient(host=workspace_url)
+
+    with ExitStack() as cleanup:
+        # Create the service principal whose normal and role-based WIF access will be compared.
+        service_principal = ucacct.service_principals_v2.create(
+            active=True,
+            display_name="py-sdk-wif-role-sp-" + random(),
+        )
+        cleanup.callback(
+            _ignore_not_found,
+            lambda: ucacct.service_principals_v2.delete(service_principal.id),
+        )
+        service_principal_id = int(service_principal.id)
+
+        # Give the service principal basic workspace access without granting notebook access.
+        ucacct.workspace_assignment.update(
+            workspace_id,
+            service_principal_id,
+            permissions=[iam.WorkspacePermission.USER],
+        )
+        cleanup.callback(
+            _ignore_not_found,
+            lambda: ucacct.workspace_assignment.delete(workspace_id, service_principal_id),
+        )
+
+        # Create the group that represents the temporary workspace role.
+        group = ucacct.groups_v2.create(display_name="py-sdk-wif-role-group-" + random())
+        cleanup.callback(
+            _ignore_not_found,
+            lambda: ucacct.groups_v2.delete(group.id),
+        )
+        group_id = int(group.id)
+
+        # Assign the group to the workspace so that it can receive workspace permissions.
+        ucacct.workspace_assignment.update(
+            workspace_id,
+            group_id,
+            permissions=[iam.WorkspacePermission.USER],
+        )
+        cleanup.callback(
+            _ignore_not_found,
+            lambda: ucacct.workspace_assignment.delete(workspace_id, group_id),
+        )
+
+        # Allow the service principal to assume the group role.
+        rule_set_name = f"accounts/{ucacct.config.account_id}/groups/{group.id}/ruleSets/default"
+        rule_set = ucacct.access_control.get_rule_set(rule_set_name, "")
+        ucacct.access_control.update_rule_set(
+            rule_set_name,
+            iam.RuleSetUpdateRequest(
+                name=rule_set_name,
+                etag=rule_set.etag,
+                grant_rules=[
+                    *(rule_set.grant_rules or []),
+                    iam.GrantRule(
+                        principals=[f"servicePrincipals/{service_principal.application_id}"],
+                        role="roles/group.assumer",
+                    ),
+                ],
+            ),
+        )
+
+        # Trust this repository's GitHub OIDC identity to authenticate as the service principal.
+        policy = ucacct.service_principal_federation_policy.create(
+            service_principal_id,
+            oauth2.FederationPolicy(
+                oidc_policy=oauth2.OidcFederationPolicy(
+                    issuer="https://token.actions.githubusercontent.com",
+                    audiences=[audience],
+                    subject="repo:databricks-eng/eng-dev-ecosystem:environment:integration-tests",
+                )
+            ),
+        )
+        cleanup.callback(
+            _ignore_not_found,
+            lambda: ucacct.service_principal_federation_policy.delete(
+                service_principal_id,
+                policy.policy_id or policy.uid,
+            ),
+        )
+
+        # Create a private notebook that distinguishes normal access from role access.
+        workspace_admin_user = workspace_admin.current_user.me().user_name
+        notebook_directory = f"/Users/{workspace_admin_user}/.sdk/notebooks/py-sdk-wif-role-{random()}"
+        notebook_path = f"{notebook_directory}/notebook"
+        workspace_admin.workspace.mkdirs(notebook_directory)
+        cleanup.callback(
+            _ignore_not_found,
+            lambda: workspace_admin.workspace.delete(notebook_directory, recursive=True),
+        )
+        workspace_admin.workspace.upload(
+            notebook_path,
+            b"print(1)",
+            format=ImportFormat.SOURCE,
+            language=Language.PYTHON,
+            overwrite=True,
+        )
+        notebook = workspace_admin.workspace.get_status(notebook_path)
+
+        # Grant only the group role permission to read the notebook.
+        workspace_admin.permissions.update(
+            "notebooks",
+            str(notebook.object_id),
+            access_control_list=[
+                iam.AccessControlRequest(
+                    group_name=group.display_name,
+                    permission_level=iam.PermissionLevel.CAN_READ,
+                )
+            ],
+        )
+
+        # Authenticate with the group role and verify that its notebook permission is usable.
+        role_client = WorkspaceClient(
+            host=workspace_url,
+            client_id=service_principal.application_id,
+            group_id=group.id,
+            auth_type="github-oidc",
+            token_audience=audience,
+        )
+        role_client.workspace.get_status(notebook_path)
+
+        # Authenticate normally as the same service principal and verify that access is denied.
+        normal_client = WorkspaceClient(
+            host=workspace_url,
+            client_id=service_principal.application_id,
+            auth_type="github-oidc",
+            token_audience=audience,
+        )
+        with pytest.raises((PermissionDenied, NotFound)):
+            normal_client.workspace.get_status(notebook_path)
 
 
 def test_workspace_config_resolves_account_and_workspace_id(w, env_or_skip):

@@ -165,8 +165,8 @@
     .. py:method:: delete_runs(experiment_id: str, max_timestamp_millis: int [, max_runs: Optional[int]]) -> DeleteRunsResponse
 
         Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
-        most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
-        client code snippet on
+        most max_runs per request. See the cloud-specific MLflow runs documentation for a Python client
+        example.
 
         :param experiment_id: str
           The ID of the experiment containing the runs to delete.
@@ -278,16 +278,6 @@
           The ID of the logged model to retrieve.
 
         :returns: :class:`GetLoggedModelResponse`
-        
-
-    .. py:method:: get_logged_models( [, model_ids: Optional[List[str]]]) -> GetLoggedModelsRequestResponse
-
-        Batch endpoint for getting logged models from a list of model IDs
-
-        :param model_ids: List[str] (optional)
-          The IDs of the logged models to retrieve. Max threshold is 100.
-
-        :returns: :class:`GetLoggedModelsRequestResponse`
         
 
     .. py:method:: get_permission_levels(experiment_id: str) -> GetExperimentPermissionLevelsResponse
@@ -566,8 +556,8 @@
     .. py:method:: restore_runs(experiment_id: str, min_timestamp_millis: int [, max_runs: Optional[int]]) -> RestoreRunsResponse
 
         Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
-        at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
-        client code snippet on
+        at most max_runs per request. See the cloud-specific MLflow runs documentation for a Python client
+        example.
 
         :param experiment_id: str
           The ID of the experiment containing the runs to restore.

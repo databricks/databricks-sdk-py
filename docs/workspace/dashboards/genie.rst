@@ -11,8 +11,8 @@
 
     .. py:method:: create_message(space_id: str, conversation_id: str, content: str [, enable_visualization: Optional[bool]]) -> Wait[GenieMessage]
 
-        Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
-        previously created messages in the conversation to respond.
+        Sends a new message in a chat-mode [conversation](:method:genie/startconversation). The AI response
+        uses all previously created messages in the conversation to respond.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is started.
@@ -149,12 +149,9 @@
         **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
         ``EXTERNAL_LINKS`` disposition.**
 
-        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
-        download the results directly from . As a short-lived is embedded in this URL, you should protect the
-        URL.
-
-        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
-        header in the download requests.
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived cloud-storage URL is generated to
+        download the results. The URL contains temporary access credentials, so protect it and do not set an
+        ``Authorization`` header in the download request.
 
         See [Execute Statement](:method:statementexecution/executestatement) for more details.
 
@@ -170,9 +167,25 @@
         :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
         
 
+    .. py:method:: genie_cancel_response(agent_id: str, conversation_id: str, response_id: str) -> GenieMessage
+
+        Cancels an in-flight agent-mode response. ``response_id`` is the id returned in the
+        ``response.created`` event from the agent-mode responses endpoint. The response stops at the next
+        agent boundary and its terminal state is returned.
+
+        :param agent_id: str
+          The ID of the Genie agent (synonymous with the Genie space ID).
+        :param conversation_id: str
+          The ID of the conversation containing the response.
+        :param response_id: str
+          The ID of the response to cancel (the id from the ``response.created`` event).
+
+        :returns: :class:`GenieMessage`
+        
+
     .. py:method:: genie_create_eval_run(space_id: str [, benchmark_question_ids: Optional[List[str]]]) -> GenieEvalRunResponse
 
-        Create and run evaluations for multiple benchmark questions in a Genie space.
+        Creates and runs chat-mode evaluations for multiple benchmark questions in a Genie space.
 
         :param space_id: str
           The ID associated with the Genie space where the evaluations will be executed.
@@ -249,12 +262,9 @@
         **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
         ``EXTERNAL_LINKS`` disposition.**
 
-        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
-        download the results directly from . As a short-lived is embedded in this URL, you should protect the
-        URL.
-
-        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
-        header in the download requests.
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived cloud-storage URL is generated to
+        download the results. The URL contains temporary access credentials, so protect it and do not set an
+        ``Authorization`` header in the download request.
 
         See [Execute Statement](:method:statementexecution/executestatement) for more details.
 
@@ -277,7 +287,8 @@
 
     .. py:method:: get_message(space_id: str, conversation_id: str, message_id: str) -> GenieMessage
 
-        Get message from conversation.
+        Gets a message from a chat-mode or agent-mode conversation. For a complete agent-mode transcript, use
+        the List conversation items endpoint.
 
         :param space_id: str
           The ID associated with the Genie space where the target conversation is located.
@@ -369,7 +380,9 @@
 
     .. py:method:: list_conversation_messages(space_id: str, conversation_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationMessagesResponse
 
-        List messages in a conversation
+        Lists messages in a chat-mode or agent-mode conversation. Agent-mode messages are returned as
+        GenieMessage projections. Use the List conversation items endpoint for the complete reasoning and
+        tool-call history.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is located
@@ -432,7 +445,7 @@
 
     .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating [, comment: Optional[str]])
 
-        Send feedback for a message.
+        Sends feedback for a message in a chat-mode or agent-mode conversation.
 
         :param space_id: str
           The ID associated with the Genie space where the message is located.
@@ -450,7 +463,7 @@
 
     .. py:method:: start_conversation(space_id: str, content: str [, enable_visualization: Optional[bool]]) -> Wait[GenieMessage]
 
-        Start a new conversation.
+        Starts a new chat-mode conversation and sends its first message.
 
         :param space_id: str
           The ID associated with the Genie space where you want to start a conversation.

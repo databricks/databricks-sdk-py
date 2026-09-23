@@ -10,7 +10,7 @@ def test_jobs(w):
     assert found > 0
 
 
-def test_submitting_jobs(w, random, env_or_skip):
+def test_submitting_jobs(skip_aws_uc_workspace, w, random, env_or_skip):
     from databricks.sdk.service import compute, jobs
 
     py_on_dbfs = f"/home/{w.current_user.me().user_name}/sample.py"

@@ -32,9 +32,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointUseCase
 
-   .. py:attribute:: GENERAL_ACCESS
-      :value: "GENERAL_ACCESS"
-
    .. py:attribute:: SERVICE_DIRECT
       :value: "SERVICE_DIRECT"
 

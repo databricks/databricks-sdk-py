@@ -4,7 +4,7 @@
 
 .. py:class:: WorkspaceIamV2API
 
-    These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
+    These APIs are used to manage identities and the workspace access of these identities in Databricks.
 
     .. py:method:: create_direct_group_member_proxy(group_id: int, direct_group_member: DirectGroupMember) -> DirectGroupMember
 
@@ -29,7 +29,7 @@
         identity, use the ExternalGroup resource.
 
         :param group: :class:`Group`
-          Required. Group to be created in <Databricks>
+          Required. Group to be created in Databricks
 
         :returns: :class:`Group`
         
@@ -46,7 +46,7 @@
         external identity, use the ExternalServicePrincipal resource.
 
         :param service_principal: :class:`ServicePrincipal`
-          Required. Service principal to be created in <Databricks>
+          Required. Service principal to be created in Databricks
 
         :returns: :class:`ServicePrincipal`
         
@@ -62,20 +62,17 @@
         identity, use the ExternalUser resource.
 
         :param user: :class:`User`
-          Required. User to be created in <Databricks>
+          Required. User to be created in Databricks
 
         :returns: :class:`User`
         
 
     .. py:method:: create_workspace_assignment_detail_proxy(workspace_assignment_detail: WorkspaceAssignmentDetail) -> WorkspaceAssignmentDetail
 
-        Creates a workspace assignment detail for a principal in the calling workspace. Entitlements are
-        granted one at a time rather than atomically. If the request fails partway through, the principal
-        stays assigned to the workspace with only some of the requested entitlements. Get the assignment
-        detail afterwards to confirm which entitlements were granted.
+        Creates a workspace assignment detail for a principal in the calling workspace.
 
         :param workspace_assignment_detail: :class:`WorkspaceAssignmentDetail`
-          Required. Workspace assignment detail to be created in <Databricks>.
+          Required. Workspace assignment detail to be created in Databricks.
 
         :returns: :class:`WorkspaceAssignmentDetail`
         
@@ -88,7 +85,7 @@
         confirm which entitlements were granted.
 
         :param workspace_assignment: :class:`WorkspaceAssignment`
-          Required. Workspace assignment to be created in <Databricks>.
+          Required. Workspace assignment to be created in Databricks.
 
         :returns: :class:`WorkspaceAssignment`
         
@@ -304,7 +301,8 @@
           Required. Internal ID of the group in Databricks whose direct members are being listed.
         :param page_size: int (optional)
           The maximum number of members to return. The service may return fewer than this value. If not
-          provided, defaults to 1000 (also the maximum allowed).
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
@@ -319,7 +317,9 @@
         :param filter: str (optional)
           Optional. Allows filtering groups by group name or external id.
         :param page_size: int (optional)
-          The maximum number of groups to return. The service may return fewer than this value.
+          The maximum number of groups to return. The service may return fewer than this value. If not
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
           page.
@@ -335,7 +335,9 @@
         :param filter: str (optional)
           Optional. Allows filtering service principals by application id or external id.
         :param page_size: int (optional)
-          The maximum number of SPs to return. The service may return fewer than this value.
+          The maximum number of SPs to return. The service may return fewer than this value. If not provided,
+          defaults to 1000, which is also the maximum allowed. Requests for more than the maximum are clamped
+          to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
           subsequent page.
@@ -352,7 +354,8 @@
           listed.
         :param page_size: int (optional)
           The maximum number of parent groups to return. The service may return fewer than this value. If not
-          provided, defaults to 1000 (also the maximum allowed).
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListTransitiveParentGroups call. Provide this to retrieve the
           subsequent page.
@@ -368,29 +371,13 @@
         :param filter: str (optional)
           Optional. Allows filtering users by username or external id.
         :param page_size: int (optional)
-          The maximum number of users to return. The service may return fewer than this value.
+          The maximum number of users to return. The service may return fewer than this value. If not
+          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
+          are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
 
         :returns: Iterator over :class:`User`
-        
-
-    .. py:method:: list_workspace_access_details_local( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceAccessDetail]
-
-        Lists the access details of every provisioned principal (user, service principal, or group) with
-        access to the current workspace, returning one page per call.
-
-        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
-          IdP or added explicitly to Databricks via SCIM/UI.
-
-        :param page_size: int (optional)
-          The maximum number of workspace access details to return. The service may return fewer than this
-          value.
-        :param page_token: str (optional)
-          A page token, received from a previous ListWorkspaceAccessDetails call. Provide this to retrieve the
-          subsequent page.
-
-        :returns: Iterator over :class:`WorkspaceAccessDetail`
         
 
     .. py:method:: list_workspace_assignment_details_proxy( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceAssignmentDetail]
@@ -401,7 +388,8 @@
 
         :param page_size: int (optional)
           The maximum number of workspace assignment details to return. The service may return fewer than this
-          value.
+          value. If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than
+          the maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
@@ -416,6 +404,8 @@
 
         :param page_size: int (optional)
           The maximum number of workspace assignments to return. The service may return fewer than this value.
+          If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than the
+          maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
 
@@ -469,7 +459,7 @@
         :param group_id: str
           Required. Internal ID of the group in Databricks.
         :param group: :class:`Group`
-          Required. Group to be updated in <Databricks>
+          Required. Group to be updated in Databricks
         :param update_mask: str
           Optional. The list of fields to update.
 
@@ -487,7 +477,7 @@
         :param service_principal_id: str
           Required. Internal ID of the service principal in Databricks.
         :param service_principal: :class:`ServicePrincipal`
-          Required. Service principal to be updated in <Databricks>
+          Required. Service principal to be updated in Databricks
         :param update_mask: str
           Optional. The list of fields to update.
 
@@ -506,7 +496,7 @@
         :param user_id: str
           Required. Internal ID of the user in Databricks.
         :param user: :class:`User`
-          Required. User to be updated in <Databricks>
+          Required. User to be updated in Databricks
         :param update_mask: str
           Optional. The list of fields to update.
 
@@ -522,7 +512,7 @@
         :param principal_id: int
           Required. ID of the principal in Databricks.
         :param workspace_assignment_detail: :class:`WorkspaceAssignmentDetail`
-          Required. Workspace assignment detail to be updated in <Databricks>.
+          Required. Workspace assignment detail to be updated in Databricks.
         :param update_mask: FieldMask
           Required. The list of fields to update.
 
@@ -538,7 +528,7 @@
         :param principal_id: int
           Required. ID of the principal in Databricks.
         :param workspace_assignment: :class:`WorkspaceAssignment`
-          Required. Workspace assignment to be updated in <Databricks>.
+          Required. Workspace assignment to be updated in Databricks.
         :param update_mask: FieldMask
           Required. The list of fields to update.
 
@@ -552,7 +542,7 @@
         :param principal_id: int
           Required. ID of the principal in Databricks.
         :param workspace_identity_detail: :class:`WorkspaceIdentityDetail`
-          Required. Workspace identity detail to be updated in <Databricks>.
+          Required. Workspace identity detail to be updated in Databricks.
         :param update_mask: FieldMask
           Required. The list of fields to update.
 

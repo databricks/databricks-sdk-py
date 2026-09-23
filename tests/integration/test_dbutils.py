@@ -16,14 +16,6 @@ def test_rest_dbfs_ls(w, env_or_skip):
     assert len(x) > 1
 
 
-def test_proxy_dbfs_mounts(w, env_or_skip):
-    w.config.cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
-
-    x = w.dbutils.fs.mounts()
-
-    assert len(x) > 1
-
-
 @pytest.fixture(params=["dbfs", "volumes"])
 def fs_and_base_path(request, ucws, volume):
     if request.param == "dbfs":

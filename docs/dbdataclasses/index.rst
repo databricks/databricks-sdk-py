@@ -6,6 +6,7 @@ Dataclasses
    :maxdepth: 1
    
    agentbricks
+   aifunctions
    aisearch
    apps
    billing
@@ -18,6 +19,7 @@ Dataclasses
    dataclassification
    dataquality
    disasterrecovery
+   domains
    environments
    files
    iam
@@ -32,6 +34,7 @@ Dataclasses
    postgres
    provisioning
    qualitymonitorv2
+   sandbox
    serving
    settings
    settingsv2

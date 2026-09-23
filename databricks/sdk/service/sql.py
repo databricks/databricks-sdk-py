@@ -646,23 +646,21 @@ class AlertState(Enum):
 
 @dataclass
 class AlertStatementParameter:
-    """Redash-owned copy of the internal StatementParameter for the external AlertV2 API. The internal
-    ``ordinal`` and ``args`` fields are intentionally omitted: the public API supports only flat,
-    named scalar parameters; complex types (ARRAY, MAP, STRUCT) are not supported. This mirrors
-    SEA's public StatementParameter schema, see:
-    cmdexec/sql-exec-api/proto/sql_exec_api_service.proto:763-779"""
+    """A named parameter bound to the alert query. Only flat, named scalar parameters are supported;
+    complex types such as ARRAY, MAP, and STRUCT are not."""
 
     name: str
-    """The name of the parameter, referenced in the query as ``:name``."""
+    """The name of the parameter. Reference it in the query text as ``:name``. Required, must be
+    non-empty, and must be unique across the alert's parameters."""
 
     type: Optional[str] = None
-    """The SQL data type of the parameter, e.g. STRING, INT, or DATE. Defaults to STRING. This is a
-    string rather than an enum because scalar subtypes such as DECIMAL(10, 4) cannot be enumerated.
-    Complex types such as ARRAY, MAP, and STRUCT are not supported."""
+    """The SQL data type of the parameter, for example ``STRING``, ``INT``, or ``DECIMAL(10, 2)``. If
+    no type is given the type is assumed to be ``STRING``. Complex types such as ``ARRAY``, ``MAP``,
+    and ``STRUCT`` are not supported."""
 
     value: Optional[str] = None
-    """The bound value for the parameter, given as a string. If omitted, the value is interpreted as
-    NULL."""
+    """The value bound to the parameter, represented as a string. If omitted, the value is interpreted
+    as NULL."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertStatementParameter into a dictionary suitable for use as a JSON request body."""
@@ -716,15 +714,12 @@ class AlertV2:
     custom_summary: Optional[str] = None
     """Custom summary for the alert. support mustache template."""
 
-    effective_parent_path: Optional[str] = None
-    """The actual workspace path of the folder containing the alert. This is an output-only field."""
-
     effective_run_as: Optional[AlertV2RunAs] = None
     """The actual identity that will be used to execute the alert. This is an output-only field that
     shows the resolved run-as identity after applying permissions and defaults."""
 
     id: Optional[str] = None
-    """UUID identifying the alert."""
+    """The canonical identifier of the alert to retrieve information about."""
 
     lifecycle_state: Optional[AlertLifecycleState] = None
     """Indicates whether the query is trashed."""
@@ -733,8 +728,19 @@ class AlertV2:
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
 
     parameters: Optional[List[AlertStatementParameter]] = None
-    """Query parameters bound when executing the alert query, referenced in the query text with
-    ``:name`` syntax. Static values only."""
+    """A list of parameters to pass into the alert SQL query statement containing parameter markers.
+    Static values only.
+    
+    Reference a parameter in the query text as ``:name``. Each parameter must have a unique,
+    non-empty name. Each parameter consists of a name, a value, and optionally a type. To represent
+    a NULL value, the ``value`` field may be omitted or set to ``null`` explicitly. If the ``type``
+    field is omitted, the value is interpreted as a string.
+    
+    If the type is given, parameters will be checked for type correctness according to the given
+    type. A value is correct if the provided string can be converted to the requested type using the
+    ``cast`` function. The exact semantics are described in the section `cast function
+    <https://docs.databricks.com/sql/language-manual/functions/cast.html>`__ of the SQL language
+    reference."""
 
     parent_path: Optional[str] = None
     """The workspace path of the folder containing the alert. Can only be set on create, and cannot be
@@ -769,8 +775,6 @@ class AlertV2:
             body["custom_summary"] = self.custom_summary
         if self.display_name is not None:
             body["display_name"] = self.display_name
-        if self.effective_parent_path is not None:
-            body["effective_parent_path"] = self.effective_parent_path
         if self.effective_run_as:
             body["effective_run_as"] = self.effective_run_as.as_dict()
         if self.evaluation:
@@ -810,8 +814,6 @@ class AlertV2:
             body["custom_summary"] = self.custom_summary
         if self.display_name is not None:
             body["display_name"] = self.display_name
-        if self.effective_parent_path is not None:
-            body["effective_parent_path"] = self.effective_parent_path
         if self.effective_run_as:
             body["effective_run_as"] = self.effective_run_as
         if self.evaluation:
@@ -848,7 +850,6 @@ class AlertV2:
             custom_description=d.get("custom_description", None),
             custom_summary=d.get("custom_summary", None),
             display_name=d.get("display_name", None),
-            effective_parent_path=d.get("effective_parent_path", None),
             effective_run_as=_from_dict(d, "effective_run_as", AlertV2RunAs),
             evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
             id=d.get("id", None),
@@ -1747,8 +1748,6 @@ class CreateVisualizationRequestVisualization:
 class CreateWarehouseRequestWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
-    REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -1790,17 +1789,12 @@ class CronSchedule:
     https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
     for details."""
 
-    effective_pause_status: Optional[SchedulePauseStatus] = None
-    """The actual pause status of the schedule. This is an output-only field."""
-
     pause_status: Optional[SchedulePauseStatus] = None
     """Indicate whether this schedule is paused or not."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.effective_pause_status is not None:
-            body["effective_pause_status"] = self.effective_pause_status.value
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
         if self.quartz_cron_schedule is not None:
@@ -1812,8 +1806,6 @@ class CronSchedule:
     def as_shallow_dict(self) -> dict:
         """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.effective_pause_status is not None:
-            body["effective_pause_status"] = self.effective_pause_status
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
         if self.quartz_cron_schedule is not None:
@@ -1826,7 +1818,6 @@ class CronSchedule:
     def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
         return cls(
-            effective_pause_status=_enum(d, "effective_pause_status", SchedulePauseStatus),
             pause_status=_enum(d, "pause_status", SchedulePauseStatus),
             quartz_cron_schedule=d.get("quartz_cron_schedule", None),
             timezone_id=d.get("timezone_id", None),
@@ -2378,8 +2369,6 @@ class Disposition(Enum):
 class EditWarehouseRequestWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
-    REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -2747,8 +2736,6 @@ class EndpointInfo:
 class EndpointInfoWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
-    REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -2875,9 +2862,10 @@ class ExternalLink:
     which point a new ``external_link`` must be requested."""
 
     external_link: Optional[str] = None
-    """A URL pointing to a chunk of result data, hosted by an external service, with a short expiration
-    time (<= 15 minutes). As this URL contains a temporary credential, it should be considered
-    sensitive and the client should not expose this URL in a log."""
+    """A short-lived cloud-storage URL pointing to a chunk of result data, hosted by an external
+    service, with a short expiration time (<= 15 minutes). As this URL contains a temporary
+    credential, it should be considered sensitive and the client should not expose this URL in a
+    log."""
 
     http_headers: Optional[Dict[str, str]] = None
     """HTTP headers that must be included with a GET request to the ``external_link``. Each header is
@@ -3388,8 +3376,6 @@ class GetWarehouseResponse:
 class GetWarehouseResponseWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
-    REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -5709,7 +5695,6 @@ class QueryParameter:
 class QueryStatementType(Enum):
     ALTER = "ALTER"
     ANALYZE = "ANALYZE"
-    CALL = "CALL"
     COPY = "COPY"
     CREATE = "CREATE"
     DELETE = "DELETE"
@@ -5835,10 +5820,10 @@ class RestoreResponse:
 @dataclass
 class ResultData:
     """Contains the result data of a single chunk when using ``INLINE`` disposition. When using
-    ``EXTERNAL_LINKS`` disposition, the array ``external_links`` is used instead to provide URLs to
-    the result data in cloud storage. Exactly one of these alternatives is used. (While the
-    ``external_links`` array prepares the API to return multiple links in a single response.
-    Currently only a single link is returned.)"""
+    ``EXTERNAL_LINKS`` disposition, the array ``external_links`` is used instead to provide
+    short-lived cloud-storage URLs to the result data in cloud storage. Exactly one of these
+    alternatives is used. (While the ``external_links`` array prepares the API to return multiple
+    links in a single response. Currently only a single link is returned.)"""
 
     byte_count: Optional[int] = None
     """The number of bytes in the result chunk. This field is not available when using ``INLINE``
@@ -6518,7 +6503,7 @@ class TerminationReason:
 
 
 class TerminationReasonCode(Enum):
-    """The status code indicating why the cluster was terminated"""
+    """The status code indicating why the cluster was terminated."""
 
     ABUSE_DETECTED = "ABUSE_DETECTED"
     ACCESS_TOKEN_FAILURE = "ACCESS_TOKEN_FAILURE"
@@ -6558,7 +6543,6 @@ class TerminationReasonCode(Enum):
     BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG = "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG"
     BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED = "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED"
     BUDGET_POLICY_RESOLUTION_FAILURE = "BUDGET_POLICY_RESOLUTION_FAILURE"
-    CERT_ROTATION = "CERT_ROTATION"
     CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED = "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
     CLOUD_ACCOUNT_SETUP_FAILURE = "CLOUD_ACCOUNT_SETUP_FAILURE"
     CLOUD_OPERATION_CANCELLED = "CLOUD_OPERATION_CANCELLED"
@@ -6577,7 +6561,6 @@ class TerminationReasonCode(Enum):
     CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
     CONTROL_PLANE_REQUEST_FAILURE = "CONTROL_PLANE_REQUEST_FAILURE"
     CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
-    COST_CONTROL_ENTITLEMENT_DENIED = "COST_CONTROL_ENTITLEMENT_DENIED"
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
@@ -6588,7 +6571,6 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
-    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -6669,8 +6651,6 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
-    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
-    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
@@ -6681,11 +6661,9 @@ class TerminationReasonCode(Enum):
     REQUEST_REJECTED = "REQUEST_REJECTED"
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
     RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
-    SECRET_CREATION_ACCESS_DENIED = "SECRET_CREATION_ACCESS_DENIED"
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
-    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
@@ -6717,7 +6695,6 @@ class TerminationReasonCode(Enum):
     WORKER_SETUP_FAILURE = "WORKER_SETUP_FAILURE"
     WORKSPACE_CANCELLED_ERROR = "WORKSPACE_CANCELLED_ERROR"
     WORKSPACE_CONFIGURATION_ERROR = "WORKSPACE_CONFIGURATION_ERROR"
-    WORKSPACE_DELEGATION_KEY_MISCONFIGURED = "WORKSPACE_DELEGATION_KEY_MISCONFIGURED"
     WORKSPACE_UPDATE = "WORKSPACE_UPDATE"
 
 
@@ -7468,8 +7445,6 @@ class WarehouseTypePair:
 class WarehouseTypePairWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
-    REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -8104,7 +8079,7 @@ class AlertsV2API:
         """Update alert
 
         :param id: str
-          UUID identifying the alert.
+          The canonical identifier of the alert to retrieve information about.
         :param alert: :class:`AlertV2`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
@@ -9541,28 +9516,26 @@ class StatementExecutionAPI:
         **Use case: large result sets with EXTERNAL_LINKS**
 
         Using ``EXTERNAL_LINKS`` to fetch result data allows you to fetch large result sets efficiently. The
-        main differences from using ``INLINE`` disposition are that the result data is accessed with URLs, and
-        that there are 3 supported formats: ``JSON_ARRAY``, ``ARROW_STREAM`` and ``CSV`` compared to only
-        ``JSON_ARRAY`` with ``INLINE``.
+        main differences from using ``INLINE`` disposition are that the result data is accessed with
+        short-lived cloud-storage URLs, and that there are 3 supported formats: ``JSON_ARRAY``,
+        ``ARROW_STREAM`` and ``CSV`` compared to only ``JSON_ARRAY`` with ``INLINE``.
 
-        ** URLs**
+        **External-link URLs**
 
-        External links point to data stored within your workspace's internal storage, in the form of a URL.
-        The URLs are valid for only a short period, <= 15 minutes. Alongside each ``external_link`` is an
-        expiration field indicating the time at which the URL is no longer valid. In ``EXTERNAL_LINKS`` mode,
-        chunks can be resolved and fetched multiple times and in parallel.
+        External links point to data stored within your workspace's internal cloud storage. The URLs are valid
+        for only a short period, <= 15 minutes. Alongside each ``external_link`` is an expiration field
+        indicating the time at which the URL is no longer valid. In ``EXTERNAL_LINKS`` mode, chunks can be
+        resolved and fetched multiple times and in parallel.
 
         **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
         ``EXTERNAL_LINKS`` disposition.**
 
-        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
-        download the results directly from . As a short-lived is embedded in this URL, you should protect the
-        URL.
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived cloud-storage URL is generated to
+        download the results. The URL contains temporary access credentials, so protect it and do not set an
+        ``Authorization`` header in the download request.
 
-        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
-        header in the download requests.
-
-        The ``EXTERNAL_LINKS`` disposition can be disabled upon request by creating a support case.
+        The ``EXTERNAL_LINKS`` disposition can be disabled upon request by creating a `support case
+        <https://docs.databricks.com/resources/support.html>`__.
 
         See also `Security best practices
         <https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices>`__.
@@ -9606,8 +9579,8 @@ class StatementExecutionAPI:
           1. They point to resources *external* to the Databricks compute; therefore any associated
              authentication information (typically a personal access token, OAuth token, or similar) *must be
              removed* when fetching from these links.
-          2. These are URLs with a specific expiration, indicated in the response. The behavior when
-             attempting to use an expired link is cloud specific.
+          2. These are short-lived cloud-storage URLs with a specific expiration, indicated in the response.
+             The behavior when attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
           Statement execution supports three result formats: ``JSON_ARRAY`` (default), ``ARROW_STREAM``, and
           ``CSV``.
