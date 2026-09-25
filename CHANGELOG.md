@@ -1,5 +1,10 @@
 # Version changelog
 
+## Release v0.142.0 (2026-09-25)
+
+### API Changes
+* Add `create_skill()`, `delete_skill()`, `finalize_skill()`, `get_skill()`, `list_skills()` and `update_skill()` methods for [w.ai_gateway](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/ai_gateway.html) workspace-level service.
+
 ## Release v0.141.0 (2026-09-23)
 
 ### API Changes

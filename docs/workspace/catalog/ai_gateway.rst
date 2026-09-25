@@ -95,6 +95,28 @@
         :returns: :class:`ModelService`
         
 
+    .. py:method:: create_skill(skill: Skill, parent: str, skill_id: str) -> Skill
+
+        Creates a skill in a Unity Catalog schema and provisions its managed bundle storage. Specify its name
+        in ``skill_id``. The request contains an optional comment but no bundle bytes. Upload bundle files
+        through the Files API, then call FinalizeSkill.
+
+        You must be the owner of the parent schema or have ``CREATE_VOLUME`` and ``USE_SCHEMA`` on it, plus
+        ``USE_CATALOG`` on the parent catalog.
+
+        :param skill: :class:`Skill`
+          The skill to create. ``comment`` is the only accepted client input and may be omitted. Do not set
+          ``name``; the server derives it from ``parent`` and ``skill_id``.
+        :param parent: str
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
+        :param skill_id: str
+          Name for the skill, e.g. "basic-math". The server normalizes this identifier to lowercase. It is
+          independent of the bundle name read from SKILL.md.
+
+        :returns: :class:`Skill`
+        
+
     .. py:method:: delete_mcp_service(name: str [, etag: Optional[str]])
 
         Deletes the MCP service identified by its resource name. Optionally supply an ``etag`` to make the
@@ -166,6 +188,45 @@
 
         
 
+    .. py:method:: delete_skill(name: str [, etag: Optional[str]])
+
+        Deletes the skill identified by its resource name and makes its managed bundle path unavailable.
+        Managed bundle data is deleted asynchronously. Optionally supply an ``etag`` to make the delete
+        conditional on the skill not having changed since it was read.
+
+        You must be the owner of the skill or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Full resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
+          component is capped at 255 characters individually.
+        :param etag: str (optional)
+          Optimistic concurrency token from the most recent read. When set, the delete succeeds only if the
+          resource has not changed. Leave unset for an unconditional delete. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
+
+
+        
+
+    .. py:method:: finalize_skill(name: str) -> Skill
+
+        Finalizes a skill after its bundle is uploaded. This method reads SKILL.md through the Files API using
+        the caller's authorization. Its YAML frontmatter must contain an agentskills.io-compliant ``name`` and
+        a nonblank ``description`` within the configured UTF-8 byte limit. On success, it replaces
+        ``bundle_name`` and ``description``; refreshes ``finalize_time``, ``update_time``, and ``updated_by``;
+        and returns the updated skill. ``comment`` is preserved. Re-finalization uses the latest SKILL.md and
+        is last-write-wins without an etag precondition. Validation failures do not change metadata.
+
+        You must be the owner of the skill or have ``READ_VOLUME`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Full resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
+          component is capped at 255 characters individually.
+
+        :returns: :class:`Skill`
+        
+
     .. py:method:: get_mcp_service(name: str) -> McpService
 
         Returns the MCP service identified by its resource name.
@@ -223,6 +284,20 @@
           Each ``{...}`` component is capped at 255 characters individually.
 
         :returns: :class:`ModelService`
+        
+
+    .. py:method:: get_skill(name: str) -> Skill
+
+        Returns the skill identified by its resource name.
+
+        You must be the owner of the skill or have ``READ_VOLUME``, ``READ_METADATA``, or ``MANAGE`` on it,
+        plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Full resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
+          component is capped at 255 characters individually.
+
+        :returns: :class:`Skill`
         
 
     .. py:method:: list_mcp_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListMcpServicesRequestView]]) -> Iterator[McpService]
@@ -301,6 +376,30 @@
           principal names from rate limits. Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`ModelService`
+        
+
+    .. py:method:: list_skills(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Skill]
+
+        Lists skills in a Unity Catalog schema. Provide ``parent`` as ``schemas/{catalog}.{schema}``. Results
+        are paginated; pass the returned ``next_page_token`` to fetch subsequent pages.
+
+        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only skills
+        the caller can access as owner or through ``READ_VOLUME``, ``READ_METADATA``, or ``MANAGE`` are
+        returned.
+
+        :param parent: str
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
+
+          Required: skill listing is schema-scoped, so ``parent`` must be set; an unset or empty ``parent`` is
+          rejected with INVALID_PARAMETER_VALUE.
+        :param page_size: int (optional)
+          Maximum number of skills to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          ``page_token`` to retrieve additional pages.
+        :param page_token: str (optional)
+          Opaque pagination token from a previous request.
+
+        :returns: Iterator over :class:`Skill`
         
 
     .. py:method:: update_mcp_service(name: str, mcp_service: McpService, update_mask: FieldMask [, etag: Optional[str]]) -> McpService
@@ -404,4 +503,32 @@
           base64 string returned by the API when setting the ``etag`` query parameter.
 
         :returns: :class:`ModelService`
+        
+
+    .. py:method:: update_skill(name: str, skill: Skill, update_mask: FieldMask [, etag: Optional[str]]) -> Skill
+
+        Updates a skill. Only fields named in ``update_mask`` are changed; currently only ``comment`` is
+        supported. The resource name is immutable. Optionally supply an ``etag`` to make the update
+        conditional on the skill not having changed since it was read. Bundle files, grants, tags, and
+        ownership are unchanged.
+
+        You must be the owner of the skill or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}`` component
+          is capped at 255 characters individually. Server-derived on Create from ``parent`` + ``skill_id``;
+          required and immutable on Update/Get/Delete.
+        :param skill: :class:`Skill`
+          The skill with the updated field values. ``name`` identifies the resource
+          (``skills/{catalog}.{schema}.{skill}``); only fields listed in ``update_mask`` are applied.
+        :param update_mask: FieldMask
+          Fields to update; validated against ``skill``. REQUIRED, matching the sibling Update RPCs.
+          ``comment`` is the only mutable field.
+        :param etag: str (optional)
+          Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
+          resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
+
+        :returns: :class:`Skill`
         

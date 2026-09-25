@@ -10,6 +10,9 @@
 
         Creates a group membership (assigns a principal to a group).
 
+        Authorization: the caller must be an account admin or a manager of the group (holds the
+        ``roles/group.manager`` role on it).
+
         :param group_id: int
           Required. Internal ID of the group in Databricks.
         :param direct_group_member: :class:`DirectGroupMember`
@@ -97,6 +100,9 @@
 
         Deletes a group membership (unassigns a principal from a group).
 
+        Authorization: the caller must be an account admin or a manager of the group (holds the
+        ``roles/group.manager`` role on it).
+
         :param group_id: int
           Required. Internal ID of the group in Databricks.
         :param principal_id: int
@@ -108,6 +114,9 @@
     .. py:method:: delete_group(group_id: str)
 
         Deletes a group from the Databricks account by its internal ID.
+
+        Authorization: the caller must be an account admin or a manager of the group (holds the
+        ``roles/group.manager`` role on it).
 
         :param group_id: str
           Required. Internal ID of the group in Databricks.
@@ -460,6 +469,9 @@
 
         When AIM is enabled and the group is an external identity (its external_id is set), only external_id
         can be updated; its other fields are sourced from your identity provider.
+
+        Authorization: the caller must be an account admin or a manager of the group (holds the
+        ``roles/group.manager`` role on it).
 
         :param group_id: str
           Required. Internal ID of the group in Databricks.

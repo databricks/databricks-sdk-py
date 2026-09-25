@@ -1075,6 +1075,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListSkillsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListStorageCredentialsResponse
    :members:
    :undoc-members:
@@ -2144,6 +2148,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VOLUME
       :value: "VOLUME"
+
+.. autoclass:: Skill
+   :members:
+   :undoc-members:
 
 .. py:class:: SpecialDestination
 

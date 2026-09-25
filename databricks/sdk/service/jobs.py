@@ -2110,17 +2110,16 @@ class DeploymentSpec:
     
     Example script contents:
     
-    Plain Python:
+    .. code-block:: bash
     
-    python train.py --epochs 10
+       # Plain Python:
+       python train.py --epochs 10
     
-    Multi-GPU via accelerate:
+       # Multi-GPU via accelerate:
+       accelerate launch train.py --config config.yaml
     
-    accelerate launch train.py --config config.yaml
-    
-    Distributed via torchrun:
-    
-    torchrun --nproc_per_node=8 train.py"""
+       # Distributed via torchrun:
+       torchrun --nproc_per_node=8 train.py"""
 
     compute: ComputeSpec
     """Compute resources allocated to each node in this deployment."""
