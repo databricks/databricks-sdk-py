@@ -54,6 +54,7 @@ from databricks.sdk.mixins.files import DbfsExt, FilesExt
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
+from databricks.sdk.mixins.model_services import ModelServicesExt
 from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.oauth import AuthorizationDetail
 from databricks.sdk.service.iam import AccessControlAPI
@@ -432,6 +433,7 @@ class WorkspaceClient:
         self._materialized_features = pkg_ml.MaterializedFeaturesAPI(self._api_client)
         self._metastores = pkg_catalog.MetastoresAPI(self._api_client)
         self._model_registry = pkg_ml.ModelRegistryAPI(self._api_client)
+        self._model_services = ModelServicesExt(self._api_client)
         self._model_versions = pkg_catalog.ModelVersionsAPI(self._api_client)
         self._notification_destinations = pkg_settings.NotificationDestinationsAPI(self._api_client)
         self._online_tables = pkg_catalog.OnlineTablesAPI(self._api_client)
@@ -859,6 +861,11 @@ class WorkspaceClient:
     def model_registry(self) -> pkg_ml.ModelRegistryAPI:
         """Note: This API reference documents APIs for the Workspace Model Registry."""
         return self._model_registry
+
+    @property
+    def model_services(self) -> ModelServicesExt:
+        """Model services are Unity Catalog v3 ``system.ai.*`` models queried via the AI Gateway."""
+        return self._model_services
 
     @property
     def model_versions(self) -> pkg_catalog.ModelVersionsAPI:
