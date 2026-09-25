@@ -6631,6 +6631,40 @@ class ListSecretsResponse:
 
 
 @dataclass
+class ListSkillsResponse:
+    """Response for listing skills."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token for retrieving the next page of results."""
+
+    skills: Optional[List[Skill]] = None
+    """The list of skills."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListSkillsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.skills:
+            body["skills"] = [v.as_dict() for v in self.skills]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSkillsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.skills:
+            body["skills"] = self.skills
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListSkillsResponse:
+        """Deserializes the ListSkillsResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), skills=_repeated_dict(d, "skills", Skill))
+
+
+@dataclass
 class ListStorageCredentialsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
@@ -11875,6 +11909,136 @@ class SecurableType(Enum):
     VOLUME = "VOLUME"
 
 
+@dataclass
+class Skill:
+    """A Skill is an agentskills.io bundle registered in Unity Catalog. Clients transfer bundle bytes
+    through the Files API. FinalizeSkill reads the uploaded SKILL.md and projects its frontmatter
+    onto the Skill metadata."""
+
+    bundle_name: Optional[str] = None
+    """Name from the most recently successfully finalized SKILL.md. It may differ from the final
+    component of the Skill resource name. Unset until FinalizeSkill succeeds."""
+
+    comment: Optional[str] = None
+    """User-provided comment for the skill. Free-text, user-editable via UpdateSkill (listed in its
+    ``update_mask``). DISTINCT from ``description``, which is the server-parsed, OUTPUT_ONLY
+    SKILL.md frontmatter value: ``comment`` is the customer's own annotation and is preserved across
+    bundle re-uploads. When ``comment`` is in the update mask, omitting it clears the field, while
+    an explicitly empty string is retained."""
+
+    create_time: Optional[Timestamp] = None
+    """Time the skill was created."""
+
+    created_by: Optional[str] = None
+    """Creator identity."""
+
+    description: Optional[str] = None
+    """Description from the most recently successfully finalized SKILL.md. Unset until FinalizeSkill
+    succeeds."""
+
+    effective_owner: Optional[str] = None
+    """Owner of the skill."""
+
+    etag: Optional[str] = None
+    """Optimistic concurrency token returned on every read. To make an Update or Delete conditional,
+    pass the last-read value in that request's ``etag`` field. In REST responses, this value is a
+    base64 string; URL-encode it when setting the ``etag`` query parameter."""
+
+    finalize_time: Optional[Timestamp] = None
+    """Time of the most recent successful FinalizeSkill. Unset until one succeeds."""
+
+    metastore_id: Optional[str] = None
+    """Metastore hosting the skill."""
+
+    name: Optional[str] = None
+    """Resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
+    component is capped at 255 characters individually. Server-derived on Create from ``parent`` +
+    ``skill_id``; required and immutable on Update/Get/Delete."""
+
+    update_time: Optional[Timestamp] = None
+    """Time of the most recent Skill metadata mutation. Uploading bundle files alone does not change
+    this value."""
+
+    updated_by: Optional[str] = None
+    """Identity of the last updater."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Skill into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bundle_name is not None:
+            body["bundle_name"] = self.bundle_name
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.finalize_time is not None:
+            body["finalize_time"] = self.finalize_time.ToJsonString()
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Skill into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bundle_name is not None:
+            body["bundle_name"] = self.bundle_name
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.finalize_time is not None:
+            body["finalize_time"] = self.finalize_time
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Skill:
+        """Deserializes the Skill from a dictionary."""
+        return cls(
+            bundle_name=d.get("bundle_name", None),
+            comment=d.get("comment", None),
+            create_time=_timestamp(d, "create_time"),
+            created_by=d.get("created_by", None),
+            description=d.get("description", None),
+            effective_owner=d.get("effective_owner", None),
+            etag=d.get("etag", None),
+            finalize_time=_timestamp(d, "finalize_time"),
+            metastore_id=d.get("metastore_id", None),
+            name=d.get("name", None),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
+        )
+
+
 class SpecialDestination(Enum):
     SPECIAL_DESTINATION_CATALOG_OWNER = "SPECIAL_DESTINATION_CATALOG_OWNER"
     SPECIAL_DESTINATION_CONNECTION_OWNER = "SPECIAL_DESTINATION_CONNECTION_OWNER"
@@ -14181,6 +14345,45 @@ class AiGatewayAPI:
         res = self._api.do("POST", "/api/2.1/unity-catalog/model-services", query=query, body=body, headers=headers)
         return ModelService.from_dict(res)
 
+    def create_skill(self, skill: Skill, parent: str, skill_id: str) -> Skill:
+        """Creates a skill in a Unity Catalog schema and provisions its managed bundle storage. Specify its name
+        in ``skill_id``. The request contains an optional comment but no bundle bytes. Upload bundle files
+        through the Files API, then call FinalizeSkill.
+
+        You must be the owner of the parent schema or have ``CREATE_VOLUME`` and ``USE_SCHEMA`` on it, plus
+        ``USE_CATALOG`` on the parent catalog.
+
+        :param skill: :class:`Skill`
+          The skill to create. ``comment`` is the only accepted client input and may be omitted. Do not set
+          ``name``; the server derives it from ``parent`` and ``skill_id``.
+        :param parent: str
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
+        :param skill_id: str
+          Name for the skill, e.g. "basic-math". The server normalizes this identifier to lowercase. It is
+          independent of the bundle name read from SKILL.md.
+
+        :returns: :class:`Skill`
+        """
+
+        body = skill.as_dict()
+        query = {}
+        if parent is not None:
+            query["parent"] = parent
+        if skill_id is not None:
+            query["skill_id"] = skill_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/skills", query=query, body=body, headers=headers)
+        return Skill.from_dict(res)
+
     def delete_mcp_service(self, name: str, *, etag: Optional[str] = None):
         """Deletes the MCP service identified by its resource name. Optionally supply an ``etag`` to make the
         delete conditional on the MCP service not having changed since it was read.
@@ -14298,6 +14501,67 @@ class AiGatewayAPI:
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
 
+    def delete_skill(self, name: str, *, etag: Optional[str] = None):
+        """Deletes the skill identified by its resource name and makes its managed bundle path unavailable.
+        Managed bundle data is deleted asynchronously. Optionally supply an ``etag`` to make the delete
+        conditional on the skill not having changed since it was read.
+
+        You must be the owner of the skill or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Full resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
+          component is capped at 255 characters individually.
+        :param etag: str (optional)
+          Optimistic concurrency token from the most recent read. When set, the delete succeeds only if the
+          resource has not changed. Leave unset for an unconditional delete. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
+
+
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+
+    def finalize_skill(self, name: str) -> Skill:
+        """Finalizes a skill after its bundle is uploaded. This method reads SKILL.md through the Files API using
+        the caller's authorization. Its YAML frontmatter must contain an agentskills.io-compliant ``name`` and
+        a nonblank ``description`` within the configured UTF-8 byte limit. On success, it replaces
+        ``bundle_name`` and ``description``; refreshes ``finalize_time``, ``update_time``, and ``updated_by``;
+        and returns the updated skill. ``comment`` is preserved. Re-finalization uses the latest SKILL.md and
+        is last-write-wins without an etag precondition. Validation failures do not change metadata.
+
+        You must be the owner of the skill or have ``READ_VOLUME`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Full resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
+          component is capped at 255 characters individually.
+
+        :returns: :class:`Skill`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.1/unity-catalog/{name}/finalize", headers=headers)
+        return Skill.from_dict(res)
+
     def get_mcp_service(self, name: str) -> McpService:
         """Returns the MCP service identified by its resource name.
 
@@ -14396,6 +14660,30 @@ class AiGatewayAPI:
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
         return ModelService.from_dict(res)
+
+    def get_skill(self, name: str) -> Skill:
+        """Returns the skill identified by its resource name.
+
+        You must be the owner of the skill or have ``READ_VOLUME``, ``READ_METADATA``, or ``MANAGE`` on it,
+        plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Full resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
+          component is capped at 255 characters individually.
+
+        :returns: :class:`Skill`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/{name}", headers=headers)
+        return Skill.from_dict(res)
 
     def list_mcp_services(
         self,
@@ -14571,6 +14859,55 @@ class AiGatewayAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_skills(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[Skill]:
+        """Lists skills in a Unity Catalog schema. Provide ``parent`` as ``schemas/{catalog}.{schema}``. Results
+        are paginated; pass the returned ``next_page_token`` to fetch subsequent pages.
+
+        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only skills
+        the caller can access as owner or through ``READ_VOLUME``, ``READ_METADATA``, or ``MANAGE`` are
+        returned.
+
+        :param parent: str
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
+
+          Required: skill listing is schema-scoped, so ``parent`` must be set; an unset or empty ``parent`` is
+          rejected with INVALID_PARAMETER_VALUE.
+        :param page_size: int (optional)
+          Maximum number of skills to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          ``page_token`` to retrieve additional pages.
+        :param page_token: str (optional)
+          Opaque pagination token from a previous request.
+
+        :returns: Iterator over :class:`Skill`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.1/unity-catalog/skills", query=query, headers=headers)
+            if "skills" in json:
+                for v in json["skills"]:
+                    yield Skill.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def update_mcp_service(
         self, name: str, mcp_service: McpService, update_mask: FieldMask, *, etag: Optional[str] = None
     ) -> McpService:
@@ -14735,6 +15072,51 @@ class AiGatewayAPI:
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/{name}", query=query, body=body, headers=headers)
         return ModelService.from_dict(res)
+
+    def update_skill(self, name: str, skill: Skill, update_mask: FieldMask, *, etag: Optional[str] = None) -> Skill:
+        """Updates a skill. Only fields named in ``update_mask`` are changed; currently only ``comment`` is
+        supported. The resource name is immutable. Optionally supply an ``etag`` to make the update
+        conditional on the skill not having changed since it was read. Bundle files, grants, tags, and
+        ownership are unchanged.
+
+        You must be the owner of the skill or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}`` component
+          is capped at 255 characters individually. Server-derived on Create from ``parent`` + ``skill_id``;
+          required and immutable on Update/Get/Delete.
+        :param skill: :class:`Skill`
+          The skill with the updated field values. ``name`` identifies the resource
+          (``skills/{catalog}.{schema}.{skill}``); only fields listed in ``update_mask`` are applied.
+        :param update_mask: FieldMask
+          Fields to update; validated against ``skill``. REQUIRED, matching the sibling Update RPCs.
+          ``comment`` is the only mutable field.
+        :param etag: str (optional)
+          Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
+          resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
+
+        :returns: :class:`Skill`
+        """
+
+        body = skill.as_dict()
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/{name}", query=query, body=body, headers=headers)
+        return Skill.from_dict(res)
 
 
 class ArtifactAllowlistsAPI:

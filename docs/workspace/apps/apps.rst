@@ -261,7 +261,8 @@
 
     .. py:method:: update(name: str, app: App) -> App
 
-        Updates the app with the supplied name.
+        Updates the app with the supplied name. This is a full replacement: fields omitted from the request
+        are cleared, so send the complete app.
 
         :param name: str
           The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It

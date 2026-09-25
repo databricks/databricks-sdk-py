@@ -230,8 +230,9 @@
 
     .. py:method:: list_memories(parent: str, actor_id: str [, page_size: Optional[int], page_token: Optional[str], path_prefix: Optional[str], read_mask: Optional[FieldMask], session_id: Optional[str]]) -> Iterator[ManagedMemoryEntry]
 
-        Lists managed memory entries for one actor. Optional ``session_id`` and ``path_prefix`` further
-        restrict the actor partition; ``read_mask`` selects fields in each returned entry.
+        Lists managed memory entries for one actor. An exact ``path`` filters entries across sessions,
+        ignoring session metadata. Otherwise, ``session_id`` and ``path_prefix`` restrict the actor partition.
+        ``read_mask`` selects fields in each returned entry.
 
         :param parent: str
           Managed memory store whose entries are listed, in the form
@@ -251,7 +252,7 @@
           the requested fields.
         :param session_id: str (optional)
           Optional session identifier. When set, only entries with this exact ``session_id`` are returned.
-          Omitted-session (cross-session) entries are not included.
+          Omitted-session (cross-session) entries are not included. Ignored when path is set.
 
         :returns: Iterator over :class:`ManagedMemoryEntry`
         
