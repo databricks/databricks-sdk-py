@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.143.0 (2026-09-26)
+
+### API Changes
+* Add `job_id` and `pipeline_id` fields for `databricks.sdk.service.ml.MaterializedFeature`.
+
+### Bug Fixes
+* Don't configure the root logger when importing `databricks.sdk.runtime`. Its import-time notebook-globals initialization logged through root-level `logging` helpers, which install a handler on the root logger when it has none. This also happened transitively through `WorkspaceClient` and `dbutils`, and made a later `logging.basicConfig()` a silent no-op. These messages now go through the SDK's `databricks.sdk` logger.
+
 ## Release v0.142.0 (2026-09-25)
 
 ### API Changes
