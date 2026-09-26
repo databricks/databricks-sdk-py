@@ -5069,6 +5069,10 @@ class MaterializedFeature:
     is_online: Optional[bool] = None
     """True if this is an online materialized feature. False if it is an offline materialized feature."""
 
+    job_id: Optional[int] = None
+    """The ID of the job that materializes the feature. This is present for both batch and streaming
+    features."""
+
     last_materialization_time: Optional[str] = None
     """The timestamp when the pipeline last ran and updated the materialized feature values. If the
     pipeline has not run yet, this field will be null."""
@@ -5085,6 +5089,10 @@ class MaterializedFeature:
 
     online_store_config: Optional[OnlineStoreConfig] = None
     """Destination for writing feature values to an online Lakebase table."""
+
+    pipeline_id: Optional[str] = None
+    """The ID of the pipeline that materializes this feature. This is only present for streaming
+    features."""
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
     """The schedule state of the materialization pipeline. Hidden from GraphQL: being deprecated, so
@@ -5124,6 +5132,8 @@ class MaterializedFeature:
             body["feature_name"] = self.feature_name
         if self.is_online is not None:
             body["is_online"] = self.is_online
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
         if self.last_materialization_time is not None:
             body["last_materialization_time"] = self.last_materialization_time
         if self.latest_backfill_operation is not None:
@@ -5134,6 +5144,8 @@ class MaterializedFeature:
             body["offline_store_config"] = self.offline_store_config.as_dict()
         if self.online_store_config:
             body["online_store_config"] = self.online_store_config.as_dict()
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
         if self.pipeline_schedule_state is not None:
             body["pipeline_schedule_state"] = self.pipeline_schedule_state.value
         if self.streaming_mode:
@@ -5159,6 +5171,8 @@ class MaterializedFeature:
             body["feature_name"] = self.feature_name
         if self.is_online is not None:
             body["is_online"] = self.is_online
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
         if self.last_materialization_time is not None:
             body["last_materialization_time"] = self.last_materialization_time
         if self.latest_backfill_operation is not None:
@@ -5169,6 +5183,8 @@ class MaterializedFeature:
             body["offline_store_config"] = self.offline_store_config
         if self.online_store_config:
             body["online_store_config"] = self.online_store_config
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
         if self.pipeline_schedule_state is not None:
             body["pipeline_schedule_state"] = self.pipeline_schedule_state
         if self.streaming_mode:
@@ -5190,11 +5206,13 @@ class MaterializedFeature:
             cron_schedule_trigger=_from_dict(d, "cron_schedule_trigger", CronSchedule),
             feature_name=d.get("feature_name", None),
             is_online=d.get("is_online", None),
+            job_id=_int64(d, "job_id"),
             last_materialization_time=d.get("last_materialization_time", None),
             latest_backfill_operation=d.get("latest_backfill_operation", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
             online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
+            pipeline_id=d.get("pipeline_id", None),
             pipeline_schedule_state=_enum(d, "pipeline_schedule_state", MaterializedFeaturePipelineScheduleState),
             streaming_mode=_from_dict(d, "streaming_mode", StreamingMode),
             table_name=d.get("table_name", None),
