@@ -491,6 +491,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: JobEnvironmentVariables
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobEnvironmentVariablesSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: JobNotificationSettings
    :members:
    :undoc-members:

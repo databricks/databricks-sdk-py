@@ -1,5 +1,21 @@
 # Version changelog
 
+## Release v0.144.0 (2026-09-29)
+
+### API Changes
+* Add `environment_variables` field for `databricks.sdk.service.jobs.BaseRun`.
+* Add `environment_variables` field for `databricks.sdk.service.jobs.CreateJob`.
+* Add `environment_variables` field for `databricks.sdk.service.jobs.JobSettings`.
+* Add `environment_variables` field for `databricks.sdk.service.jobs.Run`.
+* Add `environment_variables_key` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `environment_variables` field for `databricks.sdk.service.jobs.SubmitRun`.
+* Add `environment_variables_key` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `environment_variables_key` field for `databricks.sdk.service.jobs.Task`.
+* Change `command_path` field for `databricks.sdk.service.jobs.DeploymentSpec` to no longer be required.
+* [Breaking] Change `command_path` field for `databricks.sdk.service.jobs.DeploymentSpec` to no longer be required.
+* Change `api_secret_ref` field for `databricks.sdk.service.ml.SchemaRegistryConfig` to no longer be required.
+* [Breaking] Change `api_secret_ref` field for `databricks.sdk.service.ml.SchemaRegistryConfig` to no longer be required.
+
 ## Release v0.143.0 (2026-09-26)
 
 ### API Changes
