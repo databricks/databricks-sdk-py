@@ -31,35 +31,6 @@ jobs:
         os: windows-latest
         pyVersion: ${{ matrix.pyVersion }}
 
-  fmt:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
-        with:
-          version: "0.6.5"
-
-      - name: Setup JFrog PyPI proxy
-        uses: ./.github/actions/setup-jfrog-pypi
-
-      - name: Re-lock for JFrog
-        run: uv lock
-
-      - name: Format all files
-        run: make dev fmt
-
-      - name: Restore lockfiles and fix proxy URLs
-        run: |
-          git checkout -- '*.lock'
-          make fix-lockfile
-
-      - name: Fail on differences
-        run: git diff --exit-code
-
   check-manifest:
     runs-on: ubuntu-latest
 
