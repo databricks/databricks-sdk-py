@@ -10,6 +10,7 @@ from databricks.sdk.service._internal import (
     _duration,
     _enum,
     _escape_multi_segment_path_parameter,
+    _escape_path_parameter,
     _fieldmask,
     _from_dict,
     _int64,
@@ -91,6 +92,18 @@ def test_escape_multi_segment_path_parameter():
     assert _escape_multi_segment_path_parameter("a/b") == "a/b"
     assert _escape_multi_segment_path_parameter("a?b") == "a%3Fb"
     assert _escape_multi_segment_path_parameter("a#b") == "a%23b"
+
+
+def test_escape_path_parameter_encodes_slash():
+    # Single-segment encoding must turn "/" into "%2F" (issue #1493).
+    assert _escape_path_parameter("a/b") == "a%2Fb"
+    assert _escape_path_parameter("main.schema.table.Inferences/Second") == (
+        "main.schema.table.Inferences%2FSecond"
+    )
+    assert _escape_path_parameter("a b") == "a%20b"
+    assert _escape_path_parameter("a?b") == "a%3Fb"
+    assert _escape_path_parameter("a#b") == "a%23b"
+    assert _escape_path_parameter("a%b") == "a%25b"
 
 
 @pytest.mark.parametrize(
