@@ -5455,7 +5455,12 @@ class InstancePoolAwsAttributes:
     """Attributes set during instance pool creation which are related to Amazon Web Services."""
 
     availability: Optional[InstancePoolAwsAttributesAvailability] = None
-    """Availability type used for the spot nodes."""
+    """Availability type used for the instances in the pool. Supports on-demand, spot, and
+    spot-with-fallback (the pool acquires spot instances first, and falls back to on-demand
+    instances when spot capacity is unavailable).
+    
+    You can change this value on an existing pool. New clusters use the updated availability, and
+    existing clusters keep the availability they launched with."""
 
     instance_profile_arn: Optional[str] = None
     """All AWS instances belonging to the instance pool will have this instance profile. If omitted,
@@ -5474,7 +5479,10 @@ class InstancePoolAwsAttributes:
     instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand
     ``r3.xlarge`` instances. If not specified, the default value is 100. When spot instances are
     requested for this cluster, only spot instances whose bid price percentage matches this field
-    will be considered. Note that, for safety, we enforce this field to be no more than 10000."""
+    will be considered. Note that, for safety, we enforce this field to be no more than 10000.
+    
+    You can change this value on an existing pool. New clusters use the updated bid price, and
+    existing clusters keep the bid price they launched with."""
 
     zone_id: Optional[str] = None
     """Identifier for the availability zone/datacenter in which the cluster resides. This string will
@@ -5482,7 +5490,15 @@ class InstancePoolAwsAttributes:
     Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
     deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
     if not specified, a default zone will be used. The list of available zones as well as the
-    default value can be found by using the ``List Zones`` method."""
+    default value can be found by using the ``List Zones`` method.
+    
+    Set this field to "auto" to enable Auto-AZ, in which case Databricks selects the availability
+    zone for each cluster independently when the cluster launches, and retries another zone if the
+    cluster can't be fulfilled because of insufficient capacity or quota. All nodes in a cluster
+    land in the same zone, and different clusters backed by the pool can run in different zones.
+    
+    You can change the zone on an existing pool. New clusters use the updated zone, and existing
+    clusters keep the zone they launched with."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolAwsAttributes into a dictionary suitable for use as a JSON request body."""
@@ -5533,7 +5549,12 @@ class InstancePoolAzureAttributes:
     """Attributes set during instance pool creation which are related to Azure."""
 
     availability: Optional[InstancePoolAzureAttributesAvailability] = None
-    """Availability type used for the spot nodes."""
+    """Availability type used for the instances in the pool. Supports on-demand, spot, and
+    spot-with-fallback (the pool acquires spot instances first, and falls back to on-demand
+    instances when spot capacity is unavailable).
+    
+    You can change this value on an existing pool. New clusters use the updated availability, and
+    existing clusters keep the availability they launched with."""
 
     capacity_reservation_group: Optional[str] = None
     """The Azure capacity reservation group resource ID to use for launching VMs in this pool. When
@@ -5558,7 +5579,10 @@ class InstancePoolAzureAttributes:
     """With variable pricing, you have option to set a max price, in US dollars (USD) For example, the
     value 2 would be a max price of $2.00 USD per hour. If you set the max price to be -1, the VM
     won't be evicted based on price. The price for the VM will be the current price for spot or the
-    price for a standard VM, which ever is less, as long as there is capacity and quota available."""
+    price for a standard VM, which ever is less, as long as there is capacity and quota available.
+    
+    You can change this value on an existing pool. New clusters use the updated max price, and
+    existing clusters keep the max price they launched with."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolAzureAttributes into a dictionary suitable for use as a JSON request body."""
@@ -5604,6 +5628,12 @@ class InstancePoolGcpAttributes:
     """Attributes set during instance pool creation which are related to GCP."""
 
     gcp_availability: Optional[GcpAvailability] = None
+    """Availability type for the instances in the pool. One of:
+    
+    - ``ON_DEMAND_GCP``: the pool uses on-demand instances only.
+    - ``PREEMPTIBLE_GCP``: the pool uses preemptible instances only.
+    - ``PREEMPTIBLE_WITH_FALLBACK_GCP``: the pool acquires preemptible instances first, and falls
+      back to on-demand instances when preemptible capacity is unavailable."""
 
     local_ssd_count: Optional[int] = None
     """If provided, each node in the instance pool will have this number of local SSDs attached. Each
@@ -5622,10 +5652,17 @@ class InstancePoolGcpAttributes:
     
     - "HA" => High availability, spread nodes across availability zones for a Databricks deployment
       region
+    - "auto" => Auto-AZ. Databricks selects the availability zone for each cluster independently
+      when the cluster launches, and retries another zone if the cluster can't be fulfilled because
+      of insufficient capacity or quota. All nodes in a cluster land in the same zone, and different
+      clusters backed by the pool can run in different zones.
     - A GCP availability zone => Pick One of the available zones for (machine type + region) from
       https://cloud.google.com/compute/docs/regions-zones (e.g. "us-west1-a").
     
-    If empty, Databricks picks an availability zone to schedule the cluster on."""
+    If empty, Databricks picks an availability zone to schedule the cluster on.
+    
+    You can change the zone on an existing pool. New clusters use the updated zone, and existing
+    clusters keep the zone they launched with."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolGcpAttributes into a dictionary suitable for use as a JSON request body."""

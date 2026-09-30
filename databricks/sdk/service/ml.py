@@ -7713,8 +7713,9 @@ class SchemaLocatorFormat(Enum):
 class SchemaRegistryConfig:
     """Configuration for resolving a Stream's schema from an external schema registry (e.g. Confluent)."""
 
-    api_secret_ref: SecretScopeReference
-    """Reference to the schema registry API secret in a Databricks secret scope."""
+    api_secret_ref: Optional[SecretScopeReference] = None
+    """Reference to the schema registry API secret in a Databricks secret scope. Set this only if
+    required for authentication for the schema registry."""
 
     key_schema_locator: Optional[SchemaLocator] = None
     """Schema locator for the message key. Only used for Kafka streams. At least one of
