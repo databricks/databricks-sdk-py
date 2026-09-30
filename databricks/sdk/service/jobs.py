@@ -513,6 +513,11 @@ class BaseRun:
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
     field is set to 0 if the job is still running."""
 
+    environment_variables: Optional[List[JobEnvironmentVariables]] = None
+    """Snapshot of ``JobSettings.environment_variables`` as it was at run launch — the full list of
+    named environment-variable entries the job defined. To find which entry a given task ran with,
+    look at ``RunTaskSettings.environment_variables_key``."""
+
     execution_duration: Optional[int] = None
     """The time in milliseconds it took to execute the commands in the JAR or notebook until they
     completed, failed, timed out, were cancelled, or encountered an unexpected error. The duration
@@ -640,6 +645,8 @@ class BaseRun:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
+        if self.environment_variables:
+            body["environment_variables"] = [v.as_dict() for v in self.environment_variables]
         if self.execution_duration is not None:
             body["execution_duration"] = self.execution_duration
         if self.git_source:
@@ -717,6 +724,8 @@ class BaseRun:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
+        if self.environment_variables:
+            body["environment_variables"] = self.environment_variables
         if self.execution_duration is not None:
             body["execution_duration"] = self.execution_duration
         if self.git_source:
@@ -785,6 +794,7 @@ class BaseRun:
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=_int64(d, "end_time"),
+            environment_variables=_repeated_dict(d, "environment_variables", JobEnvironmentVariables),
             execution_duration=_int64(d, "execution_duration"),
             git_source=_from_dict(d, "git_source", GitSource),
             has_more=d.get("has_more", None),
@@ -2103,7 +2113,10 @@ class DeploymentSpec:
     same command; role-split workloads (driver + worker, parameter server, separate eval node, etc.)
     use multiple entries."""
 
-    command_path: str
+    compute: ComputeSpec
+    """Compute resources allocated to each node in this deployment."""
+
+    command_path: Optional[str] = None
     """Workspace path of the script to run on each node in this deployment. Upload the script to this
     path and supply the path here. When the task runs, the file at this path is run on each node; if
     it fails, the task fails with its exit code.
@@ -2120,9 +2133,6 @@ class DeploymentSpec:
     
        # Distributed via torchrun:
        torchrun --nproc_per_node=8 train.py"""
-
-    compute: ComputeSpec
-    """Compute resources allocated to each node in this deployment."""
 
     name: Optional[str] = None
     """Optional human-readable name for this deployment (for example, ``driver``, ``worker``,
@@ -3381,6 +3391,100 @@ class JobEnvironment:
 
 
 @dataclass
+class JobEnvironmentVariables:
+    """A named environment-variable entry, defined once at the job level and referenced by key from one
+    or more tasks. Entries live on ``JobSettings.environment_variables``, and tasks select one via
+    ``TaskSettings.environment_variables_key``."""
+
+    environment_variables_key: Optional[str] = None
+    """Identifier for this entry. Must be unique within ``JobSettings.environment_variables``. Tasks
+    reference it from ``TaskSettings.environment_variables_key``."""
+
+    spec: Optional[JobEnvironmentVariablesSpec] = None
+    """The environment variable specification."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobEnvironmentVariables into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.environment_variables_key is not None:
+            body["environment_variables_key"] = self.environment_variables_key
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobEnvironmentVariables into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.environment_variables_key is not None:
+            body["environment_variables_key"] = self.environment_variables_key
+        if self.spec:
+            body["spec"] = self.spec
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobEnvironmentVariables:
+        """Deserializes the JobEnvironmentVariables from a dictionary."""
+        return cls(
+            environment_variables_key=d.get("environment_variables_key", None),
+            spec=_from_dict(d, "spec", JobEnvironmentVariablesSpec),
+        )
+
+
+@dataclass
+class JobEnvironmentVariablesSpec:
+    """The environment variables and files associated with a job environment variable entry. Runtime
+    environment variables override inline ``variables``, which override values from ``files``, on
+    duplicate keys."""
+
+    files: Optional[List[str]] = None
+    """Workspace (``/Workspace/...``) or UC Volumes (``/Volumes/...``) paths to ``.env`` files. Maximum
+    5 files. Files are read, parsed, and merged at task execution time, not at job creation or
+    update API call time.
+    
+    File format: each line containing a variable must be exactly ``KEY=VALUE``. Empty and
+    whitespace-only lines, and lines beginning with ``#``, are ignored. Keys must match the same
+    regex as inlined variable names (``^[A-Za-z_][A-Za-z0-9_]*$``); the value continues to the end
+    of the line. No other syntax is supported — no inline comments, no quoted values, no escape
+    sequences, no variable interpolation. Any other line that does not match the ``KEY=VALUE`` shape
+    fails the run.
+    
+    Size limits: maximum 32,768 bytes (32 KiB) per file on disk; maximum 1,024 bytes (1 KiB) per
+    ``KEY=VALUE`` line combined. Files or lines exceeding these limits fail the run.
+    
+    On a duplicate key, the later file wins; ``variables`` override values from any file."""
+
+    variables: Optional[Dict[str, str]] = None
+    """Environment variables specified directly as key/value pairs. Maximum 20 entries.
+    
+    Each key must be 1 to 256 characters and match ``^[A-Za-z_][A-Za-z0-9_]*$``: it must start with
+    an ASCII letter or underscore and contain only ASCII letters, digits, and underscores. Each
+    value can be any Unicode string of up to 512 characters, including an empty string."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobEnvironmentVariablesSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.files:
+            body["files"] = [v for v in self.files]
+        if self.variables:
+            body["variables"] = self.variables
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobEnvironmentVariablesSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.files:
+            body["files"] = self.files
+        if self.variables:
+            body["variables"] = self.variables
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobEnvironmentVariablesSpec:
+        """Deserializes the JobEnvironmentVariablesSpec from a dictionary."""
+        return cls(files=d.get("files", None), variables=d.get("variables", None))
+
+
+@dataclass
 class JobNotificationSettings:
     no_alert_for_canceled_runs: Optional[bool] = None
     """If true, do not send notifications to recipients specified in ``on_failure`` if the run is
@@ -3693,6 +3797,12 @@ class JobSettings:
     """An optional set of email addresses that is notified when runs of this job begin or complete as
     well as when this job is deleted."""
 
+    environment_variables: Optional[List[JobEnvironmentVariables]] = None
+    """Named environment-variable entries that tasks can reference by key from
+    ``TaskSettings.environment_variables_key``. Each entry's ``spec`` holds inline ``variables`` and
+    optional ``.env`` ``files``. Maximum 10 entries per job. A task can reference at most one entry
+    from this list."""
+
     environments: Optional[List[JobEnvironment]] = None
     """A list of task execution environment specifications that can be referenced by tasks that use
     serverless compute or a compute resource that uses Environments mode.
@@ -3819,6 +3929,8 @@ class JobSettings:
             body["edit_mode"] = self.edit_mode.value
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
+        if self.environment_variables:
+            body["environment_variables"] = [v.as_dict() for v in self.environment_variables]
         if self.environments:
             body["environments"] = [v.as_dict() for v in self.environments]
         if self.format is not None:
@@ -3878,6 +3990,8 @@ class JobSettings:
             body["edit_mode"] = self.edit_mode
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
+        if self.environment_variables:
+            body["environment_variables"] = self.environment_variables
         if self.environments:
             body["environments"] = self.environments
         if self.format is not None:
@@ -3932,6 +4046,7 @@ class JobSettings:
             description=d.get("description", None),
             edit_mode=_enum(d, "edit_mode", JobEditMode),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
+            environment_variables=_repeated_dict(d, "environment_variables", JobEnvironmentVariables),
             environments=_repeated_dict(d, "environments", JobEnvironment),
             format=_enum(d, "format", Format),
             git_source=_from_dict(d, "git_source", GitSource),
@@ -5738,6 +5853,11 @@ class Run:
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
     field is set to 0 if the job is still running."""
 
+    environment_variables: Optional[List[JobEnvironmentVariables]] = None
+    """Snapshot of ``JobSettings.environment_variables`` as it was at run launch — the full list of
+    named environment-variable entries the job defined. To find which entry a given task ran with,
+    look at ``RunTaskSettings.environment_variables_key``."""
+
     execution_duration: Optional[int] = None
     """The time in milliseconds it took to execute the commands in the JAR or notebook until they
     completed, failed, timed out, were cancelled, or encountered an unexpected error. The duration
@@ -5871,6 +5991,8 @@ class Run:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
+        if self.environment_variables:
+            body["environment_variables"] = [v.as_dict() for v in self.environment_variables]
         if self.execution_duration is not None:
             body["execution_duration"] = self.execution_duration
         if self.git_source:
@@ -5952,6 +6074,8 @@ class Run:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
+        if self.environment_variables:
+            body["environment_variables"] = self.environment_variables
         if self.execution_duration is not None:
             body["execution_duration"] = self.execution_duration
         if self.git_source:
@@ -6024,6 +6148,7 @@ class Run:
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=_int64(d, "end_time"),
+            environment_variables=_repeated_dict(d, "environment_variables", JobEnvironmentVariables),
             execution_duration=_int64(d, "execution_duration"),
             git_source=_from_dict(d, "git_source", GitSource),
             has_more=d.get("has_more", None),
@@ -6991,6 +7116,13 @@ class RunTask:
     Python wheel and dbt tasks when using serverless compute or a compute resource that uses
     Environments mode."""
 
+    environment_variables_key: Optional[str] = None
+    """Reference to a ``JobEnvironmentVariables`` entry defined in
+    ``RunSettings.environment_variables`` for one-time runs or preserved in
+    ``Run.environment_variables`` for run snapshots. The selected entry's variables are applied to
+    this task at execution time. This field supports serverless tasks using environment version 5 or
+    later."""
+
     execution_duration: Optional[int] = None
     """The time in milliseconds it took to execute the commands in the JAR or notebook until they
     completed, failed, timed out, were cancelled, or encountered an unexpected error. The duration
@@ -7169,6 +7301,8 @@ class RunTask:
             body["end_time"] = self.end_time
         if self.environment_key is not None:
             body["environment_key"] = self.environment_key
+        if self.environment_variables_key is not None:
+            body["environment_variables_key"] = self.environment_variables_key
         if self.execution_duration is not None:
             body["execution_duration"] = self.execution_duration
         if self.existing_cluster_id is not None:
@@ -7286,6 +7420,8 @@ class RunTask:
             body["end_time"] = self.end_time
         if self.environment_key is not None:
             body["environment_key"] = self.environment_key
+        if self.environment_variables_key is not None:
+            body["environment_variables_key"] = self.environment_variables_key
         if self.execution_duration is not None:
             body["execution_duration"] = self.execution_duration
         if self.existing_cluster_id is not None:
@@ -7383,6 +7519,7 @@ class RunTask:
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=_int64(d, "end_time"),
             environment_key=d.get("environment_key", None),
+            environment_variables_key=d.get("environment_variables_key", None),
             execution_duration=_int64(d, "execution_duration"),
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", RunForEachTask),
@@ -8493,6 +8630,13 @@ class SubmitTask:
     Python wheel and dbt tasks when using serverless compute or a compute resource that uses
     Environments mode."""
 
+    environment_variables_key: Optional[str] = None
+    """Reference to a ``JobEnvironmentVariables`` entry defined in
+    ``RunSettings.environment_variables`` for one-time runs or preserved in
+    ``Run.environment_variables`` for run snapshots. The selected entry's variables are applied to
+    this task at execution time. This field supports serverless tasks using environment version 5 or
+    later."""
+
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs. When running
     jobs or tasks on an existing cluster, you may need to manually restart the cluster if it stops
@@ -8611,6 +8755,8 @@ class SubmitTask:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
             body["environment_key"] = self.environment_key
+        if self.environment_variables_key is not None:
+            body["environment_variables_key"] = self.environment_variables_key
         if self.existing_cluster_id is not None:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
@@ -8694,6 +8840,8 @@ class SubmitTask:
             body["email_notifications"] = self.email_notifications
         if self.environment_key is not None:
             body["environment_key"] = self.environment_key
+        if self.environment_variables_key is not None:
+            body["environment_variables_key"] = self.environment_variables_key
         if self.existing_cluster_id is not None:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
@@ -8763,6 +8911,7 @@ class SubmitTask:
             disabled=d.get("disabled", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             environment_key=d.get("environment_key", None),
+            environment_variables_key=d.get("environment_variables_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", ForEachTask),
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
@@ -9053,6 +9202,11 @@ class Task:
     Python wheel and dbt tasks when using serverless compute or a compute resource that uses
     Environments mode."""
 
+    environment_variables_key: Optional[str] = None
+    """Reference to a ``JobEnvironmentVariables`` entry defined in
+    ``JobSettings.environment_variables``. The selected entry's variables are applied to this task
+    at execution time. This field supports serverless tasks using environment version 5 or later."""
+
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs. When running
     jobs or tasks on an existing cluster, you may need to manually restart the cluster if it stops
@@ -9180,6 +9334,8 @@ class Task:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
             body["environment_key"] = self.environment_key
+        if self.environment_variables_key is not None:
+            body["environment_variables_key"] = self.environment_variables_key
         if self.existing_cluster_id is not None:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
@@ -9265,6 +9421,8 @@ class Task:
             body["email_notifications"] = self.email_notifications
         if self.environment_key is not None:
             body["environment_key"] = self.environment_key
+        if self.environment_variables_key is not None:
+            body["environment_variables_key"] = self.environment_variables_key
         if self.existing_cluster_id is not None:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
@@ -9336,6 +9494,7 @@ class Task:
             disabled=d.get("disabled", None),
             email_notifications=_from_dict(d, "email_notifications", TaskEmailNotifications),
             environment_key=d.get("environment_key", None),
+            environment_variables_key=d.get("environment_variables_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", ForEachTask),
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
@@ -10406,6 +10565,7 @@ class JobsAPI:
         description: Optional[str] = None,
         edit_mode: Optional[JobEditMode] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
+        environment_variables: Optional[List[JobEnvironmentVariables]] = None,
         environments: Optional[List[JobEnvironment]] = None,
         format: Optional[Format] = None,
         git_source: Optional[GitSource] = None,
@@ -10454,6 +10614,11 @@ class JobsAPI:
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
+        :param environment_variables: List[:class:`JobEnvironmentVariables`] (optional)
+          Named environment-variable entries that tasks can reference by key from
+          ``TaskSettings.environment_variables_key``. Each entry's ``spec`` holds inline ``variables`` and
+          optional ``.env`` ``files``. Maximum 10 entries per job. A task can reference at most one entry from
+          this list.
         :param environments: List[:class:`JobEnvironment`] (optional)
           A list of task execution environment specifications that can be referenced by tasks that use
           serverless compute or a compute resource that uses Environments mode.
@@ -10562,6 +10727,8 @@ class JobsAPI:
             body["edit_mode"] = edit_mode.value
         if email_notifications is not None:
             body["email_notifications"] = email_notifications.as_dict()
+        if environment_variables is not None:
+            body["environment_variables"] = [v.as_dict() for v in environment_variables]
         if environments is not None:
             body["environments"] = [v.as_dict() for v in environments]
         if format is not None:
@@ -11480,6 +11647,7 @@ class JobsAPI:
         access_control_list: Optional[List[JobAccessControlRequest]] = None,
         budget_policy_id: Optional[str] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
+        environment_variables: Optional[List[JobEnvironmentVariables]] = None,
         environments: Optional[List[JobEnvironment]] = None,
         git_source: Optional[GitSource] = None,
         health: Optional[JobsHealthRules] = None,
@@ -11511,6 +11679,11 @@ class JobsAPI:
           will be not be attributed to any budget policy.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
+        :param environment_variables: List[:class:`JobEnvironmentVariables`] (optional)
+          Named environment-variable entries that tasks of this one-time run can reference by key from
+          ``RunTaskSettings.environment_variables_key``. Each entry's ``spec`` holds inline ``variables`` and
+          optional ``.env`` ``files``. Handled identically to ``JobSettings.environment_variables``. Maximum
+          10 entries. Entries are independent of one another — there is no cross-entry merging.
         :param environments: List[:class:`JobEnvironment`] (optional)
           A list of task execution environment specifications that can be referenced by tasks of this run.
         :param git_source: :class:`GitSource` (optional)
@@ -11573,6 +11746,8 @@ class JobsAPI:
             body["budget_policy_id"] = budget_policy_id
         if email_notifications is not None:
             body["email_notifications"] = email_notifications.as_dict()
+        if environment_variables is not None:
+            body["environment_variables"] = [v.as_dict() for v in environment_variables]
         if environments is not None:
             body["environments"] = [v.as_dict() for v in environments]
         if git_source is not None:
@@ -11621,6 +11796,7 @@ class JobsAPI:
         access_control_list: Optional[List[JobAccessControlRequest]] = None,
         budget_policy_id: Optional[str] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
+        environment_variables: Optional[List[JobEnvironmentVariables]] = None,
         environments: Optional[List[JobEnvironment]] = None,
         git_source: Optional[GitSource] = None,
         health: Optional[JobsHealthRules] = None,
@@ -11640,6 +11816,7 @@ class JobsAPI:
             access_control_list=access_control_list,
             budget_policy_id=budget_policy_id,
             email_notifications=email_notifications,
+            environment_variables=environment_variables,
             environments=environments,
             git_source=git_source,
             health=health,

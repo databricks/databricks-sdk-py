@@ -146,6 +146,156 @@ class AiClassifyResponseMetadata:
 
 
 @dataclass
+class AiDecideOptions:
+    """ai_decide"""
+
+    version: Optional[str] = None
+    """The function API version to invoke. Defaults to "1.0". Supported versions: ["1.0"]."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiDecideOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiDecideOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiDecideOptions:
+        """Deserializes the AiDecideOptions from a dictionary."""
+        return cls(version=d.get("version", None))
+
+
+@dataclass
+class AiDecideResponse:
+    metadata: Optional[AiDecideResponseMetadata] = None
+    """Metadata identifying the function API version used for this request."""
+
+    response: Optional[any] = None
+    """A JSON object containing an ``answers`` map with one answer for each question, keyed by the same
+    IDs as ``questions``.
+    
+    Each answer has a ``type`` matching its question and the following fields:
+    
+    - ``choice``: choice is the highest-probability option from ``criteria``. ``probabilities`` maps
+      every option name to its probability. ``confidence`` is a number from 0 to 1 indicating how
+      well the state supports the assessment. The ``probabilities`` values sum to 1. For example:
+    
+    .. code-block:: json
+    
+       {
+       "answers": {
+       "team": {
+       "type": "choice",
+       "choice": "billing",
+       "probabilities": {
+       "billing": 0.85,
+       "technical_support": 0.15
+       },
+       "confidence": 0.9
+       }
+       }
+       }
+    
+    - ``noul``: ``probability`` is a number from 0 to 1 estimating the probability that the answer
+      is true. For example:
+    
+    .. code-block:: json
+    
+       {
+       "answers": {
+       "escalate": {
+       "type": "noul",
+       "probability": 0.8
+       }
+       }
+       }
+    
+    - ``score``: score is the probability-weighted mean of the zero-based level indices. It can fall
+      between levels, from 0 to the number of levels minus 1. ``probabilities`` maps each level
+      index to its probability, and ``legend`` maps each index to its original description. Both
+      maps use string keys such as "0", "1", and "2". ``confidence`` is a number from 0 to 1
+      indicating how well the state supports the assessment. The ``probabilities`` values sum to 1.
+      For example:
+    
+    .. code-block:: json
+    
+       {
+       "answers": {
+       "urgency": {
+       "type": "score",
+       "score": 1.6,
+       "probabilities": {
+       "0": 0.1,
+       "1": 0.2,
+       "2": 0.7
+       },
+       "legend": {
+       "0": "Routine: can wait a few days",
+       "1": "Time-sensitive: needs attention today",
+       "2": "Critical: needs immediate action"
+       },
+       "confidence": 0.85
+       }
+       }
+       }"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiDecideResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metadata:
+            body["metadata"] = self.metadata.as_dict()
+        if self.response:
+            body["response"] = self.response
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiDecideResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metadata:
+            body["metadata"] = self.metadata
+        if self.response:
+            body["response"] = self.response
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiDecideResponse:
+        """Deserializes the AiDecideResponse from a dictionary."""
+        return cls(metadata=_from_dict(d, "metadata", AiDecideResponseMetadata), response=d.get("response", None))
+
+
+@dataclass
+class AiDecideResponseMetadata:
+    version: Optional[str] = None
+    """The function API version used to evaluate the request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiDecideResponseMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiDecideResponseMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiDecideResponseMetadata:
+        """Deserializes the AiDecideResponseMetadata from a dictionary."""
+        return cls(version=d.get("version", None))
+
+
+@dataclass
 class AiExtractBbox:
     """A bounding box on a source page; used by bbox-input citations."""
 
@@ -667,6 +817,115 @@ class AiFunctionsAPI:
 
         res = self._api.do("POST", "/api/2.0/ai-functions/ai-classify", body=body, headers=headers)
         return AiClassifyResponse.from_dict(res)
+
+    def ai_decide(self, state: any, questions: any, *, options: Optional[AiDecideOptions] = None) -> AiDecideResponse:
+        """Turn text and structured data into decisions your application can use. Define questions and criteria
+        to choose an option, estimate a probability, or assign a score given a provided state.
+
+        :param state: any
+          A string, JSON object, or array containing the content, related context, and examples needed to
+          answer the provided questions. For example, provide a support message, a conversation, or records
+          describing the current state of an application. All questions receive this same state.
+        :param questions: any
+          A JSON object mapping question IDs to their definitions. Choose a nonempty string for each ID; its
+          answer is returned with the same ID in ``response.answers``.
+
+          Each definition is an object with the required fields ``type`` and ``instructions``. The
+          ``criteria`` field is optional for the type ``noul`` but is required for the types ``choice`` and
+          ``score``.
+
+          The ``instructions`` field describes the judgment to make and can be a string, object, or array. Use
+          an object or array to include supporting context alongside the instructions.
+
+          The ``type`` can be one of:
+
+          - ``choice``: Selects one option from a defined set. Requires ``criteria`` to be an object mapping 1
+            to 255 nonempty option names to descriptions. The criteria description can be a string, object,
+            array, or null when the name needs no additional detail. For example:
+
+          .. code-block:: json
+
+             {
+             "team": {
+             "type": "choice",
+             "instructions": "Which team should handle this ticket?",
+             "criteria": {
+             "billing": "Payments, charges, and refunds",
+             "technical_support": null
+             }
+             }
+             }
+
+          - ``noul``: Estimates the probability that the answer to a true-or-false question is true.
+            ``criteria`` can take the fields ``true`` or ``false``, or both, with descriptions that are
+            strings, objects, or arrays. Omit ``criteria`` to use the question alone. For example, both of the
+            following are valid:
+
+          .. code-block:: json
+
+             {
+             "escalate": {
+             "type": "noul",
+             "instructions": "Does this ticket need escalation?",
+             "criteria": {
+             "true": "Suspected fraud or an exception to standard policy",
+             "false": "A routine issue frontline support can resolve"
+             }
+             }
+             }
+
+          or
+
+          .. code-block:: json
+
+             {
+             "escalate": {
+             "type": "noul",
+             "instructions": "Does this ticket need escalation?"
+             }
+             }
+
+          - ``score``: Rates the state on an ordered scale. Requires ``criteria`` to be an array of 2 to 10
+            level descriptions, ordered from low to high. Descriptions can be strings, objects, or arrays.
+            Array positions define levels starting at 0. For example:
+
+          .. code-block:: json
+
+             {
+             "urgency": {
+             "type": "score",
+             "instructions": "How urgent is this ticket?",
+             "criteria": [
+             "Routine: can wait a few days",
+             "Time-sensitive: needs attention today",
+             "Critical: needs immediate action"
+             ]
+             }
+             }
+        :param options: :class:`AiDecideOptions` (optional)
+          Function options. Omitted fields fall back to their documented defaults.
+
+        :returns: :class:`AiDecideResponse`
+        """
+
+        body = {}
+        if options is not None:
+            body["options"] = options.as_dict()
+        if questions is not None:
+            body["questions"] = questions
+        if state is not None:
+            body["state"] = state
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/ai-functions/ai-decide", body=body, headers=headers)
+        return AiDecideResponse.from_dict(res)
 
     def ai_extract(self, content: any, schema: any, *, options: Optional[AiExtractOptions] = None) -> AiExtractResponse:
         """Extracts structured data from text and documents according to a provided schema. For REST API

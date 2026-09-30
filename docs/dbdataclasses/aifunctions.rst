@@ -16,6 +16,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AiDecideOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiDecideResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiDecideResponseMetadata
+   :members:
+   :undoc-members:
+
 .. autoclass:: AiExtractBbox
    :members:
    :undoc-members:

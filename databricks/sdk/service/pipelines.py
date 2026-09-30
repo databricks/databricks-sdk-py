@@ -3708,7 +3708,9 @@ class PipelineSpec:
     """Deployment type of this pipeline."""
 
     development: Optional[bool] = None
-    """Whether the pipeline is in Development mode. Defaults to false."""
+    """Whether the pipeline is in Development mode. Defaults to false.
+    
+    Deprecated: set development mode for each update instead."""
 
     edition: Optional[str] = None
     """Pipeline product edition."""
@@ -6075,6 +6077,8 @@ class PipelinesAPI:
           Deployment type of this pipeline.
         :param development: bool (optional)
           Whether the pipeline is in Development mode. Defaults to false.
+
+          Deprecated: set development mode for each update instead.
         :param edition: str (optional)
           Pipeline product edition.
         :param environment: :class:`PipelinesEnvironment` (optional)
@@ -6272,6 +6276,8 @@ class PipelinesAPI:
           Deployment type of this pipeline.
         :param development: bool (optional)
           Whether the pipeline is in Development mode. Defaults to false.
+
+          Deprecated: set development mode for each update instead.
         :param dry_run: bool (optional)
         :param edition: str (optional)
           Pipeline product edition.
@@ -6887,6 +6893,8 @@ class PipelinesAPI:
           Deployment type of this pipeline.
         :param development: bool (optional)
           Whether the pipeline is in Development mode. Defaults to false.
+
+          Deprecated: set development mode for each update instead.
         :param edition: str (optional)
           Pipeline product edition.
         :param environment: :class:`PipelinesEnvironment` (optional)
