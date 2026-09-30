@@ -51,7 +51,8 @@ dev = [
     "openai",
     "langchain-openai",
     "httpx",
-    "grpcio<2", # the sandbox extra's dep; also needed to run the gRPC transport unit tests
+    "grpcio>=1.81.1,<2", # the sandbox extra's dep; also needed to run the gRPC transport unit tests
+    "build", # some integration tests depend on the databricks-sdk-py wheel
     "check-manifest",
 ]
 notebook = [
@@ -64,15 +65,20 @@ openai = [
     "httpx",
 ]
 sandbox = [
-    # gRPC transport for the sandbox command-execution mixin. Optional so
-    # users who don't use the sandbox APIs don't pull the large native grpcio
-    # wheel; imported lazily in databricks/sdk/mixins/_grpc_transport.py.
+    # gRPC transport and committed stubs for the sandbox command-execution
+    # mixin. Optional so users who don't use the sandbox APIs don't pull the
+    # large native grpcio wheel; grpcio and the stubs are imported lazily (see
+    # databricks/sdk/mixins/_grpc_transport.py and mixins/sandbox.py).
     #
-    # `<2` caps the major version to guard against a breaking grpcio 2.x. No
-    # lower bound is needed: the transport uses only long-stable grpc APIs, and
-    # pip installs the newest grpcio with wheels for the user's Python (the SDK
-    # requires >=3.10), so a too-old release is never selected.
-    "grpcio<2",
+    # The floors match the version checks baked into the committed stubs: the
+    # generated sandbox_service_pb2.py validates protobuf >= 6.33.5 and
+    # sandbox_service_pb2_grpc.py validates grpcio >= 1.81.1 at import, so an
+    # older runtime that satisfied only the core protobuf floor / an unbounded
+    # grpcio would raise on import. `<2` caps grpcio's major to guard against a
+    # breaking 2.x. protobuf's core dependency (above) supplies the `<7` cap and
+    # the CVE exclusions.
+    "protobuf>=6.33.5",
+    "grpcio>=1.81.1,<2",
 ]
 
 [tool.setuptools.dynamic]
@@ -87,7 +93,8 @@ include = ["databricks", "databricks.*"]
 [tool.ruff]
 line-length = 120
 indent-width = 4
-target-version = "py310"
+target-version = "py39"
+extend-exclude = ["*_pb2.py", "*_pb2_grpc.py"]
 
 [tool.ruff.format]
 quote-style = "double"

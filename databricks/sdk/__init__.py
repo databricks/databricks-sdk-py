@@ -55,6 +55,7 @@ from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.jobs import JobsExt
+from databricks.sdk.mixins.sandbox import SandboxExt
 from databricks.sdk.oauth import AuthorizationDetail
 from databricks.sdk.service.iam import AccessControlAPI
 from databricks.sdk.service.iam import AccountAccessControlAPI
@@ -468,7 +469,7 @@ class WorkspaceClient:
         self._repos = pkg_workspace.ReposAPI(self._api_client)
         self._resource_quotas = pkg_catalog.ResourceQuotasAPI(self._api_client)
         self._rfa = pkg_catalog.RfaAPI(self._api_client)
-        self._sandbox = pkg_sandbox.SandboxAPI(self._api_client)
+        self._sandbox = SandboxExt(self._api_client)
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
         self._secrets_uc = pkg_catalog.SecretsUcAPI(self._api_client)
@@ -1031,7 +1032,7 @@ class WorkspaceClient:
         return self._rfa
 
     @property
-    def sandbox(self) -> pkg_sandbox.SandboxAPI:
+    def sandbox(self) -> SandboxExt:
         """Create, manage, and control the lifecycle of sandboxes -- isolated, pre-configured, low-latency Serverless compute environments for running code."""
         return self._sandbox
 
