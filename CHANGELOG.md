@@ -1,5 +1,10 @@
 # Version changelog
 
+## Release v0.145.0 (2026-10-01)
+
+### API Changes
+* Add `list_commands()` method for [w.sandbox](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sandbox/sandbox.html) workspace-level service.
+
 ## Release v0.144.0 (2026-09-30)
 
 ### API Changes
@@ -12,10 +17,10 @@
 * Add `environment_variables` field for `databricks.sdk.service.jobs.SubmitRun`.
 * Add `environment_variables_key` field for `databricks.sdk.service.jobs.SubmitTask`.
 * Add `environment_variables_key` field for `databricks.sdk.service.jobs.Task`.
-* Change `command_path` field for `databricks.sdk.service.jobs.DeploymentSpec` to no longer be required.
 * [Breaking] Change `command_path` field for `databricks.sdk.service.jobs.DeploymentSpec` to no longer be required.
-* [Breaking] Change `api_secret_ref` field for `databricks.sdk.service.ml.SchemaRegistryConfig` to no longer be required.
+* Change `command_path` field for `databricks.sdk.service.jobs.DeploymentSpec` to no longer be required.
 * Change `api_secret_ref` field for `databricks.sdk.service.ml.SchemaRegistryConfig` to no longer be required.
+* [Breaking] Change `api_secret_ref` field for `databricks.sdk.service.ml.SchemaRegistryConfig` to no longer be required.
 
 ## Release v0.143.0 (2026-09-26)
 

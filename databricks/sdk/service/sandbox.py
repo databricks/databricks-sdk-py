@@ -17,6 +17,7 @@ from databricks.sdk.service._internal import (
     _duration,
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _timestamp,
 )
@@ -27,6 +28,76 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class Command:
+    """A single command execution."""
+
+    args: Optional[List[str]] = None
+    """Arguments passed to the program."""
+
+    cmd: Optional[str] = None
+    """The program that was executed."""
+
+    command_id: Optional[str] = None
+    """Stable identifier for this command."""
+
+    exit_code: Optional[int] = None
+    """Process exit code. Only present when finished is true and the process exited normally (not
+    killed by signal or failed to start)."""
+
+    finished: Optional[bool] = None
+    """Whether the command has finished executing."""
+
+    pid: Optional[int] = None
+    """PID of the spawned process. Absent if the process failed to start."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Command into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.args:
+            body["args"] = [v for v in self.args]
+        if self.cmd is not None:
+            body["cmd"] = self.cmd
+        if self.command_id is not None:
+            body["command_id"] = self.command_id
+        if self.exit_code is not None:
+            body["exit_code"] = self.exit_code
+        if self.finished is not None:
+            body["finished"] = self.finished
+        if self.pid is not None:
+            body["pid"] = self.pid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Command into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.args:
+            body["args"] = self.args
+        if self.cmd is not None:
+            body["cmd"] = self.cmd
+        if self.command_id is not None:
+            body["command_id"] = self.command_id
+        if self.exit_code is not None:
+            body["exit_code"] = self.exit_code
+        if self.finished is not None:
+            body["finished"] = self.finished
+        if self.pid is not None:
+            body["pid"] = self.pid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Command:
+        """Deserializes the Command from a dictionary."""
+        return cls(
+            args=d.get("args", None),
+            cmd=d.get("cmd", None),
+            command_id=d.get("command_id", None),
+            exit_code=d.get("exit_code", None),
+            finished=d.get("finished", None),
+            pid=_int64(d, "pid"),
+        )
 
 
 @dataclass
@@ -135,6 +206,40 @@ class ExecuteCommandSyncResponse:
             stdout=d.get("stdout", None),
             truncated=d.get("truncated", None),
         )
+
+
+@dataclass
+class ListCommandsResponse:
+    """Response listing tracked command executions."""
+
+    commands: Optional[List[Command]] = None
+    """Commands in this page of results."""
+
+    next_page_token: Optional[str] = None
+    """Token to retrieve the next page. Empty when there are no more results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCommandsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.commands:
+            body["commands"] = [v.as_dict() for v in self.commands]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListCommandsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.commands:
+            body["commands"] = self.commands
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListCommandsResponse:
+        """Deserializes the ListCommandsResponse from a dictionary."""
+        return cls(commands=_repeated_dict(d, "commands", Command), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -421,6 +526,38 @@ class SandboxAPI:
 
         res = self._api.do("GET", f"/api/2.0/{name}", headers=headers)
         return Sandbox.from_dict(res)
+
+    def list_commands(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> ListCommandsResponse:
+        """Lists the tracked command executions (running and completed) in a sandbox.
+
+        :param parent: str
+          The sandbox whose commands to list, in the form ``sandboxes/{sandbox_id}``.
+        :param page_size: int (optional)
+          Maximum number of commands to return. The server may return fewer. If unspecified, the server
+          returns all commands.
+        :param page_token: str (optional)
+          Page token returned by a previous ListCommands call. Use this to retrieve the next page of results.
+
+        :returns: :class:`ListCommandsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/sandbox-exec/{parent}/commands", query=query, headers=headers)
+        return ListCommandsResponse.from_dict(res)
 
     def list_sandboxes(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Sandbox]:
         """Lists all Sandboxes.
