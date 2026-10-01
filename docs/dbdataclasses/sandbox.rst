@@ -4,6 +4,10 @@ Sandbox
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.sandbox`` module.
 
 .. py:currentmodule:: databricks.sdk.service.sandbox
+.. autoclass:: Command
+   :members:
+   :undoc-members:
+
 .. autoclass:: ComputeSpec
    :members:
    :undoc-members:
@@ -22,6 +26,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "EXECUTE_COMMAND_STATUS_TIMED_OUT"
 
 .. autoclass:: ExecuteCommandSyncResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCommandsResponse
    :members:
    :undoc-members:
 
