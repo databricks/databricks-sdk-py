@@ -3396,7 +3396,7 @@ class JobEnvironmentVariables:
     or more tasks. Entries live on ``JobSettings.environment_variables``, and tasks select one via
     ``TaskSettings.environment_variables_key``."""
 
-    environment_variables_key: Optional[str] = None
+    environment_variables_key: str
     """Identifier for this entry. Must be unique within ``JobSettings.environment_variables``. Tasks
     reference it from ``TaskSettings.environment_variables_key``."""
 

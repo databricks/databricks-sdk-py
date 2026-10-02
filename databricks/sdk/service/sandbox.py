@@ -125,6 +125,33 @@ class ComputeSpec:
         return cls(inactivity_timeout=_duration(d, "inactivity_timeout"))
 
 
+@dataclass
+class EnvironmentSpec:
+    image_uri: Optional[str] = None
+    """A Unity Catalog container artifact (e.g. ``catalog.schema.folder.image:tag``) to run as the
+    sandbox environment. When set, this image is used as the environment instead of resolving a
+    managed image from ``environment_version``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnvironmentSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.image_uri is not None:
+            body["image_uri"] = self.image_uri
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnvironmentSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.image_uri is not None:
+            body["image_uri"] = self.image_uri
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnvironmentSpec:
+        """Deserializes the EnvironmentSpec from a dictionary."""
+        return cls(image_uri=d.get("image_uri", None))
+
+
 class ExecuteCommandStatus(Enum):
     """Terminal status of a unary command execution."""
 
@@ -349,11 +376,16 @@ class SandboxSpec:
     compute: Optional[ComputeSpec] = None
     """Compute configuration (size, inactivity timeout) requested for the sandbox."""
 
+    environment: Optional[EnvironmentSpec] = None
+    """The execution environment to use for the sandbox."""
+
     def as_dict(self) -> dict:
         """Serializes the SandboxSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compute:
             body["compute"] = self.compute.as_dict()
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -361,12 +393,16 @@ class SandboxSpec:
         body = {}
         if self.compute:
             body["compute"] = self.compute
+        if self.environment:
+            body["environment"] = self.environment
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SandboxSpec:
         """Deserializes the SandboxSpec from a dictionary."""
-        return cls(compute=_from_dict(d, "compute", ComputeSpec))
+        return cls(
+            compute=_from_dict(d, "compute", ComputeSpec), environment=_from_dict(d, "environment", EnvironmentSpec)
+        )
 
 
 class SandboxState(Enum):
