@@ -1939,6 +1939,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TABLE_FOREIGN_DELTASHARING
       :value: "TABLE_FOREIGN_DELTASHARING"
 
+   .. py:attribute:: TABLE_FOREIGN_DELTA_DELTASHARING
+      :value: "TABLE_FOREIGN_DELTA_DELTASHARING"
+
    .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE
       :value: "TABLE_FOREIGN_HIVE_METASTORE"
 

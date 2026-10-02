@@ -11424,9 +11424,9 @@ class FeatureEngineeringAPI:
           identifier; the catalog_name, schema_name, and name fields below are OUTPUT_ONLY decomposed views of
           this value.
         :param feature: :class:`Feature`
-          Feature to update.
+          Feature whose full_name identifies the target. Only description is mutable.
         :param update_mask: str
-          The list of fields to update.
+          Fields to update. The only supported path is description.
 
         :returns: :class:`Feature`
         """

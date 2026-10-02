@@ -58,8 +58,8 @@
           The parent database under which to create the CdfConfig. Format:
           projects/{project}/branches/{branch}/databases/{database}
         :param cdf_config: :class:`CdfConfig`
-          The CdfConfig to create. The catalog, schema, and postgres_schema fields are required; all other
-          fields are output only and ignored on input.
+          The CdfConfig to create. The catalog, schema, and postgres_schema fields are required;
+          service_principal is optional. All other fields are output only and ignored on input.
         :param cdf_config_id: str (optional)
           The user-specified id for the CdfConfig, forming the final segment of its resource name. Must match
           the pattern ``[a-z][a-z0-9_]{0,62}``. Defaults to the Postgres schema name when omitted.
@@ -363,8 +363,8 @@
 
     .. py:method:: get_cdf_config(name: str) -> CdfConfig
 
-        Get a single Lakebase CDF configuration, including the source Postgres schema, target Unity Catalog
-        schema, and the identity under which writes are authorized.
+        Get a single Lakebase CDF configuration, including the source Postgres schema and target Unity Catalog
+        schema.
 
         :param name: str
           The resource name of the CdfConfig to retrieve. Format:

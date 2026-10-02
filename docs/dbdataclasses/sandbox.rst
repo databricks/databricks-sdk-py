@@ -12,6 +12,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnvironmentSpec
+   :members:
+   :undoc-members:
+
 .. py:class:: ExecuteCommandStatus
 
    Terminal status of a unary command execution.
