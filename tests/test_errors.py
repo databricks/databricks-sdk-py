@@ -1,4 +1,5 @@
 import http.client
+import io
 import json
 from dataclasses import dataclass, field
 from typing import Any, List, Optional
@@ -24,13 +25,14 @@ def fake_raw_response(
     status_code: int,
     response_body: bytes,
     path: Optional[str] = None,
+    request_body: Any = None,
 ) -> requests.Response:
     resp = requests.Response()
     resp.status_code = status_code
     resp.reason = http.client.responses.get(status_code, "")
     if path is None:
         path = "/api/2.0/service"
-    resp.request = requests.Request(method, f"https://databricks.com{path}").prepare()
+    resp.request = requests.Request(method, f"https://databricks.com{path}", data=request_body).prepare()
     resp._content = response_body
     return resp
 
@@ -354,6 +356,49 @@ _test_case_other_errors = [
         ),
         want_err_type=errors.NotFound,
         want_message="unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-py/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< �```",
+    ),
+    TestCase(
+        # A streamed upload (e.g. a file object passed as `data=`) leaves `request.body` as the
+        # original file-like object rather than str/bytes. Building the "unable to parse response"
+        # debug log used to crash with `TypeError: object of type '...' has no len()` trying to treat
+        # it as a string, masking the real API error entirely.
+        name="unable_to_parse_response_with_streamed_request_body",
+        response=fake_raw_response(
+            method="PUT",
+            status_code=400,
+            response_body=b"this is not a real response",
+            request_body=io.BytesIO(b"some file content"),
+        ),
+        want_err_type=errors.BadRequest,
+        want_message=(
+            "unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. "
+            "Please report this issue with the following debugging information to the SDK issue tracker at "
+            "https://github.com/databricks/databricks-sdk-py/issues. Request log:```PUT /api/2.0/service\n"
+            "> [stream body]\n"
+            "< 400 Bad Request\n"
+            "< this is not a real response```"
+        ),
+    ),
+    TestCase(
+        # A non-UTF8 bytes request body (e.g. binary file content) used to crash with
+        # `AttributeError: 'bytes' object has no attribute 'encode'` once JSON parsing failed on it,
+        # again masking the real API error.
+        name="unable_to_parse_response_with_non_utf8_bytes_request_body",
+        response=fake_raw_response(
+            method="PUT",
+            status_code=400,
+            response_body=b"this is not a real response",
+            request_body=b"\x80not json",
+        ),
+        want_err_type=errors.BadRequest,
+        want_message=(
+            "unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. "
+            "Please report this issue with the following debugging information to the SDK issue tracker at "
+            "https://github.com/databricks/databricks-sdk-py/issues. Request log:```PUT /api/2.0/service\n"
+            "> �not json\n"
+            "< 400 Bad Request\n"
+            "< this is not a real response```"
+        ),
     ),
 ]
 
