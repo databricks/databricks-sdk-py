@@ -1,3 +1,4 @@
+import os
 import pathlib
 import threading
 import time
@@ -5,7 +6,7 @@ import time
 import pytest
 
 from databricks.sdk.core import Config
-from databricks.sdk.credentials_provider import ModelServingUserCredentials
+from databricks.sdk.credentials_provider import ModelServingAuthProvider, ModelServingUserCredentials
 
 from .conftest import raises
 
@@ -80,6 +81,41 @@ def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeyp
     assert cfg.host == "x"
     # Token defined in the test file
     assert headers.get("Authorization") == "Bearer databricks_sdk_unit_test_token"
+
+
+def test_model_serving_auth_serving_credentials_dir(monkeypatch, mocker):
+    # On the Serverless Platform the model-dependency token dir comes from SERVING_CREDENTIALS_DIR,
+    # not the legacy /var/credentials-secret mount, so the provider must resolve the path from it.
+    # The fixture is named with the production basename so a drift in the real constant is caught.
+    monkeypatch.setenv("IS_IN_DB_MODEL_SERVING_ENV", "true")
+    monkeypatch.setenv("DB_MODEL_SERVING_HOST_URL", "x")
+    monkeypatch.setenv("SERVING_CREDENTIALS_DIR", str(_TESTDATA))
+    mocker.patch("databricks.sdk.config.Config._known_file_config_loader")
+
+    cfg = Config()
+    assert cfg.auth_type == "model-serving"
+    headers = cfg.authenticate()
+    assert cfg.host == "x"
+    # Token defined in the fixture file at <_TESTDATA>/model-dependencies-oauth-token.
+    assert headers.get("Authorization") == "Bearer databricks_sdk_unit_test_token"
+
+
+def test_model_dependency_oauth_token_path(monkeypatch):
+    # The resolver joins SERVING_CREDENTIALS_DIR (SP) with the production basename, and falls back to
+    # the legacy classic mount when the var is unset, empty, or whitespace-only.
+    legacy = ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH
+    file_name = ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_NAME
+
+    monkeypatch.setenv("SERVING_CREDENTIALS_DIR", "/sp/dynamic-secrets")
+    expected = os.path.join("/sp/dynamic-secrets", file_name)
+    assert ModelServingAuthProvider._model_dependency_oauth_token_path() == expected
+
+    monkeypatch.delenv("SERVING_CREDENTIALS_DIR", raising=False)
+    assert ModelServingAuthProvider._model_dependency_oauth_token_path() == legacy
+
+    for blank in ("", "   "):
+        monkeypatch.setenv("SERVING_CREDENTIALS_DIR", blank)
+        assert ModelServingAuthProvider._model_dependency_oauth_token_path() == legacy
 
 
 @pytest.mark.parametrize(

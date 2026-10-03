@@ -3701,6 +3701,9 @@ class Environment:
     """List of java dependencies. Each dependency is a string representing a java library path. For
     example: ``/Volumes/path/to/test.jar``."""
 
+    project_environment: Optional[str] = None
+    """File path of pyproject.toml file that defines the project-scoped environment."""
+
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3714,6 +3717,8 @@ class Environment:
             body["environment_version"] = self.environment_version
         if self.java_dependencies:
             body["java_dependencies"] = [v for v in self.java_dependencies]
+        if self.project_environment is not None:
+            body["project_environment"] = self.project_environment
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3729,6 +3734,8 @@ class Environment:
             body["environment_version"] = self.environment_version
         if self.java_dependencies:
             body["java_dependencies"] = self.java_dependencies
+        if self.project_environment is not None:
+            body["project_environment"] = self.project_environment
         return body
 
     @classmethod
@@ -3740,6 +3747,7 @@ class Environment:
             dependencies=d.get("dependencies", None),
             environment_version=d.get("environment_version", None),
             java_dependencies=d.get("java_dependencies", None),
+            project_environment=d.get("project_environment", None),
         )
 
 
