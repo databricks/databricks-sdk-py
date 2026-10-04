@@ -442,8 +442,8 @@
         You must be the owner of the model provider service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on
         the parent catalog and ``USE_SCHEMA`` on the parent schema.
 
-        Updating ``config.provider`` cannot change the provider type or switch between Unity Catalog
-        service-credential authentication and inline authentication.
+        Updating ``config.provider`` cannot change the provider type. Authentication mode changes require
+        feature availability and support for both modes on the selected provider.
 
         :param name: str
           Resource name of the provider service. Format:
@@ -461,7 +461,9 @@
           (for example, ``config.openai``; the mask path remains ``config.provider``);
           ``config.allow_all_targets``, ``config.targets``, ``config.forward_headers``,
           ``config.forward_query_parameters``, ``config.forward_unmanaged_paths``, ``config.rate_limits``, or
-          ``config.inference_table``. The provider type is immutable.
+          ``config.inference_table``. The provider type is immutable. A ``config`` or ``config.provider``
+          replacement that carries no authentication material preserves the existing authentication binding;
+          input-only plaintext does not need to be read back and re-sent.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
