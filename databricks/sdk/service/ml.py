@@ -7130,12 +7130,18 @@ class RequestSource:
     """A request-time data source whose value is provided at inference time: offline batch scoring or
     online serving endpoint"""
 
+    dataframe_schema: Optional[str] = None
+    """A schema containing scalar or nested fields, in Spark StructType JSON format (from
+    df.schema.json()). This preserves field, array-element, and map-value nullability."""
+
     flat_schema: Optional[FlatSchema] = None
     """A flat schema with scalar-typed fields only."""
 
     def as_dict(self) -> dict:
         """Serializes the RequestSource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
         if self.flat_schema:
             body["flat_schema"] = self.flat_schema.as_dict()
         return body
@@ -7143,6 +7149,8 @@ class RequestSource:
     def as_shallow_dict(self) -> dict:
         """Serializes the RequestSource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
         if self.flat_schema:
             body["flat_schema"] = self.flat_schema
         return body
@@ -7150,7 +7158,9 @@ class RequestSource:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RequestSource:
         """Deserializes the RequestSource from a dictionary."""
-        return cls(flat_schema=_from_dict(d, "flat_schema", FlatSchema))
+        return cls(
+            dataframe_schema=d.get("dataframe_schema", None), flat_schema=_from_dict(d, "flat_schema", FlatSchema)
+        )
 
 
 @dataclass

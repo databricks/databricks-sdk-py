@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.147.0 (2026-10-05)
+
+### API Changes
+* Add [a.private_network_gateways](https://databricks-sdk-py.readthedocs.io/en/latest/account/networking/private_network_gateways.html) account-level service.
+* Add `project_environment` field for `databricks.sdk.service.compute.Environment`.
+* Add `dataframe_schema` field for `databricks.sdk.service.ml.RequestSource`.
+
 ## Release v0.146.0 (2026-10-02)
 
 ### API Changes
