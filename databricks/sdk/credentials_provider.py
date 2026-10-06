@@ -1348,7 +1348,20 @@ def metadata_service(cfg: "Config") -> Optional[CredentialsProvider]:
 class ModelServingAuthProvider:
     USER_CREDENTIALS = "user_credentials"
 
+    # Legacy classic model-serving mount. On the Serverless Platform the token instead lives under
+    # SERVING_CREDENTIALS_DIR (there is no /var/credentials-secret mount) -- see
+    # _model_dependency_oauth_token_path.
     _MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH = "/var/credentials-secret/model-dependencies-oauth-token"
+    _MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_NAME = "model-dependencies-oauth-token"
+
+    @staticmethod
+    def _model_dependency_oauth_token_path() -> str:
+        # Prefer the Serverless Platform dynamic-secrets dir when it is set (non-empty); fall back to
+        # the legacy classic mount so non-SP model serving is unchanged.
+        serving_dir = os.environ.get("SERVING_CREDENTIALS_DIR", "").strip()
+        if serving_dir:
+            return os.path.join(serving_dir, ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_NAME)
+        return ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH
 
     def __init__(self, credential_type: Optional[str]):
         self.expiry_time = -1
@@ -1368,7 +1381,7 @@ class ModelServingAuthProvider:
             or "false"
         )
         return is_in_model_serving_env == "true" and os.path.isfile(
-            ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH
+            ModelServingAuthProvider._model_dependency_oauth_token_path()
         )
 
     def _get_model_dependency_oauth_token(self, should_retry=True) -> str:
@@ -1377,7 +1390,7 @@ class ModelServingAuthProvider:
             return self.current_token
 
         try:
-            with open(ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH) as f:
+            with open(ModelServingAuthProvider._model_dependency_oauth_token_path()) as f:
                 oauth_dict = json.load(f)
                 self.current_token = oauth_dict["OAUTH_TOKEN"][0]["oauthTokenValue"]
                 self.expiry_time = time.time() + self.refresh_duration

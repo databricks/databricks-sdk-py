@@ -235,7 +235,7 @@
 
     .. py:method:: list_synced_database_tables(instance_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[SyncedDatabaseTable]
 
-        This API is currently unimplemented, but exposed for Terraform support.
+        List synced database tables in a Database Instance.
 
         :param instance_name: str
           Name of the instance to get synced tables for.

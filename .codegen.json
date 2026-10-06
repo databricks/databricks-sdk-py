@@ -34,7 +34,7 @@
       "setup.cfg",
       "tagging.py.lock",
       "tests/testdata/**/.databrickscfg",
-      "tests/testdata/{az,model-serving-test-token,model-serving-test-token-v2}",
+      "tests/testdata/{az,model-dependencies-oauth-token,model-serving-test-token,model-serving-test-token-v2}",
       "uv.lock"
     ],
     "skip_from_source": [

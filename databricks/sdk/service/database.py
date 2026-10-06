@@ -2209,7 +2209,7 @@ class DatabaseAPI:
     def list_synced_database_tables(
         self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[SyncedDatabaseTable]:
-        """This API is currently unimplemented, but exposed for Terraform support.
+        """List synced database tables in a Database Instance.
 
         :param instance_name: str
           Name of the instance to get synced tables for.

@@ -178,6 +178,7 @@ from databricks.sdk.service.jobs import PolicyComplianceForJobsAPI
 from databricks.sdk.service.compute import PolicyFamiliesAPI
 from databricks.sdk.service.postgres import PostgresAPI
 from databricks.sdk.service.provisioning import PrivateAccessAPI
+from databricks.sdk.service.networking import PrivateNetworkGatewaysAPI
 from databricks.sdk.service.marketplace import ProviderExchangeFiltersAPI
 from databricks.sdk.service.marketplace import ProviderExchangesAPI
 from databricks.sdk.service.marketplace import ProviderFilesAPI
@@ -1324,6 +1325,7 @@ class AccountClient:
         self._networks = pkg_provisioning.NetworksAPI(self._api_client)
         self._o_auth_published_apps = pkg_oauth2.OAuthPublishedAppsAPI(self._api_client)
         self._private_access = pkg_provisioning.PrivateAccessAPI(self._api_client)
+        self._private_network_gateways = pkg_networking.PrivateNetworkGatewaysAPI(self._api_client)
         self._published_app_integration = pkg_oauth2.PublishedAppIntegrationAPI(self._api_client)
         self._service_principal_federation_policy = pkg_oauth2.ServicePrincipalFederationPolicyAPI(self._api_client)
         self._service_principal_secrets = pkg_oauth2.ServicePrincipalSecretsAPI(self._api_client)
@@ -1454,6 +1456,11 @@ class AccountClient:
     def private_access(self) -> pkg_provisioning.PrivateAccessAPI:
         """These APIs manage private access settings for this account."""
         return self._private_access
+
+    @property
+    def private_network_gateways(self) -> pkg_networking.PrivateNetworkGatewaysAPI:
+        """These APIs manage private network gateways under network connectivity configurations."""
+        return self._private_network_gateways
 
     @property
     def published_app_integration(self) -> pkg_oauth2.PublishedAppIntegrationAPI:
