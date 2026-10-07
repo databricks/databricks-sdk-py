@@ -9,6 +9,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Dict, List, Any, Iterator, Callable, Optional
 
+from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
 import time
@@ -17,6 +18,7 @@ import logging
 
 from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
+    _duration,
     _enum,
     _from_dict,
     _int64,
@@ -474,6 +476,10 @@ class AppDeployment:
     git_source: Optional[GitSource] = None
     """Git repository to use as the source for the app deployment."""
 
+    health_check: Optional[AppHealthCheck] = None
+    """Deploy-time health check for the app. Verifies the app is responding to HTTP requests before
+    considering the deployment successful."""
+
     mode: Optional[AppDeploymentMode] = None
     """The mode of which the deployment will manage the source code."""
 
@@ -507,6 +513,8 @@ class AppDeployment:
             body["env_vars"] = [v.as_dict() for v in self.env_vars]
         if self.git_source:
             body["git_source"] = self.git_source.as_dict()
+        if self.health_check:
+            body["health_check"] = self.health_check.as_dict()
         if self.mode is not None:
             body["mode"] = self.mode.value
         if self.source_code_path is not None:
@@ -534,6 +542,8 @@ class AppDeployment:
             body["env_vars"] = self.env_vars
         if self.git_source:
             body["git_source"] = self.git_source
+        if self.health_check:
+            body["health_check"] = self.health_check
         if self.mode is not None:
             body["mode"] = self.mode
         if self.source_code_path is not None:
@@ -555,6 +565,7 @@ class AppDeployment:
             deployment_id=d.get("deployment_id", None),
             env_vars=_repeated_dict(d, "env_vars", EnvVar),
             git_source=_from_dict(d, "git_source", GitSource),
+            health_check=_from_dict(d, "health_check", AppHealthCheck),
             mode=_enum(d, "mode", AppDeploymentMode),
             source_code_path=d.get("source_code_path", None),
             status=_from_dict(d, "status", AppDeploymentStatus),
@@ -629,6 +640,41 @@ class AppDeploymentStatus:
     def from_dict(cls, d: Dict[str, Any]) -> AppDeploymentStatus:
         """Deserializes the AppDeploymentStatus from a dictionary."""
         return cls(message=d.get("message", None), state=_enum(d, "state", AppDeploymentState))
+
+
+@dataclass
+class AppHealthCheck:
+    """Deploy-time HTTP health check configuration for an app deployment."""
+
+    path: Optional[str] = None
+    """HTTP path to probe, e.g. "/health" or "/api/status"."""
+
+    timeout: Optional[Duration] = None
+    """Timeout to wait for the health check to pass before failing the deployment. If not set, a
+    default timeout is used."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppHealthCheck into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.path is not None:
+            body["path"] = self.path
+        if self.timeout is not None:
+            body["timeout"] = self.timeout.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppHealthCheck into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.path is not None:
+            body["path"] = self.path
+        if self.timeout is not None:
+            body["timeout"] = self.timeout
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppHealthCheck:
+        """Deserializes the AppHealthCheck from a dictionary."""
+        return cls(path=d.get("path", None), timeout=_duration(d, "timeout"))
 
 
 @dataclass

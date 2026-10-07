@@ -1,5 +1,10 @@
 # Version changelog
 
+## Release v0.148.0 (2026-10-07)
+
+### API Changes
+* Add `health_check` field for `databricks.sdk.service.apps.AppDeployment`.
+
 ## Release v0.147.0 (2026-10-06)
 
 ### API Changes

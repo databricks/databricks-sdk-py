@@ -4,7 +4,7 @@
 
 .. py:class:: FeatureEngineeringAPI
 
-    [description]
+    Feature Engineering provides APIs for managing features and materialized features.
 
     .. py:method:: backfill_features(feature_full_names: List[str], backfill_ranges: List[BackfillRange] [, budget_policy_id: Optional[str], request_id: Optional[str], tags: Optional[Dict[str, str]]]) -> BackfillFeaturesOperation
 
