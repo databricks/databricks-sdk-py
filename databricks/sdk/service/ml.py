@@ -2363,7 +2363,8 @@ class Feature:
     """The description of the feature."""
 
     entities: Optional[List[EntityColumn]] = None
-    """The entity columns for the feature, used as aggregation keys and for query-time lookup."""
+    """The entity columns for the feature, used as aggregation keys and for query-time lookup. Optional
+    since entities are not set for RequestSource features or on-demand calculated features."""
 
     filter_condition: Optional[str] = None
 
@@ -2385,7 +2386,8 @@ class Feature:
     time_window: Optional[TimeWindow] = None
 
     timeseries_column: Optional[TimeseriesColumn] = None
-    """Column recording time, used for point-in-time joins, backfills, and aggregations."""
+    """Column recording time, used for point-in-time joins, backfills, and aggregations. Optional since
+    a timeseries column is not set for RequestSource features or on-demand calculated features."""
 
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
@@ -5085,10 +5087,12 @@ class MaterializedFeature:
     """Server-assigned unique identifier for the materialized feature."""
 
     offline_store_config: Optional[OfflineStoreConfig] = None
-    """Destination for writing feature values to an offline Delta table."""
+    """Destination for writing feature values to an offline Delta table. The resulting table is
+    returned as ``table_name``."""
 
     online_store_config: Optional[OnlineStoreConfig] = None
-    """Destination for writing feature values to an online Lakebase table."""
+    """Destination for writing feature values to an online Lakebase table. The resulting table is
+    returned as ``table_name``."""
 
     pipeline_id: Optional[str] = None
     """The ID of the pipeline that materializes this feature. This is only present for streaming
@@ -10815,7 +10819,7 @@ class ExperimentsAPI:
 
 
 class FeatureEngineeringAPI:
-    """[description]"""
+    """Feature Engineering provides APIs for managing features and materialized features."""
 
     def __init__(self, api_client):
         self._api = api_client

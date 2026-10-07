@@ -759,7 +759,7 @@ class WorkspaceClient:
 
     @property
     def feature_engineering(self) -> pkg_ml.FeatureEngineeringAPI:
-        """[description]."""
+        """Feature Engineering provides APIs for managing features and materialized features."""
         return self._feature_engineering
 
     @property
