@@ -5053,6 +5053,133 @@ class LoggedModelTag:
 
 
 @dataclass
+class MaterializationFailureNotification:
+    """Recipients to notify when a materialization run fails."""
+
+    destination_ids: Optional[List[str]] = None
+    """IDs of the notification destinations (for example Slack, Microsoft Teams, PagerDuty, or a
+    generic webhook) to notify. Not supported for streaming materialized features."""
+
+    email_addresses: Optional[List[str]] = None
+    """Email addresses to notify."""
+
+    final_attempt_only: Optional[bool] = None
+    """If true, notify only when the final attempt of a run fails. If false or unset, notify on every
+    failed attempt, including attempts that will be retried.
+    
+    Batch materialization does not retry failures that need a fix on your side, such as missing
+    permissions or invalid configuration, so the first attempt is the final one. Other batch
+    failures are retried up to twice.
+    
+    Streaming materialization restarts a failed update indefinitely unless the error cannot be
+    retried. With this set, a streaming materialized feature notifies only on errors that cannot be
+    retried, and never on failures that are restarted."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializationFailureNotification into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_ids:
+            body["destination_ids"] = [v for v in self.destination_ids]
+        if self.email_addresses:
+            body["email_addresses"] = [v for v in self.email_addresses]
+        if self.final_attempt_only is not None:
+            body["final_attempt_only"] = self.final_attempt_only
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializationFailureNotification into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_ids:
+            body["destination_ids"] = self.destination_ids
+        if self.email_addresses:
+            body["email_addresses"] = self.email_addresses
+        if self.final_attempt_only is not None:
+            body["final_attempt_only"] = self.final_attempt_only
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializationFailureNotification:
+        """Deserializes the MaterializationFailureNotification from a dictionary."""
+        return cls(
+            destination_ids=d.get("destination_ids", None),
+            email_addresses=d.get("email_addresses", None),
+            final_attempt_only=d.get("final_attempt_only", None),
+        )
+
+
+@dataclass
+class MaterializationNotifications:
+    """Notifications for the jobs and pipelines that materialize a feature, one field per trigger."""
+
+    on_failure: Optional[MaterializationFailureNotification] = None
+    """Who to notify when a run fails, and on which attempts."""
+
+    on_success: Optional[MaterializationSuccessNotification] = None
+    """Who to notify when a run succeeds."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializationNotifications into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.on_failure:
+            body["on_failure"] = self.on_failure.as_dict()
+        if self.on_success:
+            body["on_success"] = self.on_success.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializationNotifications into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.on_failure:
+            body["on_failure"] = self.on_failure
+        if self.on_success:
+            body["on_success"] = self.on_success
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializationNotifications:
+        """Deserializes the MaterializationNotifications from a dictionary."""
+        return cls(
+            on_failure=_from_dict(d, "on_failure", MaterializationFailureNotification),
+            on_success=_from_dict(d, "on_success", MaterializationSuccessNotification),
+        )
+
+
+@dataclass
+class MaterializationSuccessNotification:
+    """Recipients to notify when a materialization run succeeds."""
+
+    destination_ids: Optional[List[str]] = None
+    """IDs of the notification destinations (for example Slack, Microsoft Teams, PagerDuty, or a
+    generic webhook) to notify. Not supported for streaming materialized features."""
+
+    email_addresses: Optional[List[str]] = None
+    """Email addresses to notify."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializationSuccessNotification into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_ids:
+            body["destination_ids"] = [v for v in self.destination_ids]
+        if self.email_addresses:
+            body["email_addresses"] = [v for v in self.email_addresses]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializationSuccessNotification into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_ids:
+            body["destination_ids"] = self.destination_ids
+        if self.email_addresses:
+            body["email_addresses"] = self.email_addresses
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializationSuccessNotification:
+        """Deserializes the MaterializationSuccessNotification from a dictionary."""
+        return cls(destination_ids=d.get("destination_ids", None), email_addresses=d.get("email_addresses", None))
+
+
+@dataclass
 class MaterializedFeature:
     """A materialized feature represents a feature that is continuously computed and stored."""
 
@@ -5085,6 +5212,11 @@ class MaterializedFeature:
 
     materialized_feature_id: Optional[str] = None
     """Server-assigned unique identifier for the materialized feature."""
+
+    notifications: Optional[MaterializationNotifications] = None
+    """Notification configuration around the materialization job or pipeline lifecycle. They are
+    applied to every job and pipeline that materializes this feature. Features which are
+    materialized in the same pipeline will share the same notification."""
 
     offline_store_config: Optional[OfflineStoreConfig] = None
     """Destination for writing feature values to an offline Delta table. The resulting table is
@@ -5144,6 +5276,8 @@ class MaterializedFeature:
             body["latest_backfill_operation"] = self.latest_backfill_operation
         if self.materialized_feature_id is not None:
             body["materialized_feature_id"] = self.materialized_feature_id
+        if self.notifications:
+            body["notifications"] = self.notifications.as_dict()
         if self.offline_store_config:
             body["offline_store_config"] = self.offline_store_config.as_dict()
         if self.online_store_config:
@@ -5183,6 +5317,8 @@ class MaterializedFeature:
             body["latest_backfill_operation"] = self.latest_backfill_operation
         if self.materialized_feature_id is not None:
             body["materialized_feature_id"] = self.materialized_feature_id
+        if self.notifications:
+            body["notifications"] = self.notifications
         if self.offline_store_config:
             body["offline_store_config"] = self.offline_store_config
         if self.online_store_config:
@@ -5214,6 +5350,7 @@ class MaterializedFeature:
             last_materialization_time=d.get("last_materialization_time", None),
             latest_backfill_operation=d.get("latest_backfill_operation", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
+            notifications=_from_dict(d, "notifications", MaterializationNotifications),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
             online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
             pipeline_id=d.get("pipeline_id", None),
@@ -8691,6 +8828,11 @@ class StreamingMode:
     mode: Optional[StreamingModeStreamingModeType] = None
     """The type of streaming mode used by the materialization pipeline."""
 
+    shuffle_partitions: Optional[int] = None
+    """Number of shuffle partitions for streaming materialization of this feature. Higher values
+    process high-throughput features with more parallelism at higher compute cost. Materialized
+    features which are computed together will use the largest value set among them."""
+
     def as_dict(self) -> dict:
         """Serializes the StreamingMode into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8698,6 +8840,8 @@ class StreamingMode:
             body["freshness_target"] = self.freshness_target
         if self.mode is not None:
             body["mode"] = self.mode.value
+        if self.shuffle_partitions is not None:
+            body["shuffle_partitions"] = self.shuffle_partitions
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8707,13 +8851,17 @@ class StreamingMode:
             body["freshness_target"] = self.freshness_target
         if self.mode is not None:
             body["mode"] = self.mode
+        if self.shuffle_partitions is not None:
+            body["shuffle_partitions"] = self.shuffle_partitions
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StreamingMode:
         """Deserializes the StreamingMode from a dictionary."""
         return cls(
-            freshness_target=d.get("freshness_target", None), mode=_enum(d, "mode", StreamingModeStreamingModeType)
+            freshness_target=d.get("freshness_target", None),
+            mode=_enum(d, "mode", StreamingModeStreamingModeType),
+            shuffle_partitions=d.get("shuffle_partitions", None),
         )
 
 

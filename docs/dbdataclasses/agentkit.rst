@@ -1,9 +1,9 @@
-Mason
-=====
+AgentKit
+========
 
-These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.mason`` module.
+These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.agentkit`` module.
 
-.. py:currentmodule:: databricks.sdk.service.mason
+.. py:currentmodule:: databricks.sdk.service.agentkit
 .. autoclass:: AppendSessionItemsResponse
    :members:
    :undoc-members:

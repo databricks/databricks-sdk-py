@@ -1,5 +1,26 @@
 # Version changelog
 
+## Release v0.149.0 (2026-10-08)
+
+### API Changes
+* Add `databricks.sdk.service.agentkit` package.
+* Add [w.agent_kit](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/agentkit/agent_kit.html) workspace-level service.
+* Add `create_identity_visibility_filter()`, `delete_identity_visibility_filter()`, `get_identity_visibility_filter()` and `list_identity_visibility_filters()` methods for [a.account_iam_v2](https://databricks-sdk-py.readthedocs.io/en/latest/account/iamv2/account_iam_v2.html) account-level service.
+* Add `endpoint_route` field for `databricks.sdk.service.catalog.ModelProviderServiceConfigModelTargetConfig`.
+* Add `notifications` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `shuffle_partitions` field for `databricks.sdk.service.ml.StreamingMode`.
+* Add `parent_path` field for `databricks.sdk.service.pipelines.ClonePipelineRequest`.
+* Add `parent_path` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+* Add `parent_path` field for `databricks.sdk.service.pipelines.EditPipeline`.
+* Add `parent_path` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+* Add `custom_template_format` field for `databricks.sdk.service.sql.AlertV2`.
+* Add `statement_timeout` field for `databricks.sdk.service.sql.CreateWarehouseRequest`.
+* Add `statement_timeout` field for `databricks.sdk.service.sql.EditWarehouseRequest`.
+* Add `statement_timeout` field for `databricks.sdk.service.sql.EndpointInfo`.
+* Add `statement_timeout` field for `databricks.sdk.service.sql.GetWarehouseResponse`.
+* [Breaking] Remove `databricks.sdk.service.mason` package.
+* [Breaking] Remove [w.mason](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/mason/mason.html) workspace-level service.
+
 ## Release v0.148.0 (2026-10-07)
 
 ### API Changes

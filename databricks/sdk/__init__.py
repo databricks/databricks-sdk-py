@@ -10,6 +10,7 @@ import databricks.sdk.dbutils as dbutils
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.data_plane import DataPlaneTokenSource
 from databricks.sdk.service import agentbricks as pkg_agentbricks
+from databricks.sdk.service import agentkit as pkg_agentkit
 from databricks.sdk.service import aifunctions as pkg_aifunctions
 from databricks.sdk.service import aisearch as pkg_aisearch
 from databricks.sdk.service import apps as pkg_apps
@@ -31,7 +32,6 @@ from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
 from databricks.sdk.service import knowledgeassistants as pkg_knowledgeassistants
 from databricks.sdk.service import marketplace as pkg_marketplace
-from databricks.sdk.service import mason as pkg_mason
 from databricks.sdk.service import ml as pkg_ml
 from databricks.sdk.service import networking as pkg_networking
 from databricks.sdk.service import oauth2 as pkg_oauth2
@@ -61,6 +61,7 @@ from databricks.sdk.service.iam import AccessControlAPI
 from databricks.sdk.service.iam import AccountAccessControlAPI
 from databricks.sdk.service.iam import AccountAccessControlProxyAPI
 from databricks.sdk.service.agentbricks import AgentBricksAPI
+from databricks.sdk.service.agentkit import AgentKitAPI
 from databricks.sdk.service.aifunctions import AiFunctionsAPI
 from databricks.sdk.service.catalog import AiGatewayAPI
 from databricks.sdk.service.aisearch import AiSearchAPI
@@ -155,7 +156,6 @@ from databricks.sdk.service.settings import LlmProxyPartnerPoweredAccountAPI
 from databricks.sdk.service.settings import LlmProxyPartnerPoweredEnforceAPI
 from databricks.sdk.service.settings import LlmProxyPartnerPoweredWorkspaceAPI
 from databricks.sdk.service.billing import LogDeliveryAPI
-from databricks.sdk.service.mason import MasonAPI
 from databricks.sdk.service.ml import MaterializedFeaturesAPI
 from databricks.sdk.service.catalog import AccountMetastoreAssignmentsAPI
 from databricks.sdk.service.catalog import MetastoresAPI
@@ -369,6 +369,7 @@ class WorkspaceClient:
         self._access_control = pkg_iam.AccessControlAPI(self._api_client)
         self._account_access_control_proxy = pkg_iam.AccountAccessControlProxyAPI(self._api_client)
         self._agent_bricks = pkg_agentbricks.AgentBricksAPI(self._api_client)
+        self._agent_kit = pkg_agentkit.AgentKitAPI(self._api_client)
         self._ai_functions = pkg_aifunctions.AiFunctionsAPI(self._api_client)
         self._ai_gateway = pkg_catalog.AiGatewayAPI(self._api_client)
         self._ai_search = pkg_aisearch.AiSearchAPI(self._api_client)
@@ -430,7 +431,6 @@ class WorkspaceClient:
         self._lakeview = pkg_dashboards.LakeviewAPI(self._api_client)
         self._lakeview_embedded = pkg_dashboards.LakeviewEmbeddedAPI(self._api_client)
         self._libraries = pkg_compute.LibrariesAPI(self._api_client)
-        self._mason = pkg_mason.MasonAPI(self._api_client)
         self._materialized_features = pkg_ml.MaterializedFeaturesAPI(self._api_client)
         self._metastores = pkg_catalog.MetastoresAPI(self._api_client)
         self._model_registry = pkg_ml.ModelRegistryAPI(self._api_client)
@@ -541,6 +541,11 @@ class WorkspaceClient:
     def agent_bricks(self) -> pkg_agentbricks.AgentBricksAPI:
         """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
         return self._agent_bricks
+
+    @property
+    def agent_kit(self) -> pkg_agentkit.AgentKitAPI:
+        """APIs for managing agent memory and durable session state."""
+        return self._agent_kit
 
     @property
     def ai_functions(self) -> pkg_aifunctions.AiFunctionsAPI:
@@ -841,11 +846,6 @@ class WorkspaceClient:
     def libraries(self) -> pkg_compute.LibrariesAPI:
         """The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster."""
         return self._libraries
-
-    @property
-    def mason(self) -> pkg_mason.MasonAPI:
-        """APIs for managing agent memory and durable session state."""
-        return self._mason
 
     @property
     def materialized_features(self) -> pkg_ml.MaterializedFeaturesAPI:

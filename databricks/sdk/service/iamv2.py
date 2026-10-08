@@ -106,6 +106,33 @@ class Entitlement(Enum):
 
 
 @dataclass
+class ExactMatchRule:
+    """A rule that matches an identity whose external ID (from the identity provider) equals the value."""
+
+    external_id: str
+    """The external ID to match exactly."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExactMatchRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.external_id is not None:
+            body["external_id"] = self.external_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExactMatchRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.external_id is not None:
+            body["external_id"] = self.external_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExactMatchRule:
+        """Deserializes the ExactMatchRule from a dictionary."""
+        return cls(external_id=d.get("external_id", None))
+
+
+@dataclass
 class ExternalGroup:
     """An external group from the customer's Identity Provider, resolved into Databricks. This is a
     read-only resource keyed by the IdP external ID. The Get method may trigger an idempotent sync
@@ -443,6 +470,65 @@ class GroupMembershipSource(Enum):
 
 
 @dataclass
+class IdentityVisibilityFilter:
+    """A rule controlling which externally provisioned identities are visible in the account. Filters
+    are scoped by principal_type: an identity is only ever evaluated against filters whose
+    principal_type matches its own. When the account has no filter for an identity's principal_type,
+    all identities of that type are visible; once it has at least one filter for that type, an
+    identity of that type is visible only if it matches at least one of those filters. So a set of
+    group-only filters gates groups but leaves users and service principals fully visible."""
+
+    principal_type: PrincipalType
+    """Which type of principal (user, service principal, or group) this rule applies to."""
+
+    exact: Optional[ExactMatchRule] = None
+    """Exact match on the identity's external ID."""
+
+    name: Optional[str] = None
+    """The resource name of the identity-visibility filter. Format:
+    accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}"""
+
+    prefix: Optional[PrefixMatchRule] = None
+    """Prefix match on the identity's display name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IdentityVisibilityFilter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.exact:
+            body["exact"] = self.exact.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.prefix:
+            body["prefix"] = self.prefix.as_dict()
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IdentityVisibilityFilter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.exact:
+            body["exact"] = self.exact
+        if self.name is not None:
+            body["name"] = self.name
+        if self.prefix:
+            body["prefix"] = self.prefix
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IdentityVisibilityFilter:
+        """Deserializes the IdentityVisibilityFilter from a dictionary."""
+        return cls(
+            exact=_from_dict(d, "exact", ExactMatchRule),
+            name=d.get("name", None),
+            prefix=_from_dict(d, "prefix", PrefixMatchRule),
+            principal_type=_enum(d, "principal_type", PrincipalType),
+        )
+
+
+@dataclass
 class ListDirectGroupMembersResponse:
     """Response message for listing direct group members."""
 
@@ -512,6 +598,43 @@ class ListGroupsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListGroupsResponse:
         """Deserializes the ListGroupsResponse from a dictionary."""
         return cls(groups=_repeated_dict(d, "groups", Group), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListIdentityVisibilityFiltersResponse:
+    """Response message containing a page of identity-visibility filters in the account."""
+
+    identity_visibility_filters: Optional[List[IdentityVisibilityFilter]] = None
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as page_token to retrieve the next page. If omitted, there are no
+    subsequent pages."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListIdentityVisibilityFiltersResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.identity_visibility_filters:
+            body["identity_visibility_filters"] = [v.as_dict() for v in self.identity_visibility_filters]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListIdentityVisibilityFiltersResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.identity_visibility_filters:
+            body["identity_visibility_filters"] = self.identity_visibility_filters
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListIdentityVisibilityFiltersResponse:
+        """Deserializes the ListIdentityVisibilityFiltersResponse from a dictionary."""
+        return cls(
+            identity_visibility_filters=_repeated_dict(d, "identity_visibility_filters", IdentityVisibilityFilter),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 @dataclass
@@ -693,6 +816,33 @@ class ListWorkspaceAssignmentsResponse:
             next_page_token=d.get("next_page_token", None),
             workspace_assignments=_repeated_dict(d, "workspace_assignments", WorkspaceAssignment),
         )
+
+
+@dataclass
+class PrefixMatchRule:
+    """A rule that matches an identity whose display name starts with the value."""
+
+    display_name_prefix: str
+    """The display-name prefix to match."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PrefixMatchRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.display_name_prefix is not None:
+            body["display_name_prefix"] = self.display_name_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PrefixMatchRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.display_name_prefix is not None:
+            body["display_name_prefix"] = self.display_name_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PrefixMatchRule:
+        """Deserializes the PrefixMatchRule from a dictionary."""
+        return cls(display_name_prefix=d.get("display_name_prefix", None))
 
 
 class PrincipalType(Enum):
@@ -1397,6 +1547,40 @@ class AccountIamV2API:
         )
         return Group.from_dict(res)
 
+    def create_identity_visibility_filter(
+        self,
+        parent: str,
+        identity_visibility_filter: IdentityVisibilityFilter,
+        *,
+        identity_visibility_filter_id: Optional[str] = None,
+    ) -> IdentityVisibilityFilter:
+        """Creates an identity-visibility filter in the account.
+
+        :param parent: str
+          Required. The parent account. Format: accounts/{account_id}
+        :param identity_visibility_filter: :class:`IdentityVisibilityFilter`
+          Required. The filter to create.
+        :param identity_visibility_filter_id: str (optional)
+          Optional. The ID to use for the filter, which becomes the final component of its resource name. If
+          not specified, the server generates one.
+
+        :returns: :class:`IdentityVisibilityFilter`
+        """
+
+        body = identity_visibility_filter.as_dict()
+        query = {}
+        if identity_visibility_filter_id is not None:
+            query["identity_visibility_filter_id"] = identity_visibility_filter_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", f"/api/2.0/identity/{parent}/identity-visibility-filters", query=query, body=body, headers=headers
+        )
+        return IdentityVisibilityFilter.from_dict(res)
+
     def create_service_principal(self, service_principal: ServicePrincipal) -> ServicePrincipal:
         """Creates a local service principal in the Databricks account and returns the created service principal.
         A local service principal is one that is not synced from the customer's identity provider, and can be
@@ -1551,6 +1735,22 @@ class AccountIamV2API:
         }
 
         self._api.do("DELETE", f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{group_id}", headers=headers)
+
+    def delete_identity_visibility_filter(self, name: str):
+        """Deletes an identity-visibility filter by resource name.
+
+        :param name: str
+          Required. The resource name of the filter. Format:
+          accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def delete_service_principal(self, service_principal_id: str):
         """Deletes a service principal from the Databricks account by its internal ID.
@@ -1728,6 +1928,23 @@ class AccountIamV2API:
             "GET", f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{group_id}", headers=headers
         )
         return Group.from_dict(res)
+
+    def get_identity_visibility_filter(self, name: str) -> IdentityVisibilityFilter:
+        """Fetches an identity-visibility filter by resource name.
+
+        :param name: str
+          Required. The resource name of the filter. Format:
+          accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}
+
+        :returns: :class:`IdentityVisibilityFilter`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/identity/{name}", headers=headers)
+        return IdentityVisibilityFilter.from_dict(res)
 
     def get_service_principal(self, service_principal_id: str) -> ServicePrincipal:
         """Fetches a service principal from the Databricks account by its internal ID.
@@ -1926,6 +2143,42 @@ class AccountIamV2API:
             if "groups" in json:
                 for v in json["groups"]:
                     yield Group.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_identity_visibility_filters(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[IdentityVisibilityFilter]:
+        """Lists the identity-visibility filters in the account, returning one page per call.
+
+        :param parent: str
+          Required. The parent account. Format: accounts/{account_id}
+        :param page_size: int (optional)
+          The maximum number of filters to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListIdentityVisibilityFilters call. Provide this to retrieve
+          the subsequent page.
+
+        :returns: Iterator over :class:`IdentityVisibilityFilter`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/identity/{parent}/identity-visibility-filters", query=query, headers=headers
+            )
+            if "identity_visibility_filters" in json:
+                for v in json["identity_visibility_filters"]:
+                    yield IdentityVisibilityFilter.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]

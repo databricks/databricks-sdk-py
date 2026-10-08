@@ -959,6 +959,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MaterializationFailureNotification
+   :members:
+   :undoc-members:
+
+.. autoclass:: MaterializationNotifications
+   :members:
+   :undoc-members:
+
+.. autoclass:: MaterializationSuccessNotification
+   :members:
+   :undoc-members:
+
 .. autoclass:: MaterializedFeature
    :members:
    :undoc-members:

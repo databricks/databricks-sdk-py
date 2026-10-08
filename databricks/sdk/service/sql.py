@@ -714,6 +714,17 @@ class AlertV2:
     custom_summary: Optional[str] = None
     """Custom summary for the alert. support mustache template."""
 
+    custom_template_format: Optional[CustomTemplateFormat] = None
+    """The format used to interpret the ``custom_summary`` and ``custom_description`` templates.
+    
+    ``HTML`` treats both templates as HTML with Mustache ``{{VARIABLE_NAME}}`` placeholders.
+    ``MARKDOWN`` treats them as Markdown with allowlisted ``@VARIABLE_NAME`` placeholders and
+    converts them to the format each notification destination expects, so a single template renders
+    correctly in email, Slack, and Microsoft Teams.
+    
+    When unset, the API applies no default. Responses omit the field unless a format is stored, and
+    a template with no format is rendered as HTML."""
+
     effective_run_as: Optional[AlertV2RunAs] = None
     """The actual identity that will be used to execute the alert. This is an output-only field that
     shows the resolved run-as identity after applying permissions and defaults."""
@@ -773,6 +784,8 @@ class AlertV2:
             body["custom_description"] = self.custom_description
         if self.custom_summary is not None:
             body["custom_summary"] = self.custom_summary
+        if self.custom_template_format is not None:
+            body["custom_template_format"] = self.custom_template_format.value
         if self.display_name is not None:
             body["display_name"] = self.display_name
         if self.effective_run_as:
@@ -812,6 +825,8 @@ class AlertV2:
             body["custom_description"] = self.custom_description
         if self.custom_summary is not None:
             body["custom_summary"] = self.custom_summary
+        if self.custom_template_format is not None:
+            body["custom_template_format"] = self.custom_template_format
         if self.display_name is not None:
             body["display_name"] = self.display_name
         if self.effective_run_as:
@@ -849,6 +864,7 @@ class AlertV2:
             create_time=d.get("create_time", None),
             custom_description=d.get("custom_description", None),
             custom_summary=d.get("custom_summary", None),
+            custom_template_format=_enum(d, "custom_template_format", CustomTemplateFormat),
             display_name=d.get("display_name", None),
             effective_run_as=_from_dict(d, "effective_run_as", AlertV2RunAs),
             evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
@@ -1824,6 +1840,13 @@ class CronSchedule:
         )
 
 
+class CustomTemplateFormat(Enum):
+    """Rendering format for the ``custom_summary`` and ``custom_description`` templates."""
+
+    HTML = "HTML"
+    MARKDOWN = "MARKDOWN"
+
+
 @dataclass
 class Dashboard:
     """A JSON representing a dashboard containing widgets of visualizations and text boxes."""
@@ -2604,6 +2627,9 @@ class EndpointInfo:
     state: Optional[State] = None
     """state of the endpoint"""
 
+    statement_timeout: Optional[int] = None
+    """Warehouse statement timeout in seconds."""
+
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
     volumes) associated with this SQL warehouse.
@@ -2655,6 +2681,8 @@ class EndpointInfo:
             body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.state is not None:
             body["state"] = self.state.value
+        if self.statement_timeout is not None:
+            body["statement_timeout"] = self.statement_timeout
         if self.tags:
             body["tags"] = self.tags.as_dict()
         if self.warehouse_type is not None:
@@ -2700,6 +2728,8 @@ class EndpointInfo:
             body["spot_instance_policy"] = self.spot_instance_policy
         if self.state is not None:
             body["state"] = self.state
+        if self.statement_timeout is not None:
+            body["statement_timeout"] = self.statement_timeout
         if self.tags:
             body["tags"] = self.tags
         if self.warehouse_type is not None:
@@ -2728,6 +2758,7 @@ class EndpointInfo:
             odbc_params=_from_dict(d, "odbc_params", OdbcParams),
             spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
             state=_enum(d, "state", State),
+            statement_timeout=d.get("statement_timeout", None),
             tags=_from_dict(d, "tags", EndpointTags),
             warehouse_type=_enum(d, "warehouse_type", EndpointInfoWarehouseType),
         )
@@ -3244,6 +3275,9 @@ class GetWarehouseResponse:
     state: Optional[State] = None
     """state of the endpoint"""
 
+    statement_timeout: Optional[int] = None
+    """Warehouse statement timeout in seconds."""
+
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
     volumes) associated with this SQL warehouse.
@@ -3295,6 +3329,8 @@ class GetWarehouseResponse:
             body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.state is not None:
             body["state"] = self.state.value
+        if self.statement_timeout is not None:
+            body["statement_timeout"] = self.statement_timeout
         if self.tags:
             body["tags"] = self.tags.as_dict()
         if self.warehouse_type is not None:
@@ -3340,6 +3376,8 @@ class GetWarehouseResponse:
             body["spot_instance_policy"] = self.spot_instance_policy
         if self.state is not None:
             body["state"] = self.state
+        if self.statement_timeout is not None:
+            body["statement_timeout"] = self.statement_timeout
         if self.tags:
             body["tags"] = self.tags
         if self.warehouse_type is not None:
@@ -3368,6 +3406,7 @@ class GetWarehouseResponse:
             odbc_params=_from_dict(d, "odbc_params", OdbcParams),
             spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
             state=_enum(d, "state", State),
+            statement_timeout=d.get("statement_timeout", None),
             tags=_from_dict(d, "tags", EndpointTags),
             warehouse_type=_enum(d, "warehouse_type", GetWarehouseResponseWarehouseType),
         )
@@ -9866,6 +9905,7 @@ class WarehousesAPI:
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
     ) -> Wait[GetWarehouseResponse]:
@@ -9939,6 +9979,8 @@ class WarehousesAPI:
           - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
+        :param statement_timeout: int (optional)
+          Warehouse statement timeout in seconds.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -9978,6 +10020,8 @@ class WarehousesAPI:
             body["name"] = name
         if spot_instance_policy is not None:
             body["spot_instance_policy"] = spot_instance_policy.value
+        if statement_timeout is not None:
+            body["statement_timeout"] = statement_timeout
         if tags is not None:
             body["tags"] = tags.as_dict()
         if warehouse_type is not None:
@@ -10012,6 +10056,7 @@ class WarehousesAPI:
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
         timeout=timedelta(minutes=20),
@@ -10028,6 +10073,7 @@ class WarehousesAPI:
             min_num_clusters=min_num_clusters,
             name=name,
             spot_instance_policy=spot_instance_policy,
+            statement_timeout=statement_timeout,
             tags=tags,
             warehouse_type=warehouse_type,
         ).result(timeout=timeout)
@@ -10121,6 +10167,7 @@ class WarehousesAPI:
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
     ) -> Wait[GetWarehouseResponse]:
@@ -10196,6 +10243,8 @@ class WarehousesAPI:
           - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
+        :param statement_timeout: int (optional)
+          Warehouse statement timeout in seconds.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -10235,6 +10284,8 @@ class WarehousesAPI:
             body["name"] = name
         if spot_instance_policy is not None:
             body["spot_instance_policy"] = spot_instance_policy.value
+        if statement_timeout is not None:
+            body["statement_timeout"] = statement_timeout
         if tags is not None:
             body["tags"] = tags.as_dict()
         if warehouse_type is not None:
@@ -10266,6 +10317,7 @@ class WarehousesAPI:
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
         timeout=timedelta(minutes=20),
@@ -10283,6 +10335,7 @@ class WarehousesAPI:
             min_num_clusters=min_num_clusters,
             name=name,
             spot_instance_policy=spot_instance_policy,
+            statement_timeout=statement_timeout,
             tags=tags,
             warehouse_type=warehouse_type,
         ).result(timeout=timeout)

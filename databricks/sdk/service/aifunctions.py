@@ -827,8 +827,8 @@ class AiFunctionsAPI:
           answer the provided questions. For example, provide a support message, a conversation, or records
           describing the current state of an application. All questions receive this same state.
         :param questions: any
-          A JSON object mapping question IDs to their definitions. Choose a nonempty string for each ID; its
-          answer is returned with the same ID in ``response.answers``.
+          A JSON object mapping question IDs to their definitions. Each ID must contain non-whitespace text;
+          its answer is returned with the same ID in ``response.answers``.
 
           Each definition is an object with the required fields ``type`` and ``instructions``. The
           ``criteria`` field is optional for the type ``noul`` but is required for the types ``choice`` and
@@ -858,8 +858,9 @@ class AiFunctionsAPI:
 
           - ``noul``: Estimates the probability that the answer to a true-or-false question is true.
             ``criteria`` can take the fields ``true`` or ``false``, or both, with descriptions that are
-            strings, objects, or arrays. Omit ``criteria`` to use the question alone. For example, both of the
-            following are valid:
+            strings, objects, or arrays. Omit ``criteria`` to use the question alone. The instructions or at
+            least one criteria description must contain non-whitespace text, a nonempty object, or a nonempty
+            array. For example, both of the following are valid:
 
           .. code-block:: json
 
@@ -886,8 +887,8 @@ class AiFunctionsAPI:
              }
 
           - ``score``: Rates the state on an ordered scale. Requires ``criteria`` to be an array of 2 to 10
-            level descriptions, ordered from low to high. Descriptions can be strings, objects, or arrays.
-            Array positions define levels starting at 0. For example:
+            level descriptions, ordered from low to high. Descriptions must contain non-whitespace text, a
+            nonempty object, or a nonempty array. Array positions define levels starting at 0. For example:
 
           .. code-block:: json
 

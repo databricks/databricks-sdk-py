@@ -6,6 +6,7 @@ Dataclasses
    :maxdepth: 1
    
    agentbricks
+   agentkit
    aifunctions
    aisearch
    apps
@@ -27,7 +28,6 @@ Dataclasses
    jobs
    knowledgeassistants
    marketplace
-   mason
    ml
    networking
    oauth2
