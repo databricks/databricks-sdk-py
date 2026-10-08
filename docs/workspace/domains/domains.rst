@@ -35,7 +35,7 @@
 
         Get a domain by resource name.
 
-        Authorization: external callers must have the ``MANAGE DISCOVERY`` permission.
+        Authorization: external callers must have the ``MANAGE DISCOVER`` permission.
 
         :param name: str
           Full resource name of the domain to retrieve. Format: ``domains/{domain_id}``
@@ -48,7 +48,7 @@
         List domains in the account. Set ``parent_domain_id`` to return only the direct subdomains of a given
         domain.
 
-        Authorization: external callers must have the ``MANAGE DISCOVERY`` permission; only domains the caller
+        Authorization: external callers must have the ``MANAGE DISCOVER`` permission; only domains the caller
         is authorized to read are returned.
 
         :param page_size: int (optional)

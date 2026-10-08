@@ -28,6 +28,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKSPACE_CONSUME
       :value: "WORKSPACE_CONSUME"
 
+.. autoclass:: ExactMatchRule
+   :members:
+   :undoc-members:
+
 .. autoclass:: ExternalGroup
    :members:
    :undoc-members:
@@ -58,11 +62,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INTERNAL
       :value: "INTERNAL"
 
+.. autoclass:: IdentityVisibilityFilter
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListDirectGroupMembersResponse
    :members:
    :undoc-members:
 
 .. autoclass:: ListGroupsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListIdentityVisibilityFiltersResponse
    :members:
    :undoc-members:
 
@@ -83,6 +95,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListWorkspaceAssignmentsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: PrefixMatchRule
    :members:
    :undoc-members:
 

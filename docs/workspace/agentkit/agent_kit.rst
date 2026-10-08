@@ -1,8 +1,8 @@
-``w.mason``: Mason.v1
-=====================
-.. currentmodule:: databricks.sdk.service.mason
+``w.agent_kit``: AgentKit.v1
+============================
+.. currentmodule:: databricks.sdk.service.agentkit
 
-.. py:class:: MasonAPI
+.. py:class:: AgentKitAPI
 
     APIs for managing agent memory and durable session state. This interface is under active development and
     may change.

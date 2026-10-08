@@ -37,6 +37,21 @@
         :returns: :class:`Group`
         
 
+    .. py:method:: create_identity_visibility_filter(parent: str, identity_visibility_filter: IdentityVisibilityFilter [, identity_visibility_filter_id: Optional[str]]) -> IdentityVisibilityFilter
+
+        Creates an identity-visibility filter in the account.
+
+        :param parent: str
+          Required. The parent account. Format: accounts/{account_id}
+        :param identity_visibility_filter: :class:`IdentityVisibilityFilter`
+          Required. The filter to create.
+        :param identity_visibility_filter_id: str (optional)
+          Optional. The ID to use for the filter, which becomes the final component of its resource name. If
+          not specified, the server generates one.
+
+        :returns: :class:`IdentityVisibilityFilter`
+        
+
     .. py:method:: create_service_principal(service_principal: ServicePrincipal) -> ServicePrincipal
 
         Creates a local service principal in the Databricks account and returns the created service principal.
@@ -120,6 +135,17 @@
 
         :param group_id: str
           Required. Internal ID of the group in Databricks.
+
+
+        
+
+    .. py:method:: delete_identity_visibility_filter(name: str)
+
+        Deletes an identity-visibility filter by resource name.
+
+        :param name: str
+          Required. The resource name of the filter. Format:
+          accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}
 
 
         
@@ -233,6 +259,17 @@
         :returns: :class:`Group`
         
 
+    .. py:method:: get_identity_visibility_filter(name: str) -> IdentityVisibilityFilter
+
+        Fetches an identity-visibility filter by resource name.
+
+        :param name: str
+          Required. The resource name of the filter. Format:
+          accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}
+
+        :returns: :class:`IdentityVisibilityFilter`
+        
+
     .. py:method:: get_service_principal(service_principal_id: str) -> ServicePrincipal
 
         Fetches a service principal from the Databricks account by its internal ID.
@@ -333,6 +370,21 @@
           page.
 
         :returns: Iterator over :class:`Group`
+        
+
+    .. py:method:: list_identity_visibility_filters(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[IdentityVisibilityFilter]
+
+        Lists the identity-visibility filters in the account, returning one page per call.
+
+        :param parent: str
+          Required. The parent account. Format: accounts/{account_id}
+        :param page_size: int (optional)
+          The maximum number of filters to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListIdentityVisibilityFilters call. Provide this to retrieve
+          the subsequent page.
+
+        :returns: Iterator over :class:`IdentityVisibilityFilter`
         
 
     .. py:method:: list_service_principals( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ServicePrincipal]

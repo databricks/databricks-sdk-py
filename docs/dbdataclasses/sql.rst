@@ -325,6 +325,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: CustomTemplateFormat
+
+   Rendering format for the ``custom_summary`` and ``custom_description`` templates.
+
+   .. py:attribute:: HTML
+      :value: "HTML"
+
+   .. py:attribute:: MARKDOWN
+      :value: "MARKDOWN"
+
 .. autoclass:: Dashboard
    :members:
    :undoc-members:

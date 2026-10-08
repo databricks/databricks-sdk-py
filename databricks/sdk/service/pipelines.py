@@ -3743,6 +3743,11 @@ class PipelineSpec:
     notifications: Optional[List[Notifications]] = None
     """List of notification settings for this pipeline."""
 
+    parent_path: Optional[str] = None
+    """Path of the pipeline parent folder in workspace file tree.
+    
+    If absent, the pipeline doesn't have a workspace object."""
+
     photon: Optional[bool] = None
     """Whether Photon is enabled for this pipeline."""
 
@@ -3821,6 +3826,8 @@ class PipelineSpec:
             body["name"] = self.name
         if self.notifications:
             body["notifications"] = [v.as_dict() for v in self.notifications]
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.photon is not None:
             body["photon"] = self.photon
         if self.restart_window:
@@ -3884,6 +3891,8 @@ class PipelineSpec:
             body["name"] = self.name
         if self.notifications:
             body["notifications"] = self.notifications
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.photon is not None:
             body["photon"] = self.photon
         if self.restart_window:
@@ -3930,6 +3939,7 @@ class PipelineSpec:
             libraries=_repeated_dict(d, "libraries", PipelineLibrary),
             name=d.get("name", None),
             notifications=_repeated_dict(d, "notifications", Notifications),
+            parent_path=d.get("parent_path", None),
             photon=d.get("photon", None),
             restart_window=_from_dict(d, "restart_window", RestartWindow),
             root_path=d.get("root_path", None),
@@ -6032,6 +6042,7 @@ class PipelinesAPI:
         libraries: Optional[List[PipelineLibrary]] = None,
         name: Optional[str] = None,
         notifications: Optional[List[Notifications]] = None,
+        parent_path: Optional[str] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
         root_path: Optional[str] = None,
@@ -6103,6 +6114,10 @@ class PipelinesAPI:
           Friendly identifier for this pipeline.
         :param notifications: List[:class:`Notifications`] (optional)
           List of notification settings for this pipeline.
+        :param parent_path: str (optional)
+          Path of the pipeline parent folder in workspace file tree.
+
+          If absent, the pipeline doesn't have a workspace object.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
@@ -6177,6 +6192,8 @@ class PipelinesAPI:
             body["name"] = name
         if notifications is not None:
             body["notifications"] = [v.as_dict() for v in notifications]
+        if parent_path is not None:
+            body["parent_path"] = parent_path
         if photon is not None:
             body["photon"] = photon
         if restart_window is not None:
@@ -6235,6 +6252,7 @@ class PipelinesAPI:
         name: Optional[str] = None,
         notifications: Optional[List[Notifications]] = None,
         parameters: Optional[Dict[str, str]] = None,
+        parent_path: Optional[str] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
         root_path: Optional[str] = None,
@@ -6303,6 +6321,10 @@ class PipelinesAPI:
         :param parameters: Dict[str,str] (optional)
           Key/value map of default parameters to use for pipeline execution. Maximum total size: 10k
           characters (JSON format)
+        :param parent_path: str (optional)
+          Path of the pipeline parent folder in workspace file tree.
+
+          If absent, the pipeline doesn't have a workspace object.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
@@ -6378,6 +6400,8 @@ class PipelinesAPI:
             body["notifications"] = [v.as_dict() for v in notifications]
         if parameters is not None:
             body["parameters"] = parameters
+        if parent_path is not None:
+            body["parent_path"] = parent_path
         if photon is not None:
             body["photon"] = photon
         if restart_window is not None:
@@ -6851,6 +6875,7 @@ class PipelinesAPI:
         name: Optional[str] = None,
         notifications: Optional[List[Notifications]] = None,
         parameters: Optional[Dict[str, str]] = None,
+        parent_path: Optional[str] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
         root_path: Optional[str] = None,
@@ -6922,6 +6947,10 @@ class PipelinesAPI:
         :param parameters: Dict[str,str] (optional)
           Key/value map of default parameters to use for pipeline execution. Maximum total size: 10k
           characters (JSON format)
+        :param parent_path: str (optional)
+          Path of the pipeline parent folder in workspace file tree.
+
+          If absent, the pipeline doesn't have a workspace object.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
@@ -6997,6 +7026,8 @@ class PipelinesAPI:
             body["notifications"] = [v.as_dict() for v in notifications]
         if parameters is not None:
             body["parameters"] = parameters
+        if parent_path is not None:
+            body["parent_path"] = parent_path
         if photon is not None:
             body["photon"] = photon
         if restart_window is not None:

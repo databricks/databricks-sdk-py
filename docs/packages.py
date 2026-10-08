@@ -113,6 +113,11 @@ AUTO_PACKAGES = [
         "Agent Bricks Service",
         "The Custom LLMs service manages state and powers the UI for the Custom LLM product.",
     ),
+    Package(
+        "agentkit",
+        "AgentKit",
+        "APIs for managing agent memory and durable session state. This interface is under active development and may change.",
+    ),
     Package("aifunctions", "AI Functions", "Transform and enrich data with AI on Databricks."),
     Package(
         "aisearch",
@@ -156,11 +161,6 @@ AUTO_PACKAGES = [
     Package("jobs", "", ""),
     Package("knowledgeassistants", "Knowledge Assistants", "Manage Knowledge Assistants and related resources."),
     Package("marketplace", "", ""),
-    Package(
-        "mason",
-        "Mason",
-        "APIs for managing agent memory and durable session state. This interface is under active development and may change.",
-    ),
     Package("ml", "", ""),
     Package("networking", "", ""),
     Package("oauth2", "", ""),

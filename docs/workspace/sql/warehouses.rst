@@ -7,7 +7,7 @@
     A SQL warehouse is a compute resource that lets you run SQL commands on data objects within Databricks
     SQL. Compute resources are infrastructure resources that provide processing capabilities in the cloud.
 
-    .. py:method:: create( [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[CreateWarehouseRequestWarehouseType]]) -> Wait[GetWarehouseResponse]
+    .. py:method:: create( [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], statement_timeout: Optional[int], tags: Optional[EndpointTags], warehouse_type: Optional[CreateWarehouseRequestWarehouseType]]) -> Wait[GetWarehouseResponse]
 
 
         Usage:
@@ -104,6 +104,8 @@
           - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
+        :param statement_timeout: int (optional)
+          Warehouse statement timeout in seconds.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -120,7 +122,7 @@
           See :method:wait_get_warehouse_running for more details.
         
 
-    .. py:method:: create_and_wait( [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[CreateWarehouseRequestWarehouseType], timeout: datetime.timedelta = 0:20:00]) -> GetWarehouseResponse
+    .. py:method:: create_and_wait( [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], statement_timeout: Optional[int], tags: Optional[EndpointTags], warehouse_type: Optional[CreateWarehouseRequestWarehouseType], timeout: datetime.timedelta = 0:20:00]) -> GetWarehouseResponse
 
 
     .. py:method:: create_default_warehouse_override(default_warehouse_override: DefaultWarehouseOverride, default_warehouse_override_id: str) -> DefaultWarehouseOverride
@@ -160,7 +162,7 @@
 
         
 
-    .. py:method:: edit(id: str [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[EditWarehouseRequestWarehouseType]]) -> Wait[GetWarehouseResponse]
+    .. py:method:: edit(id: str [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], statement_timeout: Optional[int], tags: Optional[EndpointTags], warehouse_type: Optional[EditWarehouseRequestWarehouseType]]) -> Wait[GetWarehouseResponse]
 
 
         Usage:
@@ -267,6 +269,8 @@
           - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
+        :param statement_timeout: int (optional)
+          Warehouse statement timeout in seconds.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -283,7 +287,7 @@
           See :method:wait_get_warehouse_running for more details.
         
 
-    .. py:method:: edit_and_wait(id: str [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[EditWarehouseRequestWarehouseType], timeout: datetime.timedelta = 0:20:00]) -> GetWarehouseResponse
+    .. py:method:: edit_and_wait(id: str [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], statement_timeout: Optional[int], tags: Optional[EndpointTags], warehouse_type: Optional[EditWarehouseRequestWarehouseType], timeout: datetime.timedelta = 0:20:00]) -> GetWarehouseResponse
 
 
     .. py:method:: get(id: str) -> GetWarehouseResponse

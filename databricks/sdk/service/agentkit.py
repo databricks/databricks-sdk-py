@@ -883,7 +883,7 @@ class StorageBackendType(Enum):
     STORAGE_BACKEND_TYPE_LAKEBASE = "STORAGE_BACKEND_TYPE_LAKEBASE"
 
 
-class MasonAPI:
+class AgentKitAPI:
     """APIs for managing agent memory and durable session state. This interface is under active development and
     may change."""
 
