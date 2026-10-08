@@ -219,6 +219,26 @@ def test_databricks_oidc_token_source_sends_group(requests_mock, token_endpoint)
     assert token_form["assume_group"] == ["group-id"]
 
 
+def test_databricks_oidc_token_source_sends_authorization_details(requests_mock):
+    token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"
+    requests_mock.post(
+        token_endpoint,
+        json={"access_token": "token", "token_type": "Bearer", "expires_in": 3600},
+    )
+    source = oidc.DatabricksOidcTokenSource(
+        host="https://workspace.cloud.databricks.com",
+        token_endpoint=token_endpoint,
+        id_token_source=_CountingIdTokenSource(),
+        client_id="client-id",
+        authorization_details='[{"type":"example"}]',
+    )
+
+    source.token()
+
+    token_form = parse_qs(requests_mock.last_request.text)
+    assert token_form["authorization_details"] == ['[{"type":"example"}]']
+
+
 def test_databricks_oidc_token_source_reexchange_sends_group(requests_mock):
     """Verifies WIF retains assume_group when an expired token triggers re-exchange."""
     token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"

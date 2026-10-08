@@ -457,6 +457,7 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
         disable_async=cfg.disable_async_token_refresh,
         scopes=cfg.get_scopes_as_string(),
         group_id=cfg.group_id,
+        authorization_details=cfg.authorization_details,
     )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -467,6 +468,19 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
         return token_source.token()
 
     return OAuthCredentialsProvider(refreshed_headers, token)
+
+
+class _OidcTokenSupplierIdTokenSource(oidc.IdTokenSource):
+    def __init__(self, supplier: Any, audience: str, provider_name: str):
+        self._supplier = supplier
+        self._audience = audience
+        self._provider_name = provider_name
+
+    def id_token(self) -> oidc.IdToken:
+        token = self._supplier.get_oidc_token(self._audience)
+        if not token:
+            raise ValueError(f"Cannot get {self._provider_name} token")
+        return oidc.IdToken(jwt=token)
 
 
 def _oidc_credentials_provider(
@@ -495,47 +509,11 @@ def _oidc_credentials_provider(
     if audience is None:
         audience = cfg.databricks_oidc_endpoints.token_endpoint
 
-    # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
-    id_token = supplier.get_oidc_token(audience)
-    if not id_token:
-        logger.debug(f"{provider_name}: no token available, skipping authentication method")
-        return None
-
-    logger.info(f"Configured {provider_name} authentication")
-
-    def token_source_for(audience: str) -> oauth.TokenSource:
-        id_token = supplier.get_oidc_token(audience)
-        if not id_token:
-            # Should not happen, since we checked it above.
-            raise Exception(f"Cannot get {provider_name} token")
-
-        endpoint_params = {
-            "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
-            "subject_token": id_token,
-            "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
-        }
-        if cfg.group_id:
-            endpoint_params["assume_group"] = cfg.group_id
-
-        return oauth.ClientCredentials(
-            client_id=cfg.client_id,
-            client_secret="",  # we have no (rotatable) secrets in OIDC flow
-            token_url=cfg.databricks_oidc_endpoints.token_endpoint,
-            endpoint_params=endpoint_params,
-            scopes=cfg.get_scopes_as_string(),
-            use_params=True,
-            disable_async=cfg.disable_async_token_refresh,
-            authorization_details=cfg.authorization_details,
-        )
-
-    def refreshed_headers() -> Dict[str, str]:
-        token = token_source_for(audience).token()
-        return {"Authorization": f"{token.token_type} {token.access_token}"}
-
-    def token() -> oauth.Token:
-        return token_source_for(audience).token()
-
-    return OAuthCredentialsProvider(refreshed_headers, token)
+    id_token_source = _OidcTokenSupplierIdTokenSource(supplier, audience, provider_name)
+    provider = oidc_credentials_provider(cfg, id_token_source)
+    if provider is not None:
+        logger.info(f"Configured {provider_name} authentication")
+    return provider
 
 
 @oauth_credentials_strategy("github-oidc", ["host", "client_id"], supports_group=True)
