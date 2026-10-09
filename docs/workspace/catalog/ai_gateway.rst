@@ -311,7 +311,7 @@
         returned.
 
         :param page_size: int (optional)
-          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
@@ -337,7 +337,7 @@
         ``MANAGE``) are returned.
 
         :param page_size: int (optional)
-          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
+          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 200.
           Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
@@ -363,7 +363,7 @@
         returned.
 
         :param page_size: int (optional)
-          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
@@ -394,7 +394,7 @@
           Required: skill listing is schema-scoped, so ``parent`` must be set; an unset or empty ``parent`` is
           rejected with INVALID_PARAMETER_VALUE.
         :param page_size: int (optional)
-          Maximum number of skills to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          Maximum number of skills to return. Defaults to 100 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.

@@ -1768,8 +1768,7 @@ class DeltaTableSource:
 
 @dataclass
 class DirectMtlsConfig:
-    """Direct connection configs for mTLS, as Kafka Connections do not support mTLS yet . Temporarily
-    used until UC Kafka Connections gain mTLS support."""
+    """Direct connection configs for mTLS, as Kafka Connections do not support mTLS yet."""
 
     bootstrap_servers: str
     """A comma-separated list of host:port pairs for the Kafka bootstrap servers."""
@@ -2340,9 +2339,7 @@ class ExperimentTraceLocation:
 @dataclass
 class Feature:
     full_name: str
-    """The full three-part name (catalog, schema, name) of the feature. This is the feature's resource
-    identifier; the catalog_name, schema_name, and name fields below are OUTPUT_ONLY decomposed
-    views of this value."""
+    """The full three-part name (catalog, schema, name) of the feature."""
 
     source: DataSource
     """The data source of the feature."""
@@ -6104,13 +6101,7 @@ class MtlsConfig:
     and truststore (CAs trusted to verify the broker) live as JKS files on Unity Catalog volumes,
     with their passwords stored in Databricks secret scopes. This matches the SSL setup pattern
     documented at
-    https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
-
-    At materialization time, the generated PySpark code passes the JKS file paths and resolved
-    passwords through to the Kafka SSL options (kafka.ssl.keystore.location,
-    kafka.ssl.keystore.password, kafka.ssl.key.password, kafka.ssl.truststore.location,
-    kafka.ssl.truststore.password). Passwords are resolved on the Spark cluster via
-    dbutils.secrets.get; this message stores only references, never password values."""
+    https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka."""
 
     keystore_location: str
     """Unity Catalog volume path to the JKS keystore file containing the client certificate and private
@@ -8174,8 +8165,7 @@ class SearchRunsResponse:
 
 @dataclass
 class SecretScopeReference:
-    """Reference to an entry in a Databricks secret scope. The referenced value is fetched on the Spark
-    cluster at materialization time via dbutils.secrets.get(scope, key)."""
+    """Reference to an entry in a Databricks secret scope."""
 
     scope: str
     """The Databricks secret scope name."""
@@ -8457,7 +8447,7 @@ class StddevSampFunction:
 @dataclass
 class Stream:
     """A Stream is a governed UC entity representing an external streaming data source. The
-    source_config oneof determines the streaming platform source (e.g. Kafka, Kinesis, etc.)."""
+    source_config field determines the streaming platform source (e.g. Kafka, Kinesis)."""
 
     name: str
     """Full three-part (catalog.schema.stream) name of the stream."""
@@ -8624,9 +8614,7 @@ class StreamConnectionConfig:
     """Specifies how to connect and authenticate to the stream platform."""
 
     direct_mtls_config: Optional[DirectMtlsConfig] = None
-    """Direct mTLS configuration for stream platform access. This is only used in the short term until
-    UC Kafka Connections support mTLS . Once UC Kafka Connections support mTLS, this will be
-    deprecated."""
+    """Direct mTLS configuration for stream platform access."""
 
     uc_connection_name: Optional[str] = None
     """Name of an existing UC Connection for stream platform access. Must be the correct type for the
@@ -11582,9 +11570,7 @@ class FeatureEngineeringAPI:
         """Update a Feature.
 
         :param full_name: str
-          The full three-part name (catalog, schema, name) of the feature. This is the feature's resource
-          identifier; the catalog_name, schema_name, and name fields below are OUTPUT_ONLY decomposed views of
-          this value.
+          The full three-part name (catalog, schema, name) of the feature.
         :param feature: :class:`Feature`
           Feature whose full_name identifies the target. Only description is mutable.
         :param update_mask: str
