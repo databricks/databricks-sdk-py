@@ -185,7 +185,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ScalingChangeState
 
-   State of the most recent scaling change request for a Storage Optimized endpoint.
+   State of the most recent scaling change request for a Standard endpoint.
 
    .. py:attribute:: SCALING_CHANGE_APPLIED
       :value: "SCALING_CHANGE_APPLIED"

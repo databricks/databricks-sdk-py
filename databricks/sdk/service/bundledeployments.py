@@ -560,19 +560,18 @@ class Operation:
 
     state: Optional[str] = None
     """Serialized local config state after the operation. Its presence records whether the resource
-    still exists, so an operation that records no state removes its resource from the deployment. It
-    may be unset only for an operation that left no resource behind: a ``DELETE`` that succeeded, or
-    a ``CREATE`` or ``RECREATE`` that failed. It is required otherwise, including for a failed
-    ``DELETE``, whose resource survives.
+    still exists. Explicitly clearing state removes the resource; omitting it from the update mask
+    leaves resource state unchanged. State is stored only on Resources. UpdateOperation accepts
+    state but omits it from its response, as do subsequent GetOperation and ListOperations.
     
     Mutable: may be updated after creation via UpdateOperation. When updating, the caller must echo
     the last-observed ``sequence_id`` as a concurrency precondition.
     
-    Opaque to this service: the string is stored and returned unchanged. This is deliberately not
-    google.protobuf.Value, whose only numeric case is ``double number_value``, so parsing the
-    client's JSON into it rewrites every integer as a double - ``1`` reads back as ``1.0``, which no
-    longer deserializes into an integer field - and silently loses precision above 2^53, which is
-    within range for IDs the client records.
+    The string is not parsed; it is projected onto the corresponding Resource's state. It is
+    deliberately not google.protobuf.Value, whose only numeric case is ``double number_value``, so
+    parsing the client's JSON into it rewrites every integer as a double - ``1`` reads back as
+    ``1.0``, which no longer deserializes into an integer field - and silently loses precision above
+    2^53, which is within range for IDs the client records.
     
     A string rather than bytes: the payload is always UTF-8 JSON, and proto3 JSON maps bytes to
     base64, which inflates every request and response by a third and makes state unreadable in logs
@@ -582,8 +581,7 @@ class Operation:
     status: Optional[OperationStatus] = None
     """Status of the operation. Starts as OPERATION_STATUS_PENDING when the version is created and
     moves to a terminal status once the resource is applied. Mutable: updated via UpdateOperation,
-    e.g. when an operation recorded as failed is retried and eventually succeeds. A succeeded
-    operation cannot carry an ``error_message``."""
+    e.g. when an operation recorded as failed is retried and eventually succeeds."""
 
     update_time: Optional[Timestamp] = None
     """When the operation was last updated. Set to ``create_time`` when the operation is created and to

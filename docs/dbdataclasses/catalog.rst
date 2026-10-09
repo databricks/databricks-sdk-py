@@ -1207,6 +1207,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI
       :value: "EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI"
 
+   .. py:attribute:: EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE
+      :value: "EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE"
+
    .. py:attribute:: EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM
       :value: "EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM"
 
@@ -1244,6 +1247,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ModelProviderServiceConfigOpenAiProviderDirectConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: ModelProviderServiceConfigProviderPricingConfig
    :members:
    :undoc-members:
 

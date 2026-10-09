@@ -627,6 +627,9 @@ class EndpointInfo:
 
 @dataclass
 class EndpointScalingInfo:
+    """Scaling information for a Standard endpoint: the current scaling state, the requested QPS
+    target, and the progress of an in-progress scaling change."""
+
     requested_target_qps: Optional[int] = None
     """The requested QPS target for the endpoint. Best-effort; the system does not guarantee this QPS
     will be achieved."""

@@ -7498,6 +7498,8 @@ class ModelProviderServiceConfig:
 
     azure_openai: Optional[ModelProviderServiceConfigAzureOpenAiProviderConfig] = None
 
+    bedrock_mantle: Optional[ModelProviderServiceConfigAmazonBedrockProviderConfig] = None
+
     custom: Optional[ModelProviderServiceConfigCustomProviderConfig] = None
 
     forward_headers: Optional[bool] = None
@@ -7525,6 +7527,9 @@ class ModelProviderServiceConfig:
 
     openai: Optional[ModelProviderServiceConfigOpenAiProviderConfig] = None
 
+    pricing: Optional[ModelProviderServiceConfigProviderPricingConfig] = None
+    """Pricing configuration for this provider service."""
+
     provider_type: Optional[ModelProviderServiceConfigExternalModelProviderType] = None
     """External model provider. Required on Create and immutable thereafter. Set the matching
     provider-specific configuration, such as ``openai``, ``azure_openai``, or ``amazon_bedrock``."""
@@ -7551,6 +7556,8 @@ class ModelProviderServiceConfig:
             body["anthropic"] = self.anthropic.as_dict()
         if self.azure_openai:
             body["azure_openai"] = self.azure_openai.as_dict()
+        if self.bedrock_mantle:
+            body["bedrock_mantle"] = self.bedrock_mantle.as_dict()
         if self.custom:
             body["custom"] = self.custom.as_dict()
         if self.forward_headers is not None:
@@ -7567,6 +7574,8 @@ class ModelProviderServiceConfig:
             body["microsoft_foundry"] = self.microsoft_foundry.as_dict()
         if self.openai:
             body["openai"] = self.openai.as_dict()
+        if self.pricing:
+            body["pricing"] = self.pricing.as_dict()
         if self.provider_type is not None:
             body["provider_type"] = self.provider_type.value
         if self.rate_limits:
@@ -7586,6 +7595,8 @@ class ModelProviderServiceConfig:
             body["anthropic"] = self.anthropic
         if self.azure_openai:
             body["azure_openai"] = self.azure_openai
+        if self.bedrock_mantle:
+            body["bedrock_mantle"] = self.bedrock_mantle
         if self.custom:
             body["custom"] = self.custom
         if self.forward_headers is not None:
@@ -7602,6 +7613,8 @@ class ModelProviderServiceConfig:
             body["microsoft_foundry"] = self.microsoft_foundry
         if self.openai:
             body["openai"] = self.openai
+        if self.pricing:
+            body["pricing"] = self.pricing
         if self.provider_type is not None:
             body["provider_type"] = self.provider_type
         if self.rate_limits:
@@ -7618,6 +7631,7 @@ class ModelProviderServiceConfig:
             amazon_bedrock=_from_dict(d, "amazon_bedrock", ModelProviderServiceConfigAmazonBedrockProviderConfig),
             anthropic=_from_dict(d, "anthropic", ModelProviderServiceConfigAnthropicProviderConfig),
             azure_openai=_from_dict(d, "azure_openai", ModelProviderServiceConfigAzureOpenAiProviderConfig),
+            bedrock_mantle=_from_dict(d, "bedrock_mantle", ModelProviderServiceConfigAmazonBedrockProviderConfig),
             custom=_from_dict(d, "custom", ModelProviderServiceConfigCustomProviderConfig),
             forward_headers=d.get("forward_headers", None),
             forward_query_parameters=d.get("forward_query_parameters", None),
@@ -7630,6 +7644,7 @@ class ModelProviderServiceConfig:
                 d, "microsoft_foundry", ModelProviderServiceConfigMicrosoftFoundryProviderConfig
             ),
             openai=_from_dict(d, "openai", ModelProviderServiceConfigOpenAiProviderConfig),
+            pricing=_from_dict(d, "pricing", ModelProviderServiceConfigProviderPricingConfig),
             provider_type=_enum(d, "provider_type", ModelProviderServiceConfigExternalModelProviderType),
             rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
             targets=_repeated_dict(d, "targets", ModelProviderServiceConfigModelTargetConfig),
@@ -8119,6 +8134,7 @@ class ModelProviderServiceConfigExternalModelProviderType(Enum):
     EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK = "EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK"
     EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC = "EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC"
     EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI = "EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI"
+    EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE = "EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE"
     EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM = "EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM"
     EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE = "EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE"
     EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY = "EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY"
@@ -8436,6 +8452,34 @@ class ModelProviderServiceConfigOpenAiProviderDirectConfig:
             base_url=d.get("base_url", None),
             organization=d.get("organization", None),
         )
+
+
+@dataclass
+class ModelProviderServiceConfigProviderPricingConfig:
+    """Pricing adjustments applied to this provider service's external-model spend estimates."""
+
+    default_discount_basis_points: Optional[int] = None
+    """Provider-wide discount in basis points: 2000 = 20% off. Negative values are markups; the
+    discount cannot exceed 10000 (100% off)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigProviderPricingConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_discount_basis_points is not None:
+            body["default_discount_basis_points"] = self.default_discount_basis_points
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelProviderServiceConfigProviderPricingConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_discount_basis_points is not None:
+            body["default_discount_basis_points"] = self.default_discount_basis_points
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelProviderServiceConfigProviderPricingConfig:
+        """Deserializes the ModelProviderServiceConfigProviderPricingConfig from a dictionary."""
+        return cls(default_discount_basis_points=d.get("default_discount_basis_points", None))
 
 
 @dataclass
@@ -14719,7 +14763,7 @@ class AiGatewayAPI:
         returned.
 
         :param page_size: int (optional)
-          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
@@ -14777,7 +14821,7 @@ class AiGatewayAPI:
         ``MANAGE``) are returned.
 
         :param page_size: int (optional)
-          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
+          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 200.
           Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
@@ -14835,7 +14879,7 @@ class AiGatewayAPI:
         returned.
 
         :param page_size: int (optional)
-          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
@@ -14893,7 +14937,7 @@ class AiGatewayAPI:
           Required: skill listing is schema-scoped, so ``parent`` must be set; an unset or empty ``parent`` is
           rejected with INVALID_PARAMETER_VALUE.
         :param page_size: int (optional)
-          Maximum number of skills to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          Maximum number of skills to return. Defaults to 100 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.

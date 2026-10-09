@@ -517,8 +517,8 @@ class Endpoint:
 
 @dataclass
 class EndpointScalingInfo:
-    """Scaling information for a Storage Optimized endpoint — current scaling state and the requested
-    QPS target the system is scaling toward."""
+    """Scaling information for a Standard endpoint: the current scaling state, the requested QPS
+    target, and the progress of an in-progress scaling change."""
 
     requested_target_qps: Optional[int] = None
     """The requested QPS target for the endpoint. Best-effort; the system does not guarantee this QPS
@@ -1245,7 +1245,7 @@ class ResultManifest:
 
 
 class ScalingChangeState(Enum):
-    """State of the most recent scaling change request for a Storage Optimized endpoint."""
+    """State of the most recent scaling change request for a Standard endpoint."""
 
     SCALING_CHANGE_APPLIED = "SCALING_CHANGE_APPLIED"
     SCALING_CHANGE_IN_PROGRESS = "SCALING_CHANGE_IN_PROGRESS"
