@@ -20,13 +20,7 @@
             
             resp = a.billable_usage.download(start_month="2024-08", end_month="2024-09")
 
-        Returns billable usage logs in CSV format for the specified account and date range. For the data
-        schema, see:
-
-        - AWS: `CSV file schema
-          <https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema>`__.
-        - GCP: `CSV file schema
-          <https://docs.gcp.databricks.com/administration-guide/account-settings/usage-analysis.html#csv-file-schema>`__.
+        Returns billable usage logs in CSV format for the specified account and date range.
 
         Note that this method might take multiple minutes to complete.
 

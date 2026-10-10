@@ -390,14 +390,15 @@
 
     .. py:method:: update_memory_store(name: str, managed_memory_store: ManagedMemoryStore, update_mask: FieldMask) -> ManagedMemoryStore
 
-        Updates a managed memory store's description.
+        Updates a managed memory store's description and metadata.
 
         :param name: str
           Resource name in the form ``memory-stores/{managed_memory_store_id}``.
         :param managed_memory_store: :class:`ManagedMemoryStore`
           The managed memory store to update. ``name`` is taken from the URL.
         :param update_mask: FieldMask
-          Only ``description`` may be updated.
+          Only ``description`` and ``metadata`` may be updated. Selecting ``metadata`` replaces the entire
+          map.
 
         :returns: :class:`ManagedMemoryStore`
         

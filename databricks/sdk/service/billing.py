@@ -1639,13 +1639,7 @@ class BillableUsageAPI:
         self._api = api_client
 
     def download(self, start_month: str, end_month: str, *, personal_data: Optional[bool] = None) -> DownloadResponse:
-        """Returns billable usage logs in CSV format for the specified account and date range. For the data
-        schema, see:
-
-        - AWS: `CSV file schema
-          <https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema>`__.
-        - GCP: `CSV file schema
-          <https://docs.gcp.databricks.com/administration-guide/account-settings/usage-analysis.html#csv-file-schema>`__.
+        """Returns billable usage logs in CSV format for the specified account and date range.
 
         Note that this method might take multiple minutes to complete.
 

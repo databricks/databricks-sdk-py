@@ -174,6 +174,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FUNCTION
       :value: "FUNCTION"
 
+   .. py:attribute:: MODEL_SERVICE
+      :value: "MODEL_SERVICE"
+
    .. py:attribute:: TABLE
       :value: "TABLE"
 
@@ -362,6 +365,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: FUNCTION
       :value: "FUNCTION"
+
+   .. py:attribute:: MODEL_SERVICE
+      :value: "MODEL_SERVICE"
 
    .. py:attribute:: TABLE
       :value: "TABLE"

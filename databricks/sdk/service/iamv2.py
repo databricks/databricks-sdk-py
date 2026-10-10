@@ -2475,7 +2475,9 @@ class AccountIamV2API:
         modified. Returns the updated Group resource.
 
         When AIM is enabled and the group is an external identity (its external_id is set), only external_id
-        can be updated; its other fields are sourced from your identity provider.
+        can be updated; its other fields are sourced from your identity provider. With AIM and group
+        visibility filters, a new nonempty external_id must identify a visible group. Clearing external_id is
+        allowed.
 
         Authorization: the caller must be an account admin or a manager of the group (holds the
         ``roles/group.manager`` role on it).
@@ -3575,7 +3577,9 @@ class WorkspaceIamV2API:
         fields named in the update mask are modified. Returns the updated Group resource.
 
         When AIM is enabled and the group is an external identity (its external_id is set), only external_id
-        can be updated; its other fields are sourced from your identity provider.
+        can be updated; its other fields are sourced from your identity provider. With AIM and group
+        visibility filters, a new nonempty external_id must identify a visible group. Clearing external_id is
+        allowed.
 
         :param group_id: str
           Required. Internal ID of the group in Databricks.
