@@ -460,10 +460,13 @@
           more granular paths: ``comment``; ``config.provider`` to replace the active provider-specific value
           (for example, ``config.openai``; the mask path remains ``config.provider``);
           ``config.allow_all_targets``, ``config.targets``, ``config.forward_headers``,
-          ``config.forward_query_parameters``, ``config.forward_unmanaged_paths``, ``config.rate_limits``, or
-          ``config.inference_table``. The provider type is immutable. A ``config`` or ``config.provider``
-          replacement that carries no authentication material preserves the existing authentication binding;
-          input-only plaintext does not need to be read back and re-sent.
+          ``config.forward_query_parameters``, ``config.forward_unmanaged_paths``, ``config.rate_limits``,
+          ``config.pricing.default_discount_basis_points``, or ``config.inference_table``. For a pricing
+          update, an explicitly empty ``pricing`` object clears the discount but retains the object; omitting
+          ``pricing`` clears it. ``config.pricing`` is not a supported mask path. The provider type is
+          immutable. A ``config`` or ``config.provider`` replacement that carries no authentication material
+          preserves the existing authentication binding; input-only plaintext does not need to be read back
+          and re-sent.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the

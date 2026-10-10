@@ -48,7 +48,8 @@
         :param clone_mode: :class:`CloneMode` (optional)
           The type of clone to perform. Currently, only deep copies are supported
         :param clusters: List[:class:`PipelineCluster`] (optional)
-          Cluster settings for this pipeline deployment.
+          Cluster settings for this pipeline deployment. Applies to classic (non-serverless) pipelines. Omit
+          this field when ``serverless`` is ``true``.
         :param configuration: Dict[str,str] (optional)
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
@@ -102,7 +103,10 @@
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
-          Whether serverless compute is enabled for this pipeline.
+          Whether serverless compute is enabled for this pipeline. Serverless is the recommended compute for
+          new pipelines; set this to ``true`` to run the pipeline on serverless. For notebook/file pipelines,
+          omitting this field uses classic compute configured through the ``clusters`` field. When ``true``,
+          omit ``clusters``; Photon is always enabled.
         :param serverless_compute_id: str (optional)
           Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
@@ -173,7 +177,8 @@
         :param channel: str (optional)
           SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
-          Cluster settings for this pipeline deployment.
+          Cluster settings for this pipeline deployment. Applies to classic (non-serverless) pipelines. Omit
+          this field when ``serverless`` is ``true``.
         :param configuration: Dict[str,str] (optional)
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
@@ -229,7 +234,10 @@
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
-          Whether serverless compute is enabled for this pipeline.
+          Whether serverless compute is enabled for this pipeline. Serverless is the recommended compute for
+          new pipelines; set this to ``true`` to run the pipeline on serverless. For notebook/file pipelines,
+          omitting this field uses classic compute configured through the ``clusters`` field. When ``true``,
+          omit ``clusters``; Photon is always enabled.
         :param serverless_compute_id: str (optional)
           Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
@@ -598,7 +606,8 @@
         :param channel: str (optional)
           SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
-          Cluster settings for this pipeline deployment.
+          Cluster settings for this pipeline deployment. Applies to classic (non-serverless) pipelines. Omit
+          this field when ``serverless`` is ``true``.
         :param configuration: Dict[str,str] (optional)
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
@@ -656,7 +665,10 @@
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
-          Whether serverless compute is enabled for this pipeline.
+          Whether serverless compute is enabled for this pipeline. Serverless is the recommended compute for
+          new pipelines; set this to ``true`` to run the pipeline on serverless. For notebook/file pipelines,
+          omitting this field uses classic compute configured through the ``clusters`` field. When ``true``,
+          omit ``clusters``; Photon is always enabled.
         :param serverless_compute_id: str (optional)
           Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)

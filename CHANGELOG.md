@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.151.0 (2026-10-10)
+
+### API Changes
+* Add `model_service` enum value for `databricks.sdk.service.apps.AppManifestAppResourceUcSecurableSpecUcSecurableType`.
+* Add `model_service` enum value for `databricks.sdk.service.apps.AppResourceUcSecurableUcSecurableType`.
+
 ## Release v0.150.0 (2026-10-09)
 
 ### API Changes

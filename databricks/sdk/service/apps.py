@@ -1017,6 +1017,7 @@ class AppManifestAppResourceUcSecurableSpecUcSecurablePermission(Enum):
 class AppManifestAppResourceUcSecurableSpecUcSecurableType(Enum):
     CONNECTION = "CONNECTION"
     FUNCTION = "FUNCTION"
+    MODEL_SERVICE = "MODEL_SERVICE"
     TABLE = "TABLE"
     VOLUME = "VOLUME"
 
@@ -1689,6 +1690,7 @@ class AppResourceUcSecurableUcSecurablePermission(Enum):
 class AppResourceUcSecurableUcSecurableType(Enum):
     CONNECTION = "CONNECTION"
     FUNCTION = "FUNCTION"
+    MODEL_SERVICE = "MODEL_SERVICE"
     TABLE = "TABLE"
     VOLUME = "VOLUME"
 
