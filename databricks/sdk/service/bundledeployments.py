@@ -1326,7 +1326,7 @@ class BundleDeploymentsAPI:
         return HeartbeatResponse.from_dict(res)
 
     def list_deployments(
-        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, show_deleted: Optional[bool] = None
     ) -> Iterator[Deployment]:
         """Lists deployments in the workspace.
 
@@ -1337,6 +1337,10 @@ class BundleDeploymentsAPI:
         :param page_token: str (optional)
           A page token, received from a previous ``ListDeployments`` call. Provide this to retrieve the
           subsequent page.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted deployments in the response. Defaults to false. When true, returns
+          both live and soft-deleted deployments visible to the caller, subject to the filter. Soft-deleted
+          deployments have status ``DEPLOYMENT_STATUS_DELETED``.
 
         :returns: Iterator over :class:`Deployment`
         """
@@ -1346,6 +1350,8 @@ class BundleDeploymentsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
+        if show_deleted is not None:
+            query["show_deleted"] = show_deleted
         headers = {
             "Accept": "application/json",
         }

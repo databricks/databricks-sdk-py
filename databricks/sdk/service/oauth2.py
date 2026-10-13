@@ -103,6 +103,9 @@ class CreateServicePrincipalSecretResponse:
     id: Optional[str] = None
     """ID of the secret"""
 
+    scopes: Optional[List[str]] = None
+    """OAuth API scopes bound to this secret. Empty = unrestricted (all-apis)."""
+
     secret: Optional[str] = None
     """Secret Value"""
 
@@ -124,6 +127,8 @@ class CreateServicePrincipalSecretResponse:
             body["expire_time"] = self.expire_time
         if self.id is not None:
             body["id"] = self.id
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
         if self.secret is not None:
             body["secret"] = self.secret
         if self.secret_hash is not None:
@@ -143,6 +148,8 @@ class CreateServicePrincipalSecretResponse:
             body["expire_time"] = self.expire_time
         if self.id is not None:
             body["id"] = self.id
+        if self.scopes:
+            body["scopes"] = self.scopes
         if self.secret is not None:
             body["secret"] = self.secret
         if self.secret_hash is not None:
@@ -160,6 +167,7 @@ class CreateServicePrincipalSecretResponse:
             create_time=d.get("create_time", None),
             expire_time=d.get("expire_time", None),
             id=d.get("id", None),
+            scopes=d.get("scopes", None),
             secret=d.get("secret", None),
             secret_hash=d.get("secret_hash", None),
             status=d.get("status", None),
@@ -798,6 +806,9 @@ class SecretInfo:
     id: Optional[str] = None
     """ID of the secret"""
 
+    scopes: Optional[List[str]] = None
+    """OAuth API scopes bound to this secret. Empty = unrestricted (all-apis)."""
+
     secret_hash: Optional[str] = None
     """Secret Hash"""
 
@@ -816,6 +827,8 @@ class SecretInfo:
             body["expire_time"] = self.expire_time
         if self.id is not None:
             body["id"] = self.id
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
         if self.secret_hash is not None:
             body["secret_hash"] = self.secret_hash
         if self.status is not None:
@@ -833,6 +846,8 @@ class SecretInfo:
             body["expire_time"] = self.expire_time
         if self.id is not None:
             body["id"] = self.id
+        if self.scopes:
+            body["scopes"] = self.scopes
         if self.secret_hash is not None:
             body["secret_hash"] = self.secret_hash
         if self.status is not None:
@@ -848,6 +863,7 @@ class SecretInfo:
             create_time=d.get("create_time", None),
             expire_time=d.get("expire_time", None),
             id=d.get("id", None),
+            scopes=d.get("scopes", None),
             secret_hash=d.get("secret_hash", None),
             status=d.get("status", None),
             update_time=d.get("update_time", None),
@@ -1747,7 +1763,7 @@ class ServicePrincipalSecretsAPI:
         self._api = api_client
 
     def create(
-        self, service_principal_id: str, *, lifetime: Optional[str] = None
+        self, service_principal_id: str, *, lifetime: Optional[str] = None, scopes: Optional[List[str]] = None
     ) -> CreateServicePrincipalSecretResponse:
         """Create a secret for the given service principal.
 
@@ -1756,6 +1772,9 @@ class ServicePrincipalSecretsAPI:
         :param lifetime: str (optional)
           The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a
           default lifetime of 730 days (63072000s).
+        :param scopes: List[str] (optional)
+          OAuth API scopes to bind to the secret; a minted token cannot exceed them. Empty = unrestricted
+          (all-apis). E.g. all-apis, sql, iam.groups:read.
 
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
@@ -1763,6 +1782,8 @@ class ServicePrincipalSecretsAPI:
         body = {}
         if lifetime is not None:
             body["lifetime"] = lifetime
+        if scopes is not None:
+            body["scopes"] = [v for v in scopes]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1855,7 +1876,7 @@ class ServicePrincipalSecretsProxyAPI:
         self._api = api_client
 
     def create(
-        self, service_principal_id: str, *, lifetime: Optional[str] = None
+        self, service_principal_id: str, *, lifetime: Optional[str] = None, scopes: Optional[List[str]] = None
     ) -> CreateServicePrincipalSecretResponse:
         """Create a secret for the given service principal.
 
@@ -1864,6 +1885,9 @@ class ServicePrincipalSecretsProxyAPI:
         :param lifetime: str (optional)
           The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a
           default lifetime of 730 days (63072000s).
+        :param scopes: List[str] (optional)
+          OAuth API scopes to bind to the secret; a minted token cannot exceed them. Empty = unrestricted
+          (all-apis). E.g. all-apis, sql, iam.groups:read.
 
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
@@ -1871,6 +1895,8 @@ class ServicePrincipalSecretsProxyAPI:
         body = {}
         if lifetime is not None:
             body["lifetime"] = lifetime
+        if scopes is not None:
+            body["scopes"] = [v for v in scopes]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

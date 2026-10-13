@@ -973,9 +973,11 @@ class AiFunctionsAPI:
         """Parse structured content from unstructured documents.
 
         :param content: str
-          The document to parse, given as a Unity Catalog volume path to the source file (the REST API accepts
-          only a UC volume path, not inline binary data). Supported formats: PDF, DOCX, DOC, PPTX, PPT, JPG,
-          JPEG, PNG, TIFF. Accepts up to 100 pages and 100 MB per document.
+          The document to parse. The REST API accepts a Unity Catalog volume path to the source file or a
+          base64 data URL containing the file bytes (for example,
+          data:application/pdf;base64,<encoded-file-bytes> or data:image/jpeg;base64,<encoded-file-bytes>).
+          Supported formats: PDF, DOCX, DOC, PPTX, PPT, JPG, JPEG, PNG, TIFF. Accepts up to 100 pages and 100
+          MB per document.
         :param options: :class:`AiParseDocumentOptions` (optional)
           Function options. Omitted fields fall back to their documented defaults.
 

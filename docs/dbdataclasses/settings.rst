@@ -388,6 +388,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DatabricksAppSlackConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: DatabricksAppTeamsConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: DefaultNamespaceSetting
    :members:
    :undoc-members:
@@ -449,6 +457,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: DestinationType
+
+   .. py:attribute:: DATABRICKS_APP_SLACK
+      :value: "DATABRICKS_APP_SLACK"
+
+   .. py:attribute:: DATABRICKS_APP_TEAMS
+      :value: "DATABRICKS_APP_TEAMS"
 
    .. py:attribute:: EMAIL
       :value: "EMAIL"

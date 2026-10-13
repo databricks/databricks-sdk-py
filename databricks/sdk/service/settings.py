@@ -716,6 +716,10 @@ class ComplianceStandard(Enum):
 
 @dataclass
 class Config:
+    databricks_app_slack: Optional[DatabricksAppSlackConfig] = None
+
+    databricks_app_teams: Optional[DatabricksAppTeamsConfig] = None
+
     email: Optional[EmailConfig] = None
 
     generic_webhook: Optional[GenericWebhookConfig] = None
@@ -729,6 +733,10 @@ class Config:
     def as_dict(self) -> dict:
         """Serializes the Config into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.databricks_app_slack:
+            body["databricks_app_slack"] = self.databricks_app_slack.as_dict()
+        if self.databricks_app_teams:
+            body["databricks_app_teams"] = self.databricks_app_teams.as_dict()
         if self.email:
             body["email"] = self.email.as_dict()
         if self.generic_webhook:
@@ -744,6 +752,10 @@ class Config:
     def as_shallow_dict(self) -> dict:
         """Serializes the Config into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.databricks_app_slack:
+            body["databricks_app_slack"] = self.databricks_app_slack
+        if self.databricks_app_teams:
+            body["databricks_app_teams"] = self.databricks_app_teams
         if self.email:
             body["email"] = self.email
         if self.generic_webhook:
@@ -760,6 +772,8 @@ class Config:
     def from_dict(cls, d: Dict[str, Any]) -> Config:
         """Deserializes the Config from a dictionary."""
         return cls(
+            databricks_app_slack=_from_dict(d, "databricks_app_slack", DatabricksAppSlackConfig),
+            databricks_app_teams=_from_dict(d, "databricks_app_teams", DatabricksAppTeamsConfig),
             email=_from_dict(d, "email", EmailConfig),
             generic_webhook=_from_dict(d, "generic_webhook", GenericWebhookConfig),
             microsoft_teams=_from_dict(d, "microsoft_teams", MicrosoftTeamsConfig),
@@ -2277,6 +2291,130 @@ class DashboardEmailSubscriptions:
 
 
 @dataclass
+class DatabricksAppSlackConfig:
+    """Slack channel reached through the Databricks app. The app must already be installed in the Slack
+    workspace and connected to this Databricks workspace."""
+
+    channel_id: Optional[str] = None
+    """[Input-Only] Slack channel ID notifications are posted to."""
+
+    channel_id_set: Optional[bool] = None
+    """[Output-Only] Whether channel ID is set."""
+
+    team_id: Optional[str] = None
+    """[Input-Only] Slack workspace (team) ID the Databricks app is installed in."""
+
+    team_id_set: Optional[bool] = None
+    """[Output-Only] Whether team ID is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabricksAppSlackConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.channel_id is not None:
+            body["channel_id"] = self.channel_id
+        if self.channel_id_set is not None:
+            body["channel_id_set"] = self.channel_id_set
+        if self.team_id is not None:
+            body["team_id"] = self.team_id
+        if self.team_id_set is not None:
+            body["team_id_set"] = self.team_id_set
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabricksAppSlackConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.channel_id is not None:
+            body["channel_id"] = self.channel_id
+        if self.channel_id_set is not None:
+            body["channel_id_set"] = self.channel_id_set
+        if self.team_id is not None:
+            body["team_id"] = self.team_id
+        if self.team_id_set is not None:
+            body["team_id_set"] = self.team_id_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksAppSlackConfig:
+        """Deserializes the DatabricksAppSlackConfig from a dictionary."""
+        return cls(
+            channel_id=d.get("channel_id", None),
+            channel_id_set=d.get("channel_id_set", None),
+            team_id=d.get("team_id", None),
+            team_id_set=d.get("team_id_set", None),
+        )
+
+
+@dataclass
+class DatabricksAppTeamsConfig:
+    """Microsoft Teams channel reached through the Databricks app. The app must already be installed in
+    the Microsoft 365 tenant and connected to this Databricks workspace."""
+
+    channel_id: Optional[str] = None
+    """[Input-Only] Teams channel ID notifications are posted to."""
+
+    channel_id_set: Optional[bool] = None
+    """[Output-Only] Whether channel ID is set."""
+
+    team_id: Optional[str] = None
+    """[Input-Only] Microsoft Entra group ID of the team that owns the channel."""
+
+    team_id_set: Optional[bool] = None
+    """[Output-Only] Whether team ID is set."""
+
+    tenant_id: Optional[str] = None
+    """[Input-Only] Microsoft Entra tenant ID of the Microsoft 365 tenant the app is installed in."""
+
+    tenant_id_set: Optional[bool] = None
+    """[Output-Only] Whether tenant ID is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabricksAppTeamsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.channel_id is not None:
+            body["channel_id"] = self.channel_id
+        if self.channel_id_set is not None:
+            body["channel_id_set"] = self.channel_id_set
+        if self.team_id is not None:
+            body["team_id"] = self.team_id
+        if self.team_id_set is not None:
+            body["team_id_set"] = self.team_id_set
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.tenant_id_set is not None:
+            body["tenant_id_set"] = self.tenant_id_set
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabricksAppTeamsConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.channel_id is not None:
+            body["channel_id"] = self.channel_id
+        if self.channel_id_set is not None:
+            body["channel_id_set"] = self.channel_id_set
+        if self.team_id is not None:
+            body["team_id"] = self.team_id
+        if self.team_id_set is not None:
+            body["team_id_set"] = self.team_id_set
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.tenant_id_set is not None:
+            body["tenant_id_set"] = self.tenant_id_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksAppTeamsConfig:
+        """Deserializes the DatabricksAppTeamsConfig from a dictionary."""
+        return cls(
+            channel_id=d.get("channel_id", None),
+            channel_id_set=d.get("channel_id_set", None),
+            team_id=d.get("team_id", None),
+            team_id_set=d.get("team_id_set", None),
+            tenant_id=d.get("tenant_id", None),
+            tenant_id_set=d.get("tenant_id_set", None),
+        )
+
+
+@dataclass
 class DefaultNamespaceSetting:
     """This represents the setting configuration for the default namespace in the Databricks workspace.
     Setting the default catalog for the workspace determines the catalog that is used when queries
@@ -2801,6 +2939,8 @@ class DeleteSqlResultsDownloadResponse:
 
 
 class DestinationType(Enum):
+    DATABRICKS_APP_SLACK = "DATABRICKS_APP_SLACK"
+    DATABRICKS_APP_TEAMS = "DATABRICKS_APP_TEAMS"
     EMAIL = "EMAIL"
     MICROSOFT_TEAMS = "MICROSOFT_TEAMS"
     PAGERDUTY = "PAGERDUTY"

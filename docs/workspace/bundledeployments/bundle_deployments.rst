@@ -134,7 +134,7 @@
         :returns: :class:`HeartbeatResponse`
         
 
-    .. py:method:: list_deployments( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Deployment]
+    .. py:method:: list_deployments( [, page_size: Optional[int], page_token: Optional[str], show_deleted: Optional[bool]]) -> Iterator[Deployment]
 
         Lists deployments in the workspace.
 
@@ -145,6 +145,10 @@
         :param page_token: str (optional)
           A page token, received from a previous ``ListDeployments`` call. Provide this to retrieve the
           subsequent page.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted deployments in the response. Defaults to false. When true, returns
+          both live and soft-deleted deployments visible to the caller, subject to the filter. Soft-deleted
+          deployments have status ``DEPLOYMENT_STATUS_DELETED``.
 
         :returns: Iterator over :class:`Deployment`
         

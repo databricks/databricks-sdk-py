@@ -141,7 +141,7 @@ class ListManagedMemoryEntriesResponse:
     """Response containing managed memory entries."""
 
     managed_memory_entries: Optional[List[ManagedMemoryEntry]] = None
-    """Managed memory entries matching the request and its read mask."""
+    """Managed memory entries matching the request and selected response view."""
 
     next_page_token: Optional[str] = None
     """Opaque pagination token. This field is omitted when there are no more results."""
@@ -455,6 +455,13 @@ class ManagedMemoryEntrySourceType(Enum):
 
     MANAGED_MEMORY_ENTRY_SOURCE_TYPE_AGENT = "MANAGED_MEMORY_ENTRY_SOURCE_TYPE_AGENT"
     MANAGED_MEMORY_ENTRY_SOURCE_TYPE_DREAMER = "MANAGED_MEMORY_ENTRY_SOURCE_TYPE_DREAMER"
+
+
+class ManagedMemoryEntryView(Enum):
+    """Controls how much managed memory entry data is returned."""
+
+    MANAGED_MEMORY_ENTRY_VIEW_BASIC = "MANAGED_MEMORY_ENTRY_VIEW_BASIC"
+    MANAGED_MEMORY_ENTRY_VIEW_FULL = "MANAGED_MEMORY_ENTRY_VIEW_FULL"
 
 
 @dataclass
@@ -1249,24 +1256,22 @@ class AgentKitAPI:
         res = self._api.do("POST", f"/api/2.0/agents/{parent}/sessions:fork", body=body, headers=headers)
         return ForkSessionResponse.from_dict(res)
 
-    def get_memory(self, name: str, *, read_mask: Optional[FieldMask] = None) -> ManagedMemoryEntry:
-        """Retrieves a managed memory entry, including its content, by resource name. Returns ``NOT_FOUND`` when
-        the entry does not exist in the caller's workspace.
+    def get_memory(self, name: str, *, view: Optional[ManagedMemoryEntryView] = None) -> ManagedMemoryEntry:
+        """Retrieves a managed memory entry by resource name. ``view`` controls whether the response includes
+        memory content. Returns ``NOT_FOUND`` when the entry does not exist in the caller's workspace.
 
         :param name: str
           Resource name in the form
           ``memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}``.
-        :param read_mask: FieldMask (optional)
-          Fields to return, using proto field names such as ``content`` (not ``contents``). An omitted or
-          empty mask returns the full entry, including ``content``; a non-empty mask returns only the
-          requested fields.
+        :param view: :class:`ManagedMemoryEntryView` (optional)
+          Controls whether the response includes memory content. Defaults to ``FULL``.
 
         :returns: :class:`ManagedMemoryEntry`
         """
 
         query = {}
-        if read_mask is not None:
-            query["read_mask"] = read_mask.ToJsonString()
+        if view is not None:
+            query["view"] = view.value
         headers = {
             "Accept": "application/json",
         }
@@ -1347,12 +1352,12 @@ class AgentKitAPI:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         path_prefix: Optional[str] = None,
-        read_mask: Optional[FieldMask] = None,
         session_id: Optional[str] = None,
+        view: Optional[ManagedMemoryEntryView] = None,
     ) -> Iterator[ManagedMemoryEntry]:
         """Lists managed memory entries for one actor. An exact ``path`` filters entries across sessions,
         ignoring session metadata. Otherwise, ``session_id`` and ``path_prefix`` restrict the actor partition.
-        ``read_mask`` selects fields in each returned entry.
+        ``view`` controls whether each returned entry includes memory content.
 
         :param parent: str
           Managed memory store whose entries are listed, in the form
@@ -1366,13 +1371,11 @@ class AgentKitAPI:
           Opaque pagination token from a previous ListManagedMemoryEntries response.
         :param path_prefix: str (optional)
           Optional path prefix used to restrict entries within the actor partition.
-        :param read_mask: FieldMask (optional)
-          Fields to return in each entry, using proto field names such as ``content`` (not ``contents``). An
-          omitted or empty mask returns each full entry, including ``content``; a non-empty mask returns only
-          the requested fields.
         :param session_id: str (optional)
           Optional session identifier. When set, only entries with this exact ``session_id`` are returned.
           Omitted-session (cross-session) entries are not included. Ignored when path is set.
+        :param view: :class:`ManagedMemoryEntryView` (optional)
+          Controls whether each returned entry includes memory content. Defaults to ``FULL``.
 
         :returns: Iterator over :class:`ManagedMemoryEntry`
         """
@@ -1386,10 +1389,10 @@ class AgentKitAPI:
             query["page_token"] = page_token
         if path_prefix is not None:
             query["path_prefix"] = path_prefix
-        if read_mask is not None:
-            query["read_mask"] = read_mask.ToJsonString()
         if session_id is not None:
             query["session_id"] = session_id
+        if view is not None:
+            query["view"] = view.value
         headers = {
             "Accept": "application/json",
         }
@@ -1615,11 +1618,11 @@ class AgentKitAPI:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         path_prefix: Optional[str] = None,
-        read_mask: Optional[FieldMask] = None,
         session_id: Optional[str] = None,
+        view: Optional[ManagedMemoryEntryView] = None,
     ) -> Iterator[ManagedMemoryEntrySearchResult]:
         """Searches managed memory entries by text query for one actor. Returns matching entries and scores
-        ranked by relevance; ``read_mask`` selects fields in each returned entry.
+        ranked by relevance; ``view`` controls whether each returned entry includes content.
 
         :param parent: str
           Managed memory store whose entries are searched, in the form
@@ -1638,19 +1641,12 @@ class AgentKitAPI:
         :param path_prefix: str (optional)
           Optional absolute, case-sensitive path prefix used to restrict searched entries within the actor
           partition. The prefix must begin with ``/`` and must not contain empty, ``.`` or ``..`` segments.
-        :param read_mask: FieldMask (optional)
-          Fields to return in each matching entry, using proto field names such as ``content`` (not
-          ``contents``). An omitted or empty mask returns each full entry, including ``content``; a non-empty
-          mask returns only the requested fields. Search scores are always returned.
-
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
         :param session_id: str (optional)
           Optional session identifier. When set, only entries with this exact ``session_id`` are searched.
           Omitted-session (cross-session) entries are not included.
+        :param view: :class:`ManagedMemoryEntryView` (optional)
+          Controls whether each returned entry includes memory content. Search scores are always returned.
+          Defaults to ``FULL``.
 
         :returns: Iterator over :class:`ManagedMemoryEntrySearchResult`
         """
@@ -1668,10 +1664,10 @@ class AgentKitAPI:
             body["path_prefix"] = path_prefix
         if query is not None:
             body["query"] = query
-        if read_mask is not None:
-            body["read_mask"] = read_mask.ToJsonString()
         if session_id is not None:
             body["session_id"] = session_id
+        if view is not None:
+            body["view"] = view.value
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
