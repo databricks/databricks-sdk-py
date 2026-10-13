@@ -58,6 +58,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MANAGED_MEMORY_ENTRY_SOURCE_TYPE_DREAMER
       :value: "MANAGED_MEMORY_ENTRY_SOURCE_TYPE_DREAMER"
 
+.. py:class:: ManagedMemoryEntryView
+
+   Controls how much managed memory entry data is returned.
+
+   .. py:attribute:: MANAGED_MEMORY_ENTRY_VIEW_BASIC
+      :value: "MANAGED_MEMORY_ENTRY_VIEW_BASIC"
+
+   .. py:attribute:: MANAGED_MEMORY_ENTRY_VIEW_FULL
+      :value: "MANAGED_MEMORY_ENTRY_VIEW_FULL"
+
 .. autoclass:: ManagedMemoryStore
    :members:
    :undoc-members:

@@ -1,5 +1,21 @@
 # Version changelog
 
+## Release v0.152.0 (2026-10-13)
+
+### API Changes
+* Add `view` field for `databricks.sdk.service.agentkit.GetManagedMemoryEntryRequest`.
+* Add `view` field for `databricks.sdk.service.agentkit.ListManagedMemoryEntriesRequest`.
+* Add `view` field for `databricks.sdk.service.agentkit.SearchManagedMemoryEntriesRequest`.
+* Add `show_deleted` field for `databricks.sdk.service.bundledeployments.ListDeploymentsRequest`.
+* Add `scopes` field for `databricks.sdk.service.oauth2.CreateServicePrincipalSecretRequest`.
+* Add `scopes` field for `databricks.sdk.service.oauth2.CreateServicePrincipalSecretResponse`.
+* Add `scopes` field for `databricks.sdk.service.oauth2.SecretInfo`.
+* Add `databricks_app_slack` and `databricks_app_teams` fields for `databricks.sdk.service.settings.Config`.
+* Add `databricks_app_slack` and `databricks_app_teams` enum values for `databricks.sdk.service.settings.DestinationType`.
+* [Breaking] Remove `read_mask` field for `databricks.sdk.service.agentkit.GetManagedMemoryEntryRequest`.
+* [Breaking] Remove `read_mask` field for `databricks.sdk.service.agentkit.ListManagedMemoryEntriesRequest`.
+* [Breaking] Remove `read_mask` field for `databricks.sdk.service.agentkit.SearchManagedMemoryEntriesRequest`.
+
 ## Release v0.151.0 (2026-10-10)
 
 ### API Changes
