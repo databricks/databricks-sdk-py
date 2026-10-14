@@ -1764,6 +1764,7 @@ class CreateVisualizationRequestVisualization:
 class CreateWarehouseRequestWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -2392,6 +2393,7 @@ class Disposition(Enum):
 class EditWarehouseRequestWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -2767,6 +2769,7 @@ class EndpointInfo:
 class EndpointInfoWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -3415,6 +3418,7 @@ class GetWarehouseResponse:
 class GetWarehouseResponseWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -7482,6 +7486,7 @@ class WarehouseTypePair:
 class WarehouseTypePairWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 

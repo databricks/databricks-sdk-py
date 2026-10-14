@@ -7099,10 +7099,6 @@ class RunTask:
     - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
       duration time. Must provide a duration target."""
 
-    effective_serverless_compute_id: Optional[str] = None
-    """The id of the serverless compute this task ran on, either explicitly configured on the task or
-    the workspace default. Only set once the compute has been resolved at run trigger."""
-
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
     behavior is to not send any emails."""
@@ -7293,8 +7289,6 @@ class RunTask:
             body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
-        if self.effective_serverless_compute_id is not None:
-            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.end_time is not None:
@@ -7412,8 +7406,6 @@ class RunTask:
             body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
-        if self.effective_serverless_compute_id is not None:
-            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.end_time is not None:
@@ -7515,7 +7507,6 @@ class RunTask:
             disable_auto_optimization=d.get("disable_auto_optimization", None),
             disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
-            effective_serverless_compute_id=d.get("effective_serverless_compute_id", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=_int64(d, "end_time"),
             environment_key=d.get("environment_key", None),
@@ -11086,7 +11077,7 @@ class JobsAPI:
         start_time_from: Optional[int] = None,
         start_time_to: Optional[int] = None,
     ) -> Iterator[BaseRun]:
-        """List runs in descending order by end time. If a run has not finished, it falls back to start time.
+        """List runs in descending order by start time.
 
         :param active_only: bool (optional)
           If active_only is ``true``, only active runs are included in the results; otherwise, lists both
