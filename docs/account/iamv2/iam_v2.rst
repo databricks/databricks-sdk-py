@@ -39,15 +39,20 @@
 
     .. py:method:: create_identity_visibility_filter(parent: str, identity_visibility_filter: IdentityVisibilityFilter [, identity_visibility_filter_id: Optional[str]]) -> IdentityVisibilityFilter
 
-        Creates an identity-visibility filter in the account.
+        Creates a group visibility filter in the account. Requires account admin privileges. Set
+        ``principal_type`` to ``GROUP`` and specify exactly one of ``exact`` (external ID) or ``prefix``
+        (display-name starts with). The filter applies across all workspaces in the account. A duplicate
+        filter ID or an existing rule with the same type and match value returns ``ALREADY_EXISTS``. Filters
+        are immutable; to change a rule, delete it and create a new one.
 
         :param parent: str
           Required. The parent account. Format: accounts/{account_id}
         :param identity_visibility_filter: :class:`IdentityVisibilityFilter`
-          Required. The filter to create.
+          Required. The filter to create. Set ``principal_type`` to ``GROUP`` and specify exactly one of
+          ``exact`` or ``prefix``. The server assigns the resource name; any supplied ``name`` is ignored.
         :param identity_visibility_filter_id: str (optional)
           Optional. The ID to use for the filter, which becomes the final component of its resource name. If
-          not specified, the server generates one.
+          not specified or empty, the server generates one. Must not contain ``/``.
 
         :returns: :class:`IdentityVisibilityFilter`
         
@@ -141,7 +146,11 @@
 
     .. py:method:: delete_identity_visibility_filter(name: str)
 
-        Deletes an identity-visibility filter by resource name.
+        Deletes a group visibility filter by its resource name. Requires account admin privileges. Deleting a
+        filter does not delete groups or revoke access. Groups covered only by this rule stop being
+        discoverable unless they or a transitive parent are already provisioned in the account. If no group
+        filters remain, all groups become visible again. Deleting a filter that does not exist succeeds
+        without making any changes.
 
         :param name: str
           Required. The resource name of the filter. Format:
@@ -261,7 +270,8 @@
 
     .. py:method:: get_identity_visibility_filter(name: str) -> IdentityVisibilityFilter
 
-        Fetches an identity-visibility filter by resource name.
+        Gets a group visibility filter by its resource name. Requires account admin privileges. Returns the
+        filter rule, not the groups matched by the rule.
 
         :param name: str
           Required. The resource name of the filter. Format:
@@ -374,12 +384,16 @@
 
     .. py:method:: list_identity_visibility_filters(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[IdentityVisibilityFilter]
 
-        Lists the identity-visibility filters in the account, returning one page per call.
+        Lists group visibility filters in the account, returning one page per call. Requires account admin
+        privileges. Returns filter rules, not the groups matched by those rules. To retrieve the next page,
+        pass the response's ``next_page_token`` as ``page_token`` in the next request. If ``next_page_token``
+        is omitted, there are no more pages.
 
         :param parent: str
           Required. The parent account. Format: accounts/{account_id}
         :param page_size: int (optional)
-          The maximum number of filters to return. The service may return fewer than this value.
+          The maximum number of filters to return. The service may return fewer than this value. If omitted or
+          non-positive, defaults to 100. Values above 1000 are reduced to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListIdentityVisibilityFilters call. Provide this to retrieve
           the subsequent page.

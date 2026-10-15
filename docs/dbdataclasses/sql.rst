@@ -314,6 +314,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PRO
       :value: "PRO"
 
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
+
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
 
@@ -469,6 +472,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PRO
       :value: "PRO"
 
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
+
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
 
@@ -499,6 +505,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PRO
       :value: "PRO"
+
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
 
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
@@ -567,6 +576,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PRO
       :value: "PRO"
+
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
 
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
@@ -1802,6 +1814,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PRO
       :value: "PRO"
+
+   .. py:attribute:: REALTIME
+      :value: "REALTIME"
 
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
