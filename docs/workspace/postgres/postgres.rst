@@ -605,6 +605,17 @@
         :returns: Iterator over :class:`Snapshot`
         
 
+    .. py:method:: reveal_role_password(name: str) -> RevealRolePasswordResponse
+
+        Reveals the current password for a password-authenticated Postgres role.
+
+        :param name: str
+          The full resource path of the role whose password should be revealed. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+
+        :returns: :class:`RevealRolePasswordResponse`
+        
+
     .. py:method:: undelete_branch(name: str) -> UndeleteBranchOperation
 
         Undeletes the specified database branch.

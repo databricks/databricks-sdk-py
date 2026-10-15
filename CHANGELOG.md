@@ -1,5 +1,23 @@
 # Version changelog
 
+## Release v0.153.0 (2026-10-15)
+
+### API Changes
+* Add `create_issue()`, `get_issue()`, `search_issues()` and `update_issue()` methods for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/experiments.html) workspace-level service.
+* Add `reveal_role_password()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `attachment` field for `databricks.sdk.service.jobs.Subscription`.
+* Add `replication_config` field for `databricks.sdk.service.sharing.CreateShare`.
+* Add `replication_config` field for `databricks.sdk.service.sharing.ShareInfo`.
+* Add `realtime` enum value for `databricks.sdk.service.sql.CreateWarehouseRequestWarehouseType`.
+* Add `realtime` enum value for `databricks.sdk.service.sql.EditWarehouseRequestWarehouseType`.
+* Add `realtime` enum value for `databricks.sdk.service.sql.EndpointInfoWarehouseType`.
+* Add `realtime` enum value for `databricks.sdk.service.sql.GetWarehouseResponseWarehouseType`.
+* Add `realtime` enum value for `databricks.sdk.service.sql.WarehouseTypePairWarehouseType`.
+* [Breaking] Remove `effective_serverless_compute_id` field for `databricks.sdk.service.jobs.RunTask`.
+
+### Bug Fixes
+* Allow protobuf 7.x in the core SDK and sandbox extra to support current gRPC packages.
+
 ## Release v0.152.0 (2026-10-13)
 
 ### API Changes

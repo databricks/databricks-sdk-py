@@ -55,6 +55,21 @@
         :returns: :class:`CreateExperimentResponse`
         
 
+    .. py:method:: create_issue(parent: str, issue: Issue [, issue_id: Optional[str]]) -> Issue
+
+        Creates an issue in an experiment.
+
+        :param parent: str
+          experiments/{experiment}
+        :param issue: :class:`Issue`
+          Output-only fields are ignored.
+        :param issue_id: str (optional)
+          Optional client-chosen ID: iss- followed by 32 lowercase hex digits. A retry with the same ID fails
+          with ALREADY_EXISTS rather than making a duplicate. The server generates one if unset.
+
+        :returns: :class:`Issue`
+        
+
     .. py:method:: create_logged_model(experiment_id: str [, model_type: Optional[str], name: Optional[str], params: Optional[List[LoggedModelParameter]], source_run_id: Optional[str], tags: Optional[List[LoggedModelTag]]]) -> CreateLoggedModelResponse
 
         Create a logged model.
@@ -268,6 +283,16 @@
           will be removed in a future MLflow version.
 
         :returns: Iterator over :class:`Metric`
+        
+
+    .. py:method:: get_issue(name: str) -> Issue
+
+        Gets an issue.
+
+        :param name: str
+          experiments/{experiment}/issues/{issue}
+
+        :returns: :class:`Issue`
         
 
     .. py:method:: get_logged_model(model_id: str) -> GetLoggedModelResponse
@@ -591,6 +616,38 @@
         :returns: Iterator over :class:`Experiment`
         
 
+    .. py:method:: search_issues(parent: str [, categories: Optional[List[str]], page_size: Optional[int], page_token: Optional[str], query: Optional[str], severities: Optional[List[IssueSeverity]], sort_key: Optional[IssueSortKey], sort_order: Optional[SortOrder], statuses: Optional[List[IssueStatus]], tag_filters: Optional[List[IssueTagFilter]], view: Optional[IssueView]]) -> Iterator[Issue]
+
+        Searches the issues in an experiment, filtered and sorted.
+
+        :param parent: str
+          experiments/{experiment}
+        :param categories: List[str] (optional)
+          Matches Issues with any of these categories, case-insensitively.
+        :param page_size: int (optional)
+          Defaults to 20; values above 100 are clamped.
+        :param page_token: str (optional)
+          Expires after 15 minutes. Every other argument except ``view`` must match the request that returned
+          the token.
+        :param query: str (optional)
+          Case-insensitive substring match on title.
+        :param severities: List[:class:`IssueSeverity`] (optional)
+          Matches Issues with any of these severities.
+        :param sort_key: :class:`IssueSortKey` (optional)
+          Defaults to SEVERITY.
+        :param sort_order: :class:`SortOrder` (optional)
+          Defaults to DESCENDING.
+        :param statuses: List[:class:`IssueStatus`] (optional)
+          Matches Issues with any of these statuses. Different filters AND together, and an empty filter
+          matches every Issue.
+        :param tag_filters: List[:class:`IssueTagFilter`] (optional)
+          Matches Issues that satisfy every filter. At most 10 filters of 20 values each.
+        :param view: :class:`IssueView` (optional)
+          Defaults to BASIC.
+
+        :returns: Iterator over :class:`Issue`
+        
+
     .. py:method:: search_logged_models( [, datasets: Optional[List[SearchLoggedModelsDataset]], experiment_ids: Optional[List[str]], filter: Optional[str], max_results: Optional[int], order_by: Optional[List[SearchLoggedModelsOrderBy]], page_token: Optional[str]]) -> SearchLoggedModelsResponse
 
         Search for Logged Models that satisfy specified search criteria.
@@ -736,6 +793,25 @@
           If provided, the experiment's name is changed to the new name. The new name must be unique.
 
 
+        
+
+    .. py:method:: update_issue(name: str, issue: Issue, update_mask: FieldMask) -> Issue
+
+        Updates the fields of an issue named in ``update_mask``.
+
+        :param name: str
+          experiments/{experiment}/issues/{issue}
+        :param issue: :class:`Issue`
+          ``issue.name`` identifies the target.
+        :param update_mask: FieldMask
+          Accepts title, description, status, severity, categories, tags, last_seen_time, and metadata.<key>.
+          A path with an empty value clears the field, except that title, status, and severity can't be
+          cleared, and last_seen_time can be cleared only when source_type is MANUAL. categories and tags are
+          replaced whole. metadata is updated per key: a metadata.<key> path sets that key from
+          issue.metadata, or removes it when issue.metadata lacks it, and leaves the other keys alone. A bare
+          metadata path is rejected.
+
+        :returns: :class:`Issue`
         
 
     .. py:method:: update_permissions(experiment_id: str [, access_control_list: Optional[List[ExperimentAccessControlRequest]]]) -> ExperimentPermissions

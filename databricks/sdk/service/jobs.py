@@ -7099,10 +7099,6 @@ class RunTask:
     - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
       duration time. Must provide a duration target."""
 
-    effective_serverless_compute_id: Optional[str] = None
-    """The id of the serverless compute this task ran on, either explicitly configured on the task or
-    the workspace default. Only set once the compute has been resolved at run trigger."""
-
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
     behavior is to not send any emails."""
@@ -7293,8 +7289,6 @@ class RunTask:
             body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
-        if self.effective_serverless_compute_id is not None:
-            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.end_time is not None:
@@ -7412,8 +7406,6 @@ class RunTask:
             body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
-        if self.effective_serverless_compute_id is not None:
-            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.end_time is not None:
@@ -7515,7 +7507,6 @@ class RunTask:
             disable_auto_optimization=d.get("disable_auto_optimization", None),
             disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
-            effective_serverless_compute_id=d.get("effective_serverless_compute_id", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=_int64(d, "end_time"),
             environment_key=d.get("environment_key", None),
@@ -8941,6 +8932,12 @@ class SubmitTask:
 
 @dataclass
 class Subscription:
+    attachment: Optional[SubscriptionAttachment] = None
+    """Optional: The configuration for the files attached to the dashboard snapshot notification. It
+    controls the underlying data of dashboard widgets that is attached as data files and which pages
+    are included in the attached PDF. If not specified, the notification is sent with only the
+    default snapshot."""
+
     custom_subject: Optional[str] = None
     """Optional: Allows users to specify a custom subject line on the email sent to subscribers."""
 
@@ -8953,6 +8950,8 @@ class Subscription:
     def as_dict(self) -> dict:
         """Serializes the Subscription into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.attachment:
+            body["attachment"] = self.attachment.as_dict()
         if self.custom_subject is not None:
             body["custom_subject"] = self.custom_subject
         if self.paused is not None:
@@ -8964,6 +8963,8 @@ class Subscription:
     def as_shallow_dict(self) -> dict:
         """Serializes the Subscription into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.attachment:
+            body["attachment"] = self.attachment
         if self.custom_subject is not None:
             body["custom_subject"] = self.custom_subject
         if self.paused is not None:
@@ -8976,10 +8977,200 @@ class Subscription:
     def from_dict(cls, d: Dict[str, Any]) -> Subscription:
         """Deserializes the Subscription from a dictionary."""
         return cls(
+            attachment=_from_dict(d, "attachment", SubscriptionAttachment),
             custom_subject=d.get("custom_subject", None),
             paused=d.get("paused", None),
             subscribers=_repeated_dict(d, "subscribers", SubscriptionSubscriber),
         )
+
+
+@dataclass
+class SubscriptionAttachment:
+    """The configuration for the files attached to the dashboard snapshot notification sent to
+    subscribers. ``data_attachment`` describes the underlying data of dashboard widgets attached as
+    data files, and ``page_attachment`` describes which dashboard pages are included in the attached
+    PDF."""
+
+    data_attachment: Optional[SubscriptionAttachmentDataAttachment] = None
+    """Optional: The configuration for the underlying data of dashboard widgets attached as tabular
+    data files. If not specified, no tabular data is attached."""
+
+    page_attachment: Optional[SubscriptionAttachmentPageAttachment] = None
+    """Optional: The selection of dashboard pages included in the attached PDF. If not specified, only
+    the first page is included."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_attachment:
+            body["data_attachment"] = self.data_attachment.as_dict()
+        if self.page_attachment:
+            body["page_attachment"] = self.page_attachment.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_attachment:
+            body["data_attachment"] = self.data_attachment
+        if self.page_attachment:
+            body["page_attachment"] = self.page_attachment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionAttachment:
+        """Deserializes the SubscriptionAttachment from a dictionary."""
+        return cls(
+            data_attachment=_from_dict(d, "data_attachment", SubscriptionAttachmentDataAttachment),
+            page_attachment=_from_dict(d, "page_attachment", SubscriptionAttachmentPageAttachment),
+        )
+
+
+@dataclass
+class SubscriptionAttachmentDataAttachment:
+    """The configuration for the tabular data files attached to the dashboard snapshot. ``widgets``
+    lists the widgets whose data is exported and ``file_format`` is the output format; each
+    referenced widget's data is exported as a separate file."""
+
+    widgets: List[SubscriptionAttachmentDataAttachmentWidget]
+    """The widgets whose underlying data is exported. At least one widget must be referenced."""
+
+    file_format: SubscriptionAttachmentDataAttachmentFileFormat
+    """The file format of the exported tabular data files."""
+
+    include_applied_filters: Optional[bool] = None
+    """When true, the dashboard's applied filter values are included alongside the tabular data as an
+    additional attached file."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentDataAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.file_format is not None:
+            body["file_format"] = self.file_format.value
+        if self.include_applied_filters is not None:
+            body["include_applied_filters"] = self.include_applied_filters
+        if self.widgets:
+            body["widgets"] = [v.as_dict() for v in self.widgets]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentDataAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file_format is not None:
+            body["file_format"] = self.file_format
+        if self.include_applied_filters is not None:
+            body["include_applied_filters"] = self.include_applied_filters
+        if self.widgets:
+            body["widgets"] = self.widgets
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionAttachmentDataAttachment:
+        """Deserializes the SubscriptionAttachmentDataAttachment from a dictionary."""
+        return cls(
+            file_format=_enum(d, "file_format", SubscriptionAttachmentDataAttachmentFileFormat),
+            include_applied_filters=d.get("include_applied_filters", None),
+            widgets=_repeated_dict(d, "widgets", SubscriptionAttachmentDataAttachmentWidget),
+        )
+
+
+class SubscriptionAttachmentDataAttachmentFileFormat(Enum):
+    """The output format of an exported tabular data file. Must be set to a value other than
+    ``FILE_FORMAT_UNSPECIFIED``."""
+
+    FILE_FORMAT_CSV = "FILE_FORMAT_CSV"
+    FILE_FORMAT_EXCEL = "FILE_FORMAT_EXCEL"
+    FILE_FORMAT_TSV = "FILE_FORMAT_TSV"
+
+
+@dataclass
+class SubscriptionAttachmentDataAttachmentWidget:
+    """Identifies a dashboard widget whose data to attach. ``page_id`` and ``widget_id`` are the URL
+    identifiers from the dashboard's serialized definition returned by the Get dashboard API
+    (``serialized_dashboard``), and together they uniquely identify the widget."""
+
+    page_id: str
+    """The URL identifier of the page containing the widget. This is the value of the ``name`` field of
+    the corresponding entry under ``pages`` in the serialized dashboard definition. Format:
+    alphanumeric, hyphen, and underscore characters allowed, max length 63."""
+
+    widget_id: str
+    """The URL identifier of the widget. This is the value of the ``name`` field of the corresponding
+    widget under that page's ``layout`` in the serialized dashboard definition. Format:
+    alphanumeric, hyphen, and underscore characters allowed, max length 63."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentDataAttachmentWidget into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.page_id is not None:
+            body["page_id"] = self.page_id
+        if self.widget_id is not None:
+            body["widget_id"] = self.widget_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentDataAttachmentWidget into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.page_id is not None:
+            body["page_id"] = self.page_id
+        if self.widget_id is not None:
+            body["widget_id"] = self.widget_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionAttachmentDataAttachmentWidget:
+        """Deserializes the SubscriptionAttachmentDataAttachmentWidget from a dictionary."""
+        return cls(page_id=d.get("page_id", None), widget_id=d.get("widget_id", None))
+
+
+@dataclass
+class SubscriptionAttachmentPageAttachment:
+    """The selection of dashboard pages included in the attached PDF. ``page_selection`` chooses
+    between all pages, the first page only, or an explicit subset listed in ``page_ids``."""
+
+    page_ids: Optional[List[str]] = None
+    """The identifiers of the pages to include in the PDF. Only specified when ``page_selection`` is
+    ``PAGE_SELECTION_SUBSET``. Each value is the identifier of a page in the dashboard's serialized
+    definition returned by the Get dashboard API (``serialized_dashboard``): the value of the
+    ``name`` field of an entry under ``pages``. Format: alphanumeric, hyphen, and underscore
+    characters allowed, max length 63."""
+
+    page_selection: Optional[SubscriptionAttachmentPageAttachmentPageSelection] = None
+    """How the attached pages are selected. When set to ``PAGE_SELECTION_SUBSET``, the pages to include
+    are listed in ``page_ids``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentPageAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.page_ids:
+            body["page_ids"] = [v for v in self.page_ids]
+        if self.page_selection is not None:
+            body["page_selection"] = self.page_selection.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentPageAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.page_ids:
+            body["page_ids"] = self.page_ids
+        if self.page_selection is not None:
+            body["page_selection"] = self.page_selection
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionAttachmentPageAttachment:
+        """Deserializes the SubscriptionAttachmentPageAttachment from a dictionary."""
+        return cls(
+            page_ids=d.get("page_ids", None),
+            page_selection=_enum(d, "page_selection", SubscriptionAttachmentPageAttachmentPageSelection),
+        )
+
+
+class SubscriptionAttachmentPageAttachmentPageSelection(Enum):
+    """Determines which dashboard pages are attached to the notification."""
+
+    PAGE_SELECTION_ALL = "PAGE_SELECTION_ALL"
+    PAGE_SELECTION_SUBSET = "PAGE_SELECTION_SUBSET"
 
 
 @dataclass
@@ -11086,7 +11277,7 @@ class JobsAPI:
         start_time_from: Optional[int] = None,
         start_time_to: Optional[int] = None,
     ) -> Iterator[BaseRun]:
-        """List runs in descending order by end time. If a run has not finished, it falls back to start time.
+        """List runs in descending order by start time.
 
         :param active_only: bool (optional)
           If active_only is ``true``, only active runs are included in the results; otherwise, lists both

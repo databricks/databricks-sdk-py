@@ -19,6 +19,7 @@ We are keen to hear feedback from you on these SDKs. Please `file GitHub issues 
    logging
    dbutils
    dataplane
+   sandbox-command-execution
    clients/workspace
    workspace/index
    clients/account

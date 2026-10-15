@@ -7515,7 +7515,9 @@ class ModelProviderServiceConfig:
     """Whether to proxy paths that AI Gateway does not recognize as configured provider-native API
     types. Defaults to false. When true, these paths are forwarded unchanged to the upstream
     provider. When false, only recognized API paths are served. Enabling this broadens the upstream
-    API surface exposed through the provider service."""
+    API surface exposed through the provider service. AI Gateway cannot evaluate Service Policies on
+    opaque unmanaged requests, so unmanaged requests are rejected whenever Service Policies are
+    attached to this securable."""
 
     gemini_enterprise: Optional[ModelProviderServiceConfigGeminiEnterpriseProviderConfig] = None
 
@@ -8339,9 +8341,9 @@ class ModelProviderServiceConfigModelTargetConfig:
 
     endpoint_route: Optional[str] = None
     """Relative path appended to a custom provider's ``base_url`` for this model, such as
-    ``serve/openai/chat``. Only custom model provider service targets use this field; other provider
-    types ignore it, and model service destinations reject it. Do not include URI templates,
-    queries, or fragments. When empty, ``base_url`` is used unchanged."""
+    ``serve/openai/chat``. Nonempty values are only supported for custom model provider service
+    targets; other provider types reject them. Model service destinations do not support this field.
+    Do not include URI templates, queries, or fragments. When empty, ``base_url`` is used unchanged."""
 
     native_api_types: Optional[List[str]] = None
     """Provider-native API types supported by this model, such as ``openai/v1/chat/completions``. A

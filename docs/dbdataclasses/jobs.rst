@@ -1135,6 +1135,45 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SubscriptionAttachment
+   :members:
+   :undoc-members:
+
+.. autoclass:: SubscriptionAttachmentDataAttachment
+   :members:
+   :undoc-members:
+
+.. py:class:: SubscriptionAttachmentDataAttachmentFileFormat
+
+   The output format of an exported tabular data file. Must be set to a value other than ``FILE_FORMAT_UNSPECIFIED``.
+
+   .. py:attribute:: FILE_FORMAT_CSV
+      :value: "FILE_FORMAT_CSV"
+
+   .. py:attribute:: FILE_FORMAT_EXCEL
+      :value: "FILE_FORMAT_EXCEL"
+
+   .. py:attribute:: FILE_FORMAT_TSV
+      :value: "FILE_FORMAT_TSV"
+
+.. autoclass:: SubscriptionAttachmentDataAttachmentWidget
+   :members:
+   :undoc-members:
+
+.. autoclass:: SubscriptionAttachmentPageAttachment
+   :members:
+   :undoc-members:
+
+.. py:class:: SubscriptionAttachmentPageAttachmentPageSelection
+
+   Determines which dashboard pages are attached to the notification.
+
+   .. py:attribute:: PAGE_SELECTION_ALL
+      :value: "PAGE_SELECTION_ALL"
+
+   .. py:attribute:: PAGE_SELECTION_SUBSET
+      :value: "PAGE_SELECTION_SUBSET"
+
 .. autoclass:: SubscriptionSubscriber
    :members:
    :undoc-members:
