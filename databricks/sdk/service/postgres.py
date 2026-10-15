@@ -3058,6 +3058,33 @@ class RequestedResource:
 
 
 @dataclass
+class RevealRolePasswordResponse:
+    """Response containing the password for a password-authenticated Postgres role."""
+
+    password: Optional[str] = None
+    """The current password for the Postgres role."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RevealRolePasswordResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.password is not None:
+            body["password"] = self.password
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RevealRolePasswordResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.password is not None:
+            body["password"] = self.password
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RevealRolePasswordResponse:
+        """Deserializes the RevealRolePasswordResponse from a dictionary."""
+        return cls(password=d.get("password", None))
+
+
+@dataclass
 class Role:
     """Role represents a Postgres role within a Branch."""
 
@@ -5588,6 +5615,29 @@ class PostgresAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def reveal_role_password(self, name: str) -> RevealRolePasswordResponse:
+        """Reveals the current password for a password-authenticated Postgres role.
+
+        :param name: str
+          The full resource path of the role whose password should be revealed. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+
+        :returns: :class:`RevealRolePasswordResponse`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/password", body=body, headers=headers)
+        return RevealRolePasswordResponse.from_dict(res)
 
     def undelete_branch(self, name: str) -> UndeleteBranchOperation:
         """Undeletes the specified database branch.
