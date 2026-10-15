@@ -7,19 +7,17 @@
     Create, manage, and control the lifecycle of sandboxes -- isolated, pre-configured, low-latency Serverless
     compute environments for running code.
 
-    .. py:method:: attach_command(name: str, command_id: str [, last_sequence_number: Optional[int], is_retryable: Optional[Callable[[Exception], bool]], max_attempts: int = 30, retry_interval_seconds: float = 3.0]) -> Iterator['_pb.AttachCommandResponse']
+    .. py:method:: connect_command(name: str, command_id: str [, text: bool = True, stdout: StreamMode = StreamMode.PIPE, stderr: StreamMode = StreamMode.PIPE]) -> CommandProcess
 
-        Attach to a running command in sandbox ``name`` and stream its output.
+        Return a :class:`CommandProcess` handle to a command already started in
+        sandbox ``name``, such as one started by another client.
 
-        ``command_id`` comes from the ``StartEvent`` of a prior
-        :meth:`execute_command_streaming`. The server replays buffered events with
-        ``sequence_number`` greater than ``last_sequence_number`` (0 replays from
-        the beginning; omitted tails live output only), then streams live events.
-
-        Unlike :meth:`execute_command_streaming`, retries default to the
-        transport's ``UNAVAILABLE`` policy: attach is a resumable replay, so
-        re-opening from ``last_sequence_number`` is safe. Pass ``is_retryable`` to
-        override.
+        ``command_id`` is :attr:`CommandProcess.command_id` of the original
+        handle. The new handle replays the command's output from the beginning,
+        then continues with live output. The server keeps a bounded amount of
+        output per command, and keeps a finished command's output only briefly
+        after it exits. ``text``, ``stdout``, and ``stderr`` work as in
+        :meth:`execute_command`.
         
 
     .. py:method:: create_sandbox(sandbox: Sandbox, sandbox_id: str) -> Sandbox
@@ -43,24 +41,17 @@
 
         
 
-    .. py:method:: execute_command_streaming(name: str, cmd: str [, args: Optional[list[str]], envs: Optional[Dict[str, str]], is_retryable: Optional[Callable[[Exception], bool]], max_attempts: int = 30, retry_interval_seconds: float = 3.0]) -> Iterator['_pb.ExecuteCommandResponse']
+    .. py:method:: execute_command(name: str, cmd: str [, args: Optional[list[str]], envs: Optional[Dict[str, str]], text: bool = True, stdout: StreamMode = StreamMode.PIPE, stderr: StreamMode = StreamMode.PIPE]) -> CommandProcess
 
-        Run ``cmd`` in sandbox ``name`` and stream its process events.
+        Start ``cmd`` in sandbox ``name`` and return a :class:`CommandProcess`
+        handle for its output, input, and exit code.
 
-        Streaming counterpart of :meth:`SandboxAPI.execute_command_sync`: the same
-        ``name`` (``sandboxes/{sandbox_id}``), ``cmd``, ``args``, and ``envs``,
-        but the process output is streamed instead of returned in one response.
-        Yields ``ExecuteCommandResponse`` messages, each carrying one
-        ``ProcessEvent`` (a start event, then stdout/stderr data chunks, then an
-        end event with the exit code) and a monotonic ``sequence_number``.
+        Returns once the command has started. ``cmd`` runs directly, not in a
+        shell. With ``text=True`` (the default) output is decoded as UTF-8 into
+        ``str``; pass ``text=False`` for ``bytes``. ``stdout`` and ``stderr``
+        choose where each stream goes (see :class:`StreamMode`).
 
-        Retries are off by default (``is_retryable`` defaults to
-        :func:`_never_retry`) because ExecuteCommand is not idempotent: re-issuing
-        a failed open could run the command twice. Pass an ``is_retryable``
-        predicate - e.g. one matching ``UNAVAILABLE`` - to retry the stream open
-        when the command is safe to run more than once, optionally tuning
-        ``max_attempts`` and ``retry_interval_seconds``. Only the stream open is
-        retried; a failure once events are flowing is always raised.
+        The start is not retried, so the command never runs twice.
         
 
     .. py:method:: execute_command_sync(name: str, cmd: str [, args: Optional[List[str]], envs: Optional[Dict[str, str]], execution_timeout: Optional[Duration]]) -> ExecuteCommandSyncResponse
@@ -139,20 +130,6 @@
           Resource name of the sandbox to stop, in the form ``sandboxes/{sandbox_id}``.
 
         :returns: :class:`Sandbox`
-        
-
-    .. py:method:: stream_input(name: str, command_id: str, inputs: Iterable[bytes] [, close_stdin: bool = True]) -> '_pb.StreamInputResponse'
-
-        Forward stdin ``inputs`` to a running command in sandbox ``name``.
-
-        ``command_id`` comes from the ``StartEvent`` of a prior
-        :meth:`execute_command_streaming`. Sends a start message, one data message
-        per chunk of ``inputs``, then (unless ``close_stdin`` is false) a close
-        message that sends EOF to the process's stdin. Returns the server's
-        acknowledgement once the input stream is fully sent.
-
-        Not retried: forwarding input is stateful and side-effecting, so a
-        transport failure is raised to the caller.
         
 
     .. py:method:: update_sandbox(name: str, sandbox: Sandbox, update_mask: FieldMask) -> Sandbox

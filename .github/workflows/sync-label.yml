@@ -7,7 +7,7 @@ name: Sync label
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize, labeled, unlabeled]
+    types: [reopened, synchronize, labeled, unlabeled]
   # The label gate runs at PR level — a PR can't enter the merge queue
   # until this check passes there. Merge-group events carry no label
   # context, so on them the job passes trivially; without this trigger

@@ -107,10 +107,11 @@ class Entitlement(Enum):
 
 @dataclass
 class ExactMatchRule:
-    """A rule that matches an identity whose external ID (from the identity provider) equals the value."""
+    """An exact-match rule that matches a group's external ID from the identity provider."""
 
     external_id: str
-    """The external ID to match exactly."""
+    """The identity provider's external ID for the group to match. This is not the Databricks group ID.
+    The value must be non-empty and is matched exactly, including case."""
 
     def as_dict(self) -> dict:
         """Serializes the ExactMatchRule into a dictionary suitable for use as a JSON request body."""
@@ -471,25 +472,31 @@ class GroupMembershipSource(Enum):
 
 @dataclass
 class IdentityVisibilityFilter:
-    """A rule controlling which externally provisioned identities are visible in the account. Filters
-    are scoped by principal_type: an identity is only ever evaluated against filters whose
-    principal_type matches its own. When the account has no filter for an identity's principal_type,
-    all identities of that type are visible; once it has at least one filter for that type, an
-    identity of that type is visible only if it matches at least one of those filters. So a set of
-    group-only filters gates groups but leaves users and service principals fully visible."""
+    """An account-level rule that controls which identity provider groups are discoverable in directory
+    search and group pickers when automatic identity management is enabled. Filters apply across all
+    workspaces in the account.
+
+    If no group filters are configured, all groups are visible. Otherwise, a group is visible if it
+    or any of its transitive parent groups matches at least one rule. A group is also visible if it
+    or any transitive parent group is already provisioned in the account. Local Databricks groups
+    remain visible regardless of the filters.
+
+    Only group filters can be created. Filters do not change provisioning or sign-in for users and
+    service principals. Filters are immutable: to change a rule, delete it and create a new one."""
 
     principal_type: PrincipalType
-    """Which type of principal (user, service principal, or group) this rule applies to."""
+    """The type of principal this rule applies to. Set to ``GROUP`` when creating a filter. Other
+    principal types are not supported for creation."""
 
     exact: Optional[ExactMatchRule] = None
-    """Exact match on the identity's external ID."""
+    """Exact match on the group's external ID from the identity provider."""
 
     name: Optional[str] = None
     """The resource name of the identity-visibility filter. Format:
     accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}"""
 
     prefix: Optional[PrefixMatchRule] = None
-    """Prefix match on the identity's display name."""
+    """Case-sensitive starts-with match on the group's display name."""
 
     def as_dict(self) -> dict:
         """Serializes the IdentityVisibilityFilter into a dictionary suitable for use as a JSON request body."""
@@ -605,6 +612,7 @@ class ListIdentityVisibilityFiltersResponse:
     """Response message containing a page of identity-visibility filters in the account."""
 
     identity_visibility_filters: Optional[List[IdentityVisibilityFilter]] = None
+    """The filters in this page. These are filter rules, not the groups matched by the rules."""
 
     next_page_token: Optional[str] = None
     """A token, which can be sent as page_token to retrieve the next page. If omitted, there are no
@@ -820,10 +828,12 @@ class ListWorkspaceAssignmentsResponse:
 
 @dataclass
 class PrefixMatchRule:
-    """A rule that matches an identity whose display name starts with the value."""
+    """A starts-with rule that matches groups whose display name begins with a specified prefix.
+    Matching is case-sensitive. For example, the prefix ``data-`` matches ``data-platform``."""
 
     display_name_prefix: str
-    """The display-name prefix to match."""
+    """The display-name prefix to match. Must contain at least one non-whitespace character. Leading
+    and trailing whitespace are preserved, and matching is case-sensitive."""
 
     def as_dict(self) -> dict:
         """Serializes the PrefixMatchRule into a dictionary suitable for use as a JSON request body."""
@@ -1554,15 +1564,20 @@ class AccountIamV2API:
         *,
         identity_visibility_filter_id: Optional[str] = None,
     ) -> IdentityVisibilityFilter:
-        """Creates an identity-visibility filter in the account.
+        """Creates a group visibility filter in the account. Requires account admin privileges. Set
+        ``principal_type`` to ``GROUP`` and specify exactly one of ``exact`` (external ID) or ``prefix``
+        (display-name starts with). The filter applies across all workspaces in the account. A duplicate
+        filter ID or an existing rule with the same type and match value returns ``ALREADY_EXISTS``. Filters
+        are immutable; to change a rule, delete it and create a new one.
 
         :param parent: str
           Required. The parent account. Format: accounts/{account_id}
         :param identity_visibility_filter: :class:`IdentityVisibilityFilter`
-          Required. The filter to create.
+          Required. The filter to create. Set ``principal_type`` to ``GROUP`` and specify exactly one of
+          ``exact`` or ``prefix``. The server assigns the resource name; any supplied ``name`` is ignored.
         :param identity_visibility_filter_id: str (optional)
           Optional. The ID to use for the filter, which becomes the final component of its resource name. If
-          not specified, the server generates one.
+          not specified or empty, the server generates one. Must not contain ``/``.
 
         :returns: :class:`IdentityVisibilityFilter`
         """
@@ -1737,7 +1752,11 @@ class AccountIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{group_id}", headers=headers)
 
     def delete_identity_visibility_filter(self, name: str):
-        """Deletes an identity-visibility filter by resource name.
+        """Deletes a group visibility filter by its resource name. Requires account admin privileges. Deleting a
+        filter does not delete groups or revoke access. Groups covered only by this rule stop being
+        discoverable unless they or a transitive parent are already provisioned in the account. If no group
+        filters remain, all groups become visible again. Deleting a filter that does not exist succeeds
+        without making any changes.
 
         :param name: str
           Required. The resource name of the filter. Format:
@@ -1930,7 +1949,8 @@ class AccountIamV2API:
         return Group.from_dict(res)
 
     def get_identity_visibility_filter(self, name: str) -> IdentityVisibilityFilter:
-        """Fetches an identity-visibility filter by resource name.
+        """Gets a group visibility filter by its resource name. Requires account admin privileges. Returns the
+        filter rule, not the groups matched by the rule.
 
         :param name: str
           Required. The resource name of the filter. Format:
@@ -2150,12 +2170,16 @@ class AccountIamV2API:
     def list_identity_visibility_filters(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[IdentityVisibilityFilter]:
-        """Lists the identity-visibility filters in the account, returning one page per call.
+        """Lists group visibility filters in the account, returning one page per call. Requires account admin
+        privileges. Returns filter rules, not the groups matched by those rules. To retrieve the next page,
+        pass the response's ``next_page_token`` as ``page_token`` in the next request. If ``next_page_token``
+        is omitted, there are no more pages.
 
         :param parent: str
           Required. The parent account. Format: accounts/{account_id}
         :param page_size: int (optional)
-          The maximum number of filters to return. The service may return fewer than this value.
+          The maximum number of filters to return. The service may return fewer than this value. If omitted or
+          non-positive, defaults to 100. Values above 1000 are reduced to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListIdentityVisibilityFilters call. Provide this to retrieve
           the subsequent page.

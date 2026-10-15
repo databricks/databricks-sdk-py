@@ -3683,6 +3683,243 @@ class InputTag:
 
 
 @dataclass
+class Issue:
+    """A quality or operational problem found in an experiment's traces."""
+
+    title: str
+    """Non-empty, at most 250 UTF-8 bytes."""
+
+    severity: IssueSeverity
+    """Cannot be cleared: an Issue without a severity would match no severity filter."""
+
+    categories: Optional[List[str]] = None
+    """At most 10 values of at most 64 UTF-8 bytes each, unique case-insensitively. Leading and
+    trailing whitespace is trimmed."""
+
+    create_time: Optional[Timestamp] = None
+    """When the Issue was created."""
+
+    created_by: Optional[str] = None
+    """The email of the user whose request created the Issue. source_type tells whether issue detection
+    created it."""
+
+    description: Optional[str] = None
+    """Markdown, at most 32 KiB."""
+
+    issue_id: Optional[str] = None
+    """The last segment of ``name``. Issue assessments on traces reference the Issue by this ID."""
+
+    last_seen_time: Optional[Timestamp] = None
+    """The request time of the latest trace the Issue affects. Required, and can't be cleared, unless
+    source_type is MANUAL. A MANUAL Issue without one returns its create_time."""
+
+    last_updated_by: Optional[str] = None
+    """The email of the user whose request last updated the Issue."""
+
+    metadata: Optional[Dict[str, str]] = None
+    """Additional details about the Issue, such as how issue detection observed it. Not a stable
+    contract: keys and values can change without notice, so clients must tolerate unknown and
+    missing keys. At most 20 entries, with keys of at most 64 UTF-8 bytes."""
+
+    name: Optional[str] = None
+    """experiments/{experiment}/issues/{issue}"""
+
+    source_id: Optional[str] = None
+    """Set once at create. For ADHOC_RUN and SCHEDULED_RUN, the ID of the issue detection run in the
+    same experiment that created the Issue. Absent for MANUAL."""
+
+    source_type: Optional[IssueSourceType] = None
+    """Set once at create. Defaults to MANUAL."""
+
+    status: Optional[IssueStatus] = None
+    """Defaults to PENDING on create, and can't be cleared."""
+
+    tags: Optional[Dict[str, str]] = None
+    """Caller-owned; the server never writes system values here. At most 10 entries. Keys match
+    ^[A-Za-z0-9_.:/-]+$ and are at most 128 UTF-8 bytes; values are at most 256 UTF-8 bytes."""
+
+    update_time: Optional[Timestamp] = None
+    """When the Issue was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Issue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.categories:
+            body["categories"] = [v for v in self.categories]
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.issue_id is not None:
+            body["issue_id"] = self.issue_id
+        if self.last_seen_time is not None:
+            body["last_seen_time"] = self.last_seen_time.ToJsonString()
+        if self.last_updated_by is not None:
+            body["last_updated_by"] = self.last_updated_by
+        if self.metadata:
+            body["metadata"] = self.metadata
+        if self.name is not None:
+            body["name"] = self.name
+        if self.severity is not None:
+            body["severity"] = self.severity.value
+        if self.source_id is not None:
+            body["source_id"] = self.source_id
+        if self.source_type is not None:
+            body["source_type"] = self.source_type.value
+        if self.status is not None:
+            body["status"] = self.status.value
+        if self.tags:
+            body["tags"] = self.tags
+        if self.title is not None:
+            body["title"] = self.title
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Issue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.categories:
+            body["categories"] = self.categories
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.issue_id is not None:
+            body["issue_id"] = self.issue_id
+        if self.last_seen_time is not None:
+            body["last_seen_time"] = self.last_seen_time
+        if self.last_updated_by is not None:
+            body["last_updated_by"] = self.last_updated_by
+        if self.metadata:
+            body["metadata"] = self.metadata
+        if self.name is not None:
+            body["name"] = self.name
+        if self.severity is not None:
+            body["severity"] = self.severity
+        if self.source_id is not None:
+            body["source_id"] = self.source_id
+        if self.source_type is not None:
+            body["source_type"] = self.source_type
+        if self.status is not None:
+            body["status"] = self.status
+        if self.tags:
+            body["tags"] = self.tags
+        if self.title is not None:
+            body["title"] = self.title
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Issue:
+        """Deserializes the Issue from a dictionary."""
+        return cls(
+            categories=d.get("categories", None),
+            create_time=_timestamp(d, "create_time"),
+            created_by=d.get("created_by", None),
+            description=d.get("description", None),
+            issue_id=d.get("issue_id", None),
+            last_seen_time=_timestamp(d, "last_seen_time"),
+            last_updated_by=d.get("last_updated_by", None),
+            metadata=d.get("metadata", None),
+            name=d.get("name", None),
+            severity=_enum(d, "severity", IssueSeverity),
+            source_id=d.get("source_id", None),
+            source_type=_enum(d, "source_type", IssueSourceType),
+            status=_enum(d, "status", IssueStatus),
+            tags=d.get("tags", None),
+            title=d.get("title", None),
+            update_time=_timestamp(d, "update_time"),
+        )
+
+
+class IssueSeverity(Enum):
+    """How serious an Issue is, ordered LOW < MEDIUM < HIGH."""
+
+    HIGH = "HIGH"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+
+
+class IssueSortKey(Enum):
+    """The field that search results are ordered by. SEVERITY breaks ties by last_seen_time, in the
+    same direction. Results are grouped by status first (PENDING, RESOLVED, then REJECTED, whatever
+    the sort_order), and remaining ties are broken by issue ID, so paging is stable."""
+
+    CREATE_TIME = "CREATE_TIME"
+    LAST_SEEN_TIME = "LAST_SEEN_TIME"
+    SEVERITY = "SEVERITY"
+    UPDATE_TIME = "UPDATE_TIME"
+
+
+class IssueSourceType(Enum):
+    """What created an Issue: ADHOC_RUN, an issue detection run started on demand; SCHEDULED_RUN, one
+    started by a schedule; SINGLE_TRACE_ANALYSIS, an analysis of a single trace; or MANUAL, a
+    person."""
+
+    ADHOC_RUN = "ADHOC_RUN"
+    MANUAL = "MANUAL"
+    SCHEDULED_RUN = "SCHEDULED_RUN"
+    SINGLE_TRACE_ANALYSIS = "SINGLE_TRACE_ANALYSIS"
+
+
+class IssueStatus(Enum):
+    """The triage status of an Issue: PENDING means open and awaiting triage, RESOLVED means judged
+    real and addressed, and REJECTED means judged not to be an issue."""
+
+    PENDING = "PENDING"
+    REJECTED = "REJECTED"
+    RESOLVED = "RESOLVED"
+
+
+@dataclass
+class IssueTagFilter:
+    """One predicate over Issue.tags."""
+
+    key: str
+    """Matched exactly."""
+
+    values: Optional[List[str]] = None
+    """Matched exactly, and ORed together. Empty matches any Issue carrying the key."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IssueTagFilter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.values:
+            body["values"] = [v for v in self.values]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IssueTagFilter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.values:
+            body["values"] = self.values
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IssueTagFilter:
+        """Deserializes the IssueTagFilter from a dictionary."""
+        return cls(key=d.get("key", None), values=d.get("values", None))
+
+
+class IssueView(Enum):
+    """Which fields each search result includes: BASIC has every field except ``description``, and may
+    omit large ``metadata`` entries; FULL has every field."""
+
+    BASIC = "BASIC"
+    FULL = "FULL"
+
+
+@dataclass
 class JobContext:
     job_id: Optional[int] = None
     """The job ID where this API invoked."""
@@ -7943,6 +8180,51 @@ class SearchExperimentsResponse:
 
 
 @dataclass
+class SearchIssuesResponse:
+    """One page of SearchIssues results."""
+
+    issues: Optional[List[Issue]] = None
+    """The page's Issues, in the requested order."""
+
+    next_page_token: Optional[str] = None
+    """Absent on the last page."""
+
+    total_size: Optional[int] = None
+    """Exact number of matching Issues."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SearchIssuesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.issues:
+            body["issues"] = [v.as_dict() for v in self.issues]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.total_size is not None:
+            body["total_size"] = self.total_size
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchIssuesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.issues:
+            body["issues"] = self.issues
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.total_size is not None:
+            body["total_size"] = self.total_size
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SearchIssuesResponse:
+        """Deserializes the SearchIssuesResponse from a dictionary."""
+        return cls(
+            issues=_repeated_dict(d, "issues", Issue),
+            next_page_token=d.get("next_page_token", None),
+            total_size=d.get("total_size", None),
+        )
+
+
+@dataclass
 class SearchLoggedModelsDataset:
     dataset_name: str
     """The name of the dataset."""
@@ -8342,6 +8624,13 @@ class SlidingWindow:
             slide_duration=d.get("slide_duration", None),
             window_duration=d.get("window_duration", None),
         )
+
+
+class SortOrder(Enum):
+    """The direction of the ordering."""
+
+    ASCENDING = "ASCENDING"
+    DESCENDING = "DESCENDING"
 
 
 @dataclass
@@ -9560,6 +9849,36 @@ class ExperimentsAPI:
         res = self._api.do("POST", "/api/2.0/mlflow/experiments/create", body=body, headers=headers)
         return CreateExperimentResponse.from_dict(res)
 
+    def create_issue(self, parent: str, issue: Issue, *, issue_id: Optional[str] = None) -> Issue:
+        """Creates an issue in an experiment.
+
+        :param parent: str
+          experiments/{experiment}
+        :param issue: :class:`Issue`
+          Output-only fields are ignored.
+        :param issue_id: str (optional)
+          Optional client-chosen ID: iss- followed by 32 lowercase hex digits. A retry with the same ID fails
+          with ALREADY_EXISTS rather than making a duplicate. The server generates one if unset.
+
+        :returns: :class:`Issue`
+        """
+
+        body = issue.as_dict()
+        query = {}
+        if issue_id is not None:
+            query["issue_id"] = issue_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/mlflow/{parent}/issues", query=query, body=body, headers=headers)
+        return Issue.from_dict(res)
+
     def create_logged_model(
         self,
         experiment_id: str,
@@ -9950,6 +10269,26 @@ class ExperimentsAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def get_issue(self, name: str) -> Issue:
+        """Gets an issue.
+
+        :param name: str
+          experiments/{experiment}/issues/{issue}
+
+        :returns: :class:`Issue`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/mlflow/{name}", headers=headers)
+        return Issue.from_dict(res)
 
     def get_logged_model(self, model_id: str) -> GetLoggedModelResponse:
         """Get a logged model.
@@ -10596,6 +10935,90 @@ class ExperimentsAPI:
                 return
             body["page_token"] = json["next_page_token"]
 
+    def search_issues(
+        self,
+        parent: str,
+        *,
+        categories: Optional[List[str]] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        query: Optional[str] = None,
+        severities: Optional[List[IssueSeverity]] = None,
+        sort_key: Optional[IssueSortKey] = None,
+        sort_order: Optional[SortOrder] = None,
+        statuses: Optional[List[IssueStatus]] = None,
+        tag_filters: Optional[List[IssueTagFilter]] = None,
+        view: Optional[IssueView] = None,
+    ) -> Iterator[Issue]:
+        """Searches the issues in an experiment, filtered and sorted.
+
+        :param parent: str
+          experiments/{experiment}
+        :param categories: List[str] (optional)
+          Matches Issues with any of these categories, case-insensitively.
+        :param page_size: int (optional)
+          Defaults to 20; values above 100 are clamped.
+        :param page_token: str (optional)
+          Expires after 15 minutes. Every other argument except ``view`` must match the request that returned
+          the token.
+        :param query: str (optional)
+          Case-insensitive substring match on title.
+        :param severities: List[:class:`IssueSeverity`] (optional)
+          Matches Issues with any of these severities.
+        :param sort_key: :class:`IssueSortKey` (optional)
+          Defaults to SEVERITY.
+        :param sort_order: :class:`SortOrder` (optional)
+          Defaults to DESCENDING.
+        :param statuses: List[:class:`IssueStatus`] (optional)
+          Matches Issues with any of these statuses. Different filters AND together, and an empty filter
+          matches every Issue.
+        :param tag_filters: List[:class:`IssueTagFilter`] (optional)
+          Matches Issues that satisfy every filter. At most 10 filters of 20 values each.
+        :param view: :class:`IssueView` (optional)
+          Defaults to BASIC.
+
+        :returns: Iterator over :class:`Issue`
+        """
+
+        body = {}
+        if categories is not None:
+            body["categories"] = [v for v in categories]
+        if page_size is not None:
+            body["page_size"] = page_size
+        if page_token is not None:
+            body["page_token"] = page_token
+        if query is not None:
+            body["query"] = query
+        if severities is not None:
+            body["severities"] = [v.value for v in severities]
+        if sort_key is not None:
+            body["sort_key"] = sort_key.value
+        if sort_order is not None:
+            body["sort_order"] = sort_order.value
+        if statuses is not None:
+            body["statuses"] = [v.value for v in statuses]
+        if tag_filters is not None:
+            body["tag_filters"] = [v.as_dict() for v in tag_filters]
+        if view is not None:
+            body["view"] = view.value
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("POST", f"/api/2.0/mlflow/{parent}/issues:search", body=body, headers=headers)
+            if "issues" in json:
+                for v in json["issues"]:
+                    yield Issue.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            body["page_token"] = json["next_page_token"]
+
     def search_logged_models(
         self,
         *,
@@ -10876,6 +11299,40 @@ class ExperimentsAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/update", body=body, headers=headers)
+
+    def update_issue(self, name: str, issue: Issue, update_mask: FieldMask) -> Issue:
+        """Updates the fields of an issue named in ``update_mask``.
+
+        :param name: str
+          experiments/{experiment}/issues/{issue}
+        :param issue: :class:`Issue`
+          ``issue.name`` identifies the target.
+        :param update_mask: FieldMask
+          Accepts title, description, status, severity, categories, tags, last_seen_time, and metadata.<key>.
+          A path with an empty value clears the field, except that title, status, and severity can't be
+          cleared, and last_seen_time can be cleared only when source_type is MANUAL. categories and tags are
+          replaced whole. metadata is updated per key: a metadata.<key> path sets that key from
+          issue.metadata, or removes it when issue.metadata lacks it, and leaves the other keys alone. A bare
+          metadata path is rejected.
+
+        :returns: :class:`Issue`
+        """
+
+        body = issue.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/mlflow/{name}", query=query, body=body, headers=headers)
+        return Issue.from_dict(res)
 
     def update_permissions(
         self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None

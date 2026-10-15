@@ -1759,6 +1759,34 @@ class RegisteredModelAlias:
 
 
 @dataclass
+class ReplicationConfig:
+    """Configuration for Delta Sharing replication on a share. When enabled, the share's data is copied
+    into each recipient's region so recipients can query the share locally."""
+
+    enabled: Optional[bool] = None
+    """Whether replication is enabled for the share."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationConfig:
+        """Deserializes the ReplicationConfig from a dictionary."""
+        return cls(enabled=d.get("enabled", None))
+
+
+@dataclass
 class RetrieveTokenResponse:
     bearer_token: Optional[str] = None
     """The token used to authorize the recipient."""
@@ -1886,6 +1914,9 @@ class ShareInfo:
     owner: Optional[str] = None
     """Username of current owner of share."""
 
+    replication_config: Optional[ReplicationConfig] = None
+    """Configuration for share replication."""
+
     storage_location: Optional[str] = None
     """Storage Location URL (full path) for the share."""
 
@@ -1913,6 +1944,8 @@ class ShareInfo:
             body["objects"] = [v.as_dict() for v in self.objects]
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.replication_config:
+            body["replication_config"] = self.replication_config.as_dict()
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1938,6 +1971,8 @@ class ShareInfo:
             body["objects"] = self.objects
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.replication_config:
+            body["replication_config"] = self.replication_config
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1958,6 +1993,7 @@ class ShareInfo:
             name=d.get("name", None),
             objects=_repeated_dict(d, "objects", SharedDataObject),
             owner=d.get("owner", None),
+            replication_config=_from_dict(d, "replication_config", ReplicationConfig),
             storage_location=d.get("storage_location", None),
             storage_root=d.get("storage_root", None),
             updated_at=_int64(d, "updated_at"),
@@ -3327,7 +3363,14 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, *, comment: Optional[str] = None, storage_root: Optional[str] = None) -> ShareInfo:
+    def create(
+        self,
+        name: str,
+        *,
+        comment: Optional[str] = None,
+        replication_config: Optional[ReplicationConfig] = None,
+        storage_root: Optional[str] = None,
+    ) -> ShareInfo:
         """Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
 
@@ -3335,6 +3378,8 @@ class SharesAPI:
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param replication_config: :class:`ReplicationConfig` (optional)
+          Configuration for share replication.
         :param storage_root: str (optional)
           Storage root URL for the share.
 
@@ -3346,6 +3391,8 @@ class SharesAPI:
             body["comment"] = comment
         if name is not None:
             body["name"] = name
+        if replication_config is not None:
+            body["replication_config"] = replication_config.as_dict()
         if storage_root is not None:
             body["storage_root"] = storage_root
         headers = {

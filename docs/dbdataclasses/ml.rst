@@ -802,6 +802,82 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Issue
+   :members:
+   :undoc-members:
+
+.. py:class:: IssueSeverity
+
+   How serious an Issue is, ordered LOW < MEDIUM < HIGH.
+
+   .. py:attribute:: HIGH
+      :value: "HIGH"
+
+   .. py:attribute:: LOW
+      :value: "LOW"
+
+   .. py:attribute:: MEDIUM
+      :value: "MEDIUM"
+
+.. py:class:: IssueSortKey
+
+   The field that search results are ordered by. SEVERITY breaks ties by last_seen_time, in the same direction. Results are grouped by status first (PENDING, RESOLVED, then REJECTED, whatever the sort_order), and remaining ties are broken by issue ID, so paging is stable.
+
+   .. py:attribute:: CREATE_TIME
+      :value: "CREATE_TIME"
+
+   .. py:attribute:: LAST_SEEN_TIME
+      :value: "LAST_SEEN_TIME"
+
+   .. py:attribute:: SEVERITY
+      :value: "SEVERITY"
+
+   .. py:attribute:: UPDATE_TIME
+      :value: "UPDATE_TIME"
+
+.. py:class:: IssueSourceType
+
+   What created an Issue: ADHOC_RUN, an issue detection run started on demand; SCHEDULED_RUN, one started by a schedule; SINGLE_TRACE_ANALYSIS, an analysis of a single trace; or MANUAL, a person.
+
+   .. py:attribute:: ADHOC_RUN
+      :value: "ADHOC_RUN"
+
+   .. py:attribute:: MANUAL
+      :value: "MANUAL"
+
+   .. py:attribute:: SCHEDULED_RUN
+      :value: "SCHEDULED_RUN"
+
+   .. py:attribute:: SINGLE_TRACE_ANALYSIS
+      :value: "SINGLE_TRACE_ANALYSIS"
+
+.. py:class:: IssueStatus
+
+   The triage status of an Issue: PENDING means open and awaiting triage, RESOLVED means judged real and addressed, and REJECTED means judged not to be an issue.
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: REJECTED
+      :value: "REJECTED"
+
+   .. py:attribute:: RESOLVED
+      :value: "RESOLVED"
+
+.. autoclass:: IssueTagFilter
+   :members:
+   :undoc-members:
+
+.. py:class:: IssueView
+
+   Which fields each search result includes: BASIC has every field except ``description``, and may omit large ``metadata`` entries; FULL has every field.
+
+   .. py:attribute:: BASIC
+      :value: "BASIC"
+
+   .. py:attribute:: FULL
+      :value: "FULL"
+
 .. autoclass:: JobContext
    :members:
    :undoc-members:
@@ -1430,6 +1506,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SearchIssuesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: SearchLoggedModelsDataset
    :members:
    :undoc-members:
@@ -1481,6 +1561,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: SlidingWindow
    :members:
    :undoc-members:
+
+.. py:class:: SortOrder
+
+   The direction of the ordering.
+
+   .. py:attribute:: ASCENDING
+      :value: "ASCENDING"
+
+   .. py:attribute:: DESCENDING
+      :value: "DESCENDING"
 
 .. autoclass:: SourceLateness
    :members:
