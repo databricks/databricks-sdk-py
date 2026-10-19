@@ -20,6 +20,19 @@
         :meth:`execute_command`.
         
 
+    .. py:method:: create_directory(parent: str, path: str [, parents: Optional[bool]]) -> CreateDirectoryResponse
+
+        Creates a directory in a sandbox, including missing parents by default.
+
+        :param parent: str
+        :param path: str
+          Absolute UTF-8 path of the directory.
+        :param parents: bool (optional)
+          Defaults to true, which also succeeds when the directory already exists.
+
+        :returns: :class:`CreateDirectoryResponse`
+        
+
     .. py:method:: create_sandbox(sandbox: Sandbox, sandbox_id: str) -> Sandbox
 
         Creates a new Sandbox.
@@ -30,6 +43,20 @@
           Client-supplied ID that becomes the final path segment of the resource name.
 
         :returns: :class:`Sandbox`
+        
+
+    .. py:method:: delete_path(parent: str, path: str [, recursive: Optional[bool]]) -> DeletePathResponse
+
+        Deletes a file, symlink, or empty directory, with an option for recursive deletion. Succeeds if the
+        path is already absent.
+
+        :param parent: str
+        :param path: str
+          Absolute UTF-8 path of the entry to delete.
+        :param recursive: bool (optional)
+          Required for a non-empty directory.
+
+        :returns: :class:`DeletePathResponse`
         
 
     .. py:method:: delete_sandbox(name: str)
@@ -77,6 +104,17 @@
         :returns: :class:`ExecuteCommandSyncResponse`
         
 
+    .. py:method:: get_metadata(parent: str, path: str) -> GetMetadataResponse
+
+        Returns metadata for a path without following its final symlink.
+
+        :param parent: str
+        :param path: str
+          Absolute UTF-8 path of the entry to inspect.
+
+        :returns: :class:`GetMetadataResponse`
+        
+
     .. py:method:: get_sandbox(name: str) -> Sandbox
 
         Retrieves a Sandbox by name.
@@ -101,6 +139,22 @@
         :returns: :class:`ListCommandsResponse`
         
 
+    .. py:method:: list_directory_contents(parent: str, path: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[SandboxFileInfo]
+
+        Lists a directory's immediate children in UTF-8 name order. Later pages may reflect concurrent
+        changes.
+
+        :param parent: str
+        :param path: str
+          Absolute UTF-8 path of the directory.
+        :param page_size: int (optional)
+          Zero uses the default of 1000; values above 1000 are clamped to 1000.
+        :param page_token: str (optional)
+          The token from a prior response. Keep parent and path unchanged between pages.
+
+        :returns: Iterator over :class:`SandboxFileInfo`
+        
+
     .. py:method:: list_sandboxes( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Sandbox]
 
         Lists all Sandboxes.
@@ -109,6 +163,20 @@
         :param page_token: str (optional)
 
         :returns: Iterator over :class:`Sandbox`
+        
+
+    .. py:method:: rename_path(parent: str, source: str, destination: str) -> RenamePathResponse
+
+        Renames a path within a sandbox. The destination must be absent and on the same filesystem.
+
+        :param parent: str
+          Sandbox resource name, for example ``sandboxes/my-sandbox``.
+        :param source: str
+          Absolute UTF-8 path to move.
+        :param destination: str
+          Exact absolute UTF-8 destination; it must not already exist.
+
+        :returns: :class:`RenamePathResponse`
         
 
     .. py:method:: start_sandbox(name: str) -> Sandbox

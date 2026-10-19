@@ -829,7 +829,7 @@ class WorkspaceClient:
 
     @property
     def knowledge_assistants(self) -> pkg_knowledgeassistants.KnowledgeAssistantsAPI:
-        """Manage Knowledge Assistants and related resources."""
+        """Manage legacy Knowledge Assistants and related resources."""
         return self._knowledge_assistants
 
     @property
@@ -1094,7 +1094,7 @@ class WorkspaceClient:
 
     @property
     def supervisor_agents(self) -> pkg_supervisoragents.SupervisorAgentsAPI:
-        """Manage Supervisor Agents and related resources."""
+        """Manage legacy Supervisor Agents and related resources."""
         return self._supervisor_agents
 
     @property

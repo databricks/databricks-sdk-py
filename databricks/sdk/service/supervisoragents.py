@@ -802,7 +802,7 @@ class Volume:
 
 
 class SupervisorAgentsAPI:
-    """Manage Supervisor Agents and related resources."""
+    """Manage legacy Supervisor Agents and related resources."""
 
     def __init__(self, api_client):
         self._api = api_client

@@ -138,10 +138,10 @@ class ForkSessionResponse:
 
 @dataclass
 class ListManagedMemoryEntriesResponse:
-    """Response containing managed memory entries."""
+    """Response containing memory entries."""
 
     managed_memory_entries: Optional[List[ManagedMemoryEntry]] = None
-    """Managed memory entries matching the request and selected response view."""
+    """Memory entries matching the request and selected response view."""
 
     next_page_token: Optional[str] = None
     """Opaque pagination token. This field is omitted when there are no more results."""
@@ -175,10 +175,10 @@ class ListManagedMemoryEntriesResponse:
 
 @dataclass
 class ListManagedMemoryStoresResponse:
-    """Response containing managed memory stores in the caller's workspace."""
+    """Response containing memory stores in the caller's workspace."""
 
     managed_memory_stores: Optional[List[ManagedMemoryStore]] = None
-    """Managed memory stores in the caller's workspace."""
+    """Memory stores in the caller's workspace."""
 
     next_page_token: Optional[str] = None
     """Opaque pagination token. This field is omitted when there are no more results."""
@@ -320,7 +320,7 @@ class ListSessionsResponse:
 
 @dataclass
 class ManagedMemoryEntry:
-    """A workspace-scoped entry in a managed memory store."""
+    """A workspace-scoped entry in a memory store."""
 
     actor_id: str
     """Customer-provided identifier for the actor whose memory this entry represents."""
@@ -416,10 +416,10 @@ class ManagedMemoryEntry:
 
 @dataclass
 class ManagedMemoryEntrySearchResult:
-    """One relevance-ranked managed memory search result."""
+    """One relevance-ranked memory search result."""
 
     managed_memory_entry: Optional[ManagedMemoryEntry] = None
-    """Managed memory entry matching the query."""
+    """Memory entry matching the query."""
 
     score: Optional[float] = None
     """Relevance score for the result. Higher scores are more relevant."""
@@ -451,14 +451,14 @@ class ManagedMemoryEntrySearchResult:
 
 
 class ManagedMemoryEntrySourceType(Enum):
-    """Identifies the source that created a managed memory entry."""
+    """Identifies the source that created a memory entry."""
 
     MANAGED_MEMORY_ENTRY_SOURCE_TYPE_AGENT = "MANAGED_MEMORY_ENTRY_SOURCE_TYPE_AGENT"
     MANAGED_MEMORY_ENTRY_SOURCE_TYPE_DREAMER = "MANAGED_MEMORY_ENTRY_SOURCE_TYPE_DREAMER"
 
 
 class ManagedMemoryEntryView(Enum):
-    """Controls how much managed memory entry data is returned."""
+    """Controls how much memory entry data is returned."""
 
     MANAGED_MEMORY_ENTRY_VIEW_BASIC = "MANAGED_MEMORY_ENTRY_VIEW_BASIC"
     MANAGED_MEMORY_ENTRY_VIEW_FULL = "MANAGED_MEMORY_ENTRY_VIEW_FULL"
@@ -466,7 +466,7 @@ class ManagedMemoryEntryView(Enum):
 
 @dataclass
 class ManagedMemoryStore:
-    """A workspace-scoped managed memory store backed by service-managed storage."""
+    """A workspace-scoped memory store backed by service-managed storage."""
 
     create_time: Optional[Timestamp] = None
     """Time when the store was created."""
@@ -480,9 +480,9 @@ class ManagedMemoryStore:
     """Human-readable description of the memory store."""
 
     display_name: Optional[str] = None
-    """Deprecated compatibility alias for the caller-provided managed memory store ID. Canonical
-    clients provide the ID through ``CreateMemoryStoreRequest.managed_memory_store_id`` and use
-    ``name`` as the resource identifier."""
+    """Deprecated compatibility alias for the caller-provided memory store ID. Canonical clients
+    provide the ID through ``CreateMemoryStoreRequest.managed_memory_store_id`` and use ``name`` as
+    the resource identifier."""
 
     name: Optional[str] = None
     """Resource name in the form ``memory-stores/{managed_memory_store_id}``."""
@@ -591,7 +591,7 @@ class PopSessionItemResponse:
 
 @dataclass
 class SearchManagedMemoryEntriesResponse:
-    """Response containing managed memory entries ranked by relevance."""
+    """Response containing memory entries ranked by relevance."""
 
     managed_memory_entries: Optional[List[ManagedMemoryEntry]] = None
     """Deprecated compatibility alias for clients migrating to ``results``. This contains the same
@@ -852,7 +852,7 @@ class SessionStore:
 
 @dataclass
 class StorageBackend:
-    """Service-managed storage backing a managed memory store."""
+    """Service-managed storage backing a memory store."""
 
     backend_id: Optional[str] = None
     """Backend-specific identifier. For Lakebase, this is the project ID."""
@@ -885,7 +885,7 @@ class StorageBackend:
 
 
 class StorageBackendType(Enum):
-    """Type of service-managed storage backing a managed memory store."""
+    """Type of service-managed storage backing a memory store."""
 
     STORAGE_BACKEND_TYPE_LAKEBASE = "STORAGE_BACKEND_TYPE_LAKEBASE"
 
@@ -951,19 +951,18 @@ class AgentKitAPI:
     def create_memory(
         self, parent: str, managed_memory_entry: ManagedMemoryEntry, *, managed_memory_entry_id: Optional[str] = None
     ) -> ManagedMemoryEntry:
-        """Creates a managed memory entry using exclusive-create semantics. Callers may choose the entry ID; the
-        service generates one when it is omitted. Returns ``ALREADY_EXISTS`` when an entry with the same
-        actor, session, and path already exists. Omitted ``session_id`` is its own uniqueness key: two
+        """Creates a memory entry using exclusive-create semantics. Callers may choose the entry ID; the service
+        generates one when it is omitted. Returns ``ALREADY_EXISTS`` when an entry with the same actor,
+        session, and path already exists. Omitted ``session_id`` is its own uniqueness key: two
         omitted-session entries with the same actor and path conflict, but an omitted-session entry does not
         conflict with a session-scoped entry at the same actor and path.
 
         :param parent: str
-          Managed memory store that will contain the entry, in the form
-          ``memory-stores/{managed_memory_store_id}``.
+          Memory store that will contain the entry, in the form ``memory-stores/{managed_memory_store_id}``.
         :param managed_memory_entry: :class:`ManagedMemoryEntry`
-          The managed memory entry to create.
+          The memory entry to create.
         :param managed_memory_entry_id: str (optional)
-          Optional caller-selected managed memory entry ID. The service generates an ID when omitted.
+          Optional caller-selected memory entry ID. The service generates an ID when omitted.
 
         :returns: :class:`ManagedMemoryEntry`
         """
@@ -987,12 +986,12 @@ class AgentKitAPI:
     def create_memory_store(
         self, managed_memory_store: ManagedMemoryStore, managed_memory_store_id: str
     ) -> ManagedMemoryStore:
-        """Creates a managed memory store in the caller's workspace.
+        """Creates a memory store in the caller's workspace.
 
         :param managed_memory_store: :class:`ManagedMemoryStore`
-          The managed memory store to create.
+          The memory store to create.
         :param managed_memory_store_id: str
-          Caller-provided, workspace-unique managed memory store ID. It must be 3-56 characters, begin with a
+          Caller-provided, workspace-unique memory store ID. It must be 3-56 characters, begin with a
           lowercase letter, contain only lowercase letters, digits, and hyphens, and end with a letter or
           digit.
 
@@ -1075,8 +1074,8 @@ class AgentKitAPI:
         return SessionStore.from_dict(res)
 
     def delete_memory(self, name: str):
-        """Deletes a managed memory entry by resource name. Returns ``NOT_FOUND`` when the entry does not exist
-        in the caller's workspace.
+        """Deletes a memory entry by resource name. Returns ``NOT_FOUND`` when the entry does not exist in the
+        caller's workspace.
 
         :param name: str
           Resource name in the form
@@ -1096,8 +1095,8 @@ class AgentKitAPI:
         self._api.do("DELETE", f"/api/2.0/agents/{name}", headers=headers)
 
     def delete_memory_store(self, name: str):
-        """Deletes a managed memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist
-        in the caller's workspace.
+        """Deletes a memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist in the
+        caller's workspace.
 
         :param name: str
           Resource name in the form ``memory-stores/{managed_memory_store_id}``.
@@ -1172,7 +1171,7 @@ class AgentKitAPI:
         :param session_id: str
           Identifier of the session whose transcript is distilled into memories.
         :param memory_store: str
-          Managed memory store the extracted entries are written to, in the form
+          Memory store the extracted entries are written to, in the form
           ``memory-stores/{managed_memory_store_id}``.
         :param dry_run: bool (optional)
           When true, extract and return the entries without writing them to the memory store. Defaults to
@@ -1257,8 +1256,8 @@ class AgentKitAPI:
         return ForkSessionResponse.from_dict(res)
 
     def get_memory(self, name: str, *, view: Optional[ManagedMemoryEntryView] = None) -> ManagedMemoryEntry:
-        """Retrieves a managed memory entry by resource name. ``view`` controls whether the response includes
-        memory content. Returns ``NOT_FOUND`` when the entry does not exist in the caller's workspace.
+        """Retrieves a memory entry by resource name. ``view`` controls whether the response includes memory
+        content. Returns ``NOT_FOUND`` when the entry does not exist in the caller's workspace.
 
         :param name: str
           Resource name in the form
@@ -1284,8 +1283,8 @@ class AgentKitAPI:
         return ManagedMemoryEntry.from_dict(res)
 
     def get_memory_store(self, name: str) -> ManagedMemoryStore:
-        """Retrieves a managed memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist
-        in the caller's workspace.
+        """Retrieves a memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist in the
+        caller's workspace.
 
         :param name: str
           Resource name in the form ``memory-stores/{managed_memory_store_id}``.
@@ -1355,13 +1354,12 @@ class AgentKitAPI:
         session_id: Optional[str] = None,
         view: Optional[ManagedMemoryEntryView] = None,
     ) -> Iterator[ManagedMemoryEntry]:
-        """Lists managed memory entries for one actor. An exact ``path`` filters entries across sessions,
-        ignoring session metadata. Otherwise, ``session_id`` and ``path_prefix`` restrict the actor partition.
-        ``view`` controls whether each returned entry includes memory content.
+        """Lists memory entries for one actor. An exact ``path`` filters entries across sessions, ignoring
+        session metadata. Otherwise, ``session_id`` and ``path_prefix`` restrict the actor partition. ``view``
+        controls whether each returned entry includes memory content.
 
         :param parent: str
-          Managed memory store whose entries are listed, in the form
-          ``memory-stores/{managed_memory_store_id}``.
+          Memory store whose entries are listed, in the form ``memory-stores/{managed_memory_store_id}``.
         :param actor_id: str
           Customer-provided identifier for the actor whose entries are listed.
         :param page_size: int (optional)
@@ -1413,7 +1411,7 @@ class AgentKitAPI:
     def list_memory_stores(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ManagedMemoryStore]:
-        """Lists managed memory stores in the caller's workspace.
+        """Lists memory stores in the caller's workspace.
 
         :param page_size: int (optional)
           Maximum number of stores to return. The service may return fewer stores than requested. Defaults to
@@ -1621,12 +1619,11 @@ class AgentKitAPI:
         session_id: Optional[str] = None,
         view: Optional[ManagedMemoryEntryView] = None,
     ) -> Iterator[ManagedMemoryEntrySearchResult]:
-        """Searches managed memory entries by text query for one actor. Returns matching entries and scores
-        ranked by relevance; ``view`` controls whether each returned entry includes content.
+        """Searches memory entries by text query for one actor. Returns matching entries and scores ranked by
+        relevance; ``view`` controls whether each returned entry includes content.
 
         :param parent: str
-          Managed memory store whose entries are searched, in the form
-          ``memory-stores/{managed_memory_store_id}``.
+          Memory store whose entries are searched, in the form ``memory-stores/{managed_memory_store_id}``.
         :param actor_id: str
           Customer-provided identifier for the actor whose entries are searched.
         :param query: str
@@ -1689,13 +1686,13 @@ class AgentKitAPI:
     def update_memory(
         self, name: str, managed_memory_entry: ManagedMemoryEntry, update_mask: FieldMask
     ) -> ManagedMemoryEntry:
-        """Updates selected mutable fields on a managed memory entry. Identity fields are immutable.
+        """Updates selected mutable fields on a memory entry. Identity fields are immutable.
 
         :param name: str
           Resource name in the form
           ``memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}``.
         :param managed_memory_entry: :class:`ManagedMemoryEntry`
-          The managed memory entry to update.
+          The memory entry to update.
         :param update_mask: FieldMask
           Fields to update. Only ``content`` and ``description`` may be updated.
 
@@ -1721,12 +1718,12 @@ class AgentKitAPI:
     def update_memory_store(
         self, name: str, managed_memory_store: ManagedMemoryStore, update_mask: FieldMask
     ) -> ManagedMemoryStore:
-        """Updates a managed memory store's description and metadata.
+        """Updates a memory store's description and metadata.
 
         :param name: str
           Resource name in the form ``memory-stores/{managed_memory_store_id}``.
         :param managed_memory_store: :class:`ManagedMemoryStore`
-          The managed memory store to update. ``name`` is taken from the URL.
+          The memory store to update. ``name`` is taken from the URL.
         :param update_mask: FieldMask
           Only ``description`` and ``metadata`` may be updated. Selecting ``metadata`` replaces the entire
           map.

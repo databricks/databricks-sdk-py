@@ -800,7 +800,7 @@ class ListKnowledgeSourcesResponse:
 
 
 class KnowledgeAssistantsAPI:
-    """Manage Knowledge Assistants and related resources."""
+    """Manage legacy Knowledge Assistants and related resources."""
 
     def __init__(self, api_client):
         self._api = api_client

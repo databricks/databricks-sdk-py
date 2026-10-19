@@ -50,7 +50,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ManagedMemoryEntrySourceType
 
-   Identifies the source that created a managed memory entry.
+   Identifies the source that created a memory entry.
 
    .. py:attribute:: MANAGED_MEMORY_ENTRY_SOURCE_TYPE_AGENT
       :value: "MANAGED_MEMORY_ENTRY_SOURCE_TYPE_AGENT"
@@ -60,7 +60,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ManagedMemoryEntryView
 
-   Controls how much managed memory entry data is returned.
+   Controls how much memory entry data is returned.
 
    .. py:attribute:: MANAGED_MEMORY_ENTRY_VIEW_BASIC
       :value: "MANAGED_MEMORY_ENTRY_VIEW_BASIC"
@@ -98,7 +98,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: StorageBackendType
 
-   Type of service-managed storage backing a managed memory store.
+   Type of service-managed storage backing a memory store.
 
    .. py:attribute:: STORAGE_BACKEND_TYPE_LAKEBASE
       :value: "STORAGE_BACKEND_TYPE_LAKEBASE"

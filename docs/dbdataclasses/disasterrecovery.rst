@@ -43,6 +43,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INITIAL_REPLICATION
       :value: "INITIAL_REPLICATION"
 
+.. autoclass:: InitialReplicationProgress
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListFailoverGroupsResponse
    :members:
    :undoc-members:

@@ -495,6 +495,12 @@ class BaseRun:
     description: Optional[str] = None
     """Description of the run"""
 
+    duration_target: Optional[str] = None
+    """The window the run aims to finish within, in hours, for a Cost-optimized serverless run.
+    Required only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported
+    values: ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run
+    uses the default cost-optimized performance level without additional cost-saving optimizations."""
+
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
@@ -639,6 +645,8 @@ class BaseRun:
             body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.effective_usage_policy_id is not None:
@@ -718,6 +726,8 @@ class BaseRun:
             body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.effective_usage_policy_id is not None:
@@ -791,6 +801,7 @@ class BaseRun:
             creator_user_name=d.get("creator_user_name", None),
             deployment_id=d.get("deployment_id", None),
             description=d.get("description", None),
+            duration_target=d.get("duration_target", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=_int64(d, "end_time"),
@@ -3787,6 +3798,12 @@ class JobSettings:
     description: Optional[str] = None
     """An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding."""
 
+    duration_target: Optional[str] = None
+    """The window the run aims to finish within, in hours, for a Cost-optimized serverless run.
+    Required only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported
+    values: ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run
+    uses the default cost-optimized performance level without additional cost-saving optimizations."""
+
     edit_mode: Optional[JobEditMode] = None
     """Edit mode of the job.
     
@@ -3925,6 +3942,8 @@ class JobSettings:
             body["deployment"] = self.deployment.as_dict()
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.edit_mode is not None:
             body["edit_mode"] = self.edit_mode.value
         if self.email_notifications:
@@ -3986,6 +4005,8 @@ class JobSettings:
             body["deployment"] = self.deployment
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.edit_mode is not None:
             body["edit_mode"] = self.edit_mode
         if self.email_notifications:
@@ -4044,6 +4065,7 @@ class JobSettings:
             continuous=_from_dict(d, "continuous", Continuous),
             deployment=_from_dict(d, "deployment", JobDeployment),
             description=d.get("description", None),
+            duration_target=d.get("duration_target", None),
             edit_mode=_enum(d, "edit_mode", JobEditMode),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             environment_variables=_repeated_dict(d, "environment_variables", JobEnvironmentVariables),
@@ -5835,6 +5857,12 @@ class Run:
     description: Optional[str] = None
     """Description of the run"""
 
+    duration_target: Optional[str] = None
+    """The window the run aims to finish within, in hours, for a Cost-optimized serverless run.
+    Required only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported
+    values: ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run
+    uses the default cost-optimized performance level without additional cost-saving optimizations."""
+
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
@@ -5985,6 +6013,8 @@ class Run:
             body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.effective_usage_policy_id is not None:
@@ -6068,6 +6098,8 @@ class Run:
             body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.effective_usage_policy_id is not None:
@@ -6145,6 +6177,7 @@ class Run:
             creator_user_name=d.get("creator_user_name", None),
             deployment_id=d.get("deployment_id", None),
             description=d.get("description", None),
+            duration_target=d.get("duration_target", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=_int64(d, "end_time"),
@@ -10754,6 +10787,7 @@ class JobsAPI:
         continuous: Optional[Continuous] = None,
         deployment: Optional[JobDeployment] = None,
         description: Optional[str] = None,
+        duration_target: Optional[str] = None,
         edit_mode: Optional[JobEditMode] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environment_variables: Optional[List[JobEnvironmentVariables]] = None,
@@ -10797,6 +10831,11 @@ class JobsAPI:
           Deployment information for jobs managed by external sources.
         :param description: str (optional)
           An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param edit_mode: :class:`JobEditMode` (optional)
           Edit mode of the job.
 
@@ -10914,6 +10953,8 @@ class JobsAPI:
             body["deployment"] = deployment.as_dict()
         if description is not None:
             body["description"] = description
+        if duration_target is not None:
+            body["duration_target"] = duration_target
         if edit_mode is not None:
             body["edit_mode"] = edit_mode.value
         if email_notifications is not None:
@@ -11355,6 +11396,7 @@ class JobsAPI:
         run_id: int,
         *,
         dbt_commands: Optional[List[str]] = None,
+        duration_target: Optional[str] = None,
         jar_params: Optional[List[str]] = None,
         job_parameters: Optional[Dict[str, str]] = None,
         latest_repair_id: Optional[int] = None,
@@ -11381,6 +11423,11 @@ class JobsAPI:
           ⚠ **Deprecation note** Use `job parameters
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param jar_params: List[str] (optional)
           A list of parameters for jobs with Spark JAR tasks, for example ``"jar_params": ["john doe",
           "35"]``. The parameters are used to invoke the main function of the main class specified in the
@@ -11479,6 +11526,8 @@ class JobsAPI:
         body = {}
         if dbt_commands is not None:
             body["dbt_commands"] = [v for v in dbt_commands]
+        if duration_target is not None:
+            body["duration_target"] = duration_target
         if jar_params is not None:
             body["jar_params"] = [v for v in jar_params]
         if job_parameters is not None:
@@ -11528,6 +11577,7 @@ class JobsAPI:
         run_id: int,
         *,
         dbt_commands: Optional[List[str]] = None,
+        duration_target: Optional[str] = None,
         jar_params: Optional[List[str]] = None,
         job_parameters: Optional[Dict[str, str]] = None,
         latest_repair_id: Optional[int] = None,
@@ -11545,6 +11595,7 @@ class JobsAPI:
     ) -> Run:
         return self.repair_run(
             dbt_commands=dbt_commands,
+            duration_target=duration_target,
             jar_params=jar_params,
             job_parameters=job_parameters,
             latest_repair_id=latest_repair_id,
@@ -11596,6 +11647,7 @@ class JobsAPI:
         job_id: int,
         *,
         dbt_commands: Optional[List[str]] = None,
+        duration_target: Optional[str] = None,
         idempotency_token: Optional[str] = None,
         jar_params: Optional[List[str]] = None,
         job_parameters: Optional[Dict[str, str]] = None,
@@ -11620,6 +11672,11 @@ class JobsAPI:
           ⚠ **Deprecation note** Use `job parameters
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param idempotency_token: str (optional)
           An optional token to guarantee the idempotency of job run requests. If a run with the provided token
           already exists, the request does not create a new run but returns the ID of the existing run
@@ -11726,6 +11783,8 @@ class JobsAPI:
         body = {}
         if dbt_commands is not None:
             body["dbt_commands"] = [v for v in dbt_commands]
+        if duration_target is not None:
+            body["duration_target"] = duration_target
         if idempotency_token is not None:
             body["idempotency_token"] = idempotency_token
         if jar_params is not None:
@@ -11773,6 +11832,7 @@ class JobsAPI:
         job_id: int,
         *,
         dbt_commands: Optional[List[str]] = None,
+        duration_target: Optional[str] = None,
         idempotency_token: Optional[str] = None,
         jar_params: Optional[List[str]] = None,
         job_parameters: Optional[Dict[str, str]] = None,
@@ -11789,6 +11849,7 @@ class JobsAPI:
     ) -> Run:
         return self.run_now(
             dbt_commands=dbt_commands,
+            duration_target=duration_target,
             idempotency_token=idempotency_token,
             jar_params=jar_params,
             job_id=job_id,
@@ -11837,6 +11898,7 @@ class JobsAPI:
         *,
         access_control_list: Optional[List[JobAccessControlRequest]] = None,
         budget_policy_id: Optional[str] = None,
+        duration_target: Optional[str] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environment_variables: Optional[List[JobEnvironmentVariables]] = None,
         environments: Optional[List[JobEnvironment]] = None,
@@ -11868,6 +11930,11 @@ class JobsAPI:
         :param budget_policy_id: str (optional)
           The user specified id of the budget policy to use for this one-time run. If not specified, the run
           will be not be attributed to any budget policy.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
         :param environment_variables: List[:class:`JobEnvironmentVariables`] (optional)
@@ -11935,6 +12002,8 @@ class JobsAPI:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         if budget_policy_id is not None:
             body["budget_policy_id"] = budget_policy_id
+        if duration_target is not None:
+            body["duration_target"] = duration_target
         if email_notifications is not None:
             body["email_notifications"] = email_notifications.as_dict()
         if environment_variables is not None:
@@ -11986,6 +12055,7 @@ class JobsAPI:
         *,
         access_control_list: Optional[List[JobAccessControlRequest]] = None,
         budget_policy_id: Optional[str] = None,
+        duration_target: Optional[str] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environment_variables: Optional[List[JobEnvironmentVariables]] = None,
         environments: Optional[List[JobEnvironment]] = None,
@@ -12006,6 +12076,7 @@ class JobsAPI:
         return self.submit(
             access_control_list=access_control_list,
             budget_policy_id=budget_policy_id,
+            duration_target=duration_target,
             email_notifications=email_notifications,
             environment_variables=environment_variables,
             environments=environments,

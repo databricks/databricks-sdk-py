@@ -1793,6 +1793,8 @@ class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
 
 
 class IngestionSourceType(Enum):
+    """Type of source system that a managed ingestion pipeline reads from."""
+
     BIGQUERY = "BIGQUERY"
     CONFLUENCE = "CONFLUENCE"
     DYNAMICS365 = "DYNAMICS365"

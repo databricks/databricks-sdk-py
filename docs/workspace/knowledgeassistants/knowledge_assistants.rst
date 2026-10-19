@@ -4,7 +4,7 @@
 
 .. py:class:: KnowledgeAssistantsAPI
 
-    Manage Knowledge Assistants and related resources.
+    Manage legacy Knowledge Assistants and related resources.
 
     .. py:method:: create_example(parent: str, example: Example) -> Example
 

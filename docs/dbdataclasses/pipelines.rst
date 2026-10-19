@@ -282,6 +282,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: IngestionSourceType
 
+   Type of source system that a managed ingestion pipeline reads from.
+
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
 
