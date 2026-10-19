@@ -58,6 +58,13 @@ class FailoverGroup:
     etag: Optional[str] = None
     """Opaque version string for optimistic locking. Server-generated and returned in responses."""
 
+    has_replication_point_blocking_errors: Optional[bool] = None
+    """True if errors currently block the replication point."""
+
+    initial_replication_progress: Optional[InitialReplicationProgress] = None
+    """Initial replication progress of all in-scope assets. Set only when the FailoverGroup is in
+    INITIAL_REPLICATION state."""
+
     name: Optional[str] = None
     """Fully qualified resource name in the format
     accounts/{account_id}/failover-groups/{failover_group_id}."""
@@ -83,8 +90,12 @@ class FailoverGroup:
             body["effective_primary_region"] = self.effective_primary_region
         if self.etag is not None:
             body["etag"] = self.etag
+        if self.has_replication_point_blocking_errors is not None:
+            body["has_replication_point_blocking_errors"] = self.has_replication_point_blocking_errors
         if self.initial_primary_region is not None:
             body["initial_primary_region"] = self.initial_primary_region
+        if self.initial_replication_progress:
+            body["initial_replication_progress"] = self.initial_replication_progress.as_dict()
         if self.name is not None:
             body["name"] = self.name
         if self.regions:
@@ -110,8 +121,12 @@ class FailoverGroup:
             body["effective_primary_region"] = self.effective_primary_region
         if self.etag is not None:
             body["etag"] = self.etag
+        if self.has_replication_point_blocking_errors is not None:
+            body["has_replication_point_blocking_errors"] = self.has_replication_point_blocking_errors
         if self.initial_primary_region is not None:
             body["initial_primary_region"] = self.initial_primary_region
+        if self.initial_replication_progress:
+            body["initial_replication_progress"] = self.initial_replication_progress
         if self.name is not None:
             body["name"] = self.name
         if self.regions:
@@ -135,7 +150,9 @@ class FailoverGroup:
             create_time=_timestamp(d, "create_time"),
             effective_primary_region=d.get("effective_primary_region", None),
             etag=d.get("etag", None),
+            has_replication_point_blocking_errors=d.get("has_replication_point_blocking_errors", None),
             initial_primary_region=d.get("initial_primary_region", None),
+            initial_replication_progress=_from_dict(d, "initial_replication_progress", InitialReplicationProgress),
             name=d.get("name", None),
             regions=d.get("regions", None),
             replication_point=_timestamp(d, "replication_point"),
@@ -157,6 +174,34 @@ class FailoverGroupState(Enum):
     FAILING_OVER = "FAILING_OVER"
     FAILOVER_FAILED = "FAILOVER_FAILED"
     INITIAL_REPLICATION = "INITIAL_REPLICATION"
+
+
+@dataclass
+class InitialReplicationProgress:
+    """Progress of the initial replication of all in-scope assets (Unity Catalog and workspace assets)
+    of a FailoverGroup. Populated only while the FailoverGroup is in INITIAL_REPLICATION."""
+
+    completed: Optional[int] = None
+    """Percent complete, 0-100."""
+
+    def as_dict(self) -> dict:
+        """Serializes the InitialReplicationProgress into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.completed is not None:
+            body["completed"] = self.completed
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitialReplicationProgress into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.completed is not None:
+            body["completed"] = self.completed
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InitialReplicationProgress:
+        """Deserializes the InitialReplicationProgress from a dictionary."""
+        return cls(completed=d.get("completed", None))
 
 
 @dataclass

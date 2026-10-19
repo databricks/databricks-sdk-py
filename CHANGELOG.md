@@ -1,5 +1,22 @@
 # Version changelog
 
+## Release v0.154.0 (2026-10-19)
+
+### API Changes
+* Add `create_directory()`, `delete_path()`, `get_metadata()`, `list_directory_contents()` and `rename_path()` methods for [w.sandbox](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sandbox/sandbox.html) workspace-level service.
+* Add `secrets` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+* Add `secrets` field for `databricks.sdk.service.catalog.CreateConnection`.
+* Add `governed_tags` field for `databricks.sdk.service.catalog.PolicyInfo`.
+* Add `secrets` field for `databricks.sdk.service.catalog.UpdateConnection`.
+* Add `has_replication_point_blocking_errors` and `initial_replication_progress` fields for `databricks.sdk.service.disasterrecovery.FailoverGroup`.
+* Add `duration_target` field for `databricks.sdk.service.jobs.BaseRun`.
+* Add `duration_target` field for `databricks.sdk.service.jobs.CreateJob`.
+* Add `duration_target` field for `databricks.sdk.service.jobs.JobSettings`.
+* Add `duration_target` field for `databricks.sdk.service.jobs.RepairRun`.
+* Add `duration_target` field for `databricks.sdk.service.jobs.Run`.
+* Add `duration_target` field for `databricks.sdk.service.jobs.RunNow`.
+* Add `duration_target` field for `databricks.sdk.service.jobs.SubmitRun`.
+
 ## Release v0.153.0 (2026-10-15)
 
 ### API Changes

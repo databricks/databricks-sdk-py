@@ -34,31 +34,30 @@
 
     .. py:method:: create_memory(parent: str, managed_memory_entry: ManagedMemoryEntry [, managed_memory_entry_id: Optional[str]]) -> ManagedMemoryEntry
 
-        Creates a managed memory entry using exclusive-create semantics. Callers may choose the entry ID; the
-        service generates one when it is omitted. Returns ``ALREADY_EXISTS`` when an entry with the same
-        actor, session, and path already exists. Omitted ``session_id`` is its own uniqueness key: two
+        Creates a memory entry using exclusive-create semantics. Callers may choose the entry ID; the service
+        generates one when it is omitted. Returns ``ALREADY_EXISTS`` when an entry with the same actor,
+        session, and path already exists. Omitted ``session_id`` is its own uniqueness key: two
         omitted-session entries with the same actor and path conflict, but an omitted-session entry does not
         conflict with a session-scoped entry at the same actor and path.
 
         :param parent: str
-          Managed memory store that will contain the entry, in the form
-          ``memory-stores/{managed_memory_store_id}``.
+          Memory store that will contain the entry, in the form ``memory-stores/{managed_memory_store_id}``.
         :param managed_memory_entry: :class:`ManagedMemoryEntry`
-          The managed memory entry to create.
+          The memory entry to create.
         :param managed_memory_entry_id: str (optional)
-          Optional caller-selected managed memory entry ID. The service generates an ID when omitted.
+          Optional caller-selected memory entry ID. The service generates an ID when omitted.
 
         :returns: :class:`ManagedMemoryEntry`
         
 
     .. py:method:: create_memory_store(managed_memory_store: ManagedMemoryStore, managed_memory_store_id: str) -> ManagedMemoryStore
 
-        Creates a managed memory store in the caller's workspace.
+        Creates a memory store in the caller's workspace.
 
         :param managed_memory_store: :class:`ManagedMemoryStore`
-          The managed memory store to create.
+          The memory store to create.
         :param managed_memory_store_id: str
-          Caller-provided, workspace-unique managed memory store ID. It must be 3-56 characters, begin with a
+          Caller-provided, workspace-unique memory store ID. It must be 3-56 characters, begin with a
           lowercase letter, contain only lowercase letters, digits, and hyphens, and end with a letter or
           digit.
 
@@ -96,8 +95,8 @@
 
     .. py:method:: delete_memory(name: str)
 
-        Deletes a managed memory entry by resource name. Returns ``NOT_FOUND`` when the entry does not exist
-        in the caller's workspace.
+        Deletes a memory entry by resource name. Returns ``NOT_FOUND`` when the entry does not exist in the
+        caller's workspace.
 
         :param name: str
           Resource name in the form
@@ -108,8 +107,8 @@
 
     .. py:method:: delete_memory_store(name: str)
 
-        Deletes a managed memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist
-        in the caller's workspace.
+        Deletes a memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist in the
+        caller's workspace.
 
         :param name: str
           Resource name in the form ``memory-stores/{managed_memory_store_id}``.
@@ -149,7 +148,7 @@
         :param session_id: str
           Identifier of the session whose transcript is distilled into memories.
         :param memory_store: str
-          Managed memory store the extracted entries are written to, in the form
+          Memory store the extracted entries are written to, in the form
           ``memory-stores/{managed_memory_store_id}``.
         :param dry_run: bool (optional)
           When true, extract and return the entries without writing them to the memory store. Defaults to
@@ -183,8 +182,8 @@
 
     .. py:method:: get_memory(name: str [, view: Optional[ManagedMemoryEntryView]]) -> ManagedMemoryEntry
 
-        Retrieves a managed memory entry by resource name. ``view`` controls whether the response includes
-        memory content. Returns ``NOT_FOUND`` when the entry does not exist in the caller's workspace.
+        Retrieves a memory entry by resource name. ``view`` controls whether the response includes memory
+        content. Returns ``NOT_FOUND`` when the entry does not exist in the caller's workspace.
 
         :param name: str
           Resource name in the form
@@ -197,8 +196,8 @@
 
     .. py:method:: get_memory_store(name: str) -> ManagedMemoryStore
 
-        Retrieves a managed memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist
-        in the caller's workspace.
+        Retrieves a memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist in the
+        caller's workspace.
 
         :param name: str
           Resource name in the form ``memory-stores/{managed_memory_store_id}``.
@@ -228,13 +227,12 @@
 
     .. py:method:: list_memories(parent: str, actor_id: str [, page_size: Optional[int], page_token: Optional[str], path_prefix: Optional[str], session_id: Optional[str], view: Optional[ManagedMemoryEntryView]]) -> Iterator[ManagedMemoryEntry]
 
-        Lists managed memory entries for one actor. An exact ``path`` filters entries across sessions,
-        ignoring session metadata. Otherwise, ``session_id`` and ``path_prefix`` restrict the actor partition.
-        ``view`` controls whether each returned entry includes memory content.
+        Lists memory entries for one actor. An exact ``path`` filters entries across sessions, ignoring
+        session metadata. Otherwise, ``session_id`` and ``path_prefix`` restrict the actor partition. ``view``
+        controls whether each returned entry includes memory content.
 
         :param parent: str
-          Managed memory store whose entries are listed, in the form
-          ``memory-stores/{managed_memory_store_id}``.
+          Memory store whose entries are listed, in the form ``memory-stores/{managed_memory_store_id}``.
         :param actor_id: str
           Customer-provided identifier for the actor whose entries are listed.
         :param page_size: int (optional)
@@ -255,7 +253,7 @@
 
     .. py:method:: list_memory_stores( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ManagedMemoryStore]
 
-        Lists managed memory stores in the caller's workspace.
+        Lists memory stores in the caller's workspace.
 
         :param page_size: int (optional)
           Maximum number of stores to return. The service may return fewer stores than requested. Defaults to
@@ -332,12 +330,11 @@
 
     .. py:method:: search_memories(parent: str, actor_id: str, query: str [, limit: Optional[int], page_size: Optional[int], page_token: Optional[str], path_prefix: Optional[str], session_id: Optional[str], view: Optional[ManagedMemoryEntryView]]) -> Iterator[ManagedMemoryEntrySearchResult]
 
-        Searches managed memory entries by text query for one actor. Returns matching entries and scores
-        ranked by relevance; ``view`` controls whether each returned entry includes content.
+        Searches memory entries by text query for one actor. Returns matching entries and scores ranked by
+        relevance; ``view`` controls whether each returned entry includes content.
 
         :param parent: str
-          Managed memory store whose entries are searched, in the form
-          ``memory-stores/{managed_memory_store_id}``.
+          Memory store whose entries are searched, in the form ``memory-stores/{managed_memory_store_id}``.
         :param actor_id: str
           Customer-provided identifier for the actor whose entries are searched.
         :param query: str
@@ -364,13 +361,13 @@
 
     .. py:method:: update_memory(name: str, managed_memory_entry: ManagedMemoryEntry, update_mask: FieldMask) -> ManagedMemoryEntry
 
-        Updates selected mutable fields on a managed memory entry. Identity fields are immutable.
+        Updates selected mutable fields on a memory entry. Identity fields are immutable.
 
         :param name: str
           Resource name in the form
           ``memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}``.
         :param managed_memory_entry: :class:`ManagedMemoryEntry`
-          The managed memory entry to update.
+          The memory entry to update.
         :param update_mask: FieldMask
           Fields to update. Only ``content`` and ``description`` may be updated.
 
@@ -379,12 +376,12 @@
 
     .. py:method:: update_memory_store(name: str, managed_memory_store: ManagedMemoryStore, update_mask: FieldMask) -> ManagedMemoryStore
 
-        Updates a managed memory store's description and metadata.
+        Updates a memory store's description and metadata.
 
         :param name: str
           Resource name in the form ``memory-stores/{managed_memory_store_id}``.
         :param managed_memory_store: :class:`ManagedMemoryStore`
-          The managed memory store to update. ``name`` is taken from the URL.
+          The memory store to update. ``name`` is taken from the URL.
         :param update_mask: FieldMask
           Only ``description`` and ``metadata`` may be updated. Selecting ``metadata`` replaces the entire
           map.

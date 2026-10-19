@@ -12,6 +12,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateDirectoryResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeletePathResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: EnvironmentSpec
    :members:
    :undoc-members:
@@ -33,7 +41,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GetMetadataResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListCommandsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListDirectoryContentsResponse
    :members:
    :undoc-members:
 
@@ -41,9 +57,33 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RenamePathResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Sandbox
    :members:
    :undoc-members:
+
+.. autoclass:: SandboxFileInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: SandboxFileType
+
+   Type of a sandbox filesystem entry without following its final symlink.
+
+   .. py:attribute:: SANDBOX_FILE_TYPE_DIRECTORY
+      :value: "SANDBOX_FILE_TYPE_DIRECTORY"
+
+   .. py:attribute:: SANDBOX_FILE_TYPE_FILE
+      :value: "SANDBOX_FILE_TYPE_FILE"
+
+   .. py:attribute:: SANDBOX_FILE_TYPE_OTHER
+      :value: "SANDBOX_FILE_TYPE_OTHER"
+
+   .. py:attribute:: SANDBOX_FILE_TYPE_SYMLINK
+      :value: "SANDBOX_FILE_TYPE_SYMLINK"
 
 .. autoclass:: SandboxSpec
    :members:

@@ -126,6 +126,46 @@ class ComputeSpec:
 
 
 @dataclass
+class CreateDirectoryResponse:
+    """Confirms that the requested directory exists."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateDirectoryResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateDirectoryResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateDirectoryResponse:
+        """Deserializes the CreateDirectoryResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeletePathResponse:
+    """Confirms that the requested path is absent."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeletePathResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeletePathResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePathResponse:
+        """Deserializes the DeletePathResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class EnvironmentSpec:
     image_uri: Optional[str] = None
     """A Unity Catalog container artifact (e.g. ``catalog.schema.folder.image:tag``) to run as the
@@ -236,6 +276,32 @@ class ExecuteCommandSyncResponse:
 
 
 @dataclass
+class GetMetadataResponse:
+    """Contains metadata for the requested path without following its final symlink."""
+
+    file: Optional[SandboxFileInfo] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GetMetadataResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.file:
+            body["file"] = self.file.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetMetadataResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file:
+            body["file"] = self.file
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetMetadataResponse:
+        """Deserializes the GetMetadataResponse from a dictionary."""
+        return cls(file=_from_dict(d, "file", SandboxFileInfo))
+
+
+@dataclass
 class ListCommandsResponse:
     """Response listing tracked command executions."""
 
@@ -270,6 +336,41 @@ class ListCommandsResponse:
 
 
 @dataclass
+class ListDirectoryContentsResponse:
+    """Contains a page of immediate directory entries and an optional continuation token. An empty
+    token marks the final page. Pages reflect concurrent directory changes."""
+
+    contents: Optional[List[SandboxFileInfo]] = None
+
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDirectoryContentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.contents:
+            body["contents"] = [v.as_dict() for v in self.contents]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDirectoryContentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.contents:
+            body["contents"] = self.contents
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDirectoryContentsResponse:
+        """Deserializes the ListDirectoryContentsResponse from a dictionary."""
+        return cls(
+            contents=_repeated_dict(d, "contents", SandboxFileInfo), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
 class ListSandboxesResponse:
     """A list of Sandboxes."""
 
@@ -299,6 +400,26 @@ class ListSandboxesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListSandboxesResponse:
         """Deserializes the ListSandboxesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), sandboxes=_repeated_dict(d, "sandboxes", Sandbox))
+
+
+@dataclass
+class RenamePathResponse:
+    """Confirms that the sandbox path was renamed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RenamePathResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RenamePathResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RenamePathResponse:
+        """Deserializes the RenamePathResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -369,6 +490,107 @@ class Sandbox:
             status=_from_dict(d, "status", SandboxStatus),
             update_time=_timestamp(d, "update_time"),
         )
+
+
+@dataclass
+class SandboxFileInfo:
+    """Metadata for a sandbox filesystem entry, describing a final symlink itself."""
+
+    file_type: Optional[SandboxFileType] = None
+
+    group: Optional[str] = None
+
+    mode: Optional[int] = None
+
+    modify_time: Optional[Timestamp] = None
+    """Nanosecond precision is preserved on the wire."""
+
+    name: Optional[str] = None
+
+    owner: Optional[str] = None
+
+    path: Optional[str] = None
+
+    permissions: Optional[str] = None
+
+    size: Optional[int] = None
+
+    symlink_target: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the SandboxFileInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.file_type is not None:
+            body["file_type"] = self.file_type.value
+        if self.group is not None:
+            body["group"] = self.group
+        if self.mode is not None:
+            body["mode"] = self.mode
+        if self.modify_time is not None:
+            body["modify_time"] = self.modify_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.path is not None:
+            body["path"] = self.path
+        if self.permissions is not None:
+            body["permissions"] = self.permissions
+        if self.size is not None:
+            body["size"] = self.size
+        if self.symlink_target is not None:
+            body["symlink_target"] = self.symlink_target
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SandboxFileInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file_type is not None:
+            body["file_type"] = self.file_type
+        if self.group is not None:
+            body["group"] = self.group
+        if self.mode is not None:
+            body["mode"] = self.mode
+        if self.modify_time is not None:
+            body["modify_time"] = self.modify_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.path is not None:
+            body["path"] = self.path
+        if self.permissions is not None:
+            body["permissions"] = self.permissions
+        if self.size is not None:
+            body["size"] = self.size
+        if self.symlink_target is not None:
+            body["symlink_target"] = self.symlink_target
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SandboxFileInfo:
+        """Deserializes the SandboxFileInfo from a dictionary."""
+        return cls(
+            file_type=_enum(d, "file_type", SandboxFileType),
+            group=d.get("group", None),
+            mode=d.get("mode", None),
+            modify_time=_timestamp(d, "modify_time"),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            path=d.get("path", None),
+            permissions=d.get("permissions", None),
+            size=_int64(d, "size"),
+            symlink_target=d.get("symlink_target", None),
+        )
+
+
+class SandboxFileType(Enum):
+    """Type of a sandbox filesystem entry without following its final symlink."""
+
+    SANDBOX_FILE_TYPE_DIRECTORY = "SANDBOX_FILE_TYPE_DIRECTORY"
+    SANDBOX_FILE_TYPE_FILE = "SANDBOX_FILE_TYPE_FILE"
+    SANDBOX_FILE_TYPE_OTHER = "SANDBOX_FILE_TYPE_OTHER"
+    SANDBOX_FILE_TYPE_SYMLINK = "SANDBOX_FILE_TYPE_SYMLINK"
 
 
 @dataclass
@@ -448,6 +670,35 @@ class SandboxAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def create_directory(self, parent: str, path: str, *, parents: Optional[bool] = None) -> CreateDirectoryResponse:
+        """Creates a directory in a sandbox, including missing parents by default.
+
+        :param parent: str
+        :param path: str
+          Absolute UTF-8 path of the directory.
+        :param parents: bool (optional)
+          Defaults to true, which also succeeds when the directory already exists.
+
+        :returns: :class:`CreateDirectoryResponse`
+        """
+
+        body = {}
+        if parents is not None:
+            body["parents"] = parents
+        if path is not None:
+            body["path"] = path
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/sandbox-files/{parent}/directories:make", body=body, headers=headers)
+        return CreateDirectoryResponse.from_dict(res)
+
     def create_sandbox(self, sandbox: Sandbox, sandbox_id: str) -> Sandbox:
         """Creates a new Sandbox.
 
@@ -474,6 +725,36 @@ class SandboxAPI:
 
         res = self._api.do("POST", "/api/2.0/sandboxes", query=query, body=body, headers=headers)
         return Sandbox.from_dict(res)
+
+    def delete_path(self, parent: str, path: str, *, recursive: Optional[bool] = None) -> DeletePathResponse:
+        """Deletes a file, symlink, or empty directory, with an option for recursive deletion. Succeeds if the
+        path is already absent.
+
+        :param parent: str
+        :param path: str
+          Absolute UTF-8 path of the entry to delete.
+        :param recursive: bool (optional)
+          Required for a non-empty directory.
+
+        :returns: :class:`DeletePathResponse`
+        """
+
+        body = {}
+        if path is not None:
+            body["path"] = path
+        if recursive is not None:
+            body["recursive"] = recursive
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/sandbox-files/{parent}/paths:remove", body=body, headers=headers)
+        return DeletePathResponse.from_dict(res)
 
     def delete_sandbox(self, name: str):
         """Deletes a Sandbox.
@@ -544,6 +825,30 @@ class SandboxAPI:
         res = self._api.do("POST", f"/api/2.0/sandbox-exec/{name}/exec-sync", body=body, headers=headers)
         return ExecuteCommandSyncResponse.from_dict(res)
 
+    def get_metadata(self, parent: str, path: str) -> GetMetadataResponse:
+        """Returns metadata for a path without following its final symlink.
+
+        :param parent: str
+        :param path: str
+          Absolute UTF-8 path of the entry to inspect.
+
+        :returns: :class:`GetMetadataResponse`
+        """
+
+        query = {}
+        if path is not None:
+            query["path"] = path
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/sandbox-files/{parent}/paths:describe", query=query, headers=headers)
+        return GetMetadataResponse.from_dict(res)
+
     def get_sandbox(self, name: str) -> Sandbox:
         """Retrieves a Sandbox by name.
 
@@ -595,6 +900,49 @@ class SandboxAPI:
         res = self._api.do("GET", f"/api/2.0/sandbox-exec/{parent}/commands", query=query, headers=headers)
         return ListCommandsResponse.from_dict(res)
 
+    def list_directory_contents(
+        self, parent: str, path: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[SandboxFileInfo]:
+        """Lists a directory's immediate children in UTF-8 name order. Later pages may reflect concurrent
+        changes.
+
+        :param parent: str
+        :param path: str
+          Absolute UTF-8 path of the directory.
+        :param page_size: int (optional)
+          Zero uses the default of 1000; values above 1000 are clamped to 1000.
+        :param page_token: str (optional)
+          The token from a prior response. Keep parent and path unchanged between pages.
+
+        :returns: Iterator over :class:`SandboxFileInfo`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if path is not None:
+            query["path"] = path
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/sandbox-files/{parent}/directory-entries", query=query, headers=headers
+            )
+            if "contents" in json:
+                for v in json["contents"]:
+                    yield SandboxFileInfo.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def list_sandboxes(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Sandbox]:
         """Lists all Sandboxes.
 
@@ -625,6 +973,36 @@ class SandboxAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def rename_path(self, parent: str, source: str, destination: str) -> RenamePathResponse:
+        """Renames a path within a sandbox. The destination must be absent and on the same filesystem.
+
+        :param parent: str
+          Sandbox resource name, for example ``sandboxes/my-sandbox``.
+        :param source: str
+          Absolute UTF-8 path to move.
+        :param destination: str
+          Exact absolute UTF-8 destination; it must not already exist.
+
+        :returns: :class:`RenamePathResponse`
+        """
+
+        body = {}
+        if destination is not None:
+            body["destination"] = destination
+        if source is not None:
+            body["source"] = source
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/sandbox-files/{parent}/paths:rename", body=body, headers=headers)
+        return RenamePathResponse.from_dict(res)
 
     def start_sandbox(self, name: str) -> Sandbox:
         """Starts a previously stopped Sandbox under the same sandbox name. Returns NOT_FOUND if there is no
