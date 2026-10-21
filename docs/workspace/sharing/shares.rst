@@ -9,7 +9,7 @@
     register data assets under their original name, qualified by their original schema, or provide alternate
     exposed names.
 
-    .. py:method:: create(name: str [, comment: Optional[str], replication_config: Optional[ReplicationConfig], storage_root: Optional[str]]) -> ShareInfo
+    .. py:method:: create(name: str [, comment: Optional[str], storage_root: Optional[str]]) -> ShareInfo
 
 
         Usage:
@@ -34,8 +34,6 @@
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
-        :param replication_config: :class:`ReplicationConfig` (optional)
-          Configuration for share replication.
         :param storage_root: str (optional)
           Storage root URL for the share.
 

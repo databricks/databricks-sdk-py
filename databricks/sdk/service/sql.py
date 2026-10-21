@@ -2563,6 +2563,9 @@ class EndpointInfo:
     creator_name: Optional[str] = None
     """warehouse creator name"""
 
+    customer_version_label: Optional[str] = None
+    """Compute version label for a REALTIME warehouse. This field is output only."""
+
     enable_photon: Optional[bool] = None
     """Configures whether the warehouse should use Photon optimized clusters.
     
@@ -2582,6 +2585,10 @@ class EndpointInfo:
 
     jdbc_url: Optional[str] = None
     """the jdbc connection string for this warehouse"""
+
+    max_dbu: Optional[int] = None
+    """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
+    between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity."""
 
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
@@ -2623,6 +2630,17 @@ class EndpointInfo:
     odbc_params: Optional[OdbcParams] = None
     """ODBC parameters for the SQL warehouse"""
 
+    reyden_cluster_size_multiplier: Optional[float] = None
+    """Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to
+    the nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
+    
+    Accepted range: 1.0 to the workspace-configured maximum (decimals allowed). The default maximum
+    is 100.0.
+    
+    - Values below 1.0 are normalized to 1.0.
+    - Values above the configured maximum are capped at that maximum.
+    - When absent, the warehouse is treated as having a multiplier of 1.0."""
+
     spot_instance_policy: Optional[SpotInstancePolicy] = None
     """Configurations whether the endpoint should use spot instances."""
 
@@ -2655,6 +2673,8 @@ class EndpointInfo:
             body["cluster_size"] = self.cluster_size
         if self.creator_name is not None:
             body["creator_name"] = self.creator_name
+        if self.customer_version_label is not None:
+            body["customer_version_label"] = self.customer_version_label
         if self.enable_photon is not None:
             body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute is not None:
@@ -2667,6 +2687,8 @@ class EndpointInfo:
             body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url is not None:
             body["jdbc_url"] = self.jdbc_url
+        if self.max_dbu is not None:
+            body["max_dbu"] = self.max_dbu
         if self.max_num_clusters is not None:
             body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters is not None:
@@ -2679,6 +2701,8 @@ class EndpointInfo:
             body["num_clusters"] = self.num_clusters
         if self.odbc_params:
             body["odbc_params"] = self.odbc_params.as_dict()
+        if self.reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = self.reyden_cluster_size_multiplier
         if self.spot_instance_policy is not None:
             body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.state is not None:
@@ -2702,6 +2726,8 @@ class EndpointInfo:
             body["cluster_size"] = self.cluster_size
         if self.creator_name is not None:
             body["creator_name"] = self.creator_name
+        if self.customer_version_label is not None:
+            body["customer_version_label"] = self.customer_version_label
         if self.enable_photon is not None:
             body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute is not None:
@@ -2714,6 +2740,8 @@ class EndpointInfo:
             body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url is not None:
             body["jdbc_url"] = self.jdbc_url
+        if self.max_dbu is not None:
+            body["max_dbu"] = self.max_dbu
         if self.max_num_clusters is not None:
             body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters is not None:
@@ -2726,6 +2754,8 @@ class EndpointInfo:
             body["num_clusters"] = self.num_clusters
         if self.odbc_params:
             body["odbc_params"] = self.odbc_params
+        if self.reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = self.reyden_cluster_size_multiplier
         if self.spot_instance_policy is not None:
             body["spot_instance_policy"] = self.spot_instance_policy
         if self.state is not None:
@@ -2746,18 +2776,21 @@ class EndpointInfo:
             channel=_from_dict(d, "channel", Channel),
             cluster_size=d.get("cluster_size", None),
             creator_name=d.get("creator_name", None),
+            customer_version_label=d.get("customer_version_label", None),
             enable_photon=d.get("enable_photon", None),
             enable_serverless_compute=d.get("enable_serverless_compute", None),
             health=_from_dict(d, "health", EndpointHealth),
             id=d.get("id", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
             jdbc_url=d.get("jdbc_url", None),
+            max_dbu=d.get("max_dbu", None),
             max_num_clusters=d.get("max_num_clusters", None),
             min_num_clusters=d.get("min_num_clusters", None),
             name=d.get("name", None),
             num_active_sessions=_int64(d, "num_active_sessions"),
             num_clusters=d.get("num_clusters", None),
             odbc_params=_from_dict(d, "odbc_params", OdbcParams),
+            reyden_cluster_size_multiplier=d.get("reyden_cluster_size_multiplier", None),
             spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
             state=_enum(d, "state", State),
             statement_timeout=d.get("statement_timeout", None),
@@ -3212,6 +3245,9 @@ class GetWarehouseResponse:
     creator_name: Optional[str] = None
     """warehouse creator name"""
 
+    customer_version_label: Optional[str] = None
+    """Compute version label for a REALTIME warehouse. This field is output only."""
+
     enable_photon: Optional[bool] = None
     """Configures whether the warehouse should use Photon optimized clusters.
     
@@ -3231,6 +3267,10 @@ class GetWarehouseResponse:
 
     jdbc_url: Optional[str] = None
     """the jdbc connection string for this warehouse"""
+
+    max_dbu: Optional[int] = None
+    """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
+    between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity."""
 
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
@@ -3272,6 +3312,17 @@ class GetWarehouseResponse:
     odbc_params: Optional[OdbcParams] = None
     """ODBC parameters for the SQL warehouse"""
 
+    reyden_cluster_size_multiplier: Optional[float] = None
+    """Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to
+    the nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
+    
+    Accepted range: 1.0 to the workspace-configured maximum (decimals allowed). The default maximum
+    is 100.0.
+    
+    - Values below 1.0 are normalized to 1.0.
+    - Values above the configured maximum are capped at that maximum.
+    - When absent, the warehouse is treated as having a multiplier of 1.0."""
+
     spot_instance_policy: Optional[SpotInstancePolicy] = None
     """Configurations whether the endpoint should use spot instances."""
 
@@ -3304,6 +3355,8 @@ class GetWarehouseResponse:
             body["cluster_size"] = self.cluster_size
         if self.creator_name is not None:
             body["creator_name"] = self.creator_name
+        if self.customer_version_label is not None:
+            body["customer_version_label"] = self.customer_version_label
         if self.enable_photon is not None:
             body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute is not None:
@@ -3316,6 +3369,8 @@ class GetWarehouseResponse:
             body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url is not None:
             body["jdbc_url"] = self.jdbc_url
+        if self.max_dbu is not None:
+            body["max_dbu"] = self.max_dbu
         if self.max_num_clusters is not None:
             body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters is not None:
@@ -3328,6 +3383,8 @@ class GetWarehouseResponse:
             body["num_clusters"] = self.num_clusters
         if self.odbc_params:
             body["odbc_params"] = self.odbc_params.as_dict()
+        if self.reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = self.reyden_cluster_size_multiplier
         if self.spot_instance_policy is not None:
             body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.state is not None:
@@ -3351,6 +3408,8 @@ class GetWarehouseResponse:
             body["cluster_size"] = self.cluster_size
         if self.creator_name is not None:
             body["creator_name"] = self.creator_name
+        if self.customer_version_label is not None:
+            body["customer_version_label"] = self.customer_version_label
         if self.enable_photon is not None:
             body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute is not None:
@@ -3363,6 +3422,8 @@ class GetWarehouseResponse:
             body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url is not None:
             body["jdbc_url"] = self.jdbc_url
+        if self.max_dbu is not None:
+            body["max_dbu"] = self.max_dbu
         if self.max_num_clusters is not None:
             body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters is not None:
@@ -3375,6 +3436,8 @@ class GetWarehouseResponse:
             body["num_clusters"] = self.num_clusters
         if self.odbc_params:
             body["odbc_params"] = self.odbc_params
+        if self.reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = self.reyden_cluster_size_multiplier
         if self.spot_instance_policy is not None:
             body["spot_instance_policy"] = self.spot_instance_policy
         if self.state is not None:
@@ -3395,18 +3458,21 @@ class GetWarehouseResponse:
             channel=_from_dict(d, "channel", Channel),
             cluster_size=d.get("cluster_size", None),
             creator_name=d.get("creator_name", None),
+            customer_version_label=d.get("customer_version_label", None),
             enable_photon=d.get("enable_photon", None),
             enable_serverless_compute=d.get("enable_serverless_compute", None),
             health=_from_dict(d, "health", EndpointHealth),
             id=d.get("id", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
             jdbc_url=d.get("jdbc_url", None),
+            max_dbu=d.get("max_dbu", None),
             max_num_clusters=d.get("max_num_clusters", None),
             min_num_clusters=d.get("min_num_clusters", None),
             name=d.get("name", None),
             num_active_sessions=_int64(d, "num_active_sessions"),
             num_clusters=d.get("num_clusters", None),
             odbc_params=_from_dict(d, "odbc_params", OdbcParams),
+            reyden_cluster_size_multiplier=d.get("reyden_cluster_size_multiplier", None),
             spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
             state=_enum(d, "state", State),
             statement_timeout=d.get("statement_timeout", None),
@@ -9903,12 +9969,15 @@ class WarehousesAPI:
         channel: Optional[Channel] = None,
         cluster_size: Optional[str] = None,
         creator_name: Optional[str] = None,
+        customer_version_label: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
         instance_profile_arn: Optional[str] = None,
+        max_dbu: Optional[int] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
+        reyden_cluster_size_multiplier: Optional[float] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
         statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
@@ -9947,6 +10016,8 @@ class WarehousesAPI:
           - 5X-Large
         :param creator_name: str (optional)
           warehouse creator name
+        :param customer_version_label: str (optional)
+          Compute version label for a REALTIME warehouse. This field is output only.
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
@@ -9955,6 +10026,9 @@ class WarehousesAPI:
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
+        :param max_dbu: int (optional)
+          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
+          between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity.
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
@@ -9982,6 +10056,16 @@ class WarehousesAPI:
 
           - Must be unique within an org.
           - Must be less than 100 characters.
+        :param reyden_cluster_size_multiplier: float (optional)
+          Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to the
+          nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
+
+          Accepted range: 1.0 to the workspace-configured maximum (decimals allowed). The default maximum is
+          100.0.
+
+          - Values below 1.0 are normalized to 1.0.
+          - Values above the configured maximum are capped at that maximum.
+          - When absent, the warehouse is treated as having a multiplier of 1.0.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
         :param statement_timeout: int (optional)
@@ -10011,18 +10095,24 @@ class WarehousesAPI:
             body["cluster_size"] = cluster_size
         if creator_name is not None:
             body["creator_name"] = creator_name
+        if customer_version_label is not None:
+            body["customer_version_label"] = customer_version_label
         if enable_photon is not None:
             body["enable_photon"] = enable_photon
         if enable_serverless_compute is not None:
             body["enable_serverless_compute"] = enable_serverless_compute
         if instance_profile_arn is not None:
             body["instance_profile_arn"] = instance_profile_arn
+        if max_dbu is not None:
+            body["max_dbu"] = max_dbu
         if max_num_clusters is not None:
             body["max_num_clusters"] = max_num_clusters
         if min_num_clusters is not None:
             body["min_num_clusters"] = min_num_clusters
         if name is not None:
             body["name"] = name
+        if reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = reyden_cluster_size_multiplier
         if spot_instance_policy is not None:
             body["spot_instance_policy"] = spot_instance_policy.value
         if statement_timeout is not None:
@@ -10054,12 +10144,15 @@ class WarehousesAPI:
         channel: Optional[Channel] = None,
         cluster_size: Optional[str] = None,
         creator_name: Optional[str] = None,
+        customer_version_label: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
         instance_profile_arn: Optional[str] = None,
+        max_dbu: Optional[int] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
+        reyden_cluster_size_multiplier: Optional[float] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
         statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
@@ -10071,12 +10164,15 @@ class WarehousesAPI:
             channel=channel,
             cluster_size=cluster_size,
             creator_name=creator_name,
+            customer_version_label=customer_version_label,
             enable_photon=enable_photon,
             enable_serverless_compute=enable_serverless_compute,
             instance_profile_arn=instance_profile_arn,
+            max_dbu=max_dbu,
             max_num_clusters=max_num_clusters,
             min_num_clusters=min_num_clusters,
             name=name,
+            reyden_cluster_size_multiplier=reyden_cluster_size_multiplier,
             spot_instance_policy=spot_instance_policy,
             statement_timeout=statement_timeout,
             tags=tags,
@@ -10165,12 +10261,15 @@ class WarehousesAPI:
         channel: Optional[Channel] = None,
         cluster_size: Optional[str] = None,
         creator_name: Optional[str] = None,
+        customer_version_label: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
         instance_profile_arn: Optional[str] = None,
+        max_dbu: Optional[int] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
+        reyden_cluster_size_multiplier: Optional[float] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
         statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
@@ -10211,6 +10310,8 @@ class WarehousesAPI:
           - 5X-Large
         :param creator_name: str (optional)
           warehouse creator name
+        :param customer_version_label: str (optional)
+          Compute version label for a REALTIME warehouse. This field is output only.
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
@@ -10219,6 +10320,9 @@ class WarehousesAPI:
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
+        :param max_dbu: int (optional)
+          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
+          between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity.
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
@@ -10246,6 +10350,16 @@ class WarehousesAPI:
 
           - Must be unique within an org.
           - Must be less than 100 characters.
+        :param reyden_cluster_size_multiplier: float (optional)
+          Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to the
+          nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
+
+          Accepted range: 1.0 to the workspace-configured maximum (decimals allowed). The default maximum is
+          100.0.
+
+          - Values below 1.0 are normalized to 1.0.
+          - Values above the configured maximum are capped at that maximum.
+          - When absent, the warehouse is treated as having a multiplier of 1.0.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
         :param statement_timeout: int (optional)
@@ -10275,18 +10389,24 @@ class WarehousesAPI:
             body["cluster_size"] = cluster_size
         if creator_name is not None:
             body["creator_name"] = creator_name
+        if customer_version_label is not None:
+            body["customer_version_label"] = customer_version_label
         if enable_photon is not None:
             body["enable_photon"] = enable_photon
         if enable_serverless_compute is not None:
             body["enable_serverless_compute"] = enable_serverless_compute
         if instance_profile_arn is not None:
             body["instance_profile_arn"] = instance_profile_arn
+        if max_dbu is not None:
+            body["max_dbu"] = max_dbu
         if max_num_clusters is not None:
             body["max_num_clusters"] = max_num_clusters
         if min_num_clusters is not None:
             body["min_num_clusters"] = min_num_clusters
         if name is not None:
             body["name"] = name
+        if reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = reyden_cluster_size_multiplier
         if spot_instance_policy is not None:
             body["spot_instance_policy"] = spot_instance_policy.value
         if statement_timeout is not None:
@@ -10315,12 +10435,15 @@ class WarehousesAPI:
         channel: Optional[Channel] = None,
         cluster_size: Optional[str] = None,
         creator_name: Optional[str] = None,
+        customer_version_label: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
         instance_profile_arn: Optional[str] = None,
+        max_dbu: Optional[int] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
+        reyden_cluster_size_multiplier: Optional[float] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
         statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
@@ -10332,13 +10455,16 @@ class WarehousesAPI:
             channel=channel,
             cluster_size=cluster_size,
             creator_name=creator_name,
+            customer_version_label=customer_version_label,
             enable_photon=enable_photon,
             enable_serverless_compute=enable_serverless_compute,
             id=id,
             instance_profile_arn=instance_profile_arn,
+            max_dbu=max_dbu,
             max_num_clusters=max_num_clusters,
             min_num_clusters=min_num_clusters,
             name=name,
+            reyden_cluster_size_multiplier=reyden_cluster_size_multiplier,
             spot_instance_policy=spot_instance_policy,
             statement_timeout=statement_timeout,
             tags=tags,

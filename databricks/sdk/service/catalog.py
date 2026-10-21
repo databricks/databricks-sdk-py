@@ -8051,7 +8051,7 @@ class ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth:
 
 @dataclass
 class ModelProviderServiceConfigCustomProviderConfig:
-    """Custom OpenAI-compatible provider configuration with bearer-token authentication."""
+    """Custom OpenAI-compatible provider configuration."""
 
     direct: Optional[ModelProviderServiceConfigCustomProviderDirectConfig] = None
     """Endpoint and authentication configuration for the custom provider."""
@@ -14464,8 +14464,16 @@ class AiGatewayAPI:
 
     def create_skill(self, skill: Skill, parent: str, skill_id: str) -> Skill:
         """Creates a skill in a Unity Catalog schema and provisions its managed bundle storage. Specify its name
-        in ``skill_id``. The request contains an optional comment but no bundle bytes. Upload bundle files
-        through the Files API, then call FinalizeSkill.
+        in ``skill_id``. The request contains an optional comment but no bundle bytes.
+
+        To publish a skill:
+
+        1. Call CreateSkill to create the skill in Unity Catalog.
+        2. Upload every bundle file, including ``SKILL.md`` at the bundle root, with the Files API: ``PUT
+           /api/2.0/fs/files/Skills/{catalog}/{schema}/{skill}/{file_path}``. The CreateSkill caller owns the
+           skill and can upload. Other callers need ``READ_VOLUME`` and ``WRITE_VOLUME`` on the skill.
+        3. Call FinalizeSkill to validate ``SKILL.md`` and set the skill's ``bundle_name`` and ``description``
+           from its frontmatter ``name`` and ``description``.
 
         You must be the owner of the parent schema or have ``CREATE_VOLUME`` and ``USE_SCHEMA`` on it, plus
         ``USE_CATALOG`` on the parent catalog.
@@ -14651,12 +14659,13 @@ class AiGatewayAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
 
     def finalize_skill(self, name: str) -> Skill:
-        """Finalizes a skill after its bundle is uploaded. This method reads SKILL.md through the Files API using
-        the caller's authorization. Its YAML frontmatter must contain an agentskills.io-compliant ``name`` and
-        a nonblank ``description`` within the configured UTF-8 byte limit. On success, it replaces
-        ``bundle_name`` and ``description``; refreshes ``finalize_time``, ``update_time``, and ``updated_by``;
-        and returns the updated skill. ``comment`` is preserved. Re-finalization uses the latest SKILL.md and
-        is last-write-wins without an etag precondition. Validation failures do not change metadata.
+        """Finalizes a skill after its bundle files are uploaded or changed through the Files API. Call it again
+        after every bundle change. This method reads SKILL.md through the Files API using the caller's
+        authorization. Its YAML frontmatter must contain an agentskills.io-compliant ``name`` and a nonblank
+        ``description`` within the configured UTF-8 byte limit. On success, it replaces ``bundle_name`` and
+        ``description``; refreshes ``finalize_time``, ``update_time``, and ``updated_by``; and returns the
+        updated skill. ``comment`` is preserved. Re-finalization uses the latest SKILL.md and is
+        last-write-wins without an etag precondition. Validation failures do not change metadata.
 
         You must be the owner of the skill or have ``READ_VOLUME`` on it, plus ``USE_CATALOG`` on the parent
         catalog and ``USE_SCHEMA`` on the parent schema.
@@ -14819,7 +14828,7 @@ class AiGatewayAPI:
         returned.
 
         :param page_size: int (optional)
-          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 200. Use
+          Maximum number of MCP services to return. Defaults to 200 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
@@ -14877,7 +14886,7 @@ class AiGatewayAPI:
         ``MANAGE``) are returned.
 
         :param page_size: int (optional)
-          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 200.
+          Maximum number of provider services to return. Defaults to 200 when unset or 0; the maximum is 200.
           Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
@@ -14935,7 +14944,7 @@ class AiGatewayAPI:
         returned.
 
         :param page_size: int (optional)
-          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 200. Use
+          Maximum number of model services to return. Defaults to 200 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
@@ -14993,7 +15002,7 @@ class AiGatewayAPI:
           Required: skill listing is schema-scoped, so ``parent`` must be set; an unset or empty ``parent`` is
           rejected with INVALID_PARAMETER_VALUE.
         :param page_size: int (optional)
-          Maximum number of skills to return. Defaults to 100 when unset or 0; the maximum is 200. Use
+          Maximum number of skills to return. Defaults to 200 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from a previous request.
@@ -15201,8 +15210,13 @@ class AiGatewayAPI:
         conditional on the skill not having changed since it was read. Bundle files, grants, tags, and
         ownership are unchanged.
 
-        You must be the owner of the skill or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
-        catalog and ``USE_SCHEMA`` on the parent schema.
+        To update the bundle, add, overwrite (``overwrite=true``), or delete files under
+        ``/Skills/{catalog}/{schema}/{skill}/`` with the Files API, then call FinalizeSkill. Changing bundle
+        files requires being the owner of the skill or having ``READ_VOLUME`` and ``WRITE_VOLUME`` on it;
+        ``MANAGE`` does not grant access to bundle files.
+
+        To call UpdateSkill, you must be the owner of the skill or have ``MANAGE`` on it, plus ``USE_CATALOG``
+        on the parent catalog and ``USE_SCHEMA`` on the parent schema.
 
         :param name: str
           Resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}`` component
