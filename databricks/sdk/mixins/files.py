@@ -16,6 +16,7 @@ from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import timedelta
+from enum import Enum
 from io import BytesIO
 from queue import Empty, Full, Queue
 from tempfile import mkstemp
@@ -746,6 +747,35 @@ class _PresignedUrl:
     part_number: int | None = None
 
 
+class _ResolvedEndpoint(Enum):
+    """A file transfer protocol this SDK can speak, identified by the (api, api_version) pair the
+    endpoints API returns."""
+
+    IO_OFFLOAD = "IO_OFFLOAD"
+    FILES_API_V2 = "FILES_API_V2"
+
+
+# Maps the server's (api, api_version) to a protocol compiled into this SDK. Pairs not listed here are
+# skipped, which lets the server advertise newer protocols without breaking older SDKs. IO_OFFLOAD is
+# unversioned during the preview, so a versioned IO_OFFLOAD is newer than this SDK.
+_RECOGNIZED_ENDPOINTS: dict[tuple[str, Optional[str]], _ResolvedEndpoint] = {
+    ("IO_OFFLOAD", None): _ResolvedEndpoint.IO_OFFLOAD,
+    ("FILES_API", "2.0"): _ResolvedEndpoint.FILES_API_V2,
+}
+
+_ENDPOINT_SCHEMES = ("http", "https")
+
+
+@dataclass(frozen=True)
+class _Endpoint:
+    """One entry of the ordered endpoint list a file transfer walks, best first."""
+
+    kind: _ResolvedEndpoint
+    base_url: str
+    """Scheme and hostname as returned by the server, e.g. https://example.cloud.databricks.com."""
+    multipart_upload_supported: bool
+
+
 class _PresignedUrlRequestBuilder:
     """Builds presigned URL requests for file upload operations.
 
@@ -928,6 +958,12 @@ class FilesExt(files.FilesAPI):
     # Timeout in seconds for the storage-proxy health check probe.
     _STORAGE_PROXY_PROBE_TIMEOUT: float = 3.0
 
+    _ENDPOINTS_API_PATH: str = "/api/2.0/fs/endpoints"
+
+    # Endpoint discovery is a single attempt bounded by this timeout: it precedes a transfer, so it
+    # must fail fast to the default order rather than retry and stall the upload or download.
+    _ENDPOINTS_RESOLVE_TIMEOUT_SECONDS: float = 10.0
+
     @dataclass(frozen=True)
     class _UploadContext:
         target_path: str
@@ -956,13 +992,129 @@ class FilesExt(files.FilesAPI):
         self._dp_hostname_available: Optional[bool] = None
         self._cached_storage_proxy_session: Optional[requests.Session] = None
         self._storage_proxy_session_lock = Lock()
+        self._cached_endpoints: Optional[list[_Endpoint]] = None
+        self._endpoints_lock = Lock()
 
-    def _get_hostname(self) -> str:
-        """Returns the hostname for file operations.
+    def _resolve_endpoints(self) -> list[_Endpoint]:
+        """Returns the ordered endpoints to try for a file transfer, best first.
 
-        When storage proxy is enabled, probes it on first call and caches the
-        result. Returns the proxy hostname if available, otherwise the workspace
-        hostname.
+        The server is asked once per client and its answer, including a failure, is cached. Anything
+        short of a usable list falls back to the built-in order, so endpoint discovery never fails a
+        transfer.
+        """
+        if not self._config.experimental_files_ext_enable_endpoints_api:
+            return self._default_endpoints()
+        with self._endpoints_lock:
+            if self._cached_endpoints is None:
+                self._cached_endpoints = self._fetch_endpoints() or self._default_endpoints()
+            return list(self._cached_endpoints)
+
+    def _default_endpoints(self) -> list[_Endpoint]:
+        host = self._config.host
+        return [
+            _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, host, multipart_upload_supported=True),
+            _Endpoint(_ResolvedEndpoint.FILES_API_V2, host, multipart_upload_supported=False),
+        ]
+
+    def _fetch_endpoints(self) -> list[_Endpoint]:
+        """Fetches the endpoint list from the server, keeping only entries this SDK can speak.
+
+        Discovery runs before a transfer, so it is a single short-timeout attempt with no retries: a
+        slow or failing endpoint must fall back to the default order quickly rather than hold up the
+        upload or download.
+        """
+        url = f"{self._config.host}{self._ENDPOINTS_API_PATH}"
+        try:
+            response = self._cloud_provider_session().request(
+                "GET",
+                url,
+                headers={**self._config.authenticate(), "Accept": "application/json"},
+                timeout=self._ENDPOINTS_RESOLVE_TIMEOUT_SECONDS,
+            )
+        except Exception as e:
+            # Broad on purpose: network and auth failures must all fail safe to the default order.
+            _LOG.warning(f"Failed to resolve file endpoints, using the default endpoints: {e}")
+            return []
+
+        # Lets a failure below be traced to the server's request log.
+        request_id = response.headers.get("x-request-id")
+        if response.status_code == 404:
+            # Not a warning: until the server-side rollout completes, some workspaces do not serve the API.
+            _LOG.info(
+                f"Endpoints API is not served for this workspace (request ID {request_id}), using the default endpoints."
+            )
+            return []
+        if response.status_code != 200:
+            _LOG.warning(
+                f"Unexpected status resolving file endpoints ({response.status_code}, request ID {request_id}), "
+                "using the default endpoints."
+            )
+            return []
+        try:
+            body = response.json()
+        except Exception as e:
+            _LOG.warning(
+                f"Failed to parse endpoints response (request ID {request_id}), using the default endpoints: {e}"
+            )
+            return []
+
+        # Proto3 JSON leaves out an empty repeated field.
+        entries = body.get("endpoints", []) if isinstance(body, dict) else None
+        if not isinstance(entries, list):
+            _LOG.warning(
+                f"Unexpected endpoints response (request ID {request_id}), using the default endpoints: {body}"
+            )
+            return []
+        endpoints = []
+        for entry in entries:
+            kind = self._endpoint_kind(entry)
+            if kind is None:
+                # Not a warning: an older SDK is expected to skip entries for APIs added after it shipped.
+                _LOG.info(f"Skipping endpoint this SDK cannot use (request ID {request_id}): {entry}")
+                continue
+            endpoint = self._parse_endpoint(entry, kind)
+            if endpoint is None:
+                _LOG.warning(
+                    f"Skipping {kind.value} endpoint with an unusable address (request ID {request_id}): {entry}"
+                )
+                continue
+            endpoints.append(endpoint)
+        if not endpoints:
+            _LOG.warning(f"No usable endpoints in the response (request ID {request_id}), using the default endpoints.")
+        return endpoints
+
+    @staticmethod
+    def _endpoint_kind(entry) -> Optional[_ResolvedEndpoint]:
+        """Returns the protocol of a listed endpoint, or None if this SDK does not speak it."""
+        if not isinstance(entry, dict):
+            return None
+        api = entry.get("api")
+        api_version = entry.get("api_version")
+        # The entry is unvalidated JSON: an unhashable value such as a list would make the lookup below raise
+        # instead of skipping the entry. IO_OFFLOAD entries have no api_version, so None is allowed.
+        if not isinstance(api, str) or not (api_version is None or isinstance(api_version, str)):
+            return None
+        return _RECOGNIZED_ENDPOINTS.get((api, api_version))
+
+    @staticmethod
+    def _parse_endpoint(entry: dict, kind: _ResolvedEndpoint) -> Optional[_Endpoint]:
+        scheme = entry.get("scheme")
+        hostname = entry.get("hostname")
+        if scheme not in _ENDPOINT_SCHEMES or not isinstance(hostname, str) or not hostname:
+            return None
+        # Mirrors the proto getter: an unset optional bool reads as false.
+        multipart_upload_supported = entry.get("multipart_upload_supported") is True
+        return _Endpoint(kind, f"{scheme}://{hostname}", multipart_upload_supported)
+
+    def _active_endpoint(self) -> _Endpoint:
+        """The endpoint used for bulk file transfer.
+
+        Selected by the storage-proxy probe: the storage proxy (a direct Files API path) when the probe
+        finds it available, otherwise the offload (presigned) path on the workspace host. The probe runs
+        once and its result is cached.
+
+        This is the single-endpoint selection; PR wiring the endpoints API replaces it with a walk over
+        the server-resolved list.
         """
         if self._config.experimental_files_ext_enable_storage_proxy:
             if self._dp_hostname_available is None:
@@ -972,19 +1124,28 @@ class FilesExt(files.FilesAPI):
                 else:
                     _LOG.info("Storage proxy is not available, will use presigned URLs.")
             if self._dp_hostname_available:
-                return self._STORAGE_PROXY_HOSTNAME
-        return self._config.host
+                return _Endpoint(
+                    _ResolvedEndpoint.FILES_API_V2, self._STORAGE_PROXY_HOSTNAME, multipart_upload_supported=True
+                )
+        return _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, self._config.host, multipart_upload_supported=True)
+
+    def _get_hostname(self) -> str:
+        """Returns the scheme+hostname for file operations, e.g. https://example.cloud.databricks.com."""
+        return self._active_endpoint().base_url
 
     def _create_request_builder(self):
-        """Creates the appropriate request builder for file operations.
+        """Creates the request builder for the active endpoint."""
+        return self._request_builder_for(self._active_endpoint())
 
-        Returns a storage proxy builder when the proxy is available,
-        otherwise a presigned URL builder.
+    def _request_builder_for(self, endpoint: _Endpoint):
+        """Maps an endpoint to the builder that speaks its protocol.
+
+        The offload path coordinates presigned URLs through the workspace API; the direct Files API path
+        builds URLs straight at the endpoint host.
         """
-        hostname = self._get_hostname()
-        if self._config.experimental_files_ext_enable_storage_proxy and self._dp_hostname_available:
-            return _StorageProxyRequestBuilder(hostname)
-        return _PresignedUrlRequestBuilder(self._api, hostname)
+        if endpoint.kind == _ResolvedEndpoint.IO_OFFLOAD:
+            return _PresignedUrlRequestBuilder(self._api, endpoint.base_url)
+        return _StorageProxyRequestBuilder(endpoint.base_url)
 
     def _resolve_workspace_id(self) -> Optional[str]:
         """Resolves the workspace ID by querying the SCIM Me endpoint."""

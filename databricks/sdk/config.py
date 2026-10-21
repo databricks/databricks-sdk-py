@@ -267,6 +267,11 @@ class Config:
     # When enabled, the SDK will probe the storage proxy and use it if available.
     experimental_files_ext_enable_storage_proxy: bool = False
 
+    # Whether to ask the workspace which endpoints to use for file transfers (GET /api/2.0/fs/endpoints).
+    # When disabled, or when the server cannot answer, the SDK uses a built-in order: Presigned URL, then
+    # Files API 2.0 on the workspace host.
+    experimental_files_ext_enable_endpoints_api: bool = False
+
     def __init__(
         self,
         *,

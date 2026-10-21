@@ -6652,8 +6652,8 @@ class PipelinesAPI:
           optional. The default value is 25. The maximum value is 100. An error is returned if the value of
           max_results is greater than 100.
         :param order_by: List[str] (optional)
-          A list of strings specifying the order of results. Supported order_by fields are id and name. The
-          default is id asc. This field is optional.
+          A list of strings specifying the order of results. The supported order_by field is id. The default
+          is id asc. This field is optional.
         :param page_token: str (optional)
           Page token returned by previous call
 

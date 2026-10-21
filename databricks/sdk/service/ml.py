@@ -1240,6 +1240,9 @@ class DataSource:
     request_source: Optional[RequestSource] = None
     """A request-time data source."""
 
+    sdp_source: Optional[SdpSource] = None
+    """A Spark Declarative Pipeline data source."""
+
     stream_source: Optional[StreamSource] = None
     """A Stream data source."""
 
@@ -1256,6 +1259,8 @@ class DataSource:
             body["lateness"] = self.lateness.as_dict()
         if self.request_source:
             body["request_source"] = self.request_source.as_dict()
+        if self.sdp_source:
+            body["sdp_source"] = self.sdp_source.as_dict()
         if self.stream_source:
             body["stream_source"] = self.stream_source.as_dict()
         return body
@@ -1273,6 +1278,8 @@ class DataSource:
             body["lateness"] = self.lateness
         if self.request_source:
             body["request_source"] = self.request_source
+        if self.sdp_source:
+            body["sdp_source"] = self.sdp_source
         if self.stream_source:
             body["stream_source"] = self.stream_source
         return body
@@ -1286,6 +1293,7 @@ class DataSource:
             kafka_source=_from_dict(d, "kafka_source", KafkaSource),
             lateness=_from_dict(d, "lateness", SourceLateness),
             request_source=_from_dict(d, "request_source", RequestSource),
+            sdp_source=_from_dict(d, "sdp_source", SdpSource),
             stream_source=_from_dict(d, "stream_source", StreamSource),
         )
 
@@ -8142,6 +8150,106 @@ class SchemaRegistryConfig:
             payload_schema_locator=_from_dict(d, "payload_schema_locator", SchemaLocator),
             uc_connection=d.get("uc_connection", None),
         )
+
+
+@dataclass
+class SdpSource:
+    """A Spark Declarative Pipeline (SDP) data source."""
+
+    dataframe_schema: Optional[str] = None
+    """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
+    df.schema.json()). Required if transformation_sql is specified. Example:
+    {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}"""
+
+    filter_condition: Optional[str] = None
+    """Single WHERE clause to filter the pipeline's output table before applying transformations. Will
+    be row-wise evaluated, so should only include conditionals and projections."""
+
+    input_tables: Optional[List[str]] = None
+    """The full three-part names of the tables the pipeline reads from. Required to materialize this
+    feature with a TableTrigger, which starts a run when these tables update. Each table must exist
+    when the feature is created. After the pipeline runs, Feature Store checks that it reads from
+    these tables, and the run fails if it doesn't. At most 100 tables."""
+
+    output_table: Optional[str] = None
+    """The full three-part (catalog, schema, table) name of the pipeline's output table to read from.
+    The table doesn't need to exist until the pipeline first runs. Required."""
+
+    pipeline_id: Optional[str] = None
+    """The ID of the Spark Declarative Pipeline that Feature Store runs to produce this source, before
+    each materialization or backfill. The pipeline must already exist when the feature is created,
+    and you need CAN_RUN, CAN_MANAGE, or owner permission on it. It doesn't need to have run yet.
+    Deleting the feature doesn't delete the pipeline. If the pipeline is deleted, this field reads
+    back empty. Required."""
+
+    pipeline_state: Optional[SdpSourceState] = None
+    """State tracking pipeline execution and output table validation. PENDING until the pipeline has
+    run at least once and created the output table; then RESOLVED on success, or ERROR on failure."""
+
+    transformation_sql: Optional[str] = None
+    """A single SQL SELECT expression applied after filter_condition. Should contain all the columns
+    needed (eg. "SELECT *, col_a + col_b AS col_c FROM x.y.z WHERE col_a > 0" would have
+    ``transformation_sql`` "*, col_a + col_b AS col_c") If transformation_sql is not provided, all
+    columns of the pipeline's output table are present in the DataSource dataframe."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SdpSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.input_tables:
+            body["input_tables"] = [v for v in self.input_tables]
+        if self.output_table is not None:
+            body["output_table"] = self.output_table
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        if self.pipeline_state is not None:
+            body["pipeline_state"] = self.pipeline_state.value
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SdpSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.input_tables:
+            body["input_tables"] = self.input_tables
+        if self.output_table is not None:
+            body["output_table"] = self.output_table
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        if self.pipeline_state is not None:
+            body["pipeline_state"] = self.pipeline_state
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SdpSource:
+        """Deserializes the SdpSource from a dictionary."""
+        return cls(
+            dataframe_schema=d.get("dataframe_schema", None),
+            filter_condition=d.get("filter_condition", None),
+            input_tables=d.get("input_tables", None),
+            output_table=d.get("output_table", None),
+            pipeline_id=d.get("pipeline_id", None),
+            pipeline_state=_enum(d, "pipeline_state", SdpSourceState),
+            transformation_sql=d.get("transformation_sql", None),
+        )
+
+
+class SdpSourceState(Enum):
+    """State of the SDP source relative to pipeline execution and output table validation."""
+
+    ERROR = "ERROR"
+    PENDING = "PENDING"
+    RESOLVED = "RESOLVED"
 
 
 @dataclass

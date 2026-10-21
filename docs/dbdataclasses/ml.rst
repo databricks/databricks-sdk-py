@@ -1502,6 +1502,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SdpSource
+   :members:
+   :undoc-members:
+
+.. py:class:: SdpSourceState
+
+   State of the SDP source relative to pipeline execution and output table validation.
+
+   .. py:attribute:: ERROR
+      :value: "ERROR"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RESOLVED
+      :value: "RESOLVED"
+
 .. autoclass:: SearchExperimentsResponse
    :members:
    :undoc-members:
