@@ -8,6 +8,7 @@ import logging
 import os
 import pathlib
 import platform
+import re
 import subprocess
 import sys
 import threading
@@ -1056,6 +1057,9 @@ class DatabricksCliTokenSource(CliTokenSource):
     # --force-refresh support added in CLI v0.296.0: https://github.com/databricks/cli/pull/4767
     _CLI_VERSION_FOR_FORCE_REFRESH = CliVersion(0, 296, 0)
 
+    # The legacy Python CLI does not support unified authentication.
+    _CLI_VERSION_MINIMUM = CliVersion(0, 100, 0)
+
     @staticmethod
     def _parse_cli_version(output: str) -> CliVersion:
         """Parse the JSON output of `databricks version --output json`.
@@ -1082,9 +1086,18 @@ class DatabricksCliTokenSource(CliTokenSource):
             return CliVersion()
 
     @staticmethod
+    def _parse_legacy_cli_version(output: str) -> CliVersion:
+        """Parse the top-level ``--version`` output of the legacy Python CLI."""
+        match = re.fullmatch(r"Version (\d+)\.(\d+)\.(\d+)(?:\.\w+)?", output.strip())
+        if not match:
+            logger.debug(f"Failed to parse legacy Databricks CLI version from output: {output!r}")
+            return CliVersion()
+        return CliVersion(*(int(part) for part in match.groups()))
+
+    @staticmethod
     @functools.lru_cache(maxsize=8)
     def _probe_cli_version(cli_path: str) -> "CliVersion":
-        """Run `databricks version --output json` and return the parsed CliVersion.
+        """Run the CLI's version command and return the parsed CliVersion.
 
         Cached by `cli_path` for the Python process lifetime: a successful probe
         against an immutable binary doesn't need to be repeated. Subprocess-level
@@ -1095,13 +1108,22 @@ class DatabricksCliTokenSource(CliTokenSource):
         The 5-second timeout prevents a hung CLI (first-run disk scan, antivirus,
         stdin wait) from wedging SDK init indefinitely.
         """
-        out = _run_subprocess(
-            [cli_path, "version", "--output", "json"],
-            capture_output=True,
-            check=True,
-            timeout=5,
-        )
-        return DatabricksCliTokenSource._parse_cli_version(out.stdout.decode())
+        try:
+            out = _run_subprocess(
+                [cli_path, "version", "--output", "json"],
+                capture_output=True,
+                check=True,
+                timeout=5,
+            )
+            return DatabricksCliTokenSource._parse_cli_version(out.stdout.decode())
+        except subprocess.CalledProcessError:
+            out = _run_subprocess(
+                [cli_path, "--version"],
+                capture_output=True,
+                check=True,
+                timeout=5,
+            )
+            return DatabricksCliTokenSource._parse_legacy_cli_version(out.stdout.decode())
 
     @staticmethod
     def _get_cli_version(cli_path: str) -> "CliVersion":
@@ -1129,6 +1151,12 @@ class DatabricksCliTokenSource(CliTokenSource):
         graceful-skip behaviour is preserved.
         """
         version = DatabricksCliTokenSource._get_cli_version(cli_path)
+        if (
+            version != CliVersion()
+            and not version.is_default_dev_build
+            and version < DatabricksCliTokenSource._CLI_VERSION_MINIMUM
+        ):
+            raise FileNotFoundError("Databricks CLI version <0.100.0 detected")
         if version.is_default_dev_build:
             # A default-marker dev build has no injected version, so every
             # feature gate fails via at_least. Surface an informational hint so
@@ -1234,10 +1262,12 @@ class DatabricksCliTokenSource(CliTokenSource):
             if not path.is_file():
                 continue
 
-            # The new Databricks CLI is a single binary with size > 1MB.
-            # We use the size as a signal to determine which Databricks CLI is installed.
-            stat = path.stat()
-            if stat.st_size < (1024 * 1024):
+            version = DatabricksCliTokenSource._get_cli_version(str(path))
+            if (
+                version != CliVersion()
+                and not version.is_default_dev_build
+                and version < DatabricksCliTokenSource._CLI_VERSION_MINIMUM
+            ):
                 err = FileNotFoundError("Databricks CLI version <0.100.0 detected")
                 continue
 
