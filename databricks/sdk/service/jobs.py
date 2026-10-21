@@ -18,7 +18,9 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
+    _repeated_int64,
     Wait,
 )
 
@@ -30,403 +32,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 # all definitions in this file are in alphabetical order
-
-
-@dataclass
-class AgentTool:
-    """Tool configuration for an inlined agentic task agent. Discriminator selects which per-asset
-    config message applies (``genie_space``, ``knowledge_assistant``, ``uc_function``,
-    ``uc_connection``, ``uc_mcp``, ``app``, ``table``, ``vector_search_index``, ``volume``,
-    ``catalog``, ``schema``, ``dashboard``, ``supervisor_agent``, ``serving_endpoint``,
-    ``web_search``); ``description`` is a free-form top-level description; each per-asset config
-    carries only the asset's identifier.
-
-    The discriminator is exposed under two interchangeable names: ``type`` mirrors the Supervisor
-    (Responses) API surface, and ``tool_type`` is the AIP-friendly alias for clients where ``type``
-    is a reserved keyword (Terraform, etc.). Set exactly one."""
-
-    app: Optional[AppTool] = None
-    """Databricks App tool config. Set when the discriminator == "app"."""
-
-    catalog: Optional[CatalogTool] = None
-    """Unity Catalog catalog tool config. Set when the discriminator == "catalog"."""
-
-    dashboard: Optional[DashboardTool] = None
-    """Lakeview dashboard tool config. Set when the discriminator == "dashboard"."""
-
-    description: Optional[str] = None
-    """Optional. Free-form description of the tool."""
-
-    genie_space: Optional[GenieSpaceTool] = None
-    """Genie space tool config. Set when the discriminator == "genie_space"."""
-
-    knowledge_assistant: Optional[KnowledgeAssistantTool] = None
-    """Knowledge Assistant tool config. Set when the discriminator == "knowledge_assistant"."""
-
-    schema: Optional[SchemaTool] = None
-    """Unity Catalog schema tool config. Set when the discriminator == "schema"."""
-
-    serving_endpoint: Optional[ServingEndpointTool] = None
-    """Model serving endpoint tool config. Set when the discriminator == "serving_endpoint"."""
-
-    supervisor_agent: Optional[SupervisorAgentTool] = None
-    """Supervisor Agent tool config (a supervisor agent used as a tool). Set when the discriminator ==
-    "supervisor_agent"."""
-
-    table: Optional[TableTool] = None
-    """Unity Catalog table tool config. Set when the discriminator == "table"."""
-
-    tool_type: Optional[str] = None
-
-    uc_connection: Optional[UcConnectionTool] = None
-    """External MCP / UC connection tool config. Set when the discriminator == "uc_connection"."""
-
-    uc_function: Optional[UcFunctionTool] = None
-    """Unity Catalog function tool config. Set when the discriminator == "uc_function"."""
-
-    uc_mcp: Optional[UcMcpTool] = None
-    """UC-registered MCP service tool config. Set when the discriminator == "uc_mcp"."""
-
-    vector_search_index: Optional[VectorSearchIndexTool] = None
-    """Vector Search index tool config. Set when the discriminator == "vector_search_index"."""
-
-    volume: Optional[VolumeTool] = None
-    """Unity Catalog volume tool config. Set when the discriminator == "volume"."""
-
-    web_search: Optional[WebSearchTool] = None
-    """Web search tool config. Set when the discriminator == "web_search"."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AgentTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.app:
-            body["app"] = self.app.as_dict()
-        if self.catalog:
-            body["catalog"] = self.catalog.as_dict()
-        if self.dashboard:
-            body["dashboard"] = self.dashboard.as_dict()
-        if self.description is not None:
-            body["description"] = self.description
-        if self.genie_space:
-            body["genie_space"] = self.genie_space.as_dict()
-        if self.knowledge_assistant:
-            body["knowledge_assistant"] = self.knowledge_assistant.as_dict()
-        if self.schema:
-            body["schema"] = self.schema.as_dict()
-        if self.serving_endpoint:
-            body["serving_endpoint"] = self.serving_endpoint.as_dict()
-        if self.supervisor_agent:
-            body["supervisor_agent"] = self.supervisor_agent.as_dict()
-        if self.table:
-            body["table"] = self.table.as_dict()
-        if self.tool_type is not None:
-            body["tool_type"] = self.tool_type
-        if self.uc_connection:
-            body["uc_connection"] = self.uc_connection.as_dict()
-        if self.uc_function:
-            body["uc_function"] = self.uc_function.as_dict()
-        if self.uc_mcp:
-            body["uc_mcp"] = self.uc_mcp.as_dict()
-        if self.vector_search_index:
-            body["vector_search_index"] = self.vector_search_index.as_dict()
-        if self.volume:
-            body["volume"] = self.volume.as_dict()
-        if self.web_search:
-            body["web_search"] = self.web_search.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AgentTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.app:
-            body["app"] = self.app
-        if self.catalog:
-            body["catalog"] = self.catalog
-        if self.dashboard:
-            body["dashboard"] = self.dashboard
-        if self.description is not None:
-            body["description"] = self.description
-        if self.genie_space:
-            body["genie_space"] = self.genie_space
-        if self.knowledge_assistant:
-            body["knowledge_assistant"] = self.knowledge_assistant
-        if self.schema:
-            body["schema"] = self.schema
-        if self.serving_endpoint:
-            body["serving_endpoint"] = self.serving_endpoint
-        if self.supervisor_agent:
-            body["supervisor_agent"] = self.supervisor_agent
-        if self.table:
-            body["table"] = self.table
-        if self.tool_type is not None:
-            body["tool_type"] = self.tool_type
-        if self.uc_connection:
-            body["uc_connection"] = self.uc_connection
-        if self.uc_function:
-            body["uc_function"] = self.uc_function
-        if self.uc_mcp:
-            body["uc_mcp"] = self.uc_mcp
-        if self.vector_search_index:
-            body["vector_search_index"] = self.vector_search_index
-        if self.volume:
-            body["volume"] = self.volume
-        if self.web_search:
-            body["web_search"] = self.web_search
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AgentTool:
-        """Deserializes the AgentTool from a dictionary."""
-        return cls(
-            app=_from_dict(d, "app", AppTool),
-            catalog=_from_dict(d, "catalog", CatalogTool),
-            dashboard=_from_dict(d, "dashboard", DashboardTool),
-            description=d.get("description", None),
-            genie_space=_from_dict(d, "genie_space", GenieSpaceTool),
-            knowledge_assistant=_from_dict(d, "knowledge_assistant", KnowledgeAssistantTool),
-            schema=_from_dict(d, "schema", SchemaTool),
-            serving_endpoint=_from_dict(d, "serving_endpoint", ServingEndpointTool),
-            supervisor_agent=_from_dict(d, "supervisor_agent", SupervisorAgentTool),
-            table=_from_dict(d, "table", TableTool),
-            tool_type=d.get("tool_type", None),
-            uc_connection=_from_dict(d, "uc_connection", UcConnectionTool),
-            uc_function=_from_dict(d, "uc_function", UcFunctionTool),
-            uc_mcp=_from_dict(d, "uc_mcp", UcMcpTool),
-            vector_search_index=_from_dict(d, "vector_search_index", VectorSearchIndexTool),
-            volume=_from_dict(d, "volume", VolumeTool),
-            web_search=_from_dict(d, "web_search", WebSearchTool),
-        )
-
-
-@dataclass
-class AgenticTask:
-    """Defines an agentic task configuration for job-based execution. Three configuration paths via
-    ``oneof agent``:
-
-    - Reference a pre-registered Supervisor Agent tile via ``supervisor_agent.agent_id``.
-    - Provide an inlined Responses-API-style config via ``supervisor_api``.
-    - Run an inline Genie Code prompt via ``genie_code_api``."""
-
-    context: Optional[AgenticTaskContext] = None
-    """Optional. Context input providing conversation history and instructions."""
-
-    genie_code_api: Optional[GenieCodeApi] = None
-    """Inline Genie Code conversation driven by a single prompt. Mutually exclusive with the supervisor
-    variants."""
-
-    goal: Optional[str] = None
-    """Deprecated. Use ``input`` (field 7) instead. Kept for backwards compatibility with existing
-    callers; will be removed in a future revision."""
-
-    input: Optional[str] = None
-    """Optional. The user query / task input the agent must accomplish. Mirrors the OpenAI Responses
-    API ``input`` field. Replaces the deprecated ``goal`` field; new callers should populate
-    ``input`` going forward."""
-
-    output_schema: Optional[TaskOutputSchema] = None
-    """Optional. JSON-Schema-style declaration of the structured output the agent should produce.
-    Replaces the deprecated ``task_output_schema`` map; new callers should populate
-    ``output_schema`` going forward."""
-
-    supervisor_agent: Optional[SupervisorAgent] = None
-    """A Supervisor Agent that orchestrates sub-agents and tools, referenced by tile_id."""
-
-    supervisor_api: Optional[SupervisorApi] = None
-    """Inlined Responses-API supervisor configuration (model + instructions + tools). Mutually
-    exclusive with ``supervisor_agent``."""
-
-    task_output_schema: Optional[Dict[str, str]] = None
-    """Deprecated. Use ``output_schema`` (field 8) instead. Kept for backwards compatibility with
-    existing callers; will be removed in a future revision."""
-
-    trace_destination: Optional[TraceDestination] = None
-    """Optional. Where MLflow traces produced by this task run should be persisted. When unset, traces
-    follow the workspace default destination."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AgenticTask into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.context:
-            body["context"] = self.context.as_dict()
-        if self.genie_code_api:
-            body["genie_code_api"] = self.genie_code_api.as_dict()
-        if self.goal is not None:
-            body["goal"] = self.goal
-        if self.input is not None:
-            body["input"] = self.input
-        if self.output_schema:
-            body["output_schema"] = self.output_schema.as_dict()
-        if self.supervisor_agent:
-            body["supervisor_agent"] = self.supervisor_agent.as_dict()
-        if self.supervisor_api:
-            body["supervisor_api"] = self.supervisor_api.as_dict()
-        if self.task_output_schema:
-            body["task_output_schema"] = self.task_output_schema
-        if self.trace_destination:
-            body["trace_destination"] = self.trace_destination.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AgenticTask into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.context:
-            body["context"] = self.context
-        if self.genie_code_api:
-            body["genie_code_api"] = self.genie_code_api
-        if self.goal is not None:
-            body["goal"] = self.goal
-        if self.input is not None:
-            body["input"] = self.input
-        if self.output_schema:
-            body["output_schema"] = self.output_schema
-        if self.supervisor_agent:
-            body["supervisor_agent"] = self.supervisor_agent
-        if self.supervisor_api:
-            body["supervisor_api"] = self.supervisor_api
-        if self.task_output_schema:
-            body["task_output_schema"] = self.task_output_schema
-        if self.trace_destination:
-            body["trace_destination"] = self.trace_destination
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AgenticTask:
-        """Deserializes the AgenticTask from a dictionary."""
-        return cls(
-            context=_from_dict(d, "context", AgenticTaskContext),
-            genie_code_api=_from_dict(d, "genie_code_api", GenieCodeApi),
-            goal=d.get("goal", None),
-            input=d.get("input", None),
-            output_schema=_from_dict(d, "output_schema", TaskOutputSchema),
-            supervisor_agent=_from_dict(d, "supervisor_agent", SupervisorAgent),
-            supervisor_api=_from_dict(d, "supervisor_api", SupervisorApi),
-            task_output_schema=d.get("task_output_schema", None),
-            trace_destination=_from_dict(d, "trace_destination", TraceDestination),
-        )
-
-
-@dataclass
-class AgenticTaskContext:
-    """Context input for an agentic task, providing conversation history and additional instructions to
-    guide the agent."""
-
-    conversation_ids: Optional[List[str]] = None
-    """Optional. Conversation IDs to load as context for the agent."""
-
-    instructions: Optional[List[str]] = None
-    """Optional. Additional instructions to guide the agent's behavior."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AgenticTaskContext into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.conversation_ids:
-            body["conversation_ids"] = [v for v in self.conversation_ids]
-        if self.instructions:
-            body["instructions"] = [v for v in self.instructions]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AgenticTaskContext into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.conversation_ids:
-            body["conversation_ids"] = self.conversation_ids
-        if self.instructions:
-            body["instructions"] = self.instructions
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AgenticTaskContext:
-        """Deserializes the AgenticTaskContext from a dictionary."""
-        return cls(conversation_ids=d.get("conversation_ids", None), instructions=d.get("instructions", None))
-
-
-@dataclass
-class AgenticTaskOutput:
-    """Output returned after an agentic task completes."""
-
-    conversation_id: Optional[str] = None
-    """The conversation ID generated during this task execution."""
-
-    created_at: Optional[float] = None
-    """Deprecated. Run timestamps are exposed on the surrounding job-run."""
-
-    genie_code: Optional[GenieCodeOutput] = None
-    """Genie Code execution output (conversation notebook reference)."""
-
-    id: Optional[str] = None
-    """Deprecated. Run-level identity already lives on the surrounding ``RunOutput``;
-    ``SupervisorOutput.response_id`` is the canonical handle for the structured response."""
-
-    response: Optional[str] = None
-    """Deprecated. The final text response is now surfaced in ``task_output["response"]``; new callers
-    should read it from there."""
-
-    status: Optional[str] = None
-    """Deprecated. Run lifecycle state is exposed on the surrounding job-run."""
-
-    supervisor: Optional[SupervisorOutput] = None
-    """Supervisor (tile or inlined) execution output."""
-
-    task_output: Optional[Dict[str, str]] = None
-    """Custom output values from the agent. When the caller specified a ``task_output_schema`` /
-    ``output_schema``, this carries those user-defined keys. When no schema is specified, this
-    carries default supervisor keys (``response``, ``truncated``, ...)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AgenticTaskOutput into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.conversation_id is not None:
-            body["conversation_id"] = self.conversation_id
-        if self.created_at is not None:
-            body["created_at"] = self.created_at
-        if self.genie_code:
-            body["genie_code"] = self.genie_code.as_dict()
-        if self.id is not None:
-            body["id"] = self.id
-        if self.response is not None:
-            body["response"] = self.response
-        if self.status is not None:
-            body["status"] = self.status
-        if self.supervisor:
-            body["supervisor"] = self.supervisor.as_dict()
-        if self.task_output:
-            body["task_output"] = self.task_output
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AgenticTaskOutput into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.conversation_id is not None:
-            body["conversation_id"] = self.conversation_id
-        if self.created_at is not None:
-            body["created_at"] = self.created_at
-        if self.genie_code:
-            body["genie_code"] = self.genie_code
-        if self.id is not None:
-            body["id"] = self.id
-        if self.response is not None:
-            body["response"] = self.response
-        if self.status is not None:
-            body["status"] = self.status
-        if self.supervisor:
-            body["supervisor"] = self.supervisor
-        if self.task_output:
-            body["task_output"] = self.task_output
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AgenticTaskOutput:
-        """Deserializes the AgenticTaskOutput from a dictionary."""
-        return cls(
-            conversation_id=d.get("conversation_id", None),
-            created_at=d.get("created_at", None),
-            genie_code=_from_dict(d, "genie_code", GenieCodeOutput),
-            id=d.get("id", None),
-            response=d.get("response", None),
-            status=d.get("status", None),
-            supervisor=_from_dict(d, "supervisor", SupervisorOutput),
-            task_output=d.get("task_output", None),
-        )
 
 
 @dataclass
@@ -476,12 +81,15 @@ class AiRuntimeTask:
     """Optional display name for the MLflow run created under ``experiment``. If omitted, MLflow
     generates a default name."""
 
-    parameters: Optional[Dict[str, str]] = None
-    """Optional named parameters passed to each deployment's command. Keys are parameter names, values
-    the corresponding arguments (for example, ``{"epochs": "3", "dataset": "s3://bucket/train"}``).
-    Values may contain dynamic references such as ``{{job.trigger.time.iso_date}}`` or
-    ``{{tasks.<task_key>.values.<name>}}``, which Jobs substitutes before execution (see
-    ``AiRuntimeTaskResolvedValues.parameters`` in runs.proto)."""
+    priority_class: Optional[AiRuntimeTaskPriorityClass] = None
+    """Scheduling priority class for the workload. May only be set together with a pre-provisioned
+    capacity reservation (a deployment's ``compute.provisioned_capacity_id``); it is rejected on a
+    workload that runs on on-demand capacity."""
+
+    unity_catalog_image_path: Optional[str] = None
+    """Optional Unity Catalog path for a custom container image. When set, the task runs on the
+    specified container image instead of the default Databricks client image. Format:
+    ``{catalog}.{schema}.{image_name}:{tag}``"""
 
     def as_dict(self) -> dict:
         """Serializes the AiRuntimeTask into a dictionary suitable for use as a JSON request body."""
@@ -500,8 +108,10 @@ class AiRuntimeTask:
             body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
         if self.mlflow_run is not None:
             body["mlflow_run"] = self.mlflow_run
-        if self.parameters:
-            body["parameters"] = self.parameters
+        if self.priority_class is not None:
+            body["priority_class"] = self.priority_class.value
+        if self.unity_catalog_image_path is not None:
+            body["unity_catalog_image_path"] = self.unity_catalog_image_path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -521,8 +131,10 @@ class AiRuntimeTask:
             body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
         if self.mlflow_run is not None:
             body["mlflow_run"] = self.mlflow_run
-        if self.parameters:
-            body["parameters"] = self.parameters
+        if self.priority_class is not None:
+            body["priority_class"] = self.priority_class
+        if self.unity_catalog_image_path is not None:
+            body["unity_catalog_image_path"] = self.unity_catalog_image_path
         return body
 
     @classmethod
@@ -536,7 +148,8 @@ class AiRuntimeTask:
             mlflow_artifact_location=d.get("mlflow_artifact_location", None),
             mlflow_experiment_directory=d.get("mlflow_experiment_directory", None),
             mlflow_run=d.get("mlflow_run", None),
-            parameters=d.get("parameters", None),
+            priority_class=_enum(d, "priority_class", AiRuntimeTaskPriorityClass),
+            unity_catalog_image_path=d.get("unity_catalog_image_path", None),
         )
 
 
@@ -591,6 +204,15 @@ class AiRuntimeTaskOutput:
             mlflow_run_id=d.get("mlflow_run_id", None),
             status_message=d.get("status_message", None),
         )
+
+
+class AiRuntimeTaskPriorityClass(Enum):
+    """Scheduling priority class for a workload — its priority and preemptability when the scheduler
+    ranks pending work."""
+
+    BEST_EFFORT = "BEST_EFFORT"
+    CRITICAL = "CRITICAL"
+    NORMAL = "NORMAL"
 
 
 class AlertEvaluationState(Enum):
@@ -729,31 +351,6 @@ class AlertTaskSubscriber:
         return cls(destination_id=d.get("destination_id", None), user_name=d.get("user_name", None))
 
 
-@dataclass
-class AppTool:
-    name: Optional[str] = None
-    """The Databricks App name."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AppTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AppTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AppTool:
-        """Deserializes the AppTool from a dictionary."""
-        return cls(name=d.get("name", None))
-
-
 class AuthenticationMethod(Enum):
     OAUTH = "OAUTH"
     PAT = "PAT"
@@ -788,10 +385,6 @@ class BaseJob:
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
 
-    path: Optional[str] = None
-    """Path of the job object in workspace file tree, including file extension. If absent, the job
-    doesn't have a workspace object. Example: /Workspace/user@example.com/my_project/my_job.job.json"""
-
     settings: Optional[JobSettings] = None
     """Settings for this job and all of its runs. These settings can be updated using the ``resetJob``
     method."""
@@ -820,8 +413,6 @@ class BaseJob:
             body["has_more"] = self.has_more
         if self.job_id is not None:
             body["job_id"] = self.job_id
-        if self.path is not None:
-            body["path"] = self.path
         if self.settings:
             body["settings"] = self.settings.as_dict()
         if self.trigger_details:
@@ -845,8 +436,6 @@ class BaseJob:
             body["has_more"] = self.has_more
         if self.job_id is not None:
             body["job_id"] = self.job_id
-        if self.path is not None:
-            body["path"] = self.path
         if self.settings:
             body["settings"] = self.settings
         if self.trigger_details:
@@ -859,13 +448,12 @@ class BaseJob:
     def from_dict(cls, d: Dict[str, Any]) -> BaseJob:
         """Deserializes the BaseJob from a dictionary."""
         return cls(
-            created_time=d.get("created_time", None),
+            created_time=_int64(d, "created_time"),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
-            job_id=d.get("job_id", None),
-            path=d.get("path", None),
+            job_id=_int64(d, "job_id"),
             settings=_from_dict(d, "settings", JobSettings),
             trigger_details=_repeated_dict(d, "trigger_details", TriggerDetails),
             trigger_state=_from_dict(d, "trigger_state", TriggerStateProto),
@@ -907,14 +495,22 @@ class BaseRun:
     description: Optional[str] = None
     """Description of the run"""
 
+    duration_target: Optional[str] = None
+    """The window the run aims to finish within, in hours, for a Cost-optimized serverless run.
+    Required only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported
+    values: ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run
+    uses the default cost-optimized performance level without additional cost-saving optimizations."""
+
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     effective_usage_policy_id: Optional[str] = None
     """The id of the usage policy used by this run for cost attribution purposes."""
@@ -925,9 +521,8 @@ class BaseRun:
 
     environment_variables: Optional[List[JobEnvironmentVariables]] = None
     """Snapshot of ``JobSettings.environment_variables`` as it was at run launch — the full list of
-    named env-var profiles the job defined. Per-profile resolved contents are not preserved here;
-    only the customer-defined ``variables`` and ``files`` paths. To find which profile a given task
-    ran with, look at ``RunTaskSettings.environment_variables_key``."""
+    named environment-variable entries the job defined. To find which entry a given task ran with,
+    look at ``RunTaskSettings.environment_variables_key``."""
 
     execution_duration: Optional[int] = None
     """The time in milliseconds it took to execute the commands in the JAR or notebook until they
@@ -1050,6 +645,8 @@ class BaseRun:
             body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.effective_usage_policy_id is not None:
@@ -1129,6 +726,8 @@ class BaseRun:
             body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.effective_usage_policy_id is not None:
@@ -1196,36 +795,37 @@ class BaseRun:
         """Deserializes the BaseRun from a dictionary."""
         return cls(
             attempt_number=d.get("attempt_number", None),
-            cleanup_duration=d.get("cleanup_duration", None),
+            cleanup_duration=_int64(d, "cleanup_duration"),
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             cluster_spec=_from_dict(d, "cluster_spec", ClusterSpec),
             creator_user_name=d.get("creator_user_name", None),
             deployment_id=d.get("deployment_id", None),
             description=d.get("description", None),
+            duration_target=d.get("duration_target", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             environment_variables=_repeated_dict(d, "environment_variables", JobEnvironmentVariables),
-            execution_duration=d.get("execution_duration", None),
+            execution_duration=_int64(d, "execution_duration"),
             git_source=_from_dict(d, "git_source", GitSource),
             has_more=d.get("has_more", None),
             job_clusters=_repeated_dict(d, "job_clusters", JobCluster),
-            job_id=d.get("job_id", None),
+            job_id=_int64(d, "job_id"),
             job_parameters=_repeated_dict(d, "job_parameters", JobParameter),
-            job_run_id=d.get("job_run_id", None),
-            number_in_job=d.get("number_in_job", None),
-            original_attempt_run_id=d.get("original_attempt_run_id", None),
+            job_run_id=_int64(d, "job_run_id"),
+            number_in_job=_int64(d, "number_in_job"),
+            original_attempt_run_id=_int64(d, "original_attempt_run_id"),
             overriding_parameters=_from_dict(d, "overriding_parameters", RunParameters),
-            queue_duration=d.get("queue_duration", None),
+            queue_duration=_int64(d, "queue_duration"),
             repair_history=_repeated_dict(d, "repair_history", RepairHistoryItem),
-            run_duration=d.get("run_duration", None),
-            run_id=d.get("run_id", None),
+            run_duration=_int64(d, "run_duration"),
+            run_id=_int64(d, "run_id"),
             run_name=d.get("run_name", None),
             run_page_url=d.get("run_page_url", None),
             run_type=_enum(d, "run_type", RunType),
             schedule=_from_dict(d, "schedule", CronSchedule),
-            setup_duration=d.get("setup_duration", None),
-            start_time=d.get("start_time", None),
+            setup_duration=_int64(d, "setup_duration"),
+            start_time=_int64(d, "start_time"),
             state=_from_dict(d, "state", RunState),
             status=_from_dict(d, "status", RunStatus),
             tasks=_repeated_dict(d, "tasks", RunTask),
@@ -1233,31 +833,6 @@ class BaseRun:
             trigger_info=_from_dict(d, "trigger_info", TriggerInfo),
             version_id=d.get("version_id", None),
         )
-
-
-@dataclass
-class CatalogTool:
-    name: Optional[str] = None
-    """UC catalog name."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CatalogTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CatalogTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CatalogTool:
-        """Deserializes the CatalogTool from a dictionary."""
-        return cls(name=d.get("name", None))
 
 
 class CleanRoomTaskRunLifeCycleState(Enum):
@@ -1400,9 +975,6 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
     output_schema_info: Optional[OutputSchemaInfo] = None
     """Information on how to access the output schema for the clean room run"""
 
-    shared_output_schema_info: Optional[OutputSchemaInfo] = None
-    """Information on how to access the shared output schema for the clean room run"""
-
     def as_dict(self) -> dict:
         """Serializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1412,8 +984,6 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
             body["notebook_output"] = self.notebook_output.as_dict()
         if self.output_schema_info:
             body["output_schema_info"] = self.output_schema_info.as_dict()
-        if self.shared_output_schema_info:
-            body["shared_output_schema_info"] = self.shared_output_schema_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1425,8 +995,6 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
             body["notebook_output"] = self.notebook_output
         if self.output_schema_info:
             body["output_schema_info"] = self.output_schema_info
-        if self.shared_output_schema_info:
-            body["shared_output_schema_info"] = self.shared_output_schema_info
         return body
 
     @classmethod
@@ -1436,7 +1004,6 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
             clean_room_job_run_state=_from_dict(d, "clean_room_job_run_state", CleanRoomTaskRunState),
             notebook_output=_from_dict(d, "notebook_output", NotebookOutput),
             output_schema_info=_from_dict(d, "output_schema_info", OutputSchemaInfo),
-            shared_output_schema_info=_from_dict(d, "shared_output_schema_info", OutputSchemaInfo),
         )
 
 
@@ -1621,6 +1188,11 @@ class ComputeSpec:
     accelerator count encoded in ``accelerator_type``. For example, ``GPU_8xH100`` with
     ``accelerator_count: 16`` allocates 2 nodes (8 GPUs per node)."""
 
+    provisioned_capacity_id: Optional[str] = None
+    """Optional ID of a pre-provisioned accelerator capacity reservation to run this AI Runtime
+    workload on. When set, the workload is scheduled onto the referenced reserved capacity instead
+    of the on-demand capacity shared among all Databricks customers."""
+
     def as_dict(self) -> dict:
         """Serializes the ComputeSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1628,6 +1200,8 @@ class ComputeSpec:
             body["accelerator_count"] = self.accelerator_count
         if self.accelerator_type is not None:
             body["accelerator_type"] = self.accelerator_type.value
+        if self.provisioned_capacity_id is not None:
+            body["provisioned_capacity_id"] = self.provisioned_capacity_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1637,6 +1211,8 @@ class ComputeSpec:
             body["accelerator_count"] = self.accelerator_count
         if self.accelerator_type is not None:
             body["accelerator_type"] = self.accelerator_type
+        if self.provisioned_capacity_id is not None:
+            body["provisioned_capacity_id"] = self.provisioned_capacity_id
         return body
 
     @classmethod
@@ -1645,6 +1221,7 @@ class ComputeSpec:
         return cls(
             accelerator_count=d.get("accelerator_count", None),
             accelerator_type=_enum(d, "accelerator_type", ComputeSpecAcceleratorType),
+            provisioned_capacity_id=d.get("provisioned_capacity_id", None),
         )
 
 
@@ -1850,7 +1427,7 @@ class ContinuousTriggerState:
         return cls(
             consecutive_failures=d.get("consecutive_failures", None),
             is_backing_off=d.get("is_backing_off", None),
-            next_attempt_ms=d.get("next_attempt_ms", None),
+            next_attempt_ms=_int64(d, "next_attempt_ms"),
         )
 
 
@@ -1878,7 +1455,7 @@ class CreateResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
-        return cls(job_id=d.get("job_id", None))
+        return cls(job_id=_int64(d, "job_id"))
 
 
 @dataclass
@@ -2099,31 +1676,6 @@ class DashboardTaskOutput:
         return cls(page_snapshots=_repeated_dict(d, "page_snapshots", DashboardPageSnapshot))
 
 
-@dataclass
-class DashboardTool:
-    dashboard_id: Optional[str] = None
-    """Lakeview dashboard ID."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DashboardTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DashboardTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DashboardTool:
-        """Deserializes the DashboardTool from a dictionary."""
-        return cls(dashboard_id=d.get("dashboard_id", None))
-
-
 class DayOfWeek(Enum):
     """Days of week that can be referenced by Jobs scheduling settings."""
 
@@ -2223,7 +1775,7 @@ class DbtCloudTask:
         """Deserializes the DbtCloudTask from a dictionary."""
         return cls(
             connection_resource_name=d.get("connection_resource_name", None),
-            dbt_cloud_job_id=d.get("dbt_cloud_job_id", None),
+            dbt_cloud_job_id=_int64(d, "dbt_cloud_job_id"),
         )
 
 
@@ -2266,7 +1818,7 @@ class DbtCloudTaskOutput:
     def from_dict(cls, d: Dict[str, Any]) -> DbtCloudTaskOutput:
         """Deserializes the DbtCloudTaskOutput from a dictionary."""
         return cls(
-            dbt_cloud_job_run_id=d.get("dbt_cloud_job_run_id", None),
+            dbt_cloud_job_run_id=_int64(d, "dbt_cloud_job_run_id"),
             dbt_cloud_job_run_output=_repeated_dict(d, "dbt_cloud_job_run_output", DbtCloudJobRunStep),
             dbt_cloud_job_run_url=d.get("dbt_cloud_job_run_url", None),
         )
@@ -2572,32 +2124,26 @@ class DeploymentSpec:
     same command; role-split workloads (driver + worker, parameter server, separate eval node, etc.)
     use multiple entries."""
 
-    command_path: str
+    compute: ComputeSpec
+    """Compute resources allocated to each node in this deployment."""
+
+    command_path: Optional[str] = None
     """Workspace path of the script to run on each node in this deployment. Upload the script to this
     path and supply the path here. When the task runs, the file at this path is run on each node; if
     it fails, the task fails with its exit code.
     
     Example script contents:
     
-    Plain Python:
+    .. code-block:: bash
     
-    python train.py --epochs 10
+       # Plain Python:
+       python train.py --epochs 10
     
-    Multi-GPU via accelerate:
+       # Multi-GPU via accelerate:
+       accelerate launch train.py --config config.yaml
     
-    accelerate launch train.py --config config.yaml
-    
-    Distributed via torchrun:
-    
-    torchrun --nproc_per_node=8 train.py"""
-
-    compute: ComputeSpec
-    """Compute resources allocated to each node in this deployment."""
-
-    docker_image_url: Optional[str] = None
-    """Optional Docker image URL for a custom container image. When set, the task runs on the specified
-    container image instead of the default Databricks client image. Format:
-    ``{organization}/{repository}:{tag}``"""
+       # Distributed via torchrun:
+       torchrun --nproc_per_node=8 train.py"""
 
     name: Optional[str] = None
     """Optional human-readable name for this deployment (for example, ``driver``, ``worker``,
@@ -2611,8 +2157,6 @@ class DeploymentSpec:
             body["command_path"] = self.command_path
         if self.compute:
             body["compute"] = self.compute.as_dict()
-        if self.docker_image_url is not None:
-            body["docker_image_url"] = self.docker_image_url
         if self.name is not None:
             body["name"] = self.name
         return body
@@ -2624,8 +2168,6 @@ class DeploymentSpec:
             body["command_path"] = self.command_path
         if self.compute:
             body["compute"] = self.compute
-        if self.docker_image_url is not None:
-            body["docker_image_url"] = self.docker_image_url
         if self.name is not None:
             body["name"] = self.name
         return body
@@ -2636,7 +2178,6 @@ class DeploymentSpec:
         return cls(
             command_path=d.get("command_path", None),
             compute=_from_dict(d, "compute", ComputeSpec),
-            docker_image_url=d.get("docker_image_url", None),
             name=d.get("name", None),
         )
 
@@ -3041,38 +2582,14 @@ class GenAiComputeTask:
     dl_runtime_image: str
     """Runtime image"""
 
-    client_version: Optional[str] = None
-    """Version of the client (e.g., sgcli wheel) that submitted this task. Used by handlers to gate
-    behavior or reject incompatible versions."""
-
-    code_source_tar_path: Optional[str] = None
-    """Optional path to a tarball containing the user's workspace contents. When set, the entry script
-    extracts the tarball into the working directory before running the training script, so the
-    training script can import sibling modules and read packaged data files. Must be a workspace
-    path (e.g. ``/Workspace/Users/...``) or volume; ``dbfs:/`` is not supported."""
-
     command: Optional[str] = None
     """Command launcher to run the actual script, e.g. bash, python etc."""
 
     compute: Optional[ComputeConfig] = None
 
-    docker_image_url: Optional[str] = None
-    """Optional custom Docker container image URL for running the training script. Format:
-    organization/repository:tag (e.g., "pytorch/pytorch:2.0.1")"""
-
     mlflow_experiment_name: Optional[str] = None
     """Optional string containing the name of the MLflow experiment to log the run to. If name is not
     found, backend will create the mlflow experiment using the name."""
-
-    mlflow_run_name: Optional[str] = None
-    """Optional name to assign to the MLflow run created for this task. If unset, MLflow auto-generates
-    a name. Used alongside ``mlflow_experiment_name`` to identify the run in the MLflow UI."""
-
-    requirements_yaml_path: Optional[str] = None
-    """Optional path to a requirements.yaml file describing pip dependencies to install before running
-    the training script. Consumed by the entry script; format matches the runtime requirements.yaml
-    convention used by sgcli. Must be a workspace path (e.g. ``/Workspace/Users/...``) or volume;
-    ``dbfs:/`` is not supported."""
 
     source: Optional[Source] = None
     """Optional location type of the training script. When set to ``WORKSPACE``, the script will be
@@ -3099,24 +2616,14 @@ class GenAiComputeTask:
     def as_dict(self) -> dict:
         """Serializes the GenAiComputeTask into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.client_version is not None:
-            body["client_version"] = self.client_version
-        if self.code_source_tar_path is not None:
-            body["code_source_tar_path"] = self.code_source_tar_path
         if self.command is not None:
             body["command"] = self.command
         if self.compute:
             body["compute"] = self.compute.as_dict()
         if self.dl_runtime_image is not None:
             body["dl_runtime_image"] = self.dl_runtime_image
-        if self.docker_image_url is not None:
-            body["docker_image_url"] = self.docker_image_url
         if self.mlflow_experiment_name is not None:
             body["mlflow_experiment_name"] = self.mlflow_experiment_name
-        if self.mlflow_run_name is not None:
-            body["mlflow_run_name"] = self.mlflow_run_name
-        if self.requirements_yaml_path is not None:
-            body["requirements_yaml_path"] = self.requirements_yaml_path
         if self.source is not None:
             body["source"] = self.source.value
         if self.training_script_path is not None:
@@ -3130,24 +2637,14 @@ class GenAiComputeTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the GenAiComputeTask into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.client_version is not None:
-            body["client_version"] = self.client_version
-        if self.code_source_tar_path is not None:
-            body["code_source_tar_path"] = self.code_source_tar_path
         if self.command is not None:
             body["command"] = self.command
         if self.compute:
             body["compute"] = self.compute
         if self.dl_runtime_image is not None:
             body["dl_runtime_image"] = self.dl_runtime_image
-        if self.docker_image_url is not None:
-            body["docker_image_url"] = self.docker_image_url
         if self.mlflow_experiment_name is not None:
             body["mlflow_experiment_name"] = self.mlflow_experiment_name
-        if self.mlflow_run_name is not None:
-            body["mlflow_run_name"] = self.mlflow_run_name
-        if self.requirements_yaml_path is not None:
-            body["requirements_yaml_path"] = self.requirements_yaml_path
         if self.source is not None:
             body["source"] = self.source
         if self.training_script_path is not None:
@@ -3162,165 +2659,15 @@ class GenAiComputeTask:
     def from_dict(cls, d: Dict[str, Any]) -> GenAiComputeTask:
         """Deserializes the GenAiComputeTask from a dictionary."""
         return cls(
-            client_version=d.get("client_version", None),
-            code_source_tar_path=d.get("code_source_tar_path", None),
             command=d.get("command", None),
             compute=_from_dict(d, "compute", ComputeConfig),
             dl_runtime_image=d.get("dl_runtime_image", None),
-            docker_image_url=d.get("docker_image_url", None),
             mlflow_experiment_name=d.get("mlflow_experiment_name", None),
-            mlflow_run_name=d.get("mlflow_run_name", None),
-            requirements_yaml_path=d.get("requirements_yaml_path", None),
             source=_enum(d, "source", Source),
             training_script_path=d.get("training_script_path", None),
             yaml_parameters=d.get("yaml_parameters", None),
             yaml_parameters_file_path=d.get("yaml_parameters_file_path", None),
         )
-
-
-@dataclass
-class GenieCodeApi:
-    """Marks the agentic task as a Genie Code conversation. The user query is carried in
-    ``AgenticTask.input``; this message is a discriminator-only variant in ``AgenticTask.agent`` and
-    currently has no per-conversation configuration of its own."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieCodeApi into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieCodeApi into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieCodeApi:
-        """Deserializes the GenieCodeApi from a dictionary."""
-        return cls()
-
-
-@dataclass
-class GenieCodeOutput:
-    """Output specific to the ``GenieCodeApi`` execution path of an agentic task."""
-
-    thread_id: Optional[str] = None
-    """Identifier of the Genie Code conversation thread for this run. In Genie Code, threads are backed
-    by workspace notebooks, so this value also identifies the notebook a UI can deep-link to for the
-    conversation transcript."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieCodeOutput into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.thread_id is not None:
-            body["thread_id"] = self.thread_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieCodeOutput into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.thread_id is not None:
-            body["thread_id"] = self.thread_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieCodeOutput:
-        """Deserializes the GenieCodeOutput from a dictionary."""
-        return cls(thread_id=d.get("thread_id", None))
-
-
-@dataclass
-class GenieSpaceTool:
-    space_id: Optional[str] = None
-    """The Genie space ID."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieSpaceTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.space_id is not None:
-            body["space_id"] = self.space_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieSpaceTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.space_id is not None:
-            body["space_id"] = self.space_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieSpaceTool:
-        """Deserializes the GenieSpaceTool from a dictionary."""
-        return cls(space_id=d.get("space_id", None))
-
-
-@dataclass
-class GenieTask:
-    """GenieTask runs a Genie or Genie Code agent task. The job task is a thin reference to a
-    separately stored agent task configuration; all agent configuration (prompt, MCP connections,
-    referenced assets) lives on that object."""
-
-    configuration_id: str
-    """Required. Resource name of the agent task configuration to run."""
-
-    parameters: Optional[Dict[str, str]] = None
-    """Per-run parameter overrides, keyed by parameter name, substituted into the agent task
-    configuration's prompt before the run. A ``{{name}}`` placeholder in the prompt is replaced by
-    the matching value; unmatched placeholders are left unchanged. Values may reference job
-    parameters with ``{{job.parameters.*}}`` or upstream task output, which are resolved before the
-    task runs. Limited to 10000 characters when serialized as JSON; keys must be 1-100 characters
-    and contain only letters, digits, underscores, dashes, and periods."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieTask into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.configuration_id is not None:
-            body["configuration_id"] = self.configuration_id
-        if self.parameters:
-            body["parameters"] = self.parameters
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieTask into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.configuration_id is not None:
-            body["configuration_id"] = self.configuration_id
-        if self.parameters:
-            body["parameters"] = self.parameters
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieTask:
-        """Deserializes the GenieTask from a dictionary."""
-        return cls(configuration_id=d.get("configuration_id", None), parameters=d.get("parameters", None))
-
-
-@dataclass
-class GenieTaskOutput:
-    """GenieTaskOutput is the output produced by a single Genie task run."""
-
-    conversation_id: Optional[str] = None
-    """The conversation ID of the agent run, used to retrieve the full conversation history and
-    results."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieTaskOutput into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.conversation_id is not None:
-            body["conversation_id"] = self.conversation_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieTaskOutput into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.conversation_id is not None:
-            body["conversation_id"] = self.conversation_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieTaskOutput:
-        """Deserializes the GenieTaskOutput from a dictionary."""
-        return cls(conversation_id=d.get("conversation_id", None))
 
 
 @dataclass
@@ -3520,91 +2867,6 @@ class GitSource:
 
 
 @dataclass
-class IncrementalRefreshConfig:
-    """Configuration for Power BI incremental refresh applied to all IMPORT mode tables. When set,
-    IMPORT tables with incremental_refresh_datetime_column will use date-based partitioning for
-    incremental imports instead of full refreshes. The refresh windows and mode are shared across
-    all tables; the partition column is specified per-table on PowerBiTable."""
-
-    archive_window_granularity: Optional[RefreshGranularity] = None
-    """Granularity for the archive window. Default: MONTH"""
-
-    archive_window_periods: Optional[int] = None
-    """Number of periods in the archive window (total data retained). Must be greater than the refresh
-    window when using the same granularity. Default: 3 (with YEAR granularity = 3 years)"""
-
-    detect_data_changes: Optional[bool] = None
-    """If true, Power BI will check whether data has changed in each partition before reimporting.
-    Partitions with unchanged data are skipped, reducing refresh cost further. Uses
-    MAX(datetime_column) as the change detector."""
-
-    mode: Optional[RefreshPolicyMode] = None
-    """The refresh policy mode. Hybrid adds a real-time DirectQuery partition for the most recent data;
-    Import uses only batch-imported partitions. Default: HYBRID"""
-
-    only_refresh_complete_periods: Optional[bool] = None
-    """If true, only refresh complete periods (e.g., skip today's partial data)."""
-
-    refresh_window_granularity: Optional[RefreshGranularity] = None
-    """Granularity for the refresh window. Default: DAY"""
-
-    refresh_window_periods: Optional[int] = None
-    """Number of periods in the rolling refresh window. Partitions within this window are re-imported
-    on each refresh. Default: 1"""
-
-    def as_dict(self) -> dict:
-        """Serializes the IncrementalRefreshConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.archive_window_granularity is not None:
-            body["archive_window_granularity"] = self.archive_window_granularity.value
-        if self.archive_window_periods is not None:
-            body["archive_window_periods"] = self.archive_window_periods
-        if self.detect_data_changes is not None:
-            body["detect_data_changes"] = self.detect_data_changes
-        if self.mode is not None:
-            body["mode"] = self.mode.value
-        if self.only_refresh_complete_periods is not None:
-            body["only_refresh_complete_periods"] = self.only_refresh_complete_periods
-        if self.refresh_window_granularity is not None:
-            body["refresh_window_granularity"] = self.refresh_window_granularity.value
-        if self.refresh_window_periods is not None:
-            body["refresh_window_periods"] = self.refresh_window_periods
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the IncrementalRefreshConfig into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.archive_window_granularity is not None:
-            body["archive_window_granularity"] = self.archive_window_granularity
-        if self.archive_window_periods is not None:
-            body["archive_window_periods"] = self.archive_window_periods
-        if self.detect_data_changes is not None:
-            body["detect_data_changes"] = self.detect_data_changes
-        if self.mode is not None:
-            body["mode"] = self.mode
-        if self.only_refresh_complete_periods is not None:
-            body["only_refresh_complete_periods"] = self.only_refresh_complete_periods
-        if self.refresh_window_granularity is not None:
-            body["refresh_window_granularity"] = self.refresh_window_granularity
-        if self.refresh_window_periods is not None:
-            body["refresh_window_periods"] = self.refresh_window_periods
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> IncrementalRefreshConfig:
-        """Deserializes the IncrementalRefreshConfig from a dictionary."""
-        return cls(
-            archive_window_granularity=_enum(d, "archive_window_granularity", RefreshGranularity),
-            archive_window_periods=d.get("archive_window_periods", None),
-            detect_data_changes=d.get("detect_data_changes", None),
-            mode=_enum(d, "mode", RefreshPolicyMode),
-            only_refresh_complete_periods=d.get("only_refresh_complete_periods", None),
-            refresh_window_granularity=_enum(d, "refresh_window_granularity", RefreshGranularity),
-            refresh_window_periods=d.get("refresh_window_periods", None),
-        )
-
-
-@dataclass
 class Job:
     """Job was retrieved successfully."""
 
@@ -3637,10 +2899,6 @@ class Job:
 
     next_page_token: Optional[str] = None
     """A token that can be used to list the next page of array properties."""
-
-    path: Optional[str] = None
-    """Path of the job object in workspace file tree, including file extension. If absent, the job
-    doesn't have a workspace object. Example: /Workspace/user@example.com/my_project/my_job.job.json"""
 
     run_as_user_name: Optional[str] = None
     """The email of an active workspace user or the application ID of a service principal that the job
@@ -3681,8 +2939,6 @@ class Job:
             body["job_id"] = self.job_id
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
-        if self.path is not None:
-            body["path"] = self.path
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
@@ -3710,8 +2966,6 @@ class Job:
             body["job_id"] = self.job_id
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
-        if self.path is not None:
-            body["path"] = self.path
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
@@ -3726,14 +2980,13 @@ class Job:
     def from_dict(cls, d: Dict[str, Any]) -> Job:
         """Deserializes the Job from a dictionary."""
         return cls(
-            created_time=d.get("created_time", None),
+            created_time=_int64(d, "created_time"),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
-            job_id=d.get("job_id", None),
+            job_id=_int64(d, "job_id"),
             next_page_token=d.get("next_page_token", None),
-            path=d.get("path", None),
             run_as_user_name=d.get("run_as_user_name", None),
             settings=_from_dict(d, "settings", JobSettings),
             trigger_details=_repeated_dict(d, "trigger_details", TriggerDetails),
@@ -3937,7 +3190,7 @@ class JobCompliance:
     def from_dict(cls, d: Dict[str, Any]) -> JobCompliance:
         """Deserializes the JobCompliance from a dictionary."""
         return cls(
-            is_compliant=d.get("is_compliant", None), job_id=d.get("job_id", None), violations=d.get("violations", None)
+            is_compliant=d.get("is_compliant", None), job_id=_int64(d, "job_id"), violations=d.get("violations", None)
         )
 
 
@@ -4152,66 +3405,22 @@ class JobEnvironment:
 class JobEnvironmentVariables:
     """A named environment-variable entry, defined once at the job level and referenced by key from one
     or more tasks. Entries live on ``JobSettings.environment_variables``, and tasks select one via
-    ``TaskSettings.environment_variables_key``.
+    ``TaskSettings.environment_variables_key``."""
 
-    Precedence within a single entry (later overrides earlier on duplicate keys):
-
-    files (merged in submitted order; later file in the list wins) └─▶ variables (inline k/v
-    override file contents) └─▶ runtime (os.environ / sys.env — overrides all,
-    classic-parity)
-
-    Resolved values are never persisted: ``{{secrets/scope/key}}`` references in ``variables`` or in
-    ``files`` contents are stored verbatim and resolved at task execution time on the DP ."""
-
-    environment_variables_key: Optional[str] = None
+    environment_variables_key: str
     """Identifier for this entry. Must be unique within ``JobSettings.environment_variables``. Tasks
     reference it from ``TaskSettings.environment_variables_key``."""
 
-    files: Optional[List[str]] = None
-    """Workspace (``/Workspace/...``) or UC Volumes (``/Volumes/...``) paths to ``.env`` files. Maximum
-    5 files. Files are read, parsed, and merged at task execution time, not at job creation or
-    update API call time.
-    
-    File format: each line must be exactly ``KEY=VALUE``. Keys must match the same regex as inlined
-    variable names (``^[A-Za-z_][A-Za-z0-9_]*$``); the value continues to the end of the line. No
-    other syntax is supported — no comments, no quoted values, no escape sequences, no variable
-    interpolation. Any line that does not match the ``KEY=VALUE`` shape fails the run.
-    
-    Size limits: maximum 1,048,576 bytes (1 MiB) per file on disk; maximum 131,072 bytes (128 KiB)
-    per ``KEY=VALUE`` line combined. Caps are enforced at read time in jobs-runner — files
-    exceeding the per-file cap, or lines exceeding the per-line cap, fail the run.
-    
-    On a duplicate key, the later file wins; ``variables`` override values from any file.
-    
-    Values may contain {{secrets/scope/key}} references; those are resolved at task execution time
-    and never persisted in resolved form. Do not use these files to store raw secret values; consult
-    `secret management <https://docs.databricks.com/aws/en/security/secrets/>`__ for the right way
-    to pass sensitive values."""
-
-    variables: Optional[Dict[str, str]] = None
-    """Environment variables specified directly as key/value pairs (as opposed to ``files``, which are
-    read from ``.env`` file paths). Maximum 100 entries.
-    
-    Each key must match ``^[A-Za-z_][A-Za-z0-9_]*$`` and be 1 to 256 characters long. Each value is
-    up to 512 characters; larger values should be moved into a ``.env`` file referenced from
-    ``files``.
-    
-    On a duplicate key, ``variables`` override values from any file in ``files``.
-    
-    Values may contain {{secrets/scope/key}} references; those are resolved at task execution time
-    and never persisted in resolved form. Do not use this field to store a raw secret value; consult
-    `secret management <https://docs.databricks.com/aws/en/security/secrets/>`__ for the right way
-    to pass sensitive values."""
+    spec: Optional[JobEnvironmentVariablesSpec] = None
+    """The environment variable specification."""
 
     def as_dict(self) -> dict:
         """Serializes the JobEnvironmentVariables into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.environment_variables_key is not None:
             body["environment_variables_key"] = self.environment_variables_key
-        if self.files:
-            body["files"] = [v for v in self.files]
-        if self.variables:
-            body["variables"] = self.variables
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4219,10 +3428,8 @@ class JobEnvironmentVariables:
         body = {}
         if self.environment_variables_key is not None:
             body["environment_variables_key"] = self.environment_variables_key
-        if self.files:
-            body["files"] = self.files
-        if self.variables:
-            body["variables"] = self.variables
+        if self.spec:
+            body["spec"] = self.spec
         return body
 
     @classmethod
@@ -4230,9 +3437,62 @@ class JobEnvironmentVariables:
         """Deserializes the JobEnvironmentVariables from a dictionary."""
         return cls(
             environment_variables_key=d.get("environment_variables_key", None),
-            files=d.get("files", None),
-            variables=d.get("variables", None),
+            spec=_from_dict(d, "spec", JobEnvironmentVariablesSpec),
         )
+
+
+@dataclass
+class JobEnvironmentVariablesSpec:
+    """The environment variables and files associated with a job environment variable entry. Runtime
+    environment variables override inline ``variables``, which override values from ``files``, on
+    duplicate keys."""
+
+    files: Optional[List[str]] = None
+    """Workspace (``/Workspace/...``) or UC Volumes (``/Volumes/...``) paths to ``.env`` files. Maximum
+    5 files. Files are read, parsed, and merged at task execution time, not at job creation or
+    update API call time.
+    
+    File format: each line containing a variable must be exactly ``KEY=VALUE``. Empty and
+    whitespace-only lines, and lines beginning with ``#``, are ignored. Keys must match the same
+    regex as inlined variable names (``^[A-Za-z_][A-Za-z0-9_]*$``); the value continues to the end
+    of the line. No other syntax is supported — no inline comments, no quoted values, no escape
+    sequences, no variable interpolation. Any other line that does not match the ``KEY=VALUE`` shape
+    fails the run.
+    
+    Size limits: maximum 32,768 bytes (32 KiB) per file on disk; maximum 1,024 bytes (1 KiB) per
+    ``KEY=VALUE`` line combined. Files or lines exceeding these limits fail the run.
+    
+    On a duplicate key, the later file wins; ``variables`` override values from any file."""
+
+    variables: Optional[Dict[str, str]] = None
+    """Environment variables specified directly as key/value pairs. Maximum 20 entries.
+    
+    Each key must be 1 to 256 characters and match ``^[A-Za-z_][A-Za-z0-9_]*$``: it must start with
+    an ASCII letter or underscore and contain only ASCII letters, digits, and underscores. Each
+    value can be any Unicode string of up to 512 characters, including an empty string."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobEnvironmentVariablesSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.files:
+            body["files"] = [v for v in self.files]
+        if self.variables:
+            body["variables"] = self.variables
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobEnvironmentVariablesSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.files:
+            body["files"] = self.files
+        if self.variables:
+            body["variables"] = self.variables
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobEnvironmentVariablesSpec:
+        """Deserializes the JobEnvironmentVariablesSpec from a dictionary."""
+        return cls(files=d.get("files", None), variables=d.get("variables", None))
 
 
 @dataclass
@@ -4467,15 +3727,16 @@ class JobPermissionsDescription:
 
 @dataclass
 class JobRunAs:
-    """Write-only setting. Specifies the user or service principal that the job runs as. If not
+    """Write-only setting. Specifies the user, service principal, or group that the job runs as. If not
     specified, the job runs as the user who created the job.
 
-    Either ``user_name`` or ``service_principal_name`` should be specified. If not, an error is
-    thrown."""
+    One of ``user_name``, ``service_principal_name``, or ``group_name`` should be specified. If not,
+    an error is thrown."""
 
     group_name: Optional[str] = None
-    """Group name of an account group assigned to the workspace. Setting this field requires being a
-    member of the group."""
+    """Group name of an account group assigned to the workspace. When set, all tasks run as the group
+    and the group's permissions are used for data access. Setting this field requires being a member
+    of the group, or having the ``Assume`` permission on the group."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
@@ -4526,13 +3787,22 @@ class JobSettings:
 
     continuous: Optional[Continuous] = None
     """An optional continuous property for this job. The continuous property will ensure that there is
-    always one run executing. Only one of ``schedule`` and ``continuous`` can be used."""
+    always one run executing. Only one of ``schedule`` and ``continuous`` can be used.
+    
+    Pipelines started by a continuous job also run continuously, regardless of their own pipeline
+    mode setting."""
 
     deployment: Optional[JobDeployment] = None
     """Deployment information for jobs managed by external sources."""
 
     description: Optional[str] = None
     """An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding."""
+
+    duration_target: Optional[str] = None
+    """The window the run aims to finish within, in hours, for a Cost-optimized serverless run.
+    Required only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported
+    values: ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run
+    uses the default cost-optimized performance level without additional cost-saving optimizations."""
 
     edit_mode: Optional[JobEditMode] = None
     """Edit mode of the job.
@@ -4546,16 +3816,19 @@ class JobSettings:
 
     environment_variables: Optional[List[JobEnvironmentVariables]] = None
     """Named environment-variable entries that tasks can reference by key from
-    ``TaskSettings.environment_variables_key``. Each entry holds inline ``variables`` plus optional
-    ``.env`` ``files``. Maximum 10 entries per job. Entries are independent of one another — there
-    is no cross-entry merging."""
+    ``TaskSettings.environment_variables_key``. Each entry's ``spec`` holds inline ``variables`` and
+    optional ``.env`` ``files``. Maximum 10 entries per job. A task can reference at most one entry
+    from this list."""
 
     environments: Optional[List[JobEnvironment]] = None
-    """A list of task execution environment specifications that can be referenced by serverless tasks
-    of this job. For serverless notebook tasks, if the environment_key is not specified, the
-    notebook environment will be used if present. If a jobs environment is specified, it will
-    override the notebook environment. For other serverless tasks, the task environment is required
-    to be specified using environment_key in the task settings."""
+    """A list of task execution environment specifications that can be referenced by tasks that use
+    serverless compute or a compute resource that uses Environments mode.
+    
+    For notebook tasks that use serverless compute or a compute resource that uses Environments
+    mode, if the environment_key is not specified, the notebook environment will be used if present.
+    If a jobs environment is specified, it will override the notebook environment. For other tasks
+    that use serverless compute or a compute resource that uses Environments mode, the task
+    environment is required to be specified using environment_key in the task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -4607,9 +3880,11 @@ class JobSettings:
     or cost-efficiency for the run. The performance target does not apply to tasks that run on
     Serverless GPU compute.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
@@ -4667,6 +3942,8 @@ class JobSettings:
             body["deployment"] = self.deployment.as_dict()
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.edit_mode is not None:
             body["edit_mode"] = self.edit_mode.value
         if self.email_notifications:
@@ -4728,6 +4005,8 @@ class JobSettings:
             body["deployment"] = self.deployment
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.edit_mode is not None:
             body["edit_mode"] = self.edit_mode
         if self.email_notifications:
@@ -4786,6 +4065,7 @@ class JobSettings:
             continuous=_from_dict(d, "continuous", Continuous),
             deployment=_from_dict(d, "deployment", JobDeployment),
             description=d.get("description", None),
+            duration_target=d.get("duration_target", None),
             edit_mode=_enum(d, "edit_mode", JobEditMode),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             environment_variables=_repeated_dict(d, "environment_variables", JobEnvironmentVariables),
@@ -4944,9 +4224,7 @@ class JobsHealthRule:
     def from_dict(cls, d: Dict[str, Any]) -> JobsHealthRule:
         """Deserializes the JobsHealthRule from a dictionary."""
         return cls(
-            metric=_enum(d, "metric", JobsHealthMetric),
-            op=_enum(d, "op", JobsHealthOperator),
-            value=d.get("value", None),
+            metric=_enum(d, "metric", JobsHealthMetric), op=_enum(d, "op", JobsHealthOperator), value=_int64(d, "value")
         )
 
 
@@ -4974,31 +4252,6 @@ class JobsHealthRules:
     def from_dict(cls, d: Dict[str, Any]) -> JobsHealthRules:
         """Deserializes the JobsHealthRules from a dictionary."""
         return cls(rules=_repeated_dict(d, "rules", JobsHealthRule))
-
-
-@dataclass
-class KnowledgeAssistantTool:
-    knowledge_assistant_id: Optional[str] = None
-    """The Knowledge Assistant ID."""
-
-    def as_dict(self) -> dict:
-        """Serializes the KnowledgeAssistantTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.knowledge_assistant_id is not None:
-            body["knowledge_assistant_id"] = self.knowledge_assistant_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the KnowledgeAssistantTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.knowledge_assistant_id is not None:
-            body["knowledge_assistant_id"] = self.knowledge_assistant_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> KnowledgeAssistantTool:
-        """Deserializes the KnowledgeAssistantTool from a dictionary."""
-        return cls(knowledge_assistant_id=d.get("knowledge_assistant_id", None))
 
 
 @dataclass
@@ -5445,7 +4698,7 @@ class OutputSchemaInfo:
         """Deserializes the OutputSchemaInfo from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
-            expiration_time=d.get("expiration_time", None),
+            expiration_time=_int64(d, "expiration_time"),
             schema_name=d.get("schema_name", None),
         )
 
@@ -5606,7 +4859,7 @@ class PeriodicTriggerState:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PeriodicTriggerState:
         """Deserializes the PeriodicTriggerState from a dictionary."""
-        return cls(next_run_time=d.get("next_run_time", None))
+        return cls(next_run_time=_int64(d, "next_run_time"))
 
 
 @dataclass
@@ -5810,20 +5063,6 @@ class PowerBiTable:
     catalog: Optional[str] = None
     """The catalog name in Databricks"""
 
-    detect_data_changes_column: Optional[str] = None
-    """The column used for Power BI's "detect data changes" polling expression on this table. When the
-    task's IncrementalRefreshConfig.detect_data_changes is true, Power BI evaluates MAX(this_column)
-    per partition and skips partitions whose value hasn't changed since the previous refresh. Falls
-    back to incremental_refresh_datetime_column when unset, which is fine for the common case where
-    the partition column is also a good change-detection signal. Set this explicitly when you want
-    to partition on one column (e.g., event_date) but detect changes on another (e.g.,
-    last_modified_at)."""
-
-    incremental_refresh_datetime_column: Optional[str] = None
-    """The datetime column used for incremental refresh partitioning on this table. e.g., "order_date",
-    "updated_at" Only applicable when the task has incremental_refresh_config set and this table
-    uses IMPORT storage mode."""
-
     name: Optional[str] = None
     """The table name in Databricks"""
 
@@ -5833,28 +5072,17 @@ class PowerBiTable:
     storage_mode: Optional[StorageMode] = None
     """The Power BI storage mode of the table"""
 
-    table_type: Optional[PowerBiTableTableType] = None
-    """The Unity Catalog table type of this table. When set, the server trusts it to classify the table
-    during metric-view filtering and skips the server-side lookup. When unset, the server resolves
-    the type on its own."""
-
     def as_dict(self) -> dict:
         """Serializes the PowerBiTable into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog is not None:
             body["catalog"] = self.catalog
-        if self.detect_data_changes_column is not None:
-            body["detect_data_changes_column"] = self.detect_data_changes_column
-        if self.incremental_refresh_datetime_column is not None:
-            body["incremental_refresh_datetime_column"] = self.incremental_refresh_datetime_column
         if self.name is not None:
             body["name"] = self.name
         if self.schema is not None:
             body["schema"] = self.schema
         if self.storage_mode is not None:
             body["storage_mode"] = self.storage_mode.value
-        if self.table_type is not None:
-            body["table_type"] = self.table_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5862,18 +5090,12 @@ class PowerBiTable:
         body = {}
         if self.catalog is not None:
             body["catalog"] = self.catalog
-        if self.detect_data_changes_column is not None:
-            body["detect_data_changes_column"] = self.detect_data_changes_column
-        if self.incremental_refresh_datetime_column is not None:
-            body["incremental_refresh_datetime_column"] = self.incremental_refresh_datetime_column
         if self.name is not None:
             body["name"] = self.name
         if self.schema is not None:
             body["schema"] = self.schema
         if self.storage_mode is not None:
             body["storage_mode"] = self.storage_mode
-        if self.table_type is not None:
-            body["table_type"] = self.table_type
         return body
 
     @classmethod
@@ -5881,43 +5103,16 @@ class PowerBiTable:
         """Deserializes the PowerBiTable from a dictionary."""
         return cls(
             catalog=d.get("catalog", None),
-            detect_data_changes_column=d.get("detect_data_changes_column", None),
-            incremental_refresh_datetime_column=d.get("incremental_refresh_datetime_column", None),
             name=d.get("name", None),
             schema=d.get("schema", None),
             storage_mode=_enum(d, "storage_mode", StorageMode),
-            table_type=_enum(d, "table_type", PowerBiTableTableType),
         )
-
-
-class PowerBiTableTableType(Enum):
-    """The Unity Catalog table type of a table. Values mirror the Unity Catalog TableType enum so
-    classification stays aligned across the two APIs."""
-
-    EXTERNAL = "EXTERNAL"
-    EXTERNAL_SHALLOW_CLONE = "EXTERNAL_SHALLOW_CLONE"
-    FOREIGN = "FOREIGN"
-    MANAGED = "MANAGED"
-    MANAGED_SHALLOW_CLONE = "MANAGED_SHALLOW_CLONE"
-    MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
-    METRIC_VIEW = "METRIC_VIEW"
-    STREAMING_TABLE = "STREAMING_TABLE"
-    VIEW = "VIEW"
 
 
 @dataclass
 class PowerBiTask:
     connection_resource_name: Optional[str] = None
     """The resource name of the UC connection to authenticate from Databricks to Power BI"""
-
-    incremental_refresh_config: Optional[IncrementalRefreshConfig] = None
-    """Incremental refresh policy applied to all IMPORT mode tables in the model. Windows and mode are
-    shared; partition columns are set per-table on PowerBiTable."""
-
-    power_bi_gateway_id: Optional[str] = None
-    """The ID of the on-premises Power BI Gateway to bind this dataset to. Used when the Databricks
-    workspace is in a private network that the Power BI cloud connector cannot reach directly. When
-    set, the handler calls the Power BI BindToGateway API after publish."""
 
     power_bi_model: Optional[PowerBiModel] = None
     """The semantic model to update"""
@@ -5936,10 +5131,6 @@ class PowerBiTask:
         body = {}
         if self.connection_resource_name is not None:
             body["connection_resource_name"] = self.connection_resource_name
-        if self.incremental_refresh_config:
-            body["incremental_refresh_config"] = self.incremental_refresh_config.as_dict()
-        if self.power_bi_gateway_id is not None:
-            body["power_bi_gateway_id"] = self.power_bi_gateway_id
         if self.power_bi_model:
             body["power_bi_model"] = self.power_bi_model.as_dict()
         if self.refresh_after_update is not None:
@@ -5955,10 +5146,6 @@ class PowerBiTask:
         body = {}
         if self.connection_resource_name is not None:
             body["connection_resource_name"] = self.connection_resource_name
-        if self.incremental_refresh_config:
-            body["incremental_refresh_config"] = self.incremental_refresh_config
-        if self.power_bi_gateway_id is not None:
-            body["power_bi_gateway_id"] = self.power_bi_gateway_id
         if self.power_bi_model:
             body["power_bi_model"] = self.power_bi_model
         if self.refresh_after_update is not None:
@@ -5974,8 +5161,6 @@ class PowerBiTask:
         """Deserializes the PowerBiTask from a dictionary."""
         return cls(
             connection_resource_name=d.get("connection_resource_name", None),
-            incremental_refresh_config=_from_dict(d, "incremental_refresh_config", IncrementalRefreshConfig),
-            power_bi_gateway_id=d.get("power_bi_gateway_id", None),
             power_bi_model=_from_dict(d, "power_bi_model", PowerBiModel),
             refresh_after_update=d.get("refresh_after_update", None),
             tables=_repeated_dict(d, "tables", PowerBiTable),
@@ -6172,22 +5357,6 @@ class QueueSettings:
         return cls(enabled=d.get("enabled", None))
 
 
-class RefreshGranularity(Enum):
-    """Granularity for incremental refresh windows."""
-
-    REFRESH_GRANULARITY_DAY = "REFRESH_GRANULARITY_DAY"
-    REFRESH_GRANULARITY_MONTH = "REFRESH_GRANULARITY_MONTH"
-    REFRESH_GRANULARITY_QUARTER = "REFRESH_GRANULARITY_QUARTER"
-    REFRESH_GRANULARITY_YEAR = "REFRESH_GRANULARITY_YEAR"
-
-
-class RefreshPolicyMode(Enum):
-    """The refresh policy mode for incremental refresh."""
-
-    REFRESH_POLICY_MODE_HYBRID = "REFRESH_POLICY_MODE_HYBRID"
-    REFRESH_POLICY_MODE_IMPORT_ONLY = "REFRESH_POLICY_MODE_IMPORT_ONLY"
-
-
 @dataclass
 class RepairHistoryItem:
     effective_performance_target: Optional[PerformanceTarget] = None
@@ -6195,9 +5364,11 @@ class RepairHistoryItem:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     end_time: Optional[int] = None
     """The end time of the (repaired) run."""
@@ -6266,12 +5437,12 @@ class RepairHistoryItem:
         """Deserializes the RepairHistoryItem from a dictionary."""
         return cls(
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
-            end_time=d.get("end_time", None),
-            id=d.get("id", None),
-            start_time=d.get("start_time", None),
+            end_time=_int64(d, "end_time"),
+            id=_int64(d, "id"),
+            start_time=_int64(d, "start_time"),
             state=_from_dict(d, "state", RunState),
             status=_from_dict(d, "status", RunStatus),
-            task_run_ids=d.get("task_run_ids", None),
+            task_run_ids=_repeated_int64(d, "task_run_ids"),
             type=_enum(d, "type", RepairHistoryItemType),
         )
 
@@ -6308,7 +5479,7 @@ class RepairRunResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepairRunResponse:
         """Deserializes the RepairRunResponse from a dictionary."""
-        return cls(repair_id=d.get("repair_id", None))
+        return cls(repair_id=_int64(d, "repair_id"))
 
 
 @dataclass
@@ -6525,23 +5696,13 @@ class ResolvedStringParamsValues:
 
 @dataclass
 class ResolvedValues:
-    agentic_task: Optional[ResolvedValuesAgenticTaskResolvedValues] = None
-    """Resolved values for an agentic task: the ``input`` prompt with parameter references replaced by
-    the concrete values produced by upstream tasks."""
-
     ai_runtime_task: Optional[ResolvedValuesAiRuntimeTaskResolvedValues] = None
     """Resolved values for an AI Runtime task — env_vars with ``{{tasks.<key>.values.<name>}}``
     references substituted to concrete values before submission to the training service."""
 
-    alert_task: Optional[ResolvedValuesAlertTaskResolvedValues] = None
-
     condition_task: Optional[ResolvedConditionTaskValues] = None
 
     dbt_task: Optional[ResolvedDbtTaskValues] = None
-
-    genie_task: Optional[ResolvedValuesGenieTaskResolvedValues] = None
-    """Resolved values for a Genie task: the per-run ``parameters`` overrides with
-    ``{{job.parameters.*}}`` / upstream-task references replaced by concrete values before the run."""
 
     notebook_task: Optional[ResolvedNotebookTaskValues] = None
 
@@ -6564,18 +5725,12 @@ class ResolvedValues:
     def as_dict(self) -> dict:
         """Serializes the ResolvedValues into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.agentic_task:
-            body["agentic_task"] = self.agentic_task.as_dict()
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
-        if self.alert_task:
-            body["alert_task"] = self.alert_task.as_dict()
         if self.condition_task:
             body["condition_task"] = self.condition_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
-        if self.genie_task:
-            body["genie_task"] = self.genie_task.as_dict()
         if self.notebook_task:
             body["notebook_task"] = self.notebook_task.as_dict()
         if self.pipeline_task:
@@ -6599,18 +5754,12 @@ class ResolvedValues:
     def as_shallow_dict(self) -> dict:
         """Serializes the ResolvedValues into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.agentic_task:
-            body["agentic_task"] = self.agentic_task
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task
-        if self.alert_task:
-            body["alert_task"] = self.alert_task
         if self.condition_task:
             body["condition_task"] = self.condition_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
-        if self.genie_task:
-            body["genie_task"] = self.genie_task
         if self.notebook_task:
             body["notebook_task"] = self.notebook_task
         if self.pipeline_task:
@@ -6635,12 +5784,9 @@ class ResolvedValues:
     def from_dict(cls, d: Dict[str, Any]) -> ResolvedValues:
         """Deserializes the ResolvedValues from a dictionary."""
         return cls(
-            agentic_task=_from_dict(d, "agentic_task", ResolvedValuesAgenticTaskResolvedValues),
             ai_runtime_task=_from_dict(d, "ai_runtime_task", ResolvedValuesAiRuntimeTaskResolvedValues),
-            alert_task=_from_dict(d, "alert_task", ResolvedValuesAlertTaskResolvedValues),
             condition_task=_from_dict(d, "condition_task", ResolvedConditionTaskValues),
             dbt_task=_from_dict(d, "dbt_task", ResolvedDbtTaskValues),
-            genie_task=_from_dict(d, "genie_task", ResolvedValuesGenieTaskResolvedValues),
             notebook_task=_from_dict(d, "notebook_task", ResolvedNotebookTaskValues),
             pipeline_task=_from_dict(d, "pipeline_task", ResolvedPipelineTaskValues),
             python_wheel_task=_from_dict(d, "python_wheel_task", ResolvedPythonWheelTaskValues),
@@ -6651,35 +5797,6 @@ class ResolvedValues:
             spark_submit_task=_from_dict(d, "spark_submit_task", ResolvedStringParamsValues),
             sql_task=_from_dict(d, "sql_task", ResolvedParamPairValues),
         )
-
-
-@dataclass
-class ResolvedValuesAgenticTaskResolvedValues:
-    """Resolved values for an agentic task: the ``input`` prompt with parameter references such as
-    ``{{tasks.<task_key>.values.<name>}}`` replaced by the concrete values produced by upstream
-    tasks."""
-
-    input: Optional[str] = None
-    """The fully-resolved ``input`` prompt sent to the agent."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ResolvedValuesAgenticTaskResolvedValues into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.input is not None:
-            body["input"] = self.input
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResolvedValuesAgenticTaskResolvedValues into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.input is not None:
-            body["input"] = self.input
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResolvedValuesAgenticTaskResolvedValues:
-        """Deserializes the ResolvedValuesAgenticTaskResolvedValues from a dictionary."""
-        return cls(input=d.get("input", None))
 
 
 @dataclass
@@ -6701,60 +5818,6 @@ class ResolvedValuesAiRuntimeTaskResolvedValues:
     def from_dict(cls, d: Dict[str, Any]) -> ResolvedValuesAiRuntimeTaskResolvedValues:
         """Deserializes the ResolvedValuesAiRuntimeTaskResolvedValues from a dictionary."""
         return cls()
-
-
-@dataclass
-class ResolvedValuesAlertTaskResolvedValues:
-    parameters: Optional[Dict[str, str]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ResolvedValuesAlertTaskResolvedValues into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.parameters:
-            body["parameters"] = self.parameters
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResolvedValuesAlertTaskResolvedValues into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.parameters:
-            body["parameters"] = self.parameters
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResolvedValuesAlertTaskResolvedValues:
-        """Deserializes the ResolvedValuesAlertTaskResolvedValues from a dictionary."""
-        return cls(parameters=d.get("parameters", None))
-
-
-@dataclass
-class ResolvedValuesGenieTaskResolvedValues:
-    """Resolved values for a Genie task: the per-run ``parameters`` overrides with
-    ``{{job.parameters.*}}`` / ``{{tasks.<key>.values.<name>}}`` references replaced by the concrete
-    values before the run."""
-
-    parameters: Optional[Dict[str, str]] = None
-    """The per-run parameter overrides with all ``{{job.parameters.*}}`` /
-    ``{{tasks.<key>.values.<name>}}`` references replaced by concrete values."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ResolvedValuesGenieTaskResolvedValues into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.parameters:
-            body["parameters"] = self.parameters
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResolvedValuesGenieTaskResolvedValues into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.parameters:
-            body["parameters"] = self.parameters
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResolvedValuesGenieTaskResolvedValues:
-        """Deserializes the ResolvedValuesGenieTaskResolvedValues from a dictionary."""
-        return cls(parameters=d.get("parameters", None))
 
 
 @dataclass
@@ -6794,14 +5857,22 @@ class Run:
     description: Optional[str] = None
     """Description of the run"""
 
+    duration_target: Optional[str] = None
+    """The window the run aims to finish within, in hours, for a Cost-optimized serverless run.
+    Required only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported
+    values: ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run
+    uses the default cost-optimized performance level without additional cost-saving optimizations."""
+
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     effective_usage_policy_id: Optional[str] = None
     """The id of the usage policy used by this run for cost attribution purposes."""
@@ -6812,9 +5883,8 @@ class Run:
 
     environment_variables: Optional[List[JobEnvironmentVariables]] = None
     """Snapshot of ``JobSettings.environment_variables`` as it was at run launch — the full list of
-    named env-var profiles the job defined. Per-profile resolved contents are not preserved here;
-    only the customer-defined ``variables`` and ``files`` paths. To find which profile a given task
-    ran with, look at ``RunTaskSettings.environment_variables_key``."""
+    named environment-variable entries the job defined. To find which entry a given task ran with,
+    look at ``RunTaskSettings.environment_variables_key``."""
 
     execution_duration: Optional[int] = None
     """The time in milliseconds it took to execute the commands in the JAR or notebook until they
@@ -6943,6 +6013,8 @@ class Run:
             body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.effective_usage_policy_id is not None:
@@ -7026,6 +6098,8 @@ class Run:
             body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
+        if self.duration_target is not None:
+            body["duration_target"] = self.duration_target
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.effective_usage_policy_id is not None:
@@ -7097,38 +6171,39 @@ class Run:
         """Deserializes the Run from a dictionary."""
         return cls(
             attempt_number=d.get("attempt_number", None),
-            cleanup_duration=d.get("cleanup_duration", None),
+            cleanup_duration=_int64(d, "cleanup_duration"),
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             cluster_spec=_from_dict(d, "cluster_spec", ClusterSpec),
             creator_user_name=d.get("creator_user_name", None),
             deployment_id=d.get("deployment_id", None),
             description=d.get("description", None),
+            duration_target=d.get("duration_target", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             environment_variables=_repeated_dict(d, "environment_variables", JobEnvironmentVariables),
-            execution_duration=d.get("execution_duration", None),
+            execution_duration=_int64(d, "execution_duration"),
             git_source=_from_dict(d, "git_source", GitSource),
             has_more=d.get("has_more", None),
             iterations=_repeated_dict(d, "iterations", RunTask),
             job_clusters=_repeated_dict(d, "job_clusters", JobCluster),
-            job_id=d.get("job_id", None),
+            job_id=_int64(d, "job_id"),
             job_parameters=_repeated_dict(d, "job_parameters", JobParameter),
-            job_run_id=d.get("job_run_id", None),
+            job_run_id=_int64(d, "job_run_id"),
             next_page_token=d.get("next_page_token", None),
-            number_in_job=d.get("number_in_job", None),
-            original_attempt_run_id=d.get("original_attempt_run_id", None),
+            number_in_job=_int64(d, "number_in_job"),
+            original_attempt_run_id=_int64(d, "original_attempt_run_id"),
             overriding_parameters=_from_dict(d, "overriding_parameters", RunParameters),
-            queue_duration=d.get("queue_duration", None),
+            queue_duration=_int64(d, "queue_duration"),
             repair_history=_repeated_dict(d, "repair_history", RepairHistoryItem),
-            run_duration=d.get("run_duration", None),
-            run_id=d.get("run_id", None),
+            run_duration=_int64(d, "run_duration"),
+            run_id=_int64(d, "run_id"),
             run_name=d.get("run_name", None),
             run_page_url=d.get("run_page_url", None),
             run_type=_enum(d, "run_type", RunType),
             schedule=_from_dict(d, "schedule", CronSchedule),
-            setup_duration=d.get("setup_duration", None),
-            start_time=d.get("start_time", None),
+            setup_duration=_int64(d, "setup_duration"),
+            start_time=_int64(d, "start_time"),
             state=_from_dict(d, "state", RunState),
             status=_from_dict(d, "status", RunStatus),
             tasks=_repeated_dict(d, "tasks", RunTask),
@@ -7296,7 +6371,7 @@ class RunJobOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RunJobOutput:
         """Deserializes the RunJobOutput from a dictionary."""
-        return cls(run_id=d.get("run_id", None))
+        return cls(run_id=_int64(d, "run_id"))
 
 
 @dataclass
@@ -7444,7 +6519,7 @@ class RunJobTask:
         return cls(
             dbt_commands=d.get("dbt_commands", None),
             jar_params=d.get("jar_params", None),
-            job_id=d.get("job_id", None),
+            job_id=_int64(d, "job_id"),
             job_parameters=d.get("job_parameters", None),
             notebook_params=d.get("notebook_params", None),
             pipeline_params=_from_dict(d, "pipeline_params", PipelineParams),
@@ -7528,15 +6603,12 @@ class RunNowResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RunNowResponse:
         """Deserializes the RunNowResponse from a dictionary."""
-        return cls(number_in_job=d.get("number_in_job", None), run_id=d.get("run_id", None))
+        return cls(number_in_job=_int64(d, "number_in_job"), run_id=_int64(d, "run_id"))
 
 
 @dataclass
 class RunOutput:
     """Run output was retrieved successfully."""
-
-    agentic_task_output: Optional[AgenticTaskOutput] = None
-    """The output of an agentic task, if available"""
 
     ai_runtime_task_output: Optional[AiRuntimeTaskOutput] = None
     """The output of an AiRuntimeTask, if available — MLflow identifiers, artifact paths, and
@@ -7567,9 +6639,6 @@ class RunOutput:
 
     error_trace: Optional[str] = None
     """If there was an error executing the run, this field contains any available stack traces."""
-
-    genie_task_output: Optional[GenieTaskOutput] = None
-    """The output of a Genie task, if available"""
 
     info: Optional[str] = None
 
@@ -7604,8 +6673,6 @@ class RunOutput:
     def as_dict(self) -> dict:
         """Serializes the RunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.agentic_task_output:
-            body["agentic_task_output"] = self.agentic_task_output.as_dict()
         if self.ai_runtime_task_output:
             body["ai_runtime_task_output"] = self.ai_runtime_task_output.as_dict()
         if self.alert_output:
@@ -7624,8 +6691,6 @@ class RunOutput:
             body["error"] = self.error
         if self.error_trace is not None:
             body["error_trace"] = self.error_trace
-        if self.genie_task_output:
-            body["genie_task_output"] = self.genie_task_output.as_dict()
         if self.info is not None:
             body["info"] = self.info
         if self.logs is not None:
@@ -7645,8 +6710,6 @@ class RunOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunOutput into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.agentic_task_output:
-            body["agentic_task_output"] = self.agentic_task_output
         if self.ai_runtime_task_output:
             body["ai_runtime_task_output"] = self.ai_runtime_task_output
         if self.alert_output:
@@ -7665,8 +6728,6 @@ class RunOutput:
             body["error"] = self.error
         if self.error_trace is not None:
             body["error_trace"] = self.error_trace
-        if self.genie_task_output:
-            body["genie_task_output"] = self.genie_task_output
         if self.info is not None:
             body["info"] = self.info
         if self.logs is not None:
@@ -7687,7 +6748,6 @@ class RunOutput:
     def from_dict(cls, d: Dict[str, Any]) -> RunOutput:
         """Deserializes the RunOutput from a dictionary."""
         return cls(
-            agentic_task_output=_from_dict(d, "agentic_task_output", AgenticTaskOutput),
             ai_runtime_task_output=_from_dict(d, "ai_runtime_task_output", AiRuntimeTaskOutput),
             alert_output=_from_dict(d, "alert_output", AlertTaskOutput),
             clean_rooms_notebook_output=_from_dict(
@@ -7699,7 +6759,6 @@ class RunOutput:
             dbt_platform_output=_from_dict(d, "dbt_platform_output", DbtPlatformTaskOutput),
             error=d.get("error", None),
             error_trace=d.get("error_trace", None),
-            genie_task_output=_from_dict(d, "genie_task_output", GenieTaskOutput),
             info=d.get("info", None),
             logs=d.get("logs", None),
             logs_truncated=d.get("logs_truncated", None),
@@ -7997,9 +7056,6 @@ class RunTask:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
-    agentic_task: Optional[AgenticTask] = None
-    """Agentic Task for job-based multi-agent execution"""
-
     ai_runtime_task: Optional[AiRuntimeTask] = None
     """The task runs a multi-gpu compute workload on Databricks AI Runtime. Specify the accelerator
     type and count, the command to run, and where the workload's code and MLflow output are stored."""
@@ -8070,13 +7126,11 @@ class RunTask:
     the client-set performance target on the request depending on whether the performance mode is
     supported by the job type.
     
-    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
     - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling
-      and optimized cluster performance."""
-
-    effective_serverless_compute_id: Optional[str] = None
-    """The id of the serverless compute this task ran on, either explicitly configured on the task or
-    the workspace default. Only set once the compute has been resolved at run trigger."""
+      and optimized cluster performance.
+    - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+    - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+      duration time. Must provide a duration target."""
 
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
@@ -8088,13 +7142,15 @@ class RunTask:
 
     environment_key: Optional[str] = None
     """The key that references an environment spec in a job. This field is required for Python script,
-    Python wheel and dbt tasks when using serverless compute."""
+    Python wheel and dbt tasks when using serverless compute or a compute resource that uses
+    Environments mode."""
 
     environment_variables_key: Optional[str] = None
     """Reference to a ``JobEnvironmentVariables`` entry defined in
-    ``RunSettings.environment_variables``. The selected entry's variables and file contents are
-    applied to this task at execution time. Length and pattern mirror ``environment_key`` so the two
-    references look identical to customers reading task settings."""
+    ``RunSettings.environment_variables`` for one-time runs or preserved in
+    ``Run.environment_variables`` for run snapshots. The selected entry's variables are applied to
+    this task at execution time. This field supports serverless tasks using environment version 5 or
+    later."""
 
     execution_duration: Optional[int] = None
     """The time in milliseconds it took to execute the commands in the JAR or notebook until they
@@ -8113,9 +7169,6 @@ class RunTask:
     present."""
 
     gen_ai_compute_task: Optional[GenAiComputeTask] = None
-
-    genie_task: Optional[GenieTask] = None
-    """Runs a Genie or Genie Code agent task."""
 
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
@@ -8235,8 +7288,6 @@ class RunTask:
     def as_dict(self) -> dict:
         """Serializes the RunTask into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.agentic_task:
-            body["agentic_task"] = self.agentic_task.as_dict()
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.alert_task:
@@ -8271,8 +7322,6 @@ class RunTask:
             body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
-        if self.effective_serverless_compute_id is not None:
-            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.end_time is not None:
@@ -8289,8 +7338,6 @@ class RunTask:
             body["for_each_task"] = self.for_each_task.as_dict()
         if self.gen_ai_compute_task:
             body["gen_ai_compute_task"] = self.gen_ai_compute_task.as_dict()
-        if self.genie_task:
-            body["genie_task"] = self.genie_task.as_dict()
         if self.git_source:
             body["git_source"] = self.git_source.as_dict()
         if self.job_cluster_key is not None:
@@ -8358,8 +7405,6 @@ class RunTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunTask into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.agentic_task:
-            body["agentic_task"] = self.agentic_task
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task
         if self.alert_task:
@@ -8394,8 +7439,6 @@ class RunTask:
             body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
-        if self.effective_serverless_compute_id is not None:
-            body["effective_serverless_compute_id"] = self.effective_serverless_compute_id
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.end_time is not None:
@@ -8412,8 +7455,6 @@ class RunTask:
             body["for_each_task"] = self.for_each_task
         if self.gen_ai_compute_task:
             body["gen_ai_compute_task"] = self.gen_ai_compute_task
-        if self.genie_task:
-            body["genie_task"] = self.genie_task
         if self.git_source:
             body["git_source"] = self.git_source
         if self.job_cluster_key is not None:
@@ -8482,12 +7523,11 @@ class RunTask:
     def from_dict(cls, d: Dict[str, Any]) -> RunTask:
         """Deserializes the RunTask from a dictionary."""
         return cls(
-            agentic_task=_from_dict(d, "agentic_task", AgenticTask),
             ai_runtime_task=_from_dict(d, "ai_runtime_task", AiRuntimeTask),
             alert_task=_from_dict(d, "alert_task", AlertTask),
             attempt_number=d.get("attempt_number", None),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
-            cleanup_duration=d.get("cleanup_duration", None),
+            cleanup_duration=_int64(d, "cleanup_duration"),
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             compute=_from_dict(d, "compute", Compute),
             condition_task=_from_dict(d, "condition_task", RunConditionTask),
@@ -8500,16 +7540,14 @@ class RunTask:
             disable_auto_optimization=d.get("disable_auto_optimization", None),
             disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
-            effective_serverless_compute_id=d.get("effective_serverless_compute_id", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             environment_key=d.get("environment_key", None),
             environment_variables_key=d.get("environment_variables_key", None),
-            execution_duration=d.get("execution_duration", None),
+            execution_duration=_int64(d, "execution_duration"),
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", RunForEachTask),
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
-            genie_task=_from_dict(d, "genie_task", GenieTask),
             git_source=_from_dict(d, "git_source", GitSource),
             job_cluster_key=d.get("job_cluster_key", None),
             libraries=_repeated_dict(d, "libraries", compute.Library),
@@ -8522,20 +7560,20 @@ class RunTask:
             power_bi_task=_from_dict(d, "power_bi_task", PowerBiTask),
             python_operator_task=_from_dict(d, "python_operator_task", PythonOperatorTask),
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
-            queue_duration=d.get("queue_duration", None),
+            queue_duration=_int64(d, "queue_duration"),
             resolved_values=_from_dict(d, "resolved_values", ResolvedValues),
             retry_on_timeout=d.get("retry_on_timeout", None),
-            run_duration=d.get("run_duration", None),
-            run_id=d.get("run_id", None),
+            run_duration=_int64(d, "run_duration"),
+            run_id=_int64(d, "run_id"),
             run_if=_enum(d, "run_if", RunIf),
             run_job_task=_from_dict(d, "run_job_task", RunJobTask),
             run_page_url=d.get("run_page_url", None),
-            setup_duration=d.get("setup_duration", None),
+            setup_duration=_int64(d, "setup_duration"),
             spark_jar_task=_from_dict(d, "spark_jar_task", SparkJarTask),
             spark_python_task=_from_dict(d, "spark_python_task", SparkPythonTask),
             spark_submit_task=_from_dict(d, "spark_submit_task", SparkSubmitTask),
             sql_task=_from_dict(d, "sql_task", SqlTask),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             state=_from_dict(d, "state", RunState),
             status=_from_dict(d, "status", RunStatus),
             task_key=d.get("task_key", None),
@@ -8576,56 +7614,6 @@ class ScheduleTriggerState:
     def from_dict(cls, d: Dict[str, Any]) -> ScheduleTriggerState:
         """Deserializes the ScheduleTriggerState from a dictionary."""
         return cls()
-
-
-@dataclass
-class SchemaTool:
-    name: Optional[str] = None
-    """UC schema name (``catalog.schema``)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SchemaTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SchemaTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SchemaTool:
-        """Deserializes the SchemaTool from a dictionary."""
-        return cls(name=d.get("name", None))
-
-
-@dataclass
-class ServingEndpointTool:
-    name: Optional[str] = None
-    """Model serving endpoint name."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ServingEndpointTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ServingEndpointTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointTool:
-        """Deserializes the ServingEndpointTool from a dictionary."""
-        return cls(name=d.get("name", None))
 
 
 class Source(Enum):
@@ -9138,10 +8126,10 @@ class SqlDashboardWidgetOutput:
     def from_dict(cls, d: Dict[str, Any]) -> SqlDashboardWidgetOutput:
         """Deserializes the SqlDashboardWidgetOutput from a dictionary."""
         return cls(
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             error=_from_dict(d, "error", SqlOutputError),
             output_link=d.get("output_link", None),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             status=_enum(d, "status", SqlDashboardWidgetOutputStatus),
             widget_id=d.get("widget_id", None),
             widget_title=d.get("widget_title", None),
@@ -9600,7 +8588,7 @@ class SubmitRunResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SubmitRunResponse:
         """Deserializes the SubmitRunResponse from a dictionary."""
-        return cls(run_id=d.get("run_id", None))
+        return cls(run_id=_int64(d, "run_id"))
 
 
 @dataclass
@@ -9609,9 +8597,6 @@ class SubmitTask:
     """A unique name for the task. This field is used to refer to this task from other tasks. This
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
-
-    agentic_task: Optional[AgenticTask] = None
-    """Agentic Task for job-based multi-agent execution"""
 
     ai_runtime_task: Optional[AiRuntimeTask] = None
     """The task runs a multi-gpu compute workload on Databricks AI Runtime. Specify the accelerator
@@ -9666,13 +8651,15 @@ class SubmitTask:
 
     environment_key: Optional[str] = None
     """The key that references an environment spec in a job. This field is required for Python script,
-    Python wheel and dbt tasks when using serverless compute."""
+    Python wheel and dbt tasks when using serverless compute or a compute resource that uses
+    Environments mode."""
 
     environment_variables_key: Optional[str] = None
     """Reference to a ``JobEnvironmentVariables`` entry defined in
-    ``RunSettings.environment_variables``. The selected entry's variables and file contents are
-    applied to this task at execution time. Length and pattern mirror ``environment_key`` so the two
-    references look identical to customers reading task settings."""
+    ``RunSettings.environment_variables`` for one-time runs or preserved in
+    ``Run.environment_variables`` for run snapshots. The selected entry's variables are applied to
+    this task at execution time. This field supports serverless tasks using environment version 5 or
+    later."""
 
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs. When running
@@ -9684,9 +8671,6 @@ class SubmitTask:
     present."""
 
     gen_ai_compute_task: Optional[GenAiComputeTask] = None
-
-    genie_task: Optional[GenieTask] = None
-    """Runs a Genie or Genie Code agent task."""
 
     health: Optional[JobsHealthRules] = None
 
@@ -9765,8 +8749,6 @@ class SubmitTask:
     def as_dict(self) -> dict:
         """Serializes the SubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.agentic_task:
-            body["agentic_task"] = self.agentic_task.as_dict()
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.alert_task:
@@ -9805,8 +8787,6 @@ class SubmitTask:
             body["for_each_task"] = self.for_each_task.as_dict()
         if self.gen_ai_compute_task:
             body["gen_ai_compute_task"] = self.gen_ai_compute_task.as_dict()
-        if self.genie_task:
-            body["genie_task"] = self.genie_task.as_dict()
         if self.health:
             body["health"] = self.health.as_dict()
         if self.libraries:
@@ -9854,8 +8834,6 @@ class SubmitTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the SubmitTask into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.agentic_task:
-            body["agentic_task"] = self.agentic_task
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task
         if self.alert_task:
@@ -9894,8 +8872,6 @@ class SubmitTask:
             body["for_each_task"] = self.for_each_task
         if self.gen_ai_compute_task:
             body["gen_ai_compute_task"] = self.gen_ai_compute_task
-        if self.genie_task:
-            body["genie_task"] = self.genie_task
         if self.health:
             body["health"] = self.health
         if self.libraries:
@@ -9944,7 +8920,6 @@ class SubmitTask:
     def from_dict(cls, d: Dict[str, Any]) -> SubmitTask:
         """Deserializes the SubmitTask from a dictionary."""
         return cls(
-            agentic_task=_from_dict(d, "agentic_task", AgenticTask),
             ai_runtime_task=_from_dict(d, "ai_runtime_task", AiRuntimeTask),
             alert_task=_from_dict(d, "alert_task", AlertTask),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
@@ -9964,7 +8939,6 @@ class SubmitTask:
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", ForEachTask),
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
-            genie_task=_from_dict(d, "genie_task", GenieTask),
             health=_from_dict(d, "health", JobsHealthRules),
             libraries=_repeated_dict(d, "libraries", compute.Library),
             max_retries=d.get("max_retries", None),
@@ -9991,6 +8965,12 @@ class SubmitTask:
 
 @dataclass
 class Subscription:
+    attachment: Optional[SubscriptionAttachment] = None
+    """Optional: The configuration for the files attached to the dashboard snapshot notification. It
+    controls the underlying data of dashboard widgets that is attached as data files and which pages
+    are included in the attached PDF. If not specified, the notification is sent with only the
+    default snapshot."""
+
     custom_subject: Optional[str] = None
     """Optional: Allows users to specify a custom subject line on the email sent to subscribers."""
 
@@ -10003,6 +8983,8 @@ class Subscription:
     def as_dict(self) -> dict:
         """Serializes the Subscription into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.attachment:
+            body["attachment"] = self.attachment.as_dict()
         if self.custom_subject is not None:
             body["custom_subject"] = self.custom_subject
         if self.paused is not None:
@@ -10014,6 +8996,8 @@ class Subscription:
     def as_shallow_dict(self) -> dict:
         """Serializes the Subscription into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.attachment:
+            body["attachment"] = self.attachment
         if self.custom_subject is not None:
             body["custom_subject"] = self.custom_subject
         if self.paused is not None:
@@ -10026,10 +9010,200 @@ class Subscription:
     def from_dict(cls, d: Dict[str, Any]) -> Subscription:
         """Deserializes the Subscription from a dictionary."""
         return cls(
+            attachment=_from_dict(d, "attachment", SubscriptionAttachment),
             custom_subject=d.get("custom_subject", None),
             paused=d.get("paused", None),
             subscribers=_repeated_dict(d, "subscribers", SubscriptionSubscriber),
         )
+
+
+@dataclass
+class SubscriptionAttachment:
+    """The configuration for the files attached to the dashboard snapshot notification sent to
+    subscribers. ``data_attachment`` describes the underlying data of dashboard widgets attached as
+    data files, and ``page_attachment`` describes which dashboard pages are included in the attached
+    PDF."""
+
+    data_attachment: Optional[SubscriptionAttachmentDataAttachment] = None
+    """Optional: The configuration for the underlying data of dashboard widgets attached as tabular
+    data files. If not specified, no tabular data is attached."""
+
+    page_attachment: Optional[SubscriptionAttachmentPageAttachment] = None
+    """Optional: The selection of dashboard pages included in the attached PDF. If not specified, only
+    the first page is included."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_attachment:
+            body["data_attachment"] = self.data_attachment.as_dict()
+        if self.page_attachment:
+            body["page_attachment"] = self.page_attachment.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_attachment:
+            body["data_attachment"] = self.data_attachment
+        if self.page_attachment:
+            body["page_attachment"] = self.page_attachment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionAttachment:
+        """Deserializes the SubscriptionAttachment from a dictionary."""
+        return cls(
+            data_attachment=_from_dict(d, "data_attachment", SubscriptionAttachmentDataAttachment),
+            page_attachment=_from_dict(d, "page_attachment", SubscriptionAttachmentPageAttachment),
+        )
+
+
+@dataclass
+class SubscriptionAttachmentDataAttachment:
+    """The configuration for the tabular data files attached to the dashboard snapshot. ``widgets``
+    lists the widgets whose data is exported and ``file_format`` is the output format; each
+    referenced widget's data is exported as a separate file."""
+
+    widgets: List[SubscriptionAttachmentDataAttachmentWidget]
+    """The widgets whose underlying data is exported. At least one widget must be referenced."""
+
+    file_format: SubscriptionAttachmentDataAttachmentFileFormat
+    """The file format of the exported tabular data files."""
+
+    include_applied_filters: Optional[bool] = None
+    """When true, the dashboard's applied filter values are included alongside the tabular data as an
+    additional attached file."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentDataAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.file_format is not None:
+            body["file_format"] = self.file_format.value
+        if self.include_applied_filters is not None:
+            body["include_applied_filters"] = self.include_applied_filters
+        if self.widgets:
+            body["widgets"] = [v.as_dict() for v in self.widgets]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentDataAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file_format is not None:
+            body["file_format"] = self.file_format
+        if self.include_applied_filters is not None:
+            body["include_applied_filters"] = self.include_applied_filters
+        if self.widgets:
+            body["widgets"] = self.widgets
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionAttachmentDataAttachment:
+        """Deserializes the SubscriptionAttachmentDataAttachment from a dictionary."""
+        return cls(
+            file_format=_enum(d, "file_format", SubscriptionAttachmentDataAttachmentFileFormat),
+            include_applied_filters=d.get("include_applied_filters", None),
+            widgets=_repeated_dict(d, "widgets", SubscriptionAttachmentDataAttachmentWidget),
+        )
+
+
+class SubscriptionAttachmentDataAttachmentFileFormat(Enum):
+    """The output format of an exported tabular data file. Must be set to a value other than
+    ``FILE_FORMAT_UNSPECIFIED``."""
+
+    FILE_FORMAT_CSV = "FILE_FORMAT_CSV"
+    FILE_FORMAT_EXCEL = "FILE_FORMAT_EXCEL"
+    FILE_FORMAT_TSV = "FILE_FORMAT_TSV"
+
+
+@dataclass
+class SubscriptionAttachmentDataAttachmentWidget:
+    """Identifies a dashboard widget whose data to attach. ``page_id`` and ``widget_id`` are the URL
+    identifiers from the dashboard's serialized definition returned by the Get dashboard API
+    (``serialized_dashboard``), and together they uniquely identify the widget."""
+
+    page_id: str
+    """The URL identifier of the page containing the widget. This is the value of the ``name`` field of
+    the corresponding entry under ``pages`` in the serialized dashboard definition. Format:
+    alphanumeric, hyphen, and underscore characters allowed, max length 63."""
+
+    widget_id: str
+    """The URL identifier of the widget. This is the value of the ``name`` field of the corresponding
+    widget under that page's ``layout`` in the serialized dashboard definition. Format:
+    alphanumeric, hyphen, and underscore characters allowed, max length 63."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentDataAttachmentWidget into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.page_id is not None:
+            body["page_id"] = self.page_id
+        if self.widget_id is not None:
+            body["widget_id"] = self.widget_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentDataAttachmentWidget into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.page_id is not None:
+            body["page_id"] = self.page_id
+        if self.widget_id is not None:
+            body["widget_id"] = self.widget_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionAttachmentDataAttachmentWidget:
+        """Deserializes the SubscriptionAttachmentDataAttachmentWidget from a dictionary."""
+        return cls(page_id=d.get("page_id", None), widget_id=d.get("widget_id", None))
+
+
+@dataclass
+class SubscriptionAttachmentPageAttachment:
+    """The selection of dashboard pages included in the attached PDF. ``page_selection`` chooses
+    between all pages, the first page only, or an explicit subset listed in ``page_ids``."""
+
+    page_ids: Optional[List[str]] = None
+    """The identifiers of the pages to include in the PDF. Only specified when ``page_selection`` is
+    ``PAGE_SELECTION_SUBSET``. Each value is the identifier of a page in the dashboard's serialized
+    definition returned by the Get dashboard API (``serialized_dashboard``): the value of the
+    ``name`` field of an entry under ``pages``. Format: alphanumeric, hyphen, and underscore
+    characters allowed, max length 63."""
+
+    page_selection: Optional[SubscriptionAttachmentPageAttachmentPageSelection] = None
+    """How the attached pages are selected. When set to ``PAGE_SELECTION_SUBSET``, the pages to include
+    are listed in ``page_ids``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentPageAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.page_ids:
+            body["page_ids"] = [v for v in self.page_ids]
+        if self.page_selection is not None:
+            body["page_selection"] = self.page_selection.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionAttachmentPageAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.page_ids:
+            body["page_ids"] = self.page_ids
+        if self.page_selection is not None:
+            body["page_selection"] = self.page_selection
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionAttachmentPageAttachment:
+        """Deserializes the SubscriptionAttachmentPageAttachment from a dictionary."""
+        return cls(
+            page_ids=d.get("page_ids", None),
+            page_selection=_enum(d, "page_selection", SubscriptionAttachmentPageAttachmentPageSelection),
+        )
+
+
+class SubscriptionAttachmentPageAttachmentPageSelection(Enum):
+    """Determines which dashboard pages are attached to the notification."""
+
+    PAGE_SELECTION_ALL = "PAGE_SELECTION_ALL"
+    PAGE_SELECTION_SUBSET = "PAGE_SELECTION_SUBSET"
 
 
 @dataclass
@@ -10067,138 +9241,6 @@ class SubscriptionSubscriber:
 
 
 @dataclass
-class SupervisorAgent:
-    """Configuration for a Supervisor Agent referenced by tile_id."""
-
-    agent_id: Optional[str] = None
-    """Required. The ID of the supervisor agent (tile_id)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SupervisorAgent into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.agent_id is not None:
-            body["agent_id"] = self.agent_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SupervisorAgent into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.agent_id is not None:
-            body["agent_id"] = self.agent_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SupervisorAgent:
-        """Deserializes the SupervisorAgent from a dictionary."""
-        return cls(agent_id=d.get("agent_id", None))
-
-
-@dataclass
-class SupervisorAgentTool:
-    """Supervisor Agent referenced by another supervisor as a tool."""
-
-    supervisor_agent_id: Optional[str] = None
-    """Supervisor Agent ID."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SupervisorAgentTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.supervisor_agent_id is not None:
-            body["supervisor_agent_id"] = self.supervisor_agent_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SupervisorAgentTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.supervisor_agent_id is not None:
-            body["supervisor_agent_id"] = self.supervisor_agent_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SupervisorAgentTool:
-        """Deserializes the SupervisorAgentTool from a dictionary."""
-        return cls(supervisor_agent_id=d.get("supervisor_agent_id", None))
-
-
-@dataclass
-class SupervisorApi:
-    """Inlined Responses-API supervisor configuration. Used as a oneof variant inside
-    ``AgenticTask.agent`` to define an agent without referencing a pre-registered Supervisor Agent
-    tile."""
-
-    instructions: Optional[str] = None
-    """Optional. System instructions that guide how the supervisor routes queries across tools and
-    synthesizes responses."""
-
-    model: Optional[str] = None
-    """Required. Databricks-provided FMAPI model, e.g. "databricks-claude-sonnet-4-5"."""
-
-    tools: Optional[List[AgentTool]] = None
-    """Optional. The tools the inlined agent can use."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SupervisorApi into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.instructions is not None:
-            body["instructions"] = self.instructions
-        if self.model is not None:
-            body["model"] = self.model
-        if self.tools:
-            body["tools"] = [v.as_dict() for v in self.tools]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SupervisorApi into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.instructions is not None:
-            body["instructions"] = self.instructions
-        if self.model is not None:
-            body["model"] = self.model
-        if self.tools:
-            body["tools"] = self.tools
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SupervisorApi:
-        """Deserializes the SupervisorApi from a dictionary."""
-        return cls(
-            instructions=d.get("instructions", None),
-            model=d.get("model", None),
-            tools=_repeated_dict(d, "tools", AgentTool),
-        )
-
-
-@dataclass
-class SupervisorOutput:
-    """Output specific to the ``SupervisorAgent`` / ``SupervisorApi`` execution path of an agentic
-    task."""
-
-    response_id: Optional[str] = None
-    """The Responses-API ``response.id`` produced by the supervisor. Use this ID with the Responses API
-    to fetch the full structured response (assistant messages, function calls, function-call
-    outputs)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SupervisorOutput into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.response_id is not None:
-            body["response_id"] = self.response_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SupervisorOutput into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.response_id is not None:
-            body["response_id"] = self.response_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SupervisorOutput:
-        """Deserializes the SupervisorOutput from a dictionary."""
-        return cls(response_id=d.get("response_id", None))
-
-
-@dataclass
 class TableState:
     has_seen_updates: Optional[bool] = None
     """Whether or not the table has seen updates since either the creation of the trigger or the last
@@ -10229,31 +9271,6 @@ class TableState:
     def from_dict(cls, d: Dict[str, Any]) -> TableState:
         """Deserializes the TableState from a dictionary."""
         return cls(has_seen_updates=d.get("has_seen_updates", None), table_name=d.get("table_name", None))
-
-
-@dataclass
-class TableTool:
-    name: Optional[str] = None
-    """Full UC table name (``catalog.schema.table``)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TableTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TableTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TableTool:
-        """Deserializes the TableTool from a dictionary."""
-        return cls(name=d.get("name", None))
 
 
 @dataclass
@@ -10352,9 +9369,6 @@ class Task:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
-    agentic_task: Optional[AgenticTask] = None
-    """Agentic Task for job-based multi-agent execution"""
-
     ai_runtime_task: Optional[AiRuntimeTask] = None
     """The task runs a multi-gpu compute workload on Databricks AI Runtime. Specify the accelerator
     type and count, the command to run, and where the workload's code and MLflow output are stored."""
@@ -10409,13 +9423,13 @@ class Task:
 
     environment_key: Optional[str] = None
     """The key that references an environment spec in a job. This field is required for Python script,
-    Python wheel and dbt tasks when using serverless compute."""
+    Python wheel and dbt tasks when using serverless compute or a compute resource that uses
+    Environments mode."""
 
     environment_variables_key: Optional[str] = None
     """Reference to a ``JobEnvironmentVariables`` entry defined in
-    ``JobSettings.environment_variables``. The selected entry's variables and file contents are
-    applied to this task at execution time. Length and pattern mirror ``environment_key`` so the two
-    references look identical to customers reading task settings."""
+    ``JobSettings.environment_variables``. The selected entry's variables are applied to this task
+    at execution time. This field supports serverless tasks using environment version 5 or later."""
 
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs. When running
@@ -10427,9 +9441,6 @@ class Task:
     present."""
 
     gen_ai_compute_task: Optional[GenAiComputeTask] = None
-
-    genie_task: Optional[GenieTask] = None
-    """Runs a Genie or Genie Code agent task."""
 
     health: Optional[JobsHealthRules] = None
 
@@ -10517,8 +9528,6 @@ class Task:
     def as_dict(self) -> dict:
         """Serializes the Task into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.agentic_task:
-            body["agentic_task"] = self.agentic_task.as_dict()
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.alert_task:
@@ -10557,8 +9566,6 @@ class Task:
             body["for_each_task"] = self.for_each_task.as_dict()
         if self.gen_ai_compute_task:
             body["gen_ai_compute_task"] = self.gen_ai_compute_task.as_dict()
-        if self.genie_task:
-            body["genie_task"] = self.genie_task.as_dict()
         if self.health:
             body["health"] = self.health.as_dict()
         if self.job_cluster_key is not None:
@@ -10608,8 +9615,6 @@ class Task:
     def as_shallow_dict(self) -> dict:
         """Serializes the Task into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.agentic_task:
-            body["agentic_task"] = self.agentic_task
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task
         if self.alert_task:
@@ -10648,8 +9653,6 @@ class Task:
             body["for_each_task"] = self.for_each_task
         if self.gen_ai_compute_task:
             body["gen_ai_compute_task"] = self.gen_ai_compute_task
-        if self.genie_task:
-            body["genie_task"] = self.genie_task
         if self.health:
             body["health"] = self.health
         if self.job_cluster_key is not None:
@@ -10700,7 +9703,6 @@ class Task:
     def from_dict(cls, d: Dict[str, Any]) -> Task:
         """Deserializes the Task from a dictionary."""
         return cls(
-            agentic_task=_from_dict(d, "agentic_task", AgenticTask),
             ai_runtime_task=_from_dict(d, "ai_runtime_task", AiRuntimeTask),
             alert_task=_from_dict(d, "alert_task", AlertTask),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
@@ -10720,7 +9722,6 @@ class Task:
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", ForEachTask),
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
-            genie_task=_from_dict(d, "genie_task", GenieTask),
             health=_from_dict(d, "health", JobsHealthRules),
             job_cluster_key=d.get("job_cluster_key", None),
             libraries=_repeated_dict(d, "libraries", compute.Library),
@@ -10928,58 +9929,6 @@ class TaskNotificationSettings:
         )
 
 
-@dataclass
-class TaskOutputSchema:
-    """Single-layer JSON-Schema-style declaration of the structured output the agent should produce."""
-
-    properties: Optional[Dict[str, TaskOutputSchemaProperty]] = None
-    """Map of property name to property definition."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TaskOutputSchema into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.properties:
-            body["properties"] = self.properties
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TaskOutputSchema into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.properties:
-            body["properties"] = self.properties
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TaskOutputSchema:
-        """Deserializes the TaskOutputSchema from a dictionary."""
-        return cls(properties=d.get("properties", None))
-
-
-@dataclass
-class TaskOutputSchemaProperty:
-    description: Optional[str] = None
-    """Description of what the property should contain."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TaskOutputSchemaProperty into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TaskOutputSchemaProperty into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TaskOutputSchemaProperty:
-        """Deserializes the TaskOutputSchemaProperty from a dictionary."""
-        return cls(description=d.get("description", None))
-
-
 class TaskRetryMode(Enum):
     """task retry mode of the continuous job
 
@@ -11055,7 +10004,6 @@ class TerminationCodeCode(Enum):
     CLOUD_FAILURE = "CLOUD_FAILURE"
     CLUSTER_ERROR = "CLUSTER_ERROR"
     CLUSTER_REQUEST_LIMIT_EXCEEDED = "CLUSTER_REQUEST_LIMIT_EXCEEDED"
-    CLUSTER_TERMINATED_BY_USER = "CLUSTER_TERMINATED_BY_USER"
     DISABLED = "DISABLED"
     DRIVER_ERROR = "DRIVER_ERROR"
     FEATURE_DISABLED = "FEATURE_DISABLED"
@@ -11135,68 +10083,12 @@ class TerminationTypeType(Enum):
 
 
 @dataclass
-class TraceDestination:
-    """Where MLflow traces produced by an agentic task run should be persisted. Traces are written to
-    the given MLflow experiment, with their source data landing in a UC table at
-    ``<catalog_name>.<schema_name>.<table_prefix>...``."""
-
-    catalog_name: Optional[str] = None
-    """Unity Catalog catalog name for the trace table."""
-
-    experiment_id: Optional[str] = None
-    """MLflow experiment ID where traces are written."""
-
-    schema_name: Optional[str] = None
-    """Unity Catalog schema name for the trace table."""
-
-    table_prefix: Optional[str] = None
-    """Table-name prefix under ``<catalog>.<schema>``. Trace tables are created as
-    ``<catalog>.<schema>.<table_prefix>_<...>``."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TraceDestination into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.experiment_id is not None:
-            body["experiment_id"] = self.experiment_id
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        if self.table_prefix is not None:
-            body["table_prefix"] = self.table_prefix
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TraceDestination into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.experiment_id is not None:
-            body["experiment_id"] = self.experiment_id
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        if self.table_prefix is not None:
-            body["table_prefix"] = self.table_prefix
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TraceDestination:
-        """Deserializes the TraceDestination from a dictionary."""
-        return cls(
-            catalog_name=d.get("catalog_name", None),
-            experiment_id=d.get("experiment_id", None),
-            schema_name=d.get("schema_name", None),
-            table_prefix=d.get("table_prefix", None),
-        )
-
-
-@dataclass
 class TriggerConfiguration:
     """A single trigger attached to a job via ``JobSettings.triggers``. Exactly one of the trigger-type
     fields (``periodic``, ``schedule``, ``continuous``, ``file_arrival``, ``table_update``,
-    ``model``) must be set; mutual exclusivity is enforced in the API handler rather than via
-    ``oneof`` so that codegen, validation, and JSON serialization across SDKs and Terraform behave
-    consistently."""
+    ``model``, ``job_completion``) must be set; mutual exclusivity is enforced in the API handler
+    rather than via ``oneof`` so that codegen, validation, and JSON serialization across SDKs and
+    Terraform behave consistently."""
 
     continuous: Optional[ContinuousTriggerConfiguration] = None
     """Continuous trigger configuration."""
@@ -11355,9 +10247,7 @@ class TriggerEvaluation:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TriggerEvaluation:
         """Deserializes the TriggerEvaluation from a dictionary."""
-        return cls(
-            description=d.get("description", None), run_id=d.get("run_id", None), timestamp=d.get("timestamp", None)
-        )
+        return cls(description=d.get("description", None), run_id=_int64(d, "run_id"), timestamp=_int64(d, "timestamp"))
 
 
 @dataclass
@@ -11434,9 +10324,7 @@ class TriggerInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TriggerInfo:
         """Deserializes the TriggerInfo from a dictionary."""
-        return cls(
-            run_id=d.get("run_id", None), sql_condition=_from_dict(d, "sql_condition", SqlConditionRunInfoDetails)
-        )
+        return cls(run_id=_int64(d, "run_id"), sql_condition=_from_dict(d, "sql_condition", SqlConditionRunInfoDetails))
 
 
 @dataclass
@@ -11570,7 +10458,8 @@ class TriggerType(Enum):
     - ``TABLE``: Indicates a run that is triggered by a table update.
     - ``CONTINUOUS_RESTART``: Indicates a run created by user to manually restart a continuous job
       run.
-    - ``MODEL``: Indicates a run that is triggered by a model update."""
+    - ``MODEL``: Indicates a run that is triggered by a model update.
+    - ``JOB_COMPLETION``: Indicates a run that is triggered by an upstream job completion."""
 
     CONTINUOUS = "CONTINUOUS"
     CONTINUOUS_RESTART = "CONTINUOUS_RESTART"
@@ -11580,106 +10469,6 @@ class TriggerType(Enum):
     RETRY = "RETRY"
     RUN_JOB_TASK = "RUN_JOB_TASK"
     TABLE = "TABLE"
-
-
-@dataclass
-class UcConnectionTool:
-    name: Optional[str] = None
-    """The UC connection name (an external MCP server)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UcConnectionTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UcConnectionTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UcConnectionTool:
-        """Deserializes the UcConnectionTool from a dictionary."""
-        return cls(name=d.get("name", None))
-
-
-@dataclass
-class UcFunctionTool:
-    name: Optional[str] = None
-    """The fully qualified UC function path (catalog.schema.function)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UcFunctionTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UcFunctionTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UcFunctionTool:
-        """Deserializes the UcFunctionTool from a dictionary."""
-        return cls(name=d.get("name", None))
-
-
-@dataclass
-class UcMcpTool:
-    name: Optional[str] = None
-    """Three-level UC FQN of the registered MCP service (catalog.schema.mcp_service)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UcMcpTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UcMcpTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UcMcpTool:
-        """Deserializes the UcMcpTool from a dictionary."""
-        return cls(name=d.get("name", None))
-
-
-@dataclass
-class VectorSearchIndexTool:
-    name: Optional[str] = None
-    """Full Vector Search index name (``catalog.schema.index``)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the VectorSearchIndexTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VectorSearchIndexTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchIndexTool:
-        """Deserializes the VectorSearchIndexTool from a dictionary."""
-        return cls(name=d.get("name", None))
 
 
 @dataclass
@@ -11738,51 +10527,6 @@ class ViewsToExport(Enum):
     ALL = "ALL"
     CODE = "CODE"
     DASHBOARDS = "DASHBOARDS"
-
-
-@dataclass
-class VolumeTool:
-    name: Optional[str] = None
-    """Full UC volume name (``catalog.schema.volume``)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the VolumeTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VolumeTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VolumeTool:
-        """Deserializes the VolumeTool from a dictionary."""
-        return cls(name=d.get("name", None))
-
-
-@dataclass
-class WebSearchTool:
-    """Built-in web-search tool. No per-asset configuration today."""
-
-    def as_dict(self) -> dict:
-        """Serializes the WebSearchTool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WebSearchTool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WebSearchTool:
-        """Deserializes the WebSearchTool from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -12043,6 +10787,7 @@ class JobsAPI:
         continuous: Optional[Continuous] = None,
         deployment: Optional[JobDeployment] = None,
         description: Optional[str] = None,
+        duration_target: Optional[str] = None,
         edit_mode: Optional[JobEditMode] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environment_variables: Optional[List[JobEnvironmentVariables]] = None,
@@ -12079,10 +10824,18 @@ class JobsAPI:
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of ``schedule`` and ``continuous`` can be used.
+
+          Pipelines started by a continuous job also run continuously, regardless of their own pipeline mode
+          setting.
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
         :param description: str (optional)
           An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param edit_mode: :class:`JobEditMode` (optional)
           Edit mode of the job.
 
@@ -12093,15 +10846,18 @@ class JobsAPI:
           as when this job is deleted.
         :param environment_variables: List[:class:`JobEnvironmentVariables`] (optional)
           Named environment-variable entries that tasks can reference by key from
-          ``TaskSettings.environment_variables_key``. Each entry holds inline ``variables`` plus optional
-          ``.env`` ``files``. Maximum 10 entries per job. Entries are independent of one another — there is
-          no cross-entry merging.
+          ``TaskSettings.environment_variables_key``. Each entry's ``spec`` holds inline ``variables`` and
+          optional ``.env`` ``files``. Maximum 10 entries per job. A task can reference at most one entry from
+          this list.
         :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by serverless tasks of
-          this job. For serverless notebook tasks, if the environment_key is not specified, the notebook
-          environment will be used if present. If a jobs environment is specified, it will override the
-          notebook environment. For other serverless tasks, the task environment is required to be specified
-          using environment_key in the task settings.
+          A list of task execution environment specifications that can be referenced by tasks that use
+          serverless compute or a compute resource that uses Environments mode.
+
+          For notebook tasks that use serverless compute or a compute resource that uses Environments mode, if
+          the environment_key is not specified, the notebook environment will be used if present. If a jobs
+          environment is specified, it will override the notebook environment. For other tasks that use
+          serverless compute or a compute resource that uses Environments mode, the task environment is
+          required to be specified using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to ``"MULTI_TASK"``.
@@ -12142,9 +10898,11 @@ class JobsAPI:
           cost-efficiency for the run. The performance target does not apply to tasks that run on Serverless
           GPU compute.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -12195,6 +10953,8 @@ class JobsAPI:
             body["deployment"] = deployment.as_dict()
         if description is not None:
             body["description"] = description
+        if duration_target is not None:
+            body["duration_target"] = duration_target
         if edit_mode is not None:
             body["edit_mode"] = edit_mode.value
         if email_notifications is not None:
@@ -12558,7 +11318,7 @@ class JobsAPI:
         start_time_from: Optional[int] = None,
         start_time_to: Optional[int] = None,
     ) -> Iterator[BaseRun]:
-        """List runs in descending order by end time. If a run has not finished, it falls back to start time.
+        """List runs in descending order by start time.
 
         :param active_only: bool (optional)
           If active_only is ``true``, only active runs are included in the results; otherwise, lists both
@@ -12636,6 +11396,7 @@ class JobsAPI:
         run_id: int,
         *,
         dbt_commands: Optional[List[str]] = None,
+        duration_target: Optional[str] = None,
         jar_params: Optional[List[str]] = None,
         job_parameters: Optional[Dict[str, str]] = None,
         latest_repair_id: Optional[int] = None,
@@ -12662,6 +11423,11 @@ class JobsAPI:
           ⚠ **Deprecation note** Use `job parameters
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param jar_params: List[str] (optional)
           A list of parameters for jobs with Spark JAR tasks, for example ``"jar_params": ["john doe",
           "35"]``. The parameters are used to invoke the main function of the main class specified in the
@@ -12697,9 +11463,11 @@ class JobsAPI:
           performance or cost-efficiency for the run. This field overrides the performance target defined on
           the job level.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -12758,6 +11526,8 @@ class JobsAPI:
         body = {}
         if dbt_commands is not None:
             body["dbt_commands"] = [v for v in dbt_commands]
+        if duration_target is not None:
+            body["duration_target"] = duration_target
         if jar_params is not None:
             body["jar_params"] = [v for v in jar_params]
         if job_parameters is not None:
@@ -12807,6 +11577,7 @@ class JobsAPI:
         run_id: int,
         *,
         dbt_commands: Optional[List[str]] = None,
+        duration_target: Optional[str] = None,
         jar_params: Optional[List[str]] = None,
         job_parameters: Optional[Dict[str, str]] = None,
         latest_repair_id: Optional[int] = None,
@@ -12824,6 +11595,7 @@ class JobsAPI:
     ) -> Run:
         return self.repair_run(
             dbt_commands=dbt_commands,
+            duration_target=duration_target,
             jar_params=jar_params,
             job_parameters=job_parameters,
             latest_repair_id=latest_repair_id,
@@ -12875,6 +11647,7 @@ class JobsAPI:
         job_id: int,
         *,
         dbt_commands: Optional[List[str]] = None,
+        duration_target: Optional[str] = None,
         idempotency_token: Optional[str] = None,
         jar_params: Optional[List[str]] = None,
         job_parameters: Optional[Dict[str, str]] = None,
@@ -12899,6 +11672,11 @@ class JobsAPI:
           ⚠ **Deprecation note** Use `job parameters
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param idempotency_token: str (optional)
           An optional token to guarantee the idempotency of job run requests. If a run with the provided token
           already exists, the request does not create a new run but returns the ID of the existing run
@@ -12948,9 +11726,11 @@ class JobsAPI:
           performance or cost-efficiency for the run. This field overrides the performance target defined on
           the job level.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -13003,6 +11783,8 @@ class JobsAPI:
         body = {}
         if dbt_commands is not None:
             body["dbt_commands"] = [v for v in dbt_commands]
+        if duration_target is not None:
+            body["duration_target"] = duration_target
         if idempotency_token is not None:
             body["idempotency_token"] = idempotency_token
         if jar_params is not None:
@@ -13050,6 +11832,7 @@ class JobsAPI:
         job_id: int,
         *,
         dbt_commands: Optional[List[str]] = None,
+        duration_target: Optional[str] = None,
         idempotency_token: Optional[str] = None,
         jar_params: Optional[List[str]] = None,
         job_parameters: Optional[Dict[str, str]] = None,
@@ -13066,6 +11849,7 @@ class JobsAPI:
     ) -> Run:
         return self.run_now(
             dbt_commands=dbt_commands,
+            duration_target=duration_target,
             idempotency_token=idempotency_token,
             jar_params=jar_params,
             job_id=job_id,
@@ -13114,6 +11898,7 @@ class JobsAPI:
         *,
         access_control_list: Optional[List[JobAccessControlRequest]] = None,
         budget_policy_id: Optional[str] = None,
+        duration_target: Optional[str] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environment_variables: Optional[List[JobEnvironmentVariables]] = None,
         environments: Optional[List[JobEnvironment]] = None,
@@ -13125,7 +11910,6 @@ class JobsAPI:
         queue: Optional[QueueSettings] = None,
         run_as: Optional[JobRunAs] = None,
         run_name: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
         usage_policy_id: Optional[str] = None,
@@ -13146,13 +11930,18 @@ class JobsAPI:
         :param budget_policy_id: str (optional)
           The user specified id of the budget policy to use for this one-time run. If not specified, the run
           will be not be attributed to any budget policy.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
         :param environment_variables: List[:class:`JobEnvironmentVariables`] (optional)
           Named environment-variable entries that tasks of this one-time run can reference by key from
-          ``RunTaskSettings.environment_variables_key``. Each entry holds inline ``variables`` plus optional
-          ``.env`` ``files``. Handled identically to ``JobSettings.environment_variables``. Maximum 10
-          entries. Entries are independent of one another — there is no cross-entry merging.
+          ``RunTaskSettings.environment_variables_key``. Each entry's ``spec`` holds inline ``variables`` and
+          optional ``.env`` ``files``. Handled identically to ``JobSettings.environment_variables``. Maximum
+          10 entries. Entries are independent of one another — there is no cross-entry merging.
         :param environments: List[:class:`JobEnvironment`] (optional)
           A list of task execution environment specifications that can be referenced by tasks of this run.
         :param git_source: :class:`GitSource` (optional)
@@ -13182,9 +11971,11 @@ class JobsAPI:
           performance or cost-efficiency for the run. The performance target does not apply to tasks that run
           on Serverless GPU compute.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
         :param run_as: :class:`JobRunAs` (optional)
@@ -13192,10 +11983,6 @@ class JobsAPI:
           user who submits the request.
         :param run_name: str (optional)
           An optional name for the run. The default value is ``Untitled``.
-        :param tags: Dict[str,str] (optional)
-          A map of tags associated with the one-time run, handled identically to job-level tags. The tags are
-          forwarded to the cluster as cluster tags for the run's compute, attributed in billing, and surfaced
-          in system tables. A maximum of 25 tags can be added.
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of ``0`` means no timeout.
@@ -13215,6 +12002,8 @@ class JobsAPI:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         if budget_policy_id is not None:
             body["budget_policy_id"] = budget_policy_id
+        if duration_target is not None:
+            body["duration_target"] = duration_target
         if email_notifications is not None:
             body["email_notifications"] = email_notifications.as_dict()
         if environment_variables is not None:
@@ -13237,8 +12026,6 @@ class JobsAPI:
             body["run_as"] = run_as.as_dict()
         if run_name is not None:
             body["run_name"] = run_name
-        if tags is not None:
-            body["tags"] = tags
         if tasks is not None:
             body["tasks"] = [v.as_dict() for v in tasks]
         if timeout_seconds is not None:
@@ -13268,6 +12055,7 @@ class JobsAPI:
         *,
         access_control_list: Optional[List[JobAccessControlRequest]] = None,
         budget_policy_id: Optional[str] = None,
+        duration_target: Optional[str] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environment_variables: Optional[List[JobEnvironmentVariables]] = None,
         environments: Optional[List[JobEnvironment]] = None,
@@ -13279,7 +12067,6 @@ class JobsAPI:
         queue: Optional[QueueSettings] = None,
         run_as: Optional[JobRunAs] = None,
         run_name: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
         usage_policy_id: Optional[str] = None,
@@ -13289,6 +12076,7 @@ class JobsAPI:
         return self.submit(
             access_control_list=access_control_list,
             budget_policy_id=budget_policy_id,
+            duration_target=duration_target,
             email_notifications=email_notifications,
             environment_variables=environment_variables,
             environments=environments,
@@ -13300,7 +12088,6 @@ class JobsAPI:
             queue=queue,
             run_as=run_as,
             run_name=run_name,
-            tags=tags,
             tasks=tasks,
             timeout_seconds=timeout_seconds,
             usage_policy_id=usage_policy_id,

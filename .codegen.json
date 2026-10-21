@@ -10,7 +10,7 @@
       "tagging.py",
       "tagging.py.lock"
     ],
-    "allow_from_source": [
+    "allow_from_packages": [
       "**/*.{md,py,rst,png,svg,gif,tmpl,ps1}",
       "**/py.typed",
       ".codegen/{_last_sha,_openapi_sha}",
@@ -18,7 +18,7 @@
       ".gitattributes",
       ".github/actions/**/*.yml",
       ".github/dependabot.yml",
-      ".github/workflows/{external-message,integration-tests,push,sync-label,tagging,test}.yml",
+      ".github/workflows/{push,sync-label,tagging,test}.yml",
       ".gitignore",
       ".package.json",
       ".readthedocs.yaml",
@@ -34,7 +34,7 @@
       "setup.cfg",
       "tagging.py.lock",
       "tests/testdata/**/.databrickscfg",
-      "tests/testdata/{az,model-serving-test-token,model-serving-test-token-v2}",
+      "tests/testdata/{az,model-dependencies-oauth-token,model-serving-test-token,model-serving-test-token-v2}",
       "uv.lock"
     ],
     "skip_from_source": [

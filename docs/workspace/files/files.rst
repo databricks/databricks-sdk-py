@@ -11,7 +11,7 @@
     The API supports `Unity Catalog volumes
     <https://docs.databricks.com/en/connect/unity-catalog/volumes.html>`__, where files and directories to
     operate on are specified using their volume URI path, which follows the format
-    /Volumes/&lt;catalog_name&gt;/&lt;schema_name&gt;/&lt;volume_name&gt;/&lt;path_to_file&gt;.
+    /Volumes/<catalog_name>/<schema_name>/<volume_name>/<path_to_file>.
 
     The Files API has two distinct endpoints, one for working with files (``/fs/files``) and another one for
     working with directories (``/fs/directories``). Both endpoints use the standard HTTP methods GET, HEAD,

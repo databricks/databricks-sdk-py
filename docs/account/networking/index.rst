@@ -8,3 +8,4 @@ Manage network connectivity configurations for Databricks workspaces.
    :maxdepth: 1
 
    endpoints
+   private_network_gateways

@@ -19,6 +19,7 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
     _timestamp,
@@ -360,6 +361,10 @@ class GenieAttachment:
 
 @dataclass
 class GenieConversation:
+    """A Genie conversation. Use chat-mode message endpoints for classic chats and agent-mode response
+    and item endpoints for agent conversations. Conversation management, feedback, comments, and
+    attachment operations support both modes."""
+
     space_id: str
     """Genie space ID"""
 
@@ -424,9 +429,9 @@ class GenieConversation:
         """Deserializes the GenieConversation from a dictionary."""
         return cls(
             conversation_id=d.get("conversation_id", None),
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             space_id=d.get("space_id", None),
             title=d.get("title", None),
             user_id=d.get("user_id", None),
@@ -477,7 +482,7 @@ class GenieConversationSummary:
         return cls(
             agent_type=_enum(d, "agent_type", GenieConversationType),
             conversation_id=d.get("conversation_id", None),
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             title=d.get("title", None),
         )
 
@@ -616,7 +621,7 @@ class GenieEvalResult:
         return cls(
             benchmark_answer=d.get("benchmark_answer", None),
             benchmark_question_id=d.get("benchmark_question_id", None),
-            created_by_user=d.get("created_by_user", None),
+            created_by_user=_int64(d, "created_by_user"),
             question=d.get("question", None),
             result_id=d.get("result_id", None),
             space_id=d.get("space_id", None),
@@ -769,6 +774,8 @@ class GenieEvalResultDetails:
 
 @dataclass
 class GenieEvalRunResponse:
+    """A benchmark evaluation run. The public benchmark API currently evaluates chat-mode responses."""
+
     eval_run_id: str
     """The unique identifier for the evaluation run."""
 
@@ -846,15 +853,15 @@ class GenieEvalRunResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GenieEvalRunResponse:
         """Deserializes the GenieEvalRunResponse from a dictionary."""
         return cls(
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             eval_run_id=d.get("eval_run_id", None),
             eval_run_status=_enum(d, "eval_run_status", EvaluationStatusType),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
-            num_correct=d.get("num_correct", None),
-            num_done=d.get("num_done", None),
-            num_needs_review=d.get("num_needs_review", None),
-            num_questions=d.get("num_questions", None),
-            run_by_user=d.get("run_by_user", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
+            num_correct=_int64(d, "num_correct"),
+            num_done=_int64(d, "num_done"),
+            num_needs_review=_int64(d, "num_needs_review"),
+            num_questions=_int64(d, "num_questions"),
+            run_by_user=_int64(d, "run_by_user"),
         )
 
 
@@ -1331,16 +1338,16 @@ class GenieMessage:
             attachments=_repeated_dict(d, "attachments", GenieAttachment),
             content=d.get("content", None),
             conversation_id=d.get("conversation_id", None),
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             error=_from_dict(d, "error", MessageError),
             feedback=_from_dict(d, "feedback", GenieFeedback),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             message_id=d.get("message_id", None),
             query_result=_from_dict(d, "query_result", Result),
             space_id=d.get("space_id", None),
             status=_enum(d, "status", MessageStatus),
-            user_id=d.get("user_id", None),
+            user_id=_int64(d, "user_id"),
         )
 
 
@@ -1413,11 +1420,11 @@ class GenieMessageComment:
         return cls(
             content=d.get("content", None),
             conversation_id=d.get("conversation_id", None),
-            created_timestamp=d.get("created_timestamp", None),
+            created_timestamp=_int64(d, "created_timestamp"),
             message_comment_id=d.get("message_comment_id", None),
             message_id=d.get("message_id", None),
             space_id=d.get("space_id", None),
-            user_id=d.get("user_id", None),
+            user_id=_int64(d, "user_id"),
         )
 
 
@@ -1501,7 +1508,7 @@ class GenieQueryAttachment:
         return cls(
             description=d.get("description", None),
             id=d.get("id", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_timestamp=_int64(d, "last_updated_timestamp"),
             parameters=_repeated_dict(d, "parameters", QueryAttachmentParameter),
             query=d.get("query", None),
             query_result_metadata=_from_dict(d, "query_result_metadata", GenieResultMetadata),
@@ -1540,7 +1547,7 @@ class GenieResultMetadata:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieResultMetadata:
         """Deserializes the GenieResultMetadata from a dictionary."""
-        return cls(is_truncated=d.get("is_truncated", None), row_count=d.get("row_count", None))
+        return cls(is_truncated=d.get("is_truncated", None), row_count=_int64(d, "row_count"))
 
 
 @dataclass
@@ -1750,24 +1757,6 @@ class GenieVizAttachment:
 
 
 @dataclass
-class GetPublishedDashboardEmbeddedResponse:
-    def as_dict(self) -> dict:
-        """Serializes the GetPublishedDashboardEmbeddedResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetPublishedDashboardEmbeddedResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedDashboardEmbeddedResponse:
-        """Deserializes the GetPublishedDashboardEmbeddedResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class GetPublishedDashboardTokenInfoResponse:
     authorization_details: Optional[List[AuthorizationDetails]] = None
     """Authorization constraints for accessing the published dashboard. Currently includes
@@ -1951,8 +1940,6 @@ class MessageError:
 
 class MessageErrorType(Enum):
     BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION = "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION"
-    BUDGET_EXCEEDED_EXCEPTION = "BUDGET_EXCEEDED_EXCEPTION"
-    CERTIFIED_ANSWERS_MISSING_EXCEPTION = "CERTIFIED_ANSWERS_MISSING_EXCEPTION"
     CHAT_COMPLETION_CLIENT_EXCEPTION = "CHAT_COMPLETION_CLIENT_EXCEPTION"
     CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION = "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION"
     CHAT_COMPLETION_NETWORK_EXCEPTION = "CHAT_COMPLETION_NETWORK_EXCEPTION"
@@ -1961,8 +1948,6 @@ class MessageErrorType(Enum):
     COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION = "COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION"
     COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION = "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION"
     COULD_NOT_GET_UC_SCHEMA_EXCEPTION = "COULD_NOT_GET_UC_SCHEMA_EXCEPTION"
-    DASHBOARD_PERMISSION_DENIED_EXCEPTION = "DASHBOARD_PERMISSION_DENIED_EXCEPTION"
-    DELEGATION_NOT_FOUND_EXCEPTION = "DELEGATION_NOT_FOUND_EXCEPTION"
     DEPLOYMENT_NOT_FOUND_EXCEPTION = "DEPLOYMENT_NOT_FOUND_EXCEPTION"
     DESCRIBE_QUERY_INVALID_SQL_ERROR = "DESCRIBE_QUERY_INVALID_SQL_ERROR"
     DESCRIBE_QUERY_TIMEOUT = "DESCRIBE_QUERY_TIMEOUT"
@@ -1985,7 +1970,6 @@ class MessageErrorType(Enum):
     INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION = "INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION = "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION = "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
-    INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
     INVALID_CHAT_COMPLETION_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
     INVALID_COMPLETION_REQUEST_EXCEPTION = "INVALID_COMPLETION_REQUEST_EXCEPTION"
     INVALID_FUNCTION_CALL_EXCEPTION = "INVALID_FUNCTION_CALL_EXCEPTION"
@@ -2002,7 +1986,6 @@ class MessageErrorType(Enum):
     NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE = "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE"
     NO_QUERY_TO_VISUALIZE_EXCEPTION = "NO_QUERY_TO_VISUALIZE_EXCEPTION"
     NO_TABLES_TO_QUERY_EXCEPTION = "NO_TABLES_TO_QUERY_EXCEPTION"
-    PAY_PER_TOKEN_DISABLED_EXCEPTION = "PAY_PER_TOKEN_DISABLED_EXCEPTION"
     RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION = "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION"
     RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION = "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION"
     REPLY_PROCESS_TIMEOUT_EXCEPTION = "REPLY_PROCESS_TIMEOUT_EXCEPTION"
@@ -2137,11 +2120,6 @@ class QueryAttachmentParameter:
         return cls(keyword=d.get("keyword", None), sql_type=d.get("sql_type", None), value=d.get("value", None))
 
 
-class ResponsePhase(Enum):
-    RESPONSE_PHASE_THINKING = "RESPONSE_PHASE_THINKING"
-    RESPONSE_PHASE_VERIFYING = "RESPONSE_PHASE_VERIFYING"
-
-
 @dataclass
 class Result:
     is_truncated: Optional[bool] = None
@@ -2188,7 +2166,7 @@ class Result:
         """Deserializes the Result from a dictionary."""
         return cls(
             is_truncated=d.get("is_truncated", None),
-            row_count=d.get("row_count", None),
+            row_count=_int64(d, "row_count"),
             statement_id=d.get("statement_id", None),
             statement_id_signature=d.get("statement_id_signature", None),
         )
@@ -2347,7 +2325,6 @@ class ScoreReason(Enum):
     RESULT_MISSING_COLUMNS = "RESULT_MISSING_COLUMNS"
     RESULT_MISSING_ROWS = "RESULT_MISSING_ROWS"
     SINGLE_CELL_DIFFERENCE = "SINGLE_CELL_DIFFERENCE"
-    TRANSIENT_ERROR = "TRANSIENT_ERROR"
 
 
 @dataclass
@@ -2470,7 +2447,7 @@ class Subscription:
         """Deserializes the Subscription from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
-            created_by_user_id=d.get("created_by_user_id", None),
+            created_by_user_id=_int64(d, "created_by_user_id"),
             dashboard_id=d.get("dashboard_id", None),
             etag=d.get("etag", None),
             schedule_id=d.get("schedule_id", None),
@@ -2528,7 +2505,7 @@ class SubscriptionSubscriberUser:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SubscriptionSubscriberUser:
         """Deserializes the SubscriptionSubscriberUser from a dictionary."""
-        return cls(user_id=d.get("user_id", None))
+        return cls(user_id=_int64(d, "user_id"))
 
 
 @dataclass
@@ -2541,16 +2518,11 @@ class TextAttachment:
 
     id: Optional[str] = None
 
-    phase: Optional[ResponsePhase] = None
-
     purpose: Optional[TextAttachmentPurpose] = None
     """Purpose of this text attachment. A completed message may contain more than one text attachment
     (for example a clarifying follow-up question alongside the final answer); use this field to tell
     them apart. ``TEXT_ATTACHMENT_PURPOSE_ANSWER`` marks the final answer/summary and
     ``FOLLOW_UP_QUESTION`` marks a clarifying question."""
-
-    verification_metadata: Optional[VerificationMetadata] = None
-    """Metadata for verification phase attachments. Only set when phase = RESPONSE_PHASE_VERIFYING."""
 
     def as_dict(self) -> dict:
         """Serializes the TextAttachment into a dictionary suitable for use as a JSON request body."""
@@ -2559,12 +2531,8 @@ class TextAttachment:
             body["content"] = self.content
         if self.id is not None:
             body["id"] = self.id
-        if self.phase is not None:
-            body["phase"] = self.phase.value
         if self.purpose is not None:
             body["purpose"] = self.purpose.value
-        if self.verification_metadata:
-            body["verification_metadata"] = self.verification_metadata.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2574,23 +2542,15 @@ class TextAttachment:
             body["content"] = self.content
         if self.id is not None:
             body["id"] = self.id
-        if self.phase is not None:
-            body["phase"] = self.phase
         if self.purpose is not None:
             body["purpose"] = self.purpose
-        if self.verification_metadata:
-            body["verification_metadata"] = self.verification_metadata
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TextAttachment:
         """Deserializes the TextAttachment from a dictionary."""
         return cls(
-            content=d.get("content", None),
-            id=d.get("id", None),
-            phase=_enum(d, "phase", ResponsePhase),
-            purpose=_enum(d, "purpose", TextAttachmentPurpose),
-            verification_metadata=_from_dict(d, "verification_metadata", VerificationMetadata),
+            content=d.get("content", None), id=d.get("id", None), purpose=_enum(d, "purpose", TextAttachmentPurpose)
         )
 
 
@@ -2695,49 +2655,6 @@ class UnpublishDashboardResponse:
         return cls()
 
 
-@dataclass
-class VerificationMetadata:
-    """Metadata for verification phase attachments"""
-
-    index: Optional[int] = None
-    """Optional index to help order attachments within the same section"""
-
-    section: Optional[VerificationSection] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the VerificationMetadata into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.index is not None:
-            body["index"] = self.index
-        if self.section is not None:
-            body["section"] = self.section.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VerificationMetadata into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.index is not None:
-            body["index"] = self.index
-        if self.section is not None:
-            body["section"] = self.section
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VerificationMetadata:
-        """Deserializes the VerificationMetadata from a dictionary."""
-        return cls(index=d.get("index", None), section=_enum(d, "section", VerificationSection))
-
-
-class VerificationSection(Enum):
-    """Verification workflow section - indicates which stage of verification this attachment belongs to
-    These sections are used for grouping and ordering attachments in the frontend UI"""
-
-    VERIFICATION_SECTION_FINAL_DECISION = "VERIFICATION_SECTION_FINAL_DECISION"
-    VERIFICATION_SECTION_PROPOSED_IMPROVEMENT = "VERIFICATION_SECTION_PROPOSED_IMPROVEMENT"
-    VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION = "VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION"
-    VERIFICATION_SECTION_VERIFICATION_QUERIES = "VERIFICATION_SECTION_VERIFICATION_QUERIES"
-
-
 class GenieAPI:
     """Genie provides a no-code experience for business users, powered by AI/BI. Analysts set up spaces that
     business users can use to ask questions using natural language. Genie uses data registered to Unity
@@ -2784,8 +2701,8 @@ class GenieAPI:
     def create_message(
         self, space_id: str, conversation_id: str, content: str, *, enable_visualization: Optional[bool] = None
     ) -> Wait[GenieMessage]:
-        """Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
-        previously created messages in the conversation to respond.
+        """Sends a new message in a chat-mode [conversation](:method:genie/startconversation). The AI response
+        uses all previously created messages in the conversation to respond.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is started.
@@ -2984,7 +2901,7 @@ class GenieAPI:
     def download_message_attachment_visualization(self, name: str) -> DownloadMessageAttachmentVisualizationResponse:
         """Download a rendered image of a message visualization attachment. The response body is the raw PNG
         image, not a JSON payload. This is only available if the attachment is a visualization and the message
-        status is ``COMPLETED``. This endpoint is not supported for Private Link workspaces.
+        status is ``COMPLETED``.
 
         :param name: str
           The resource name of the attachment to render, in the format
@@ -3085,12 +3002,9 @@ class GenieAPI:
         **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
         ``EXTERNAL_LINKS`` disposition.**
 
-        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
-        download the results directly from . As a short-lived is embedded in this URL, you should protect the
-        URL.
-
-        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
-        header in the download requests.
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived cloud-storage URL is generated to
+        download the results. The URL contains temporary access credentials, so protect it and do not set an
+        ``Authorization`` header in the download request.
 
         See [Execute Statement](:method:statementexecution/executestatement) for more details.
 
@@ -3124,10 +3038,43 @@ class GenieAPI:
         )
         return GenieGenerateDownloadFullQueryResultResponse.from_dict(res)
 
+    def genie_cancel_response(self, agent_id: str, conversation_id: str, response_id: str) -> GenieMessage:
+        """Cancels an in-flight agent-mode response. ``response_id`` is the id returned in the
+        ``response.created`` event from the agent-mode responses endpoint. The response stops at the next
+        agent boundary and its terminal state is returned.
+
+        :param agent_id: str
+          The ID of the Genie agent (synonymous with the Genie space ID).
+        :param conversation_id: str
+          The ID of the conversation containing the response.
+        :param response_id: str
+          The ID of the response to cancel (the id from the ``response.created`` event).
+
+        :returns: :class:`GenieMessage`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/genie/agents/{agent_id}/conversations/{conversation_id}/responses/{response_id}/cancel",
+            body=body,
+            headers=headers,
+        )
+        return GenieMessage.from_dict(res)
+
     def genie_create_eval_run(
         self, space_id: str, *, benchmark_question_ids: Optional[List[str]] = None
     ) -> GenieEvalRunResponse:
-        """Create and run evaluations for multiple benchmark questions in a Genie space.
+        """Creates and runs chat-mode evaluations for multiple benchmark questions in a Genie space.
 
         :param space_id: str
           The ID associated with the Genie space where the evaluations will be executed.
@@ -3284,12 +3231,9 @@ class GenieAPI:
         **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
         ``EXTERNAL_LINKS`` disposition.**
 
-        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
-        download the results directly from . As a short-lived is embedded in this URL, you should protect the
-        URL.
-
-        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
-        header in the download requests.
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived cloud-storage URL is generated to
+        download the results. The URL contains temporary access credentials, so protect it and do not set an
+        ``Authorization`` header in the download request.
 
         See [Execute Statement](:method:statementexecution/executestatement) for more details.
 
@@ -3330,7 +3274,8 @@ class GenieAPI:
         return GenieGetDownloadFullQueryResultResponse.from_dict(res)
 
     def get_message(self, space_id: str, conversation_id: str, message_id: str) -> GenieMessage:
-        """Get message from conversation.
+        """Gets a message from a chat-mode or agent-mode conversation. For a complete agent-mode transcript, use
+        the List conversation items endpoint.
 
         :param space_id: str
           The ID associated with the Genie space where the target conversation is located.
@@ -3521,7 +3466,9 @@ class GenieAPI:
     def list_conversation_messages(
         self, space_id: str, conversation_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> GenieListConversationMessagesResponse:
-        """List messages in a conversation
+        """Lists messages in a chat-mode or agent-mode conversation. Agent-mode messages are returned as
+        GenieMessage projections. Use the List conversation items endpoint for the complete reasoning and
+        tool-call history.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is located
@@ -3681,7 +3628,7 @@ class GenieAPI:
         *,
         comment: Optional[str] = None,
     ):
-        """Send feedback for a message.
+        """Sends feedback for a message in a chat-mode or agent-mode conversation.
 
         :param space_id: str
           The ID associated with the Genie space where the message is located.
@@ -3721,7 +3668,7 @@ class GenieAPI:
     def start_conversation(
         self, space_id: str, content: str, *, enable_visualization: Optional[bool] = None
     ) -> Wait[GenieMessage]:
-        """Start a new conversation.
+        """Starts a new chat-mode conversation and sends its first message.
 
         :param space_id: str
           The ID associated with the Genie space where you want to start a conversation.
@@ -3859,6 +3806,9 @@ class LakeviewAPI:
     ) -> Dashboard:
         """Create a draft dashboard.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard: :class:`Dashboard`
         :param dataset_catalog: str (optional)
           Sets the default catalog for all datasets in this dashboard. Does not impact table references that
@@ -3893,6 +3843,9 @@ class LakeviewAPI:
     def create_schedule(self, dashboard_id: str, schedule: Schedule) -> Schedule:
         """Create dashboard schedule.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule: :class:`Schedule`
@@ -3917,6 +3870,13 @@ class LakeviewAPI:
 
     def create_subscription(self, dashboard_id: str, schedule_id: str, subscription: Subscription) -> Subscription:
         """Create schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
@@ -3949,6 +3909,9 @@ class LakeviewAPI:
 
     def delete_schedule(self, dashboard_id: str, schedule_id: str, *, etag: Optional[str] = None):
         """Delete dashboard schedule.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
@@ -3984,6 +3947,13 @@ class LakeviewAPI:
     ):
         """Delete schedule subscription.
 
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
         :param schedule_id: str
@@ -4018,6 +3988,9 @@ class LakeviewAPI:
     def get(self, dashboard_id: str) -> Dashboard:
         """Get a draft dashboard.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -4038,6 +4011,12 @@ class LakeviewAPI:
     def get_published(self, dashboard_id: str) -> PublishedDashboard:
         """Get the current published dashboard.
 
+        The caller must be a workspace user with one of the following entitlements: Workspace access,
+        Databricks SQL access, or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the published dashboard.
 
@@ -4057,6 +4036,13 @@ class LakeviewAPI:
 
     def get_schedule(self, dashboard_id: str, schedule_id: str) -> Schedule:
         """Get dashboard schedule.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
@@ -4081,6 +4067,13 @@ class LakeviewAPI:
 
     def get_subscription(self, dashboard_id: str, schedule_id: str, subscription_id: str) -> Subscription:
         """Get schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
@@ -4116,6 +4109,9 @@ class LakeviewAPI:
         view: Optional[DashboardView] = None,
     ) -> Iterator[Dashboard]:
         """List dashboards.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param page_size: int (optional)
           The number of dashboards to return per page.
@@ -4162,6 +4158,13 @@ class LakeviewAPI:
     ) -> Iterator[Schedule]:
         """List dashboard schedules.
 
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedules belongs.
         :param page_size: int (optional)
@@ -4201,6 +4204,13 @@ class LakeviewAPI:
         self, dashboard_id: str, schedule_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Subscription]:
         """List schedule subscriptions.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscriptions belongs.
@@ -4250,7 +4260,8 @@ class LakeviewAPI:
         parent_path: Optional[str] = None,
         update_parameter_syntax: Optional[bool] = None,
     ) -> Dashboard:
-        """Migrates a classic SQL dashboard to Lakeview.
+        """Deprecated: Legacy dashboard migration is no longer supported. Use Lakeview (AI/BI) dashboards
+        instead.
 
         :param source_dashboard_id: str
           UUID of the dashboard to be migrated.
@@ -4291,6 +4302,9 @@ class LakeviewAPI:
     ) -> PublishedDashboard:
         """Publish the current draft dashboard.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard to be published.
         :param embed_credentials: bool (optional)
@@ -4322,6 +4336,9 @@ class LakeviewAPI:
     def revert(self, dashboard_id: str, *, etag: Optional[str] = None) -> RevertDashboardResponse:
         """Revert a dashboard's definition in draft mode to the last published version.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard.
         :param etag: str (optional)
@@ -4349,6 +4366,9 @@ class LakeviewAPI:
     def trash(self, dashboard_id: str):
         """Trash a dashboard.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -4367,6 +4387,9 @@ class LakeviewAPI:
 
     def unpublish(self, dashboard_id: str):
         """Unpublish the dashboard.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.
@@ -4393,6 +4416,9 @@ class LakeviewAPI:
         dataset_schema: Optional[str] = None,
     ) -> Dashboard:
         """Update a draft dashboard.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -4432,6 +4458,9 @@ class LakeviewAPI:
     def update_schedule(self, dashboard_id: str, schedule_id: str, schedule: Schedule) -> Schedule:
         """Update dashboard schedule.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
@@ -4465,29 +4494,16 @@ class LakeviewEmbeddedAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_published_dashboard_embedded(self, dashboard_id: str):
-        """Get the current published dashboard within an embedded context.
-
-        :param dashboard_id: str
-          UUID identifying the published dashboard.
-
-
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded", headers=headers)
-
     def get_published_dashboard_token_info(
         self, dashboard_id: str, *, external_value: Optional[str] = None, external_viewer_id: Optional[str] = None
     ) -> GetPublishedDashboardTokenInfoResponse:
         """Get a required authorization details and scopes of a published dashboard to mint an OAuth token.
+
+        The caller must be a workspace user with one of the following entitlements: Workspace access,
+        Databricks SQL access, or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.

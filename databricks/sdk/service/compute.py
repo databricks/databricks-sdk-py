@@ -14,12 +14,12 @@ from google.protobuf.timestamp_pb2 import Timestamp
 import time
 import random
 import logging
-import uuid
 
 from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
     _timestamp,
@@ -361,13 +361,6 @@ class AzureAvailability(Enum):
     SPOT_WITH_FALLBACK_AZURE = "SPOT_WITH_FALLBACK_AZURE"
 
 
-class BaseEnvironmentType(Enum):
-    """If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto"""
-
-    CPU = "CPU"
-    GPU = "GPU"
-
-
 @dataclass
 class CancelPendingClusterEnforcementResponse:
     """Response for canceling the pending enforcement for a cluster. If the cancel request succeeds, an
@@ -423,22 +416,6 @@ class ChangeClusterOwnerResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ChangeClusterOwnerResponse:
         """Deserializes the ChangeClusterOwnerResponse from a dictionary."""
         return cls()
-
-
-class CheckId(Enum):
-    """Identifies the specific diagnostic check the user will see. Each value maps to one row in the
-    cluster's Diagnostics tab."""
-
-    CHECK_ID_NETWORK_BIFROST = "CHECK_ID_NETWORK_BIFROST"
-    CHECK_ID_NETWORK_CONTROL_PLANE = "CHECK_ID_NETWORK_CONTROL_PLANE"
-    CHECK_ID_NETWORK_CP_MTLS = "CHECK_ID_NETWORK_CP_MTLS"
-    CHECK_ID_NETWORK_DNS_SERVER = "CHECK_ID_NETWORK_DNS_SERVER"
-    CHECK_ID_NETWORK_INTERNET = "CHECK_ID_NETWORK_INTERNET"
-    CHECK_ID_NETWORK_LOG_ARTIFACT_BUCKET = "CHECK_ID_NETWORK_LOG_ARTIFACT_BUCKET"
-    CHECK_ID_NETWORK_METADATA_ENDPOINT = "CHECK_ID_NETWORK_METADATA_ENDPOINT"
-    CHECK_ID_NETWORK_NIC = "CHECK_ID_NETWORK_NIC"
-    CHECK_ID_NETWORK_SCC_TUNNEL = "CHECK_ID_NETWORK_SCC_TUNNEL"
-    CHECK_ID_NETWORK_STORAGE_BUCKET = "CHECK_ID_NETWORK_STORAGE_BUCKET"
 
 
 @dataclass
@@ -698,11 +675,7 @@ class ClusterAttributes:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as ``node_type_id`` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as ``node_type_id`` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -781,8 +754,8 @@ class ClusterAttributes:
     can be specified."""
 
     total_initial_remote_disk_size: Optional[int] = None
-    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-    supported for GCP HYPERDISK_BALANCED disks."""
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Supported for
+    GCP."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
@@ -1121,11 +1094,7 @@ class ClusterDetails:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as ``node_type_id`` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as ``node_type_id`` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -1259,8 +1228,8 @@ class ClusterDetails:
     a ``TERMINATING`` or ``TERMINATED`` state."""
 
     total_initial_remote_disk_size: Optional[int] = None
-    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-    supported for GCP HYPERDISK_BALANCED disks."""
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Supported for
+    GCP."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
@@ -1507,7 +1476,7 @@ class ClusterDetails:
             cluster_id=d.get("cluster_id", None),
             cluster_log_conf=_from_dict(d, "cluster_log_conf", ClusterLogConf),
             cluster_log_status=_from_dict(d, "cluster_log_status", LogSyncStatus),
-            cluster_memory_mb=d.get("cluster_memory_mb", None),
+            cluster_memory_mb=_int64(d, "cluster_memory_mb"),
             cluster_name=d.get("cluster_name", None),
             cluster_source=_enum(d, "cluster_source", ClusterSource),
             creator_user_name=d.get("creator_user_name", None),
@@ -1529,8 +1498,8 @@ class ClusterDetails:
             is_single_node=d.get("is_single_node", None),
             jdbc_port=d.get("jdbc_port", None),
             kind=_enum(d, "kind", Kind),
-            last_restarted_time=d.get("last_restarted_time", None),
-            last_state_loss_time=d.get("last_state_loss_time", None),
+            last_restarted_time=_int64(d, "last_restarted_time"),
+            last_state_loss_time=_int64(d, "last_state_loss_time"),
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
@@ -1538,15 +1507,15 @@ class ClusterDetails:
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
-            spark_context_id=d.get("spark_context_id", None),
+            spark_context_id=_int64(d, "spark_context_id"),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             spec=_from_dict(d, "spec", ClusterSpec),
             ssh_public_keys=d.get("ssh_public_keys", None),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             state=_enum(d, "state", State),
             state_message=d.get("state_message", None),
-            terminated_time=d.get("terminated_time", None),
+            terminated_time=_int64(d, "terminated_time"),
             termination_reason=_from_dict(d, "termination_reason", TerminationReason),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
@@ -1606,7 +1575,7 @@ class ClusterEvent:
             cluster_id=d.get("cluster_id", None),
             data_plane_event_details=_from_dict(d, "data_plane_event_details", DataPlaneEventDetails),
             details=_from_dict(d, "details", EventDetails),
-            timestamp=d.get("timestamp", None),
+            timestamp=_int64(d, "timestamp"),
             type=_enum(d, "type", EventType),
         )
 
@@ -2210,11 +2179,7 @@ class ClusterSpec:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as ``node_type_id`` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as ``node_type_id`` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -2308,8 +2273,8 @@ class ClusterSpec:
     can be specified."""
 
     total_initial_remote_disk_size: Optional[int] = None
-    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-    supported for GCP HYPERDISK_BALANCED disks."""
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Supported for
+    GCP."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
@@ -2809,7 +2774,7 @@ class DataPlaneEventDetails:
             event_type=_enum(d, "event_type", DataPlaneEventDetailsEventType),
             executor_failures=d.get("executor_failures", None),
             host_id=d.get("host_id", None),
-            timestamp=d.get("timestamp", None),
+            timestamp=_int64(d, "timestamp"),
         )
 
 
@@ -2884,183 +2849,6 @@ class DbfsStorageInfo:
     def from_dict(cls, d: Dict[str, Any]) -> DbfsStorageInfo:
         """Deserializes the DbfsStorageInfo from a dictionary."""
         return cls(destination=d.get("destination", None))
-
-
-@dataclass
-class DefaultBaseEnvironment:
-    base_environment_cache: Optional[List[DefaultBaseEnvironmentCache]] = None
-
-    base_environment_type: Optional[BaseEnvironmentType] = None
-
-    created_timestamp: Optional[int] = None
-
-    creator_user_id: Optional[int] = None
-
-    environment: Optional[Environment] = None
-    """Note: we made ``environment`` non-internal because we need to expose its ``client`` field. All
-    other fields should be treated as internal."""
-
-    filepath: Optional[str] = None
-
-    id: Optional[str] = None
-
-    is_default: Optional[bool] = None
-
-    last_updated_timestamp: Optional[int] = None
-
-    last_updated_user_id: Optional[int] = None
-
-    message: Optional[str] = None
-
-    name: Optional[str] = None
-
-    principal_ids: Optional[List[int]] = None
-
-    status: Optional[DefaultBaseEnvironmentCacheStatus] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the DefaultBaseEnvironment into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.base_environment_cache:
-            body["base_environment_cache"] = [v.as_dict() for v in self.base_environment_cache]
-        if self.base_environment_type is not None:
-            body["base_environment_type"] = self.base_environment_type.value
-        if self.created_timestamp is not None:
-            body["created_timestamp"] = self.created_timestamp
-        if self.creator_user_id is not None:
-            body["creator_user_id"] = self.creator_user_id
-        if self.environment:
-            body["environment"] = self.environment.as_dict()
-        if self.filepath is not None:
-            body["filepath"] = self.filepath
-        if self.id is not None:
-            body["id"] = self.id
-        if self.is_default is not None:
-            body["is_default"] = self.is_default
-        if self.last_updated_timestamp is not None:
-            body["last_updated_timestamp"] = self.last_updated_timestamp
-        if self.last_updated_user_id is not None:
-            body["last_updated_user_id"] = self.last_updated_user_id
-        if self.message is not None:
-            body["message"] = self.message
-        if self.name is not None:
-            body["name"] = self.name
-        if self.principal_ids:
-            body["principal_ids"] = [v for v in self.principal_ids]
-        if self.status is not None:
-            body["status"] = self.status.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DefaultBaseEnvironment into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.base_environment_cache:
-            body["base_environment_cache"] = self.base_environment_cache
-        if self.base_environment_type is not None:
-            body["base_environment_type"] = self.base_environment_type
-        if self.created_timestamp is not None:
-            body["created_timestamp"] = self.created_timestamp
-        if self.creator_user_id is not None:
-            body["creator_user_id"] = self.creator_user_id
-        if self.environment:
-            body["environment"] = self.environment
-        if self.filepath is not None:
-            body["filepath"] = self.filepath
-        if self.id is not None:
-            body["id"] = self.id
-        if self.is_default is not None:
-            body["is_default"] = self.is_default
-        if self.last_updated_timestamp is not None:
-            body["last_updated_timestamp"] = self.last_updated_timestamp
-        if self.last_updated_user_id is not None:
-            body["last_updated_user_id"] = self.last_updated_user_id
-        if self.message is not None:
-            body["message"] = self.message
-        if self.name is not None:
-            body["name"] = self.name
-        if self.principal_ids:
-            body["principal_ids"] = self.principal_ids
-        if self.status is not None:
-            body["status"] = self.status
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DefaultBaseEnvironment:
-        """Deserializes the DefaultBaseEnvironment from a dictionary."""
-        return cls(
-            base_environment_cache=_repeated_dict(d, "base_environment_cache", DefaultBaseEnvironmentCache),
-            base_environment_type=_enum(d, "base_environment_type", BaseEnvironmentType),
-            created_timestamp=d.get("created_timestamp", None),
-            creator_user_id=d.get("creator_user_id", None),
-            environment=_from_dict(d, "environment", Environment),
-            filepath=d.get("filepath", None),
-            id=d.get("id", None),
-            is_default=d.get("is_default", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
-            last_updated_user_id=d.get("last_updated_user_id", None),
-            message=d.get("message", None),
-            name=d.get("name", None),
-            principal_ids=d.get("principal_ids", None),
-            status=_enum(d, "status", DefaultBaseEnvironmentCacheStatus),
-        )
-
-
-@dataclass
-class DefaultBaseEnvironmentCache:
-    indefinite_materialized_environment: Optional[MaterializedEnvironment] = None
-
-    materialized_environment: Optional[MaterializedEnvironment] = None
-
-    message: Optional[str] = None
-
-    status: Optional[DefaultBaseEnvironmentCacheStatus] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the DefaultBaseEnvironmentCache into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.indefinite_materialized_environment:
-            body["indefinite_materialized_environment"] = self.indefinite_materialized_environment.as_dict()
-        if self.materialized_environment:
-            body["materialized_environment"] = self.materialized_environment.as_dict()
-        if self.message is not None:
-            body["message"] = self.message
-        if self.status is not None:
-            body["status"] = self.status.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DefaultBaseEnvironmentCache into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.indefinite_materialized_environment:
-            body["indefinite_materialized_environment"] = self.indefinite_materialized_environment
-        if self.materialized_environment:
-            body["materialized_environment"] = self.materialized_environment
-        if self.message is not None:
-            body["message"] = self.message
-        if self.status is not None:
-            body["status"] = self.status
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DefaultBaseEnvironmentCache:
-        """Deserializes the DefaultBaseEnvironmentCache from a dictionary."""
-        return cls(
-            indefinite_materialized_environment=_from_dict(
-                d, "indefinite_materialized_environment", MaterializedEnvironment
-            ),
-            materialized_environment=_from_dict(d, "materialized_environment", MaterializedEnvironment),
-            message=d.get("message", None),
-            status=_enum(d, "status", DefaultBaseEnvironmentCacheStatus),
-        )
-
-
-class DefaultBaseEnvironmentCacheStatus(Enum):
-    CREATED = "CREATED"
-    EXPIRED = "EXPIRED"
-    FAILED = "FAILED"
-    INVALID = "INVALID"
-    PENDING = "PENDING"
-    REFRESHING = "REFRESHING"
 
 
 @dataclass
@@ -3167,129 +2955,6 @@ class DestroyResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DestroyResponse:
         """Deserializes the DestroyResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class Diagnostic:
-    """The cluster diagnostics singleton resource: the latest diagnostics run for a cluster."""
-
-    checks: Optional[List[DiagnosticCheck]] = None
-    """List of individual checks (maps to UI rows)."""
-
-    diagnostics_status: Optional[DiagnosticsStatus] = None
-    """Overall run status (PASSED / FAILED / NOT_RUN). FAILED if any individual check fails."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Diagnostic into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.checks:
-            body["checks"] = [v.as_dict() for v in self.checks]
-        if self.diagnostics_status is not None:
-            body["diagnostics_status"] = self.diagnostics_status.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Diagnostic into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.checks:
-            body["checks"] = self.checks
-        if self.diagnostics_status is not None:
-            body["diagnostics_status"] = self.diagnostics_status
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Diagnostic:
-        """Deserializes the Diagnostic from a dictionary."""
-        return cls(
-            checks=_repeated_dict(d, "checks", DiagnosticCheck),
-            diagnostics_status=_enum(d, "diagnostics_status", DiagnosticsStatus),
-        )
-
-
-@dataclass
-class DiagnosticCheck:
-    """A single check (one row of the cluster's Diagnostics tab)."""
-
-    check_id: Optional[CheckId] = None
-    """Identifies the probed target (from the CheckId enum)."""
-
-    check_status: Optional[DiagnosticsStatus] = None
-    """Outcome of this specific check (PASSED / FAILED / NOT_RUN)."""
-
-    description: Optional[str] = None
-    """Static summary of what this check tests (e.g., "Control-plane REST reachability")."""
-
-    reason: Optional[DiagnosticsErrorReason] = None
-    """The error reason that caused the check failure, mapping to the first failing layer (DNS -> TCP
-    -> TLS -> HTTP). Set ONLY when check_status = FAILED."""
-
-    remediation: Optional[str] = None
-    """Static, human-readable instructions to resolve the failure. Set ONLY when check_status = FAILED."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DiagnosticCheck into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.check_id is not None:
-            body["check_id"] = self.check_id.value
-        if self.check_status is not None:
-            body["check_status"] = self.check_status.value
-        if self.description is not None:
-            body["description"] = self.description
-        if self.reason is not None:
-            body["reason"] = self.reason.value
-        if self.remediation is not None:
-            body["remediation"] = self.remediation
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DiagnosticCheck into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.check_id is not None:
-            body["check_id"] = self.check_id
-        if self.check_status is not None:
-            body["check_status"] = self.check_status
-        if self.description is not None:
-            body["description"] = self.description
-        if self.reason is not None:
-            body["reason"] = self.reason
-        if self.remediation is not None:
-            body["remediation"] = self.remediation
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DiagnosticCheck:
-        """Deserializes the DiagnosticCheck from a dictionary."""
-        return cls(
-            check_id=_enum(d, "check_id", CheckId),
-            check_status=_enum(d, "check_status", DiagnosticsStatus),
-            description=d.get("description", None),
-            reason=_enum(d, "reason", DiagnosticsErrorReason),
-            remediation=d.get("remediation", None),
-        )
-
-
-class DiagnosticsErrorReason(Enum):
-    """Diagnostic error reason for a failed check, identifying the first failing network layer (DNS ->
-    TCP -> TLS -> HTTP). Set on Check.reason only when check_status = FAILED."""
-
-    ERROR_REASON_CERT_SAN_MISMATCH = "ERROR_REASON_CERT_SAN_MISMATCH"
-    ERROR_REASON_DNS_RESOLVE_FAIL = "ERROR_REASON_DNS_RESOLVE_FAIL"
-    ERROR_REASON_HTTP_3XX = "ERROR_REASON_HTTP_3XX"
-    ERROR_REASON_HTTP_4XX = "ERROR_REASON_HTTP_4XX"
-    ERROR_REASON_HTTP_5XX = "ERROR_REASON_HTTP_5XX"
-    ERROR_REASON_HTTP_TIMEOUT = "ERROR_REASON_HTTP_TIMEOUT"
-    ERROR_REASON_NOT_RUN = "ERROR_REASON_NOT_RUN"
-    ERROR_REASON_TCP_REFUSED = "ERROR_REASON_TCP_REFUSED"
-    ERROR_REASON_TCP_TIMEOUT = "ERROR_REASON_TCP_TIMEOUT"
-    ERROR_REASON_TLS_HANDSHAKE_FAIL = "ERROR_REASON_TLS_HANDSHAKE_FAIL"
-
-
-class DiagnosticsStatus(Enum):
-    """Overall status of a cluster diagnostics run, and of each individual check within it."""
-
-    DIAGNOSTICS_STATUS_FAILED = "DIAGNOSTICS_STATUS_FAILED"
-    DIAGNOSTICS_STATUS_NOT_RUN = "DIAGNOSTICS_STATUS_NOT_RUN"
-    DIAGNOSTICS_STATUS_PASSED = "DIAGNOSTICS_STATUS_PASSED"
 
 
 @dataclass
@@ -3683,11 +3348,7 @@ class EnforcePolicyComplianceForClusterResponseClusterSettings:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as ``node_type_id`` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as ``node_type_id`` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -3781,8 +3442,8 @@ class EnforcePolicyComplianceForClusterResponseClusterSettings:
     can be specified."""
 
     total_initial_remote_disk_size: Optional[int] = None
-    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-    supported for GCP HYPERDISK_BALANCED disks."""
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Supported for
+    GCP."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
@@ -4024,6 +3685,9 @@ class Environment:
     """List of java dependencies. Each dependency is a string representing a java library path. For
     example: ``/Volumes/path/to/test.jar``."""
 
+    project_environment: Optional[str] = None
+    """File path of pyproject.toml file that defines the project-scoped environment."""
+
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4037,6 +3701,8 @@ class Environment:
             body["environment_version"] = self.environment_version
         if self.java_dependencies:
             body["java_dependencies"] = [v for v in self.java_dependencies]
+        if self.project_environment is not None:
+            body["project_environment"] = self.project_environment
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4052,6 +3718,8 @@ class Environment:
             body["environment_version"] = self.environment_version
         if self.java_dependencies:
             body["java_dependencies"] = self.java_dependencies
+        if self.project_environment is not None:
+            body["project_environment"] = self.project_environment
         return body
 
     @classmethod
@@ -4063,6 +3731,7 @@ class Environment:
             dependencies=d.get("dependencies", None),
             environment_version=d.get("environment_version", None),
             java_dependencies=d.get("java_dependencies", None),
+            project_environment=d.get("project_environment", None),
         )
 
 
@@ -4232,16 +3901,16 @@ class EventDetails:
             current_num_vcpus=d.get("current_num_vcpus", None),
             current_num_workers=d.get("current_num_workers", None),
             did_not_expand_reason=d.get("did_not_expand_reason", None),
-            disk_size=d.get("disk_size", None),
+            disk_size=_int64(d, "disk_size"),
             driver_state_message=d.get("driver_state_message", None),
             enable_termination_for_node_blocklisted=d.get("enable_termination_for_node_blocklisted", None),
-            free_space=d.get("free_space", None),
+            free_space=_int64(d, "free_space"),
             init_scripts=_from_dict(d, "init_scripts", InitScriptEventDetails),
             instance_id=d.get("instance_id", None),
             job_run_name=d.get("job_run_name", None),
             previous_attributes=_from_dict(d, "previous_attributes", ClusterAttributes),
             previous_cluster_size=_from_dict(d, "previous_cluster_size", ClusterSize),
-            previous_disk_size=d.get("previous_disk_size", None),
+            previous_disk_size=_int64(d, "previous_disk_size"),
             reason=_from_dict(d, "reason", TerminationReason),
             target_num_vcpus=d.get("target_num_vcpus", None),
             target_num_workers=d.get("target_num_workers", None),
@@ -4629,14 +4298,14 @@ class GetEvents:
         """Deserializes the GetEvents from a dictionary."""
         return cls(
             cluster_id=d.get("cluster_id", None),
-            end_time=d.get("end_time", None),
+            end_time=_int64(d, "end_time"),
             event_types=_repeated_enum(d, "event_types", EventType),
-            limit=d.get("limit", None),
-            offset=d.get("offset", None),
+            limit=_int64(d, "limit"),
+            offset=_int64(d, "offset"),
             order=_enum(d, "order", GetEventsOrder),
             page_size=d.get("page_size", None),
             page_token=d.get("page_token", None),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
         )
 
 
@@ -4707,7 +4376,7 @@ class GetEventsResponse:
             next_page=_from_dict(d, "next_page", GetEvents),
             next_page_token=d.get("next_page_token", None),
             prev_page_token=d.get("prev_page_token", None),
-            total_count=d.get("total_count", None),
+            total_count=_int64(d, "total_count"),
         )
 
 
@@ -4740,10 +4409,6 @@ class GetInstancePool:
 
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
-
-    enable_auto_alternate_node_types: Optional[bool] = None
-    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
-    are enabled. This field must not be set together with node_type_flexibility."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
@@ -4823,8 +4488,6 @@ class GetInstancePool:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec.as_dict()
-        if self.enable_auto_alternate_node_types is not None:
-            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4872,8 +4535,6 @@ class GetInstancePool:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec
-        if self.enable_auto_alternate_node_types is not None:
-            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4917,7 +4578,6 @@ class GetInstancePool:
             custom_tags=d.get("custom_tags", None),
             default_tags=d.get("default_tags", None),
             disk_spec=_from_dict(d, "disk_spec", DiskSpec),
-            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
@@ -5592,10 +5252,6 @@ class InstancePoolAndStats:
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
 
-    enable_auto_alternate_node_types: Optional[bool] = None
-    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
-    are enabled. This field must not be set together with node_type_flexibility."""
-
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
     additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -5677,8 +5333,6 @@ class InstancePoolAndStats:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec.as_dict()
-        if self.enable_auto_alternate_node_types is not None:
-            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -5726,8 +5380,6 @@ class InstancePoolAndStats:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec
-        if self.enable_auto_alternate_node_types is not None:
-            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -5771,7 +5423,6 @@ class InstancePoolAndStats:
             custom_tags=d.get("custom_tags", None),
             default_tags=d.get("default_tags", None),
             disk_spec=_from_dict(d, "disk_spec", DiskSpec),
-            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
@@ -5796,7 +5447,12 @@ class InstancePoolAwsAttributes:
     """Attributes set during instance pool creation which are related to Amazon Web Services."""
 
     availability: Optional[InstancePoolAwsAttributesAvailability] = None
-    """Availability type used for the spot nodes."""
+    """Availability type used for the instances in the pool. Supports on-demand, spot, and
+    spot-with-fallback (the pool acquires spot instances first, and falls back to on-demand
+    instances when spot capacity is unavailable).
+    
+    You can change this value on an existing pool. New clusters use the updated availability, and
+    existing clusters keep the availability they launched with."""
 
     instance_profile_arn: Optional[str] = None
     """All AWS instances belonging to the instance pool will have this instance profile. If omitted,
@@ -5815,7 +5471,10 @@ class InstancePoolAwsAttributes:
     instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand
     ``r3.xlarge`` instances. If not specified, the default value is 100. When spot instances are
     requested for this cluster, only spot instances whose bid price percentage matches this field
-    will be considered. Note that, for safety, we enforce this field to be no more than 10000."""
+    will be considered. Note that, for safety, we enforce this field to be no more than 10000.
+    
+    You can change this value on an existing pool. New clusters use the updated bid price, and
+    existing clusters keep the bid price they launched with."""
 
     zone_id: Optional[str] = None
     """Identifier for the availability zone/datacenter in which the cluster resides. This string will
@@ -5823,7 +5482,15 @@ class InstancePoolAwsAttributes:
     Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
     deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
     if not specified, a default zone will be used. The list of available zones as well as the
-    default value can be found by using the ``List Zones`` method."""
+    default value can be found by using the ``List Zones`` method.
+    
+    Set this field to "auto" to enable Auto-AZ, in which case Databricks selects the availability
+    zone for each cluster independently when the cluster launches, and retries another zone if the
+    cluster can't be fulfilled because of insufficient capacity or quota. All nodes in a cluster
+    land in the same zone, and different clusters backed by the pool can run in different zones.
+    
+    You can change the zone on an existing pool. New clusters use the updated zone, and existing
+    clusters keep the zone they launched with."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolAwsAttributes into a dictionary suitable for use as a JSON request body."""
@@ -5874,7 +5541,12 @@ class InstancePoolAzureAttributes:
     """Attributes set during instance pool creation which are related to Azure."""
 
     availability: Optional[InstancePoolAzureAttributesAvailability] = None
-    """Availability type used for the spot nodes."""
+    """Availability type used for the instances in the pool. Supports on-demand, spot, and
+    spot-with-fallback (the pool acquires spot instances first, and falls back to on-demand
+    instances when spot capacity is unavailable).
+    
+    You can change this value on an existing pool. New clusters use the updated availability, and
+    existing clusters keep the availability they launched with."""
 
     capacity_reservation_group: Optional[str] = None
     """The Azure capacity reservation group resource ID to use for launching VMs in this pool. When
@@ -5899,7 +5571,10 @@ class InstancePoolAzureAttributes:
     """With variable pricing, you have option to set a max price, in US dollars (USD) For example, the
     value 2 would be a max price of $2.00 USD per hour. If you set the max price to be -1, the VM
     won't be evicted based on price. The price for the VM will be the current price for spot or the
-    price for a standard VM, which ever is less, as long as there is capacity and quota available."""
+    price for a standard VM, which ever is less, as long as there is capacity and quota available.
+    
+    You can change this value on an existing pool. New clusters use the updated max price, and
+    existing clusters keep the max price they launched with."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolAzureAttributes into a dictionary suitable for use as a JSON request body."""
@@ -5945,6 +5620,12 @@ class InstancePoolGcpAttributes:
     """Attributes set during instance pool creation which are related to GCP."""
 
     gcp_availability: Optional[GcpAvailability] = None
+    """Availability type for the instances in the pool. One of:
+    
+    - ``ON_DEMAND_GCP``: the pool uses on-demand instances only.
+    - ``PREEMPTIBLE_GCP``: the pool uses preemptible instances only.
+    - ``PREEMPTIBLE_WITH_FALLBACK_GCP``: the pool acquires preemptible instances first, and falls
+      back to on-demand instances when preemptible capacity is unavailable."""
 
     local_ssd_count: Optional[int] = None
     """If provided, each node in the instance pool will have this number of local SSDs attached. Each
@@ -5963,10 +5644,17 @@ class InstancePoolGcpAttributes:
     
     - "HA" => High availability, spread nodes across availability zones for a Databricks deployment
       region
+    - "auto" => Auto-AZ. Databricks selects the availability zone for each cluster independently
+      when the cluster launches, and retries another zone if the cluster can't be fulfilled because
+      of insufficient capacity or quota. All nodes in a cluster land in the same zone, and different
+      clusters backed by the pool can run in different zones.
     - A GCP availability zone => Pick One of the available zones for (machine type + region) from
       https://cloud.google.com/compute/docs/regions-zones (e.g. "us-west1-a").
     
-    If empty, Databricks picks an availability zone to schedule the cluster on."""
+    If empty, Databricks picks an availability zone to schedule the cluster on.
+    
+    You can change the zone on an existing pool. New clusters use the updated zone, and existing
+    clusters keep the zone they launched with."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolGcpAttributes into a dictionary suitable for use as a JSON request body."""
@@ -6682,39 +6370,6 @@ class ListClustersSortByField(Enum):
 
 
 @dataclass
-class ListDefaultBaseEnvironmentsResponse:
-    default_base_environments: Optional[List[DefaultBaseEnvironment]] = None
-
-    next_page_token: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ListDefaultBaseEnvironmentsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.default_base_environments:
-            body["default_base_environments"] = [v.as_dict() for v in self.default_base_environments]
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListDefaultBaseEnvironmentsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.default_base_environments:
-            body["default_base_environments"] = self.default_base_environments
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListDefaultBaseEnvironmentsResponse:
-        """Deserializes the ListDefaultBaseEnvironmentsResponse from a dictionary."""
-        return cls(
-            default_base_environments=_repeated_dict(d, "default_base_environments", DefaultBaseEnvironment),
-            next_page_token=d.get("next_page_token", None),
-        )
-
-
-@dataclass
 class ListGlobalInitScriptsResponse:
     scripts: Optional[List[GlobalInitScriptDetails]] = None
 
@@ -6974,50 +6629,10 @@ class LogSyncStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LogSyncStatus:
         """Deserializes the LogSyncStatus from a dictionary."""
-        return cls(last_attempted=d.get("last_attempted", None), last_exception=d.get("last_exception", None))
+        return cls(last_attempted=_int64(d, "last_attempted"), last_exception=d.get("last_exception", None))
 
 
 MapAny = Dict[str, Any]
-
-
-@dataclass
-class MaterializedEnvironment:
-    """Materialized Environment information enables environment sharing and reuse via Environment
-    Caching during library installations. Currently this feature is only supported for Python
-    libraries.
-
-    - If the env cache entry in LMv2 DB doesn't exist or invalid, library installations and
-      environment materialization will occur. A new Materialized Environment metadata will be sent
-      from DP upon successful library installations and env materialization, and is persisted into
-      database by LMv2.
-    - If the env cache entry in LMv2 DB is valid, the Materialized Environment will be sent to DP by
-      LMv2, and DP will restore the cached environment from a store instead of reinstalling
-      libraries from scratch.
-
-    If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto with new version
-    If changed, also update estore/namespaces/envspecenvironments/latest.proto with new version"""
-
-    last_updated_timestamp: Optional[int] = None
-    """The timestamp (in epoch milliseconds) when the materialized env is updated."""
-
-    def as_dict(self) -> dict:
-        """Serializes the MaterializedEnvironment into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.last_updated_timestamp is not None:
-            body["last_updated_timestamp"] = self.last_updated_timestamp
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the MaterializedEnvironment into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.last_updated_timestamp is not None:
-            body["last_updated_timestamp"] = self.last_updated_timestamp
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> MaterializedEnvironment:
-        """Deserializes the MaterializedEnvironment from a dictionary."""
-        return cls(last_updated_timestamp=d.get("last_updated_timestamp", None))
 
 
 @dataclass
@@ -7322,11 +6937,17 @@ class NodeTypeFlexibility:
     alternate_node_type_ids: Optional[List[str]] = None
     """A list of node type IDs to use as fallbacks when the primary node type is unavailable."""
 
+    aws_context_id: Optional[str] = None
+    """The AWS Context ID for EC2 Fleet. When set (non-empty), the value is passed to AWS CreateFleet
+    API to create the EC2 Fleet."""
+
     def as_dict(self) -> dict:
         """Serializes the NodeTypeFlexibility into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alternate_node_type_ids:
             body["alternate_node_type_ids"] = [v for v in self.alternate_node_type_ids]
+        if self.aws_context_id is not None:
+            body["aws_context_id"] = self.aws_context_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7334,12 +6955,16 @@ class NodeTypeFlexibility:
         body = {}
         if self.alternate_node_type_ids:
             body["alternate_node_type_ids"] = self.alternate_node_type_ids
+        if self.aws_context_id is not None:
+            body["aws_context_id"] = self.aws_context_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NodeTypeFlexibility:
         """Deserializes the NodeTypeFlexibility from a dictionary."""
-        return cls(alternate_node_type_ids=d.get("alternate_node_type_ids", None))
+        return cls(
+            alternate_node_type_ids=d.get("alternate_node_type_ids", None), aws_context_id=d.get("aws_context_id", None)
+        )
 
 
 @dataclass
@@ -7484,29 +7109,6 @@ class PinClusterResponse:
 class Policy:
     """Describes a Cluster Policy entity."""
 
-    auto_enforcement_config: Optional[PolicyAutoEnforcementConfig] = None
-    """If present, auto enforcement is enabled for the policy. After the policy is edited, a background
-    operation may be scheduled to scan and edit all clusters and jobs using this policy to be in
-    compliance with the policy.
-    
-    The background operation is created when a policy edit does one of the following:
-    
-    - Changes the policy definition, or
-    - Changes auto enforcement from disabled to enabled Additionally, changes to the policy
-      definition or auto enforcement configuration may cause an in-progress operation to be
-      restarted.
-    
-    To cancel an in-progress operation, edit the policy to delete this auto enforcement
-    configuration.
-    
-    The background operation status is reported via the ``background_enforcement`` field when
-    reading the policy."""
-
-    background_enforcement: Optional[PolicyBackgroundEnforcement] = None
-    """Status and results of the background auto-enforcement operation for this policy. Only returned
-    if calling "Get a cluster policy" with ``POLICY_VIEW_FULL``. Must be a workspace admin for this
-    field to be populated."""
-
     created_at_timestamp: Optional[int] = None
     """Creation time. The timestamp (in millisecond) when this Cluster Policy was created."""
 
@@ -7558,10 +7160,6 @@ class Policy:
     def as_dict(self) -> dict:
         """Serializes the Policy into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.auto_enforcement_config:
-            body["auto_enforcement_config"] = self.auto_enforcement_config.as_dict()
-        if self.background_enforcement:
-            body["background_enforcement"] = self.background_enforcement.as_dict()
         if self.created_at_timestamp is not None:
             body["created_at_timestamp"] = self.created_at_timestamp
         if self.creator_user_name is not None:
@@ -7589,10 +7187,6 @@ class Policy:
     def as_shallow_dict(self) -> dict:
         """Serializes the Policy into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.auto_enforcement_config:
-            body["auto_enforcement_config"] = self.auto_enforcement_config
-        if self.background_enforcement:
-            body["background_enforcement"] = self.background_enforcement
         if self.created_at_timestamp is not None:
             body["created_at_timestamp"] = self.created_at_timestamp
         if self.creator_user_name is not None:
@@ -7621,158 +7215,18 @@ class Policy:
     def from_dict(cls, d: Dict[str, Any]) -> Policy:
         """Deserializes the Policy from a dictionary."""
         return cls(
-            auto_enforcement_config=_from_dict(d, "auto_enforcement_config", PolicyAutoEnforcementConfig),
-            background_enforcement=_from_dict(d, "background_enforcement", PolicyBackgroundEnforcement),
-            created_at_timestamp=d.get("created_at_timestamp", None),
+            created_at_timestamp=_int64(d, "created_at_timestamp"),
             creator_user_name=d.get("creator_user_name", None),
             definition=d.get("definition", None),
             description=d.get("description", None),
             is_default=d.get("is_default", None),
             libraries=_repeated_dict(d, "libraries", Library),
-            max_clusters_per_user=d.get("max_clusters_per_user", None),
+            max_clusters_per_user=_int64(d, "max_clusters_per_user"),
             name=d.get("name", None),
             policy_family_definition_overrides=d.get("policy_family_definition_overrides", None),
             policy_family_id=d.get("policy_family_id", None),
             policy_id=d.get("policy_id", None),
         )
-
-
-@dataclass
-class PolicyAutoEnforcementConfig:
-    """Configures how auto enforcement should be executed for a cluster policy."""
-
-    enforce_mode: Optional[PolicyAutoEnforcementConfigPolicyAutoEnforcementEnforceMode] = None
-    """For running clusters, whether to defer enforcement until the cluster terminates or to restart it
-    immediately."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PolicyAutoEnforcementConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.enforce_mode is not None:
-            body["enforce_mode"] = self.enforce_mode.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PolicyAutoEnforcementConfig into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.enforce_mode is not None:
-            body["enforce_mode"] = self.enforce_mode
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PolicyAutoEnforcementConfig:
-        """Deserializes the PolicyAutoEnforcementConfig from a dictionary."""
-        return cls(enforce_mode=_enum(d, "enforce_mode", PolicyAutoEnforcementConfigPolicyAutoEnforcementEnforceMode))
-
-
-class PolicyAutoEnforcementConfigPolicyAutoEnforcementEnforceMode(Enum):
-    """Behavior for running clusters when auto-enforcement is applied. Mirrors ``enforce_mode`` on the
-    enforce compliance API."""
-
-    ENFORCE_IMMEDIATELY = "ENFORCE_IMMEDIATELY"
-    WAIT_FOR_TERMINATION = "WAIT_FOR_TERMINATION"
-
-
-@dataclass
-class PolicyBackgroundEnforcement:
-    """Status and results of the background enforcement operation for a policy."""
-
-    deferred_cluster_enforce_count: Optional[int] = None
-    """Number of clusters that are scheduled to enforce on next termination or restart."""
-
-    end_time: Optional[Timestamp] = None
-    """The time the enforcement operation finished. Only set once the operation reaches a COMPLETED or
-    ABORTED state."""
-
-    failed_cluster_enforce_count: Optional[int] = None
-    """Number of clusters that could not be enforced due to an error."""
-
-    failed_job_enforce_count: Optional[int] = None
-    """Number of jobs that could not be enforced due to an error."""
-
-    initiate_time: Optional[Timestamp] = None
-    """The time the enforcement operation was initiated."""
-
-    initiator_user: Optional[str] = None
-    """The user who edited the policy to initiate the enforcement operation."""
-
-    status: Optional[PolicyBackgroundEnforcementPolicyBackgroundEnforcementStatus] = None
-    """Whether the enforcement operation is still in-progress or completed."""
-
-    success_cluster_enforce_count: Optional[int] = None
-    """Number of clusters that were successfully enforced."""
-
-    success_job_enforce_count: Optional[int] = None
-    """Number of jobs that were successfully enforced."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PolicyBackgroundEnforcement into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.deferred_cluster_enforce_count is not None:
-            body["deferred_cluster_enforce_count"] = self.deferred_cluster_enforce_count
-        if self.end_time is not None:
-            body["end_time"] = self.end_time.ToJsonString()
-        if self.failed_cluster_enforce_count is not None:
-            body["failed_cluster_enforce_count"] = self.failed_cluster_enforce_count
-        if self.failed_job_enforce_count is not None:
-            body["failed_job_enforce_count"] = self.failed_job_enforce_count
-        if self.initiate_time is not None:
-            body["initiate_time"] = self.initiate_time.ToJsonString()
-        if self.initiator_user is not None:
-            body["initiator_user"] = self.initiator_user
-        if self.status is not None:
-            body["status"] = self.status.value
-        if self.success_cluster_enforce_count is not None:
-            body["success_cluster_enforce_count"] = self.success_cluster_enforce_count
-        if self.success_job_enforce_count is not None:
-            body["success_job_enforce_count"] = self.success_job_enforce_count
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PolicyBackgroundEnforcement into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.deferred_cluster_enforce_count is not None:
-            body["deferred_cluster_enforce_count"] = self.deferred_cluster_enforce_count
-        if self.end_time is not None:
-            body["end_time"] = self.end_time
-        if self.failed_cluster_enforce_count is not None:
-            body["failed_cluster_enforce_count"] = self.failed_cluster_enforce_count
-        if self.failed_job_enforce_count is not None:
-            body["failed_job_enforce_count"] = self.failed_job_enforce_count
-        if self.initiate_time is not None:
-            body["initiate_time"] = self.initiate_time
-        if self.initiator_user is not None:
-            body["initiator_user"] = self.initiator_user
-        if self.status is not None:
-            body["status"] = self.status
-        if self.success_cluster_enforce_count is not None:
-            body["success_cluster_enforce_count"] = self.success_cluster_enforce_count
-        if self.success_job_enforce_count is not None:
-            body["success_job_enforce_count"] = self.success_job_enforce_count
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PolicyBackgroundEnforcement:
-        """Deserializes the PolicyBackgroundEnforcement from a dictionary."""
-        return cls(
-            deferred_cluster_enforce_count=d.get("deferred_cluster_enforce_count", None),
-            end_time=_timestamp(d, "end_time"),
-            failed_cluster_enforce_count=d.get("failed_cluster_enforce_count", None),
-            failed_job_enforce_count=d.get("failed_job_enforce_count", None),
-            initiate_time=_timestamp(d, "initiate_time"),
-            initiator_user=d.get("initiator_user", None),
-            status=_enum(d, "status", PolicyBackgroundEnforcementPolicyBackgroundEnforcementStatus),
-            success_cluster_enforce_count=d.get("success_cluster_enforce_count", None),
-            success_job_enforce_count=d.get("success_job_enforce_count", None),
-        )
-
-
-class PolicyBackgroundEnforcementPolicyBackgroundEnforcementStatus(Enum):
-    """The status of a background policy enforcement operation."""
-
-    ABORTED = "ABORTED"
-    COMPLETED = "COMPLETED"
-    IN_PROGRESS = "IN_PROGRESS"
 
 
 @dataclass
@@ -7825,13 +7279,6 @@ class PolicyFamily:
             name=d.get("name", None),
             policy_family_id=d.get("policy_family_id", None),
         )
-
-
-class PolicyView(Enum):
-    """Controls which fields are returned when reading a policy."""
-
-    POLICY_VIEW_BASIC = "POLICY_VIEW_BASIC"
-    POLICY_VIEW_FULL = "POLICY_VIEW_FULL"
 
 
 @dataclass
@@ -7897,24 +7344,6 @@ class RCranLibrary:
     def from_dict(cls, d: Dict[str, Any]) -> RCranLibrary:
         """Deserializes the RCranLibrary from a dictionary."""
         return cls(package=d.get("package", None), repo=d.get("repo", None))
-
-
-@dataclass
-class RefreshDefaultBaseEnvironmentsResponse:
-    def as_dict(self) -> dict:
-        """Serializes the RefreshDefaultBaseEnvironmentsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RefreshDefaultBaseEnvironmentsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RefreshDefaultBaseEnvironmentsResponse:
-        """Deserializes the RefreshDefaultBaseEnvironmentsResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -8252,7 +7681,7 @@ class SparkNode:
             node_id=d.get("node_id", None),
             private_ip=d.get("private_ip", None),
             public_dns=d.get("public_dns", None),
-            start_timestamp=d.get("start_timestamp", None),
+            start_timestamp=_int64(d, "start_timestamp"),
         )
 
 
@@ -8404,7 +7833,7 @@ class TerminationReason:
 
 
 class TerminationReasonCode(Enum):
-    """The status code indicating why the cluster was terminated"""
+    """The status code indicating why the cluster was terminated."""
 
     ABUSE_DETECTED = "ABUSE_DETECTED"
     ACCESS_TOKEN_FAILURE = "ACCESS_TOKEN_FAILURE"
@@ -8444,7 +7873,6 @@ class TerminationReasonCode(Enum):
     BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG = "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG"
     BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED = "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED"
     BUDGET_POLICY_RESOLUTION_FAILURE = "BUDGET_POLICY_RESOLUTION_FAILURE"
-    CERT_ROTATION = "CERT_ROTATION"
     CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED = "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
     CLOUD_ACCOUNT_SETUP_FAILURE = "CLOUD_ACCOUNT_SETUP_FAILURE"
     CLOUD_OPERATION_CANCELLED = "CLOUD_OPERATION_CANCELLED"
@@ -8463,7 +7891,6 @@ class TerminationReasonCode(Enum):
     CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
     CONTROL_PLANE_REQUEST_FAILURE = "CONTROL_PLANE_REQUEST_FAILURE"
     CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
-    COST_CONTROL_ENTITLEMENT_DENIED = "COST_CONTROL_ENTITLEMENT_DENIED"
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
@@ -8474,7 +7901,6 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
-    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -8555,8 +7981,6 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
-    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
-    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
@@ -8567,11 +7991,9 @@ class TerminationReasonCode(Enum):
     REQUEST_REJECTED = "REQUEST_REJECTED"
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
     RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
-    SECRET_CREATION_ACCESS_DENIED = "SECRET_CREATION_ACCESS_DENIED"
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
-    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
@@ -8603,7 +8025,6 @@ class TerminationReasonCode(Enum):
     WORKER_SETUP_FAILURE = "WORKER_SETUP_FAILURE"
     WORKSPACE_CANCELLED_ERROR = "WORKSPACE_CANCELLED_ERROR"
     WORKSPACE_CONFIGURATION_ERROR = "WORKSPACE_CONFIGURATION_ERROR"
-    WORKSPACE_DELEGATION_KEY_MISCONFIGURED = "WORKSPACE_DELEGATION_KEY_MISCONFIGURED"
     WORKSPACE_UPDATE = "WORKSPACE_UPDATE"
 
 
@@ -8709,11 +8130,7 @@ class UpdateClusterResource:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as ``node_type_id`` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as ``node_type_id`` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -8807,8 +8224,8 @@ class UpdateClusterResource:
     can be specified."""
 
     total_initial_remote_disk_size: Optional[int] = None
-    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-    supported for GCP HYPERDISK_BALANCED disks."""
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Supported for
+    GCP."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when ``kind = CLASSIC_PREVIEW``.
@@ -9157,7 +8574,6 @@ class ClusterPoliciesAPI:
     def create(
         self,
         *,
-        auto_enforcement_config: Optional[PolicyAutoEnforcementConfig] = None,
         definition: Optional[str] = None,
         description: Optional[str] = None,
         libraries: Optional[List[Library]] = None,
@@ -9168,21 +8584,6 @@ class ClusterPoliciesAPI:
     ) -> CreatePolicyResponse:
         """Creates a new policy with prescribed settings.
 
-        :param auto_enforcement_config: :class:`PolicyAutoEnforcementConfig` (optional)
-          If present, auto enforcement is enabled for the policy. After the policy is edited, a background
-          operation may be scheduled to scan and edit all clusters and jobs using this policy to be in
-          compliance with the policy.
-
-          The background operation is created when a policy edit does one of the following:
-
-          - Changes the policy definition, or
-          - Changes auto enforcement from disabled to enabled Additionally, changes to the policy definition
-            or auto enforcement configuration may cause an in-progress operation to be restarted.
-
-          To cancel an in-progress operation, edit the policy to delete this auto enforcement configuration.
-
-          The background operation status is reported via the ``background_enforcement`` field when reading
-          the policy.
         :param definition: str (optional)
           Policy definition document expressed in `Databricks Cluster Policy Definition Language
           <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__.
@@ -9215,8 +8616,6 @@ class ClusterPoliciesAPI:
         """
 
         body = {}
-        if auto_enforcement_config is not None:
-            body["auto_enforcement_config"] = auto_enforcement_config.as_dict()
         if definition is not None:
             body["definition"] = definition
         if description is not None:
@@ -9270,7 +8669,6 @@ class ClusterPoliciesAPI:
         self,
         policy_id: str,
         *,
-        auto_enforcement_config: Optional[PolicyAutoEnforcementConfig] = None,
         definition: Optional[str] = None,
         description: Optional[str] = None,
         libraries: Optional[List[Library]] = None,
@@ -9284,21 +8682,6 @@ class ClusterPoliciesAPI:
 
         :param policy_id: str
           The ID of the policy to update.
-        :param auto_enforcement_config: :class:`PolicyAutoEnforcementConfig` (optional)
-          If present, auto enforcement is enabled for the policy. After the policy is edited, a background
-          operation may be scheduled to scan and edit all clusters and jobs using this policy to be in
-          compliance with the policy.
-
-          The background operation is created when a policy edit does one of the following:
-
-          - Changes the policy definition, or
-          - Changes auto enforcement from disabled to enabled Additionally, changes to the policy definition
-            or auto enforcement configuration may cause an in-progress operation to be restarted.
-
-          To cancel an in-progress operation, edit the policy to delete this auto enforcement configuration.
-
-          The background operation status is reported via the ``background_enforcement`` field when reading
-          the policy.
         :param definition: str (optional)
           Policy definition document expressed in `Databricks Cluster Policy Definition Language
           <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__.
@@ -9331,8 +8714,6 @@ class ClusterPoliciesAPI:
         """
 
         body = {}
-        if auto_enforcement_config is not None:
-            body["auto_enforcement_config"] = auto_enforcement_config.as_dict()
         if definition is not None:
             body["definition"] = definition
         if description is not None:
@@ -9360,13 +8741,11 @@ class ClusterPoliciesAPI:
 
         self._api.do("POST", "/api/2.0/policies/clusters/edit", body=body, headers=headers)
 
-    def get(self, policy_id: str, *, policy_view: Optional[PolicyView] = None) -> Policy:
+    def get(self, policy_id: str) -> Policy:
         """Get a cluster policy entity. Creation and editing is available to admins only.
 
         :param policy_id: str
           Canonical unique identifier for the Cluster Policy.
-        :param policy_view: :class:`PolicyView` (optional)
-          Controls which fields are returned.
 
         :returns: :class:`Policy`
         """
@@ -9374,8 +8753,6 @@ class ClusterPoliciesAPI:
         query = {}
         if policy_id is not None:
             query["policy_id"] = policy_id
-        if policy_view is not None:
-            query["policy_view"] = policy_view.value
         headers = {
             "Accept": "application/json",
         }
@@ -9752,10 +9129,6 @@ class ClustersAPI:
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as ``node_type_id`` defined above.
-
-          This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-          driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
-          node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
           when its Spark workers are running low on disk space.
@@ -9827,8 +9200,7 @@ class ClustersAPI:
           private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys can
           be specified.
         :param total_initial_remote_disk_size: int (optional)
-          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-          supported for GCP HYPERDISK_BALANCED disks.
+          If set, what the total initial volume size (in GB) of the remote disks should be. Supported for GCP.
         :param use_ml_runtime: bool (optional)
           This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
@@ -10146,10 +9518,6 @@ class ClustersAPI:
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as ``node_type_id`` defined above.
-
-          This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-          driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
-          node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
           when its Spark workers are running low on disk space.
@@ -10221,8 +9589,7 @@ class ClustersAPI:
           private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys can
           be specified.
         :param total_initial_remote_disk_size: int (optional)
-          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-          supported for GCP HYPERDISK_BALANCED disks.
+          If set, what the total initial volume size (in GB) of the remote disks should be. Supported for GCP.
         :param use_ml_runtime: bool (optional)
           This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
@@ -10510,35 +9877,6 @@ class ClustersAPI:
 
         res = self._api.do("GET", "/api/2.1/clusters/get", query=query, headers=headers)
         return ClusterDetails.from_dict(res)
-
-    def get_diagnostic(self, name: str) -> Diagnostic:
-        """Returns the most recent cluster diagnostics result for a cluster.
-
-        Cluster diagnostics are a set of environment checks -- for example, network reachability to the
-        control plane, storage, DNS, and the SCC tunnel -- that verify the cluster's environment is set up
-        correctly for the cluster to provision. The checks run automatically while the cluster is starting,
-        once per cluster start, and their results are stored.
-
-        This method only reads the latest stored result; it does NOT run the checks. The response reports an
-        overall status plus a per-check breakdown (check status, failure reason, remediation, and
-        description). If diagnostics have not run for the cluster, the overall status is NOT_RUN.
-
-        :param name: str
-          The resource name of the cluster whose diagnostics to retrieve. Format: clusters/{cluster_id}
-
-        :returns: :class:`Diagnostic`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("GET", f"/api/2.1/{name}/diagnostics", headers=headers)
-        return Diagnostic.from_dict(res)
 
     def get_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
@@ -11557,7 +10895,6 @@ class InstancePoolsAPI:
         azure_attributes: Optional[InstancePoolAzureAttributes] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         disk_spec: Optional[DiskSpec] = None,
-        enable_auto_alternate_node_types: Optional[bool] = None,
         enable_elastic_disk: Optional[bool] = None,
         gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
         idle_instance_autotermination_minutes: Optional[int] = None,
@@ -11593,9 +10930,6 @@ class InstancePoolsAPI:
           - Currently, Databricks allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
           Defines the specification of the disks that will be attached to all spark containers.
-        :param enable_auto_alternate_node_types: bool (optional)
-          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
-          enabled. This field must not be set together with node_type_flexibility.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
           additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -11643,8 +10977,6 @@ class InstancePoolsAPI:
             body["custom_tags"] = custom_tags
         if disk_spec is not None:
             body["disk_spec"] = disk_spec.as_dict()
-        if enable_auto_alternate_node_types is not None:
-            body["enable_auto_alternate_node_types"] = enable_auto_alternate_node_types
         if enable_elastic_disk is not None:
             body["enable_elastic_disk"] = enable_elastic_disk
         if gcp_attributes is not None:
@@ -11711,7 +11043,6 @@ class InstancePoolsAPI:
         node_type_id: str,
         *,
         custom_tags: Optional[Dict[str, str]] = None,
-        enable_auto_alternate_node_types: Optional[bool] = None,
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
@@ -11736,9 +11067,6 @@ class InstancePoolsAPI:
           EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
-        :param enable_auto_alternate_node_types: bool (optional)
-          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
-          enabled. This field must not be set together with node_type_flexibility.
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
           in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
@@ -11764,8 +11092,6 @@ class InstancePoolsAPI:
         body = {}
         if custom_tags is not None:
             body["custom_tags"] = custom_tags
-        if enable_auto_alternate_node_types is not None:
-            body["enable_auto_alternate_node_types"] = enable_auto_alternate_node_types
         if idle_instance_autotermination_minutes is not None:
             body["idle_instance_autotermination_minutes"] = idle_instance_autotermination_minutes
         if instance_pool_id is not None:
@@ -12174,94 +11500,6 @@ class LibrariesAPI:
         parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
         return parsed if parsed is not None else []
 
-    def create_default_base_environment(
-        self,
-        default_base_environment: DefaultBaseEnvironment,
-        *,
-        request_id: Optional[str] = None,
-        workspace_base_environment_id: Optional[str] = None,
-    ) -> DefaultBaseEnvironment:
-        """Create a default base environment within workspaces to define the environment version and a list of
-        dependencies to be used in serverless notebooks and jobs. This process will asynchronously generate a
-        cache to optimize dependency resolution.
-
-        :param default_base_environment: :class:`DefaultBaseEnvironment`
-        :param request_id: str (optional)
-          A unique identifier for this request. A random UUID is recommended. This request is only idempotent
-          if a ``request_id`` is provided.
-        :param workspace_base_environment_id: str (optional)
-
-        :returns: :class:`DefaultBaseEnvironment`
-        """
-
-        if request_id is None or request_id == "":
-            request_id = str(uuid.uuid4())
-        body = {}
-        if default_base_environment is not None:
-            body["default_base_environment"] = default_base_environment.as_dict()
-        if request_id is not None:
-            body["request_id"] = request_id
-        if workspace_base_environment_id is not None:
-            body["workspace_base_environment_id"] = workspace_base_environment_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("POST", "/api/2.0/default-base-environments", body=body, headers=headers)
-        return DefaultBaseEnvironment.from_dict(res)
-
-    def delete_default_base_environment(self, id: str):
-        """Delete the default base environment given an ID. The default base environment may be used by
-        downstream workloads. Please ensure that the deletion is intentional.
-
-        :param id: str
-
-
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        self._api.do("DELETE", f"/api/2.0/default-base-environments/{id}", headers=headers)
-
-    def get_default_base_environment(self, id: str, *, trace_id: Optional[str] = None) -> DefaultBaseEnvironment:
-        """Return the default base environment details for a given ID.
-
-        :param id: str
-        :param trace_id: str (optional)
-          Deprecated: use ctx.requestId instead
-
-        :returns: :class:`DefaultBaseEnvironment`
-        """
-
-        query = {}
-        if id is not None:
-            query["id"] = id
-        if trace_id is not None:
-            query["trace_id"] = trace_id
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do(
-            "GET", "/api/2.0/default-base-environments:getDefaultBaseEnvironment", query=query, headers=headers
-        )
-        return DefaultBaseEnvironment.from_dict(res)
-
     def install(self, cluster_id: str, libraries: List[Library]):
         """Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
         after the completion of this request.
@@ -12290,62 +11528,6 @@ class LibrariesAPI:
 
         self._api.do("POST", "/api/2.0/libraries/install", body=body, headers=headers)
 
-    def list_default_base_environments(
-        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> Iterator[DefaultBaseEnvironment]:
-        """List default base environments defined in the workspaces for the requested user.
-
-        :param page_size: int (optional)
-        :param page_token: str (optional)
-
-        :returns: Iterator over :class:`DefaultBaseEnvironment`
-        """
-
-        query = {}
-        if page_size is not None:
-            query["page_size"] = page_size
-        if page_token is not None:
-            query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        while True:
-            json = self._api.do("GET", "/api/2.0/default-base-environments", query=query, headers=headers)
-            if "default_base_environments" in json:
-                for v in json["default_base_environments"]:
-                    yield DefaultBaseEnvironment.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
-                return
-            query["page_token"] = json["next_page_token"]
-
-    def refresh_default_base_environments(self, ids: List[str]):
-        """Refresh the cached default base environments for the given IDs. This process will asynchronously
-        regenerate the caches. The existing caches remains available until it expires.
-
-        :param ids: List[str]
-
-
-        """
-
-        body = {}
-        if ids is not None:
-            body["ids"] = [v for v in ids]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        self._api.do("POST", "/api/2.0/default-base-environments/refresh", body=body, headers=headers)
-
     def uninstall(self, cluster_id: str, libraries: List[Library]):
         """Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is
         restarted. A request to uninstall a library that is not currently installed is ignored.
@@ -12373,62 +11555,6 @@ class LibrariesAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/libraries/uninstall", body=body, headers=headers)
-
-    def update_default_base_environment(
-        self, id: str, default_base_environment: DefaultBaseEnvironment
-    ) -> DefaultBaseEnvironment:
-        """Update the default base environment for the given ID. This process will asynchronously regenerate the
-        cache. The existing cache remains available until it expires.
-
-        :param id: str
-        :param default_base_environment: :class:`DefaultBaseEnvironment`
-
-        :returns: :class:`DefaultBaseEnvironment`
-        """
-
-        body = {}
-        if default_base_environment is not None:
-            body["default_base_environment"] = default_base_environment.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("PATCH", f"/api/2.0/default-base-environments/{id}", body=body, headers=headers)
-        return DefaultBaseEnvironment.from_dict(res)
-
-    def update_default_default_base_environment(
-        self, *, base_environment_type: Optional[BaseEnvironmentType] = None, id: Optional[str] = None
-    ) -> DefaultBaseEnvironment:
-        """Set the default base environment for the workspace. This marks the specified DBE as the workspace
-        default.
-
-        :param base_environment_type: :class:`BaseEnvironmentType` (optional)
-        :param id: str (optional)
-
-        :returns: :class:`DefaultBaseEnvironment`
-        """
-
-        body = {}
-        if base_environment_type is not None:
-            body["base_environment_type"] = base_environment_type.value
-        if id is not None:
-            body["id"] = id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        cfg = self._api._cfg
-        if cfg.workspace_id:
-            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
-
-        res = self._api.do("POST", "/api/2.0/default-base-environments:setDefault", body=body, headers=headers)
-        return DefaultBaseEnvironment.from_dict(res)
 
 
 class PolicyComplianceForClustersAPI:

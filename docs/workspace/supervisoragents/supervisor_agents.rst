@@ -4,7 +4,7 @@
 
 .. py:class:: SupervisorAgentsAPI
 
-    Manage Supervisor Agents and related resources.
+    Manage legacy Supervisor Agents and related resources.
 
     .. py:method:: create_example(parent: str, example: Example) -> Example
 

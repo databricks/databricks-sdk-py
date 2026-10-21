@@ -11,6 +11,9 @@
 
         Create a draft dashboard.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard: :class:`Dashboard`
         :param dataset_catalog: str (optional)
           Sets the default catalog for all datasets in this dashboard. Does not impact table references that
@@ -28,6 +31,9 @@
 
         Create dashboard schedule.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule: :class:`Schedule`
@@ -39,6 +45,13 @@
     .. py:method:: create_subscription(dashboard_id: str, schedule_id: str, subscription: Subscription) -> Subscription
 
         Create schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
@@ -54,6 +67,9 @@
 
         Delete dashboard schedule.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
@@ -68,6 +84,13 @@
     .. py:method:: delete_subscription(dashboard_id: str, schedule_id: str, subscription_id: str [, etag: Optional[str]])
 
         Delete schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
@@ -86,6 +109,9 @@
 
         Get a draft dashboard.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -96,6 +122,12 @@
 
         Get the current published dashboard.
 
+        The caller must be a workspace user with one of the following entitlements: Workspace access,
+        Databricks SQL access, or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the published dashboard.
 
@@ -105,6 +137,13 @@
     .. py:method:: get_schedule(dashboard_id: str, schedule_id: str) -> Schedule
 
         Get dashboard schedule.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
@@ -117,6 +156,13 @@
     .. py:method:: get_subscription(dashboard_id: str, schedule_id: str, subscription_id: str) -> Subscription
 
         Get schedule subscription.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
@@ -131,6 +177,9 @@
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str], show_trashed: Optional[bool], view: Optional[DashboardView]]) -> Iterator[Dashboard]
 
         List dashboards.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param page_size: int (optional)
           The number of dashboards to return per page.
@@ -150,6 +199,13 @@
 
         List dashboard schedules.
 
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedules belongs.
         :param page_size: int (optional)
@@ -164,6 +220,13 @@
     .. py:method:: list_subscriptions(dashboard_id: str, schedule_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Subscription]
 
         List schedule subscriptions.
+
+        The caller must be a workspace user with one of the following `entitlements
+        <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
+        or Consumer access.
+
+        Account-level users who are not members of the workspace cannot call this endpoint, even if the
+        dashboard has been shared with them.
 
         :param dashboard_id: str
           UUID identifying the dashboard which the subscriptions belongs.
@@ -180,7 +243,8 @@
 
     .. py:method:: migrate(source_dashboard_id: str [, display_name: Optional[str], parent_path: Optional[str], update_parameter_syntax: Optional[bool]]) -> Dashboard
 
-        Migrates a classic SQL dashboard to Lakeview.
+        Deprecated: Legacy dashboard migration is no longer supported. Use Lakeview (AI/BI) dashboards
+        instead.
 
         :param source_dashboard_id: str
           UUID of the dashboard to be migrated.
@@ -199,6 +263,9 @@
 
         Publish the current draft dashboard.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard to be published.
         :param embed_credentials: bool (optional)
@@ -214,6 +281,9 @@
 
         Revert a dashboard's definition in draft mode to the last published version.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard.
         :param etag: str (optional)
@@ -227,6 +297,9 @@
 
         Trash a dashboard.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -237,6 +310,9 @@
 
         Unpublish the dashboard.
 
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
+
         :param dashboard_id: str
           UUID identifying the published dashboard.
 
@@ -246,6 +322,9 @@
     .. py:method:: update(dashboard_id: str, dashboard: Dashboard [, dataset_catalog: Optional[str], dataset_schema: Optional[str]]) -> Dashboard
 
         Update a draft dashboard.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -265,6 +344,9 @@
     .. py:method:: update_schedule(dashboard_id: str, schedule_id: str, schedule: Schedule) -> Schedule
 
         Update dashboard schedule.
+
+        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
+        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.

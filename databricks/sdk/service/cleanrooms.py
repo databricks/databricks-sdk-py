@@ -9,16 +9,15 @@ from datetime import timedelta
 from enum import Enum
 from typing import Dict, List, Any, Iterator, Callable, Optional
 
-from google.protobuf.duration_pb2 import Duration
 
 import time
 import random
 import logging
 
 from databricks.sdk.service._internal import (
-    _duration,
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
     Wait,
@@ -72,11 +71,6 @@ class CleanRoom:
     """Central clean room details. During creation, users need to specify cloud_vendor, region, and
     collaborators.global_metastore_id. This field will not be filled in the ListCleanRooms call."""
 
-    replication_config: Optional[ReplicationConfig] = None
-    """Replication setting for the calling collaborator's input share. Set via UpdateCleanRoom before
-    the collaborator adds their first asset (immutable thereafter), and read back on GetCleanRoom.
-    When enabled, that collaborator's input data is replicated into the central clean-room region."""
-
     status: Optional[CleanRoomStatusEnum] = None
     """Clean room status."""
 
@@ -104,8 +98,6 @@ class CleanRoom:
             body["owner"] = self.owner
         if self.remote_detailed_info:
             body["remote_detailed_info"] = self.remote_detailed_info.as_dict()
-        if self.replication_config:
-            body["replication_config"] = self.replication_config.as_dict()
         if self.status is not None:
             body["status"] = self.status.value
         if self.updated_at is not None:
@@ -133,8 +125,6 @@ class CleanRoom:
             body["owner"] = self.owner
         if self.remote_detailed_info:
             body["remote_detailed_info"] = self.remote_detailed_info
-        if self.replication_config:
-            body["replication_config"] = self.replication_config
         if self.status is not None:
             body["status"] = self.status
         if self.updated_at is not None:
@@ -147,16 +137,15 @@ class CleanRoom:
         return cls(
             access_restricted=_enum(d, "access_restricted", CleanRoomAccessRestricted),
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             enable_shared_output=d.get("enable_shared_output", None),
             local_collaborator_alias=d.get("local_collaborator_alias", None),
             name=d.get("name", None),
             output_catalog=_from_dict(d, "output_catalog", CleanRoomOutputCatalog),
             owner=d.get("owner", None),
             remote_detailed_info=_from_dict(d, "remote_detailed_info", CleanRoomRemoteDetail),
-            replication_config=_from_dict(d, "replication_config", ReplicationConfig),
             status=_enum(d, "status", CleanRoomStatusEnum),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
         )
 
 
@@ -177,7 +166,8 @@ class CleanRoomAsset:
     *shared_catalog*.*shared_schema*.*asset_name*
     
     For notebooks, the name is the notebook file name. For jar analyses, the name is the jar
-    analysis name."""
+    analysis name. For Genie spaces, the name is derived from the clean room; the caller does not
+    choose it."""
 
     asset_type: CleanRoomAssetAssetType
     """The type of the asset."""
@@ -197,11 +187,6 @@ class CleanRoomAsset:
     """Local details for a foreign that are only available to its owner. Present if and only if
     **asset_type** is **FOREIGN_TABLE**"""
 
-    genie_space: Optional[CleanRoomAssetGenieSpace] = None
-    """Genie space details. The space_id sub-field is only returned to the owner; other fields (e.g.
-    prompts_limit_per_day) are visible to all collaborators. Present if and only if **asset_type**
-    is **GENIE_SPACE**"""
-
     jar_analysis: Optional[CleanRoomAssetJarAnalysis] = None
     """Jar analysis details available to all collaborators of the clean room. Present if and only if
     **asset_type** is **JAR_ANALYSIS**"""
@@ -218,19 +203,19 @@ class CleanRoomAsset:
 
     table: Optional[CleanRoomAssetTable] = None
     """Table details available to all collaborators of the clean room. Present if and only if
-    **asset_type** is **TABLE**"""
+    **asset_type** is **TABLE** or **STREAMING_TABLE**"""
 
     table_local_details: Optional[CleanRoomAssetTableLocalDetails] = None
     """Local details for a table that are only available to its owner. Present if and only if
-    **asset_type** is **TABLE**"""
+    **asset_type** is **TABLE** or **STREAMING_TABLE**"""
 
     view: Optional[CleanRoomAssetView] = None
     """View details available to all collaborators of the clean room. Present if and only if
-    **asset_type** is **VIEW**"""
+    **asset_type** is **VIEW** or **METRIC_VIEW**"""
 
     view_local_details: Optional[CleanRoomAssetViewLocalDetails] = None
     """Local details for a view that are only available to its owner. Present if and only if
-    **asset_type** is **VIEW**"""
+    **asset_type** is **VIEW** or **METRIC_VIEW**"""
 
     volume_local_details: Optional[CleanRoomAssetVolumeLocalDetails] = None
     """Local details for a volume that are only available to its owner. Present if and only if
@@ -249,8 +234,6 @@ class CleanRoomAsset:
             body["foreign_table"] = self.foreign_table.as_dict()
         if self.foreign_table_local_details:
             body["foreign_table_local_details"] = self.foreign_table_local_details.as_dict()
-        if self.genie_space:
-            body["genie_space"] = self.genie_space.as_dict()
         if self.jar_analysis:
             body["jar_analysis"] = self.jar_analysis.as_dict()
         if self.name is not None:
@@ -286,8 +269,6 @@ class CleanRoomAsset:
             body["foreign_table"] = self.foreign_table
         if self.foreign_table_local_details:
             body["foreign_table_local_details"] = self.foreign_table_local_details
-        if self.genie_space:
-            body["genie_space"] = self.genie_space
         if self.jar_analysis:
             body["jar_analysis"] = self.jar_analysis
         if self.name is not None:
@@ -314,14 +295,13 @@ class CleanRoomAsset:
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAsset:
         """Deserializes the CleanRoomAsset from a dictionary."""
         return cls(
-            added_at=d.get("added_at", None),
+            added_at=_int64(d, "added_at"),
             asset_type=_enum(d, "asset_type", CleanRoomAssetAssetType),
             clean_room_name=d.get("clean_room_name", None),
             foreign_table=_from_dict(d, "foreign_table", CleanRoomAssetForeignTable),
             foreign_table_local_details=_from_dict(
                 d, "foreign_table_local_details", CleanRoomAssetForeignTableLocalDetails
             ),
-            genie_space=_from_dict(d, "genie_space", CleanRoomAssetGenieSpace),
             jar_analysis=_from_dict(d, "jar_analysis", CleanRoomAssetJarAnalysis),
             name=d.get("name", None),
             notebook=_from_dict(d, "notebook", CleanRoomAssetNotebook),
@@ -337,7 +317,6 @@ class CleanRoomAsset:
 
 class CleanRoomAssetAssetType(Enum):
     FOREIGN_TABLE = "FOREIGN_TABLE"
-    GENIE_SPACE = "GENIE_SPACE"
     JAR_ANALYSIS = "JAR_ANALYSIS"
     NOTEBOOK_FILE = "NOTEBOOK_FILE"
     TABLE = "TABLE"
@@ -397,24 +376,6 @@ class CleanRoomAssetForeignTableLocalDetails:
 
 
 @dataclass
-class CleanRoomAssetGenieSpace:
-    def as_dict(self) -> dict:
-        """Serializes the CleanRoomAssetGenieSpace into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CleanRoomAssetGenieSpace into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetGenieSpace:
-        """Deserializes the CleanRoomAssetGenieSpace from a dictionary."""
-        return cls()
-
-
-@dataclass
 class CleanRoomAssetJarAnalysis:
     central_jar_file_paths: Optional[List[str]] = None
     """The full paths in central to the jar files that are added to the library during execution (e.g.
@@ -424,8 +385,8 @@ class CleanRoomAssetJarAnalysis:
     """Optional description of the jar analysis shown to all collaborators."""
 
     environment_version: Optional[str] = None
-    """The serverless environment version used to execute the JAR analysis (e.g. "4"). Defaults to
-    "4-scala-preview" if not specified."""
+    """The serverless environment version used to execute the JAR analysis (e.g. "4"). If not
+    specified, uses the service-configured JAR analysis default."""
 
     etag: Optional[str] = None
     """Server generated etag that represents the jar analysis version."""
@@ -790,7 +751,7 @@ class CleanRoomAutoApprovalRule:
             author_collaborator_alias=d.get("author_collaborator_alias", None),
             author_scope=_enum(d, "author_scope", CleanRoomAutoApprovalRuleAuthorScope),
             clean_room_name=d.get("clean_room_name", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             rule_id=d.get("rule_id", None),
             rule_owner_collaborator_alias=d.get("rule_owner_collaborator_alias", None),
             runner_collaborator_alias=d.get("runner_collaborator_alias", None),
@@ -876,7 +837,7 @@ class CleanRoomCollaborator:
             display_name=d.get("display_name", None),
             global_metastore_id=d.get("global_metastore_id", None),
             invite_recipient_email=d.get("invite_recipient_email", None),
-            invite_recipient_workspace_id=d.get("invite_recipient_workspace_id", None),
+            invite_recipient_workspace_id=_int64(d, "invite_recipient_workspace_id"),
             organization_name=d.get("organization_name", None),
         )
 
@@ -935,7 +896,7 @@ class CleanRoomJarAnalysisReview:
         """Deserializes the CleanRoomJarAnalysisReview from a dictionary."""
         return cls(
             comment=d.get("comment", None),
-            created_at_millis=d.get("created_at_millis", None),
+            created_at_millis=_int64(d, "created_at_millis"),
             review_state=_enum(d, "review_state", CleanRoomJarAnalysisReviewJarAnalysisReviewState),
             review_sub_reason=_enum(d, "review_sub_reason", CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason),
             reviewer_collaborator_alias=d.get("reviewer_collaborator_alias", None),
@@ -1004,7 +965,7 @@ class CleanRoomNotebookReview:
         """Deserializes the CleanRoomNotebookReview from a dictionary."""
         return cls(
             comment=d.get("comment", None),
-            created_at_millis=d.get("created_at_millis", None),
+            created_at_millis=_int64(d, "created_at_millis"),
             review_state=_enum(d, "review_state", CleanRoomNotebookReviewNotebookReviewState),
             review_sub_reason=_enum(d, "review_sub_reason", CleanRoomNotebookReviewNotebookReviewSubReason),
             reviewer_collaborator_alias=d.get("reviewer_collaborator_alias", None),
@@ -1124,13 +1085,13 @@ class CleanRoomNotebookTaskRun:
             notebook_etag=d.get("notebook_etag", None),
             notebook_job_run_state=_from_dict(d, "notebook_job_run_state", jobs.CleanRoomTaskRunState),
             notebook_name=d.get("notebook_name", None),
-            notebook_updated_at=d.get("notebook_updated_at", None),
-            output_schema_expiration_time=d.get("output_schema_expiration_time", None),
+            notebook_updated_at=_int64(d, "notebook_updated_at"),
+            output_schema_expiration_time=_int64(d, "output_schema_expiration_time"),
             output_schema_name=d.get("output_schema_name", None),
-            run_duration=d.get("run_duration", None),
-            shared_output_schema_expiration_time=d.get("shared_output_schema_expiration_time", None),
+            run_duration=_int64(d, "run_duration"),
+            shared_output_schema_expiration_time=_int64(d, "shared_output_schema_expiration_time"),
             shared_output_schema_name=d.get("shared_output_schema_name", None),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
         )
 
 
@@ -1370,9 +1331,9 @@ class CleanRoomTaskRun:
             collaborator_job_run_info=_from_dict(d, "collaborator_job_run_info", CollaboratorJobRunInfo),
             name=d.get("name", None),
             output_info=_from_dict(d, "output_info", CleanRoomTaskRunOutputInfo),
-            run_duration=d.get("run_duration", None),
+            run_duration=_int64(d, "run_duration"),
             shared_output_info=_from_dict(d, "shared_output_info", CleanRoomTaskRunOutputInfo),
-            start_time=d.get("start_time", None),
+            start_time=_int64(d, "start_time"),
             task_run_state=_from_dict(d, "task_run_state", jobs.CleanRoomTaskRunState),
             task_type=_enum(d, "task_type", CleanRoomTaskType),
         )
@@ -1407,7 +1368,7 @@ class CleanRoomTaskRunCleanRoomTaskAnalysisDetails:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRunCleanRoomTaskAnalysisDetails:
         """Deserializes the CleanRoomTaskRunCleanRoomTaskAnalysisDetails from a dictionary."""
-        return cls(etag=d.get("etag", None), updated_at=d.get("updated_at", None))
+        return cls(etag=d.get("etag", None), updated_at=_int64(d, "updated_at"))
 
 
 @dataclass
@@ -1440,7 +1401,7 @@ class CleanRoomTaskRunOutputInfo:
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRunOutputInfo:
         """Deserializes the CleanRoomTaskRunOutputInfo from a dictionary."""
         return cls(
-            output_schema_expiration_time=d.get("output_schema_expiration_time", None),
+            output_schema_expiration_time=_int64(d, "output_schema_expiration_time"),
             output_schema_name=d.get("output_schema_name", None),
         )
 
@@ -1502,10 +1463,10 @@ class CollaboratorJobRunInfo:
         """Deserializes the CollaboratorJobRunInfo from a dictionary."""
         return cls(
             collaborator_alias=d.get("collaborator_alias", None),
-            collaborator_job_id=d.get("collaborator_job_id", None),
-            collaborator_job_run_id=d.get("collaborator_job_run_id", None),
-            collaborator_task_run_id=d.get("collaborator_task_run_id", None),
-            collaborator_workspace_id=d.get("collaborator_workspace_id", None),
+            collaborator_job_id=_int64(d, "collaborator_job_id"),
+            collaborator_job_run_id=_int64(d, "collaborator_job_run_id"),
+            collaborator_task_run_id=_int64(d, "collaborator_task_run_id"),
+            collaborator_workspace_id=_int64(d, "collaborator_workspace_id"),
         )
 
 
@@ -1932,107 +1893,6 @@ class NotebookVersionReview:
         )
 
 
-@dataclass
-class ReplicationConfig:
-    """Replication setting for a collaborator's input share. When enabled, that collaborator's input
-    data is replicated into the central clean-room region so the clean room can run locally against
-    replicated data instead of reaching across regions to the source.
-
-    This is settable (via UpdateCleanRoom) until the collaborator adds their first asset, and is
-    immutable thereafter. Copied from (not imported) the managed-catalog share-level
-    ReplicationConfig."""
-
-    enabled: Optional[bool] = None
-    """Whether this collaborator's input share is replicated into the central clean-room region."""
-
-    schedule: Optional[ReplicationSchedule] = None
-    """Optional schedule describing when replication runs. When unset, the service-default schedule
-    (currently every hour) applies."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ReplicationConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.schedule:
-            body["schedule"] = self.schedule.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ReplicationConfig into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.schedule:
-            body["schedule"] = self.schedule
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ReplicationConfig:
-        """Deserializes the ReplicationConfig from a dictionary."""
-        return cls(enabled=d.get("enabled", None), schedule=_from_dict(d, "schedule", ReplicationSchedule))
-
-
-@dataclass
-class ReplicationInterval:
-    """How often a collaborator's replicated input share is refreshed.
-
-    Copied from (not imported) the managed-catalog share-level ReplicationInterval so the clean-room
-    API and the Delta Sharing API stay independently evolvable."""
-
-    duration: Optional[Duration] = None
-    """How often the collaborator's input-share data should be replicated. When unset, the
-    service-default interval applies."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ReplicationInterval into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.duration is not None:
-            body["duration"] = self.duration.ToJsonString()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ReplicationInterval into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.duration is not None:
-            body["duration"] = self.duration
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ReplicationInterval:
-        """Deserializes the ReplicationInterval from a dictionary."""
-        return cls(duration=_duration(d, "duration"))
-
-
-@dataclass
-class ReplicationSchedule:
-    """Schedule describing when a collaborator's replicated input share is refreshed.
-
-    Copied from (not imported) the managed-catalog share-level ReplicationSchedule."""
-
-    interval: Optional[ReplicationInterval] = None
-    """Fixed-interval replication schedule."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ReplicationSchedule into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.interval:
-            body["interval"] = self.interval.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ReplicationSchedule into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.interval:
-            body["interval"] = self.interval
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ReplicationSchedule:
-        """Deserializes the ReplicationSchedule from a dictionary."""
-        return cls(interval=_from_dict(d, "interval", ReplicationInterval))
-
-
 class CleanRoomAssetRevisionsAPI:
     """Clean Room Asset Revisions denote new versions of uploaded assets (e.g. notebooks) in the clean room."""
 
@@ -2302,7 +2162,7 @@ class CleanRoomAssetsAPI:
           *shared_catalog*.*shared_schema*.*asset_name*
 
           For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis
-          name.
+          name. For Genie spaces, the name is derived from the clean room; the caller does not choose it.
         :param asset: :class:`CleanRoomAsset`
           The asset to update. The asset's ``name`` and ``asset_type`` fields are used to identify the asset
           to update.

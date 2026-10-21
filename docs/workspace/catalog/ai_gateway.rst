@@ -6,43 +6,22 @@
 
     Govern AI workloads in Unity Catalog. This API manages the Unity Catalog securables that bring centralized
     access control, lineage, and auditing to AI-serving entities: model services (governed access to
-    foundation models and external LLMs), model provider services (governed connections to external model
+    foundation models and external LLMs), model provider services (governed resources for external model
     providers), and MCP services (governed Model Context Protocol servers).
-
-    .. py:method:: create_agent_service(agent_service: AgentService, parent: str, agent_service_id: str) -> AgentService
-
-        Creates an agent service in a Unity Catalog schema. An agent service is a governed securable that
-        registers an AI agent and exposes it for discovery, access control, and auditing. The caller supplies
-        the leaf name in ``agent_service_id`` and the agent service type, which is immutable after creation.
-
-        You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
-
-        :param agent_service: :class:`AgentService`
-          The agent service to create. The server populates ``name`` from ``parent`` + ``agent_service_id``;
-          clients should leave it unset.
-        :param parent: str
-          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
-          capped at 255 characters individually.
-        :param agent_service_id: str
-          Name for the agent service, e.g. "support_agent".
-
-        :returns: :class:`AgentService`
-        
 
     .. py:method:: create_mcp_service(mcp_service: McpService, parent: str, mcp_service_id: str) -> McpService
 
         Creates an MCP service in a Unity Catalog schema. An MCP (Model Context Protocol) service is a
         governed securable that registers an MCP server and exposes its tools for discovery, access control,
-        and invocation. The caller supplies the leaf name in ``mcp_service_id``.
+        and invocation. Specify its name in ``mcp_service_id``.
 
         You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
         privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. You also need
         ``USE_CONNECTION`` on the connection the MCP service references.
 
         :param mcp_service: :class:`McpService`
-          The MCP service to create. The server populates ``name`` from ``parent`` + ``mcp_service_id``;
-          clients should leave it unset.
+          The MCP service to create. Do not set ``name``; the server derives it from ``parent`` and
+          ``mcp_service_id``. ``source_connection`` is required.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -52,19 +31,36 @@
         :returns: :class:`McpService`
         
 
+    .. py:method:: create_mcp_service_user_mapped_credential(name: str, login: McpServiceUserMappedCredentialLogin) -> McpServiceUserMappedCredential
+
+        Logs the caller in to an MCP service: creates their per-user OAuth credential, or re-authenticates it
+        if one already exists. The request body carries the OAuth exchange fields.
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+        :param login: :class:`McpServiceUserMappedCredentialLogin`
+
+        :returns: :class:`McpServiceUserMappedCredential`
+        
+
     .. py:method:: create_model_provider_service(model_provider_service: ModelProviderService, parent: str, model_provider_service_id: str) -> ModelProviderService
 
-        Creates a model provider service in a Unity Catalog schema. A model provider service is a governed
-        connection to an external model provider (for example OpenAI, Azure OpenAI, or Amazon Bedrock) that
-        model services reference to invoke that provider. The caller supplies the leaf name in
+        Creates a model provider service in a Unity Catalog schema. A model provider service stores
+        authentication and request configuration for an external model provider, such as OpenAI, Azure OpenAI,
+        or Amazon Bedrock. Model services reference it to invoke the provider. Specify its name in
         ``model_provider_service_id``.
 
         You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. Inline credentials
+        additionally require ``CREATE_CONNECTION`` on the parent schema. When using a Unity Catalog service
+        credential, you must have ``ACCESS`` on that credential.
 
         :param model_provider_service: :class:`ModelProviderService`
-          The model provider service to create. The server populates ``name`` from ``parent`` +
-          ``model_provider_service_id``; clients should leave it unset.
+          The model provider service to create. Do not set ``name``; the server derives it from ``parent`` and
+          ``model_provider_service_id``.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -77,15 +73,19 @@
     .. py:method:: create_model_service(model_service: ModelService, parent: str, model_service_id: str) -> ModelService
 
         Creates a model service in a Unity Catalog schema. A model service is a governed AI Gateway endpoint
-        that routes inference requests to one or more model destinations. The caller supplies the leaf name in
+        that routes inference requests to one or more model destinations. Specify its name in
         ``model_service_id``.
 
         You must be the owner of the parent schema or have the ``CREATE_SERVICE`` and ``USE_SCHEMA``
-        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog.
+        privileges on the parent schema and ``USE_CATALOG`` on the parent catalog. For every destination, you
+        also need ``USE_CATALOG`` and ``USE_SCHEMA`` on its parent and ``EXECUTE`` on the referenced Unity
+        Catalog model or model provider service. A provisioned-throughput destination additionally requires
+        ``CAN_MANAGE`` on its Model Serving endpoint. Configuring an inference table additionally requires
+        ``CREATE_TABLE``.
 
         :param model_service: :class:`ModelService`
-          The model service to create. The server populates ``name`` from ``parent`` + ``model_service_id``;
-          clients should leave it unset.
+          The model service to create. Do not set ``name``; the server derives it from ``parent`` and
+          ``model_service_id``.
         :param parent: str
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
@@ -95,22 +95,34 @@
         :returns: :class:`ModelService`
         
 
-    .. py:method:: delete_agent_service(name: str [, etag: Optional[str]])
+    .. py:method:: create_skill(skill: Skill, parent: str, skill_id: str) -> Skill
 
-        Deletes the agent service identified by its resource name. Optionally supply an ``etag`` to make the
-        delete conditional on the agent service not having changed since it was read.
+        Creates a skill in a Unity Catalog schema and provisions its managed bundle storage. Specify its name
+        in ``skill_id``. The request contains an optional comment but no bundle bytes.
 
-        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
+        To publish a skill:
 
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually.
-        :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
+        1. Call CreateSkill to create the skill in Unity Catalog.
+        2. Upload every bundle file, including ``SKILL.md`` at the bundle root, with the Files API: ``PUT
+           /api/2.0/fs/files/Skills/{catalog}/{schema}/{skill}/{file_path}``. The CreateSkill caller owns the
+           skill and can upload. Other callers need ``READ_VOLUME`` and ``WRITE_VOLUME`` on the skill.
+        3. Call FinalizeSkill to validate ``SKILL.md`` and set the skill's ``bundle_name`` and ``description``
+           from its frontmatter ``name`` and ``description``.
 
+        You must be the owner of the parent schema or have ``CREATE_VOLUME`` and ``USE_SCHEMA`` on it, plus
+        ``USE_CATALOG`` on the parent catalog.
 
+        :param skill: :class:`Skill`
+          The skill to create. ``comment`` is the only accepted client input and may be omitted. Do not set
+          ``name``; the server derives it from ``parent`` and ``skill_id``.
+        :param parent: str
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
+        :param skill_id: str
+          Name for the skill, e.g. "basic-math". The server normalizes this identifier to lowercase. It is
+          independent of the bundle name read from SKILL.md.
+
+        :returns: :class:`Skill`
         
 
     .. py:method:: delete_mcp_service(name: str [, etag: Optional[str]])
@@ -125,10 +137,24 @@
           Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
           ``{...}`` component is capped at 255 characters individually.
         :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
+          Optimistic concurrency token from the most recent read. When set, the delete succeeds only if the
+          resource has not changed. Leave unset for an unconditional delete. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
 
+        
+
+    .. py:method:: delete_mcp_service_user_mapped_credential(name: str) -> DeleteMcpServiceUserMappedCredentialResponse
+
+        Revokes (deletes) the caller's per-user OAuth credential for an MCP service (logout).
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+
+        :returns: :class:`DeleteMcpServiceUserMappedCredentialResponse`
         
 
     .. py:method:: delete_model_provider_service(name: str [, etag: Optional[str]])
@@ -144,8 +170,9 @@
           ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
+          Optimistic concurrency token from the most recent read. When set, the delete succeeds only if the
+          resource has not changed. Leave unset for an unconditional delete. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
 
         
@@ -162,24 +189,51 @@
           Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
           Each ``{...}`` component is capped at 255 characters individually.
         :param etag: str (optional)
-          If-match precondition: when set, the delete proceeds only if the current server-side etag matches.
-          Empty means unconditional delete.
+          Optimistic concurrency token from the most recent read. When set, the delete succeeds only if the
+          resource has not changed. Leave unset for an unconditional delete. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
 
         
 
-    .. py:method:: get_agent_service(name: str) -> AgentService
+    .. py:method:: delete_skill(name: str [, etag: Optional[str]])
 
-        Returns the agent service identified by its resource name.
+        Deletes the skill identified by its resource name and makes its managed bundle path unavailable.
+        Managed bundle data is deleted asynchronously. Optionally supply an ``etag`` to make the delete
+        conditional on the skill not having changed since it was read.
 
-        You must be the owner of the agent service or have ``EXECUTE``, ``READ_METADATA``, or ``MANAGE`` on
-        it, plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
+        You must be the owner of the skill or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
 
         :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually.
+          Full resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
+          component is capped at 255 characters individually.
+        :param etag: str (optional)
+          Optimistic concurrency token from the most recent read. When set, the delete succeeds only if the
+          resource has not changed. Leave unset for an unconditional delete. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
-        :returns: :class:`AgentService`
+
+        
+
+    .. py:method:: finalize_skill(name: str) -> Skill
+
+        Finalizes a skill after its bundle files are uploaded or changed through the Files API. Call it again
+        after every bundle change. This method reads SKILL.md through the Files API using the caller's
+        authorization. Its YAML frontmatter must contain an agentskills.io-compliant ``name`` and a nonblank
+        ``description`` within the configured UTF-8 byte limit. On success, it replaces ``bundle_name`` and
+        ``description``; refreshes ``finalize_time``, ``update_time``, and ``updated_by``; and returns the
+        updated skill. ``comment`` is preserved. Re-finalization uses the latest SKILL.md and is
+        last-write-wins without an etag precondition. Validation failures do not change metadata.
+
+        You must be the owner of the skill or have ``READ_VOLUME`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Full resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
+          component is capped at 255 characters individually.
+
+        :returns: :class:`Skill`
         
 
     .. py:method:: get_mcp_service(name: str) -> McpService
@@ -194,6 +248,22 @@
           ``{...}`` component is capped at 255 characters individually.
 
         :returns: :class:`McpService`
+        
+
+    .. py:method:: get_mcp_service_user_mapped_credential(name: str) -> McpServiceUserMappedCredential
+
+        Returns the caller's per-user OAuth login state for an MCP service. Read ``provisioning_info.state``:
+        ``ACTIVE`` means the caller is logged in and the credential is usable; any other state (for example a
+        failed or still-provisioning login) means the login has not completed and the caller should log in
+        again. If the caller has no credential yet, the RPC returns ``NOT_FOUND``.
+
+        You must be the owner of the MCP service or have ``EXECUTE`` on it, plus ``USE_CATALOG`` on the parent
+        catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
+
+        :returns: :class:`McpServiceUserMappedCredential`
         
 
     .. py:method:: get_model_provider_service(name: str) -> ModelProviderService
@@ -225,26 +295,18 @@
         :returns: :class:`ModelService`
         
 
-    .. py:method:: list_agent_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[AgentService]
+    .. py:method:: get_skill(name: str) -> Skill
 
-        Lists the agent services in a Unity Catalog schema. Provide ``parent`` as
-        ``schemas/{catalog}.{schema}``. Results are paginated; pass the returned ``next_page_token`` to fetch
-        subsequent pages.
+        Returns the skill identified by its resource name.
 
-        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only agent
-        services the caller can access (as owner or through ``EXECUTE``, ``READ_METADATA``, or ``MANAGE``) are
-        returned.
+        You must be the owner of the skill or have ``READ_VOLUME``, ``READ_METADATA``, or ``MANAGE`` on it,
+        plus ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema.
 
-        :param page_size: int (optional)
-          Maximum number of agent services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
-          ``page_token`` to retrieve additional pages.
-        :param page_token: str (optional)
-          Opaque pagination token from a previous request.
-        :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+        :param name: str
+          Full resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
           component is capped at 255 characters individually.
 
-        :returns: Iterator over :class:`AgentService`
+        :returns: :class:`Skill`
         
 
     .. py:method:: list_mcp_services( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str], view: Optional[ListMcpServicesRequestView]]) -> Iterator[McpService]
@@ -258,17 +320,17 @@
         returned.
 
         :param page_size: int (optional)
-          Maximum number of MCP services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          Maximum number of MCP services to return. Defaults to 200 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
-          Opaque pagination token from a previous request.
+          Opaque pagination token from the previous response.
         :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListMcpServicesRequestView` (optional)
-          View selector controlling which fields are populated per row. ``FULL`` returns the full
-          representation of the service; ``BASIC`` returns a more compact version. Defaults to ``BASIC`` when
-          unset.
+          Fields to return for each service. ``FULL`` includes source-connection details and rate-limit
+          principal names. ``BASIC`` omits the source connection and omits principal names from rate limits.
+          Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`McpService`
         
@@ -284,17 +346,17 @@
         ``MANAGE``) are returned.
 
         :param page_size: int (optional)
-          Maximum number of provider services to return. Defaults to 100 when unset or 0; the maximum is 100.
+          Maximum number of provider services to return. Defaults to 200 when unset or 0; the maximum is 200.
           Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
-          Opaque pagination token from a previous request.
+          Opaque pagination token from the previous response.
         :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelProviderServicesRequestView` (optional)
-          View selector controlling which fields are populated per row. ``FULL`` returns the full
-          representation of the service; ``BASIC`` returns a more compact version. Defaults to ``BASIC`` when
-          unset.
+          Fields to return for each service. ``FULL`` includes resolved service-credential and inference-table
+          details and rate-limit principal names. ``BASIC`` omits those details and principal names from rate
+          limits. Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`ModelProviderService`
         
@@ -310,46 +372,43 @@
         returned.
 
         :param page_size: int (optional)
-          Maximum number of model services to return. Defaults to 100 when unset or 0; the maximum is 100. Use
+          Maximum number of model services to return. Defaults to 200 when unset or 0; the maximum is 200. Use
           ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
-          Opaque pagination token from a previous request.
+          Opaque pagination token from the previous response.
         :param parent: str (optional)
-          Name of the parent schema to list within, as ``schemas/{catalog}.{schema}``. Each ``{...}``
+          Parent schema to list within, in the form ``schemas/{catalog}.{schema}``. Required. Each ``{...}``
           component is capped at 255 characters individually.
         :param view: :class:`ListModelServicesRequestView` (optional)
-          View selector controlling which fields are populated per row. ``FULL`` returns the full
-          representation of the service; ``BASIC`` returns a more compact version. Defaults to ``BASIC`` when
-          unset.
+          Fields to return for each service. ``FULL`` includes destinations, inference-table details, and
+          rate-limit principal names. ``BASIC`` omits destinations and inference-table details and omits
+          principal names from rate limits. Defaults to ``BASIC`` when unset.
 
         :returns: Iterator over :class:`ModelService`
         
 
-    .. py:method:: update_agent_service(name: str, agent_service: AgentService, update_mask: FieldMask [, etag: Optional[str]]) -> AgentService
+    .. py:method:: list_skills(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Skill]
 
-        Updates an agent service. Only the fields named in ``update_mask`` are changed; the resource name and
-        agent service type are immutable. Optionally supply an ``etag`` to make the update conditional on the
-        agent service not having changed since it was read.
+        Lists skills in a Unity Catalog schema. Provide ``parent`` as ``schemas/{catalog}.{schema}``. Results
+        are paginated; pass the returned ``next_page_token`` to fetch subsequent pages.
 
-        You must be the owner of the agent service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
+        Requires ``USE_CATALOG`` on the parent catalog and ``USE_SCHEMA`` on the parent schema. Only skills
+        the caller can access as owner or through ``READ_VOLUME``, ``READ_METADATA``, or ``MANAGE`` are
+        returned.
 
-        :param name: str
-          Resource name of the agent service. Format: ``agent-services/{catalog}.{schema}.{agent_service}``.
-          Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
-          ``parent`` + ``agent_service_id``; required and immutable on Update/Get/Delete.
-        :param agent_service: :class:`AgentService`
-          The agent service with the updated field values. ``name`` identifies the resource
-          (``agent-services/{catalog}.{schema}.{agent_service}``); only fields listed in ``update_mask`` are
-          applied.
-        :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the ``agent_service`` field
-          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
-        :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
+        :param parent: str
+          Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
+          capped at 255 characters individually.
 
-        :returns: :class:`AgentService`
+          Required: skill listing is schema-scoped, so ``parent`` must be set; an unset or empty ``parent`` is
+          rejected with INVALID_PARAMETER_VALUE.
+        :param page_size: int (optional)
+          Maximum number of skills to return. Defaults to 200 when unset or 0; the maximum is 200. Use
+          ``page_token`` to retrieve additional pages.
+        :param page_token: str (optional)
+          Opaque pagination token from a previous request.
+
+        :returns: Iterator over :class:`Skill`
         
 
     .. py:method:: update_mcp_service(name: str, mcp_service: McpService, update_mask: FieldMask [, etag: Optional[str]]) -> McpService
@@ -359,7 +418,8 @@
         changed since it was read.
 
         You must be the owner of the MCP service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the parent
-        catalog and ``USE_SCHEMA`` on the parent schema.
+        catalog and ``USE_SCHEMA`` on the parent schema. When changing ``config.source_connection.name``, the
+        MCP service owner must also have ``USE_CONNECTION`` on the new connection.
 
         :param name: str
           Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
@@ -370,11 +430,14 @@
           (``mcp-services/{catalog}.{schema}.{mcp_service}``); only fields listed in ``update_mask`` are
           applied.
         :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the ``mcp_service`` field
-          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
+          Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
+          every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
+          more granular paths: ``comment``, ``config.source_connection.name``,
+          ``config.include_tool_selectors``, or ``config.rate_limits``.
         :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
+          Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
+          resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
         :returns: :class:`McpService`
         
@@ -388,6 +451,9 @@
         You must be the owner of the model provider service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on
         the parent catalog and ``USE_SCHEMA`` on the parent schema.
 
+        Updating ``config.provider`` cannot change the provider type. Authentication mode changes require
+        feature availability and support for both modes on the selected provider.
+
         :param name: str
           Resource name of the provider service. Format:
           ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
@@ -398,12 +464,22 @@
           (``model-provider-services/{catalog}.{schema}.{model_provider_service}``); only fields listed in
           ``update_mask`` are applied.
         :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the
-          ``model_provider_service`` field above. Wildcard paths (``paths: ["*"]``) are not supported; list
-          each field path explicitly.
+          Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
+          every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
+          more granular paths: ``comment``; ``config.provider`` to replace the active provider-specific value
+          (for example, ``config.openai``; the mask path remains ``config.provider``);
+          ``config.allow_all_targets``, ``config.targets``, ``config.forward_headers``,
+          ``config.forward_query_parameters``, ``config.forward_unmanaged_paths``, ``config.rate_limits``,
+          ``config.pricing.default_discount_basis_points``, or ``config.inference_table``. For a pricing
+          update, an explicitly empty ``pricing`` object clears the discount but retains the object; omitting
+          ``pricing`` clears it. ``config.pricing`` is not a supported mask path. The provider type is
+          immutable. A ``config`` or ``config.provider`` replacement that carries no authentication material
+          preserves the existing authentication binding; input-only plaintext does not need to be read back
+          and re-sent.
         :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
+          Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
+          resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
         :returns: :class:`ModelProviderService`
         
@@ -415,7 +491,11 @@
         having changed since it was read.
 
         You must be the owner of the model service or have ``MANAGE`` on it, plus ``USE_CATALOG`` on the
-        parent catalog and ``USE_SCHEMA`` on the parent schema.
+        parent catalog and ``USE_SCHEMA`` on the parent schema. When changing destinations, both you and the
+        model service owner need ``USE_CATALOG`` and ``USE_SCHEMA`` on each destination's parent and
+        ``EXECUTE`` on the referenced Unity Catalog model or model provider service. A provisioned-throughput
+        destination additionally requires ``CAN_MANAGE`` for you and ``CAN_QUERY`` for the model service
+        owner. Adding an inference table additionally requires ``CREATE_TABLE``.
 
         :param name: str
           Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
@@ -426,11 +506,48 @@
           (``model-services/{catalog}.{schema}.{model_service}``); only fields listed in ``update_mask`` are
           applied.
         :param update_mask: FieldMask
-          The list of fields to update. The framework validates each path against the ``model_service`` field
-          above. Wildcard paths (``paths: ["*"]``) are not supported; list each field path explicitly.
+          Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
+          every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
+          more granular paths: ``comment``, ``config.routing.destinations``,
+          ``config.routing.fallback.destinations``, ``config.rate_limits``, or ``config.inference_table``.
+          Intermediate paths such as ``config.routing`` and ``config.routing.fallback`` are not supported.
         :param etag: str (optional)
-          If-match precondition: when set, the update proceeds only if the current server-side etag matches.
-          Empty means an unconditional update.
+          Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
+          resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
 
         :returns: :class:`ModelService`
+        
+
+    .. py:method:: update_skill(name: str, skill: Skill, update_mask: FieldMask [, etag: Optional[str]]) -> Skill
+
+        Updates a skill. Only fields named in ``update_mask`` are changed; currently only ``comment`` is
+        supported. The resource name is immutable. Optionally supply an ``etag`` to make the update
+        conditional on the skill not having changed since it was read. Bundle files, grants, tags, and
+        ownership are unchanged.
+
+        To update the bundle, add, overwrite (``overwrite=true``), or delete files under
+        ``/Skills/{catalog}/{schema}/{skill}/`` with the Files API, then call FinalizeSkill. Changing bundle
+        files requires being the owner of the skill or having ``READ_VOLUME`` and ``WRITE_VOLUME`` on it;
+        ``MANAGE`` does not grant access to bundle files.
+
+        To call UpdateSkill, you must be the owner of the skill or have ``MANAGE`` on it, plus ``USE_CATALOG``
+        on the parent catalog and ``USE_SCHEMA`` on the parent schema.
+
+        :param name: str
+          Resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}`` component
+          is capped at 255 characters individually. Server-derived on Create from ``parent`` + ``skill_id``;
+          required and immutable on Update/Get/Delete.
+        :param skill: :class:`Skill`
+          The skill with the updated field values. ``name`` identifies the resource
+          (``skills/{catalog}.{schema}.{skill}``); only fields listed in ``update_mask`` are applied.
+        :param update_mask: FieldMask
+          Fields to update; validated against ``skill``. REQUIRED, matching the sibling Update RPCs.
+          ``comment`` is the only mutable field.
+        :param etag: str (optional)
+          Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
+          resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
+          base64 string returned by the API when setting the ``etag`` query parameter.
+
+        :returns: :class:`Skill`
         

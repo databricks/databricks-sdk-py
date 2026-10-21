@@ -15,6 +15,7 @@ import logging
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _timestamp,
 )
@@ -33,7 +34,8 @@ class DashboardMetadata:
 
     definition_path: Optional[str] = None
     """Path of the file that declares this dashboard, relative to the bundle's workspace.file_path
-    (Version.workspace_info.file_path) — join the two to get the file's absolute workspace path.
+    (Deployment.workspace_info.file_path) — join the two to get the file's absolute workspace
+    path.
     
     For now this lives only on the dashboard metadata, and is a single string because it was a
     single string (``relative_path``) in the legacy bundle metadata.json. We may generalize it in
@@ -80,8 +82,7 @@ class Deployment:
     metadata does not identify a creator or the principal cannot be resolved."""
 
     deployment_mode: Optional[DeploymentMode] = None
-    """Bundle target deployment mode (development or production), derived from the most recent
-    version's mode."""
+    """Bundle target deployment mode (development or production)."""
 
     destroy_time: Optional[Timestamp] = None
     """When deletion was recorded. Unset if deletion has not been recorded. This response metadata does
@@ -92,8 +93,7 @@ class Deployment:
     been destroyed."""
 
     display_name: Optional[str] = None
-    """Human-readable name for the deployment, up to 256 characters. Output only: clients update it by
-    setting ``display_name`` when creating a version."""
+    """Human-readable name for the deployment, up to 256 characters."""
 
     git_info: Optional[GitInfo] = None
     """Git provenance of the deployment's source, derived from the latest version."""
@@ -121,8 +121,7 @@ class Deployment:
     """Current status of the deployment."""
 
     target_name: Optional[str] = None
-    """The bundle target name associated with this deployment. Output only: it is denormalized from the
-    latest version, not set directly on the deployment."""
+    """The bundle target name associated with this deployment."""
 
     update_time: Optional[Timestamp] = None
     """When the deployment was last updated."""
@@ -133,7 +132,7 @@ class Deployment:
     resolved."""
 
     workspace_info: Optional[WorkspaceInfo] = None
-    """Workspace location of the deployment, derived from the latest version."""
+    """Workspace location of the deployment."""
 
     def as_dict(self) -> dict:
         """Serializes the Deployment into a dictionary suitable for use as a JSON request body."""
@@ -247,24 +246,35 @@ class DeploymentResourceType(Enum):
     DEPLOYMENT_RESOURCE_TYPE_APP = "DEPLOYMENT_RESOURCE_TYPE_APP"
     DEPLOYMENT_RESOURCE_TYPE_CATALOG = "DEPLOYMENT_RESOURCE_TYPE_CATALOG"
     DEPLOYMENT_RESOURCE_TYPE_CLUSTER = "DEPLOYMENT_RESOURCE_TYPE_CLUSTER"
+    DEPLOYMENT_RESOURCE_TYPE_CLUSTER_POLICY = "DEPLOYMENT_RESOURCE_TYPE_CLUSTER_POLICY"
     DEPLOYMENT_RESOURCE_TYPE_DASHBOARD = "DEPLOYMENT_RESOURCE_TYPE_DASHBOARD"
     DEPLOYMENT_RESOURCE_TYPE_DATABASE_CATALOG = "DEPLOYMENT_RESOURCE_TYPE_DATABASE_CATALOG"
     DEPLOYMENT_RESOURCE_TYPE_DATABASE_INSTANCE = "DEPLOYMENT_RESOURCE_TYPE_DATABASE_INSTANCE"
     DEPLOYMENT_RESOURCE_TYPE_EXPERIMENT = "DEPLOYMENT_RESOURCE_TYPE_EXPERIMENT"
     DEPLOYMENT_RESOURCE_TYPE_EXTERNAL_LOCATION = "DEPLOYMENT_RESOURCE_TYPE_EXTERNAL_LOCATION"
+    DEPLOYMENT_RESOURCE_TYPE_GENIE_SPACE = "DEPLOYMENT_RESOURCE_TYPE_GENIE_SPACE"
+    DEPLOYMENT_RESOURCE_TYPE_INSTANCE_POOL = "DEPLOYMENT_RESOURCE_TYPE_INSTANCE_POOL"
     DEPLOYMENT_RESOURCE_TYPE_JOB = "DEPLOYMENT_RESOURCE_TYPE_JOB"
+    DEPLOYMENT_RESOURCE_TYPE_JOB_RUN = "DEPLOYMENT_RESOURCE_TYPE_JOB_RUN"
     DEPLOYMENT_RESOURCE_TYPE_MODEL = "DEPLOYMENT_RESOURCE_TYPE_MODEL"
     DEPLOYMENT_RESOURCE_TYPE_MODEL_SERVING_ENDPOINT = "DEPLOYMENT_RESOURCE_TYPE_MODEL_SERVING_ENDPOINT"
     DEPLOYMENT_RESOURCE_TYPE_PIPELINE = "DEPLOYMENT_RESOURCE_TYPE_PIPELINE"
     DEPLOYMENT_RESOURCE_TYPE_POSTGRES_BRANCH = "DEPLOYMENT_RESOURCE_TYPE_POSTGRES_BRANCH"
+    DEPLOYMENT_RESOURCE_TYPE_POSTGRES_CATALOG = "DEPLOYMENT_RESOURCE_TYPE_POSTGRES_CATALOG"
+    DEPLOYMENT_RESOURCE_TYPE_POSTGRES_DATABASE = "DEPLOYMENT_RESOURCE_TYPE_POSTGRES_DATABASE"
     DEPLOYMENT_RESOURCE_TYPE_POSTGRES_ENDPOINT = "DEPLOYMENT_RESOURCE_TYPE_POSTGRES_ENDPOINT"
     DEPLOYMENT_RESOURCE_TYPE_POSTGRES_PROJECT = "DEPLOYMENT_RESOURCE_TYPE_POSTGRES_PROJECT"
+    DEPLOYMENT_RESOURCE_TYPE_POSTGRES_ROLE = "DEPLOYMENT_RESOURCE_TYPE_POSTGRES_ROLE"
+    DEPLOYMENT_RESOURCE_TYPE_POSTGRES_SYNCED_TABLE = "DEPLOYMENT_RESOURCE_TYPE_POSTGRES_SYNCED_TABLE"
     DEPLOYMENT_RESOURCE_TYPE_QUALITY_MONITOR = "DEPLOYMENT_RESOURCE_TYPE_QUALITY_MONITOR"
     DEPLOYMENT_RESOURCE_TYPE_REGISTERED_MODEL = "DEPLOYMENT_RESOURCE_TYPE_REGISTERED_MODEL"
     DEPLOYMENT_RESOURCE_TYPE_SCHEMA = "DEPLOYMENT_RESOURCE_TYPE_SCHEMA"
+    DEPLOYMENT_RESOURCE_TYPE_SECRET = "DEPLOYMENT_RESOURCE_TYPE_SECRET"
     DEPLOYMENT_RESOURCE_TYPE_SECRET_SCOPE = "DEPLOYMENT_RESOURCE_TYPE_SECRET_SCOPE"
     DEPLOYMENT_RESOURCE_TYPE_SQL_WAREHOUSE = "DEPLOYMENT_RESOURCE_TYPE_SQL_WAREHOUSE"
     DEPLOYMENT_RESOURCE_TYPE_SYNCED_DATABASE_TABLE = "DEPLOYMENT_RESOURCE_TYPE_SYNCED_DATABASE_TABLE"
+    DEPLOYMENT_RESOURCE_TYPE_VECTOR_SEARCH_ENDPOINT = "DEPLOYMENT_RESOURCE_TYPE_VECTOR_SEARCH_ENDPOINT"
+    DEPLOYMENT_RESOURCE_TYPE_VECTOR_SEARCH_INDEX = "DEPLOYMENT_RESOURCE_TYPE_VECTOR_SEARCH_INDEX"
     DEPLOYMENT_RESOURCE_TYPE_VOLUME = "DEPLOYMENT_RESOURCE_TYPE_VOLUME"
 
 
@@ -549,20 +559,20 @@ class Operation:
     rejected with ABORTED so the caller can re-read and retry."""
 
     state: Optional[str] = None
-    """Serialized local config state after the operation. Its presence records whether the resource
-    still exists, so an operation that records no state removes its resource from the deployment. It
-    may be unset only for an operation that left no resource behind: a ``DELETE`` that succeeded, or
-    a ``CREATE`` or ``RECREATE`` that failed. It is required otherwise, including for a failed
-    ``DELETE``, whose resource survives.
+    """Serialized local config state after the operation. Its presence records whether the resource is
+    still tracked by the deployment. Explicitly clearing state removes the resource from the
+    deployment; omitting it from the update mask leaves resource state unchanged. State is stored
+    only on Resources. UpdateOperation accepts state but omits it from its response, as do
+    subsequent GetOperation and ListOperations.
     
     Mutable: may be updated after creation via UpdateOperation. When updating, the caller must echo
     the last-observed ``sequence_id`` as a concurrency precondition.
     
-    Opaque to this service: the string is stored and returned unchanged. This is deliberately not
-    google.protobuf.Value, whose only numeric case is ``double number_value``, so parsing the
-    client's JSON into it rewrites every integer as a double - ``1`` reads back as ``1.0``, which no
-    longer deserializes into an integer field - and silently loses precision above 2^53, which is
-    within range for IDs the client records.
+    The string is not parsed; it is projected onto the corresponding Resource's state. It is
+    deliberately not google.protobuf.Value, whose only numeric case is ``double number_value``, so
+    parsing the client's JSON into it rewrites every integer as a double - ``1`` reads back as
+    ``1.0``, which no longer deserializes into an integer field - and silently loses precision above
+    2^53, which is within range for IDs the client records.
     
     A string rather than bytes: the payload is always UTF-8 JSON, and proto3 JSON maps bytes to
     base64, which inflates every request and response by a third and makes state unreadable in logs
@@ -572,8 +582,7 @@ class Operation:
     status: Optional[OperationStatus] = None
     """Status of the operation. Starts as OPERATION_STATUS_PENDING when the version is created and
     moves to a terminal status once the resource is applied. Mutable: updated via UpdateOperation,
-    e.g. when an operation recorded as failed is retried and eventually succeeds. A succeeded
-    operation cannot carry an ``error_message``."""
+    e.g. when an operation recorded as failed is retried and eventually succeeds."""
 
     update_time: Optional[Timestamp] = None
     """When the operation was last updated. Set to ``create_time`` when the operation is created and to
@@ -649,7 +658,7 @@ class Operation:
             resource_id=d.get("resource_id", None),
             resource_key=d.get("resource_key", None),
             resource_type=_enum(d, "resource_type", DeploymentResourceType),
-            sequence_id=d.get("sequence_id", None),
+            sequence_id=_int64(d, "sequence_id"),
             state=d.get("state", None),
             status=_enum(d, "status", OperationStatus),
             update_time=_timestamp(d, "update_time"),
@@ -784,7 +793,7 @@ class StagedOperation:
     resource_key: str
     """The key identifying the resource this operation applies to (e.g. "jobs.foo", "pipelines.bar").
     Becomes the final component of the operation's name and must be unique among the operations in
-    the request."""
+    the version."""
 
     action_type: OperationActionType
     """The type of operation planned for this resource."""
@@ -855,6 +864,11 @@ class Version:
     name: Optional[str] = None
     """Resource name of the version. Format: deployments/{deployment_id}/versions/{version_id}"""
 
+    operations: Optional[List[StagedOperation]] = None
+    """The full operation plan for this version: one PENDING operation per entry, recorded in the same
+    transaction. Input only -- supplied on create and never returned by create/get/list; read the
+    recorded operations via ListOperations."""
+
     previous_version_id: Optional[str] = None
     """The version_id this version was created on top of — the deployment's most recent version at
     creation time. Leave unset when creating the first version (the deployment has no prior
@@ -903,6 +917,8 @@ class Version:
             body["git_info"] = self.git_info.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.operations:
+            body["operations"] = [v.as_dict() for v in self.operations]
         if self.previous_version_id is not None:
             body["previous_version_id"] = self.previous_version_id
         if self.status is not None:
@@ -940,6 +956,8 @@ class Version:
             body["git_info"] = self.git_info
         if self.name is not None:
             body["name"] = self.name
+        if self.operations:
+            body["operations"] = self.operations
         if self.previous_version_id is not None:
             body["previous_version_id"] = self.previous_version_id
         if self.status is not None:
@@ -968,6 +986,7 @@ class Version:
             display_name=d.get("display_name", None),
             git_info=_from_dict(d, "git_info", GitInfo),
             name=d.get("name", None),
+            operations=_repeated_dict(d, "operations", StagedOperation),
             previous_version_id=d.get("previous_version_id", None),
             status=_enum(d, "status", VersionStatus),
             target_name=d.get("target_name", None),
@@ -1087,11 +1106,9 @@ class BundleDeploymentsAPI:
         :param name: str
           The name of the version to complete. Format: deployments/{deployment_id}/versions/{version_id}
         :param completion_reason: :class:`VersionComplete`
-          The reason for completing the version. Must be a terminal reason: VERSION_COMPLETE_SUCCESS,
-          VERSION_COMPLETE_FAILURE, or VERSION_COMPLETE_FORCE_ABORT.
+          The reason for completing the version. Must be VERSION_COMPLETE_SUCCESS or VERSION_COMPLETE_FAILURE.
         :param force: bool (optional)
-          If true, force-completes the version even if the caller is not the original creator. The
-          completion_reason must be VERSION_COMPLETE_FORCE_ABORT when force is true.
+          If true, force-completes the version even if the caller is not the original creator.
 
         :returns: :class:`Version`
         """
@@ -1117,8 +1134,9 @@ class BundleDeploymentsAPI:
         """Creates a new deployment in the workspace.
 
         :param deployment: :class:`Deployment`
-          The deployment to create. The caller must set ``initial_parent_path``. Other fields are ignored on
-          input and populated by the service.
+          The deployment to create. ``initial_parent_path`` is required. ``display_name``, ``target_name``,
+          ``deployment_mode``, and ``workspace_info`` may be set; every other field is assigned by the service
+          and ignored on input.
 
         :returns: :class:`Deployment`
         """
@@ -1137,9 +1155,7 @@ class BundleDeploymentsAPI:
         res = self._api.do("POST", "/api/2.0/bundle/deployments", body=body, headers=headers)
         return Deployment.from_dict(res)
 
-    def create_version(
-        self, parent: str, version: Version, version_id: str, *, operations: Optional[List[StagedOperation]] = None
-    ) -> Version:
+    def create_version(self, parent: str, version: Version, version_id: str) -> Version:
         """Creates a new version under a deployment.
 
         Creating a version acquires an exclusive lock on the deployment, preventing concurrent deploys. The
@@ -1164,19 +1180,12 @@ class BundleDeploymentsAPI:
           or equal to 1. Must be numerically greater than the deployment's most recent version (see
           ``version.previous_version_id``); it does not need to start at 1 or increase by exactly 1. If the
           value is not numerically greater, the server returns ``INVALID_PARAMETER_VALUE``.
-        :param operations: List[:class:`StagedOperation`] (optional)
-          The full set of resource operations to record for this version. The server creates one operation per
-          entry in ``OPERATION_STATUS_PENDING``, in the same transaction as the version; each outcome is
-          recorded later via UpdateOperation. May be empty for a version that changes no resources. Each
-          ``resource_key`` must be unique within the request.
 
         :returns: :class:`Version`
         """
 
         body = version.as_dict()
         query = {}
-        if operations is not None:
-            query["operations"] = [v.as_dict() for v in operations]
         if version_id is not None:
             query["version_id"] = version_id
         headers = {
@@ -1318,34 +1327,10 @@ class BundleDeploymentsAPI:
         return HeartbeatResponse.from_dict(res)
 
     def list_deployments(
-        self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, show_deleted: Optional[bool] = None
     ) -> Iterator[Deployment]:
         """Lists deployments in the workspace.
 
-        :param filter: str (optional)
-          A filter expression restricting which deployments are returned, in the style of AIP-160
-          (https://google.aip.dev/160). The expression is a conjunction of one or more ``field operator
-          value`` terms joined by ``AND`` (case-insensitive); a deployment is returned only when it matches
-          every term. Whitespace around terms is ignored, and a value containing spaces must be wrapped in
-          double quotes. An unset or empty filter returns all deployments. Filtering applies only to live
-          deployments; deleted deployments are never returned regardless of the filter.
-
-          Supported terms:
-
-          - ``status = <STATUS>``: exact match on the deployment status. The value is a ``DeploymentStatus``
-            enum value, with or without the ``DEPLOYMENT_STATUS_`` prefix and case-insensitive (e.g. ``status
-            = ACTIVE``).
-          - ``deployment_mode = <MODE>``: exact match on the deployment mode. The value is a
-            ``DeploymentMode`` enum value, with or without the ``DEPLOYMENT_MODE_`` prefix and
-            case-insensitive (e.g. ``deployment_mode = DEVELOPMENT``).
-          - ``created_by = "<email>"``: exact match on the creator's email or principal name. To list only the
-            deployments you created, pass your own identity (e.g. ``created_by = "me@example.com"``). This
-            term matches the same value the deployment reports in ``created_by``, so a deployment whose
-            creator cannot currently be resolved reports an empty ``created_by`` and does not match this term.
-          - ``display_name = "<name>"``: exact match on the display name.
-          - ``display_name : "<substring>"``: case-insensitive substring match on the display name.
-
-          For example: ``status = ACTIVE AND display_name : "etl"``.
         :param page_size: int (optional)
           The maximum number of deployments to return. The service may return fewer than this value. If
           unspecified, at most 20 deployments will be returned. The maximum value is 1000; values above 1000
@@ -1353,17 +1338,21 @@ class BundleDeploymentsAPI:
         :param page_token: str (optional)
           A page token, received from a previous ``ListDeployments`` call. Provide this to retrieve the
           subsequent page.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted deployments in the response. Defaults to false. When true, returns
+          both live and soft-deleted deployments visible to the caller, subject to the filter. Soft-deleted
+          deployments have status ``DEPLOYMENT_STATUS_DELETED``.
 
         :returns: Iterator over :class:`Deployment`
         """
 
         query = {}
-        if filter is not None:
-            query["filter"] = filter
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
+        if show_deleted is not None:
+            query["show_deleted"] = show_deleted
         headers = {
             "Accept": "application/json",
         }
@@ -1501,6 +1490,37 @@ class BundleDeploymentsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def update_deployment(self, name: str, deployment: Deployment, update_mask: FieldMask) -> Deployment:
+        """Updates a deployment.
+
+        :param name: str
+          Resource name of the deployment. Format: deployments/{deployment_id}
+        :param deployment: :class:`Deployment`
+          The deployment to update. Its ``name`` selects the deployment; the fields named in ``update_mask``
+          carry the new values. All other fields are ignored.
+        :param update_mask: FieldMask
+          The fields to update; supported paths are ``display_name``, ``deployment_mode``, ``target_name``,
+          and ``workspace_info``. An empty mask or any other path returns INVALID_PARAMETER_VALUE.
+
+        :returns: :class:`Deployment`
+        """
+
+        body = deployment.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/bundle/{name}", query=query, body=body, headers=headers)
+        return Deployment.from_dict(res)
+
     def update_operation(self, name: str, operation: Operation, update_mask: FieldMask) -> Operation:
         """Updates a resource operation's mutable fields.
 
@@ -1510,8 +1530,8 @@ class BundleDeploymentsAPI:
         value it last observed, and the server rejects the update with ``ABORTED`` if the operation has been
         modified since. On success the server increments ``sequence_id``; updates to ``state``,
         ``resource_id``, and ``dashboard_metadata`` are mirrored onto the corresponding deployment-level
-        resource. Listing ``state`` in ``update_mask`` with no value clears it, which removes the resource, so
-        a delete that is retried until it succeeds must clear ``state``. The parent version must be in
+        resource. Listing ``state`` in ``update_mask`` with no value clears it, which removes the tracked
+        resource, so a delete or unbind that succeeds must clear ``state``. The parent version must be in
         progress, and after the update is applied a succeeded operation cannot carry an ``error_message``. See
         the ``state`` and ``resource_id`` fields for the rest.
 

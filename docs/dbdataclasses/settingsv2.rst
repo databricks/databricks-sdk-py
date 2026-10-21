@@ -115,10 +115,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DENY_ALL
       :value: "DENY_ALL"
 
-.. autoclass:: GenieChatSharePolicy
-   :members:
-   :undoc-members:
-
 .. autoclass:: IntegerMessage
    :members:
    :undoc-members:
@@ -197,5 +193,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UserPreference
+   :members:
+   :undoc-members:
+
+.. autoclass:: WorkspaceLabelMessage
    :members:
    :undoc-members:

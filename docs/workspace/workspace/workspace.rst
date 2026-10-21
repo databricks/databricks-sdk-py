@@ -66,7 +66,7 @@
         :return:         file-like `io.BinaryIO` of the `path` contents.
         
 
-    .. py:method:: export(path: str [, format: Optional[ExportFormat], outputs: Optional[ExportOutputs]]) -> ExportResponse
+    .. py:method:: export(path: str [, format: Optional[ExportFormat]]) -> ExportResponse
 
 
         Usage:
@@ -108,11 +108,6 @@
           - ``R_MARKDOWN``: The notebook is exported to R Markdown format.
           - ``AUTO``: The object or directory is exported depending on the objects type. Directory exports
             will include notebooks and workspace files.
-        :param outputs: :class:`ExportOutputs` (optional)
-          This specifies which cell outputs should be included in the export (if the export format allows it).
-          If not specified, the behavior is determined by the format. For JUPYTER format, the default is to
-          include all outputs. This is a public endpoint, but only ALL or NONE is documented publically,
-          DATABRICKS is internal only
 
         :returns: :class:`ExportResponse`
         

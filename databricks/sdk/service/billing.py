@@ -15,7 +15,9 @@ import uuid
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
+    _repeated_int64,
 )
 
 
@@ -36,14 +38,8 @@ class ActionConfiguration:
     action_type: Optional[ActionConfigurationType] = None
     """The type of the action."""
 
-    create_time: Optional[int] = None
-    """Creation time of this action configuration."""
-
     target: Optional[str] = None
     """Target for the action. For example, an email address."""
-
-    update_time: Optional[int] = None
-    """Update time of this action configuration."""
 
     def as_dict(self) -> dict:
         """Serializes the ActionConfiguration into a dictionary suitable for use as a JSON request body."""
@@ -52,12 +48,8 @@ class ActionConfiguration:
             body["action_configuration_id"] = self.action_configuration_id
         if self.action_type is not None:
             body["action_type"] = self.action_type.value
-        if self.create_time is not None:
-            body["create_time"] = self.create_time
         if self.target is not None:
             body["target"] = self.target
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -67,12 +59,8 @@ class ActionConfiguration:
             body["action_configuration_id"] = self.action_configuration_id
         if self.action_type is not None:
             body["action_type"] = self.action_type
-        if self.create_time is not None:
-            body["create_time"] = self.create_time
         if self.target is not None:
             body["target"] = self.target
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
         return body
 
     @classmethod
@@ -81,9 +69,7 @@ class ActionConfiguration:
         return cls(
             action_configuration_id=d.get("action_configuration_id", None),
             action_type=_enum(d, "action_type", ActionConfigurationType),
-            create_time=d.get("create_time", None),
             target=d.get("target", None),
-            update_time=d.get("update_time", None),
         )
 
 
@@ -102,9 +88,6 @@ class AlertConfiguration:
 
     alert_configuration_id: Optional[str] = None
     """Databricks alert configuration ID."""
-
-    create_time: Optional[int] = None
-    """Creation time of this alert configuration."""
 
     principal_overrides: Optional[List[PrincipalOverride]] = None
     """Per-principal threshold overrides for this alert. Only applies to per-user alerts
@@ -128,9 +111,6 @@ class AlertConfiguration:
     trigger_type: Optional[AlertConfigurationTriggerType] = None
     """The evaluation method to determine when this budget alert is in a triggered state."""
 
-    update_time: Optional[int] = None
-    """Update time of this alert configuration."""
-
     def as_dict(self) -> dict:
         """Serializes the AlertConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -138,8 +118,6 @@ class AlertConfiguration:
             body["action_configurations"] = [v.as_dict() for v in self.action_configurations]
         if self.alert_configuration_id is not None:
             body["alert_configuration_id"] = self.alert_configuration_id
-        if self.create_time is not None:
-            body["create_time"] = self.create_time
         if self.principal_overrides:
             body["principal_overrides"] = [v.as_dict() for v in self.principal_overrides]
         if self.quantity_threshold is not None:
@@ -152,8 +130,6 @@ class AlertConfiguration:
             body["time_period"] = self.time_period.value
         if self.trigger_type is not None:
             body["trigger_type"] = self.trigger_type.value
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -163,8 +139,6 @@ class AlertConfiguration:
             body["action_configurations"] = self.action_configurations
         if self.alert_configuration_id is not None:
             body["alert_configuration_id"] = self.alert_configuration_id
-        if self.create_time is not None:
-            body["create_time"] = self.create_time
         if self.principal_overrides:
             body["principal_overrides"] = self.principal_overrides
         if self.quantity_threshold is not None:
@@ -177,8 +151,6 @@ class AlertConfiguration:
             body["time_period"] = self.time_period
         if self.trigger_type is not None:
             body["trigger_type"] = self.trigger_type
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
         return body
 
     @classmethod
@@ -187,14 +159,12 @@ class AlertConfiguration:
         return cls(
             action_configurations=_repeated_dict(d, "action_configurations", ActionConfiguration),
             alert_configuration_id=d.get("alert_configuration_id", None),
-            create_time=d.get("create_time", None),
             principal_overrides=_repeated_dict(d, "principal_overrides", PrincipalOverride),
             quantity_threshold=d.get("quantity_threshold", None),
             quantity_type=_enum(d, "quantity_type", AlertConfigurationQuantityType),
             scope_type=_enum(d, "scope_type", AlertConfigurationScopeType),
             time_period=_enum(d, "time_period", AlertConfigurationTimePeriod),
             trigger_type=_enum(d, "trigger_type", AlertConfigurationTriggerType),
-            update_time=d.get("update_time", None),
         )
 
 
@@ -223,8 +193,15 @@ class BudgetConfiguration:
     """Databricks account ID."""
 
     alert_configurations: Optional[List[AlertConfiguration]] = None
-    """Alerts to configure when this budget is in a triggered state. Budgets must have exactly one
-    alert configuration."""
+    """Alerts to configure when this budget is in a triggered state. Budgets must have at least one
+    alert configuration. A budget can have up to four shared alerts per time period, each with a
+    unique ``quantity_threshold``. Budgets with ``resource_type`` set to
+    ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`` can also use per-user alerts, with optional
+    ``principal_overrides``. These budgets can have at most one per-user alert per time period, and
+    can use shared alerts, a per-user alert, or both. The ``BLOCK_USAGE`` action is only supported
+    on budgets with ``resource_type`` set to ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``. At most one
+    shared alert per time period can have a ``BLOCK_USAGE`` action, and it must be the shared alert
+    with the highest threshold in that period."""
 
     budget_configuration_id: Optional[str] = None
     """Databricks budget configuration ID."""
@@ -239,12 +216,6 @@ class BudgetConfiguration:
     """Configured filters for this budget. These are applied to your account's usage to limit the scope
     of what is considered for this budget. Leave empty to include all usage for this account. All
     provided filters must be matched for usage to be included."""
-
-    include_external_spend: Optional[bool] = None
-    """Whether this budget tracks external pass-through spend (third-party costs billed through a
-    Databricks product) in addition to internal Databricks spend. Only applicable when
-    ``resource_type`` is ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``; AI Gateway External Models is
-    the first use case. This field is immutable after create."""
 
     resource_type: Optional[BudgetResourceType] = None
     """The resource scope for this budget. Determines whether the budget tracks all resources or a
@@ -268,8 +239,6 @@ class BudgetConfiguration:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter.as_dict()
-        if self.include_external_spend is not None:
-            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type.value
         if self.update_time is not None:
@@ -291,8 +260,6 @@ class BudgetConfiguration:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter
-        if self.include_external_spend is not None:
-            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type
         if self.update_time is not None:
@@ -306,12 +273,11 @@ class BudgetConfiguration:
             account_id=d.get("account_id", None),
             alert_configurations=_repeated_dict(d, "alert_configurations", AlertConfiguration),
             budget_configuration_id=d.get("budget_configuration_id", None),
-            create_time=d.get("create_time", None),
+            create_time=_int64(d, "create_time"),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
-            include_external_spend=d.get("include_external_spend", None),
             resource_type=_enum(d, "resource_type", BudgetResourceType),
-            update_time=d.get("update_time", None),
+            update_time=_int64(d, "update_time"),
         )
 
 
@@ -443,7 +409,9 @@ class BudgetConfigurationFilterWorkspaceIdClause:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> BudgetConfigurationFilterWorkspaceIdClause:
         """Deserializes the BudgetConfigurationFilterWorkspaceIdClause from a dictionary."""
-        return cls(operator=_enum(d, "operator", BudgetConfigurationFilterOperator), values=d.get("values", None))
+        return cls(
+            operator=_enum(d, "operator", BudgetConfigurationFilterOperator), values=_repeated_int64(d, "values")
+        )
 
 
 @dataclass
@@ -497,7 +465,7 @@ class BudgetPolicy:
     def from_dict(cls, d: Dict[str, Any]) -> BudgetPolicy:
         """Deserializes the BudgetPolicy from a dictionary."""
         return cls(
-            binding_workspace_ids=d.get("binding_workspace_ids", None),
+            binding_workspace_ids=_repeated_int64(d, "binding_workspace_ids"),
             custom_tags=_repeated_dict(d, "custom_tags", compute.CustomPolicyTag),
             policy_id=d.get("policy_id", None),
             policy_name=d.get("policy_name", None),
@@ -543,8 +511,15 @@ class CreateBudgetConfigurationBudget:
     """Databricks account ID."""
 
     alert_configurations: Optional[List[CreateBudgetConfigurationBudgetAlertConfigurations]] = None
-    """Alerts to configure when this budget is in a triggered state. Budgets must have exactly one
-    alert configuration."""
+    """Alerts to configure when this budget is in a triggered state. Budgets must have at least one
+    alert configuration. A budget can have up to four shared alerts per time period, each with a
+    unique ``quantity_threshold``. Budgets with ``resource_type`` set to
+    ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`` can also use per-user alerts, with optional
+    ``principal_overrides``. These budgets can have at most one per-user alert per time period, and
+    can use shared alerts, a per-user alert, or both. The ``BLOCK_USAGE`` action is only supported
+    on budgets with ``resource_type`` set to ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``. At most one
+    shared alert per time period can have a ``BLOCK_USAGE`` action, and it must be the shared alert
+    with the highest threshold in that period."""
 
     display_name: Optional[str] = None
     """Human-readable name of budget configuration. Max Length: 128"""
@@ -553,12 +528,6 @@ class CreateBudgetConfigurationBudget:
     """Configured filters for this budget. These are applied to your account's usage to limit the scope
     of what is considered for this budget. Leave empty to include all usage for this account. All
     provided filters must be matched for usage to be included."""
-
-    include_external_spend: Optional[bool] = None
-    """Whether this budget tracks external pass-through spend (third-party costs billed through a
-    Databricks product) in addition to internal Databricks spend. Only applicable when
-    ``resource_type`` is ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``; AI Gateway External Models is
-    the first use case. This field is immutable after create."""
 
     resource_type: Optional[BudgetResourceType] = None
     """The resource scope for this budget. Determines whether the budget tracks all resources or a
@@ -575,8 +544,6 @@ class CreateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter.as_dict()
-        if self.include_external_spend is not None:
-            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type.value
         return body
@@ -592,8 +559,6 @@ class CreateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter
-        if self.include_external_spend is not None:
-            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type
         return body
@@ -608,7 +573,6 @@ class CreateBudgetConfigurationBudget:
             ),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
-            include_external_spend=d.get("include_external_spend", None),
             resource_type=_enum(d, "resource_type", BudgetResourceType),
         )
 
@@ -878,7 +842,7 @@ class CreateLogDeliveryConfigurationParams:
             output_format=_enum(d, "output_format", OutputFormat),
             status=_enum(d, "status", LogDeliveryConfigStatus),
             storage_configuration_id=d.get("storage_configuration_id", None),
-            workspace_ids_filter=d.get("workspace_ids_filter", None),
+            workspace_ids_filter=_repeated_int64(d, "workspace_ids_filter"),
         )
 
 
@@ -982,7 +946,7 @@ class Filter:
     def from_dict(cls, d: Dict[str, Any]) -> Filter:
         """Deserializes the Filter from a dictionary."""
         return cls(
-            creator_user_id=d.get("creator_user_id", None),
+            creator_user_id=_int64(d, "creator_user_id"),
             creator_user_name=d.get("creator_user_name", None),
             policy_name=d.get("policy_name", None),
         )
@@ -1170,50 +1134,6 @@ class ListBudgetPoliciesResponse:
         )
 
 
-@dataclass
-class ListUsagePoliciesResponse:
-    """A list of usage policies."""
-
-    next_page_token: Optional[str] = None
-    """A token that can be sent as ``page_token`` to retrieve the next page."""
-
-    policies: Optional[List[UsagePolicy]] = None
-
-    previous_page_token: Optional[str] = None
-    """A token that can be sent as ``page_token`` to retrieve the previous page."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ListUsagePoliciesResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        if self.policies:
-            body["policies"] = [v.as_dict() for v in self.policies]
-        if self.previous_page_token is not None:
-            body["previous_page_token"] = self.previous_page_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListUsagePoliciesResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        if self.policies:
-            body["policies"] = self.policies
-        if self.previous_page_token is not None:
-            body["previous_page_token"] = self.previous_page_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListUsagePoliciesResponse:
-        """Deserializes the ListUsagePoliciesResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            policies=_repeated_dict(d, "policies", UsagePolicy),
-            previous_page_token=d.get("previous_page_token", None),
-        )
-
-
 class LogDeliveryConfigStatus(Enum):
     """Log Delivery Status
 
@@ -1380,7 +1300,7 @@ class LogDeliveryConfiguration:
             account_id=d.get("account_id", None),
             config_id=d.get("config_id", None),
             config_name=d.get("config_name", None),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             credentials_id=d.get("credentials_id", None),
             delivery_path_prefix=d.get("delivery_path_prefix", None),
             delivery_start_time=d.get("delivery_start_time", None),
@@ -1389,8 +1309,8 @@ class LogDeliveryConfiguration:
             output_format=_enum(d, "output_format", OutputFormat),
             status=_enum(d, "status", LogDeliveryConfigStatus),
             storage_configuration_id=d.get("storage_configuration_id", None),
-            update_time=d.get("update_time", None),
-            workspace_ids_filter=d.get("workspace_ids_filter", None),
+            update_time=_int64(d, "update_time"),
+            workspace_ids_filter=_repeated_int64(d, "workspace_ids_filter"),
         )
 
 
@@ -1519,7 +1439,7 @@ class PrincipalOverride:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrincipalOverride:
         """Deserializes the PrincipalOverride from a dictionary."""
-        return cls(override_threshold=d.get("override_threshold", None), principal_id=d.get("principal_id", None))
+        return cls(override_threshold=d.get("override_threshold", None), principal_id=_int64(d, "principal_id"))
 
 
 @dataclass
@@ -1564,8 +1484,15 @@ class UpdateBudgetConfigurationBudget:
     """Databricks account ID."""
 
     alert_configurations: Optional[List[AlertConfiguration]] = None
-    """Alerts to configure when this budget is in a triggered state. Budgets must have exactly one
-    alert configuration."""
+    """Alerts to configure when this budget is in a triggered state. Budgets must have at least one
+    alert configuration. A budget can have up to four shared alerts per time period, each with a
+    unique ``quantity_threshold``. Budgets with ``resource_type`` set to
+    ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY`` can also use per-user alerts, with optional
+    ``principal_overrides``. These budgets can have at most one per-user alert per time period, and
+    can use shared alerts, a per-user alert, or both. The ``BLOCK_USAGE`` action is only supported
+    on budgets with ``resource_type`` set to ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``. At most one
+    shared alert per time period can have a ``BLOCK_USAGE`` action, and it must be the shared alert
+    with the highest threshold in that period."""
 
     budget_configuration_id: Optional[str] = None
     """Databricks budget configuration ID."""
@@ -1577,12 +1504,6 @@ class UpdateBudgetConfigurationBudget:
     """Configured filters for this budget. These are applied to your account's usage to limit the scope
     of what is considered for this budget. Leave empty to include all usage for this account. All
     provided filters must be matched for usage to be included."""
-
-    include_external_spend: Optional[bool] = None
-    """Whether this budget tracks external pass-through spend (third-party costs billed through a
-    Databricks product) in addition to internal Databricks spend. Only applicable when
-    ``resource_type`` is ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``; AI Gateway External Models is
-    the first use case. This field is immutable after create."""
 
     resource_type: Optional[BudgetResourceType] = None
     """The resource scope for this budget. Determines whether the budget tracks all resources or a
@@ -1601,8 +1522,6 @@ class UpdateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter.as_dict()
-        if self.include_external_spend is not None:
-            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type.value
         return body
@@ -1620,8 +1539,6 @@ class UpdateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter
-        if self.include_external_spend is not None:
-            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type
         return body
@@ -1635,7 +1552,6 @@ class UpdateBudgetConfigurationBudget:
             budget_configuration_id=d.get("budget_configuration_id", None),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
-            include_external_spend=d.get("include_external_spend", None),
             resource_type=_enum(d, "resource_type", BudgetResourceType),
         )
 
@@ -1673,59 +1589,6 @@ class UsageDashboardMajorVersion(Enum):
 class UsageDashboardType(Enum):
     USAGE_DASHBOARD_TYPE_GLOBAL = "USAGE_DASHBOARD_TYPE_GLOBAL"
     USAGE_DASHBOARD_TYPE_WORKSPACE = "USAGE_DASHBOARD_TYPE_WORKSPACE"
-
-
-@dataclass
-class UsagePolicy:
-    """Contains the UsagePolicy details (same structure as BudgetPolicy)"""
-
-    binding_workspace_ids: Optional[List[int]] = None
-    """List of workspaces that this usage policy will be exclusively bound to."""
-
-    custom_tags: Optional[List[compute.CustomPolicyTag]] = None
-    """A list of tags defined by the customer. At most 20 entries are allowed per policy."""
-
-    policy_id: Optional[str] = None
-    """The Id of the policy. This field is generated by Databricks and globally unique."""
-
-    policy_name: Optional[str] = None
-    """The name of the policy."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UsagePolicy into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.binding_workspace_ids:
-            body["binding_workspace_ids"] = [v for v in self.binding_workspace_ids]
-        if self.custom_tags:
-            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        if self.policy_name is not None:
-            body["policy_name"] = self.policy_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UsagePolicy into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.binding_workspace_ids:
-            body["binding_workspace_ids"] = self.binding_workspace_ids
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        if self.policy_name is not None:
-            body["policy_name"] = self.policy_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UsagePolicy:
-        """Deserializes the UsagePolicy from a dictionary."""
-        return cls(
-            binding_workspace_ids=d.get("binding_workspace_ids", None),
-            custom_tags=_repeated_dict(d, "custom_tags", compute.CustomPolicyTag),
-            policy_id=d.get("policy_id", None),
-            policy_name=d.get("policy_name", None),
-        )
 
 
 @dataclass
@@ -1797,13 +1660,7 @@ class BillableUsageAPI:
         self._api = api_client
 
     def download(self, start_month: str, end_month: str, *, personal_data: Optional[bool] = None) -> DownloadResponse:
-        """Returns billable usage logs in CSV format for the specified account and date range. For the data
-        schema, see:
-
-        - AWS: `CSV file schema
-          <https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema>`__.
-        - GCP: `CSV file schema
-          <https://docs.gcp.databricks.com/administration-guide/account-settings/usage-analysis.html#csv-file-schema>`__.
+        """Returns billable usage logs in CSV format for the specified account and date range.
 
         Note that this method might take multiple minutes to complete.
 
@@ -1964,12 +1821,7 @@ class BudgetPolicyAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self,
-        policy_id: str,
-        policy: BudgetPolicy,
-        *,
-        limit_config: Optional[LimitConfig] = None,
-        update_mask: Optional[str] = None,
+        self, policy_id: str, policy: BudgetPolicy, *, limit_config: Optional[LimitConfig] = None
     ) -> BudgetPolicy:
         """Updates a policy
 
@@ -1980,8 +1832,6 @@ class BudgetPolicyAPI:
           be specified even if not changed. The ``policy_id`` is used to identify the policy to update.
         :param limit_config: :class:`LimitConfig` (optional)
           DEPRECATED. This is redundant field as LimitConfig is part of the BudgetPolicy
-        :param update_mask: str (optional)
-          Field mask specifying which fields to update. When not provided, all fields are updated.
 
         :returns: :class:`BudgetPolicy`
         """
@@ -1990,8 +1840,6 @@ class BudgetPolicyAPI:
         query = {}
         if limit_config is not None:
             query["limit_config"] = limit_config.as_dict()
-        if update_mask is not None:
-            query["update_mask"] = update_mask
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -2393,148 +2241,3 @@ class UsageDashboardsAPI:
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/dashboard", query=query, headers=headers)
         return GetBillingUsageDashboardResponse.from_dict(res)
-
-
-class UsagePolicyAPI:
-    """A service serves REST API about Usage policies"""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def create(self, *, policy: Optional[UsagePolicy] = None, request_id: Optional[str] = None) -> UsagePolicy:
-        """Creates a new usage policy.
-
-        :param policy: :class:`UsagePolicy` (optional)
-          The policy to create. ``policy_id`` needs to be empty as it will be generated
-        :param request_id: str (optional)
-          A unique identifier for this request. Restricted to 36 ASCII characters.
-
-        :returns: :class:`UsagePolicy`
-        """
-
-        if request_id is None or request_id == "":
-            request_id = str(uuid.uuid4())
-        body = {}
-        if policy is not None:
-            body["policy"] = policy.as_dict()
-        if request_id is not None:
-            body["request_id"] = request_id
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do(
-            "POST", f"/api/2.1/accounts/{self._api.account_id}/usage-policies", body=body, headers=headers
-        )
-        return UsagePolicy.from_dict(res)
-
-    def delete(self, policy_id: str):
-        """Deletes a usage policy
-
-        :param policy_id: str
-          The Id of the policy.
-
-
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        self._api.do("DELETE", f"/api/2.1/accounts/{self._api.account_id}/usage-policies/{policy_id}", headers=headers)
-
-    def get(self, policy_id: str) -> UsagePolicy:
-        """Retrieves a usage policy by it's ID.
-
-        :param policy_id: str
-          The Id of the policy.
-
-        :returns: :class:`UsagePolicy`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do(
-            "GET", f"/api/2.1/accounts/{self._api.account_id}/usage-policies/{policy_id}", headers=headers
-        )
-        return UsagePolicy.from_dict(res)
-
-    def list(
-        self,
-        *,
-        filter_by: Optional[Filter] = None,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
-        sort_spec: Optional[SortSpec] = None,
-    ) -> Iterator[UsagePolicy]:
-        """Lists all usage policies. Policies are returned in the alphabetically ascending order of their names.
-
-        :param filter_by: :class:`Filter` (optional)
-          A filter to apply to the list of policies.
-        :param page_size: int (optional)
-          The maximum number of usage policies to return.
-        :param page_token: str (optional)
-          A page token, received from a previous ``ListUsagePolicies`` call.
-        :param sort_spec: :class:`SortSpec` (optional)
-          The sort specification.
-
-        :returns: Iterator over :class:`UsagePolicy`
-        """
-
-        query = {}
-        if filter_by is not None:
-            query["filter_by"] = filter_by.as_dict()
-        if page_size is not None:
-            query["page_size"] = page_size
-        if page_token is not None:
-            query["page_token"] = page_token
-        if sort_spec is not None:
-            query["sort_spec"] = sort_spec.as_dict()
-        headers = {
-            "Accept": "application/json",
-        }
-
-        while True:
-            json = self._api.do(
-                "GET", f"/api/2.1/accounts/{self._api.account_id}/usage-policies", query=query, headers=headers
-            )
-            if "policies" in json:
-                for v in json["policies"]:
-                    yield UsagePolicy.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
-                return
-            query["page_token"] = json["next_page_token"]
-
-    def update(self, policy_id: str, policy: UsagePolicy, *, limit_config: Optional[LimitConfig] = None) -> UsagePolicy:
-        """Updates a usage policy
-
-        :param policy_id: str
-          The Id of the policy. This field is generated by Databricks and globally unique.
-        :param policy: :class:`UsagePolicy`
-          The policy to update. ``creator_user_id`` cannot be specified in the request.
-        :param limit_config: :class:`LimitConfig` (optional)
-          DEPRECATED. This is redundant field as LimitConfig is part of the UsagePolicy
-
-        :returns: :class:`UsagePolicy`
-        """
-
-        body = policy.as_dict()
-        query = {}
-        if limit_config is not None:
-            query["limit_config"] = limit_config.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/accounts/{self._api.account_id}/usage-policies/{policy_id}",
-            query=query,
-            body=body,
-            headers=headers,
-        )
-        return UsagePolicy.from_dict(res)

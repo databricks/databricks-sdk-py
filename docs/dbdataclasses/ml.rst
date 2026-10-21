@@ -81,6 +81,37 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: BackfillFeaturesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: BackfillOperationMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: BackfillOperationMetadataState
+
+   Lifecycle state of a backfill.
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
+
+.. autoclass:: BackfillRange
+   :members:
+   :undoc-members:
+
 .. autoclass:: BackfillSource
    :members:
    :undoc-members:
@@ -176,11 +207,25 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: CronScheduleMode
+
+   The way a materialization schedule is arrived at.
+
+   .. py:attribute:: DERIVED
+      :value: "DERIVED"
+
+   .. py:attribute:: MANUAL
+      :value: "MANUAL"
+
 .. autoclass:: CustomUdf
    :members:
    :undoc-members:
 
 .. autoclass:: DataSource
+   :members:
+   :undoc-members:
+
+.. autoclass:: DatabricksServiceExceptionWithDetailsProto
    :members:
    :undoc-members:
 
@@ -260,6 +305,253 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ErrorCode
+
+   Error codes returned by Databricks APIs to indicate specific failure conditions.
+
+   .. py:attribute:: ABORTED
+      :value: "ABORTED"
+
+   .. py:attribute:: ALREADY_EXISTS
+      :value: "ALREADY_EXISTS"
+
+   .. py:attribute:: BAD_REQUEST
+      :value: "BAD_REQUEST"
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: CATALOG_ALREADY_EXISTS
+      :value: "CATALOG_ALREADY_EXISTS"
+
+   .. py:attribute:: CATALOG_DOES_NOT_EXIST
+      :value: "CATALOG_DOES_NOT_EXIST"
+
+   .. py:attribute:: CATALOG_NOT_EMPTY
+      :value: "CATALOG_NOT_EMPTY"
+
+   .. py:attribute:: COULD_NOT_ACQUIRE_LOCK
+      :value: "COULD_NOT_ACQUIRE_LOCK"
+
+   .. py:attribute:: CUSTOMER_UNAUTHORIZED
+      :value: "CUSTOMER_UNAUTHORIZED"
+
+   .. py:attribute:: DAC_ALREADY_EXISTS
+      :value: "DAC_ALREADY_EXISTS"
+
+   .. py:attribute:: DAC_DOES_NOT_EXIST
+      :value: "DAC_DOES_NOT_EXIST"
+
+   .. py:attribute:: DATA_LOSS
+      :value: "DATA_LOSS"
+
+   .. py:attribute:: DEADLINE_EXCEEDED
+      :value: "DEADLINE_EXCEEDED"
+
+   .. py:attribute:: DEPLOYMENT_TIMEOUT
+      :value: "DEPLOYMENT_TIMEOUT"
+
+   .. py:attribute:: DIRECTORY_NOT_EMPTY
+      :value: "DIRECTORY_NOT_EMPTY"
+
+   .. py:attribute:: DIRECTORY_PROTECTED
+      :value: "DIRECTORY_PROTECTED"
+
+   .. py:attribute:: DRY_RUN_FAILED
+      :value: "DRY_RUN_FAILED"
+
+   .. py:attribute:: ENDPOINT_NOT_FOUND
+      :value: "ENDPOINT_NOT_FOUND"
+
+   .. py:attribute:: EXTERNAL_LOCATION_ALREADY_EXISTS
+      :value: "EXTERNAL_LOCATION_ALREADY_EXISTS"
+
+   .. py:attribute:: EXTERNAL_LOCATION_DOES_NOT_EXIST
+      :value: "EXTERNAL_LOCATION_DOES_NOT_EXIST"
+
+   .. py:attribute:: FEATURE_DISABLED
+      :value: "FEATURE_DISABLED"
+
+   .. py:attribute:: GIT_CONFLICT
+      :value: "GIT_CONFLICT"
+
+   .. py:attribute:: GIT_REMOTE_ERROR
+      :value: "GIT_REMOTE_ERROR"
+
+   .. py:attribute:: GIT_SENSITIVE_TOKEN_DETECTED
+      :value: "GIT_SENSITIVE_TOKEN_DETECTED"
+
+   .. py:attribute:: GIT_UNKNOWN_REF
+      :value: "GIT_UNKNOWN_REF"
+
+   .. py:attribute:: GIT_URL_NOT_ON_ALLOW_LIST
+      :value: "GIT_URL_NOT_ON_ALLOW_LIST"
+
+   .. py:attribute:: INSECURE_PARTNER_RESPONSE
+      :value: "INSECURE_PARTNER_RESPONSE"
+
+   .. py:attribute:: INTERNAL_ERROR
+      :value: "INTERNAL_ERROR"
+
+   .. py:attribute:: INVALID_PARAMETER_VALUE
+      :value: "INVALID_PARAMETER_VALUE"
+
+   .. py:attribute:: INVALID_STATE
+      :value: "INVALID_STATE"
+
+   .. py:attribute:: INVALID_STATE_TRANSITION
+      :value: "INVALID_STATE_TRANSITION"
+
+   .. py:attribute:: IO_ERROR
+      :value: "IO_ERROR"
+
+   .. py:attribute:: IPYNB_FILE_IN_REPO
+      :value: "IPYNB_FILE_IN_REPO"
+
+   .. py:attribute:: MALFORMED_PARTNER_RESPONSE
+      :value: "MALFORMED_PARTNER_RESPONSE"
+
+   .. py:attribute:: MALFORMED_REQUEST
+      :value: "MALFORMED_REQUEST"
+
+   .. py:attribute:: MANAGED_RESOURCE_GROUP_DOES_NOT_EXIST
+      :value: "MANAGED_RESOURCE_GROUP_DOES_NOT_EXIST"
+
+   .. py:attribute:: MAX_BLOCK_SIZE_EXCEEDED
+      :value: "MAX_BLOCK_SIZE_EXCEEDED"
+
+   .. py:attribute:: MAX_CHILD_NODE_SIZE_EXCEEDED
+      :value: "MAX_CHILD_NODE_SIZE_EXCEEDED"
+
+   .. py:attribute:: MAX_LIST_SIZE_EXCEEDED
+      :value: "MAX_LIST_SIZE_EXCEEDED"
+
+   .. py:attribute:: MAX_NOTEBOOK_SIZE_EXCEEDED
+      :value: "MAX_NOTEBOOK_SIZE_EXCEEDED"
+
+   .. py:attribute:: MAX_READ_SIZE_EXCEEDED
+      :value: "MAX_READ_SIZE_EXCEEDED"
+
+   .. py:attribute:: METASTORE_ALREADY_EXISTS
+      :value: "METASTORE_ALREADY_EXISTS"
+
+   .. py:attribute:: METASTORE_DOES_NOT_EXIST
+      :value: "METASTORE_DOES_NOT_EXIST"
+
+   .. py:attribute:: METASTORE_NOT_EMPTY
+      :value: "METASTORE_NOT_EMPTY"
+
+   .. py:attribute:: NOT_FOUND
+      :value: "NOT_FOUND"
+
+   .. py:attribute:: NOT_IMPLEMENTED
+      :value: "NOT_IMPLEMENTED"
+
+   .. py:attribute:: PARTIAL_DELETE
+      :value: "PARTIAL_DELETE"
+
+   .. py:attribute:: PERMISSION_DENIED
+      :value: "PERMISSION_DENIED"
+
+   .. py:attribute:: PERMISSION_NOT_PROPAGATED
+      :value: "PERMISSION_NOT_PROPAGATED"
+
+   .. py:attribute:: PRINCIPAL_DOES_NOT_EXIST
+      :value: "PRINCIPAL_DOES_NOT_EXIST"
+
+   .. py:attribute:: PROJECTS_OPERATION_TIMEOUT
+      :value: "PROJECTS_OPERATION_TIMEOUT"
+
+   .. py:attribute:: PROVIDER_ALREADY_EXISTS
+      :value: "PROVIDER_ALREADY_EXISTS"
+
+   .. py:attribute:: PROVIDER_DOES_NOT_EXIST
+      :value: "PROVIDER_DOES_NOT_EXIST"
+
+   .. py:attribute:: PROVIDER_SHARE_NOT_ACCESSIBLE
+      :value: "PROVIDER_SHARE_NOT_ACCESSIBLE"
+
+   .. py:attribute:: QUOTA_EXCEEDED
+      :value: "QUOTA_EXCEEDED"
+
+   .. py:attribute:: RECIPIENT_ALREADY_EXISTS
+      :value: "RECIPIENT_ALREADY_EXISTS"
+
+   .. py:attribute:: RECIPIENT_DOES_NOT_EXIST
+      :value: "RECIPIENT_DOES_NOT_EXIST"
+
+   .. py:attribute:: REQUEST_LIMIT_EXCEEDED
+      :value: "REQUEST_LIMIT_EXCEEDED"
+
+   .. py:attribute:: RESOURCE_ALREADY_EXISTS
+      :value: "RESOURCE_ALREADY_EXISTS"
+
+   .. py:attribute:: RESOURCE_CONFLICT
+      :value: "RESOURCE_CONFLICT"
+
+   .. py:attribute:: RESOURCE_DOES_NOT_EXIST
+      :value: "RESOURCE_DOES_NOT_EXIST"
+
+   .. py:attribute:: RESOURCE_EXHAUSTED
+      :value: "RESOURCE_EXHAUSTED"
+
+   .. py:attribute:: RESOURCE_LIMIT_EXCEEDED
+      :value: "RESOURCE_LIMIT_EXCEEDED"
+
+   .. py:attribute:: SCHEMA_ALREADY_EXISTS
+      :value: "SCHEMA_ALREADY_EXISTS"
+
+   .. py:attribute:: SCHEMA_DOES_NOT_EXIST
+      :value: "SCHEMA_DOES_NOT_EXIST"
+
+   .. py:attribute:: SCHEMA_NOT_EMPTY
+      :value: "SCHEMA_NOT_EMPTY"
+
+   .. py:attribute:: SEARCH_QUERY_TOO_LONG
+      :value: "SEARCH_QUERY_TOO_LONG"
+
+   .. py:attribute:: SEARCH_QUERY_TOO_SHORT
+      :value: "SEARCH_QUERY_TOO_SHORT"
+
+   .. py:attribute:: SERVICE_UNDER_MAINTENANCE
+      :value: "SERVICE_UNDER_MAINTENANCE"
+
+   .. py:attribute:: SHARE_ALREADY_EXISTS
+      :value: "SHARE_ALREADY_EXISTS"
+
+   .. py:attribute:: SHARE_DOES_NOT_EXIST
+      :value: "SHARE_DOES_NOT_EXIST"
+
+   .. py:attribute:: STORAGE_CREDENTIAL_ALREADY_EXISTS
+      :value: "STORAGE_CREDENTIAL_ALREADY_EXISTS"
+
+   .. py:attribute:: STORAGE_CREDENTIAL_DOES_NOT_EXIST
+      :value: "STORAGE_CREDENTIAL_DOES_NOT_EXIST"
+
+   .. py:attribute:: TABLE_ALREADY_EXISTS
+      :value: "TABLE_ALREADY_EXISTS"
+
+   .. py:attribute:: TABLE_DOES_NOT_EXIST
+      :value: "TABLE_DOES_NOT_EXIST"
+
+   .. py:attribute:: TEMPORARILY_UNAVAILABLE
+      :value: "TEMPORARILY_UNAVAILABLE"
+
+   .. py:attribute:: UNAUTHENTICATED
+      :value: "UNAUTHENTICATED"
+
+   .. py:attribute:: UNAVAILABLE
+      :value: "UNAVAILABLE"
+
+   .. py:attribute:: UNKNOWN
+      :value: "UNKNOWN"
+
+   .. py:attribute:: UNPARSEABLE_HTTP_ERROR
+      :value: "UNPARSEABLE_HTTP_ERROR"
+
+   .. py:attribute:: WORKSPACE_TEMPORARILY_UNAVAILABLE
+      :value: "WORKSPACE_TEMPORARILY_UNAVAILABLE"
+
 .. autoclass:: Experiment
    :members:
    :undoc-members:
@@ -329,7 +621,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FeatureReference
+   :members:
+   :undoc-members:
+
 .. autoclass:: FeatureTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: FeatureViewSource
    :members:
    :undoc-members:
 
@@ -392,8 +692,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: FunctionFunctionType
 
-   Deprecated: Use the function-specific messages in AggregationFunction.function_type oneof instead. Kept for backwards compatibility.
-
    .. py:attribute:: APPROX_COUNT_DISTINCT
       :value: "APPROX_COUNT_DISTINCT"
 
@@ -408,6 +706,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: FIRST
       :value: "FIRST"
+
+   .. py:attribute:: FUNCTION_TYPE_UNSPECIFIED
+      :value: "FUNCTION_TYPE_UNSPECIFIED"
 
    .. py:attribute:: LAST
       :value: "LAST"
@@ -450,10 +751,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GetLoggedModelResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GetLoggedModelsRequestResponse
    :members:
    :undoc-members:
 
@@ -504,6 +801,82 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: InputTag
    :members:
    :undoc-members:
+
+.. autoclass:: Issue
+   :members:
+   :undoc-members:
+
+.. py:class:: IssueSeverity
+
+   How serious an Issue is, ordered LOW < MEDIUM < HIGH.
+
+   .. py:attribute:: HIGH
+      :value: "HIGH"
+
+   .. py:attribute:: LOW
+      :value: "LOW"
+
+   .. py:attribute:: MEDIUM
+      :value: "MEDIUM"
+
+.. py:class:: IssueSortKey
+
+   The field that search results are ordered by. SEVERITY breaks ties by last_seen_time, in the same direction. Results are grouped by status first (PENDING, RESOLVED, then REJECTED, whatever the sort_order), and remaining ties are broken by issue ID, so paging is stable.
+
+   .. py:attribute:: CREATE_TIME
+      :value: "CREATE_TIME"
+
+   .. py:attribute:: LAST_SEEN_TIME
+      :value: "LAST_SEEN_TIME"
+
+   .. py:attribute:: SEVERITY
+      :value: "SEVERITY"
+
+   .. py:attribute:: UPDATE_TIME
+      :value: "UPDATE_TIME"
+
+.. py:class:: IssueSourceType
+
+   What created an Issue: ADHOC_RUN, an issue detection run started on demand; SCHEDULED_RUN, one started by a schedule; SINGLE_TRACE_ANALYSIS, an analysis of a single trace; or MANUAL, a person.
+
+   .. py:attribute:: ADHOC_RUN
+      :value: "ADHOC_RUN"
+
+   .. py:attribute:: MANUAL
+      :value: "MANUAL"
+
+   .. py:attribute:: SCHEDULED_RUN
+      :value: "SCHEDULED_RUN"
+
+   .. py:attribute:: SINGLE_TRACE_ANALYSIS
+      :value: "SINGLE_TRACE_ANALYSIS"
+
+.. py:class:: IssueStatus
+
+   The triage status of an Issue: PENDING means open and awaiting triage, RESOLVED means judged real and addressed, and REJECTED means judged not to be an issue.
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: REJECTED
+      :value: "REJECTED"
+
+   .. py:attribute:: RESOLVED
+      :value: "RESOLVED"
+
+.. autoclass:: IssueTagFilter
+   :members:
+   :undoc-members:
+
+.. py:class:: IssueView
+
+   Which fields each search result includes: BASIC has every field except ``description``, and may omit large ``metadata`` entries; FULL has every field.
+
+   .. py:attribute:: BASIC
+      :value: "BASIC"
+
+   .. py:attribute:: FULL
+      :value: "FULL"
 
 .. autoclass:: JobContext
    :members:
@@ -662,6 +1035,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MaterializationFailureNotification
+   :members:
+   :undoc-members:
+
+.. autoclass:: MaterializationNotifications
+   :members:
+   :undoc-members:
+
+.. autoclass:: MaterializationSuccessNotification
+   :members:
+   :undoc-members:
+
 .. autoclass:: MaterializedFeature
    :members:
    :undoc-members:
@@ -771,13 +1156,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UPDATING
       :value: "UPDATING"
 
+.. autoclass:: Operation
+   :members:
+   :undoc-members:
+
 .. autoclass:: Param
    :members:
    :undoc-members:
 
 .. py:class:: PermissionLevel
 
-   Permission level of the requesting user on the object. For what is allowed at each level, see [MLflow Model permissions](..).
+   Permission level of the requesting user on the object. For what is allowed at each level, see `MLflow Model permissions <https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/workspace-model-registry#permissions>`__.
 
    .. py:attribute:: CAN_CREATE_REGISTERED_MODEL
       :value: "CAN_CREATE_REGISTERED_MODEL"
@@ -819,6 +1208,50 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: PublishTableResponse
    :members:
    :undoc-members:
+
+.. autoclass:: PurgeFeatureEntitiesMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: PurgeFeatureEntitiesMetadataState
+
+   Lifecycle state of a feature entity purge.
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
+
+.. autoclass:: PurgeFeatureEntitiesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: PurgeFeatureEntitiesResult
+   :members:
+   :undoc-members:
+
+.. py:class:: PurgeFeatureEntitiesResultState
+
+   Terminal state of a purge for one store type.
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: NOT_APPLICABLE
+      :value: "NOT_APPLICABLE"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
 
 .. autoclass:: RegisteredModelAccessControlRequest
    :members:
@@ -1069,7 +1502,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SdpSource
+   :members:
+   :undoc-members:
+
+.. py:class:: SdpSourceState
+
+   State of the SDP source relative to pipeline execution and output table validation.
+
+   .. py:attribute:: ERROR
+      :value: "ERROR"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RESOLVED
+      :value: "RESOLVED"
+
 .. autoclass:: SearchExperimentsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: SearchIssuesResponse
    :members:
    :undoc-members:
 
@@ -1122,6 +1576,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SlidingWindow
+   :members:
+   :undoc-members:
+
+.. py:class:: SortOrder
+
+   The direction of the ordering.
+
+   .. py:attribute:: ASCENDING
+      :value: "ASCENDING"
+
+   .. py:attribute:: DESCENDING
+      :value: "DESCENDING"
+
+.. autoclass:: SourceLateness
    :members:
    :undoc-members:
 

@@ -14,6 +14,7 @@ import logging
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
 )
 
@@ -165,7 +166,7 @@ class CreateCredentialsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialsResponse:
         """Deserializes the CreateCredentialsResponse from a dictionary."""
         return cls(
-            credential_id=d.get("credential_id", None),
+            credential_id=_int64(d, "credential_id"),
             git_email=d.get("git_email", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
@@ -191,7 +192,7 @@ class CreateRepoResponse:
     provider: Optional[str] = None
     """Git provider of the linked Git repository, e.g. ``gitHub``, ``azureDevOpsServices``,
     ``bitbucketServer`` (Bitbucket Data Center), ``gitLabEnterpriseEdition`` (GitLab Self-Managed),
-    or ``awsCodeCommit`` (deprecated)."""
+    or ``awsCodeCommit``."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout settings for the Git folder (repo)."""
@@ -243,7 +244,7 @@ class CreateRepoResponse:
         return cls(
             branch=d.get("branch", None),
             head_commit_id=d.get("head_commit_id", None),
-            id=d.get("id", None),
+            id=_int64(d, "id"),
             path=d.get("path", None),
             provider=d.get("provider", None),
             sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
@@ -266,7 +267,7 @@ class CredentialInfo:
     """The Git provider associated with the credential. One of ``gitHub``, ``bitbucketCloud``,
     ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft Entra ID
     authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
-    ``gitLabEnterpriseEdition`` (GitLab Self-Managed), or ``awsCodeCommit`` (deprecated)."""
+    ``gitLabEnterpriseEdition`` (GitLab Self-Managed), or ``awsCodeCommit``."""
 
     git_username: Optional[str] = None
     """The username provided with your Git provider account and associated with the credential. For
@@ -318,7 +319,7 @@ class CredentialInfo:
     def from_dict(cls, d: Dict[str, Any]) -> CredentialInfo:
         """Deserializes the CredentialInfo from a dictionary."""
         return cls(
-            credential_id=d.get("credential_id", None),
+            credential_id=_int64(d, "credential_id"),
             git_email=d.get("git_email", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
@@ -447,11 +448,6 @@ class ExportFormat(Enum):
     SOURCE = "SOURCE"
 
 
-class ExportOutputs(Enum):
-    ALL = "ALL"
-    NONE = "NONE"
-
-
 @dataclass
 class ExportResponse:
     """The request field ``direct_download`` determines whether a JSON response or binary contents are
@@ -552,7 +548,7 @@ class GetCredentialsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsResponse:
         """Deserializes the GetCredentialsResponse from a dictionary."""
         return cls(
-            credential_id=d.get("credential_id", None),
+            credential_id=_int64(d, "credential_id"),
             git_email=d.get("git_email", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
@@ -607,7 +603,7 @@ class GetRepoResponse:
     provider: Optional[str] = None
     """Git provider of the linked Git repository, e.g. ``gitHub``, ``azureDevOpsServices``,
     ``bitbucketServer`` (Bitbucket Data Center), ``gitLabEnterpriseEdition`` (GitLab Self-Managed),
-    or ``awsCodeCommit`` (deprecated)."""
+    or ``awsCodeCommit``."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout settings for the Git folder (repo)."""
@@ -664,7 +660,7 @@ class GetRepoResponse:
             branch=d.get("branch", None),
             git_cli_enabled=d.get("git_cli_enabled", None),
             head_commit_id=d.get("head_commit_id", None),
-            id=d.get("id", None),
+            id=_int64(d, "id"),
             path=d.get("path", None),
             provider=d.get("provider", None),
             sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
@@ -1033,15 +1029,15 @@ class ObjectInfo:
     def from_dict(cls, d: Dict[str, Any]) -> ObjectInfo:
         """Deserializes the ObjectInfo from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             directory_info=_from_dict(d, "directory_info", DirectoryInfo),
             language=_enum(d, "language", Language),
-            modified_at=d.get("modified_at", None),
-            object_id=d.get("object_id", None),
+            modified_at=_int64(d, "modified_at"),
+            object_id=_int64(d, "object_id"),
             object_type=_enum(d, "object_type", ObjectType),
             path=d.get("path", None),
             resource_id=d.get("resource_id", None),
-            size=d.get("size", None),
+            size=_int64(d, "size"),
         )
 
 
@@ -1184,7 +1180,7 @@ class RepoInfo:
     provider: Optional[str] = None
     """Git provider of the remote git repository, e.g. ``gitHub``, ``azureDevOpsServices``,
     ``bitbucketServer`` (Bitbucket Data Center), ``gitLabEnterpriseEdition`` (GitLab Self-Managed),
-    or ``awsCodeCommit`` (deprecated)."""
+    or ``awsCodeCommit``."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout config for the git folder (repo)."""
@@ -1236,7 +1232,7 @@ class RepoInfo:
         return cls(
             branch=d.get("branch", None),
             head_commit_id=d.get("head_commit_id", None),
-            id=d.get("id", None),
+            id=_int64(d, "id"),
             path=d.get("path", None),
             provider=d.get("provider", None),
             sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
@@ -1405,7 +1401,7 @@ class SecretMetadata:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SecretMetadata:
         """Deserializes the SecretMetadata from a dictionary."""
-        return cls(key=d.get("key", None), last_updated_timestamp=d.get("last_updated_timestamp", None))
+        return cls(key=d.get("key", None), last_updated_timestamp=_int64(d, "last_updated_timestamp"))
 
 
 @dataclass
@@ -1804,8 +1800,7 @@ class GitCredentialsAPI:
           Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
           ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
           Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
-          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
-          accepting new customers).
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit``.
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -1954,8 +1949,7 @@ class GitCredentialsAPI:
           Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
           ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
           Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
-          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
-          accepting new customers).
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit``.
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -2040,8 +2034,7 @@ class ReposAPI:
           Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
           ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
           Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
-          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
-          accepting new customers).
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit``.
         :param git_credential_id: int (optional)
           Git credential ID to use when cloning the repository. The Git credential must be configured for the
           current user.
@@ -2868,9 +2861,7 @@ class WorkspaceAPI:
 
         self._api.do("POST", "/api/2.0/workspace/delete", body=body, headers=headers)
 
-    def export(
-        self, path: str, *, format: Optional[ExportFormat] = None, outputs: Optional[ExportOutputs] = None
-    ) -> ExportResponse:
+    def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
         """Exports an object or the contents of an entire directory.
 
         If ``path`` does not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
@@ -2895,11 +2886,6 @@ class WorkspaceAPI:
           - ``R_MARKDOWN``: The notebook is exported to R Markdown format.
           - ``AUTO``: The object or directory is exported depending on the objects type. Directory exports
             will include notebooks and workspace files.
-        :param outputs: :class:`ExportOutputs` (optional)
-          This specifies which cell outputs should be included in the export (if the export format allows it).
-          If not specified, the behavior is determined by the format. For JUPYTER format, the default is to
-          include all outputs. This is a public endpoint, but only ALL or NONE is documented publically,
-          DATABRICKS is internal only
 
         :returns: :class:`ExportResponse`
         """
@@ -2907,8 +2893,6 @@ class WorkspaceAPI:
         query = {}
         if format is not None:
             query["format"] = format.value
-        if outputs is not None:
-            query["outputs"] = outputs.value
         if path is not None:
             query["path"] = path
         headers = {

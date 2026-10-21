@@ -18,8 +18,10 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
+    _repeated_int64,
     Wait,
 )
 from databricks.sdk.common.types.fieldmask import FieldMask
@@ -644,23 +646,21 @@ class AlertState(Enum):
 
 @dataclass
 class AlertStatementParameter:
-    """Redash-owned copy of the internal StatementParameter for the external AlertV2 API. The internal
-    ``ordinal`` and ``args`` fields are intentionally omitted: the public API supports only flat,
-    named scalar parameters; complex types (ARRAY, MAP, STRUCT) are not supported. This mirrors
-    SEA's public StatementParameter schema, see:
-    cmdexec/sql-exec-api/proto/sql_exec_api_service.proto:763-779"""
+    """A named parameter bound to the alert query. Only flat, named scalar parameters are supported;
+    complex types such as ARRAY, MAP, and STRUCT are not."""
 
     name: str
-    """The name of the parameter, referenced in the query as ``:name``."""
+    """The name of the parameter. Reference it in the query text as ``:name``. Required, must be
+    non-empty, and must be unique across the alert's parameters."""
 
     type: Optional[str] = None
-    """The SQL data type of the parameter, e.g. STRING, INT, or DATE. Defaults to STRING. This is a
-    string rather than an enum because scalar subtypes such as DECIMAL(10, 4) cannot be enumerated.
-    Complex types such as ARRAY, MAP, and STRUCT are not supported."""
+    """The SQL data type of the parameter, for example ``STRING``, ``INT``, or ``DECIMAL(10, 2)``. If
+    no type is given the type is assumed to be ``STRING``. Complex types such as ``ARRAY``, ``MAP``,
+    and ``STRUCT`` are not supported."""
 
     value: Optional[str] = None
-    """The bound value for the parameter, given as a string. If omitted, the value is interpreted as
-    NULL."""
+    """The value bound to the parameter, represented as a string. If omitted, the value is interpreted
+    as NULL."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertStatementParameter into a dictionary suitable for use as a JSON request body."""
@@ -714,15 +714,23 @@ class AlertV2:
     custom_summary: Optional[str] = None
     """Custom summary for the alert. support mustache template."""
 
-    effective_parent_path: Optional[str] = None
-    """The actual workspace path of the folder containing the alert. This is an output-only field."""
+    custom_template_format: Optional[CustomTemplateFormat] = None
+    """The format used to interpret the ``custom_summary`` and ``custom_description`` templates.
+    
+    ``HTML`` treats both templates as HTML with Mustache ``{{VARIABLE_NAME}}`` placeholders.
+    ``MARKDOWN`` treats them as Markdown with allowlisted ``@VARIABLE_NAME`` placeholders and
+    converts them to the format each notification destination expects, so a single template renders
+    correctly in email, Slack, and Microsoft Teams.
+    
+    When unset, the API applies no default. Responses omit the field unless a format is stored, and
+    a template with no format is rendered as HTML."""
 
     effective_run_as: Optional[AlertV2RunAs] = None
     """The actual identity that will be used to execute the alert. This is an output-only field that
     shows the resolved run-as identity after applying permissions and defaults."""
 
     id: Optional[str] = None
-    """UUID identifying the alert."""
+    """The canonical identifier of the alert to retrieve information about."""
 
     lifecycle_state: Optional[AlertLifecycleState] = None
     """Indicates whether the query is trashed."""
@@ -731,8 +739,19 @@ class AlertV2:
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
 
     parameters: Optional[List[AlertStatementParameter]] = None
-    """Query parameters bound when executing the alert query, referenced in the query text with
-    ``:name`` syntax. Static values only."""
+    """A list of parameters to pass into the alert SQL query statement containing parameter markers.
+    Static values only.
+    
+    Reference a parameter in the query text as ``:name``. Each parameter must have a unique,
+    non-empty name. Each parameter consists of a name, a value, and optionally a type. To represent
+    a NULL value, the ``value`` field may be omitted or set to ``null`` explicitly. If the ``type``
+    field is omitted, the value is interpreted as a string.
+    
+    If the type is given, parameters will be checked for type correctness according to the given
+    type. A value is correct if the provided string can be converted to the requested type using the
+    ``cast`` function. The exact semantics are described in the section `cast function
+    <https://docs.databricks.com/sql/language-manual/functions/cast.html>`__ of the SQL language
+    reference."""
 
     parent_path: Optional[str] = None
     """The workspace path of the folder containing the alert. Can only be set on create, and cannot be
@@ -765,10 +784,10 @@ class AlertV2:
             body["custom_description"] = self.custom_description
         if self.custom_summary is not None:
             body["custom_summary"] = self.custom_summary
+        if self.custom_template_format is not None:
+            body["custom_template_format"] = self.custom_template_format.value
         if self.display_name is not None:
             body["display_name"] = self.display_name
-        if self.effective_parent_path is not None:
-            body["effective_parent_path"] = self.effective_parent_path
         if self.effective_run_as:
             body["effective_run_as"] = self.effective_run_as.as_dict()
         if self.evaluation:
@@ -806,10 +825,10 @@ class AlertV2:
             body["custom_description"] = self.custom_description
         if self.custom_summary is not None:
             body["custom_summary"] = self.custom_summary
+        if self.custom_template_format is not None:
+            body["custom_template_format"] = self.custom_template_format
         if self.display_name is not None:
             body["display_name"] = self.display_name
-        if self.effective_parent_path is not None:
-            body["effective_parent_path"] = self.effective_parent_path
         if self.effective_run_as:
             body["effective_run_as"] = self.effective_run_as
         if self.evaluation:
@@ -845,8 +864,8 @@ class AlertV2:
             create_time=d.get("create_time", None),
             custom_description=d.get("custom_description", None),
             custom_summary=d.get("custom_summary", None),
+            custom_template_format=_enum(d, "custom_template_format", CustomTemplateFormat),
             display_name=d.get("display_name", None),
-            effective_parent_path=d.get("effective_parent_path", None),
             effective_run_as=_from_dict(d, "effective_run_as", AlertV2RunAs),
             evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
             id=d.get("id", None),
@@ -1204,10 +1223,10 @@ class BaseChunkInfo:
     def from_dict(cls, d: Dict[str, Any]) -> BaseChunkInfo:
         """Deserializes the BaseChunkInfo from a dictionary."""
         return cls(
-            byte_count=d.get("byte_count", None),
+            byte_count=_int64(d, "byte_count"),
             chunk_index=d.get("chunk_index", None),
-            row_count=d.get("row_count", None),
-            row_offset=d.get("row_offset", None),
+            row_count=_int64(d, "row_count"),
+            row_offset=_int64(d, "row_offset"),
         )
 
 
@@ -1746,7 +1765,6 @@ class CreateWarehouseRequestWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -1788,17 +1806,12 @@ class CronSchedule:
     https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
     for details."""
 
-    effective_pause_status: Optional[SchedulePauseStatus] = None
-    """The actual pause status of the schedule. This is an output-only field."""
-
     pause_status: Optional[SchedulePauseStatus] = None
     """Indicate whether this schedule is paused or not."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.effective_pause_status is not None:
-            body["effective_pause_status"] = self.effective_pause_status.value
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
         if self.quartz_cron_schedule is not None:
@@ -1810,8 +1823,6 @@ class CronSchedule:
     def as_shallow_dict(self) -> dict:
         """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.effective_pause_status is not None:
-            body["effective_pause_status"] = self.effective_pause_status
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
         if self.quartz_cron_schedule is not None:
@@ -1824,11 +1835,17 @@ class CronSchedule:
     def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
         return cls(
-            effective_pause_status=_enum(d, "effective_pause_status", SchedulePauseStatus),
             pause_status=_enum(d, "pause_status", SchedulePauseStatus),
             quartz_cron_schedule=d.get("quartz_cron_schedule", None),
             timezone_id=d.get("timezone_id", None),
         )
+
+
+class CustomTemplateFormat(Enum):
+    """Rendering format for the ``custom_summary`` and ``custom_description`` templates."""
+
+    HTML = "HTML"
+    MARKDOWN = "MARKDOWN"
 
 
 @dataclass
@@ -2377,7 +2394,6 @@ class EditWarehouseRequestWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -2547,6 +2563,9 @@ class EndpointInfo:
     creator_name: Optional[str] = None
     """warehouse creator name"""
 
+    customer_version_label: Optional[str] = None
+    """Compute version label for a REALTIME warehouse. This field is output only."""
+
     enable_photon: Optional[bool] = None
     """Configures whether the warehouse should use Photon optimized clusters.
     
@@ -2566,6 +2585,10 @@ class EndpointInfo:
 
     jdbc_url: Optional[str] = None
     """the jdbc connection string for this warehouse"""
+
+    max_dbu: Optional[int] = None
+    """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
+    between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity."""
 
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
@@ -2607,11 +2630,25 @@ class EndpointInfo:
     odbc_params: Optional[OdbcParams] = None
     """ODBC parameters for the SQL warehouse"""
 
+    reyden_cluster_size_multiplier: Optional[float] = None
+    """Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to
+    the nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
+    
+    Accepted range: 1.0 to the workspace-configured maximum (decimals allowed). The default maximum
+    is 100.0.
+    
+    - Values below 1.0 are normalized to 1.0.
+    - Values above the configured maximum are capped at that maximum.
+    - When absent, the warehouse is treated as having a multiplier of 1.0."""
+
     spot_instance_policy: Optional[SpotInstancePolicy] = None
     """Configurations whether the endpoint should use spot instances."""
 
     state: Optional[State] = None
     """state of the endpoint"""
+
+    statement_timeout: Optional[int] = None
+    """Warehouse statement timeout in seconds."""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -2636,6 +2673,8 @@ class EndpointInfo:
             body["cluster_size"] = self.cluster_size
         if self.creator_name is not None:
             body["creator_name"] = self.creator_name
+        if self.customer_version_label is not None:
+            body["customer_version_label"] = self.customer_version_label
         if self.enable_photon is not None:
             body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute is not None:
@@ -2648,6 +2687,8 @@ class EndpointInfo:
             body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url is not None:
             body["jdbc_url"] = self.jdbc_url
+        if self.max_dbu is not None:
+            body["max_dbu"] = self.max_dbu
         if self.max_num_clusters is not None:
             body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters is not None:
@@ -2660,10 +2701,14 @@ class EndpointInfo:
             body["num_clusters"] = self.num_clusters
         if self.odbc_params:
             body["odbc_params"] = self.odbc_params.as_dict()
+        if self.reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = self.reyden_cluster_size_multiplier
         if self.spot_instance_policy is not None:
             body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.state is not None:
             body["state"] = self.state.value
+        if self.statement_timeout is not None:
+            body["statement_timeout"] = self.statement_timeout
         if self.tags:
             body["tags"] = self.tags.as_dict()
         if self.warehouse_type is not None:
@@ -2681,6 +2726,8 @@ class EndpointInfo:
             body["cluster_size"] = self.cluster_size
         if self.creator_name is not None:
             body["creator_name"] = self.creator_name
+        if self.customer_version_label is not None:
+            body["customer_version_label"] = self.customer_version_label
         if self.enable_photon is not None:
             body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute is not None:
@@ -2693,6 +2740,8 @@ class EndpointInfo:
             body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url is not None:
             body["jdbc_url"] = self.jdbc_url
+        if self.max_dbu is not None:
+            body["max_dbu"] = self.max_dbu
         if self.max_num_clusters is not None:
             body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters is not None:
@@ -2705,10 +2754,14 @@ class EndpointInfo:
             body["num_clusters"] = self.num_clusters
         if self.odbc_params:
             body["odbc_params"] = self.odbc_params
+        if self.reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = self.reyden_cluster_size_multiplier
         if self.spot_instance_policy is not None:
             body["spot_instance_policy"] = self.spot_instance_policy
         if self.state is not None:
             body["state"] = self.state
+        if self.statement_timeout is not None:
+            body["statement_timeout"] = self.statement_timeout
         if self.tags:
             body["tags"] = self.tags
         if self.warehouse_type is not None:
@@ -2723,20 +2776,24 @@ class EndpointInfo:
             channel=_from_dict(d, "channel", Channel),
             cluster_size=d.get("cluster_size", None),
             creator_name=d.get("creator_name", None),
+            customer_version_label=d.get("customer_version_label", None),
             enable_photon=d.get("enable_photon", None),
             enable_serverless_compute=d.get("enable_serverless_compute", None),
             health=_from_dict(d, "health", EndpointHealth),
             id=d.get("id", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
             jdbc_url=d.get("jdbc_url", None),
+            max_dbu=d.get("max_dbu", None),
             max_num_clusters=d.get("max_num_clusters", None),
             min_num_clusters=d.get("min_num_clusters", None),
             name=d.get("name", None),
-            num_active_sessions=d.get("num_active_sessions", None),
+            num_active_sessions=_int64(d, "num_active_sessions"),
             num_clusters=d.get("num_clusters", None),
             odbc_params=_from_dict(d, "odbc_params", OdbcParams),
+            reyden_cluster_size_multiplier=d.get("reyden_cluster_size_multiplier", None),
             spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
             state=_enum(d, "state", State),
+            statement_timeout=d.get("statement_timeout", None),
             tags=_from_dict(d, "tags", EndpointTags),
             warehouse_type=_enum(d, "warehouse_type", EndpointInfoWarehouseType),
         )
@@ -2746,7 +2803,6 @@ class EndpointInfoWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -2873,9 +2929,10 @@ class ExternalLink:
     which point a new ``external_link`` must be requested."""
 
     external_link: Optional[str] = None
-    """A URL pointing to a chunk of result data, hosted by an external service, with a short expiration
-    time (<= 15 minutes). As this URL contains a temporary credential, it should be considered
-    sensitive and the client should not expose this URL in a log."""
+    """A short-lived cloud-storage URL pointing to a chunk of result data, hosted by an external
+    service, with a short expiration time (<= 15 minutes). As this URL contains a temporary
+    credential, it should be considered sensitive and the client should not expose this URL in a
+    log."""
 
     http_headers: Optional[Dict[str, str]] = None
     """HTTP headers that must be included with a GET request to the ``external_link``. Each header is
@@ -2949,15 +3006,15 @@ class ExternalLink:
     def from_dict(cls, d: Dict[str, Any]) -> ExternalLink:
         """Deserializes the ExternalLink from a dictionary."""
         return cls(
-            byte_count=d.get("byte_count", None),
+            byte_count=_int64(d, "byte_count"),
             chunk_index=d.get("chunk_index", None),
             expiration=d.get("expiration", None),
             external_link=d.get("external_link", None),
             http_headers=d.get("http_headers", None),
             next_chunk_index=d.get("next_chunk_index", None),
             next_chunk_internal_link=d.get("next_chunk_internal_link", None),
-            row_count=d.get("row_count", None),
-            row_offset=d.get("row_offset", None),
+            row_count=_int64(d, "row_count"),
+            row_offset=_int64(d, "row_offset"),
         )
 
 
@@ -3188,6 +3245,9 @@ class GetWarehouseResponse:
     creator_name: Optional[str] = None
     """warehouse creator name"""
 
+    customer_version_label: Optional[str] = None
+    """Compute version label for a REALTIME warehouse. This field is output only."""
+
     enable_photon: Optional[bool] = None
     """Configures whether the warehouse should use Photon optimized clusters.
     
@@ -3207,6 +3267,10 @@ class GetWarehouseResponse:
 
     jdbc_url: Optional[str] = None
     """the jdbc connection string for this warehouse"""
+
+    max_dbu: Optional[int] = None
+    """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
+    between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity."""
 
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
@@ -3248,11 +3312,25 @@ class GetWarehouseResponse:
     odbc_params: Optional[OdbcParams] = None
     """ODBC parameters for the SQL warehouse"""
 
+    reyden_cluster_size_multiplier: Optional[float] = None
+    """Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to
+    the nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
+    
+    Accepted range: 1.0 to the workspace-configured maximum (decimals allowed). The default maximum
+    is 100.0.
+    
+    - Values below 1.0 are normalized to 1.0.
+    - Values above the configured maximum are capped at that maximum.
+    - When absent, the warehouse is treated as having a multiplier of 1.0."""
+
     spot_instance_policy: Optional[SpotInstancePolicy] = None
     """Configurations whether the endpoint should use spot instances."""
 
     state: Optional[State] = None
     """state of the endpoint"""
+
+    statement_timeout: Optional[int] = None
+    """Warehouse statement timeout in seconds."""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -3277,6 +3355,8 @@ class GetWarehouseResponse:
             body["cluster_size"] = self.cluster_size
         if self.creator_name is not None:
             body["creator_name"] = self.creator_name
+        if self.customer_version_label is not None:
+            body["customer_version_label"] = self.customer_version_label
         if self.enable_photon is not None:
             body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute is not None:
@@ -3289,6 +3369,8 @@ class GetWarehouseResponse:
             body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url is not None:
             body["jdbc_url"] = self.jdbc_url
+        if self.max_dbu is not None:
+            body["max_dbu"] = self.max_dbu
         if self.max_num_clusters is not None:
             body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters is not None:
@@ -3301,10 +3383,14 @@ class GetWarehouseResponse:
             body["num_clusters"] = self.num_clusters
         if self.odbc_params:
             body["odbc_params"] = self.odbc_params.as_dict()
+        if self.reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = self.reyden_cluster_size_multiplier
         if self.spot_instance_policy is not None:
             body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.state is not None:
             body["state"] = self.state.value
+        if self.statement_timeout is not None:
+            body["statement_timeout"] = self.statement_timeout
         if self.tags:
             body["tags"] = self.tags.as_dict()
         if self.warehouse_type is not None:
@@ -3322,6 +3408,8 @@ class GetWarehouseResponse:
             body["cluster_size"] = self.cluster_size
         if self.creator_name is not None:
             body["creator_name"] = self.creator_name
+        if self.customer_version_label is not None:
+            body["customer_version_label"] = self.customer_version_label
         if self.enable_photon is not None:
             body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute is not None:
@@ -3334,6 +3422,8 @@ class GetWarehouseResponse:
             body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url is not None:
             body["jdbc_url"] = self.jdbc_url
+        if self.max_dbu is not None:
+            body["max_dbu"] = self.max_dbu
         if self.max_num_clusters is not None:
             body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters is not None:
@@ -3346,10 +3436,14 @@ class GetWarehouseResponse:
             body["num_clusters"] = self.num_clusters
         if self.odbc_params:
             body["odbc_params"] = self.odbc_params
+        if self.reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = self.reyden_cluster_size_multiplier
         if self.spot_instance_policy is not None:
             body["spot_instance_policy"] = self.spot_instance_policy
         if self.state is not None:
             body["state"] = self.state
+        if self.statement_timeout is not None:
+            body["statement_timeout"] = self.statement_timeout
         if self.tags:
             body["tags"] = self.tags
         if self.warehouse_type is not None:
@@ -3364,20 +3458,24 @@ class GetWarehouseResponse:
             channel=_from_dict(d, "channel", Channel),
             cluster_size=d.get("cluster_size", None),
             creator_name=d.get("creator_name", None),
+            customer_version_label=d.get("customer_version_label", None),
             enable_photon=d.get("enable_photon", None),
             enable_serverless_compute=d.get("enable_serverless_compute", None),
             health=_from_dict(d, "health", EndpointHealth),
             id=d.get("id", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
             jdbc_url=d.get("jdbc_url", None),
+            max_dbu=d.get("max_dbu", None),
             max_num_clusters=d.get("max_num_clusters", None),
             min_num_clusters=d.get("min_num_clusters", None),
             name=d.get("name", None),
-            num_active_sessions=d.get("num_active_sessions", None),
+            num_active_sessions=_int64(d, "num_active_sessions"),
             num_clusters=d.get("num_clusters", None),
             odbc_params=_from_dict(d, "odbc_params", OdbcParams),
+            reyden_cluster_size_multiplier=d.get("reyden_cluster_size_multiplier", None),
             spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
             state=_enum(d, "state", State),
+            statement_timeout=d.get("statement_timeout", None),
             tags=_from_dict(d, "tags", EndpointTags),
             warehouse_type=_enum(d, "warehouse_type", GetWarehouseResponseWarehouseType),
         )
@@ -3387,7 +3485,6 @@ class GetWarehouseResponseWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -5002,7 +5099,7 @@ class QueryFilter:
             query_start_time_range=_from_dict(d, "query_start_time_range", TimeRange),
             statement_ids=d.get("statement_ids", None),
             statuses=_repeated_enum(d, "statuses", QueryStatus),
-            user_ids=d.get("user_ids", None),
+            user_ids=_repeated_int64(d, "user_ids"),
             warehouse_ids=d.get("warehouse_ids", None),
         )
 
@@ -5228,28 +5325,28 @@ class QueryInfo:
             cache_query_id=d.get("cache_query_id", None),
             channel_used=_from_dict(d, "channel_used", ChannelInfo),
             client_application=d.get("client_application", None),
-            duration=d.get("duration", None),
+            duration=_int64(d, "duration"),
             endpoint_id=d.get("endpoint_id", None),
             error_message=d.get("error_message", None),
-            executed_as_user_id=d.get("executed_as_user_id", None),
+            executed_as_user_id=_int64(d, "executed_as_user_id"),
             executed_as_user_name=d.get("executed_as_user_name", None),
-            execution_end_time_ms=d.get("execution_end_time_ms", None),
+            execution_end_time_ms=_int64(d, "execution_end_time_ms"),
             is_final=d.get("is_final", None),
             lookup_key=d.get("lookup_key", None),
             metrics=_from_dict(d, "metrics", QueryMetrics),
             plans_state=_enum(d, "plans_state", PlansState),
-            query_end_time_ms=d.get("query_end_time_ms", None),
+            query_end_time_ms=_int64(d, "query_end_time_ms"),
             query_id=d.get("query_id", None),
             query_source=_from_dict(d, "query_source", ExternalQuerySource),
-            query_start_time_ms=d.get("query_start_time_ms", None),
+            query_start_time_ms=_int64(d, "query_start_time_ms"),
             query_tags=_repeated_dict(d, "query_tags", QueryTag),
             query_text=d.get("query_text", None),
-            rows_produced=d.get("rows_produced", None),
+            rows_produced=_int64(d, "rows_produced"),
             session_id=d.get("session_id", None),
             spark_ui_url=d.get("spark_ui_url", None),
             statement_type=_enum(d, "statement_type", QueryStatementType),
             status=_enum(d, "status", QueryStatus),
-            user_id=d.get("user_id", None),
+            user_id=_int64(d, "user_id"),
             user_name=d.get("user_name", None),
             warehouse_id=d.get("warehouse_id", None),
         )
@@ -5537,35 +5634,35 @@ class QueryMetrics:
     def from_dict(cls, d: Dict[str, Any]) -> QueryMetrics:
         """Deserializes the QueryMetrics from a dictionary."""
         return cls(
-            compilation_time_ms=d.get("compilation_time_ms", None),
-            execution_time_ms=d.get("execution_time_ms", None),
-            network_sent_bytes=d.get("network_sent_bytes", None),
-            overloading_queue_start_timestamp=d.get("overloading_queue_start_timestamp", None),
-            photon_total_time_ms=d.get("photon_total_time_ms", None),
-            projected_remaining_task_total_time_ms=d.get("projected_remaining_task_total_time_ms", None),
-            projected_remaining_wallclock_time_ms=d.get("projected_remaining_wallclock_time_ms", None),
-            provisioning_queue_start_timestamp=d.get("provisioning_queue_start_timestamp", None),
-            pruned_bytes=d.get("pruned_bytes", None),
-            pruned_files_count=d.get("pruned_files_count", None),
-            query_compilation_start_timestamp=d.get("query_compilation_start_timestamp", None),
-            read_bytes=d.get("read_bytes", None),
-            read_cache_bytes=d.get("read_cache_bytes", None),
-            read_files_bytes=d.get("read_files_bytes", None),
-            read_files_count=d.get("read_files_count", None),
-            read_partitions_count=d.get("read_partitions_count", None),
-            read_remote_bytes=d.get("read_remote_bytes", None),
-            remaining_task_count=d.get("remaining_task_count", None),
-            result_fetch_time_ms=d.get("result_fetch_time_ms", None),
+            compilation_time_ms=_int64(d, "compilation_time_ms"),
+            execution_time_ms=_int64(d, "execution_time_ms"),
+            network_sent_bytes=_int64(d, "network_sent_bytes"),
+            overloading_queue_start_timestamp=_int64(d, "overloading_queue_start_timestamp"),
+            photon_total_time_ms=_int64(d, "photon_total_time_ms"),
+            projected_remaining_task_total_time_ms=_int64(d, "projected_remaining_task_total_time_ms"),
+            projected_remaining_wallclock_time_ms=_int64(d, "projected_remaining_wallclock_time_ms"),
+            provisioning_queue_start_timestamp=_int64(d, "provisioning_queue_start_timestamp"),
+            pruned_bytes=_int64(d, "pruned_bytes"),
+            pruned_files_count=_int64(d, "pruned_files_count"),
+            query_compilation_start_timestamp=_int64(d, "query_compilation_start_timestamp"),
+            read_bytes=_int64(d, "read_bytes"),
+            read_cache_bytes=_int64(d, "read_cache_bytes"),
+            read_files_bytes=_int64(d, "read_files_bytes"),
+            read_files_count=_int64(d, "read_files_count"),
+            read_partitions_count=_int64(d, "read_partitions_count"),
+            read_remote_bytes=_int64(d, "read_remote_bytes"),
+            remaining_task_count=_int64(d, "remaining_task_count"),
+            result_fetch_time_ms=_int64(d, "result_fetch_time_ms"),
             result_from_cache=d.get("result_from_cache", None),
-            rows_produced_count=d.get("rows_produced_count", None),
-            rows_read_count=d.get("rows_read_count", None),
-            runnable_tasks=d.get("runnable_tasks", None),
-            spill_to_disk_bytes=d.get("spill_to_disk_bytes", None),
+            rows_produced_count=_int64(d, "rows_produced_count"),
+            rows_read_count=_int64(d, "rows_read_count"),
+            runnable_tasks=_int64(d, "runnable_tasks"),
+            spill_to_disk_bytes=_int64(d, "spill_to_disk_bytes"),
             task_time_over_time_range=_from_dict(d, "task_time_over_time_range", TaskTimeOverRange),
-            task_total_time_ms=d.get("task_total_time_ms", None),
-            total_time_ms=d.get("total_time_ms", None),
-            work_to_be_done=d.get("work_to_be_done", None),
-            write_remote_bytes=d.get("write_remote_bytes", None),
+            task_total_time_ms=_int64(d, "task_total_time_ms"),
+            total_time_ms=_int64(d, "total_time_ms"),
+            work_to_be_done=_int64(d, "work_to_be_done"),
+            write_remote_bytes=_int64(d, "write_remote_bytes"),
         )
 
 
@@ -5707,7 +5804,6 @@ class QueryParameter:
 class QueryStatementType(Enum):
     ALTER = "ALTER"
     ANALYZE = "ANALYZE"
-    CALL = "CALL"
     COPY = "COPY"
     CREATE = "CREATE"
     DELETE = "DELETE"
@@ -5833,10 +5929,10 @@ class RestoreResponse:
 @dataclass
 class ResultData:
     """Contains the result data of a single chunk when using ``INLINE`` disposition. When using
-    ``EXTERNAL_LINKS`` disposition, the array ``external_links`` is used instead to provide URLs to
-    the result data in cloud storage. Exactly one of these alternatives is used. (While the
-    ``external_links`` array prepares the API to return multiple links in a single response.
-    Currently only a single link is returned.)"""
+    ``EXTERNAL_LINKS`` disposition, the array ``external_links`` is used instead to provide
+    short-lived cloud-storage URLs to the result data in cloud storage. Exactly one of these
+    alternatives is used. (While the ``external_links`` array prepares the API to return multiple
+    links in a single response. Currently only a single link is returned.)"""
 
     byte_count: Optional[int] = None
     """The number of bytes in the result chunk. This field is not available when using ``INLINE``
@@ -5913,14 +6009,14 @@ class ResultData:
     def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
         return cls(
-            byte_count=d.get("byte_count", None),
+            byte_count=_int64(d, "byte_count"),
             chunk_index=d.get("chunk_index", None),
             data_array=d.get("data_array", None),
             external_links=_repeated_dict(d, "external_links", ExternalLink),
             next_chunk_index=d.get("next_chunk_index", None),
             next_chunk_internal_link=d.get("next_chunk_internal_link", None),
-            row_count=d.get("row_count", None),
-            row_offset=d.get("row_offset", None),
+            row_count=_int64(d, "row_count"),
+            row_offset=_int64(d, "row_offset"),
         )
 
 
@@ -5993,9 +6089,9 @@ class ResultManifest:
             chunks=_repeated_dict(d, "chunks", BaseChunkInfo),
             format=_enum(d, "format", Format),
             schema=_from_dict(d, "schema", ResultSchema),
-            total_byte_count=d.get("total_byte_count", None),
+            total_byte_count=_int64(d, "total_byte_count"),
             total_chunk_count=d.get("total_chunk_count", None),
-            total_row_count=d.get("total_row_count", None),
+            total_row_count=_int64(d, "total_row_count"),
             truncated=d.get("truncated", None),
         )
 
@@ -6168,12 +6264,10 @@ class SpotInstancePolicy(Enum):
 
     The breakdown of how the EndpointSpotInstancePolicy converts to per cloud configurations is:
 
-    +-------+--------------------------------------+--------------------------------+ | Cloud |
-    COST_OPTIMIZED | RELIABILITY_OPTIMIZED |
-    +-------+--------------------------------------+--------------------------------+ | AWS | On
-    Demand Driver with Spot Executors | On Demand Driver and Executors | | AZURE | On Demand Driver
-    and Executors | On Demand Driver and Executors |
-    +-------+--------------------------------------+--------------------------------+"""
+    - AWS, COST_OPTIMIZED: On Demand Driver with Spot Executors.
+    - AWS, RELIABILITY_OPTIMIZED: On Demand Driver and Executors.
+    - AZURE, COST_OPTIMIZED: On Demand Driver and Executors.
+    - AZURE, RELIABILITY_OPTIMIZED: On Demand Driver and Executors."""
 
     COST_OPTIMIZED = "COST_OPTIMIZED"
     POLICY_UNSPECIFIED = "POLICY_UNSPECIFIED"
@@ -6444,7 +6538,7 @@ class TaskTimeOverRange:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TaskTimeOverRange:
         """Deserializes the TaskTimeOverRange from a dictionary."""
-        return cls(entries=_repeated_dict(d, "entries", TaskTimeOverRangeEntry), interval=d.get("interval", None))
+        return cls(entries=_repeated_dict(d, "entries", TaskTimeOverRangeEntry), interval=_int64(d, "interval"))
 
 
 @dataclass
@@ -6469,7 +6563,7 @@ class TaskTimeOverRangeEntry:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TaskTimeOverRangeEntry:
         """Deserializes the TaskTimeOverRangeEntry from a dictionary."""
-        return cls(task_completed_time_ms=d.get("task_completed_time_ms", None))
+        return cls(task_completed_time_ms=_int64(d, "task_completed_time_ms"))
 
 
 @dataclass
@@ -6516,7 +6610,7 @@ class TerminationReason:
 
 
 class TerminationReasonCode(Enum):
-    """The status code indicating why the cluster was terminated"""
+    """The status code indicating why the cluster was terminated."""
 
     ABUSE_DETECTED = "ABUSE_DETECTED"
     ACCESS_TOKEN_FAILURE = "ACCESS_TOKEN_FAILURE"
@@ -6556,7 +6650,6 @@ class TerminationReasonCode(Enum):
     BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG = "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG"
     BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED = "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED"
     BUDGET_POLICY_RESOLUTION_FAILURE = "BUDGET_POLICY_RESOLUTION_FAILURE"
-    CERT_ROTATION = "CERT_ROTATION"
     CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED = "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
     CLOUD_ACCOUNT_SETUP_FAILURE = "CLOUD_ACCOUNT_SETUP_FAILURE"
     CLOUD_OPERATION_CANCELLED = "CLOUD_OPERATION_CANCELLED"
@@ -6575,7 +6668,6 @@ class TerminationReasonCode(Enum):
     CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
     CONTROL_PLANE_REQUEST_FAILURE = "CONTROL_PLANE_REQUEST_FAILURE"
     CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
-    COST_CONTROL_ENTITLEMENT_DENIED = "COST_CONTROL_ENTITLEMENT_DENIED"
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
@@ -6586,7 +6678,6 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
-    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -6667,8 +6758,6 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
-    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
-    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
@@ -6679,11 +6768,9 @@ class TerminationReasonCode(Enum):
     REQUEST_REJECTED = "REQUEST_REJECTED"
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
     RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
-    SECRET_CREATION_ACCESS_DENIED = "SECRET_CREATION_ACCESS_DENIED"
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
-    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
@@ -6715,7 +6802,6 @@ class TerminationReasonCode(Enum):
     WORKER_SETUP_FAILURE = "WORKER_SETUP_FAILURE"
     WORKSPACE_CANCELLED_ERROR = "WORKSPACE_CANCELLED_ERROR"
     WORKSPACE_CONFIGURATION_ERROR = "WORKSPACE_CONFIGURATION_ERROR"
-    WORKSPACE_DELEGATION_KEY_MISCONFIGURED = "WORKSPACE_DELEGATION_KEY_MISCONFIGURED"
     WORKSPACE_UPDATE = "WORKSPACE_UPDATE"
 
 
@@ -6781,7 +6867,7 @@ class TimeRange:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TimeRange:
         """Deserializes the TimeRange from a dictionary."""
-        return cls(end_time_ms=d.get("end_time_ms", None), start_time_ms=d.get("start_time_ms", None))
+        return cls(end_time_ms=_int64(d, "end_time_ms"), start_time_ms=_int64(d, "start_time_ms"))
 
 
 @dataclass
@@ -7467,7 +7553,6 @@ class WarehouseTypePairWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     REALTIME = "REALTIME"
-    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -8102,7 +8187,7 @@ class AlertsV2API:
         """Update alert
 
         :param id: str
-          UUID identifying the alert.
+          The canonical identifier of the alert to retrieve information about.
         :param alert: :class:`AlertV2`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
@@ -9539,28 +9624,26 @@ class StatementExecutionAPI:
         **Use case: large result sets with EXTERNAL_LINKS**
 
         Using ``EXTERNAL_LINKS`` to fetch result data allows you to fetch large result sets efficiently. The
-        main differences from using ``INLINE`` disposition are that the result data is accessed with URLs, and
-        that there are 3 supported formats: ``JSON_ARRAY``, ``ARROW_STREAM`` and ``CSV`` compared to only
-        ``JSON_ARRAY`` with ``INLINE``.
+        main differences from using ``INLINE`` disposition are that the result data is accessed with
+        short-lived cloud-storage URLs, and that there are 3 supported formats: ``JSON_ARRAY``,
+        ``ARROW_STREAM`` and ``CSV`` compared to only ``JSON_ARRAY`` with ``INLINE``.
 
-        ** URLs**
+        **External-link URLs**
 
-        External links point to data stored within your workspace's internal storage, in the form of a URL.
-        The URLs are valid for only a short period, <= 15 minutes. Alongside each ``external_link`` is an
-        expiration field indicating the time at which the URL is no longer valid. In ``EXTERNAL_LINKS`` mode,
-        chunks can be resolved and fetched multiple times and in parallel.
+        External links point to data stored within your workspace's internal cloud storage. The URLs are valid
+        for only a short period, <= 15 minutes. Alongside each ``external_link`` is an expiration field
+        indicating the time at which the URL is no longer valid. In ``EXTERNAL_LINKS`` mode, chunks can be
+        resolved and fetched multiple times and in parallel.
 
         **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
         ``EXTERNAL_LINKS`` disposition.**
 
-        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
-        download the results directly from . As a short-lived is embedded in this URL, you should protect the
-        URL.
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived cloud-storage URL is generated to
+        download the results. The URL contains temporary access credentials, so protect it and do not set an
+        ``Authorization`` header in the download request.
 
-        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
-        header in the download requests.
-
-        The ``EXTERNAL_LINKS`` disposition can be disabled upon request by creating a support case.
+        The ``EXTERNAL_LINKS`` disposition can be disabled upon request by creating a `support case
+        <https://docs.databricks.com/resources/support.html>`__.
 
         See also `Security best practices
         <https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices>`__.
@@ -9604,8 +9687,8 @@ class StatementExecutionAPI:
           1. They point to resources *external* to the Databricks compute; therefore any associated
              authentication information (typically a personal access token, OAuth token, or similar) *must be
              removed* when fetching from these links.
-          2. These are URLs with a specific expiration, indicated in the response. The behavior when
-             attempting to use an expired link is cloud specific.
+          2. These are short-lived cloud-storage URLs with a specific expiration, indicated in the response.
+             The behavior when attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
           Statement execution supports three result formats: ``JSON_ARRAY`` (default), ``ARROW_STREAM``, and
           ``CSV``.
@@ -9886,13 +9969,17 @@ class WarehousesAPI:
         channel: Optional[Channel] = None,
         cluster_size: Optional[str] = None,
         creator_name: Optional[str] = None,
+        customer_version_label: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
         instance_profile_arn: Optional[str] = None,
+        max_dbu: Optional[int] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
+        reyden_cluster_size_multiplier: Optional[float] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
     ) -> Wait[GetWarehouseResponse]:
@@ -9929,6 +10016,8 @@ class WarehousesAPI:
           - 5X-Large
         :param creator_name: str (optional)
           warehouse creator name
+        :param customer_version_label: str (optional)
+          Compute version label for a REALTIME warehouse. This field is output only.
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
@@ -9937,6 +10026,9 @@ class WarehousesAPI:
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
+        :param max_dbu: int (optional)
+          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
+          between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity.
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
@@ -9964,8 +10056,20 @@ class WarehousesAPI:
 
           - Must be unique within an org.
           - Must be less than 100 characters.
+        :param reyden_cluster_size_multiplier: float (optional)
+          Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to the
+          nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
+
+          Accepted range: 1.0 to the workspace-configured maximum (decimals allowed). The default maximum is
+          100.0.
+
+          - Values below 1.0 are normalized to 1.0.
+          - Values above the configured maximum are capped at that maximum.
+          - When absent, the warehouse is treated as having a multiplier of 1.0.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
+        :param statement_timeout: int (optional)
+          Warehouse statement timeout in seconds.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -9991,20 +10095,28 @@ class WarehousesAPI:
             body["cluster_size"] = cluster_size
         if creator_name is not None:
             body["creator_name"] = creator_name
+        if customer_version_label is not None:
+            body["customer_version_label"] = customer_version_label
         if enable_photon is not None:
             body["enable_photon"] = enable_photon
         if enable_serverless_compute is not None:
             body["enable_serverless_compute"] = enable_serverless_compute
         if instance_profile_arn is not None:
             body["instance_profile_arn"] = instance_profile_arn
+        if max_dbu is not None:
+            body["max_dbu"] = max_dbu
         if max_num_clusters is not None:
             body["max_num_clusters"] = max_num_clusters
         if min_num_clusters is not None:
             body["min_num_clusters"] = min_num_clusters
         if name is not None:
             body["name"] = name
+        if reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = reyden_cluster_size_multiplier
         if spot_instance_policy is not None:
             body["spot_instance_policy"] = spot_instance_policy.value
+        if statement_timeout is not None:
+            body["statement_timeout"] = statement_timeout
         if tags is not None:
             body["tags"] = tags.as_dict()
         if warehouse_type is not None:
@@ -10032,13 +10144,17 @@ class WarehousesAPI:
         channel: Optional[Channel] = None,
         cluster_size: Optional[str] = None,
         creator_name: Optional[str] = None,
+        customer_version_label: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
         instance_profile_arn: Optional[str] = None,
+        max_dbu: Optional[int] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
+        reyden_cluster_size_multiplier: Optional[float] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
         timeout=timedelta(minutes=20),
@@ -10048,13 +10164,17 @@ class WarehousesAPI:
             channel=channel,
             cluster_size=cluster_size,
             creator_name=creator_name,
+            customer_version_label=customer_version_label,
             enable_photon=enable_photon,
             enable_serverless_compute=enable_serverless_compute,
             instance_profile_arn=instance_profile_arn,
+            max_dbu=max_dbu,
             max_num_clusters=max_num_clusters,
             min_num_clusters=min_num_clusters,
             name=name,
+            reyden_cluster_size_multiplier=reyden_cluster_size_multiplier,
             spot_instance_policy=spot_instance_policy,
+            statement_timeout=statement_timeout,
             tags=tags,
             warehouse_type=warehouse_type,
         ).result(timeout=timeout)
@@ -10141,13 +10261,17 @@ class WarehousesAPI:
         channel: Optional[Channel] = None,
         cluster_size: Optional[str] = None,
         creator_name: Optional[str] = None,
+        customer_version_label: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
         instance_profile_arn: Optional[str] = None,
+        max_dbu: Optional[int] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
+        reyden_cluster_size_multiplier: Optional[float] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
     ) -> Wait[GetWarehouseResponse]:
@@ -10186,6 +10310,8 @@ class WarehousesAPI:
           - 5X-Large
         :param creator_name: str (optional)
           warehouse creator name
+        :param customer_version_label: str (optional)
+          Compute version label for a REALTIME warehouse. This field is output only.
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
@@ -10194,6 +10320,9 @@ class WarehousesAPI:
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
+        :param max_dbu: int (optional)
+          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
+          between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity.
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
@@ -10221,8 +10350,20 @@ class WarehousesAPI:
 
           - Must be unique within an org.
           - Must be less than 100 characters.
+        :param reyden_cluster_size_multiplier: float (optional)
+          Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to the
+          nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
+
+          Accepted range: 1.0 to the workspace-configured maximum (decimals allowed). The default maximum is
+          100.0.
+
+          - Values below 1.0 are normalized to 1.0.
+          - Values above the configured maximum are capped at that maximum.
+          - When absent, the warehouse is treated as having a multiplier of 1.0.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
+        :param statement_timeout: int (optional)
+          Warehouse statement timeout in seconds.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -10248,20 +10389,28 @@ class WarehousesAPI:
             body["cluster_size"] = cluster_size
         if creator_name is not None:
             body["creator_name"] = creator_name
+        if customer_version_label is not None:
+            body["customer_version_label"] = customer_version_label
         if enable_photon is not None:
             body["enable_photon"] = enable_photon
         if enable_serverless_compute is not None:
             body["enable_serverless_compute"] = enable_serverless_compute
         if instance_profile_arn is not None:
             body["instance_profile_arn"] = instance_profile_arn
+        if max_dbu is not None:
+            body["max_dbu"] = max_dbu
         if max_num_clusters is not None:
             body["max_num_clusters"] = max_num_clusters
         if min_num_clusters is not None:
             body["min_num_clusters"] = min_num_clusters
         if name is not None:
             body["name"] = name
+        if reyden_cluster_size_multiplier is not None:
+            body["reyden_cluster_size_multiplier"] = reyden_cluster_size_multiplier
         if spot_instance_policy is not None:
             body["spot_instance_policy"] = spot_instance_policy.value
+        if statement_timeout is not None:
+            body["statement_timeout"] = statement_timeout
         if tags is not None:
             body["tags"] = tags.as_dict()
         if warehouse_type is not None:
@@ -10286,13 +10435,17 @@ class WarehousesAPI:
         channel: Optional[Channel] = None,
         cluster_size: Optional[str] = None,
         creator_name: Optional[str] = None,
+        customer_version_label: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
         instance_profile_arn: Optional[str] = None,
+        max_dbu: Optional[int] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
         name: Optional[str] = None,
+        reyden_cluster_size_multiplier: Optional[float] = None,
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        statement_timeout: Optional[int] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
         timeout=timedelta(minutes=20),
@@ -10302,14 +10455,18 @@ class WarehousesAPI:
             channel=channel,
             cluster_size=cluster_size,
             creator_name=creator_name,
+            customer_version_label=customer_version_label,
             enable_photon=enable_photon,
             enable_serverless_compute=enable_serverless_compute,
             id=id,
             instance_profile_arn=instance_profile_arn,
+            max_dbu=max_dbu,
             max_num_clusters=max_num_clusters,
             min_num_clusters=min_num_clusters,
             name=name,
+            reyden_cluster_size_multiplier=reyden_cluster_size_multiplier,
             spot_instance_policy=spot_instance_policy,
+            statement_timeout=statement_timeout,
             tags=tags,
             warehouse_type=warehouse_type,
         ).result(timeout=timeout)

@@ -1,6 +1,8 @@
 """Tests for the import-time behavior of ``databricks.sdk.runtime``."""
 
+import subprocess
 import sys
+import textwrap
 import types
 
 import pytest
@@ -60,3 +62,39 @@ def test_workspace_client_constructs_on_spark_connect(spark_connect_runtime, con
     ws = WorkspaceClient(config=config)
 
     assert ws is not None
+
+
+def test_import_does_not_configure_root_logger():
+    """Importing the module must not install a handler on the root logger.
+
+    The module logs from its import-time global-init blocks. Routing those through the
+    root ``logging.<level>()`` functions calls ``logging.basicConfig()`` while the root
+    logger has no handler, which installs one -- so a downstream ``logging.basicConfig()``
+    silently becomes a no-op and the importer's logs vanish. Run in a subprocess with a
+    clean root logger, since this process has already imported the module (and configured
+    logging), and the module is import-cached.
+    """
+    check = textwrap.dedent(
+        """
+        import logging
+        import sys
+
+        # databricks-connect is installed here; force its import in the OSS fallback to fail
+        # fast so the block logs via the ImportError path instead of trying to open a session.
+        sys.modules["databricks.connect"] = None
+
+        assert not logging.getLogger().handlers, "precondition: root logger starts clean"
+        try:
+            import databricks.sdk.runtime  # noqa: F401
+        except Exception:
+            # The fallback ends by building RemoteDbUtils()/Config, which can fail or block on
+            # host resolution without credentials. That runs *after* the import-time global-init
+            # logging this test guards, so tolerate it -- we only assert the root logger was
+            # left untouched by that earlier logging.
+            pass
+        handlers = logging.getLogger().handlers
+        assert not handlers, f"import configured the root logger: {handlers!r}"
+        """
+    )
+    result = subprocess.run([sys.executable, "-c", check], capture_output=True, text=True)
+    assert result.returncode == 0, f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"

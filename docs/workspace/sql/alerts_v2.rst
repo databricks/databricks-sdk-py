@@ -52,7 +52,7 @@
         Update alert
 
         :param id: str
-          UUID identifying the alert.
+          The canonical identifier of the alert to retrieve information about.
         :param alert: :class:`AlertV2`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The

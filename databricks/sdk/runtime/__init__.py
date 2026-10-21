@@ -138,12 +138,12 @@ if not _use_runtime_namespace:
         sqlContext: SQLContext = None  # type: ignore
         table = sqlContext.table
     except Exception as e:
-        logging.debug(f"Failed to initialize globals 'sqlContext' and 'table', continuing. Cause: {e}")
+        logger.debug(f"Failed to initialize globals 'sqlContext' and 'table', continuing. Cause: {e}")
 
     try:
         from pyspark.sql.functions import udf  # type: ignore  # noqa: F401
     except ImportError as e:
-        logging.debug(f"Failed to initialise udf global: {e}")
+        logger.debug(f"Failed to initialise udf global: {e}")
 
     try:
         from databricks.connect import DatabricksSession  # type: ignore
@@ -153,13 +153,13 @@ if not _use_runtime_namespace:
     except Exception as e:
         # We are ignoring all failures here because user might want to initialize
         # spark session themselves and we don't want to interfere with that
-        logging.debug(f"Failed to initialize globals 'spark' and 'sql', continuing. Cause: {e}")
+        logger.debug(f"Failed to initialize globals 'spark' and 'sql', continuing. Cause: {e}")
 
     try:
         # We expect this to fail locally since dbconnect does not support sparkcontext. This is just for typing
         sc = spark.sparkContext  # type: ignore
     except Exception as e:
-        logging.debug(f"Failed to initialize global 'sc', continuing. Cause: {e}")
+        logger.debug(f"Failed to initialize global 'sc', continuing. Cause: {e}")
 
     def display(input=None, *args, **kwargs) -> None:  # type: ignore
         """

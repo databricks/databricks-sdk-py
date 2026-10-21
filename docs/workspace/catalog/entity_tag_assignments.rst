@@ -52,7 +52,7 @@
 
         
 
-    .. py:method:: get(entity_type: str, entity_name: str, tag_key: str [, include_inherited: Optional[bool]]) -> EntityTagAssignment
+    .. py:method:: get(entity_type: str, entity_name: str, tag_key: str) -> EntityTagAssignment
 
         Gets a tag assignment for an Unity Catalog entity by tag key.
 
@@ -62,13 +62,11 @@
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
           Required. The key of the tag
-        :param include_inherited: bool (optional)
-          Boolean which indicates whether this tag is inherited.
 
         :returns: :class:`EntityTagAssignment`
         
 
-    .. py:method:: list(entity_type: str, entity_name: str [, include_inherited: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[EntityTagAssignment]
+    .. py:method:: list(entity_type: str, entity_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[EntityTagAssignment]
 
         List tag assignments for an Unity Catalog entity
 
@@ -80,8 +78,6 @@
           The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
-        :param include_inherited: bool (optional)
-          Boolean which indicates whether this tag is inherited.
         :param max_results: int (optional)
           Optional. Maximum number of tag assignments to return in a single page
         :param page_token: str (optional)

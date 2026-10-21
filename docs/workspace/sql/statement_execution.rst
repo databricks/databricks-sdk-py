@@ -119,28 +119,26 @@
         **Use case: large result sets with EXTERNAL_LINKS**
 
         Using ``EXTERNAL_LINKS`` to fetch result data allows you to fetch large result sets efficiently. The
-        main differences from using ``INLINE`` disposition are that the result data is accessed with URLs, and
-        that there are 3 supported formats: ``JSON_ARRAY``, ``ARROW_STREAM`` and ``CSV`` compared to only
-        ``JSON_ARRAY`` with ``INLINE``.
+        main differences from using ``INLINE`` disposition are that the result data is accessed with
+        short-lived cloud-storage URLs, and that there are 3 supported formats: ``JSON_ARRAY``,
+        ``ARROW_STREAM`` and ``CSV`` compared to only ``JSON_ARRAY`` with ``INLINE``.
 
-        ** URLs**
+        **External-link URLs**
 
-        External links point to data stored within your workspace's internal storage, in the form of a URL.
-        The URLs are valid for only a short period, <= 15 minutes. Alongside each ``external_link`` is an
-        expiration field indicating the time at which the URL is no longer valid. In ``EXTERNAL_LINKS`` mode,
-        chunks can be resolved and fetched multiple times and in parallel.
+        External links point to data stored within your workspace's internal cloud storage. The URLs are valid
+        for only a short period, <= 15 minutes. Alongside each ``external_link`` is an expiration field
+        indicating the time at which the URL is no longer valid. In ``EXTERNAL_LINKS`` mode, chunks can be
+        resolved and fetched multiple times and in parallel.
 
         **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
         ``EXTERNAL_LINKS`` disposition.**
 
-        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
-        download the results directly from . As a short-lived is embedded in this URL, you should protect the
-        URL.
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived cloud-storage URL is generated to
+        download the results. The URL contains temporary access credentials, so protect it and do not set an
+        ``Authorization`` header in the download request.
 
-        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
-        header in the download requests.
-
-        The ``EXTERNAL_LINKS`` disposition can be disabled upon request by creating a support case.
+        The ``EXTERNAL_LINKS`` disposition can be disabled upon request by creating a `support case
+        <https://docs.databricks.com/resources/support.html>`__.
 
         See also `Security best practices
         <https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices>`__.
@@ -184,8 +182,8 @@
           1. They point to resources *external* to the Databricks compute; therefore any associated
              authentication information (typically a personal access token, OAuth token, or similar) *must be
              removed* when fetching from these links.
-          2. These are URLs with a specific expiration, indicated in the response. The behavior when
-             attempting to use an expired link is cloud specific.
+          2. These are short-lived cloud-storage URLs with a specific expiration, indicated in the response.
+             The behavior when attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
           Statement execution supports three result formats: ``JSON_ARRAY`` (default), ``ARROW_STREAM``, and
           ``CSV``.

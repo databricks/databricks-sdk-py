@@ -18,6 +18,7 @@ from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
     Wait,
@@ -123,9 +124,6 @@ class AzureKeyInfo:
     key_vault_uri: Optional[str] = None
     """The base URI of the KeyVault."""
 
-    subscription_id: Optional[str] = None
-    """The Azure subscription ID to use for Key Vault access validation during CMK creation."""
-
     tenant_id: Optional[str] = None
     """The tenant id where the KeyVault lives."""
 
@@ -143,8 +141,6 @@ class AzureKeyInfo:
             body["key_name"] = self.key_name
         if self.key_vault_uri is not None:
             body["key_vault_uri"] = self.key_vault_uri
-        if self.subscription_id is not None:
-            body["subscription_id"] = self.subscription_id
         if self.tenant_id is not None:
             body["tenant_id"] = self.tenant_id
         if self.version is not None:
@@ -162,8 +158,6 @@ class AzureKeyInfo:
             body["key_name"] = self.key_name
         if self.key_vault_uri is not None:
             body["key_vault_uri"] = self.key_vault_uri
-        if self.subscription_id is not None:
-            body["subscription_id"] = self.subscription_id
         if self.tenant_id is not None:
             body["tenant_id"] = self.tenant_id
         if self.version is not None:
@@ -178,7 +172,6 @@ class AzureKeyInfo:
             key_access_configuration=_from_dict(d, "key_access_configuration", KeyAccessConfiguration),
             key_name=d.get("key_name", None),
             key_vault_uri=d.get("key_vault_uri", None),
-            subscription_id=d.get("subscription_id", None),
             tenant_id=d.get("tenant_id", None),
             version=d.get("version", None),
         )
@@ -309,9 +302,6 @@ class CreateAzureKeyInfo:
     key_vault_uri: Optional[str] = None
     """The base URI of the KeyVault."""
 
-    subscription_id: Optional[str] = None
-    """The Azure subscription ID to use for Key Vault access validation during CMK creation."""
-
     tenant_id: Optional[str] = None
     """The tenant id where the KeyVault lives."""
 
@@ -329,8 +319,6 @@ class CreateAzureKeyInfo:
             body["key_name"] = self.key_name
         if self.key_vault_uri is not None:
             body["key_vault_uri"] = self.key_vault_uri
-        if self.subscription_id is not None:
-            body["subscription_id"] = self.subscription_id
         if self.tenant_id is not None:
             body["tenant_id"] = self.tenant_id
         if self.version is not None:
@@ -348,8 +336,6 @@ class CreateAzureKeyInfo:
             body["key_name"] = self.key_name
         if self.key_vault_uri is not None:
             body["key_vault_uri"] = self.key_vault_uri
-        if self.subscription_id is not None:
-            body["subscription_id"] = self.subscription_id
         if self.tenant_id is not None:
             body["tenant_id"] = self.tenant_id
         if self.version is not None:
@@ -364,7 +350,6 @@ class CreateAzureKeyInfo:
             key_access_configuration=_from_dict(d, "key_access_configuration", KeyAccessConfiguration),
             key_name=d.get("key_name", None),
             key_vault_uri=d.get("key_vault_uri", None),
-            subscription_id=d.get("subscription_id", None),
             tenant_id=d.get("tenant_id", None),
             version=d.get("version", None),
         )
@@ -517,7 +502,7 @@ class Credential:
         return cls(
             account_id=d.get("account_id", None),
             aws_credentials=_from_dict(d, "aws_credentials", AwsCredentials),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             credentials_id=d.get("credentials_id", None),
             credentials_name=d.get("credentials_name", None),
         )
@@ -625,7 +610,7 @@ class CustomerManagedKey:
             account_id=d.get("account_id", None),
             aws_key_info=_from_dict(d, "aws_key_info", AwsKeyInfo),
             azure_key_info=_from_dict(d, "azure_key_info", AzureKeyInfo),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             customer_managed_key_id=d.get("customer_managed_key_id", None),
             gcp_key_info=_from_dict(d, "gcp_key_info", GcpKeyInfo),
             use_cases=_repeated_enum(d, "use_cases", KeyUseCase),
@@ -1116,7 +1101,7 @@ class Network:
         """Deserializes the Network from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             error_messages=_repeated_dict(d, "error_messages", NetworkHealth),
             gcp_network_info=_from_dict(d, "gcp_network_info", GcpNetworkInfo),
             network_id=d.get("network_id", None),
@@ -1127,7 +1112,7 @@ class Network:
             vpc_id=d.get("vpc_id", None),
             vpc_status=_enum(d, "vpc_status", VpcStatus),
             warning_messages=_repeated_dict(d, "warning_messages", NetworkWarning),
-            workspace_id=d.get("workspace_id", None),
+            workspace_id=_int64(d, "workspace_id"),
         )
 
 
@@ -1417,7 +1402,7 @@ class StorageConfiguration:
         """Deserializes the StorageConfiguration from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             role_arn=d.get("role_arn", None),
             root_bucket_info=_from_dict(d, "root_bucket_info", RootBucketInfo),
             storage_configuration_id=d.get("storage_configuration_id", None),
@@ -1791,7 +1776,7 @@ class Workspace:
             cloud=d.get("cloud", None),
             cloud_resource_container=_from_dict(d, "cloud_resource_container", CloudResourceContainer),
             compute_mode=_enum(d, "compute_mode", CustomerFacingComputeMode),
-            creation_time=d.get("creation_time", None),
+            creation_time=_int64(d, "creation_time"),
             credentials_id=d.get("credentials_id", None),
             custom_tags=d.get("custom_tags", None),
             deployment_name=d.get("deployment_name", None),
@@ -1808,7 +1793,7 @@ class Workspace:
             storage_configuration_id=d.get("storage_configuration_id", None),
             storage_customer_managed_key_id=d.get("storage_customer_managed_key_id", None),
             storage_mode=_enum(d, "storage_mode", CustomerFacingStorageMode),
-            workspace_id=d.get("workspace_id", None),
+            workspace_id=_int64(d, "workspace_id"),
             workspace_name=d.get("workspace_name", None),
             workspace_status=_enum(d, "workspace_status", WorkspaceStatus),
             workspace_status_message=d.get("workspace_status_message", None),
@@ -2635,7 +2620,6 @@ class WorkspacesAPI:
         self,
         *,
         aws_region: Optional[str] = None,
-        azure_workspace_info: Optional[AzureWorkspaceInfo] = None,
         cloud: Optional[str] = None,
         cloud_resource_container: Optional[CloudResourceContainer] = None,
         compute_mode: Optional[CustomerFacingComputeMode] = None,
@@ -2684,7 +2668,6 @@ class WorkspacesAPI:
         custom plan that allows multiple workspaces per account.
 
         :param aws_region: str (optional)
-        :param azure_workspace_info: :class:`AzureWorkspaceInfo` (optional)
         :param cloud: str (optional)
           DEPRECATED: This field is being ignored by the server and will be removed in the future. The cloud
           name. This field always has the value ``gcp``.
@@ -2757,8 +2740,6 @@ class WorkspacesAPI:
         body = {}
         if aws_region is not None:
             body["aws_region"] = aws_region
-        if azure_workspace_info is not None:
-            body["azure_workspace_info"] = azure_workspace_info.as_dict()
         if cloud is not None:
             body["cloud"] = cloud
         if cloud_resource_container is not None:
@@ -2811,7 +2792,6 @@ class WorkspacesAPI:
         self,
         *,
         aws_region: Optional[str] = None,
-        azure_workspace_info: Optional[AzureWorkspaceInfo] = None,
         cloud: Optional[str] = None,
         cloud_resource_container: Optional[CloudResourceContainer] = None,
         compute_mode: Optional[CustomerFacingComputeMode] = None,
@@ -2833,7 +2813,6 @@ class WorkspacesAPI:
     ) -> Workspace:
         return self.create(
             aws_region=aws_region,
-            azure_workspace_info=azure_workspace_info,
             cloud=cloud,
             cloud_resource_container=cloud_resource_container,
             compute_mode=compute_mode,

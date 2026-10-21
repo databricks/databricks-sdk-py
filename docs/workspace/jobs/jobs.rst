@@ -125,7 +125,7 @@
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
 
-    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environment_variables: Optional[List[JobEnvironmentVariables]], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], parent_path: Optional[str], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], triggers: Optional[List[TriggerConfiguration]], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
+    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], duration_target: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environment_variables: Optional[List[JobEnvironmentVariables]], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], parent_path: Optional[str], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], triggers: Optional[List[TriggerConfiguration]], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
 
 
         Usage:
@@ -173,10 +173,18 @@
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of ``schedule`` and ``continuous`` can be used.
+
+          Pipelines started by a continuous job also run continuously, regardless of their own pipeline mode
+          setting.
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
         :param description: str (optional)
           An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param edit_mode: :class:`JobEditMode` (optional)
           Edit mode of the job.
 
@@ -187,15 +195,18 @@
           as when this job is deleted.
         :param environment_variables: List[:class:`JobEnvironmentVariables`] (optional)
           Named environment-variable entries that tasks can reference by key from
-          ``TaskSettings.environment_variables_key``. Each entry holds inline ``variables`` plus optional
-          ``.env`` ``files``. Maximum 10 entries per job. Entries are independent of one another — there is
-          no cross-entry merging.
+          ``TaskSettings.environment_variables_key``. Each entry's ``spec`` holds inline ``variables`` and
+          optional ``.env`` ``files``. Maximum 10 entries per job. A task can reference at most one entry from
+          this list.
         :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by serverless tasks of
-          this job. For serverless notebook tasks, if the environment_key is not specified, the notebook
-          environment will be used if present. If a jobs environment is specified, it will override the
-          notebook environment. For other serverless tasks, the task environment is required to be specified
-          using environment_key in the task settings.
+          A list of task execution environment specifications that can be referenced by tasks that use
+          serverless compute or a compute resource that uses Environments mode.
+
+          For notebook tasks that use serverless compute or a compute resource that uses Environments mode, if
+          the environment_key is not specified, the notebook environment will be used if present. If a jobs
+          environment is specified, it will override the notebook environment. For other tasks that use
+          serverless compute or a compute resource that uses Environments mode, the task environment is
+          required to be specified using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to ``"MULTI_TASK"``.
@@ -236,9 +247,11 @@
           cost-efficiency for the run. The performance target does not apply to tasks that run on Serverless
           GPU compute.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -349,7 +362,7 @@
         :returns: :class:`ExportRunOutput`
         
 
-    .. py:method:: get(job_id: int [, page_token: str]) -> Job
+    .. py:method:: get(job_id: int [, include_trigger_state: bool, page_token: str]) -> Job
 
 
         Usage:
@@ -395,6 +408,8 @@
 
         :param job_id: int
           The canonical identifier of the job to retrieve information about. This field is required.
+        :param include_trigger_state: bool (optional)
+          Flag that indicates that trigger state should be included in the response.
         :param page_token: str (optional)
           Use `next_page_token` returned from the previous GetJob to request the next page of the job's
           sub-resources.
@@ -641,7 +656,7 @@
         :returns: Iterator over :class:`BaseRun`
         
 
-    .. py:method:: repair_run(run_id: int [, dbt_commands: Optional[List[str]], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
+    .. py:method:: repair_run(run_id: int [, dbt_commands: Optional[List[str]], duration_target: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
 
 
         Usage:
@@ -699,6 +714,11 @@
           ⚠ **Deprecation note** Use `job parameters
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param jar_params: List[str] (optional)
           A list of parameters for jobs with Spark JAR tasks, for example ``"jar_params": ["john doe",
           "35"]``. The parameters are used to invoke the main function of the main class specified in the
@@ -734,9 +754,11 @@
           performance or cost-efficiency for the run. This field overrides the performance target defined on
           the job level.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -792,7 +814,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: repair_run_and_wait(run_id: int [, dbt_commands: Optional[List[str]], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: repair_run_and_wait(run_id: int [, dbt_commands: Optional[List[str]], duration_target: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: reset(job_id: int, new_settings: JobSettings)
@@ -855,7 +877,7 @@
 
         
 
-    .. py:method:: run_now(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
+    .. py:method:: run_now(job_id: int [, dbt_commands: Optional[List[str]], duration_target: Optional[str], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
 
 
         Usage:
@@ -905,6 +927,11 @@
           ⚠ **Deprecation note** Use `job parameters
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param idempotency_token: str (optional)
           An optional token to guarantee the idempotency of job run requests. If a run with the provided token
           already exists, the request does not create a new run but returns the ID of the existing run
@@ -954,9 +981,11 @@
           performance or cost-efficiency for the run. This field overrides the performance target defined on
           the job level.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -1006,7 +1035,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: run_now_and_wait(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: run_now_and_wait(job_id: int [, dbt_commands: Optional[List[str]], duration_target: Optional[str], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: set_permissions(job_id: str [, access_control_list: Optional[List[JobAccessControlRequest]]]) -> JobPermissions
@@ -1021,7 +1050,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: submit( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environment_variables: Optional[List[JobEnvironmentVariables]], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tags: Optional[Dict[str, str]], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
+    .. py:method:: submit( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], duration_target: Optional[str], email_notifications: Optional[JobEmailNotifications], environment_variables: Optional[List[JobEnvironmentVariables]], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
 
 
         Usage:
@@ -1071,13 +1100,18 @@
         :param budget_policy_id: str (optional)
           The user specified id of the budget policy to use for this one-time run. If not specified, the run
           will be not be attributed to any budget policy.
+        :param duration_target: str (optional)
+          The window the run aims to finish within, in hours, for a Cost-optimized serverless run. Required
+          only when ``performance_target`` is ``COST_OPTIMIZED``. Must be one of the supported values:
+          ``NO_FLEXIBILITY``, ``4h``, ``12h``, ``24h``, ``72h``. ``NO_FLEXIBILITY`` means the run uses the
+          default cost-optimized performance level without additional cost-saving optimizations.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
         :param environment_variables: List[:class:`JobEnvironmentVariables`] (optional)
           Named environment-variable entries that tasks of this one-time run can reference by key from
-          ``RunTaskSettings.environment_variables_key``. Each entry holds inline ``variables`` plus optional
-          ``.env`` ``files``. Handled identically to ``JobSettings.environment_variables``. Maximum 10
-          entries. Entries are independent of one another — there is no cross-entry merging.
+          ``RunTaskSettings.environment_variables_key``. Each entry's ``spec`` holds inline ``variables`` and
+          optional ``.env`` ``files``. Handled identically to ``JobSettings.environment_variables``. Maximum
+          10 entries. Entries are independent of one another — there is no cross-entry merging.
         :param environments: List[:class:`JobEnvironment`] (optional)
           A list of task execution environment specifications that can be referenced by tasks of this run.
         :param git_source: :class:`GitSource` (optional)
@@ -1107,9 +1141,11 @@
           performance or cost-efficiency for the run. The performance target does not apply to tasks that run
           on Serverless GPU compute.
 
-          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
           - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
             optimized cluster performance.
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``COST_OPTIMIZED``: Enables lower job costs by optimizing compute for your selected target
+            duration time. Must provide a duration target.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
         :param run_as: :class:`JobRunAs` (optional)
@@ -1117,10 +1153,6 @@
           user who submits the request.
         :param run_name: str (optional)
           An optional name for the run. The default value is ``Untitled``.
-        :param tags: Dict[str,str] (optional)
-          A map of tags associated with the one-time run, handled identically to job-level tags. The tags are
-          forwarded to the cluster as cluster tags for the run's compute, attributed in billing, and surfaced
-          in system tables. A maximum of 25 tags can be added.
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of ``0`` means no timeout.
@@ -1135,7 +1167,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environment_variables: Optional[List[JobEnvironmentVariables]], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tags: Optional[Dict[str, str]], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], duration_target: Optional[str], email_notifications: Optional[JobEmailNotifications], environment_variables: Optional[List[JobEnvironmentVariables]], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: update(job_id: int [, fields_to_remove: Optional[List[str]], new_settings: Optional[JobSettings]])

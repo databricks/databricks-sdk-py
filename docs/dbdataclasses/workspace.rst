@@ -82,14 +82,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SOURCE
       :value: "SOURCE"
 
-.. py:class:: ExportOutputs
-
-   .. py:attribute:: ALL
-      :value: "ALL"
-
-   .. py:attribute:: NONE
-      :value: "NONE"
-
 .. autoclass:: ExportResponse
    :members:
    :undoc-members:

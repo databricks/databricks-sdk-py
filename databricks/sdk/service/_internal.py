@@ -21,6 +21,18 @@ def _repeated_dict(d: Dict[str, any], field: str, cls: Type) -> any:
     return [from_dict(v) for v in d[field]]
 
 
+def _int64(d: Dict[str, any], field: str) -> Optional[int]:
+    if field not in d or d[field] is None:
+        return None
+    return int(d[field])
+
+
+def _repeated_int64(d: Dict[str, any], field: str) -> Optional[List[int]]:
+    if field not in d or d[field] is None:
+        return None
+    return [int(v) for v in d[field]]
+
+
 def _get_enum_value(cls: Type, value: str) -> Optional[Type]:
     return next(
         (v for v in getattr(cls, "__members__").values() if v.value == value),

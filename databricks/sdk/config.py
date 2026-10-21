@@ -95,6 +95,7 @@ class Config:
     # can route to the right workspace. Accepts a classic numeric workspace ID
     # or another workspace identifier format that the server understands.
     workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
+    group_id: str = ConfigAttribute(env="DATABRICKS_GROUP_ID")
 
     # Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly
     # instead of inferring from hostname. Populated automatically from /.well-known/databricks-config.
@@ -265,6 +266,11 @@ class Config:
     # Whether to enable the storage proxy for file operations.
     # When enabled, the SDK will probe the storage proxy and use it if available.
     experimental_files_ext_enable_storage_proxy: bool = False
+
+    # Whether to ask the workspace which endpoints to use for file transfers (GET /api/2.0/fs/endpoints).
+    # When disabled, or when the server cannot answer, the SDK uses a built-in order: Presigned URL, then
+    # Files API 2.0 on the workspace host.
+    experimental_files_ext_enable_endpoints_api: bool = False
 
     def __init__(
         self,

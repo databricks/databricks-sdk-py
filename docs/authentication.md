@@ -131,6 +131,7 @@ For all authentication methods, you can override the default behavior in client 
 | Argument                | Description | Environment variable   |
 |-------------------------|-------------|------------------------|
 | `auth_type`             | _(String)_ When multiple auth attributes are available in the environment, use the auth type specified by this argument. This argument also holds the currently selected auth. When set explicitly, the SDK only attempts that authentication method, skipping automatic detection of others. See the [Authentication Types Reference](./auth-types-reference.md) for all valid values, required parameters, and usage examples. | `DATABRICKS_AUTH_TYPE` |
+| `group_id`              | _(String)_ ID of the group role to assume. Supported with `external-browser`, `oauth-m2m`, `github-oidc`, `azure-devops-oidc`, `env-oidc`, `file-oidc`, and `runtime-oauth`. | `DATABRICKS_GROUP_ID` |
 | `http_timeout_seconds`  | _(Integer)_ Number of seconds for HTTP timeout. Default is _60_. | _(None)_               |
 | `retry_timeout_seconds` | _(Integer)_ Number of seconds to keep retrying HTTP requests. Default is _300 (5 minutes)_. | _(None)_               |
 | `debug_truncate_bytes`  | _(Integer)_ Truncate JSON fields in debug logs above this limit. Default is 96. | `DATABRICKS_DEBUG_TRUNCATE_BYTES` |
@@ -144,3 +145,23 @@ from databricks.sdk import WorkspaceClient
 w = WorkspaceClient(debug_headers=True)
 # Now call the Databricks workspace APIs as desired...
 ```
+
+## Group role assumption
+
+Set `group_id`, `DATABRICKS_GROUP_ID`, or `group_id` in the selected configuration profile to use a group role. Explicit client configuration takes precedence over the environment, which takes precedence over the profile. The role replaces the caller's normal permissions for the lifetime of the client.
+
+```python
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient(
+    host="https://your-workspace.cloud.databricks.com",
+    client_id="your-client-id",
+    client_secret="your-client-secret",
+    auth_type="oauth-m2m",
+    group_id="your-group-id",
+)
+```
+
+Group role assumption requires a Databricks OAuth authentication method. PAT, basic, Databricks CLI, Azure or Google native authentication, metadata service, native runtime, and model serving credentials do not support it. Unified and account OAuth endpoints receive the group request and return an error when the server does not support it; the SDK never retries with normal permissions.
+
+An assumed group identity cannot currently call `/api/2.0/preview/scim/v2/Me`. This affects current-user lookup, workspace-ID fallback, and `Config.sql_http_path` when `cluster_id` is configured. Setting `workspace_id` avoids only the workspace-ID fallback; it does not make cluster SQL HTTP-path derivation work. The experimental Files storage-proxy probe also cannot resolve the workspace ID through `/Me` and falls back to presigned URLs.

@@ -200,7 +200,13 @@ class JobsExt(jobs.JobsAPI):
 
         return run
 
-    def get(self, job_id: int, *, page_token: Optional[str] = None) -> Job:
+    def get(
+        self,
+        job_id: int,
+        *,
+        include_trigger_state: Optional[bool] = None,
+        page_token: Optional[str] = None,
+    ) -> Job:
         """Get a single job.
 
         Retrieves the details for a single job. If the job has multiple pages of tasks, job_clusters, parameters or environments,
@@ -208,17 +214,23 @@ class JobsExt(jobs.JobsAPI):
 
         :param job_id: int
           The canonical identifier of the job to retrieve information about. This field is required.
+        :param include_trigger_state: bool (optional)
+          Flag that indicates that trigger state should be included in the response.
         :param page_token: str (optional)
           Use `next_page_token` returned from the previous GetJob to request the next page of the job's
           sub-resources.
 
         :returns: :class:`Job`
         """
-        job = super().get(job_id, page_token=page_token)
+        job = super().get(job_id, include_trigger_state=include_trigger_state, page_token=page_token)
 
         # jobs/get response includes next_page_token as long as there are more pages to fetch.
         while job.next_page_token is not None:
-            next_job = super().get(job_id, page_token=job.next_page_token)
+            next_job = super().get(
+                job_id,
+                include_trigger_state=include_trigger_state,
+                page_token=job.next_page_token,
+            )
             # Each new page of jobs/get response includes the next page of the tasks, job_clusters, job_parameters, and environments.
             job.settings.tasks.extend(next_job.settings.tasks)
             job.settings.job_clusters.extend(next_job.settings.job_clusters)

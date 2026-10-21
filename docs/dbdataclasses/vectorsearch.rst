@@ -4,44 +4,6 @@ Vector Search
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.vectorsearch`` module.
 
 .. py:currentmodule:: databricks.sdk.service.vectorsearch
-.. autoclass:: AdjustedThroughputRequest
-   :members:
-   :undoc-members:
-
-.. py:class:: AutoEvalDisplayStatus
-
-   .. py:attribute:: AUTO_EVAL_DISPLAY_STATUS_FAILED
-      :value: "AUTO_EVAL_DISPLAY_STATUS_FAILED"
-
-   .. py:attribute:: AUTO_EVAL_DISPLAY_STATUS_PENDING
-      :value: "AUTO_EVAL_DISPLAY_STATUS_PENDING"
-
-   .. py:attribute:: AUTO_EVAL_DISPLAY_STATUS_RUNNING
-      :value: "AUTO_EVAL_DISPLAY_STATUS_RUNNING"
-
-   .. py:attribute:: AUTO_EVAL_DISPLAY_STATUS_SUCCEEDED
-      :value: "AUTO_EVAL_DISPLAY_STATUS_SUCCEEDED"
-
-.. autoclass:: AutoEvalJob
-   :members:
-   :undoc-members:
-
-.. py:class:: AutoEvalStage
-
-   Pipeline stages within a single autoeval run, in execution order. Used together with AutoEvalJob to drive a staged progress bar in the UI.
-
-   .. py:attribute:: AUTO_EVAL_STAGE_FEW_SHOT_QUERIES
-      :value: "AUTO_EVAL_STAGE_FEW_SHOT_QUERIES"
-
-   .. py:attribute:: AUTO_EVAL_STAGE_GENERATE_QUERIES
-      :value: "AUTO_EVAL_STAGE_GENERATE_QUERIES"
-
-   .. py:attribute:: AUTO_EVAL_STAGE_GENERATE_RESULTS
-      :value: "AUTO_EVAL_STAGE_GENERATE_RESULTS"
-
-   .. py:attribute:: AUTO_EVAL_STAGE_METRICS_COMPUTATION
-      :value: "AUTO_EVAL_STAGE_METRICS_COMPUTATION"
-
 .. autoclass:: ColumnInfo
    :members:
    :undoc-members:
@@ -131,10 +93,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: YELLOW_STATE
       :value: "YELLOW_STATE"
 
-.. autoclass:: EndpointThroughputInfo
-   :members:
-   :undoc-members:
-
 .. py:class:: EndpointType
 
    Type of endpoint.
@@ -146,10 +104,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STORAGE_OPTIMIZED"
 
 .. autoclass:: FacetResultData
-   :members:
-   :undoc-members:
-
-.. autoclass:: GetAutoEvalStatusResponse
    :members:
    :undoc-members:
 
@@ -211,10 +165,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: PatchEndpointThroughputResponse
-   :members:
-   :undoc-members:
-
 .. py:class:: PipelineType
 
    Pipeline execution mode.
@@ -234,16 +184,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: RerankerConfigModelType
-
-   EXPERIMENTAL. Selects how ``model`` is interpreted.
-
-   .. py:attribute:: MODEL_TYPE_BASE
-      :value: "MODEL_TYPE_BASE"
-
-   .. py:attribute:: MODEL_TYPE_FINETUNED
-      :value: "MODEL_TYPE_FINETUNED"
-
 .. autoclass:: RerankerConfigRerankerParameters
    :members:
    :undoc-members:
@@ -257,14 +197,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RetrieveUserVisibleMetricsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: RunAutoEvalResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: RunRerankerFinetuningResponse
    :members:
    :undoc-members:
 
@@ -291,46 +223,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: ThroughputChangeRequestState
-
-   Throughput change request state
-
-   .. py:attribute:: CHANGE_ADJUSTED
-      :value: "CHANGE_ADJUSTED"
-
-   .. py:attribute:: CHANGE_FAILED
-      :value: "CHANGE_FAILED"
-
-   .. py:attribute:: CHANGE_IN_PROGRESS
-      :value: "CHANGE_IN_PROGRESS"
-
-   .. py:attribute:: CHANGE_REACHED_MAXIMUM
-      :value: "CHANGE_REACHED_MAXIMUM"
-
-   .. py:attribute:: CHANGE_REACHED_MINIMUM
-      :value: "CHANGE_REACHED_MINIMUM"
-
-   .. py:attribute:: CHANGE_SUCCESS
-      :value: "CHANGE_SUCCESS"
-
-.. py:class:: ThroughputPatchStatus
-
-   Response status for throughput change requests
-
-   .. py:attribute:: PATCH_ACCEPTED
-      :value: "PATCH_ACCEPTED"
-
-   .. py:attribute:: PATCH_FAILED
-      :value: "PATCH_FAILED"
-
-   .. py:attribute:: PATCH_REJECTED
-      :value: "PATCH_REJECTED"
-
 .. autoclass:: UpdateEndpointCustomTagsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateVectorIndexUsagePolicyResponse
    :members:
    :undoc-members:
 

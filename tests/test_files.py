@@ -7,6 +7,7 @@ import os
 import platform
 import random
 import re
+import threading
 import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -32,13 +33,66 @@ from databricks.sdk.errors.platform import (
     PermissionDenied,
     TooManyRequests,
 )
-from databricks.sdk.mixins.files import FallbackToDownloadUsingFilesApi
+from databricks.sdk.mixins.files import (
+    FallbackToDownloadUsingFilesApi,
+    _Endpoint,
+    _PresignedUrlRequestBuilder,
+    _ResolvedEndpoint,
+    _StorageProxyRequestBuilder,
+)
 from databricks.sdk.mixins.files_utils import CreateDownloadUrlResponse
 from tests.clock import FakeClock
 
 from .test_files_utils import NonSeekableBuffer, Utils
 
 logger = logging.getLogger(__name__)
+
+
+def test_files_http_wire_format_preserves_bytes_metadata_and_stream_lifecycle(config: Config, requests_mock):
+    config = config.copy()
+    config.disable_experimental_files_api_client = True
+    file_path = "/Volumes/main/default/volume/report ?#%.bin"
+    file_url = "http://localhost/api/2.0/fs/files/Volumes/main/default/volume/report%20%3F%23%25.bin"
+    payload = b"raw file contents\x00\xff"
+    uploaded = {}
+
+    def capture_upload(request, _context):
+        body = request.body
+        uploaded["body"] = body.read() if hasattr(body, "read") else body
+        return ""
+
+    requests_mock.put(file_url, text=capture_upload)
+    response_headers = {
+        "Content-Length": str(len(payload)),
+        "Content-Type": "application/octet-stream",
+        "Last-Modified": "Wed, 10 Sep 2025 12:00:00 GMT",
+    }
+    requests_mock.head(file_url, headers=response_headers)
+    requests_mock.get(file_url, content=payload, headers=response_headers)
+    files = WorkspaceClient(config=config).files
+
+    files.upload(file_path, io.BytesIO(payload), overwrite=False)
+    metadata = files.get_metadata(file_path)
+    download = files.download(file_path)
+    with download.contents as stream:
+        assert stream.read() == payload
+    with pytest.raises(ValueError, match="I/O operation on closed file"):
+        download.contents.read()
+
+    upload_request, metadata_request, download_request = requests_mock.request_history
+    assert uploaded["body"] == payload
+    assert upload_request.url == f"{file_url}?overwrite=false"
+    assert upload_request.headers["Content-Type"] == "application/octet-stream"
+    assert metadata.content_length == len(payload)
+    assert metadata.content_type == "application/octet-stream"
+    assert metadata.last_modified == "Wed, 10 Sep 2025 12:00:00 GMT"
+    assert metadata_request.method == "HEAD"
+    assert metadata_request.url == file_url
+    assert download.content_length == len(payload)
+    assert download.content_type == "application/octet-stream"
+    assert download.last_modified == "Wed, 10 Sep 2025 12:00:00 GMT"
+    assert download_request.method == "GET"
+    assert download_request.url == file_url
 
 
 class CustomResponse:
@@ -3077,3 +3131,411 @@ def fast_random_bytes(n: int, chunk_size: int = 1024) -> bytes:
     chunk = os.urandom(chunk_size)
     # Repeat it until we reach n bytes.
     return (chunk * (n // chunk_size + 1))[:n]
+
+
+_ENDPOINTS_URL = "http://localhost/api/2.0/fs/endpoints"
+
+# The built-in order used whenever the endpoints API is disabled or unusable: Presigned URL, then
+# Files API 2.0 single-shot on the workspace host.
+_DEFAULT_ENDPOINTS = [
+    _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, "http://localhost", multipart_upload_supported=True),
+    _Endpoint(_ResolvedEndpoint.FILES_API_V2, "http://localhost", multipart_upload_supported=False),
+]
+
+
+def _endpoints_client(config: Config, enabled: bool = True) -> WorkspaceClient:
+    config = config.copy()
+    config.experimental_files_ext_enable_endpoints_api = enabled
+    return WorkspaceClient(config=config)
+
+
+def _endpoints_calls(requests_mock) -> int:
+    return sum(1 for r in requests_mock.request_history if r.url == _ENDPOINTS_URL)
+
+
+def test_resolve_endpoints_disabled_uses_default_without_calling_server(config: Config, requests_mock):
+    requests_mock.get(_ENDPOINTS_URL, json={"endpoints": []})
+    w = _endpoints_client(config, enabled=False)
+
+    assert w.files._resolve_endpoints() == _DEFAULT_ENDPOINTS
+    assert _endpoints_calls(requests_mock) == 0
+
+
+@dataclass
+class ResolveEndpointsTestCase:
+    name: str
+    response: Dict[str, Any]
+    expected: List[_Endpoint]
+
+    def __str__(self) -> str:
+        return self.name
+
+
+_IO_OFFLOAD_WS = {
+    "api": "IO_OFFLOAD",
+    "scheme": "https",
+    "hostname": "ws.example.com",
+    "multipart_upload_supported": True,
+}
+_FILES_V2_GIG = {
+    "api": "FILES_API",
+    "api_version": "2.0",
+    "scheme": "https",
+    "hostname": "ws.example.com",
+    "multipart_upload_supported": False,
+}
+_FILES_V2_DP = {
+    "api": "FILES_API",
+    "api_version": "2.0",
+    "scheme": "http",
+    "hostname": "storage-proxy.example.com",
+    "multipart_upload_supported": True,
+}
+_FILES_V3_RIG = {
+    "api": "FILES_API",
+    "api_version": "3.0",
+    "scheme": "https",
+    "hostname": "123.storage.us-west-2.example.com",
+    "multipart_upload_supported": True,
+}
+
+_PARSED_IO_OFFLOAD_WS = _Endpoint(
+    _ResolvedEndpoint.IO_OFFLOAD, "https://ws.example.com", multipart_upload_supported=True
+)
+_PARSED_FILES_V2_GIG = _Endpoint(
+    _ResolvedEndpoint.FILES_API_V2, "https://ws.example.com", multipart_upload_supported=False
+)
+_PARSED_FILES_V2_DP = _Endpoint(
+    _ResolvedEndpoint.FILES_API_V2, "http://storage-proxy.example.com", multipart_upload_supported=True
+)
+
+
+@pytest.mark.parametrize(
+    "test_case",
+    [
+        ResolveEndpointsTestCase(
+            name="DP order is preserved",
+            response={"endpoints": [_FILES_V2_DP, _IO_OFFLOAD_WS, _FILES_V2_GIG]},
+            expected=[_PARSED_FILES_V2_DP, _PARSED_IO_OFFLOAD_WS, _PARSED_FILES_V2_GIG],
+        ),
+        ResolveEndpointsTestCase(
+            # This SDK version does not speak Files API 3.0, so RIG is skipped and the rest keeps its order.
+            name="Files API 3.0 is skipped",
+            response={"endpoints": [_IO_OFFLOAD_WS, _FILES_V3_RIG, _FILES_V2_GIG]},
+            expected=[_PARSED_IO_OFFLOAD_WS, _PARSED_FILES_V2_GIG],
+        ),
+        ResolveEndpointsTestCase(
+            name="unknown and unspecified api values are skipped",
+            response={
+                "endpoints": [
+                    {**_IO_OFFLOAD_WS, "api": "SOMETHING_NEW"},
+                    {**_IO_OFFLOAD_WS, "api": "API_UNSPECIFIED"},
+                    {k: v for k, v in _IO_OFFLOAD_WS.items() if k != "api"},
+                    _FILES_V2_GIG,
+                ]
+            },
+            expected=[_PARSED_FILES_V2_GIG],
+        ),
+        ResolveEndpointsTestCase(
+            name="Files API without a known version is skipped",
+            response={
+                "endpoints": [
+                    {k: v for k, v in _FILES_V2_DP.items() if k != "api_version"},
+                    {**_FILES_V2_DP, "api_version": "2.1"},
+                    _FILES_V2_GIG,
+                ]
+            },
+            expected=[_PARSED_FILES_V2_GIG],
+        ),
+        ResolveEndpointsTestCase(
+            # The SDK only speaks the unversioned offload protocol; a versioned one is newer than this client.
+            name="versioned IO_OFFLOAD is skipped",
+            response={"endpoints": [{**_IO_OFFLOAD_WS, "api_version": "3.0"}, _FILES_V2_GIG]},
+            expected=[_PARSED_FILES_V2_GIG],
+        ),
+        ResolveEndpointsTestCase(
+            name="entries without a usable scheme or hostname are skipped",
+            response={
+                "endpoints": [
+                    {**_FILES_V2_DP, "scheme": "ftp"},
+                    {k: v for k, v in _FILES_V2_DP.items() if k != "scheme"},
+                    {**_FILES_V2_DP, "hostname": ""},
+                    {k: v for k, v in _FILES_V2_DP.items() if k != "hostname"},
+                    _FILES_V2_GIG,
+                ]
+            },
+            expected=[_PARSED_FILES_V2_GIG],
+        ),
+        ResolveEndpointsTestCase(
+            # Mirrors the proto getter: an unset optional bool reads as false.
+            name="missing multipart_upload_supported reads as false",
+            response={"endpoints": [{k: v for k, v in _FILES_V2_DP.items() if k != "multipart_upload_supported"}]},
+            expected=[_Endpoint(_ResolvedEndpoint.FILES_API_V2, "http://storage-proxy.example.com", False)],
+        ),
+        ResolveEndpointsTestCase(
+            name="unknown fields are ignored",
+            response={"endpoints": [{**_FILES_V2_GIG, "future_field": 1}], "next_page_token": "x"},
+            expected=[_PARSED_FILES_V2_GIG],
+        ),
+        ResolveEndpointsTestCase(
+            name="empty list falls back to the default",
+            response={"endpoints": []},
+            expected=_DEFAULT_ENDPOINTS,
+        ),
+        ResolveEndpointsTestCase(
+            name="missing endpoints field falls back to the default",
+            response={},
+            expected=_DEFAULT_ENDPOINTS,
+        ),
+        ResolveEndpointsTestCase(
+            name="only unrecognized entries falls back to the default",
+            response={"endpoints": [_FILES_V3_RIG, {**_IO_OFFLOAD_WS, "api": "SOMETHING_NEW"}]},
+            expected=_DEFAULT_ENDPOINTS,
+        ),
+        ResolveEndpointsTestCase(
+            name="malformed endpoints field falls back to the default",
+            response={"endpoints": "not-a-list"},
+            expected=_DEFAULT_ENDPOINTS,
+        ),
+        ResolveEndpointsTestCase(
+            name="malformed entry is skipped",
+            response={"endpoints": ["not-an-object", _FILES_V2_GIG]},
+            expected=[_PARSED_FILES_V2_GIG],
+        ),
+    ],
+    ids=str,
+)
+def test_resolve_endpoints_parses_server_response(config: Config, requests_mock, test_case: ResolveEndpointsTestCase):
+    requests_mock.get(_ENDPOINTS_URL, json=test_case.response)
+    w = _endpoints_client(config)
+
+    assert w.files._resolve_endpoints() == test_case.expected
+    assert _endpoints_calls(requests_mock) == 1
+
+
+@pytest.mark.parametrize(
+    "mock_kwargs",
+    [
+        pytest.param({"status_code": 404, "json": {"error_code": "NOT_FOUND", "message": "no"}}, id="404"),
+        pytest.param({"status_code": 403, "json": {"error_code": "PERMISSION_DENIED", "message": "no"}}, id="403"),
+        pytest.param({"status_code": 500, "json": {"error_code": "INTERNAL_ERROR", "message": "no"}}, id="500"),
+        # A single attempt, no retries: a 503 falls back immediately rather than stalling a transfer.
+        pytest.param(
+            {"status_code": 503, "json": {"error_code": "TEMPORARILY_UNAVAILABLE", "message": "no"}}, id="503"
+        ),
+        pytest.param({"exc": requests.exceptions.ConnectionError}, id="connection-error"),
+        pytest.param({"status_code": 200, "text": "not json"}, id="non-json-body"),
+    ],
+)
+def test_resolve_endpoints_failure_falls_back_to_default(config: Config, requests_mock, mock_kwargs):
+    requests_mock.get(_ENDPOINTS_URL, **mock_kwargs)
+    w = _endpoints_client(config)
+
+    assert w.files._resolve_endpoints() == _DEFAULT_ENDPOINTS
+
+
+@pytest.mark.parametrize(
+    "mock_kwargs",
+    [
+        pytest.param({"status_code": 500, "json": {"error_code": "INTERNAL_ERROR", "message": "no"}}, id="500"),
+        pytest.param({"status_code": 200, "text": "not json"}, id="non-json-body"),
+        pytest.param({"status_code": 200, "json": {"endpoints": "not-a-list"}}, id="unexpected-body"),
+        pytest.param({"status_code": 200, "text": "[" * 100_000}, id="deeply-nested-body"),
+    ],
+)
+def test_resolve_endpoints_failure_logs_request_id(config: Config, requests_mock, caplog, mock_kwargs):
+    requests_mock.get(_ENDPOINTS_URL, headers={"X-Request-Id": "req-123"}, **mock_kwargs)
+    w = _endpoints_client(config)
+
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk.mixins.files"):
+        assert w.files._resolve_endpoints() == _DEFAULT_ENDPOINTS
+
+    assert any(rec.levelname == "WARNING" and "req-123" in rec.message for rec in caplog.records)
+
+
+def test_resolve_endpoints_not_served_logs_info(config: Config, requests_mock, caplog):
+    requests_mock.get(
+        _ENDPOINTS_URL,
+        status_code=404,
+        headers={"X-Request-Id": "req-123"},
+        json={"error_code": "NOT_FOUND", "message": "no"},
+    )
+    w = _endpoints_client(config)
+
+    with caplog.at_level(logging.INFO, logger="databricks.sdk.mixins.files"):
+        assert w.files._resolve_endpoints() == _DEFAULT_ENDPOINTS
+
+    records = [rec for rec in caplog.records if rec.name == "databricks.sdk.mixins.files"]
+    assert [(rec.levelname, "req-123" in rec.message) for rec in records] == [("INFO", True)]
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        pytest.param({"endpoints": []}, id="empty-list"),
+        pytest.param({}, id="omitted-list"),
+        pytest.param({"endpoints": [{**_FILES_V2_GIG, "scheme": "ftp"}]}, id="no-usable-entry"),
+    ],
+)
+def test_resolve_endpoints_without_usable_entries_warns(config: Config, requests_mock, caplog, body):
+    requests_mock.get(_ENDPOINTS_URL, headers={"X-Request-Id": "req-123"}, json=body)
+    w = _endpoints_client(config)
+
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk.mixins.files"):
+        assert w.files._resolve_endpoints() == _DEFAULT_ENDPOINTS
+
+    assert [rec.levelname for rec in caplog.records if "No usable endpoints" in rec.message] == ["WARNING"]
+    assert not any("Unexpected endpoints response" in rec.message for rec in caplog.records)
+
+
+@pytest.mark.parametrize(
+    "entry,level",
+    [
+        pytest.param(
+            {"api": "FILES_API", "api_version": "9.9", "scheme": "https", "hostname": "ws.example.com"},
+            "INFO",
+            id="unknown-api-version",
+        ),
+        pytest.param({"api": "NEW_API", "scheme": "https", "hostname": "ws.example.com"}, "INFO", id="unknown-api"),
+        pytest.param(
+            {"api": "FILES_API", "api_version": "2.0", "scheme": "ftp", "hostname": "ws.example.com"},
+            "WARNING",
+            id="known-api-unusable-scheme",
+        ),
+        pytest.param(
+            {"api": "IO_OFFLOAD", "scheme": "https", "hostname": ""}, "WARNING", id="known-api-empty-hostname"
+        ),
+    ],
+)
+def test_resolve_endpoints_skipped_entry_log_level(config: Config, requests_mock, caplog, entry, level):
+    # Skipping an API this SDK predates is expected; a known API with an unusable address is a server problem.
+    requests_mock.get(_ENDPOINTS_URL, headers={"X-Request-Id": "req-123"}, json={"endpoints": [entry, _FILES_V2_GIG]})
+    w = _endpoints_client(config)
+
+    with caplog.at_level(logging.INFO, logger="databricks.sdk.mixins.files"):
+        assert w.files._resolve_endpoints() == [_PARSED_FILES_V2_GIG]
+
+    skipped = [rec for rec in caplog.records if "Skipping" in rec.message]
+    assert [rec.levelname for rec in skipped] == [level]
+    assert "req-123" in skipped[0].message
+    assert not any("No usable endpoints" in rec.message for rec in caplog.records)
+
+
+def test_resolve_endpoints_result_is_cached(config: Config, requests_mock):
+    requests_mock.get(_ENDPOINTS_URL, json={"endpoints": [_FILES_V2_GIG]})
+    w = _endpoints_client(config)
+
+    assert w.files._resolve_endpoints() == [_PARSED_FILES_V2_GIG]
+    assert w.files._resolve_endpoints() == [_PARSED_FILES_V2_GIG]
+    assert _endpoints_calls(requests_mock) == 1
+
+
+def test_resolve_endpoints_failure_is_cached(config: Config, requests_mock):
+    # A failed resolution is not retried on every transfer; the client keeps the default order.
+    requests_mock.get(_ENDPOINTS_URL, status_code=500, json={"error_code": "INTERNAL_ERROR", "message": "no"})
+    w = _endpoints_client(config)
+
+    assert w.files._resolve_endpoints() == _DEFAULT_ENDPOINTS
+    assert w.files._resolve_endpoints() == _DEFAULT_ENDPOINTS
+    assert _endpoints_calls(requests_mock) == 1
+
+
+def test_resolve_endpoints_concurrent_callers_share_one_request(config: Config, requests_mock):
+    # Parallel upload/download workers resolve endpoints concurrently; only one request must reach the server.
+    release = threading.Event()
+
+    def slow_response(_request, _context):
+        release.wait(timeout=5)
+        return {"endpoints": [_FILES_V2_GIG]}
+
+    requests_mock.get(_ENDPOINTS_URL, json=slow_response)
+    w = _endpoints_client(config)
+    results = []
+    results_lock = Lock()
+
+    def resolve():
+        endpoints = w.files._resolve_endpoints()
+        with results_lock:
+            results.append(endpoints)
+
+    threads = [threading.Thread(target=resolve) for _ in range(8)]
+    for t in threads:
+        t.start()
+    release.set()
+    for t in threads:
+        t.join(timeout=10)
+
+    assert results == [[_PARSED_FILES_V2_GIG]] * 8
+    assert _endpoints_calls(requests_mock) == 1
+
+
+def test_resolve_endpoints_returns_copy_callers_cannot_corrupt_cache(config: Config, requests_mock):
+    requests_mock.get(_ENDPOINTS_URL, json={"endpoints": [_FILES_V2_DP, _FILES_V2_GIG]})
+    w = _endpoints_client(config)
+
+    w.files._resolve_endpoints().pop(0)
+
+    assert w.files._resolve_endpoints() == [_PARSED_FILES_V2_DP, _PARSED_FILES_V2_GIG]
+
+
+def test_active_endpoint_defaults_to_offload_on_workspace_host(config: Config):
+    w = WorkspaceClient(config=config)
+
+    endpoint = w.files._active_endpoint()
+
+    assert endpoint == _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, config.host, multipart_upload_supported=True)
+
+
+def test_active_endpoint_uses_storage_proxy_when_probe_succeeds(config: Config):
+    config = config.copy()
+    config.experimental_files_ext_enable_storage_proxy = True
+    w = WorkspaceClient(config=config)
+    # Skip the network probe; this test only covers the selection that follows a successful probe.
+    w.files._dp_hostname_available = True
+
+    endpoint = w.files._active_endpoint()
+
+    assert endpoint == _Endpoint(
+        _ResolvedEndpoint.FILES_API_V2, w.files._STORAGE_PROXY_HOSTNAME, multipart_upload_supported=True
+    )
+
+
+def test_active_endpoint_falls_back_to_offload_when_probe_fails(config: Config):
+    config = config.copy()
+    config.experimental_files_ext_enable_storage_proxy = True
+    w = WorkspaceClient(config=config)
+    w.files._dp_hostname_available = False
+
+    endpoint = w.files._active_endpoint()
+
+    assert endpoint == _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, config.host, multipart_upload_supported=True)
+
+
+def test_request_builder_for_offload_is_presigned(config: Config):
+    w = WorkspaceClient(config=config)
+    endpoint = _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, "https://ws.example.com", multipart_upload_supported=True)
+
+    builder = w.files._request_builder_for(endpoint)
+
+    assert isinstance(builder, _PresignedUrlRequestBuilder)
+    assert builder._hostname == "https://ws.example.com"
+
+
+def test_request_builder_for_files_api_is_storage_proxy(config: Config):
+    w = WorkspaceClient(config=config)
+    endpoint = _Endpoint(
+        _ResolvedEndpoint.FILES_API_V2, "http://storage-proxy.example.com", multipart_upload_supported=True
+    )
+
+    builder = w.files._request_builder_for(endpoint)
+
+    assert isinstance(builder, _StorageProxyRequestBuilder)
+    assert builder._hostname == "http://storage-proxy.example.com"
+
+
+def test_create_request_builder_matches_active_endpoint(config: Config):
+    # The default flow (no storage proxy) uses the offload/presigned builder on the workspace host.
+    w = WorkspaceClient(config=config)
+
+    assert w.files._get_hostname() == config.host
+    assert isinstance(w.files._create_request_builder(), _PresignedUrlRequestBuilder)

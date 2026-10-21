@@ -434,3 +434,19 @@ def test_python_marshall(from_dict_method: any, instance: Any, expected_json: st
     final_dict = recreated.as_dict()
 
     assert final_dict == expected_dict, f"Expected {expected_dict}, but got {final_dict}"
+
+
+@pytest.mark.parametrize(
+    "wire_value",
+    [9223372036854775807, "9223372036854775807", -9223372036854775808, "-9223372036854775808"],
+)
+def test_python_unmarshal_int64(wire_value):
+    result = OptionalFields.from_dict({"optional_int64": wire_value})
+
+    assert result.optional_int64 == int(wire_value)
+
+
+def test_python_unmarshal_repeated_int64():
+    result = RepeatedFields.from_dict({"repeated_int64": [123, "456", -789, "-1011"]})
+
+    assert result.repeated_int64 == [123, 456, -789, -1011]

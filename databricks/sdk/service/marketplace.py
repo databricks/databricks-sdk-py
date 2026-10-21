@@ -14,6 +14,7 @@ import logging
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
+    _int64,
     _repeated_dict,
     _repeated_enum,
 )
@@ -123,7 +124,6 @@ class Category(Enum):
     LOOKUP_TABLES = "LOOKUP_TABLES"
     MANUFACTURING = "MANUFACTURING"
     MEDIA = "MEDIA"
-    OPEN_SOURCE = "OPEN_SOURCE"
     OTHER = "OTHER"
     PUBLIC_SECTOR = "PUBLIC_SECTOR"
     RETAIL = "RETAIL"
@@ -402,7 +402,7 @@ class DataRefreshInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DataRefreshInfo:
         """Deserializes the DataRefreshInfo from a dictionary."""
-        return cls(interval=d.get("interval", None), unit=_enum(d, "unit", DataRefresh))
+        return cls(interval=_int64(d, "interval"), unit=_enum(d, "unit", DataRefresh))
 
 
 @dataclass
@@ -589,13 +589,13 @@ class Exchange:
         """Deserializes the Exchange from a dictionary."""
         return cls(
             comment=d.get("comment", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             filters=_repeated_dict(d, "filters", ExchangeFilter),
             id=d.get("id", None),
             linked_listings=_repeated_dict(d, "linked_listings", ExchangeListing),
             name=d.get("name", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -670,14 +670,14 @@ class ExchangeFilter:
     def from_dict(cls, d: Dict[str, Any]) -> ExchangeFilter:
         """Deserializes the ExchangeFilter from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             exchange_id=d.get("exchange_id", None),
             filter_type=_enum(d, "filter_type", ExchangeFilterType),
             filter_value=d.get("filter_value", None),
             id=d.get("id", None),
             name=d.get("name", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -744,7 +744,7 @@ class ExchangeListing:
     def from_dict(cls, d: Dict[str, Any]) -> ExchangeListing:
         """Deserializes the ExchangeListing from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
             exchange_id=d.get("exchange_id", None),
             exchange_name=d.get("exchange_name", None),
@@ -832,7 +832,7 @@ class FileInfo:
     def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             display_name=d.get("display_name", None),
             download_link=d.get("download_link", None),
             file_parent=_from_dict(d, "file_parent", FileParent),
@@ -841,7 +841,7 @@ class FileInfo:
             mime_type=d.get("mime_type", None),
             status=_enum(d, "status", FileStatus),
             status_message=d.get("status_message", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
         )
 
 
@@ -882,7 +882,6 @@ class FileParentType(Enum):
 
 
 class FileStatus(Enum):
-    FILE_STATUS_COMMIT_DRAWDOWN = "FILE_STATUS_COMMIT_DRAWDOWN"
     FILE_STATUS_PUBLISHED = "FILE_STATUS_PUBLISHED"
     FILE_STATUS_SANITIZATION_FAILED = "FILE_STATUS_SANITIZATION_FAILED"
     FILE_STATUS_SANITIZING = "FILE_STATUS_SANITIZING"
@@ -964,7 +963,7 @@ class GetLatestVersionProviderAnalyticsDashboardResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionProviderAnalyticsDashboardResponse:
         """Deserializes the GetLatestVersionProviderAnalyticsDashboardResponse from a dictionary."""
-        return cls(version=d.get("version", None))
+        return cls(version=_int64(d, "version"))
 
 
 @dataclass
@@ -1103,130 +1102,6 @@ class GetProviderResponse:
 
 
 @dataclass
-class InstallListingMcpConnectionDetail:
-    """Consumer-supplied details for creating the Unity Catalog HTTP connection when installing an MCP
-    listing. Values the provider configures on the listing (port, credential type, OAuth
-    token/authorization endpoints, scope, exchange method) are not repeated here."""
-
-    connection_name: str
-    """Name of the Unity Catalog connection to create for the MCP server."""
-
-    base_path: Optional[str] = None
-    """Optional override of the MCP server base path. Defaults to the base path on the listing."""
-
-    bearer_token: Optional[str] = None
-    """Bearer token supplied by the consumer, for bearer-token authentication."""
-
-    catalog: Optional[str] = None
-    """Catalog the MCP service (and its schema-scoped UC connection) is created under. The consumer
-    must hold the privileges to create a service and connection in this catalog/schema."""
-
-    host: Optional[str] = None
-    """Optional override of the MCP server host. Defaults to the host configured on the listing."""
-
-    mcp_service_name: Optional[str] = None
-    """Name of the UC MCP service to create. The schema-scoped UC connection backing it is derived as
-    ``<mcp_service_name>_connection`` (not separately named). Used on the MCP-service creation path;
-    ``connection_name`` is ignored there."""
-
-    oauth_credentials: Optional[InstallListingMcpConnectionDetailOauthCredentials] = None
-    """OAuth client credentials supplied by the consumer, for OAuth (U2M/M2M) authentication."""
-
-    schema: Optional[str] = None
-    """Schema (within ``catalog``) the MCP service and its UC connection are created under."""
-
-    def as_dict(self) -> dict:
-        """Serializes the InstallListingMcpConnectionDetail into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.base_path is not None:
-            body["base_path"] = self.base_path
-        if self.bearer_token is not None:
-            body["bearer_token"] = self.bearer_token
-        if self.catalog is not None:
-            body["catalog"] = self.catalog
-        if self.connection_name is not None:
-            body["connection_name"] = self.connection_name
-        if self.host is not None:
-            body["host"] = self.host
-        if self.mcp_service_name is not None:
-            body["mcp_service_name"] = self.mcp_service_name
-        if self.oauth_credentials:
-            body["oauth_credentials"] = self.oauth_credentials.as_dict()
-        if self.schema is not None:
-            body["schema"] = self.schema
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InstallListingMcpConnectionDetail into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.base_path is not None:
-            body["base_path"] = self.base_path
-        if self.bearer_token is not None:
-            body["bearer_token"] = self.bearer_token
-        if self.catalog is not None:
-            body["catalog"] = self.catalog
-        if self.connection_name is not None:
-            body["connection_name"] = self.connection_name
-        if self.host is not None:
-            body["host"] = self.host
-        if self.mcp_service_name is not None:
-            body["mcp_service_name"] = self.mcp_service_name
-        if self.oauth_credentials:
-            body["oauth_credentials"] = self.oauth_credentials
-        if self.schema is not None:
-            body["schema"] = self.schema
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InstallListingMcpConnectionDetail:
-        """Deserializes the InstallListingMcpConnectionDetail from a dictionary."""
-        return cls(
-            base_path=d.get("base_path", None),
-            bearer_token=d.get("bearer_token", None),
-            catalog=d.get("catalog", None),
-            connection_name=d.get("connection_name", None),
-            host=d.get("host", None),
-            mcp_service_name=d.get("mcp_service_name", None),
-            oauth_credentials=_from_dict(d, "oauth_credentials", InstallListingMcpConnectionDetailOauthCredentials),
-            schema=d.get("schema", None),
-        )
-
-
-@dataclass
-class InstallListingMcpConnectionDetailOauthCredentials:
-    """OAuth client credentials supplied by the consumer for an MCP connection."""
-
-    client_id: str
-    """OAuth client id. Identifies the credential; not the secret itself."""
-
-    client_secret: str
-    """OAuth client secret supplied by the consumer."""
-
-    def as_dict(self) -> dict:
-        """Serializes the InstallListingMcpConnectionDetailOauthCredentials into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.client_id is not None:
-            body["client_id"] = self.client_id
-        if self.client_secret is not None:
-            body["client_secret"] = self.client_secret
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InstallListingMcpConnectionDetailOauthCredentials into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.client_id is not None:
-            body["client_id"] = self.client_id
-        if self.client_secret is not None:
-            body["client_secret"] = self.client_secret
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InstallListingMcpConnectionDetailOauthCredentials:
-        """Deserializes the InstallListingMcpConnectionDetailOauthCredentials from a dictionary."""
-        return cls(client_id=d.get("client_id", None), client_secret=d.get("client_secret", None))
-
-
-@dataclass
 class Installation:
     installation: Optional[InstallationDetail] = None
 
@@ -1347,7 +1222,7 @@ class InstallationDetail:
             catalog_name=d.get("catalog_name", None),
             error_message=d.get("error_message", None),
             id=d.get("id", None),
-            installed_on=d.get("installed_on", None),
+            installed_on=_int64(d, "installed_on"),
             listing_id=d.get("listing_id", None),
             listing_name=d.get("listing_name", None),
             recipient_type=_enum(d, "recipient_type", DeltaSharingRecipientType),
@@ -1717,7 +1592,7 @@ class ListProviderAnalyticsDashboardResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListProviderAnalyticsDashboardResponse:
         """Deserializes the ListProviderAnalyticsDashboardResponse from a dictionary."""
-        return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=d.get("version", None))
+        return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=_int64(d, "version"))
 
 
 @dataclass
@@ -1943,8 +1818,8 @@ class ListingDetail:
         """Deserializes the ListingDetail from a dictionary."""
         return cls(
             assets=_repeated_enum(d, "assets", AssetType),
-            collection_date_end=d.get("collection_date_end", None),
-            collection_date_start=d.get("collection_date_start", None),
+            collection_date_end=_int64(d, "collection_date_end"),
+            collection_date_start=_int64(d, "collection_date_start"),
             collection_granularity=_from_dict(d, "collection_granularity", DataRefreshInfo),
             cost=_enum(d, "cost", Cost),
             data_source=d.get("data_source", None),
@@ -2189,24 +2064,24 @@ class ListingSummary:
         """Deserializes the ListingSummary from a dictionary."""
         return cls(
             categories=_repeated_enum(d, "categories", Category),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
-            created_by_id=d.get("created_by_id", None),
+            created_by_id=_int64(d, "created_by_id"),
             exchange_ids=d.get("exchange_ids", None),
             git_repo=_from_dict(d, "git_repo", RepoInfo),
             listing_type=_enum(d, "listingType", ListingType),
             name=d.get("name", None),
             provider_id=d.get("provider_id", None),
             provider_region=_from_dict(d, "provider_region", RegionInfo),
-            published_at=d.get("published_at", None),
+            published_at=_int64(d, "published_at"),
             published_by=d.get("published_by", None),
             setting=_from_dict(d, "setting", ListingSetting),
             share=_from_dict(d, "share", ShareInfo),
             status=_enum(d, "status", ListingStatus),
             subtitle=d.get("subtitle", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
-            updated_by_id=d.get("updated_by_id", None),
+            updated_by_id=_int64(d, "updated_by_id"),
         )
 
 
@@ -2254,11 +2129,8 @@ class ListingType(Enum):
 
 class MarketplaceFileType(Enum):
     APP = "APP"
-    COMMIT_DRAWDOWN_REQUEST_ATTACHMENT = "COMMIT_DRAWDOWN_REQUEST_ATTACHMENT"
-    EMBEDDED_MARKDOWN = "EMBEDDED_MARKDOWN"
     EMBEDDED_NOTEBOOK = "EMBEDDED_NOTEBOOK"
     PROVIDER_ICON = "PROVIDER_ICON"
-    SCREENSHOT = "SCREENSHOT"
 
 
 @dataclass
@@ -2378,7 +2250,7 @@ class PersonalizationRequest:
             comment=d.get("comment", None),
             consumer_region=_from_dict(d, "consumer_region", RegionInfo),
             contact_info=_from_dict(d, "contact_info", ContactInfo),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             id=d.get("id", None),
             intended_use=d.get("intended_use", None),
             is_from_lighthouse=d.get("is_from_lighthouse", None),
@@ -2390,7 +2262,7 @@ class PersonalizationRequest:
             share=_from_dict(d, "share", ShareInfo),
             status=_enum(d, "status", PersonalizationRequestStatus),
             status_message=d.get("status_message", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
         )
 
 
@@ -2858,11 +2730,11 @@ class TokenInfo:
         """Deserializes the TokenInfo from a dictionary."""
         return cls(
             activation_url=d.get("activation_url", None),
-            created_at=d.get("created_at", None),
+            created_at=_int64(d, "created_at"),
             created_by=d.get("created_by", None),
-            expiration_time=d.get("expiration_time", None),
+            expiration_time=_int64(d, "expiration_time"),
             id=d.get("id", None),
-            updated_at=d.get("updated_at", None),
+            updated_at=_int64(d, "updated_at"),
             updated_by=d.get("updated_by", None),
         )
 
@@ -3022,7 +2894,7 @@ class UpdateProviderAnalyticsDashboardResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderAnalyticsDashboardResponse:
         """Deserializes the UpdateProviderAnalyticsDashboardResponse from a dictionary."""
-        return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=d.get("version", None))
+        return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=_int64(d, "version"))
 
 
 @dataclass
@@ -3148,7 +3020,6 @@ class ConsumerInstallationsAPI:
         *,
         accepted_consumer_terms: Optional[ConsumerTerms] = None,
         catalog_name: Optional[str] = None,
-        mcp_connection_detail: Optional[InstallListingMcpConnectionDetail] = None,
         recipient_type: Optional[DeltaSharingRecipientType] = None,
         repo_detail: Optional[RepoInstallation] = None,
         share_name: Optional[str] = None,
@@ -3158,7 +3029,6 @@ class ConsumerInstallationsAPI:
         :param listing_id: str
         :param accepted_consumer_terms: :class:`ConsumerTerms` (optional)
         :param catalog_name: str (optional)
-        :param mcp_connection_detail: :class:`InstallListingMcpConnectionDetail` (optional)
         :param recipient_type: :class:`DeltaSharingRecipientType` (optional)
         :param repo_detail: :class:`RepoInstallation` (optional)
           for git repo installations
@@ -3172,8 +3042,6 @@ class ConsumerInstallationsAPI:
             body["accepted_consumer_terms"] = accepted_consumer_terms.as_dict()
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
-        if mcp_connection_detail is not None:
-            body["mcp_connection_detail"] = mcp_connection_detail.as_dict()
         if recipient_type is not None:
             body["recipient_type"] = recipient_type.value
         if repo_detail is not None:

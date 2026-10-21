@@ -3,6 +3,7 @@ import re
 from typing import Optional, Pattern
 
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.service import compute, jobs
 
 
 def make_getrun_path_pattern(run_id: int, page_token: Optional[str] = None) -> Pattern[str]:
@@ -14,13 +15,16 @@ def make_getrun_path_pattern(run_id: int, page_token: Optional[str] = None) -> P
         return re.compile(rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/runs/get?run_id={run_id}')}")
 
 
-def make_getjob_path_pattern(job_id: int, page_token: Optional[str] = None) -> Pattern[str]:
+def make_getjob_path_pattern(
+    job_id: int, page_token: Optional[str] = None, include_trigger_state: Optional[bool] = None
+) -> Pattern[str]:
+    query_params = [("job_id", str(job_id))]
+    if include_trigger_state is not None:
+        query_params.append(("include_trigger_state", str(include_trigger_state).lower()))
     if page_token:
-        return re.compile(
-            rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/get?job_id={job_id}&page_token={page_token}')}"
-        )
-    else:
-        return re.compile(rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/get?job_id={job_id}')}")
+        query_params.append(("page_token", page_token))
+    query = "&".join(f"{key}={value}" for key, value in sorted(query_params))
+    return re.compile(rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/get?{query}')}")
 
 
 def make_listjobs_path_pattern(page_token: str) -> Pattern[str]:
@@ -50,8 +54,6 @@ def test_get_run_with_no_pagination(config, requests_mock):
 
 
 def test_get_run_pagination_with_tasks(config, requests_mock):
-    from databricks.sdk.service import compute, jobs
-
     cluster_spec = compute.ClusterSpec(
         spark_version="11.3.x-scala2.12",
         custom_tags={"ResourceClass": "SingleNode"},
@@ -173,9 +175,29 @@ def test_get_job_with_no_pagination(config, requests_mock):
     }
 
 
-def test_get_job_pagination_with_tasks(config, requests_mock):
-    from databricks.sdk.service import compute, jobs
+def test_get_job_forwards_include_trigger_state(config, requests_mock):
+    job1 = {
+        "settings": {"tasks": [{"task_key": "taskKey1"}]},
+        "next_page_token": "tokenToSecondPage",
+    }
+    job2 = {"settings": {"tasks": [{"task_key": "taskKey2"}]}}
+    requests_mock.get(make_getjob_path_pattern(1337, include_trigger_state=True), text=json.dumps(job1))
+    requests_mock.get(
+        make_getjob_path_pattern(1337, "tokenToSecondPage", include_trigger_state=True),
+        text=json.dumps(job2),
+    )
+    w = WorkspaceClient(config=config)
 
+    job = w.jobs.get(1337, include_trigger_state=True)
+
+    assert job.as_dict() == {
+        "settings": {
+            "tasks": [{"task_key": "taskKey1"}, {"task_key": "taskKey2"}],
+        }
+    }
+
+
+def test_get_job_pagination_with_tasks(config, requests_mock):
     cluster_spec = compute.ClusterSpec(
         spark_version="11.3.x-scala2.12",
         custom_tags={"ResourceClass": "SingleNode"},
@@ -349,8 +371,6 @@ def test_list_jobs_without_task_expansion(config, requests_mock):
 
 
 def test_list_jobs_with_many_tasks(config, requests_mock):
-    from databricks.sdk.service import compute, jobs
-
     cluster_spec = compute.ClusterSpec(
         spark_version="11.3.x-scala2.12",
         custom_tags={"ResourceClass": "SingleNode"},
@@ -609,10 +629,10 @@ def test_list_runs_without_task_expansion(config, requests_mock):
                 "run_name": "run400",
                 "repair_history": [
                     {
-                        "id": "repair400_1",
+                        "id": "4001",
                     },
                     {
-                        "id": "repair400_2",
+                        "id": "4002",
                     },
                 ],
             }
@@ -654,10 +674,10 @@ def test_list_runs_without_task_expansion(config, requests_mock):
             "run_name": "run400",
             "repair_history": [
                 {
-                    "id": "repair400_1",
+                    "id": 4001,
                 },
                 {
-                    "id": "repair400_2",
+                    "id": 4002,
                 },
             ],
         },
@@ -791,3 +811,55 @@ def test_list_runs(config, requests_mock):
     history = requests_mock.request_history
     assert all("300" not in request.qs.get("run_id", [""]) for request in history)
     assert all("200" not in request.qs.get("run_id", [""]) for request in history)
+
+
+def test_submit_waiter_polls_real_jobs_service_until_terminal_state(config, monkeypatch, requests_mock):
+    requests_mock.post(
+        "http://localhost/api/2.2/jobs/runs/submit",
+        json={"run_id": 123},
+    )
+    requests_mock.register_uri(
+        "GET",
+        make_getrun_path_pattern(123),
+        [
+            {
+                "json": {
+                    "run_id": 123,
+                    "run_name": "fixture-run",
+                    "state": {"life_cycle_state": "PENDING", "state_message": "Waiting for compute"},
+                }
+            },
+            {
+                "json": {
+                    "run_id": 123,
+                    "run_name": "fixture-run",
+                    "state": {"life_cycle_state": "RUNNING", "state_message": "Running"},
+                }
+            },
+            {
+                "json": {
+                    "run_id": 123,
+                    "run_name": "fixture-run",
+                    "state": {
+                        "life_cycle_state": "TERMINATED",
+                        "result_state": "SUCCESS",
+                        "state_message": "Completed",
+                    },
+                }
+            },
+        ],
+    )
+    monkeypatch.setattr(jobs.time, "sleep", lambda _: None)
+    workspace = WorkspaceClient(config=config)
+    observed_states = []
+
+    run = workspace.jobs.submit(run_name="fixture-run").result(
+        callback=lambda polled: observed_states.append(polled.state.life_cycle_state)
+    )
+
+    assert run.run_id == 123
+    assert run.state.life_cycle_state == jobs.RunLifeCycleState.TERMINATED
+    assert run.state.result_state == jobs.RunResultState.SUCCESS
+    assert observed_states == [jobs.RunLifeCycleState.PENDING, jobs.RunLifeCycleState.RUNNING]
+    assert requests_mock.request_history[0].json() == {"run_name": "fixture-run"}
+    assert [request.method for request in requests_mock.request_history] == ["POST", "GET", "GET", "GET"]
