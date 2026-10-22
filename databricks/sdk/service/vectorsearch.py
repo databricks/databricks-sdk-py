@@ -703,6 +703,9 @@ class EndpointStatusState(Enum):
     ONLINE = "ONLINE"
     PROVISIONING = "PROVISIONING"
     RED_STATE = "RED_STATE"
+    STARTING = "STARTING"
+    STOPPED = "STOPPED"
+    STOPPING = "STOPPING"
     YELLOW_STATE = "YELLOW_STATE"
 
 
@@ -2378,6 +2381,53 @@ class VectorSearchEndpointsAPI:
             "PUT", f"/api/2.0/permissions/vector-search-endpoints/{endpoint_id}", body=body, headers=headers
         )
         return VectorSearchEndpointPermissions.from_dict(res)
+
+    def start_endpoint(self, endpoint_name: str) -> EndpointInfo:
+        """Start a stopped endpoint. The endpoint serves the same indexes it had when it stopped.
+
+        :param endpoint_name: str
+          Name of the AI Search endpoint
+
+        :returns: :class:`EndpointInfo`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", f"/api/2.0/vector-search/endpoints/{endpoint_name}/start", body=body, headers=headers
+        )
+        return EndpointInfo.from_dict(res)
+
+    def stop_endpoint(self, endpoint_name: str) -> EndpointInfo:
+        """Stop an endpoint. Stopping removes the endpoint's serving compute and retains its indexes. A stopped
+        endpoint can't serve queries or sync indexes until it is started.
+
+        :param endpoint_name: str
+          Name of the AI Search endpoint
+
+        :returns: :class:`EndpointInfo`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/vector-search/endpoints/{endpoint_name}/stop", body=body, headers=headers)
+        return EndpointInfo.from_dict(res)
 
     def update_endpoint_budget_policy(
         self, endpoint_name: str, budget_policy_id: str

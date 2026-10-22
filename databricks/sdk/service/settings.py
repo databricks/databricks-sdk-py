@@ -1090,6 +1090,8 @@ class CustomerFacingIngressNetworkPolicy:
     """The network policies applying for ingress traffic."""
 
     cross_workspace_access: Optional[CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess] = None
+    """The network policy restrictions for cross-workspace access: which other workspaces may access
+    this workspace."""
 
     private_access: Optional[CustomerFacingIngressNetworkPolicyPrivateAccess] = None
     """The network policy restrictions for private access. Configures how requests arriving over

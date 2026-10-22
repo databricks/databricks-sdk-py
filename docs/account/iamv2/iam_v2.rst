@@ -40,16 +40,18 @@
     .. py:method:: create_identity_visibility_filter(parent: str, identity_visibility_filter: IdentityVisibilityFilter [, identity_visibility_filter_id: Optional[str]]) -> IdentityVisibilityFilter
 
         Creates a group visibility filter in the account. Requires account admin privileges. Set
-        ``principal_type`` to ``GROUP`` and specify exactly one of ``exact`` (external ID) or ``prefix``
-        (display-name starts with). The filter applies across all workspaces in the account. A duplicate
-        filter ID or an existing rule with the same type and match value returns ``ALREADY_EXISTS``. Filters
-        are immutable; to change a rule, delete it and create a new one.
+        ``principal_type`` to ``GROUP`` and specify exactly one of ``exact`` (external ID), ``prefix``
+        (display-name starts with), or ``regex`` (full RE2 display-name match). The filter applies across all
+        workspaces in the account. A duplicate filter ID or an existing rule with the same type and match
+        value returns ``ALREADY_EXISTS``. Filters are immutable; to change a rule, delete it and create a new
+        one.
 
         :param parent: str
           Required. The parent account. Format: accounts/{account_id}
         :param identity_visibility_filter: :class:`IdentityVisibilityFilter`
           Required. The filter to create. Set ``principal_type`` to ``GROUP`` and specify exactly one of
-          ``exact`` or ``prefix``. The server assigns the resource name; any supplied ``name`` is ignored.
+          ``exact``, ``prefix``, or ``regex``. The server assigns the resource name; any supplied ``name`` is
+          ignored.
         :param identity_visibility_filter_id: str (optional)
           Optional. The ID to use for the filter, which becomes the final component of its resource name. If
           not specified or empty, the server generates one. Must not contain ``/``.

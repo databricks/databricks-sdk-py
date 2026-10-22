@@ -365,14 +365,25 @@ class ApproxCountDistinctFunction:
     input: str
     """The input column from which the approximate count of distinct values is computed."""
 
+    relative_error: Optional[float] = None
+    """The error the user accepts, as a fraction of the count, between 0.02 (by default) and 0.3. This
+    is one standard error of the estimate, the same meaning as Spark's relativeSD: 0.02 means the
+    result is within ±2% of the true count about 68% of the time (one standard deviation covers 68%
+    of the region). Feature Store picks the sketch size that gives this relative error. If neither
+    relative_error nor relative_sd is set, 0.02 is default chosen at feature creation."""
+
     relative_sd: Optional[float] = None
-    """The maximum relative standard deviation allowed (default defined by Spark)."""
+    """The maximum relative standard deviation allowed (default defined by Spark). Deprecated: use
+    relative_error. When relative_error is set, reads return the same value here for clients that
+    don't have relative_error, and a request may only send that value."""
 
     def as_dict(self) -> dict:
         """Serializes the ApproxCountDistinctFunction into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.input is not None:
             body["input"] = self.input
+        if self.relative_error is not None:
+            body["relative_error"] = self.relative_error
         if self.relative_sd is not None:
             body["relative_sd"] = self.relative_sd
         return body
@@ -382,6 +393,8 @@ class ApproxCountDistinctFunction:
         body = {}
         if self.input is not None:
             body["input"] = self.input
+        if self.relative_error is not None:
+            body["relative_error"] = self.relative_error
         if self.relative_sd is not None:
             body["relative_sd"] = self.relative_sd
         return body
@@ -389,7 +402,11 @@ class ApproxCountDistinctFunction:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ApproxCountDistinctFunction:
         """Deserializes the ApproxCountDistinctFunction from a dictionary."""
-        return cls(input=d.get("input", None), relative_sd=d.get("relative_sd", None))
+        return cls(
+            input=d.get("input", None),
+            relative_error=d.get("relative_error", None),
+            relative_sd=d.get("relative_sd", None),
+        )
 
 
 @dataclass
@@ -403,7 +420,16 @@ class ApproxPercentileFunction:
     """The percentile value to compute (between 0 and 1)."""
 
     accuracy: Optional[int] = None
-    """The accuracy parameter (higher is more accurate but slower)."""
+    """The accuracy parameter (higher is more accurate but slower). Deprecated: use relative_error.
+    When relative_error is set, reads return ceil(1 / relative_error) here for clients that don't
+    have relative_error, and a request may only send that value."""
+
+    relative_error: Optional[float] = None
+    """The error the user accepts, as a fraction of rank, between 0.01 (by default) and 0.3. The result
+    is within this rank error with 99% confidence: at 0.01, the value returned for p95 is between
+    the true p94 and p96 at least 99% of the time. Feature Store picks the sketch size that gives
+    this error. If neither relative_error nor accuracy is set, 0.01 is default chosen at feature
+    creation."""
 
     def as_dict(self) -> dict:
         """Serializes the ApproxPercentileFunction into a dictionary suitable for use as a JSON request body."""
@@ -414,6 +440,8 @@ class ApproxPercentileFunction:
             body["input"] = self.input
         if self.percentile is not None:
             body["percentile"] = self.percentile
+        if self.relative_error is not None:
+            body["relative_error"] = self.relative_error
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -425,12 +453,19 @@ class ApproxPercentileFunction:
             body["input"] = self.input
         if self.percentile is not None:
             body["percentile"] = self.percentile
+        if self.relative_error is not None:
+            body["relative_error"] = self.relative_error
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ApproxPercentileFunction:
         """Deserializes the ApproxPercentileFunction from a dictionary."""
-        return cls(accuracy=_int64(d, "accuracy"), input=d.get("input", None), percentile=d.get("percentile", None))
+        return cls(
+            accuracy=_int64(d, "accuracy"),
+            input=d.get("input", None),
+            percentile=d.get("percentile", None),
+            relative_error=d.get("relative_error", None),
+        )
 
 
 @dataclass
@@ -9334,22 +9369,60 @@ class SumFunction:
 
 @dataclass
 class TableTrigger:
-    """A trigger that fires when the upstream source table changes."""
+    """A trigger that fires when the feature's source table changes: a DeltaTableSource's table, or an
+    SdpSource's input_tables."""
+
+    condition: Optional[TableTriggerTableTriggerCondition] = None
+    """Which source table updates trigger a materialization run. If not set, any source table update
+    triggers a run."""
+
+    min_time_between_triggers: Optional[Duration] = None
+    """The minimum time between two triggered runs, so a frequently updated source table does not
+    trigger runs too often. If not set, a feature with a sliding window uses half its slide_duration
+    and a feature with a tumbling window uses half its window_duration, clamped to between 5 minutes
+    and 1 hour. Other features have no minimum."""
+
+    wait_after_last_change: Optional[Duration] = None
+    """How long the source table must go without updates before a run starts, so a series of updates
+    settles before the run. If not set, a run starts as soon as the source table updates."""
 
     def as_dict(self) -> dict:
         """Serializes the TableTrigger into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.condition is not None:
+            body["condition"] = self.condition.value
+        if self.min_time_between_triggers is not None:
+            body["min_time_between_triggers"] = self.min_time_between_triggers.ToJsonString()
+        if self.wait_after_last_change is not None:
+            body["wait_after_last_change"] = self.wait_after_last_change.ToJsonString()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the TableTrigger into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.condition is not None:
+            body["condition"] = self.condition
+        if self.min_time_between_triggers is not None:
+            body["min_time_between_triggers"] = self.min_time_between_triggers
+        if self.wait_after_last_change is not None:
+            body["wait_after_last_change"] = self.wait_after_last_change
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TableTrigger:
         """Deserializes the TableTrigger from a dictionary."""
-        return cls()
+        return cls(
+            condition=_enum(d, "condition", TableTriggerTableTriggerCondition),
+            min_time_between_triggers=_duration(d, "min_time_between_triggers"),
+            wait_after_last_change=_duration(d, "wait_after_last_change"),
+        )
+
+
+class TableTriggerTableTriggerCondition(Enum):
+    """Which source table updates trigger a materialization run."""
+
+    TABLE_TRIGGER_CONDITION_ALL_UPDATED = "TABLE_TRIGGER_CONDITION_ALL_UPDATED"
+    TABLE_TRIGGER_CONDITION_ANY_UPDATED = "TABLE_TRIGGER_CONDITION_ANY_UPDATED"
 
 
 @dataclass

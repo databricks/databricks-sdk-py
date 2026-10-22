@@ -217,6 +217,12 @@ class BudgetConfiguration:
     of what is considered for this budget. Leave empty to include all usage for this account. All
     provided filters must be matched for usage to be included."""
 
+    include_external_spend: Optional[bool] = None
+    """Whether this budget tracks external pass-through spend (third-party costs billed through a
+    Databricks product) in addition to internal Databricks spend. Only applicable to Unity Gateway
+    budgets, i.e. when ``resource_type`` is ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``. This field is
+    immutable after create."""
+
     resource_type: Optional[BudgetResourceType] = None
     """The resource scope for this budget. Determines whether the budget tracks all resources or a
     specific resource."""
@@ -239,6 +245,8 @@ class BudgetConfiguration:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter.as_dict()
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type.value
         if self.update_time is not None:
@@ -260,6 +268,8 @@ class BudgetConfiguration:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type
         if self.update_time is not None:
@@ -276,6 +286,7 @@ class BudgetConfiguration:
             create_time=_int64(d, "create_time"),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
+            include_external_spend=d.get("include_external_spend", None),
             resource_type=_enum(d, "resource_type", BudgetResourceType),
             update_time=_int64(d, "update_time"),
         )
@@ -529,6 +540,12 @@ class CreateBudgetConfigurationBudget:
     of what is considered for this budget. Leave empty to include all usage for this account. All
     provided filters must be matched for usage to be included."""
 
+    include_external_spend: Optional[bool] = None
+    """Whether this budget tracks external pass-through spend (third-party costs billed through a
+    Databricks product) in addition to internal Databricks spend. Only applicable to Unity Gateway
+    budgets, i.e. when ``resource_type`` is ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``. This field is
+    immutable after create."""
+
     resource_type: Optional[BudgetResourceType] = None
     """The resource scope for this budget. Determines whether the budget tracks all resources or a
     specific resource."""
@@ -544,6 +561,8 @@ class CreateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter.as_dict()
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type.value
         return body
@@ -559,6 +578,8 @@ class CreateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type
         return body
@@ -573,6 +594,7 @@ class CreateBudgetConfigurationBudget:
             ),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
+            include_external_spend=d.get("include_external_spend", None),
             resource_type=_enum(d, "resource_type", BudgetResourceType),
         )
 
@@ -1505,6 +1527,12 @@ class UpdateBudgetConfigurationBudget:
     of what is considered for this budget. Leave empty to include all usage for this account. All
     provided filters must be matched for usage to be included."""
 
+    include_external_spend: Optional[bool] = None
+    """Whether this budget tracks external pass-through spend (third-party costs billed through a
+    Databricks product) in addition to internal Databricks spend. Only applicable to Unity Gateway
+    budgets, i.e. when ``resource_type`` is ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``. This field is
+    immutable after create."""
+
     resource_type: Optional[BudgetResourceType] = None
     """The resource scope for this budget. Determines whether the budget tracks all resources or a
     specific resource."""
@@ -1522,6 +1550,8 @@ class UpdateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter.as_dict()
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type.value
         return body
@@ -1539,6 +1569,8 @@ class UpdateBudgetConfigurationBudget:
             body["display_name"] = self.display_name
         if self.filter:
             body["filter"] = self.filter
+        if self.include_external_spend is not None:
+            body["include_external_spend"] = self.include_external_spend
         if self.resource_type is not None:
             body["resource_type"] = self.resource_type
         return body
@@ -1552,6 +1584,7 @@ class UpdateBudgetConfigurationBudget:
             budget_configuration_id=d.get("budget_configuration_id", None),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
+            include_external_spend=d.get("include_external_spend", None),
             resource_type=_enum(d, "resource_type", BudgetResourceType),
         )
 

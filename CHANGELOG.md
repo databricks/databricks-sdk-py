@@ -1,5 +1,22 @@
 # Version changelog
 
+## Release v0.156.0 (2026-10-22)
+
+### API Changes
+* Add `start_endpoint()` and `stop_endpoint()` methods for [w.vector_search_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vectorsearch/vector_search_endpoints.html) workspace-level service.
+* Add `include_external_spend` field for `databricks.sdk.service.billing.BudgetConfiguration`.
+* Add `include_external_spend` field for `databricks.sdk.service.billing.CreateBudgetConfigurationBudget`.
+* Add `include_external_spend` field for `databricks.sdk.service.billing.UpdateBudgetConfigurationBudget`.
+* Add `regex` field for `databricks.sdk.service.iamv2.IdentityVisibilityFilter`.
+* Add `relative_error` field for `databricks.sdk.service.ml.ApproxCountDistinctFunction`.
+* Add `relative_error` field for `databricks.sdk.service.ml.ApproxPercentileFunction`.
+* Add `condition`, `min_time_between_triggers` and `wait_after_last_change` fields for `databricks.sdk.service.ml.TableTrigger`.
+* Add `onedrive_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `stopping`, `stopped` and `starting` enum values for `databricks.sdk.service.aisearch.EndpointStatusState`.
+* Add `operation_action_type_unbind` enum value for `databricks.sdk.service.bundledeployments.OperationActionType`.
+* Add `onedrive` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Add `stopping`, `stopped` and `starting` enum values for `databricks.sdk.service.vectorsearch.EndpointStatusState`.
+
 ## Release v0.155.0 (2026-10-21)
 
 ### API Changes

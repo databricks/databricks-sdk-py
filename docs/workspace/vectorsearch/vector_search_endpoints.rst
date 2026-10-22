@@ -126,6 +126,27 @@
         :returns: :class:`VectorSearchEndpointPermissions`
         
 
+    .. py:method:: start_endpoint(endpoint_name: str) -> EndpointInfo
+
+        Start a stopped endpoint. The endpoint serves the same indexes it had when it stopped.
+
+        :param endpoint_name: str
+          Name of the AI Search endpoint
+
+        :returns: :class:`EndpointInfo`
+        
+
+    .. py:method:: stop_endpoint(endpoint_name: str) -> EndpointInfo
+
+        Stop an endpoint. Stopping removes the endpoint's serving compute and retains its indexes. A stopped
+        endpoint can't serve queries or sync indexes until it is started.
+
+        :param endpoint_name: str
+          Name of the AI Search endpoint
+
+        :returns: :class:`EndpointInfo`
+        
+
     .. py:method:: update_endpoint_budget_policy(endpoint_name: str, budget_policy_id: str) -> PatchEndpointBudgetPolicyResponse
 
         Update the budget policy of an endpoint
