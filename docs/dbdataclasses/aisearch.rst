@@ -76,6 +76,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: RED_STATE
       :value: "RED_STATE"
 
+   .. py:attribute:: STARTING
+      :value: "STARTING"
+
+   .. py:attribute:: STOPPED
+      :value: "STOPPED"
+
+   .. py:attribute:: STOPPING
+      :value: "STOPPING"
+
    .. py:attribute:: YELLOW_STATE
       :value: "YELLOW_STATE"
 

@@ -498,6 +498,9 @@ class IdentityVisibilityFilter:
     prefix: Optional[PrefixMatchRule] = None
     """Case-sensitive starts-with match on the group's display name."""
 
+    regex: Optional[RegexMatchRule] = None
+    """Full, case-sensitive RE2 match on the identity's display name."""
+
     def as_dict(self) -> dict:
         """Serializes the IdentityVisibilityFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -509,6 +512,8 @@ class IdentityVisibilityFilter:
             body["prefix"] = self.prefix.as_dict()
         if self.principal_type is not None:
             body["principal_type"] = self.principal_type.value
+        if self.regex:
+            body["regex"] = self.regex.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -522,6 +527,8 @@ class IdentityVisibilityFilter:
             body["prefix"] = self.prefix
         if self.principal_type is not None:
             body["principal_type"] = self.principal_type
+        if self.regex:
+            body["regex"] = self.regex
         return body
 
     @classmethod
@@ -532,6 +539,7 @@ class IdentityVisibilityFilter:
             name=d.get("name", None),
             prefix=_from_dict(d, "prefix", PrefixMatchRule),
             principal_type=_enum(d, "principal_type", PrincipalType),
+            regex=_from_dict(d, "regex", RegexMatchRule),
         )
 
 
@@ -861,6 +869,34 @@ class PrincipalType(Enum):
     GROUP = "GROUP"
     SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
     USER = "USER"
+
+
+@dataclass
+class RegexMatchRule:
+    """A rule that matches an identity whose complete display name matches an RE2 regular expression.
+    Matching is case-sensitive. Use .* explicitly when substring matching is desired."""
+
+    display_name_regex: str
+    """The RE2 regular expression matched against the complete display name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RegexMatchRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.display_name_regex is not None:
+            body["display_name_regex"] = self.display_name_regex
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RegexMatchRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.display_name_regex is not None:
+            body["display_name_regex"] = self.display_name_regex
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RegexMatchRule:
+        """Deserializes the RegexMatchRule from a dictionary."""
+        return cls(display_name_regex=d.get("display_name_regex", None))
 
 
 @dataclass
@@ -1565,16 +1601,18 @@ class AccountIamV2API:
         identity_visibility_filter_id: Optional[str] = None,
     ) -> IdentityVisibilityFilter:
         """Creates a group visibility filter in the account. Requires account admin privileges. Set
-        ``principal_type`` to ``GROUP`` and specify exactly one of ``exact`` (external ID) or ``prefix``
-        (display-name starts with). The filter applies across all workspaces in the account. A duplicate
-        filter ID or an existing rule with the same type and match value returns ``ALREADY_EXISTS``. Filters
-        are immutable; to change a rule, delete it and create a new one.
+        ``principal_type`` to ``GROUP`` and specify exactly one of ``exact`` (external ID), ``prefix``
+        (display-name starts with), or ``regex`` (full RE2 display-name match). The filter applies across all
+        workspaces in the account. A duplicate filter ID or an existing rule with the same type and match
+        value returns ``ALREADY_EXISTS``. Filters are immutable; to change a rule, delete it and create a new
+        one.
 
         :param parent: str
           Required. The parent account. Format: accounts/{account_id}
         :param identity_visibility_filter: :class:`IdentityVisibilityFilter`
           Required. The filter to create. Set ``principal_type`` to ``GROUP`` and specify exactly one of
-          ``exact`` or ``prefix``. The server assigns the resource name; any supplied ``name`` is ignored.
+          ``exact``, ``prefix``, or ``regex``. The server assigns the resource name; any supplied ``name`` is
+          ignored.
         :param identity_visibility_filter_id: str (optional)
           Optional. The ID to use for the filter, which becomes the final component of its resource name. If
           not specified or empty, the server generates one. Must not contain ``/``.

@@ -1667,6 +1667,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: TableTriggerTableTriggerCondition
+
+   Which source table updates trigger a materialization run.
+
+   .. py:attribute:: TABLE_TRIGGER_CONDITION_ALL_UPDATED
+      :value: "TABLE_TRIGGER_CONDITION_ALL_UPDATED"
+
+   .. py:attribute:: TABLE_TRIGGER_CONDITION_ANY_UPDATED
+      :value: "TABLE_TRIGGER_CONDITION_ANY_UPDATED"
+
 .. autoclass:: TestRegistryWebhookResponse
    :members:
    :undoc-members:

@@ -197,6 +197,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: OPERATION_ACTION_TYPE_RESIZE
       :value: "OPERATION_ACTION_TYPE_RESIZE"
 
+   .. py:attribute:: OPERATION_ACTION_TYPE_UNBIND
+      :value: "OPERATION_ACTION_TYPE_UNBIND"
+
    .. py:attribute:: OPERATION_ACTION_TYPE_UPDATE
       :value: "OPERATION_ACTION_TYPE_UPDATE"
 

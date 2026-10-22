@@ -115,6 +115,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: USER
       :value: "USER"
 
+.. autoclass:: RegexMatchRule
+   :members:
+   :undoc-members:
+
 .. autoclass:: ResolveGroupResponse
    :members:
    :undoc-members:

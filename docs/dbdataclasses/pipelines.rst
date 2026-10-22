@@ -317,6 +317,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NETSUITE
       :value: "NETSUITE"
 
+   .. py:attribute:: ONEDRIVE
+      :value: "ONEDRIVE"
+
    .. py:attribute:: ORACLE
       :value: "ORACLE"
 
@@ -463,6 +466,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: Notifications
    :members:
    :undoc-members:
+
+.. autoclass:: OneDriveOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: OneDriveOptionsOneDriveEntityType
+
+   The type of OneDrive entity to ingest.
+
+   .. py:attribute:: FILE
+      :value: "FILE"
+
+   .. py:attribute:: FILE_METADATA
+      :value: "FILE_METADATA"
 
 .. autoclass:: OperationTimeWindow
    :members:
