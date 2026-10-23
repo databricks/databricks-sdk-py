@@ -113,7 +113,11 @@ def test_fs_rm(dbutils, mocker):
     inner.assert_called_with("a", recursive=False)
 
 
-@raises("cluster_id is required in the configuration. Config: host=http://localhost, auth_type=noop")
+@raises(
+    "cluster_id is required in the configuration. "
+    "Set it with Config(cluster_id='...') or the DATABRICKS_CLUSTER_ID environment variable. "
+    "Config: host=http://localhost, auth_type=noop"
+)
 def test_fs_mount_without_cluster_fails(dbutils):
     dbutils.fs.mount("s3://foo", "bar")
 
