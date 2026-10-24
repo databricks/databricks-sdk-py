@@ -5789,6 +5789,9 @@ class UpdateInfo:
     full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
     that the states of the table will be reset before the refresh."""
 
+    full_refresh_selection_by_path: Optional[List[str]] = None
+    """A list of file paths that identify the tables to update with a full refresh."""
+
     mode: Optional[UpdateMode] = None
     """Indicates whether the update is either part of a continuous job run, or running in legacy
     continuous pipeline mode. Returned only for GetUpdate; not populated in ListUpdates responses."""
@@ -5803,6 +5806,9 @@ class UpdateInfo:
     """A list of tables to update without fullRefresh. If both refresh_selection and
     full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
     that the states of the table will be reset before the refresh."""
+
+    refresh_selection_by_path: Optional[List[str]] = None
+    """A list of file paths that identify the tables to update."""
 
     state: Optional[UpdateInfoState] = None
     """The update state."""
@@ -5829,6 +5835,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
+        if self.full_refresh_selection_by_path:
+            body["full_refresh_selection_by_path"] = [v for v in self.full_refresh_selection_by_path]
         if self.mode is not None:
             body["mode"] = self.mode.value
         if self.parameters:
@@ -5837,6 +5845,8 @@ class UpdateInfo:
             body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
             body["refresh_selection"] = [v for v in self.refresh_selection]
+        if self.refresh_selection_by_path:
+            body["refresh_selection_by_path"] = [v for v in self.refresh_selection_by_path]
         if self.state is not None:
             body["state"] = self.state.value
         if self.update_id is not None:
@@ -5860,6 +5870,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = self.full_refresh_selection
+        if self.full_refresh_selection_by_path:
+            body["full_refresh_selection_by_path"] = self.full_refresh_selection_by_path
         if self.mode is not None:
             body["mode"] = self.mode
         if self.parameters:
@@ -5868,6 +5880,8 @@ class UpdateInfo:
             body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
             body["refresh_selection"] = self.refresh_selection
+        if self.refresh_selection_by_path:
+            body["refresh_selection_by_path"] = self.refresh_selection_by_path
         if self.state is not None:
             body["state"] = self.state
         if self.update_id is not None:
@@ -5886,10 +5900,12 @@ class UpdateInfo:
             creation_time=_int64(d, "creation_time"),
             full_refresh=d.get("full_refresh", None),
             full_refresh_selection=d.get("full_refresh_selection", None),
+            full_refresh_selection_by_path=d.get("full_refresh_selection_by_path", None),
             mode=_enum(d, "mode", UpdateMode),
             parameters=d.get("parameters", None),
             pipeline_id=d.get("pipeline_id", None),
             refresh_selection=d.get("refresh_selection", None),
+            refresh_selection_by_path=d.get("refresh_selection_by_path", None),
             state=_enum(d, "state", UpdateInfoState),
             update_id=d.get("update_id", None),
             validate_only=d.get("validate_only", None),
@@ -6820,8 +6836,10 @@ class PipelinesAPI:
         development: Optional[bool] = None,
         full_refresh: Optional[bool] = None,
         full_refresh_selection: Optional[List[str]] = None,
+        full_refresh_selection_by_path: Optional[List[str]] = None,
         parameters: Optional[Dict[str, str]] = None,
         refresh_selection: Optional[List[str]] = None,
+        refresh_selection_by_path: Optional[List[str]] = None,
         replace_where_overrides: Optional[List[ReplaceWhereOverride]] = None,
         reset_checkpoint_selection: Optional[List[str]] = None,
         rewind_spec: Optional[RewindSpec] = None,
@@ -6842,12 +6860,16 @@ class PipelinesAPI:
           A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param full_refresh_selection_by_path: List[str] (optional)
+          A list of file paths that identify the tables to update with a full refresh.
         :param parameters: Dict[str,str] (optional)
           Key/value map of parameters to pass to the pipeline execution
         :param refresh_selection: List[str] (optional)
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param refresh_selection_by_path: List[str] (optional)
+          A list of file paths that identify the tables to update.
         :param replace_where_overrides: List[:class:`ReplaceWhereOverride`] (optional)
           A list of predicate overrides for replace_where flows in this update. Only replace_where flows may
           be specified. Flows not listed use their original predicate.
@@ -6873,10 +6895,14 @@ class PipelinesAPI:
             body["full_refresh"] = full_refresh
         if full_refresh_selection is not None:
             body["full_refresh_selection"] = [v for v in full_refresh_selection]
+        if full_refresh_selection_by_path is not None:
+            body["full_refresh_selection_by_path"] = [v for v in full_refresh_selection_by_path]
         if parameters is not None:
             body["parameters"] = parameters
         if refresh_selection is not None:
             body["refresh_selection"] = [v for v in refresh_selection]
+        if refresh_selection_by_path is not None:
+            body["refresh_selection_by_path"] = [v for v in refresh_selection_by_path]
         if replace_where_overrides is not None:
             body["replace_where_overrides"] = [v.as_dict() for v in replace_where_overrides]
         if reset_checkpoint_selection is not None:

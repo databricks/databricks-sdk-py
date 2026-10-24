@@ -17,6 +17,7 @@ from databricks.sdk.service._internal import (
     _int64,
     _repeated_dict,
     _repeated_enum,
+    _repeated_int64,
 )
 
 
@@ -48,11 +49,26 @@ class AnomalyDetectionConfig:
     excluded_table_full_names: Optional[List[str]] = None
     """List of fully qualified table names to exclude from anomaly detection."""
 
+    notification_settings: Optional[NotificationSettings] = None
+    """Who to alert when anomaly detection finds unhealthy tables in this schema. Applicable to
+    ``schema`` monitors only. This is the same schema alert you manage from **Manage alerts** in the
+    Data Quality Monitoring UI, so a change made in either place shows in both.
+    
+    Set the recipients in ``on_unhealthy_table``; ``on_failure`` is not supported here. Only
+    ``destination_ids`` and ``destination_user_ids`` are supported.
+    
+    On update, an update mask of ``*``, ``anomaly_detection_config``, or
+    ``anomaly_detection_config.notification_settings`` replaces the alert's recipients with the ones
+    in the request; omitting the field, or leaving both recipient lists empty, removes the alert.
+    Other masks leave the alert unchanged."""
+
     def as_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.excluded_table_full_names:
             body["excluded_table_full_names"] = [v for v in self.excluded_table_full_names]
+        if self.notification_settings:
+            body["notification_settings"] = self.notification_settings.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -60,12 +76,17 @@ class AnomalyDetectionConfig:
         body = {}
         if self.excluded_table_full_names:
             body["excluded_table_full_names"] = self.excluded_table_full_names
+        if self.notification_settings:
+            body["notification_settings"] = self.notification_settings
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AnomalyDetectionConfig:
         """Deserializes the AnomalyDetectionConfig from a dictionary."""
-        return cls(excluded_table_full_names=d.get("excluded_table_full_names", None))
+        return cls(
+            excluded_table_full_names=d.get("excluded_table_full_names", None),
+            notification_settings=_from_dict(d, "notification_settings", NotificationSettings),
+        )
 
 
 @dataclass
@@ -637,6 +658,16 @@ class Monitor:
 class NotificationDestination:
     """Destination of the data quality monitoring notification."""
 
+    destination_ids: Optional[List[str]] = None
+    """The notification-destination IDs (Slack / Teams / webhook) to send the notification to. The
+    destinations must already exist in the workspace; a workspace admin creates them. A maximum of
+    25 destination IDs is supported. Only supported on schema monitors, via
+    ``anomaly_detection_config``; rejected on table monitors."""
+
+    destination_user_ids: Optional[List[int]] = None
+    """The IDs of the workspace users to notify by email. A maximum of 25 user IDs is supported. Only
+    supported on schema monitors, via ``anomaly_detection_config``; rejected on table monitors."""
+
     email_addresses: Optional[List[str]] = None
     """The list of email addresses to send the notification to. A maximum of 5 email addresses is
     supported."""
@@ -644,6 +675,10 @@ class NotificationDestination:
     def as_dict(self) -> dict:
         """Serializes the NotificationDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.destination_ids:
+            body["destination_ids"] = [v for v in self.destination_ids]
+        if self.destination_user_ids:
+            body["destination_user_ids"] = [v for v in self.destination_user_ids]
         if self.email_addresses:
             body["email_addresses"] = [v for v in self.email_addresses]
         return body
@@ -651,6 +686,10 @@ class NotificationDestination:
     def as_shallow_dict(self) -> dict:
         """Serializes the NotificationDestination into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.destination_ids:
+            body["destination_ids"] = self.destination_ids
+        if self.destination_user_ids:
+            body["destination_user_ids"] = self.destination_user_ids
         if self.email_addresses:
             body["email_addresses"] = self.email_addresses
         return body
@@ -658,7 +697,11 @@ class NotificationDestination:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NotificationDestination:
         """Deserializes the NotificationDestination from a dictionary."""
-        return cls(email_addresses=d.get("email_addresses", None))
+        return cls(
+            destination_ids=d.get("destination_ids", None),
+            destination_user_ids=_repeated_int64(d, "destination_user_ids"),
+            email_addresses=d.get("email_addresses", None),
+        )
 
 
 @dataclass
@@ -668,11 +711,18 @@ class NotificationSettings:
     on_failure: Optional[NotificationDestination] = None
     """Destinations to send notifications on failure/timeout."""
 
+    on_unhealthy_table: Optional[NotificationDestination] = None
+    """Recipients to notify when anomaly detection finds unhealthy tables in the schema. Each recipient
+    gets one notification per important unhealthy table. Only supported on schema monitors, via
+    ``anomaly_detection_config``."""
+
     def as_dict(self) -> dict:
         """Serializes the NotificationSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.on_failure:
             body["on_failure"] = self.on_failure.as_dict()
+        if self.on_unhealthy_table:
+            body["on_unhealthy_table"] = self.on_unhealthy_table.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -680,12 +730,17 @@ class NotificationSettings:
         body = {}
         if self.on_failure:
             body["on_failure"] = self.on_failure
+        if self.on_unhealthy_table:
+            body["on_unhealthy_table"] = self.on_unhealthy_table
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NotificationSettings:
         """Deserializes the NotificationSettings from a dictionary."""
-        return cls(on_failure=_from_dict(d, "on_failure", NotificationDestination))
+        return cls(
+            on_failure=_from_dict(d, "on_failure", NotificationDestination),
+            on_unhealthy_table=_from_dict(d, "on_unhealthy_table", NotificationDestination),
+        )
 
 
 @dataclass

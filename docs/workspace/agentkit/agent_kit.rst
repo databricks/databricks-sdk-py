@@ -205,6 +205,17 @@
         :returns: :class:`ManagedMemoryStore`
         
 
+    .. py:method:: get_memory_store_permission(name: str) -> MemoryStorePermission
+
+        Retrieves the current caller's effective memory store permission. Returns PERMISSION_LEVEL_UNSPECIFIED
+        when the caller has no access.
+
+        :param name: str
+          Resource name in the form ``memory-stores/{managed_memory_store_id}``.
+
+        :returns: :class:`MemoryStorePermission`
+        
+
     .. py:method:: get_session(name: str) -> Session
 
         Gets a session by resource name.
@@ -223,6 +234,47 @@
           Resource name in the form ``session-stores/{session_store_id}``.
 
         :returns: :class:`SessionStore`
+        
+
+    .. py:method:: get_session_store_permission(name: str) -> SessionStorePermission
+
+        Retrieves the current caller's effective session store permission. Returns
+        PERMISSION_LEVEL_UNSPECIFIED when the caller has no access.
+
+        :param name: str
+          Resource name in the form ``session-stores/{session_store_id}``.
+
+        :returns: :class:`SessionStorePermission`
+        
+
+    .. py:method:: grant_memory_store_permission(name: str, principal: StorePrincipal, permission: PermissionLevel) -> GrantMemoryStorePermissionResponse
+
+        Grants a READ or WRITE permission on a memory store to a principal. Only the owner or a workspace
+        admin may grant permissions.
+
+        :param name: str
+          Resource name in the form ``memory-stores/{managed_memory_store_id}``.
+        :param principal: :class:`StorePrincipal`
+          Principal to grant the permission to.
+        :param permission: :class:`PermissionLevel`
+          Permission level to grant.
+
+        :returns: :class:`GrantMemoryStorePermissionResponse`
+        
+
+    .. py:method:: grant_session_store_permission(name: str, principal: StorePrincipal, permission: PermissionLevel) -> GrantSessionStorePermissionResponse
+
+        Grants a READ or WRITE permission on a session store to a principal. Only the owner or a workspace
+        admin may grant permissions.
+
+        :param name: str
+          Resource name in the form ``session-stores/{session_store_id}``.
+        :param principal: :class:`StorePrincipal`
+          Principal to grant the permission to.
+        :param permission: :class:`PermissionLevel`
+          Permission level to grant.
+
+        :returns: :class:`GrantSessionStorePermissionResponse`
         
 
     .. py:method:: list_memories(parent: str, actor_id: str [, page_size: Optional[int], page_token: Optional[str], path_prefix: Optional[str], session_id: Optional[str], view: Optional[ManagedMemoryEntryView]]) -> Iterator[ManagedMemoryEntry]
@@ -249,6 +301,20 @@
           Controls whether each returned entry includes memory content. Defaults to ``FULL``.
 
         :returns: Iterator over :class:`ManagedMemoryEntry`
+        
+
+    .. py:method:: list_memory_store_permissions(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[MemoryStorePermission]
+
+        Lists explicit memory store grants. Only the owner or a workspace admin may list permissions.
+
+        :param parent: str
+          Resource name of the store, in the form ``memory-stores/{managed_memory_store_id}``.
+        :param page_size: int (optional)
+          Maximum number of permissions to return. Defaults to 100; maximum is 1000.
+        :param page_token: str (optional)
+          Continuation token from a previous response.
+
+        :returns: Iterator over :class:`MemoryStorePermission`
         
 
     .. py:method:: list_memory_stores( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ManagedMemoryStore]
@@ -281,6 +347,20 @@
           Token returned by a previous list request.
 
         :returns: Iterator over :class:`SessionItem`
+        
+
+    .. py:method:: list_session_store_permissions(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[SessionStorePermission]
+
+        Lists explicit session store grants. Only the owner or a workspace admin may list permissions.
+
+        :param parent: str
+          Resource name of the store, in the form ``session-stores/{session_store_id}``.
+        :param page_size: int (optional)
+          Maximum number of permissions to return. Defaults to 100; maximum is 1000.
+        :param page_token: str (optional)
+          Continuation token from a previous response.
+
+        :returns: Iterator over :class:`SessionStorePermission`
         
 
     .. py:method:: list_session_stores( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[SessionStore]
@@ -328,6 +408,32 @@
         :returns: :class:`PopSessionItemResponse`
         
 
+    .. py:method:: revoke_memory_store_permission(name: str, principal: StorePrincipal) -> RevokeMemoryStorePermissionResponse
+
+        Removes a principal's explicit READ and WRITE grants on a memory store. Only the owner or a workspace
+        admin may revoke permissions. Ownership and inherited access are unaffected.
+
+        :param name: str
+          Resource name in the form ``memory-stores/{managed_memory_store_id}``.
+        :param principal: :class:`StorePrincipal`
+          Principal whose READ and WRITE grants will be removed.
+
+        :returns: :class:`RevokeMemoryStorePermissionResponse`
+        
+
+    .. py:method:: revoke_session_store_permission(name: str, principal: StorePrincipal) -> RevokeSessionStorePermissionResponse
+
+        Removes a principal's explicit READ and WRITE grants on a session store. Only the owner or a workspace
+        admin may revoke permissions. Ownership and inherited access are unaffected.
+
+        :param name: str
+          Resource name in the form ``session-stores/{session_store_id}``.
+        :param principal: :class:`StorePrincipal`
+          Principal whose READ and WRITE grants will be removed.
+
+        :returns: :class:`RevokeSessionStorePermissionResponse`
+        
+
     .. py:method:: search_memories(parent: str, actor_id: str, query: str [, limit: Optional[int], page_size: Optional[int], page_token: Optional[str], path_prefix: Optional[str], session_id: Optional[str], view: Optional[ManagedMemoryEntryView]]) -> Iterator[ManagedMemoryEntrySearchResult]
 
         Searches memory entries by text query for one actor. Returns matching entries and scores ranked by
@@ -365,7 +471,8 @@
 
         :param name: str
           Resource name in the form
-          ``memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}``.
+          ``memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}``. Required for updates;
+          assigned by the service on creation.
         :param managed_memory_entry: :class:`ManagedMemoryEntry`
           The memory entry to update.
         :param update_mask: FieldMask

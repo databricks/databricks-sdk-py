@@ -5422,6 +5422,214 @@ class MaterializationNotifications:
 
 
 @dataclass
+class MaterializationSet:
+    """A group of materialized features created and managed as a single unit."""
+
+    materialization_set_id: Optional[str] = None
+    """Server-assigned unique identifier for the materialization set."""
+
+    materialized_features: Optional[List[MaterializedFeature]] = None
+    """The materialized features in this set. Order is not significant. Updating the set with a
+    materialized feature removed from this set will cause it to be deleted."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializationSet into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.materialization_set_id is not None:
+            body["materialization_set_id"] = self.materialization_set_id
+        if self.materialized_features:
+            body["materialized_features"] = [v.as_dict() for v in self.materialized_features]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializationSet into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.materialization_set_id is not None:
+            body["materialization_set_id"] = self.materialization_set_id
+        if self.materialized_features:
+            body["materialized_features"] = self.materialized_features
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializationSet:
+        """Deserializes the MaterializationSet from a dictionary."""
+        return cls(
+            materialization_set_id=d.get("materialization_set_id", None),
+            materialized_features=_repeated_dict(d, "materialized_features", MaterializedFeature),
+        )
+
+
+@dataclass
+class MaterializationSetDeletionProgress:
+    """What a partly failed DeleteMaterializationSet got through, attached to the error so a caller can
+    tell which materialized feature members are gone and which ones still need attention. The set
+    itself is left in place whenever any member failed, so a retry can still find the members."""
+
+    deleted_materialized_feature_ids: Optional[List[str]] = None
+    """Members that are no longer materialized, including any that were already gone."""
+
+    failed_materialized_features: Optional[List[MaterializedFeatureChangeFailure]] = None
+    """Members that could not be deleted, one entry each."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializationSetDeletionProgress into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.deleted_materialized_feature_ids:
+            body["deleted_materialized_feature_ids"] = [v for v in self.deleted_materialized_feature_ids]
+        if self.failed_materialized_features:
+            body["failed_materialized_features"] = [v.as_dict() for v in self.failed_materialized_features]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializationSetDeletionProgress into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.deleted_materialized_feature_ids:
+            body["deleted_materialized_feature_ids"] = self.deleted_materialized_feature_ids
+        if self.failed_materialized_features:
+            body["failed_materialized_features"] = self.failed_materialized_features
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializationSetDeletionProgress:
+        """Deserializes the MaterializationSetDeletionProgress from a dictionary."""
+        return cls(
+            deleted_materialized_feature_ids=d.get("deleted_materialized_feature_ids", None),
+            failed_materialized_features=_repeated_dict(
+                d, "failed_materialized_features", MaterializedFeatureChangeFailure
+            ),
+        )
+
+
+@dataclass
+class MaterializationSetOperationMetadata:
+    """Progress of a materialization set operation. Shared by create, update and delete, because
+    databricks.longrunning freezes a method's metadata type once it ships."""
+
+    create_time: Optional[Timestamp] = None
+    """Time at which the operation was requested."""
+
+    deletion_progress: Optional[MaterializationSetDeletionProgress] = None
+    """Set by a DeleteMaterializationSet operation."""
+
+    feature_full_names: Optional[List[str]] = None
+    """Full names of the features the set materializes, one entry per feature."""
+
+    materialization_set_id: Optional[str] = None
+    """ID of the materialization set the operation targets."""
+
+    state: Optional[MaterializationSetOperationMetadataState] = None
+    """Current state of the operation."""
+
+    update_progress: Optional[MaterializationSetUpdateProgress] = None
+    """Set by an UpdateMaterializationSet operation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializationSetOperationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.deletion_progress:
+            body["deletion_progress"] = self.deletion_progress.as_dict()
+        if self.feature_full_names:
+            body["feature_full_names"] = [v for v in self.feature_full_names]
+        if self.materialization_set_id is not None:
+            body["materialization_set_id"] = self.materialization_set_id
+        if self.state is not None:
+            body["state"] = self.state.value
+        if self.update_progress:
+            body["update_progress"] = self.update_progress.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializationSetOperationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.deletion_progress:
+            body["deletion_progress"] = self.deletion_progress
+        if self.feature_full_names:
+            body["feature_full_names"] = self.feature_full_names
+        if self.materialization_set_id is not None:
+            body["materialization_set_id"] = self.materialization_set_id
+        if self.state is not None:
+            body["state"] = self.state
+        if self.update_progress:
+            body["update_progress"] = self.update_progress
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializationSetOperationMetadata:
+        """Deserializes the MaterializationSetOperationMetadata from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            deletion_progress=_from_dict(d, "deletion_progress", MaterializationSetDeletionProgress),
+            feature_full_names=d.get("feature_full_names", None),
+            materialization_set_id=d.get("materialization_set_id", None),
+            state=_enum(d, "state", MaterializationSetOperationMetadataState),
+            update_progress=_from_dict(d, "update_progress", MaterializationSetUpdateProgress),
+        )
+
+
+class MaterializationSetOperationMetadataState(Enum):
+    """Lifecycle state of a materialization set operation."""
+
+    CANCELLED = "CANCELLED"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
+
+
+@dataclass
+class MaterializationSetUpdateProgress:
+    """What a partly failed UpdateMaterializationSet got through, attached to the error so a caller can
+    tell which materialized feature members already changed and which ones did not and why it
+    failed."""
+
+    deleted_materialized_feature_ids: Optional[List[str]] = None
+    """Materialized feature members that were deleted from the materialization set."""
+
+    failed_materialized_features: Optional[List[MaterializedFeatureChangeFailure]] = None
+    """Materialized feature members that could not be updated, one entry each."""
+
+    updated_materialized_feature_ids: Optional[List[str]] = None
+    """Materialized feature members whose mutable state was updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializationSetUpdateProgress into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.deleted_materialized_feature_ids:
+            body["deleted_materialized_feature_ids"] = [v for v in self.deleted_materialized_feature_ids]
+        if self.failed_materialized_features:
+            body["failed_materialized_features"] = [v.as_dict() for v in self.failed_materialized_features]
+        if self.updated_materialized_feature_ids:
+            body["updated_materialized_feature_ids"] = [v for v in self.updated_materialized_feature_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializationSetUpdateProgress into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.deleted_materialized_feature_ids:
+            body["deleted_materialized_feature_ids"] = self.deleted_materialized_feature_ids
+        if self.failed_materialized_features:
+            body["failed_materialized_features"] = self.failed_materialized_features
+        if self.updated_materialized_feature_ids:
+            body["updated_materialized_feature_ids"] = self.updated_materialized_feature_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializationSetUpdateProgress:
+        """Deserializes the MaterializationSetUpdateProgress from a dictionary."""
+        return cls(
+            deleted_materialized_feature_ids=d.get("deleted_materialized_feature_ids", None),
+            failed_materialized_features=_repeated_dict(
+                d, "failed_materialized_features", MaterializedFeatureChangeFailure
+            ),
+            updated_materialized_feature_ids=d.get("updated_materialized_feature_ids", None),
+        )
+
+
+@dataclass
 class MaterializationSuccessNotification:
     """Recipients to notify when a materialization run succeeds."""
 
@@ -5487,6 +5695,10 @@ class MaterializedFeature:
     """Name of the latest backfill operation on this materialized feature. Format:
     operations/{operation_id}."""
 
+    materialization_set_id: Optional[str] = None
+    """The materialization set this materialized feature was created for, through DABs or direct-engine
+    creation. Unset for a materialized feature that was not created as part of a set."""
+
     materialized_feature_id: Optional[str] = None
     """Server-assigned unique identifier for the materialized feature."""
 
@@ -5551,6 +5763,8 @@ class MaterializedFeature:
             body["last_materialization_time"] = self.last_materialization_time
         if self.latest_backfill_operation is not None:
             body["latest_backfill_operation"] = self.latest_backfill_operation
+        if self.materialization_set_id is not None:
+            body["materialization_set_id"] = self.materialization_set_id
         if self.materialized_feature_id is not None:
             body["materialized_feature_id"] = self.materialized_feature_id
         if self.notifications:
@@ -5592,6 +5806,8 @@ class MaterializedFeature:
             body["last_materialization_time"] = self.last_materialization_time
         if self.latest_backfill_operation is not None:
             body["latest_backfill_operation"] = self.latest_backfill_operation
+        if self.materialization_set_id is not None:
+            body["materialization_set_id"] = self.materialization_set_id
         if self.materialized_feature_id is not None:
             body["materialized_feature_id"] = self.materialized_feature_id
         if self.notifications:
@@ -5626,6 +5842,7 @@ class MaterializedFeature:
             job_id=_int64(d, "job_id"),
             last_materialization_time=d.get("last_materialization_time", None),
             latest_backfill_operation=d.get("latest_backfill_operation", None),
+            materialization_set_id=d.get("materialization_set_id", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
             notifications=_from_dict(d, "notifications", MaterializationNotifications),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
@@ -5636,6 +5853,51 @@ class MaterializedFeature:
             table_name=d.get("table_name", None),
             table_trigger=_from_dict(d, "table_trigger", TableTrigger),
             tags=d.get("tags", None),
+        )
+
+
+@dataclass
+class MaterializedFeatureChangeFailure:
+    """Why one materialization set member could not be changed."""
+
+    error_code: Optional[str] = None
+    """Databricks error code name of the failure, for example "RESOURCE_CONFLICT"."""
+
+    materialized_feature_id: Optional[str] = None
+    """The member that could not be changed."""
+
+    message: Optional[str] = None
+    """The failure's message."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializedFeatureChangeFailure into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error_code is not None:
+            body["error_code"] = self.error_code
+        if self.materialized_feature_id is not None:
+            body["materialized_feature_id"] = self.materialized_feature_id
+        if self.message is not None:
+            body["message"] = self.message
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializedFeatureChangeFailure into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error_code is not None:
+            body["error_code"] = self.error_code
+        if self.materialized_feature_id is not None:
+            body["materialized_feature_id"] = self.materialized_feature_id
+        if self.message is not None:
+            body["message"] = self.message
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeatureChangeFailure:
+        """Deserializes the MaterializedFeatureChangeFailure from a dictionary."""
+        return cls(
+            error_code=d.get("error_code", None),
+            materialized_feature_id=d.get("materialized_feature_id", None),
+            message=d.get("message", None),
         )
 
 
@@ -6921,6 +7183,9 @@ class PurgeFeatureEntitiesMetadata:
     create_time: Optional[Timestamp] = None
     """Time at which the purge operation was created."""
 
+    delete_rows: Optional[bool] = None
+    """Whether this purge deletes matching rows instead of setting feature values to null."""
+
     entities_table: Optional[str] = None
     """Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge."""
 
@@ -6941,6 +7206,8 @@ class PurgeFeatureEntitiesMetadata:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
+        if self.delete_rows is not None:
+            body["delete_rows"] = self.delete_rows
         if self.entities_table is not None:
             body["entities_table"] = self.entities_table
         if self.entities_table_version is not None:
@@ -6958,6 +7225,8 @@ class PurgeFeatureEntitiesMetadata:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
+        if self.delete_rows is not None:
+            body["delete_rows"] = self.delete_rows
         if self.entities_table is not None:
             body["entities_table"] = self.entities_table
         if self.entities_table_version is not None:
@@ -6975,6 +7244,7 @@ class PurgeFeatureEntitiesMetadata:
         """Deserializes the PurgeFeatureEntitiesMetadata from a dictionary."""
         return cls(
             create_time=_timestamp(d, "create_time"),
+            delete_rows=d.get("delete_rows", None),
             entities_table=d.get("entities_table", None),
             entities_table_version=d.get("entities_table_version", None),
             features=d.get("features", None),
@@ -8203,8 +8473,8 @@ class SdpSource:
     input_tables: Optional[List[str]] = None
     """The full three-part names of the tables the pipeline reads from. Required to materialize this
     feature with a TableTrigger, which starts a run when these tables update. Each table must exist
-    when the feature is created. After the pipeline runs, Feature Store checks that it reads from
-    these tables, and the run fails if it doesn't. At most 100 tables."""
+    when the feature is created. Feature Store doesn't confirm that the pipeline reads from these
+    tables. At most 100 tables."""
 
     output_table: Optional[str] = None
     """The full three-part (catalog, schema, table) name of the pipeline's output table to read from.
@@ -11750,6 +12020,44 @@ class FeatureEngineeringAPI:
         res = self._api.do("POST", "/api/2.0/feature-engineering/features/kafka-configs", body=body, headers=headers)
         return KafkaConfig.from_dict(res)
 
+    def create_materialization_set(
+        self, materialization_set: MaterializationSet, *, request_id: Optional[str] = None
+    ) -> CreateMaterializationSetOperation:
+        """Create a materialization set.
+
+        :param materialization_set: :class:`MaterializationSet`
+          The materialization set to create. Supply materialization_set_id to choose the identifier; leave it
+          unset to have one assigned.
+        :param request_id: str (optional)
+          Idempotency token for the request. A second request carrying a token that has already been used
+          returns the operation the first one created, whatever state it reached, and creates no second set.
+          The token is not checked against the rest of the request, so reusing one for a different set returns
+          the original operation rather than an error. Omit it and each request creates its own set.
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = materialization_set.as_dict()
+        query = {}
+        if request_id is not None:
+            query["request_id"] = request_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", "/api/2.0/feature-engineering/materialization-sets", query=query, body=body, headers=headers
+        )
+        operation = Operation.from_dict(res)
+        return CreateMaterializationSetOperation(self, operation)
+
     def create_materialized_feature(self, materialized_feature: MaterializedFeature) -> MaterializedFeature:
         """Create a materialized feature.
 
@@ -11835,6 +12143,51 @@ class FeatureEngineeringAPI:
 
         self._api.do("DELETE", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
 
+    def delete_materialization_set(
+        self, materialization_set_id: str, *, allow_missing: Optional[bool] = None, request_id: Optional[str] = None
+    ) -> DeleteMaterializationSetOperation:
+        """Delete a materialization set and every materialized feature in it. The set is gone afterwards, so a
+        later read returns NOT_FOUND and the set id is free to use again.
+
+        :param materialization_set_id: str
+          The ID of the materialization set to delete.
+        :param allow_missing: bool (optional)
+          Return success instead of NOT_FOUND when the set does not exist, so a repeated destroy is
+          idempotent.
+        :param request_id: str (optional)
+          Idempotency token for the request. A second request carrying a token that has already been used
+          returns the operation the first one created, whatever state it reached, and deletes nothing further.
+          The token is not checked against the rest of the request. Omit it and each request deletes
+          independently.
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+
+        query = {}
+        if allow_missing is not None:
+            query["allow_missing"] = allow_missing
+        if request_id is not None:
+            query["request_id"] = request_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "DELETE",
+            f"/api/2.0/feature-engineering/materialization-sets/{materialization_set_id}",
+            query=query,
+            headers=headers,
+        )
+        operation = Operation.from_dict(res)
+        return DeleteMaterializationSetOperation(self, operation)
+
     def delete_materialized_feature(self, materialized_feature_id: str):
         """Delete a materialized feature.
 
@@ -11915,6 +12268,29 @@ class FeatureEngineeringAPI:
 
         res = self._api.do("GET", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
         return KafkaConfig.from_dict(res)
+
+    def get_materialization_set(self, materialization_set_id: str) -> MaterializationSet:
+        """Get a materialization set and the materialized features in it. A set whose materialized feature
+        members have all been deleted is returned with an empty member list.
+
+        :param materialization_set_id: str
+          The ID of the materialization set.
+
+        :returns: :class:`MaterializationSet`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "GET", f"/api/2.0/feature-engineering/materialization-sets/{materialization_set_id}", headers=headers
+        )
+        return MaterializationSet.from_dict(res)
 
     def get_materialized_feature(self, materialized_feature_id: str) -> MaterializedFeature:
         """Get a materialized feature.
@@ -12147,6 +12523,7 @@ class FeatureEngineeringAPI:
         entities_table: str,
         *,
         budget_policy_id: Optional[str] = None,
+        delete_rows: Optional[bool] = None,
         request_id: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
     ) -> PurgeFeatureEntitiesOperation:
@@ -12154,8 +12531,8 @@ class FeatureEngineeringAPI:
 
         :param features: List[str]
           Fully qualified names of the features to purge. At least one nonempty feature name is required. A
-          request may contain at most 10000 features; submit additional features in separate requests.
-          Duplicate features are rejected.
+          request may contain at most 500 features; submit additional features in separate requests. Duplicate
+          features are rejected.
         :param entities_table: str
           Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge. The table
           may contain a subset of each feature's entity-key columns. A partial key match deletes all feature
@@ -12163,6 +12540,11 @@ class FeatureEngineeringAPI:
         :param budget_policy_id: str (optional)
           The budget policy ID, in UUID format, used to attribute the serverless compute cost of this purge.
           If not specified, a default budget policy may be applied.
+        :param delete_rows: bool (optional)
+          If false feature values are set to null on purge but rows are not deleted. If true then the full
+          rows containing entities are deleted. Defaults to false. When true, the request must include every
+          feature which shares the same ``table_name`` property in their MaterializedFeature. Features from
+          multiple tables may be included if all features materialized in each table are included.
         :param request_id: str (optional)
           Optional UUID4 idempotency token for the request.
         :param tags: Dict[str,str] (optional)
@@ -12181,6 +12563,8 @@ class FeatureEngineeringAPI:
         body = {}
         if budget_policy_id is not None:
             body["budget_policy_id"] = budget_policy_id
+        if delete_rows is not None:
+            body["delete_rows"] = delete_rows
         if entities_table is not None:
             body["entities_table"] = entities_table
         if features is not None:
@@ -12272,6 +12656,60 @@ class FeatureEngineeringAPI:
             headers=headers,
         )
         return KafkaConfig.from_dict(res)
+
+    def update_materialization_set(
+        self,
+        materialization_set_id: str,
+        materialization_set: MaterializationSet,
+        update_mask: FieldMask,
+        *,
+        request_id: Optional[str] = None,
+    ) -> UpdateMaterializationSetOperation:
+        """Update the materialization set's state to match the supplied materialization set. Changes are applied
+        member by member and are not atomic: when one member fails, the error reports which members were
+        already changed.
+
+        :param materialization_set_id: str
+          Server-assigned unique identifier for the materialization set.
+        :param materialization_set: :class:`MaterializationSet`
+          The desired state of the updated materialization set. materialization_set_id selects the set.
+        :param update_mask: FieldMask
+          The fields to update. Only 'materialized_features' is supported.
+        :param request_id: str (optional)
+          Idempotency token for the request. A second request carrying a token that has already been used
+          returns the operation the first one created, whatever state it reached, and changes nothing further.
+          The token is not checked against the rest of the request. Omit it and each request updates
+          independently.
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = materialization_set.as_dict()
+        query = {}
+        if request_id is not None:
+            query["request_id"] = request_id
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/feature-engineering/materialization-sets/{materialization_set_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        operation = Operation.from_dict(res)
+        return UpdateMaterializationSetOperation(self, operation)
 
     def update_materialized_feature(
         self, materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str
@@ -12426,6 +12864,158 @@ class BackfillFeaturesOperation:
         return operation.done
 
 
+class CreateMaterializationSetOperation:
+    """Long-running operation for create_materialization_set"""
+
+    def __init__(self, impl: FeatureEngineeringAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> MaterializationSet:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`MaterializationSet`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            materialization_set = MaterializationSet.from_dict(operation.response)
+
+            return materialization_set, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MaterializationSetOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MaterializationSetOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MaterializationSetOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteMaterializationSetOperation:
+    """Long-running operation for delete_materialization_set"""
+
+    def __init__(self, impl: FeatureEngineeringAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MaterializationSetOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MaterializationSetOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MaterializationSetOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
 class PurgeFeatureEntitiesOperation:
     """Long-running operation for purge_feature_entities"""
 
@@ -12488,6 +13078,83 @@ class PurgeFeatureEntitiesOperation:
             return None
 
         return PurgeFeatureEntitiesMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UpdateMaterializationSetOperation:
+    """Long-running operation for update_materialization_set"""
+
+    def __init__(self, impl: FeatureEngineeringAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> MaterializationSet:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`MaterializationSet`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            materialization_set = MaterializationSet.from_dict(operation.response)
+
+            return materialization_set, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MaterializationSetOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MaterializationSetOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MaterializationSetOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

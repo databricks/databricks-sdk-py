@@ -137,6 +137,46 @@ class ForkSessionResponse:
 
 
 @dataclass
+class GrantMemoryStorePermissionResponse:
+    """Response from granting a permission on a memory store."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GrantMemoryStorePermissionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GrantMemoryStorePermissionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GrantMemoryStorePermissionResponse:
+        """Deserializes the GrantMemoryStorePermissionResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class GrantSessionStorePermissionResponse:
+    """Response from granting a permission on a session store."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GrantSessionStorePermissionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GrantSessionStorePermissionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GrantSessionStorePermissionResponse:
+        """Deserializes the GrantSessionStorePermissionResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class ListManagedMemoryEntriesResponse:
     """Response containing memory entries."""
 
@@ -211,6 +251,43 @@ class ListManagedMemoryStoresResponse:
 
 
 @dataclass
+class ListMemoryStorePermissionsResponse:
+    """A page of explicit memory store permissions."""
+
+    memory_store_permissions: Optional[List[MemoryStorePermission]] = None
+    """Explicit READ or WRITE grants. Implicit owner/admin access and inherited grants are excluded."""
+
+    next_page_token: Optional[str] = None
+    """Token for the next page, omitted when all permissions have been returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListMemoryStorePermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.memory_store_permissions:
+            body["memory_store_permissions"] = [v.as_dict() for v in self.memory_store_permissions]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListMemoryStorePermissionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.memory_store_permissions:
+            body["memory_store_permissions"] = self.memory_store_permissions
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListMemoryStorePermissionsResponse:
+        """Deserializes the ListMemoryStorePermissionsResponse from a dictionary."""
+        return cls(
+            memory_store_permissions=_repeated_dict(d, "memory_store_permissions", MemoryStorePermission),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListSessionItemsResponse:
     """Response containing a page of session items."""
 
@@ -244,6 +321,43 @@ class ListSessionItemsResponse:
         return cls(
             next_page_token=d.get("next_page_token", None),
             session_items=_repeated_dict(d, "session_items", SessionItem),
+        )
+
+
+@dataclass
+class ListSessionStorePermissionsResponse:
+    """A page of explicit session store permissions."""
+
+    next_page_token: Optional[str] = None
+    """Token for the next page, omitted when all permissions have been returned."""
+
+    session_store_permissions: Optional[List[SessionStorePermission]] = None
+    """Explicit READ or WRITE grants. Implicit owner/admin access and inherited grants are excluded."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListSessionStorePermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.session_store_permissions:
+            body["session_store_permissions"] = [v.as_dict() for v in self.session_store_permissions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSessionStorePermissionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.session_store_permissions:
+            body["session_store_permissions"] = self.session_store_permissions
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListSessionStorePermissionsResponse:
+        """Deserializes the ListSessionStorePermissionsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            session_store_permissions=_repeated_dict(d, "session_store_permissions", SessionStorePermission),
         )
 
 
@@ -340,7 +454,8 @@ class ManagedMemoryEntry:
 
     name: Optional[str] = None
     """Resource name in the form
-    ``memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}``."""
+    ``memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}``. Required for
+    updates; assigned by the service on creation."""
 
     session_id: Optional[str] = None
     """Optional identifier for the session associated with this memory entry. When omitted, the entry
@@ -563,6 +678,50 @@ class ManagedMemoryStore:
 
 
 @dataclass
+class MemoryStorePermission:
+    """A principal's permission on a memory store."""
+
+    permission: Optional[PermissionLevel] = None
+    """The permission level. WRITE includes READ; PERMISSION_LEVEL_UNSPECIFIED means neither is
+    available."""
+
+    principal: Optional[StorePrincipal] = None
+    """The principal whose permission is reported."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MemoryStorePermission into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        if self.principal:
+            body["principal"] = self.principal.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MemoryStorePermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        if self.principal:
+            body["principal"] = self.principal
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MemoryStorePermission:
+        """Deserializes the MemoryStorePermission from a dictionary."""
+        return cls(
+            permission=_enum(d, "permission", PermissionLevel), principal=_from_dict(d, "principal", StorePrincipal)
+        )
+
+
+class PermissionLevel(Enum):
+    """Permission level granted on a store. WRITE is a superset of READ."""
+
+    READ = "READ"
+    WRITE = "WRITE"
+
+
+@dataclass
 class PopSessionItemResponse:
     """Response containing the popped item."""
 
@@ -587,6 +746,53 @@ class PopSessionItemResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PopSessionItemResponse:
         """Deserializes the PopSessionItemResponse from a dictionary."""
         return cls(item=_from_dict(d, "item", SessionItem))
+
+
+class PrincipalType(Enum):
+    """The kind of Databricks principal a store permission is granted to."""
+
+    SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
+    USER = "USER"
+
+
+@dataclass
+class RevokeMemoryStorePermissionResponse:
+    """Response from revoking a memory store permission."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RevokeMemoryStorePermissionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RevokeMemoryStorePermissionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RevokeMemoryStorePermissionResponse:
+        """Deserializes the RevokeMemoryStorePermissionResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class RevokeSessionStorePermissionResponse:
+    """Response from revoking a session store permission."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RevokeSessionStorePermissionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RevokeSessionStorePermissionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RevokeSessionStorePermissionResponse:
+        """Deserializes the RevokeSessionStorePermissionResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -851,6 +1057,43 @@ class SessionStore:
 
 
 @dataclass
+class SessionStorePermission:
+    """A principal's permission on a session store."""
+
+    permission: Optional[PermissionLevel] = None
+    """The permission level. WRITE includes READ; PERMISSION_LEVEL_UNSPECIFIED means neither is
+    available."""
+
+    principal: Optional[StorePrincipal] = None
+    """The principal whose permission is reported."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SessionStorePermission into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        if self.principal:
+            body["principal"] = self.principal.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SessionStorePermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        if self.principal:
+            body["principal"] = self.principal
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SessionStorePermission:
+        """Deserializes the SessionStorePermission from a dictionary."""
+        return cls(
+            permission=_enum(d, "permission", PermissionLevel), principal=_from_dict(d, "principal", StorePrincipal)
+        )
+
+
+@dataclass
 class StorageBackend:
     """Service-managed storage backing a memory store."""
 
@@ -888,6 +1131,40 @@ class StorageBackendType(Enum):
     """Type of service-managed storage backing a memory store."""
 
     STORAGE_BACKEND_TYPE_LAKEBASE = "STORAGE_BACKEND_TYPE_LAKEBASE"
+
+
+@dataclass
+class StorePrincipal:
+    """A principal a store permission is granted to. ``name`` is the principal's Lakebase identifier: a
+    user's email or a service principal's application (client) id."""
+
+    name: str
+
+    principal_type: Optional[PrincipalType] = None
+    """The kind of principal. Required unless the deprecated type alias is supplied."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StorePrincipal into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StorePrincipal into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StorePrincipal:
+        """Deserializes the StorePrincipal from a dictionary."""
+        return cls(name=d.get("name", None), principal_type=_enum(d, "principal_type", PrincipalType))
 
 
 class AgentKitAPI:
@@ -1303,6 +1580,27 @@ class AgentKitAPI:
         res = self._api.do("GET", f"/api/2.0/agents/{name}", headers=headers)
         return ManagedMemoryStore.from_dict(res)
 
+    def get_memory_store_permission(self, name: str) -> MemoryStorePermission:
+        """Retrieves the current caller's effective memory store permission. Returns PERMISSION_LEVEL_UNSPECIFIED
+        when the caller has no access.
+
+        :param name: str
+          Resource name in the form ``memory-stores/{managed_memory_store_id}``.
+
+        :returns: :class:`MemoryStorePermission`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/agents/{name}/permissions/self", headers=headers)
+        return MemoryStorePermission.from_dict(res)
+
     def get_session(self, name: str) -> Session:
         """Gets a session by resource name.
 
@@ -1342,6 +1640,93 @@ class AgentKitAPI:
 
         res = self._api.do("GET", f"/api/2.0/agents/{name}", headers=headers)
         return SessionStore.from_dict(res)
+
+    def get_session_store_permission(self, name: str) -> SessionStorePermission:
+        """Retrieves the current caller's effective session store permission. Returns
+        PERMISSION_LEVEL_UNSPECIFIED when the caller has no access.
+
+        :param name: str
+          Resource name in the form ``session-stores/{session_store_id}``.
+
+        :returns: :class:`SessionStorePermission`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/agents/{name}/permissions/self", headers=headers)
+        return SessionStorePermission.from_dict(res)
+
+    def grant_memory_store_permission(
+        self, name: str, principal: StorePrincipal, permission: PermissionLevel
+    ) -> GrantMemoryStorePermissionResponse:
+        """Grants a READ or WRITE permission on a memory store to a principal. Only the owner or a workspace
+        admin may grant permissions.
+
+        :param name: str
+          Resource name in the form ``memory-stores/{managed_memory_store_id}``.
+        :param principal: :class:`StorePrincipal`
+          Principal to grant the permission to.
+        :param permission: :class:`PermissionLevel`
+          Permission level to grant.
+
+        :returns: :class:`GrantMemoryStorePermissionResponse`
+        """
+
+        body = {}
+        if permission is not None:
+            body["permission"] = permission.value
+        if principal is not None:
+            body["principal"] = principal.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/agents/{name}/permissions:grant", body=body, headers=headers)
+        return GrantMemoryStorePermissionResponse.from_dict(res)
+
+    def grant_session_store_permission(
+        self, name: str, principal: StorePrincipal, permission: PermissionLevel
+    ) -> GrantSessionStorePermissionResponse:
+        """Grants a READ or WRITE permission on a session store to a principal. Only the owner or a workspace
+        admin may grant permissions.
+
+        :param name: str
+          Resource name in the form ``session-stores/{session_store_id}``.
+        :param principal: :class:`StorePrincipal`
+          Principal to grant the permission to.
+        :param permission: :class:`PermissionLevel`
+          Permission level to grant.
+
+        :returns: :class:`GrantSessionStorePermissionResponse`
+        """
+
+        body = {}
+        if permission is not None:
+            body["permission"] = permission.value
+        if principal is not None:
+            body["principal"] = principal.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/agents/{name}/permissions:grant", body=body, headers=headers)
+        return GrantSessionStorePermissionResponse.from_dict(res)
 
     def list_memories(
         self,
@@ -1404,6 +1789,43 @@ class AgentKitAPI:
             if "managed_memory_entries" in json:
                 for v in json["managed_memory_entries"]:
                     yield ManagedMemoryEntry.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_memory_store_permissions(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[MemoryStorePermission]:
+        """Lists explicit memory store grants. Only the owner or a workspace admin may list permissions.
+
+        :param parent: str
+          Resource name of the store, in the form ``memory-stores/{managed_memory_store_id}``.
+        :param page_size: int (optional)
+          Maximum number of permissions to return. Defaults to 100; maximum is 1000.
+        :param page_token: str (optional)
+          Continuation token from a previous response.
+
+        :returns: Iterator over :class:`MemoryStorePermission`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/agents/{parent}/permissions", query=query, headers=headers)
+            if "memory_store_permissions" in json:
+                for v in json["memory_store_permissions"]:
+                    yield MemoryStorePermission.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -1489,6 +1911,43 @@ class AgentKitAPI:
             if "session_items" in json:
                 for v in json["session_items"]:
                     yield SessionItem.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_session_store_permissions(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[SessionStorePermission]:
+        """Lists explicit session store grants. Only the owner or a workspace admin may list permissions.
+
+        :param parent: str
+          Resource name of the store, in the form ``session-stores/{session_store_id}``.
+        :param page_size: int (optional)
+          Maximum number of permissions to return. Defaults to 100; maximum is 1000.
+        :param page_token: str (optional)
+          Continuation token from a previous response.
+
+        :returns: Iterator over :class:`SessionStorePermission`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/agents/{parent}/permissions", query=query, headers=headers)
+            if "session_store_permissions" in json:
+                for v in json["session_store_permissions"]:
+                    yield SessionStorePermission.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -1606,6 +2065,64 @@ class AgentKitAPI:
         res = self._api.do("POST", f"/api/2.0/agents/{parent}/items:pop", body=body, headers=headers)
         return PopSessionItemResponse.from_dict(res)
 
+    def revoke_memory_store_permission(
+        self, name: str, principal: StorePrincipal
+    ) -> RevokeMemoryStorePermissionResponse:
+        """Removes a principal's explicit READ and WRITE grants on a memory store. Only the owner or a workspace
+        admin may revoke permissions. Ownership and inherited access are unaffected.
+
+        :param name: str
+          Resource name in the form ``memory-stores/{managed_memory_store_id}``.
+        :param principal: :class:`StorePrincipal`
+          Principal whose READ and WRITE grants will be removed.
+
+        :returns: :class:`RevokeMemoryStorePermissionResponse`
+        """
+
+        body = {}
+        if principal is not None:
+            body["principal"] = principal.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/agents/{name}/permissions:revoke", body=body, headers=headers)
+        return RevokeMemoryStorePermissionResponse.from_dict(res)
+
+    def revoke_session_store_permission(
+        self, name: str, principal: StorePrincipal
+    ) -> RevokeSessionStorePermissionResponse:
+        """Removes a principal's explicit READ and WRITE grants on a session store. Only the owner or a workspace
+        admin may revoke permissions. Ownership and inherited access are unaffected.
+
+        :param name: str
+          Resource name in the form ``session-stores/{session_store_id}``.
+        :param principal: :class:`StorePrincipal`
+          Principal whose READ and WRITE grants will be removed.
+
+        :returns: :class:`RevokeSessionStorePermissionResponse`
+        """
+
+        body = {}
+        if principal is not None:
+            body["principal"] = principal.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/agents/{name}/permissions:revoke", body=body, headers=headers)
+        return RevokeSessionStorePermissionResponse.from_dict(res)
+
     def search_memories(
         self,
         parent: str,
@@ -1690,7 +2207,8 @@ class AgentKitAPI:
 
         :param name: str
           Resource name in the form
-          ``memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}``.
+          ``memory-stores/{managed_memory_store_id}/entries/{managed_memory_entry_id}``. Required for updates;
+          assigned by the service on creation.
         :param managed_memory_entry: :class:`ManagedMemoryEntry`
           The memory entry to update.
         :param update_mask: FieldMask

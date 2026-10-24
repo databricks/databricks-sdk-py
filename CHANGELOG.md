@@ -1,5 +1,23 @@
 # Version changelog
 
+## Release v0.157.0 (2026-10-24)
+
+### API Changes
+* Add `get_memory_store_permission()`, `get_session_store_permission()`, `grant_memory_store_permission()`, `grant_session_store_permission()`, `list_memory_store_permissions()`, `list_session_store_permissions()`, `revoke_memory_store_permission()` and `revoke_session_store_permission()` methods for [w.agent_kit](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/agentkit/agent_kit.html) workspace-level service.
+* Add `create_materialization_set()`, `delete_materialization_set()`, `get_materialization_set()` and `update_materialization_set()` methods for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service.
+* Add `notification_settings` field for `databricks.sdk.service.dataquality.AnomalyDetectionConfig`.
+* Add `destination_ids` and `destination_user_ids` fields for `databricks.sdk.service.dataquality.NotificationDestination`.
+* Add `on_unhealthy_table` field for `databricks.sdk.service.dataquality.NotificationSettings`.
+* Add `file_output` field for `databricks.sdk.service.jobs.SqlOutput`.
+* Add `materialization_set_id` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `delete_rows` field for `databricks.sdk.service.ml.PurgeFeatureEntitiesRequest`.
+* Add `full_refresh_selection_by_path` and `refresh_selection_by_path` fields for `databricks.sdk.service.pipelines.StartUpdate`.
+* Add `full_refresh_selection_by_path` and `refresh_selection_by_path` fields for `databricks.sdk.service.pipelines.UpdateInfo`.
+* Add `metadata` field for `databricks.sdk.service.sandbox.Sandbox`.
+
+### Security
+* Require certifi 2026.10.19 or newer to use an updated CA trust bundle.
+
 ## Release v0.156.0 (2026-10-22)
 
 ### API Changes

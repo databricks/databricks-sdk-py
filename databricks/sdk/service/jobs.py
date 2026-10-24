@@ -8152,6 +8152,9 @@ class SqlOutput:
     dashboard_output: Optional[SqlDashboardOutput] = None
     """The output of a SQL dashboard task, if available."""
 
+    file_output: Optional[SqlTaskSqlFileOutput] = None
+    """The output of a SQL file task, if available."""
+
     query_output: Optional[SqlQueryOutput] = None
     """The output of a SQL query task, if available."""
 
@@ -8162,6 +8165,8 @@ class SqlOutput:
             body["alert_output"] = self.alert_output.as_dict()
         if self.dashboard_output:
             body["dashboard_output"] = self.dashboard_output.as_dict()
+        if self.file_output:
+            body["file_output"] = self.file_output.as_dict()
         if self.query_output:
             body["query_output"] = self.query_output.as_dict()
         return body
@@ -8173,6 +8178,8 @@ class SqlOutput:
             body["alert_output"] = self.alert_output
         if self.dashboard_output:
             body["dashboard_output"] = self.dashboard_output
+        if self.file_output:
+            body["file_output"] = self.file_output
         if self.query_output:
             body["query_output"] = self.query_output
         return body
@@ -8183,6 +8190,7 @@ class SqlOutput:
         return cls(
             alert_output=_from_dict(d, "alert_output", SqlAlertOutput),
             dashboard_output=_from_dict(d, "dashboard_output", SqlDashboardOutput),
+            file_output=_from_dict(d, "file_output", SqlTaskSqlFileOutput),
             query_output=_from_dict(d, "query_output", SqlQueryOutput),
         )
 
@@ -8217,7 +8225,7 @@ class SqlQueryOutput:
     endpoint_id: Optional[str] = None
 
     output_link: Optional[str] = None
-    """The link to find the output results."""
+    """Deprecated. The link to find the output results, which are only accessible from the UI."""
 
     query_text: Optional[str] = None
     """The text of the SQL query. Can Run permission of the SQL query is required to view this field."""
@@ -8293,6 +8301,124 @@ class SqlStatementOutput:
     def from_dict(cls, d: Dict[str, Any]) -> SqlStatementOutput:
         """Deserializes the SqlStatementOutput from a dictionary."""
         return cls(lookup_key=d.get("lookup_key", None))
+
+
+@dataclass
+class SqlStatementQueryResult:
+    columns: Optional[List[SqlStatementQueryResultColumn]] = None
+    """The metadata for each column in the result set."""
+
+    rows: Optional[List[SqlStatementQueryResultRow]] = None
+    """The rows returned by the query."""
+
+    truncated: Optional[bool] = None
+    """Whether the result set was truncated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SqlStatementQueryResult into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns:
+            body["columns"] = [v.as_dict() for v in self.columns]
+        if self.rows:
+            body["rows"] = [v.as_dict() for v in self.rows]
+        if self.truncated is not None:
+            body["truncated"] = self.truncated
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlStatementQueryResult into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns:
+            body["columns"] = self.columns
+        if self.rows:
+            body["rows"] = self.rows
+        if self.truncated is not None:
+            body["truncated"] = self.truncated
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SqlStatementQueryResult:
+        """Deserializes the SqlStatementQueryResult from a dictionary."""
+        return cls(
+            columns=_repeated_dict(d, "columns", SqlStatementQueryResultColumn),
+            rows=_repeated_dict(d, "rows", SqlStatementQueryResultRow),
+            truncated=d.get("truncated", None),
+        )
+
+
+@dataclass
+class SqlStatementQueryResultColumn:
+    name: Optional[str] = None
+    """The name of the column."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SqlStatementQueryResultColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlStatementQueryResultColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SqlStatementQueryResultColumn:
+        """Deserializes the SqlStatementQueryResultColumn from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class SqlStatementQueryResultRow:
+    values: Optional[List[SqlStatementQueryResultRowRowValue]] = None
+    """The values in the row, ordered to match the columns."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SqlStatementQueryResultRow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.values:
+            body["values"] = [v.as_dict() for v in self.values]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlStatementQueryResultRow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.values:
+            body["values"] = self.values
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SqlStatementQueryResultRow:
+        """Deserializes the SqlStatementQueryResultRow from a dictionary."""
+        return cls(values=_repeated_dict(d, "values", SqlStatementQueryResultRowRowValue))
+
+
+@dataclass
+class SqlStatementQueryResultRowRowValue:
+    string_value: Optional[str] = None
+    """The value rendered as a string."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SqlStatementQueryResultRowRowValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.string_value is not None:
+            body["string_value"] = self.string_value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlStatementQueryResultRowRowValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.string_value is not None:
+            body["string_value"] = self.string_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SqlStatementQueryResultRowRowValue:
+        """Deserializes the SqlStatementQueryResultRowRowValue from a dictionary."""
+        return cls(string_value=d.get("string_value", None))
 
 
 @dataclass
@@ -8521,6 +8647,57 @@ class SqlTaskQuery:
     def from_dict(cls, d: Dict[str, Any]) -> SqlTaskQuery:
         """Deserializes the SqlTaskQuery from a dictionary."""
         return cls(query_id=d.get("query_id", None))
+
+
+@dataclass
+class SqlTaskSqlFileOutput:
+    query_result: Optional[SqlStatementQueryResult] = None
+    """The result of the executed SQL statement, if available."""
+
+    query_text: Optional[str] = None
+    """The text of the SQL query."""
+
+    sql_statements: Optional[List[SqlStatementOutput]] = None
+    """Information about SQL statements executed in the run."""
+
+    warehouse_id: Optional[str] = None
+    """The canonical identifier of the SQL warehouse."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SqlTaskSqlFileOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.query_result:
+            body["query_result"] = self.query_result.as_dict()
+        if self.query_text is not None:
+            body["query_text"] = self.query_text
+        if self.sql_statements:
+            body["sql_statements"] = [v.as_dict() for v in self.sql_statements]
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlTaskSqlFileOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.query_result:
+            body["query_result"] = self.query_result
+        if self.query_text is not None:
+            body["query_text"] = self.query_text
+        if self.sql_statements:
+            body["sql_statements"] = self.sql_statements
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskSqlFileOutput:
+        """Deserializes the SqlTaskSqlFileOutput from a dictionary."""
+        return cls(
+            query_result=_from_dict(d, "query_result", SqlStatementQueryResult),
+            query_text=d.get("query_text", None),
+            sql_statements=_repeated_dict(d, "sql_statements", SqlStatementOutput),
+            warehouse_id=d.get("warehouse_id", None),
+        )
 
 
 @dataclass

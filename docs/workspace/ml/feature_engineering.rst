@@ -70,6 +70,22 @@
         :returns: :class:`KafkaConfig`
         
 
+    .. py:method:: create_materialization_set(materialization_set: MaterializationSet [, request_id: Optional[str]]) -> CreateMaterializationSetOperation
+
+        Create a materialization set.
+
+        :param materialization_set: :class:`MaterializationSet`
+          The materialization set to create. Supply materialization_set_id to choose the identifier; leave it
+          unset to have one assigned.
+        :param request_id: str (optional)
+          Idempotency token for the request. A second request carrying a token that has already been used
+          returns the operation the first one created, whatever state it reached, and creates no second set.
+          The token is not checked against the rest of the request, so reusing one for a different set returns
+          the original operation rather than an error. Omit it and each request creates its own set.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: create_materialized_feature(materialized_feature: MaterializedFeature) -> MaterializedFeature
 
         Create a materialized feature.
@@ -111,6 +127,25 @@
 
         
 
+    .. py:method:: delete_materialization_set(materialization_set_id: str [, allow_missing: Optional[bool], request_id: Optional[str]]) -> DeleteMaterializationSetOperation
+
+        Delete a materialization set and every materialized feature in it. The set is gone afterwards, so a
+        later read returns NOT_FOUND and the set id is free to use again.
+
+        :param materialization_set_id: str
+          The ID of the materialization set to delete.
+        :param allow_missing: bool (optional)
+          Return success instead of NOT_FOUND when the set does not exist, so a repeated destroy is
+          idempotent.
+        :param request_id: str (optional)
+          Idempotency token for the request. A second request carrying a token that has already been used
+          returns the operation the first one created, whatever state it reached, and deletes nothing further.
+          The token is not checked against the rest of the request. Omit it and each request deletes
+          independently.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: delete_materialized_feature(materialized_feature_id: str)
 
         Delete a materialized feature.
@@ -150,6 +185,17 @@
           Name of the Kafka config to get.
 
         :returns: :class:`KafkaConfig`
+        
+
+    .. py:method:: get_materialization_set(materialization_set_id: str) -> MaterializationSet
+
+        Get a materialization set and the materialized features in it. A set whose materialized feature
+        members have all been deleted is returned with an empty member list.
+
+        :param materialization_set_id: str
+          The ID of the materialization set.
+
+        :returns: :class:`MaterializationSet`
         
 
     .. py:method:: get_materialized_feature(materialized_feature_id: str) -> MaterializedFeature
@@ -241,14 +287,14 @@
         :returns: Iterator over :class:`Stream`
         
 
-    .. py:method:: purge_feature_entities(features: List[str], entities_table: str [, budget_policy_id: Optional[str], request_id: Optional[str], tags: Optional[Dict[str, str]]]) -> PurgeFeatureEntitiesOperation
+    .. py:method:: purge_feature_entities(features: List[str], entities_table: str [, budget_policy_id: Optional[str], delete_rows: Optional[bool], request_id: Optional[str], tags: Optional[Dict[str, str]]]) -> PurgeFeatureEntitiesOperation
 
         Purge materialized feature values for specified entities.
 
         :param features: List[str]
           Fully qualified names of the features to purge. At least one nonempty feature name is required. A
-          request may contain at most 10000 features; submit additional features in separate requests.
-          Duplicate features are rejected.
+          request may contain at most 500 features; submit additional features in separate requests. Duplicate
+          features are rejected.
         :param entities_table: str
           Fully qualified name of the Unity Catalog Delta table containing the entity keys to purge. The table
           may contain a subset of each feature's entity-key columns. A partial key match deletes all feature
@@ -256,6 +302,11 @@
         :param budget_policy_id: str (optional)
           The budget policy ID, in UUID format, used to attribute the serverless compute cost of this purge.
           If not specified, a default budget policy may be applied.
+        :param delete_rows: bool (optional)
+          If false feature values are set to null on purge but rows are not deleted. If true then the full
+          rows containing entities are deleted. Defaults to false. When true, the request must include every
+          feature which shares the same ``table_name`` property in their MaterializedFeature. Features from
+          multiple tables may be included if all features materialized in each table are included.
         :param request_id: str (optional)
           Optional UUID4 idempotency token for the request.
         :param tags: Dict[str,str] (optional)
@@ -298,6 +349,27 @@
           The list of fields to update.
 
         :returns: :class:`KafkaConfig`
+        
+
+    .. py:method:: update_materialization_set(materialization_set_id: str, materialization_set: MaterializationSet, update_mask: FieldMask [, request_id: Optional[str]]) -> UpdateMaterializationSetOperation
+
+        Update the materialization set's state to match the supplied materialization set. Changes are applied
+        member by member and are not atomic: when one member fails, the error reports which members were
+        already changed.
+
+        :param materialization_set_id: str
+          Server-assigned unique identifier for the materialization set.
+        :param materialization_set: :class:`MaterializationSet`
+          The desired state of the updated materialization set. materialization_set_id selects the set.
+        :param update_mask: FieldMask
+          The fields to update. Only 'materialized_features' is supported.
+        :param request_id: str (optional)
+          Idempotency token for the request. A second request carrying a token that has already been used
+          returns the operation the first one created, whatever state it reached, and changes nothing further.
+          The token is not checked against the rest of the request. Omit it and each request updates
+          independently.
+
+        :returns: :class:`Operation`
         
 
     .. py:method:: update_materialized_feature(materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str) -> MaterializedFeature

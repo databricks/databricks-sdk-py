@@ -432,6 +432,9 @@ class Sandbox:
     display_name: Optional[str] = None
     """Human-readable display label for the sandbox. At most 256 characters."""
 
+    metadata: Optional[SandboxMetadata] = None
+    """Metadata associated with the sandbox."""
+
     name: Optional[str] = None
     """The sandbox resource name, in the form ``sandboxes/{sandbox_id}``. Derived from ``sandbox_id``;
     any value supplied in a create or update request body is ignored."""
@@ -452,6 +455,8 @@ class Sandbox:
             body["create_time"] = self.create_time.ToJsonString()
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.metadata:
+            body["metadata"] = self.metadata.as_dict()
         if self.name is not None:
             body["name"] = self.name
         if self.spec:
@@ -469,6 +474,8 @@ class Sandbox:
             body["create_time"] = self.create_time
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.metadata:
+            body["metadata"] = self.metadata
         if self.name is not None:
             body["name"] = self.name
         if self.spec:
@@ -485,6 +492,7 @@ class Sandbox:
         return cls(
             create_time=_timestamp(d, "create_time"),
             display_name=d.get("display_name", None),
+            metadata=_from_dict(d, "metadata", SandboxMetadata),
             name=d.get("name", None),
             spec=_from_dict(d, "spec", SandboxSpec),
             status=_from_dict(d, "status", SandboxStatus),
@@ -591,6 +599,34 @@ class SandboxFileType(Enum):
     SANDBOX_FILE_TYPE_FILE = "SANDBOX_FILE_TYPE_FILE"
     SANDBOX_FILE_TYPE_OTHER = "SANDBOX_FILE_TYPE_OTHER"
     SANDBOX_FILE_TYPE_SYMLINK = "SANDBOX_FILE_TYPE_SYMLINK"
+
+
+@dataclass
+class SandboxMetadata:
+    """Metadata associated with a sandbox."""
+
+    custom_tags: Optional[Dict[str, str]] = None
+    """Key-value tags associated with the sandbox. Supports up to 54 tags. Keys must be between 1 and
+    512 characters, and values must not exceed 256 characters."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SandboxMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SandboxMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SandboxMetadata:
+        """Deserializes the SandboxMetadata from a dictionary."""
+        return cls(custom_tags=d.get("custom_tags", None))
 
 
 @dataclass
