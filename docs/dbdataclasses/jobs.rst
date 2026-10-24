@@ -1088,6 +1088,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SqlStatementQueryResult
+   :members:
+   :undoc-members:
+
+.. autoclass:: SqlStatementQueryResultColumn
+   :members:
+   :undoc-members:
+
+.. autoclass:: SqlStatementQueryResultRow
+   :members:
+   :undoc-members:
+
+.. autoclass:: SqlStatementQueryResultRowRowValue
+   :members:
+   :undoc-members:
+
 .. autoclass:: SqlTask
    :members:
    :undoc-members:
@@ -1105,6 +1121,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SqlTaskQuery
+   :members:
+   :undoc-members:
+
+.. autoclass:: SqlTaskSqlFileOutput
    :members:
    :undoc-members:
 

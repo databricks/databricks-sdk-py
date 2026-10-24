@@ -2076,8 +2076,9 @@ class SharedDataObject:
     string_shared_as: Optional[str] = None
     """A user-provided alias name for non-table data objects within the share.
     
-    Use this field for non-table objects (for example: VOLUME, MODEL, NOTEBOOK_FILE, FUNCTION). For
-    table-like objects (for example: TABLE, VIEW, MATERIALIZED_VIEW, STREAMING_TABLE,
+    Use this field for non-table objects (for example: VOLUME, MODEL, NOTEBOOK_FILE, FUNCTION).
+    
+    For table-like objects (for example: TABLE, VIEW, MATERIALIZED_VIEW, STREAMING_TABLE,
     FOREIGN_TABLE), use ``shared_as`` instead.
     
     Important: For table-like objects, this field must be omitted entirely.

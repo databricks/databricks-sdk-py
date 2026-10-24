@@ -20,6 +20,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GrantMemoryStorePermissionResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GrantSessionStorePermissionResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListManagedMemoryEntriesResponse
    :members:
    :undoc-members:
@@ -28,7 +36,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListMemoryStorePermissionsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListSessionItemsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListSessionStorePermissionsResponse
    :members:
    :undoc-members:
 
@@ -72,7 +88,39 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MemoryStorePermission
+   :members:
+   :undoc-members:
+
+.. py:class:: PermissionLevel
+
+   Permission level granted on a store. WRITE is a superset of READ.
+
+   .. py:attribute:: READ
+      :value: "READ"
+
+   .. py:attribute:: WRITE
+      :value: "WRITE"
+
 .. autoclass:: PopSessionItemResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: PrincipalType
+
+   The kind of Databricks principal a store permission is granted to.
+
+   .. py:attribute:: SERVICE_PRINCIPAL
+      :value: "SERVICE_PRINCIPAL"
+
+   .. py:attribute:: USER
+      :value: "USER"
+
+.. autoclass:: RevokeMemoryStorePermissionResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: RevokeSessionStorePermissionResponse
    :members:
    :undoc-members:
 
@@ -92,6 +140,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SessionStorePermission
+   :members:
+   :undoc-members:
+
 .. autoclass:: StorageBackend
    :members:
    :undoc-members:
@@ -102,3 +154,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: STORAGE_BACKEND_TYPE_LAKEBASE
       :value: "STORAGE_BACKEND_TYPE_LAKEBASE"
+
+.. autoclass:: StorePrincipal
+   :members:
+   :undoc-members:

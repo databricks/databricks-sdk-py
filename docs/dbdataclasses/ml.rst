@@ -1043,11 +1043,50 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MaterializationSet
+   :members:
+   :undoc-members:
+
+.. autoclass:: MaterializationSetDeletionProgress
+   :members:
+   :undoc-members:
+
+.. autoclass:: MaterializationSetOperationMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: MaterializationSetOperationMetadataState
+
+   Lifecycle state of a materialization set operation.
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
+
+.. autoclass:: MaterializationSetUpdateProgress
+   :members:
+   :undoc-members:
+
 .. autoclass:: MaterializationSuccessNotification
    :members:
    :undoc-members:
 
 .. autoclass:: MaterializedFeature
+   :members:
+   :undoc-members:
+
+.. autoclass:: MaterializedFeatureChangeFailure
    :members:
    :undoc-members:
 

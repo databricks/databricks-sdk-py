@@ -85,6 +85,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SANDBOX_FILE_TYPE_SYMLINK
       :value: "SANDBOX_FILE_TYPE_SYMLINK"
 
+.. autoclass:: SandboxMetadata
+   :members:
+   :undoc-members:
+
 .. autoclass:: SandboxSpec
    :members:
    :undoc-members:

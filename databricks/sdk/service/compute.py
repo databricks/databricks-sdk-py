@@ -3686,7 +3686,10 @@ class Environment:
     example: ``/Volumes/path/to/test.jar``."""
 
     project_environment: Optional[str] = None
-    """File path of pyproject.toml file that defines the project-scoped environment."""
+    """Path to the ``pyproject.toml`` file that defines the project environment. This field cannot be
+    combined with ``environment_version``, ``base_environment``, dependency fields, or any other
+    environment-source fields. Set the environment version and dependencies in ``pyproject.toml``
+    instead. For more information, see the serverless dependencies documentation."""
 
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
