@@ -3,8 +3,6 @@ import json
 import os
 import pathlib
 import platform
-import random
-import string
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler
 
@@ -96,76 +94,13 @@ def write_small_dummy_executable(path: pathlib.Path):
     return cli
 
 
-def write_large_dummy_executable(path: pathlib.Path):
-    cli = path.joinpath("databricks")
-
-    # Generate a long random string to inflate the file size.
-    random_string = "".join(random.choice(string.ascii_letters) for i in range(1024 * 1024))
-    cli.write_text(
-        """#!/bin/sh
-cat <<EOF
-{
-"access_token": "token",
-"token_type": "Bearer",
-"expiry": "2023-05-22T00:00:00.000000+00:00"
-}
-EOF
-exit 0
-"""
-        + random_string
-    )
-    cli.chmod(0o755)
-    assert cli.stat().st_size >= (1024 * 1024)
-    return cli
-
-
-def test_databricks_cli_token_source_installed_legacy(config, monkeypatch, tmp_path):
+def test_databricks_cli_token_source_installed_small_shim(config, monkeypatch, tmp_path, mocker):
     write_small_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", tmp_path.as_posix())
-    with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
-        DatabricksCliTokenSource(config)
-
-
-def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monkeypatch, tmp_path):
-    dir1 = tmp_path.joinpath("dir1")
-    dir2 = tmp_path.joinpath("dir2")
-    dir1.mkdir()
-    dir2.mkdir()
-
-    if platform.system() == "Windows":
-        (dir1 / "databricks.exe").symlink_to(write_small_dummy_executable(dir2))
-    else:
-        (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
-
-    path = pathlib.Path(dir1)
-    path = str(path)
-    monkeypatch.setenv("PATH", path)
-
-    with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
-        DatabricksCliTokenSource(config)
-
-
-def test_databricks_cli_token_source_installed_new(config, monkeypatch, tmp_path):
-    write_large_dummy_executable(tmp_path)
-    monkeypatch.setenv("PATH", tmp_path.as_posix())
-    DatabricksCliTokenSource(config)
-
-
-def test_databricks_cli_token_source_installed_both(config, monkeypatch, tmp_path):
-    dir1 = tmp_path.joinpath("dir1")
-    dir2 = tmp_path.joinpath("dir2")
-    dir1.mkdir()
-    dir2.mkdir()
-
-    write_small_dummy_executable(dir1)
-    write_large_dummy_executable(dir2)
-
-    # Resolve small before large.
-    monkeypatch.setenv("PATH", str(os.pathsep).join([dir1.as_posix(), dir2.as_posix()]))
-    DatabricksCliTokenSource(config)
-
-    # Resolve large before small.
-    monkeypatch.setenv("PATH", str(os.pathsep).join([dir2.as_posix(), dir1.as_posix()]))
+    mocker.patch(
+        "databricks.sdk.credentials_provider._run_subprocess",
+        return_value=mocker.Mock(stdout=b'{"Major": 0, "Minor": 300, "Patch": 0}'),
+    )
     DatabricksCliTokenSource(config)
 
 
@@ -174,13 +109,21 @@ def test_databricks_cli_credential_provider_not_installed(config, monkeypatch):
     assert databricks_cli(config) is None
 
 
-def test_databricks_cli_credential_provider_installed_legacy(config, monkeypatch, tmp_path):
+def test_databricks_cli_credential_provider_installed_small_shim(config, monkeypatch, tmp_path, mocker):
+    mocker.patch(
+        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        return_value=Token(
+            access_token="token",
+            token_type="Bearer",
+            expiry=datetime(2023, 5, 22, 0, 0, 0),
+        ),
+    )
     write_small_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", tmp_path.as_posix())
-    assert databricks_cli(config) is None
+    assert databricks_cli(config) is not None
 
 
-def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path, mocker):
+def test_databricks_cli_credential_provider_installed_with_existing_path(config, monkeypatch, tmp_path, mocker):
     get_mock = mocker.patch(
         "databricks.sdk.credentials_provider.CliTokenSource.refresh",
         return_value=Token(
@@ -189,7 +132,7 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
             expiry=datetime(2023, 5, 22, 0, 0, 0),
         ),
     )
-    write_large_dummy_executable(tmp_path)
+    write_small_dummy_executable(tmp_path)
     path = str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]])
     path = pathlib.Path(path)
     path = str(path)
@@ -241,7 +184,7 @@ def test_databricks_cli_scope_validation(
         "databricks.sdk.credentials_provider.CliTokenSource.refresh",
         return_value=Token(access_token=_make_jwt(token_claims), token_type="Bearer", expiry=datetime(2023, 5, 22)),
     )
-    write_large_dummy_executable(tmp_path)
+    write_small_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
     if configured_scopes is not None:
         # sorted() to match _parse_scopes transform applied during real Config construction
@@ -265,7 +208,7 @@ def test_databricks_cli_scope_validation_error_message(config, monkeypatch, tmp_
             access_token=_make_jwt({"scope": "all-apis"}), token_type="Bearer", expiry=datetime(2023, 5, 22)
         ),
     )
-    write_large_dummy_executable(tmp_path)
+    write_small_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
     # sorted() to match _parse_scopes transform applied during real Config construction
     config.scopes = sorted(["sql", "offline_access"])

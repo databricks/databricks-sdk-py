@@ -1,3 +1,5 @@
+import os
+import subprocess
 from datetime import datetime, timedelta
 from unittest.mock import Mock
 from urllib.parse import parse_qs
@@ -705,6 +707,18 @@ def test_parse_cli_version(output, expected):
 
 
 @pytest.mark.parametrize(
+    "output,expected",
+    [
+        ("Version 0.18.1", _CV(0, 18, 1)),
+        ("Version 0.18.1.dev0", _CV(0, 18, 1)),
+        ("databricks-cli, version 0.18.1", _CV()),
+    ],
+)
+def test_parse_legacy_cli_version(output, expected):
+    assert credentials_provider.DatabricksCliTokenSource._parse_legacy_cli_version(output) == expected
+
+
+@pytest.mark.parametrize(
     "a,b,ordering",
     [
         (_CV(0, 207, 1), _CV(0, 207, 1), "=="),
@@ -910,6 +924,36 @@ def _stub_version_output(mocker, output: str):
     )
 
 
+def test_probe_cli_version_falls_back_to_legacy_cli_version(mocker):
+    mock_run = mocker.patch(
+        "databricks.sdk.credentials_provider._run_subprocess",
+        side_effect=[
+            subprocess.CalledProcessError(2, [_CLI, "version", "--output", "json"]),
+            Mock(stdout=b"Version 0.18.1.dev0\n"),
+        ],
+    )
+    assert credentials_provider.DatabricksCliTokenSource._probe_cli_version(_CLI) == _CV(0, 18, 1)
+    assert mock_run.call_count == 2
+
+
+def test_find_executable_skips_legacy_cli_before_modern_cli(monkeypatch, mocker, tmp_path):
+    legacy_dir = tmp_path / "legacy"
+    modern_dir = tmp_path / "modern"
+    legacy_dir.mkdir()
+    modern_dir.mkdir()
+    (legacy_dir / "databricks").touch()
+    modern_cli = modern_dir / "databricks"
+    modern_cli.touch()
+    monkeypatch.setenv("PATH", os.pathsep.join([str(legacy_dir), str(modern_dir)]))
+    mocker.patch.object(
+        credentials_provider.DatabricksCliTokenSource,
+        "_get_cli_version",
+        side_effect=[_CV(0, 18, 1), _CV(0, 300, 0)],
+    )
+
+    assert credentials_provider.DatabricksCliTokenSource._find_executable("databricks") == str(modern_cli.resolve())
+
+
 def test_resolve_cli_command_dev_build_logs_info_and_falls_back(mocker, caplog):
     import logging
 
@@ -924,6 +968,18 @@ def test_resolve_cli_command_dev_build_logs_info_and_falls_back(mocker, caplog):
     # back to --host.
     assert cmd == [_CLI, "auth", "token", "--host", _HOST]
     assert any("development build" in rec.message and rec.levelname == "INFO" for rec in caplog.records)
+
+
+def test_resolve_cli_command_rejects_confirmed_legacy_cli(mocker):
+    mocker.patch(
+        "databricks.sdk.credentials_provider._run_subprocess",
+        side_effect=[
+            subprocess.CalledProcessError(2, [_CLI, "version", "--output", "json"]),
+            Mock(stdout=b"Version 0.18.1.dev0\n"),
+        ],
+    )
+    with pytest.raises(FileNotFoundError, match=r"version <0.100.0 detected"):
+        credentials_provider.DatabricksCliTokenSource._resolve_cli_command(_CLI, _make_cfg(host=_HOST))
 
 
 def test_resolve_cli_command_version_detection_failure_logs_warning(mocker, caplog):
