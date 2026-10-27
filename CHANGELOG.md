@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.157.1 (2026-10-27)
+
+### Bug Fixes
+* Fix `WorkspaceClient.files.download_to` with `use_parallel=True` always falling back to the Files API for files above the parallel download threshold, instead of downloading byte ranges from presigned URLs (or from the storage proxy when `experimental_files_ext_enable_storage_proxy` is set). A byte range that fails after another range was received now raises, and expired GCP presigned URLs are refreshed like AWS and Azure ones.
+* Fix `WorkspaceClient.files.download_to` with `use_parallel=True` requesting the wrong path from the Files API when the file path contains characters such as `#`, `?` or `%`.
+
 ## Release v0.157.0 (2026-10-24)
 
 ### API Changes
