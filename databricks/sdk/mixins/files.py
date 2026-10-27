@@ -850,25 +850,6 @@ class _PresignedUrlRequestBuilder:
         )
         return CreateDownloadUrlResponse.from_dict(response)
 
-    def build_abort_url(self, path: str, session_token: str, expire_time: str) -> _PresignedUrl:
-        """Fetches a presigned URL for aborting a multipart upload."""
-        body = {
-            "path": path,
-            "session_token": session_token,
-            "expire_time": expire_time,
-        }
-        response = self._api.do(
-            "POST",
-            url=f"{self._hostname}/api/2.0/fs/create-abort-upload-url",
-            headers={"Content-Type": "application/json"},
-            body=body,
-        )
-        abort_node = response["abort_upload_url"]
-        headers: dict[str, str] = {"Content-Type": "application/octet-stream"}
-        for h in abort_node.get("headers", []):
-            headers[h["name"]] = h["value"]
-        return _PresignedUrl(url=abort_node["url"], headers=headers)
-
 
 class _StorageProxyRequestBuilder:
     """Builds direct upload requests to the storage proxy.
@@ -930,21 +911,6 @@ class _StorageProxyRequestBuilder:
             headers={},
         )
 
-    def build_abort_url(self, path: str, session_token: str, expire_time: str) -> _PresignedUrl:
-        """Builds a URL for aborting an upload directly on the storage proxy."""
-        escaped = _escape_multi_segment_path_parameter(path)
-        base = f"{self._hostname}/api/2.0/fs/files{escaped}"
-        query = parse.urlencode(
-            {
-                "action": "abort-upload",
-                "session_token": session_token,
-            }
-        )
-        return _PresignedUrl(
-            url=f"{base}?{query}",
-            headers={"Content-Type": "application/json"},
-        )
-
 
 class FilesExt(files.FilesAPI):
     __doc__ = files.FilesAPI.__doc__
@@ -990,8 +956,8 @@ class FilesExt(files.FilesAPI):
         self._cached_cloud_provider_session: Optional[requests.Session] = None
         self._cloud_provider_session_lock = Lock()
         self._dp_hostname_available: Optional[bool] = None
-        self._cached_storage_proxy_session: Optional[requests.Session] = None
-        self._storage_proxy_session_lock = Lock()
+        self._cached_authenticated_session: Optional[requests.Session] = None
+        self._authenticated_session_lock = Lock()
         self._cached_endpoints: Optional[list[_Endpoint]] = None
         self._endpoints_lock = Lock()
 
@@ -1185,17 +1151,16 @@ class FilesExt(files.FilesAPI):
         except Exception:
             return False
 
-    def _create_storage_proxy_session(self) -> requests.Session:
-        """Returns an HTTP session with SDK auth for storage-proxy requests.
+    def _authenticated_session(self) -> requests.Session:
+        """Returns an HTTP session with SDK auth for direct Files API data requests.
 
-        Unlike _cloud_provider_session (which has no auth), this session
-        includes the SDK authentication callback so that every request to the
-        storage proxy carries valid credentials. The session is created on
-        first call and cached for reuse.
+        Unlike _cloud_provider_session (which has no auth), this session includes the SDK authentication
+        callback so that every request carries valid credentials. The session is created on first call and
+        cached for reuse.
         """
-        with self._storage_proxy_session_lock:
-            if self._cached_storage_proxy_session is not None:
-                return self._cached_storage_proxy_session
+        with self._authenticated_session_lock:
+            if self._cached_authenticated_session is not None:
+                return self._cached_authenticated_session
             session = requests.Session()
             config = self._config
 
@@ -1212,7 +1177,7 @@ class FilesExt(files.FilesAPI):
             )
             session.mount("https://", http_adapter)
             session.mount("http://", http_adapter)
-            self._cached_storage_proxy_session = session
+            self._cached_authenticated_session = session
             return session
 
     def download(
@@ -1339,8 +1304,12 @@ class FilesExt(files.FilesAPI):
         file_info = self.get_metadata(remote_path)
         file_size = file_info.content_length
         last_modified = file_info.last_modified
-        # If the file is smaller than the threshold, do not use parallel download.
-        if file_size <= self._config.files_ext_parallel_download_min_file_size:
+        # If the file is smaller than the threshold, or fits in one range, do not use parallel download. A range
+        # covering the whole file may also be answered with 200 instead of 206.
+        if file_size <= max(
+            self._config.files_ext_parallel_download_min_file_size,
+            self._config.files_ext_parallel_download_default_part_size,
+        ):
             self._sequential_download_to_file(destination, remote_path, last_modified)
             return
         part_size = self._config.files_ext_parallel_download_default_part_size
@@ -1422,13 +1391,16 @@ class FilesExt(files.FilesAPI):
                     url_distributor.invalidate_url(version)
                     retry_count += 1
                     continue
-                elif raw_resp.status_code == 403 and not any_success.is_set():
-                    raise FallbackToDownloadUsingFilesApi("Received 403 Forbidden from presigned URL")
-                elif not any_success.is_set():
-                    # For other errors, we raise a retryable exception to trigger retry logic.
-                    raise FallbackToDownloadUsingFilesApi(f"Received {raw_resp.status_code} from presigned URL")
+                # Only a 206 carries the requested range; a 200 carries the whole file, which must not be written
+                # at this range's offset.
+                if raw_resp.status_code != 206:
+                    message = f"Received {raw_resp.status_code} from presigned URL for {additional_headers['Range']}"
+                    if not any_success.is_set():
+                        raise FallbackToDownloadUsingFilesApi(message)
+                    if raw_resp.ok:
+                        raise ValueError(message)
+                    raise _error_mapper(raw_resp, {"message": message})
 
-                raw_resp.raise_for_status()
                 any_success.set()
                 return BytesIO(raw_resp.content)
             raise ValueError("Exceeded maximum retries for downloading with presigned URL: URL expired too many times")
@@ -1451,11 +1423,17 @@ class FilesExt(files.FilesAPI):
         def download_chunk(additional_headers: dict[str, str]) -> BinaryIO:
             raw_response: dict = self._api.do(
                 method="GET",
-                path=f"/api/2.0/fs/files{remote_path}",
+                path=f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(remote_path)}",
                 headers=additional_headers,
                 raw=True,
             )
-            return raw_response["contents"]
+            contents = raw_response["contents"]
+            status = contents._response.status_code
+            if status != 206:
+                # Only a 206 carries the requested range; anything else must not be written at its offset.
+                contents.close()
+                raise ValueError(f"Received {status} from the Files API for {additional_headers['Range']}")
+            return contents
 
         self._do_parallel_download(remote_path, destination, parallelism, download_chunk)
 
@@ -2314,7 +2292,7 @@ class FilesExt(files.FilesAPI):
         """
         Checks if response matches one of the known "URL expired" responses from the cloud storage providers.
         """
-        if response.status_code != 403:
+        if response.status_code not in (400, 403):
             return False
 
         try:
@@ -2325,6 +2303,10 @@ class FilesExt(files.FilesAPI):
             code = xml_root.find("Code")
             if code is None:
                 return False
+
+            if code.text == "ExpiredToken":
+                # GCP, and AWS when the URL was signed with temporary credentials that have since expired.
+                return True
 
             if code.text == "AuthenticationFailed":
                 # Azure
@@ -2587,37 +2569,30 @@ class FilesExt(files.FilesAPI):
         )
 
     def _abort_multipart_upload(self, ctx: _UploadContext, session_token: str) -> None:
-        """Aborts ongoing multipart upload session to clean up incomplete file."""
-        builder = self._create_request_builder()
-        abort_info = builder.build_abort_url(ctx.target_path, session_token, self._get_upload_url_expire_time())
+        """Aborts ongoing multipart upload session to clean up incomplete file.
 
-        def perform() -> requests.Response:
-            return self._cloud_provider_session().request(
-                "DELETE",
-                abort_info.url,
-                headers=abort_info.headers,
-                data=b"",
-                timeout=self._config.files_ext_network_transfer_inactivity_timeout_seconds,
-            )
+        Best-effort, so sent once, without the API client's retries.
+        """
+        escaped = _escape_multi_segment_path_parameter(ctx.target_path)
+        abort_response = self._authenticated_session().request(
+            "POST",
+            f"{self._get_hostname()}/api/2.0/fs/files{escaped}",
+            params={"action": "abort-upload", "upload_type": "multipart", "session_token": session_token},
+            timeout=self._config.files_ext_network_transfer_inactivity_timeout_seconds,
+        )
 
-        abort_response = self._retry_cloud_idempotent_operation(perform)
-
-        if abort_response.status_code not in (200, 201):
+        if not abort_response.ok:
             raise ValueError(abort_response)
 
     def _abort_resumable_upload(self, resumable_upload_url: str, headers: dict[str, str]) -> None:
-        """Aborts ongoing resumable upload session to clean up incomplete file."""
-
-        def perform() -> requests.Response:
-            return self._cloud_provider_session().request(
-                "DELETE",
-                resumable_upload_url,
-                headers=headers,
-                data=b"",
-                timeout=self._config.files_ext_network_transfer_inactivity_timeout_seconds,
-            )
-
-        abort_response = self._retry_cloud_idempotent_operation(perform)
+        """Aborts ongoing resumable upload session to clean up incomplete file. Best-effort, so sent once."""
+        abort_response = self._cloud_provider_session().request(
+            "DELETE",
+            resumable_upload_url,
+            headers=headers,
+            data=b"",
+            timeout=self._config.files_ext_network_transfer_inactivity_timeout_seconds,
+        )
 
         if abort_response.status_code not in (200, 201):
             raise ValueError(abort_response)
@@ -2631,7 +2606,7 @@ class FilesExt(files.FilesAPI):
         The session is created on first call and cached for reuse.
         """
         if self._config.experimental_files_ext_enable_storage_proxy and self._dp_hostname_available:
-            return self._create_storage_proxy_session()
+            return self._authenticated_session()
         with self._cloud_provider_session_lock:
             if self._cached_cloud_provider_session is None:
                 session = requests.Session()

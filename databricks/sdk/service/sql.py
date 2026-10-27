@@ -709,10 +709,10 @@ class AlertV2:
     """The timestamp indicating when the alert was created."""
 
     custom_description: Optional[str] = None
-    """Custom description for the alert. support mustache template."""
+    """Custom description for the alert. Interpreted according to ``custom_template_format``."""
 
     custom_summary: Optional[str] = None
-    """Custom summary for the alert. support mustache template."""
+    """Custom summary for the alert. Interpreted according to ``custom_template_format``."""
 
     custom_template_format: Optional[CustomTemplateFormat] = None
     """The format used to interpret the ``custom_summary`` and ``custom_description`` templates.

@@ -889,6 +889,12 @@ class PresignedUrlDownloadTestCase:
         "</Error>"
     )
 
+    expired_url_gcp_response: str = (
+        "<?xml version='1.0' encoding='UTF-8'?><Error><Code>ExpiredToken</Code>"
+        "<Message>The provided token has expired.</Message>"
+        "<Details>Request signature expired at: 2025-01-01T16:54:20+00:00</Details></Error>"
+    )
+
     def __init__(
         self,
         name: str,
@@ -1167,6 +1173,7 @@ class PresignedUrlDownloadTestCase:
             download_mode=DownloadMode.FILE,
             use_parallel=True,
             parallelism=2,
+            expected_download_api="presigned_url",
         ),
         # Sad cases
         PresignedUrlDownloadTestCase(
@@ -1198,11 +1205,31 @@ class PresignedUrlDownloadTestCase:
             use_parallel=True,
             download_mode=DownloadMode.FILE,
         ),
+        PresignedUrlDownloadTestCase(
+            # Once a range was received the download is committed to presigned URLs, so a later failure is raised.
+            name="Presigned URL range fails after another range was received, the error is raised",
+            file_size=100 * 1024 * 1024,
+            custom_response_download_from_url=CustomResponse(code=500, first_invocation=3),
+            expected_exception_type=InternalError,
+            use_parallel=True,
+            parallelism=2,
+            download_mode=DownloadMode.FILE,
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL answers ranges with 200 instead of 206, parallel download falls back to Files API",
+            file_size=100 * 1024 * 1024,
+            custom_response_download_from_url=CustomResponse(code=200),
+            expected_download_api="files_api",
+            use_parallel=True,
+            parallelism=2,
+            download_mode=DownloadMode.FILE,
+        ),
         # Recoverable errors
         PresignedUrlDownloadTestCase(
             name="Intermittent error should succeed after retry: Presigned URL download fails with 502 when downloading from URL",
             file_size=100 * 1024 * 1024,
             custom_response_download_from_url=CustomResponse(code=502, only_invocation=1),
+            expected_download_api="presigned_url",
         ),
         PresignedUrlDownloadTestCase(
             name="Intermittent error should succeed after retry: Presigned URL expires with 403 when downloading from URL",
@@ -1213,6 +1240,18 @@ class PresignedUrlDownloadTestCase:
                 last_invocation=3,
                 body=PresignedUrlDownloadTestCase.expired_url_aws_response,
             ),
+            expected_download_api="presigned_url",
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Intermittent error should succeed after retry: GCP presigned URL expires with 400 when downloading from URL",
+            file_size=100 * 1024 * 1024,
+            custom_response_download_from_url=CustomResponse(
+                code=400,
+                first_invocation=2,
+                last_invocation=3,
+                body=PresignedUrlDownloadTestCase.expired_url_gcp_response,
+            ),
+            expected_download_api="presigned_url",
         ),
         # Test fallback to Files API
         PresignedUrlDownloadTestCase(
@@ -1250,7 +1289,7 @@ class PresignedUrlDownloadTestCase:
         ),
         PresignedUrlDownloadTestCase(
             "Storage proxy: parallel download",
-            file_size=1024 * 1024,
+            file_size=100 * 1024 * 1024,
             use_storage_proxy=True,
             download_mode=DownloadMode.FILE,
             use_parallel=True,
@@ -1262,6 +1301,97 @@ class PresignedUrlDownloadTestCase:
 )
 def test_presigned_url_download(config: Config, test_case: PresignedUrlDownloadTestCase, monkeypatch) -> None:
     test_case.run(config, monkeypatch)
+
+
+_RANGED_CONTENT = os.urandom(3 * 1024)
+
+
+def _parallel_download_from_files_api(
+    config: Config, requests_mock, tmp_path, file_path: str, file_url: str, part_size: int, ranges_answered_with: int
+) -> str:
+    """Runs a parallel download_to whose presigned URL can't be created, so the ranges come from the Files API.
+
+    The Files API answers a range with `ranges_answered_with`, 206 with the range or 200 with the whole file.
+    """
+    config = config.copy()
+    config.files_ext_parallel_download_min_file_size = 1024
+    config.files_ext_parallel_download_default_part_size = part_size
+
+    def get_file(request, context):
+        context.headers["Last-Modified"] = "Wed, 10 Sep 2025 12:00:00 GMT"
+        if "Range" in request.headers and ranges_answered_with == 206:
+            start, end = Utils.parse_range_header(request.headers["Range"], len(_RANGED_CONTENT))
+            context.status_code = 206
+            return _RANGED_CONTENT[start : end + 1]
+        context.status_code = 200
+        return _RANGED_CONTENT
+
+    requests_mock.post(
+        "http://localhost/api/2.0/fs/create-download-url",
+        status_code=403,
+        json={"error_code": "PERMISSION_DENIED", "message": "Presigned URLs are disabled"},
+    )
+    requests_mock.head(
+        file_url,
+        headers={"Content-Length": str(len(_RANGED_CONTENT)), "Last-Modified": "Wed, 10 Sep 2025 12:00:00 GMT"},
+    )
+    requests_mock.get(file_url, content=get_file)
+    destination = str(tmp_path / "downloaded.bin")
+    WorkspaceClient(config=config).files.download_to(file_path, destination, use_parallel=True, parallelism=2)
+    return destination
+
+
+def test_parallel_download_from_files_api_escapes_the_path(config: Config, requests_mock, tmp_path):
+    file_path = "/Volumes/main/default/volume/report ?#%.bin"
+    file_url = "http://localhost/api/2.0/fs/files/Volumes/main/default/volume/report%20%3F%23%25.bin"
+
+    destination = _parallel_download_from_files_api(
+        config, requests_mock, tmp_path, file_path, file_url, part_size=1024, ranges_answered_with=206
+    )
+
+    with open(destination, "rb") as f:
+        assert f.read() == _RANGED_CONTENT
+    ranged = [r for r in requests_mock.request_history if r.method == "GET" and "Range" in r.headers]
+    assert len(ranged) == 3
+    assert all(r.url == file_url for r in ranged)
+
+
+def test_parallel_download_from_files_api_rejects_a_range_answered_with_the_whole_file(
+    config: Config, requests_mock, tmp_path
+):
+    file_url = "http://localhost/api/2.0/fs/files/Volumes/main/default/volume/file.bin"
+
+    with pytest.raises(ValueError, match="Received 200 from the Files API"):
+        _parallel_download_from_files_api(
+            config,
+            requests_mock,
+            tmp_path,
+            "/Volumes/main/default/volume/file.bin",
+            file_url,
+            part_size=1024,
+            ranges_answered_with=200,
+        )
+
+    assert not (tmp_path / "downloaded.bin").exists()
+
+
+def test_parallel_download_of_a_file_that_fits_one_range_is_sequential(config: Config, requests_mock, tmp_path):
+    # The Files API answers a range that covers the whole file with 200, so such a file must not be fetched as a range.
+    file_url = "http://localhost/api/2.0/fs/files/Volumes/main/default/volume/file.bin"
+
+    destination = _parallel_download_from_files_api(
+        config,
+        requests_mock,
+        tmp_path,
+        "/Volumes/main/default/volume/file.bin",
+        file_url,
+        part_size=len(_RANGED_CONTENT),
+        ranges_answered_with=200,
+    )
+
+    with open(destination, "rb") as f:
+        assert f.read() == _RANGED_CONTENT
+    assert not any("Range" in r.headers for r in requests_mock.request_history)
 
 
 class FileContent:
@@ -1288,14 +1418,12 @@ class MultipartUploadServerState:
     """This server state is updated on multipart upload (AWS, Azure)"""
 
     upload_part_url_prefix = "https://cloud_provider.com/upload-part/"
-    abort_upload_url_prefix = "https://cloud_provider.com/abort-upload/"
 
     def __init__(self, expected_part_size: Optional[int] = None):
         self.issued_multipart_urls = {}  # part_number -> expiration_time
         self.uploaded_parts = {}  # part_number -> [part file path, etag]
         self.session_token = "token-" + MultipartUploadServerState.randomstr()
         self.file_content = None
-        self.issued_abort_url_expire_time = None
         self.aborted = False
         self.expected_part_size = expected_part_size
         self.global_lock = Lock()
@@ -1305,11 +1433,6 @@ class MultipartUploadServerState:
         # client may have requested a URL for the same part if retrying on network error
         self.issued_multipart_urls[part_number] = expire_time
         return f"{self.upload_part_url_prefix}{path}/{part_number}"
-
-    def create_abort_url(self, path: str, expire_time: datetime) -> str:
-        assert not self.aborted
-        self.issued_abort_url_expire_time = expire_time
-        return f"{self.abort_upload_url_prefix}{path}"
 
     def save_part(self, part_number: int, part_content: bytes, etag: str) -> None:
         assert not self.aborted
@@ -1645,8 +1768,7 @@ class MultipartUploadTestCase(UploadTestCase):
     - requesting upload part URLs (calls to Databricks Files API)
     - uploading data in parts (calls to cloud storage provider or Databricks storage proxy)
     - completing the upload (call to Databricks Files API)
-    - requesting abort upload URL (call to Databricks Files API)
-    - aborting the upload (call to cloud storage provider or Databricks storage proxy)
+    - aborting the upload (call to Databricks Files API or storage proxy)
 
     Test case uses requests-mock library to mock all these requests. Within a test, mocks use
     shared server state that tracks the upload. Mocks generate the "default" (successful) response.
@@ -1735,7 +1857,6 @@ class MultipartUploadTestCase(UploadTestCase):
         custom_response_on_create_multipart_url: CustomResponse = CustomResponse(enabled=False),
         custom_response_on_upload: CustomResponse = CustomResponse(enabled=False),
         custom_response_on_complete: CustomResponse = CustomResponse(enabled=False),
-        custom_response_on_create_abort_url: CustomResponse = CustomResponse(enabled=False),
         custom_response_on_abort: CustomResponse = CustomResponse(enabled=False),
         # exception which is expected to be thrown (so upload is expected to have failed)
         expected_exception_type: Optional[Type[BaseException]] = None,
@@ -1771,7 +1892,6 @@ class MultipartUploadTestCase(UploadTestCase):
         self.custom_response_on_create_multipart_url = copy.deepcopy(custom_response_on_create_multipart_url)
         self.custom_response_on_upload = copy.deepcopy(custom_response_on_upload)
         self.custom_response_on_complete = copy.deepcopy(custom_response_on_complete)
-        self.custom_response_on_create_abort_url = copy.deepcopy(custom_response_on_create_abort_url)
         self.custom_response_on_abort = copy.deepcopy(custom_response_on_abort)
         self.expected_exception_type = expected_exception_type
         self.expected_part_size = expected_part_size
@@ -1789,7 +1909,6 @@ class MultipartUploadTestCase(UploadTestCase):
         self.custom_response_on_create_multipart_url.clear_state()
         self.custom_response_on_upload.clear_state()
         self.custom_response_on_complete.clear_state()
-        self.custom_response_on_create_abort_url.clear_state()
         self.custom_response_on_abort.clear_state()
 
     def match_request_to_response(
@@ -1817,18 +1936,23 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_upload.generate_response(request, processor)
 
-        # Storage proxy direct abort.
+        # Abort upload, on the host that initiated it.
         elif (
-            self.use_storage_proxy
-            and request_url.hostname == self._expected_hostname
+            request_url.hostname == self._expected_hostname
             and request_url.path == f"/api/2.0/fs/files{self.path}"
             and request_query.get("action") == ["abort-upload"]
-            and request.method == "DELETE"
         ):
+            assert request.method == "POST"
+            assert UploadTestCase.is_auth_header_present(request)
+            assert request_query == {
+                "action": ["abort-upload"],
+                "upload_type": ["multipart"],
+                "session_token": [server_state.session_token],
+            }
 
             def processor() -> list:
                 server_state.abort_upload()
-                return [200, "", {}]
+                return [200, "{}", {}]
 
             return self.custom_response_on_abort.generate_response(request, processor)
 
@@ -1925,41 +2049,6 @@ class MultipartUploadTestCase(UploadTestCase):
                 return [200, "", {}]
 
             return self.custom_response_on_complete.generate_response(request, processor)
-
-        # Create abort URL (presigned URL path only).
-        elif (
-            request_url.hostname == self._expected_hostname
-            and request_url.path == "/api/2.0/fs/create-abort-upload-url"
-            and request.method == "POST"
-        ):
-            # This should never be called when using the storage proxy.
-            assert not self.use_storage_proxy, "create-abort-upload-url should not be called with storage proxy"
-            assert UploadTestCase.is_auth_header_present(request)
-            request_json = request.json()
-            assert request_json["path"] == self.path
-            expire_time = MultipartUploadTestCase.parse_and_validate_expire_time(request_json["expire_time"])
-
-            def processor() -> list:
-                response_json = {
-                    "abort_upload_url": {
-                        "url": server_state.create_abort_url(self.path, expire_time),
-                        "headers": [{"name": "header1", "value": "headervalue1"}],
-                    }
-                }
-                return [200, json.dumps(response_json), {}]
-
-            return self.custom_response_on_create_abort_url.generate_response(request, processor)
-
-        # Abort upload via presigned URL.
-        elif request.url.startswith(MultipartUploadServerState.abort_upload_url_prefix) and request.method == "DELETE":
-            assert not UploadTestCase.is_auth_header_present(request)
-            assert request.url[len(MultipartUploadServerState.abort_upload_url_prefix) :] == self.path
-
-            def processor() -> list:
-                server_state.abort_upload()
-                return [200, "", {}]
-
-            return self.custom_response_on_abort.generate_response(request, processor)
 
         # Direct upload (single-shot upload).
         elif (
@@ -2423,11 +2512,11 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         # -------------------------- failures on abort --------------------------
         MultipartUploadTestCase(
-            "Abort URL: intermittent retryable error",
+            "Abort: a failure is not retried",
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(code=403, only_invocation=1),
-            custom_response_on_create_abort_url=CustomResponse(code=429, first_invocation=1, last_invocation=3),
-            expected_multipart_upload_aborted=True,  # abort successfully called after abort URL creation is retried
+            custom_response_on_abort=CustomResponse(code=429, only_invocation=1),
+            expected_multipart_upload_aborted=False,
             expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
@@ -2479,6 +2568,19 @@ class MultipartUploadTestCase(UploadTestCase):
             expected_multipart_upload_aborted=False,
             expected_single_shot_upload=True,
         ),
+        MultipartUploadTestCase(
+            "Storage proxy: a failed upload is aborted on the proxy",
+            content_size=10 * 1024 * 1024,
+            multipart_upload_part_size=1024 * 1024,
+            custom_response_on_upload=CustomResponse(
+                code=400,
+                # fail once, but not on the first part
+                only_invocation=3,
+            ),
+            use_storage_proxy=True,
+            expected_exception_type=BadRequest,
+            expected_multipart_upload_aborted=True,
+        ),
     ],
     ids=MultipartUploadTestCase.to_string,
 )
@@ -2490,7 +2592,6 @@ class ResumableUploadServerState:
     """This server state is updated on resumable upload (GCP)"""
 
     resumable_upload_url_prefix = "https://cloud_provider.com/resumable-upload/"
-    abort_upload_url_prefix = "https://cloud_provider.com/abort-upload/"
 
     def __init__(self, unconfirmed_delta: Union[int, list], expected_part_size: Optional[int]):
         self.unconfirmed_delta = unconfirmed_delta
@@ -2557,11 +2658,6 @@ class ResumableUploadServerState:
             self.file_content = FileContent(size, sha256.hexdigest())
 
         self.confirmed_last_byte = end_offset_incl - unconfirmed_delta
-
-    def create_abort_url(self, path: str, expire_time: datetime) -> str:
-        assert not self.aborted
-        self.issued_abort_url_expire_time = expire_time
-        return f"{self.abort_upload_url_prefix}{path}"
 
     def cleanup(self) -> None:
         for file in self.uploaded_parts:
@@ -2992,6 +3088,14 @@ class ResumableUploadTestCase(UploadTestCase):
             expected_exception_type=PermissionDenied,
             # abort returned error but was actually processed
             expected_multipart_upload_aborted=True,
+        ),
+        ResumableUploadTestCase(
+            "Abort: a failure is not retried",
+            stream_size=1024 * 1024,
+            custom_response_on_upload=CustomResponse(code=403),
+            custom_response_on_abort=CustomResponse(code=429, only_invocation=1),
+            expected_exception_type=PermissionDenied,
+            expected_multipart_upload_aborted=False,
         ),
         # -------------- file already exists --------------
         ResumableUploadTestCase(
