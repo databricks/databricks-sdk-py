@@ -162,7 +162,10 @@ class _DbfsIO(BinaryIO):
 
     def __iter__(self) -> Iterator[bytes]:
         while self._offset < self._status.file_size:
-            yield self.__next__()
+            chunk = self.__next__()
+            if not chunk:
+                break
+            yield chunk
 
     def __next__(self) -> bytes:
         # TODO: verify semantics
