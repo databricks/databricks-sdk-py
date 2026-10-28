@@ -132,7 +132,9 @@ AUTO_PACKAGES = [
     Package("compute", "", ""),
     Package("dashboards", "", ""),
     Package(
-        "database", "Database Instances", "Database Instances provide access to a database via REST API or direct SQL."
+        "database",
+        "Database Instances",
+        "Database Instances provide access to a database via REST API or direct SQL.\n\nFor new workloads, Databricks recommends the [Postgres API](https://docs.databricks.com/api/postgres/v1/postgres), which supports the latest Lakebase features.",
     ),
     Package(
         "dataclassification",

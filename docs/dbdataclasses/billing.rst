@@ -47,6 +47,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CUMULATIVE_SPENDING_EXCEEDED
       :value: "CUMULATIVE_SPENDING_EXCEEDED"
 
+.. autoclass:: AlertSpendStatus
+   :members:
+   :undoc-members:
+
 .. autoclass:: BudgetConfiguration
    :members:
    :undoc-members:
@@ -85,6 +89,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY
       :value: "BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY"
+
+.. autoclass:: BudgetSpendStatus
+   :members:
+   :undoc-members:
 
 .. autoclass:: CreateBillingUsageDashboardResponse
    :members:
@@ -162,6 +170,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListBudgetPoliciesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListBudgetSpendStatusesResponse
    :members:
    :undoc-members:
 

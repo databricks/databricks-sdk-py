@@ -548,7 +548,7 @@
         :param group: :class:`Group`
           Required. Group to be updated in Databricks
         :param update_mask: str
-          Optional. The list of fields to update.
+          Required. The list of fields to update.
 
         :returns: :class:`Group`
         
@@ -558,6 +558,8 @@
         Updates an existing service principal in the Databricks account. Only the fields named in the update
         mask are modified. Returns the updated ServicePrincipal resource.
 
+        For locally managed service principals, is_agent must be set to true or false when updated.
+
         When AIM is enabled and the service principal is an external identity (its external_id is set), only
         external_id can be updated; its other fields are sourced from your identity provider.
 
@@ -566,7 +568,7 @@
         :param service_principal: :class:`ServicePrincipal`
           Required. Service Principal to be updated in Databricks
         :param update_mask: str
-          Optional. The list of fields to update.
+          Required. The list of fields to update.
 
         :returns: :class:`ServicePrincipal`
         
@@ -585,7 +587,7 @@
         :param user: :class:`User`
           Required. User to be updated in Databricks
         :param update_mask: str
-          Optional. The list of fields to update.
+          Required. The list of fields to update.
 
         :returns: :class:`User`
         

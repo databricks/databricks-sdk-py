@@ -1639,7 +1639,10 @@ class SyncedTableTriggeredUpdateStatus:
 
 
 class DatabaseAPI:
-    """Database Instances provide access to a database via REST API or direct SQL."""
+    """Database Instances provide access to a database via REST API or direct SQL.
+
+    For new workloads, Databricks recommends the `Postgres API
+    <https://docs.databricks.com/api/postgres/v1/postgres>`__, which supports the latest Lakebase features."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1672,6 +1675,9 @@ class DatabaseAPI:
     def create_database_catalog(self, catalog: DatabaseCatalog) -> DatabaseCatalog:
         """Create a Database Catalog.
 
+        For new workloads, Databricks recommends the Postgres API equivalent: `Create a catalog
+        <https://docs.databricks.com/api/postgres/v1/create-catalog>`__.
+
         :param catalog: :class:`DatabaseCatalog`
 
         :returns: :class:`DatabaseCatalog`
@@ -1693,6 +1699,9 @@ class DatabaseAPI:
 
     def create_database_instance(self, database_instance: DatabaseInstance) -> Wait[DatabaseInstance]:
         """Create a Database Instance.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `Create a project
+        <https://docs.databricks.com/api/postgres/v1/create-project>`__.
 
         :param database_instance: :class:`DatabaseInstance`
           Instance to create.
@@ -1733,6 +1742,9 @@ class DatabaseAPI:
         database_instance_name: Optional[str] = None,
     ) -> DatabaseInstanceRole:
         """Create a role for a Database Instance.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `Create a role
+        <https://docs.databricks.com/api/postgres/v1/create-role>`__.
 
         :param instance_name: str
         :param database_instance_role: :class:`DatabaseInstanceRole`
@@ -1785,6 +1797,9 @@ class DatabaseAPI:
     def create_synced_database_table(self, synced_table: SyncedDatabaseTable) -> SyncedDatabaseTable:
         """Create a Synced Database Table.
 
+        For new workloads, Databricks recommends the Postgres API equivalent: `Create a synced table
+        <https://docs.databricks.com/api/postgres/v1/create-synced-table>`__.
+
         :param synced_table: :class:`SyncedDatabaseTable`
 
         :returns: :class:`SyncedDatabaseTable`
@@ -1807,6 +1822,9 @@ class DatabaseAPI:
     def delete_database_catalog(self, name: str):
         """Delete a Database Catalog.
 
+        For new workloads, Databricks recommends the Postgres API equivalent: `Delete a catalog
+        <https://docs.databricks.com/api/postgres/v1/delete-catalog>`__.
+
         :param name: str
 
 
@@ -1824,6 +1842,9 @@ class DatabaseAPI:
 
     def delete_database_instance(self, name: str, *, force: Optional[bool] = None, purge: Optional[bool] = None):
         """Delete a Database Instance.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `Delete a project
+        <https://docs.databricks.com/api/postgres/v1/delete-project>`__.
 
         :param name: str
           Name of the instance to delete.
@@ -1861,6 +1882,9 @@ class DatabaseAPI:
         reassign_owned_to: Optional[str] = None,
     ):
         """Deletes a role for a Database Instance.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `Delete a role
+        <https://docs.databricks.com/api/postgres/v1/delete-role>`__.
 
         :param instance_name: str
         :param name: str
@@ -1908,6 +1932,9 @@ class DatabaseAPI:
 
     def delete_synced_database_table(self, name: str, *, purge_data: Optional[bool] = None):
         """Delete a Synced Database Table.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `Delete a synced table
+        <https://docs.databricks.com/api/postgres/v1/delete-synced-table>`__.
 
         :param name: str
         :param purge_data: bool (optional)
@@ -1961,6 +1988,9 @@ class DatabaseAPI:
     ) -> DatabaseCredential:
         """Generates a credential that can be used to access database instances.
 
+        For new workloads, Databricks recommends the Postgres API equivalent: `Generate a database credential
+        <https://docs.databricks.com/api/postgres/v1/generate-database-credential>`__.
+
         :param claims: List[:class:`RequestedClaims`] (optional)
           A set of UC permissions to add to the credential. We verify that the caller has the necessary
           permissions in UC and include a reference in the token. Postgres uses that token to give the
@@ -1998,6 +2028,9 @@ class DatabaseAPI:
     def get_database_catalog(self, name: str) -> DatabaseCatalog:
         """Get a Database Catalog.
 
+        For new workloads, Databricks recommends the Postgres API equivalent: `Get a catalog
+        <https://docs.databricks.com/api/postgres/v1/get-catalog>`__.
+
         :param name: str
 
         :returns: :class:`DatabaseCatalog`
@@ -2016,6 +2049,9 @@ class DatabaseAPI:
 
     def get_database_instance(self, name: str) -> DatabaseInstance:
         """Get a Database Instance.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `Get a project
+        <https://docs.databricks.com/api/postgres/v1/get-project>`__.
 
         :param name: str
           Name of the cluster to get.
@@ -2036,6 +2072,9 @@ class DatabaseAPI:
 
     def get_database_instance_role(self, instance_name: str, name: str) -> DatabaseInstanceRole:
         """Gets a role for a Database Instance.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `Get a role
+        <https://docs.databricks.com/api/postgres/v1/get-role>`__.
 
         :param instance_name: str
         :param name: str
@@ -2075,6 +2114,9 @@ class DatabaseAPI:
 
     def get_synced_database_table(self, name: str) -> SyncedDatabaseTable:
         """Get a Synced Database Table.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `Get a synced table
+        <https://docs.databricks.com/api/postgres/v1/get-synced-table>`__.
 
         :param name: str
 
@@ -2134,9 +2176,10 @@ class DatabaseAPI:
     def list_database_instance_roles(
         self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DatabaseInstanceRole]:
-        """START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage < PUBLIC_PREVIEW. With more
-        recent Lakebase V2 plans, we don't plan to ever advance these to PUBLIC_PREVIEW. These APIs will
-        remain effectively undocumented/UI-only and we'll aim for a new public roles API as part of V2 PuPr.
+        """List roles for a Database Instance.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `List roles
+        <https://docs.databricks.com/api/postgres/v1/list-roles>`__.
 
         :param instance_name: str
         :param page_size: int (optional)
@@ -2175,6 +2218,9 @@ class DatabaseAPI:
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DatabaseInstance]:
         """List Database Instances.
+
+        For new workloads, Databricks recommends the Postgres API equivalent: `List projects
+        <https://docs.databricks.com/api/postgres/v1/list-projects>`__.
 
         :param page_size: int (optional)
           Upper bound for items returned. The maximum value is 100.
@@ -2280,6 +2326,10 @@ class DatabaseAPI:
         self, name: str, database_instance: DatabaseInstance, update_mask: str
     ) -> DatabaseInstance:
         """Update a Database Instance.
+
+        For new workloads, Databricks recommends the Postgres API equivalents: `Update a project
+        <https://docs.databricks.com/api/postgres/v1/update-project>`__ and `Update an endpoint
+        <https://docs.databricks.com/api/postgres/v1/update-endpoint>`__.
 
         :param name: str
           The name of the instance. This is the unique identifier for the instance.
