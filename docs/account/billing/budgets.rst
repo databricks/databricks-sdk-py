@@ -134,6 +134,21 @@
         :returns: :class:`GetBudgetConfigurationResponse`
         
 
+    .. py:method:: get_budget_spend_status(name: str) -> BudgetSpendStatus
+
+        Get the calling user's live spend against the blocking thresholds of a single Unity Gateway budget.
+        Any account user can call this for their own spend. Spend is reported in USD at list price and is
+        near-real-time, so it may differ slightly from billing data. Returns NOT_FOUND if the budget doesn't
+        exist or has no blocking thresholds.
+
+        :param name: str
+          The resource name of the budget spend status to read, of the form
+          ``accounts/{account_id}/budget-spend-statuses/{budget_id}``. A ``budget_id`` that isn't a valid UUID
+          fails with INVALID_PARAMETER_VALUE.
+
+        :returns: :class:`BudgetSpendStatus`
+        
+
     .. py:method:: list( [, page_token: Optional[str]]) -> Iterator[BudgetConfiguration]
 
 
@@ -155,6 +170,35 @@
           retrieve the subsequent page. Requests first page if absent.
 
         :returns: Iterator over :class:`BudgetConfiguration`
+        
+
+    .. py:method:: list_budget_spend_statuses(parent: str [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> ListBudgetSpendStatusesResponse
+
+        List the calling user's live spend against the blocking thresholds across the account's Unity Gateway
+        budgets. Any account user can call this for their own spend. Spend is reported in USD at list price
+        and is near-real-time, so it may differ slightly from billing data. By default, returns every budget
+        in the account that has a blocking threshold. Use ``filter`` to narrow results by workspace.
+
+        :param parent: str
+          The parent account whose budget spend statuses to list, of the form ``accounts/{account_id}``.
+        :param filter: str (optional)
+          A filter expression that narrows the returned budgets by workspace. Only ``workspace_id`` is
+          supported, in lower case with numeric workspace IDs, for example ``workspace_id = 123`` or
+          ``workspace_id IN (123, 456)``. Matches budgets that apply to any of the listed workspaces,
+          including budgets that apply to all workspaces. Any other expression, such as an empty ``IN ()``
+          list, fails with INVALID_PARAMETER_VALUE. If empty, returns every budget in the account that has a
+          blocking threshold.
+        :param page_size: int (optional)
+          The maximum number of spend statuses to return per page. If unspecified or 0, at most 100 are
+          returned. The maximum value is 100; values above 100 are coerced to 100. Negative values fail with
+          INVALID_PARAMETER_VALUE. The server may return fewer results than requested, including zero, even
+          when more pages remain; page until ``next_page_token`` is absent.
+        :param page_token: str (optional)
+          A page token from a previous ``ListBudgetSpendStatuses`` response, used to fetch the next page.
+          Requests the first page if absent. All other request parameters except ``page_size`` must match the
+          request that returned the token; otherwise the request fails with INVALID_PARAMETER_VALUE.
+
+        :returns: :class:`ListBudgetSpendStatusesResponse`
         
 
     .. py:method:: update(budget_id: str, budget: UpdateBudgetConfigurationBudget) -> UpdateBudgetConfigurationResponse

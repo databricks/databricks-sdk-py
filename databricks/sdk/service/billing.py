@@ -188,6 +188,76 @@ class AlertConfigurationTriggerType(Enum):
 
 
 @dataclass
+class AlertSpendStatus:
+    """The calling user's spend against a single blocking threshold. Values may be omitted if live
+    spend or threshold data is temporarily unavailable."""
+
+    percent_consumed: Optional[str] = None
+    """Percentage of the threshold consumed, as a decimal string rounded down to one decimal place (for
+    example, "68.4" means 68.4%). May exceed 100 when spend is over the threshold. Returns "0.0" if
+    there's no spend, and is omitted if the threshold is $0. For shared thresholds, this is the only
+    value returned; the absolute ``spend`` and ``threshold`` dollar amounts are withheld."""
+
+    scope_type: Optional[AlertConfigurationScopeType] = None
+    """Whether the threshold is evaluated per individual user
+    (``ALERT_CONFIGURATION_SCOPE_TYPE_PER_USER``) or on the shared spend across all users
+    (``ALERT_CONFIGURATION_SCOPE_TYPE_SHARED``)."""
+
+    spend: Optional[str] = None
+    """The calling user's live spend against this threshold, in USD at list price. Returns "0" if the
+    caller has no usage. Omitted for shared thresholds, where only ``percent_consumed`` is returned."""
+
+    threshold: Optional[str] = None
+    """The calling user's effective threshold, in USD at list price. The effective threshold is the
+    actual threshold amount that applies to the user, after adjusting for any user or group
+    overrides. Omitted for shared thresholds, where only ``percent_consumed`` is returned."""
+
+    time_period: Optional[AlertConfigurationTimePeriod] = None
+    """The time window the threshold applies to, for example ``MONTH``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertSpendStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.percent_consumed is not None:
+            body["percent_consumed"] = self.percent_consumed
+        if self.scope_type is not None:
+            body["scope_type"] = self.scope_type.value
+        if self.spend is not None:
+            body["spend"] = self.spend
+        if self.threshold is not None:
+            body["threshold"] = self.threshold
+        if self.time_period is not None:
+            body["time_period"] = self.time_period.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertSpendStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.percent_consumed is not None:
+            body["percent_consumed"] = self.percent_consumed
+        if self.scope_type is not None:
+            body["scope_type"] = self.scope_type
+        if self.spend is not None:
+            body["spend"] = self.spend
+        if self.threshold is not None:
+            body["threshold"] = self.threshold
+        if self.time_period is not None:
+            body["time_period"] = self.time_period
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertSpendStatus:
+        """Deserializes the AlertSpendStatus from a dictionary."""
+        return cls(
+            percent_consumed=d.get("percent_consumed", None),
+            scope_type=_enum(d, "scope_type", AlertConfigurationScopeType),
+            spend=d.get("spend", None),
+            threshold=d.get("threshold", None),
+            time_period=_enum(d, "time_period", AlertConfigurationTimePeriod),
+        )
+
+
+@dataclass
 class BudgetConfiguration:
     account_id: Optional[str] = None
     """Databricks account ID."""
@@ -489,6 +559,45 @@ class BudgetResourceType(Enum):
 
     BUDGET_RESOURCE_TYPE_ALL_RESOURCES = "BUDGET_RESOURCE_TYPE_ALL_RESOURCES"
     BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY = "BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY"
+
+
+@dataclass
+class BudgetSpendStatus:
+    """The calling user's live spend against the blocking thresholds of a single budget."""
+
+    alert_spend_statuses: Optional[List[AlertSpendStatus]] = None
+    """The calling user's spend against each blocking threshold on this budget, one entry per scope
+    type and time period. A blocking threshold is a threshold that, once reached, blocks further
+    requests through Unity Gateway."""
+
+    name: Optional[str] = None
+    """The resource name of this budget spend status, of the form
+    ``accounts/{account_id}/budget-spend-statuses/{budget_id}``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BudgetSpendStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert_spend_statuses:
+            body["alert_spend_statuses"] = [v.as_dict() for v in self.alert_spend_statuses]
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BudgetSpendStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert_spend_statuses:
+            body["alert_spend_statuses"] = self.alert_spend_statuses
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BudgetSpendStatus:
+        """Deserializes the BudgetSpendStatus from a dictionary."""
+        return cls(
+            alert_spend_statuses=_repeated_dict(d, "alert_spend_statuses", AlertSpendStatus), name=d.get("name", None)
+        )
 
 
 @dataclass
@@ -1153,6 +1262,45 @@ class ListBudgetPoliciesResponse:
             next_page_token=d.get("next_page_token", None),
             policies=_repeated_dict(d, "policies", BudgetPolicy),
             previous_page_token=d.get("previous_page_token", None),
+        )
+
+
+@dataclass
+class ListBudgetSpendStatusesResponse:
+    """Response for ListBudgetSpendStatuses."""
+
+    budget_spend_statuses: Optional[List[BudgetSpendStatus]] = None
+    """The calling user's spend status, one entry per returned budget."""
+
+    next_page_token: Optional[str] = None
+    """Token to pass as ``page_token`` to retrieve the next page. Absent when there are no more
+    results. A page can contain fewer results than ``page_size``, or none, while this token is still
+    set, so keep paging until it's absent."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListBudgetSpendStatusesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budget_spend_statuses:
+            body["budget_spend_statuses"] = [v.as_dict() for v in self.budget_spend_statuses]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListBudgetSpendStatusesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget_spend_statuses:
+            body["budget_spend_statuses"] = self.budget_spend_statuses
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListBudgetSpendStatusesResponse:
+        """Deserializes the ListBudgetSpendStatusesResponse from a dictionary."""
+        return cls(
+            budget_spend_statuses=_repeated_dict(d, "budget_spend_statuses", BudgetSpendStatus),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -1949,6 +2097,27 @@ class BudgetsAPI:
         res = self._api.do("GET", f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}", headers=headers)
         return GetBudgetConfigurationResponse.from_dict(res)
 
+    def get_budget_spend_status(self, name: str) -> BudgetSpendStatus:
+        """Get the calling user's live spend against the blocking thresholds of a single Unity Gateway budget.
+        Any account user can call this for their own spend. Spend is reported in USD at list price and is
+        near-real-time, so it may differ slightly from billing data. Returns NOT_FOUND if the budget doesn't
+        exist or has no blocking thresholds.
+
+        :param name: str
+          The resource name of the budget spend status to read, of the form
+          ``accounts/{account_id}/budget-spend-statuses/{budget_id}``. A ``budget_id`` that isn't a valid UUID
+          fails with INVALID_PARAMETER_VALUE.
+
+        :returns: :class:`BudgetSpendStatus`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
+        return BudgetSpendStatus.from_dict(res)
+
     def list(self, *, page_token: Optional[str] = None) -> Iterator[BudgetConfiguration]:
         """Gets all budgets associated with this account.
 
@@ -1976,6 +2145,55 @@ class BudgetsAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def list_budget_spend_statuses(
+        self,
+        parent: str,
+        *,
+        filter: Optional[str] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> ListBudgetSpendStatusesResponse:
+        """List the calling user's live spend against the blocking thresholds across the account's Unity Gateway
+        budgets. Any account user can call this for their own spend. Spend is reported in USD at list price
+        and is near-real-time, so it may differ slightly from billing data. By default, returns every budget
+        in the account that has a blocking threshold. Use ``filter`` to narrow results by workspace.
+
+        :param parent: str
+          The parent account whose budget spend statuses to list, of the form ``accounts/{account_id}``.
+        :param filter: str (optional)
+          A filter expression that narrows the returned budgets by workspace. Only ``workspace_id`` is
+          supported, in lower case with numeric workspace IDs, for example ``workspace_id = 123`` or
+          ``workspace_id IN (123, 456)``. Matches budgets that apply to any of the listed workspaces,
+          including budgets that apply to all workspaces. Any other expression, such as an empty ``IN ()``
+          list, fails with INVALID_PARAMETER_VALUE. If empty, returns every budget in the account that has a
+          blocking threshold.
+        :param page_size: int (optional)
+          The maximum number of spend statuses to return per page. If unspecified or 0, at most 100 are
+          returned. The maximum value is 100; values above 100 are coerced to 100. Negative values fail with
+          INVALID_PARAMETER_VALUE. The server may return fewer results than requested, including zero, even
+          when more pages remain; page until ``next_page_token`` is absent.
+        :param page_token: str (optional)
+          A page token from a previous ``ListBudgetSpendStatuses`` response, used to fetch the next page.
+          Requests the first page if absent. All other request parameters except ``page_size`` must match the
+          request that returned the token; otherwise the request fails with INVALID_PARAMETER_VALUE.
+
+        :returns: :class:`ListBudgetSpendStatusesResponse`
+        """
+
+        query = {}
+        if filter is not None:
+            query["filter"] = filter
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.1/{parent}/budget-spend-statuses", query=query, headers=headers)
+        return ListBudgetSpendStatusesResponse.from_dict(res)
 
     def update(self, budget_id: str, budget: UpdateBudgetConfigurationBudget) -> UpdateBudgetConfigurationResponse:
         """Updates a budget configuration for an account. Both account and budget configuration are specified by
