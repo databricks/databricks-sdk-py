@@ -151,6 +151,8 @@ class DatabricksOidcTokenSource(oauth.Refreshable):
     audience : Optional[str], optional
         The audience of the Databricks OIDC application. Only used for
         Workspace level tokens.
+    authorization_details : Optional[str], optional
+        JSON-encoded authorization details to include in the token exchange.
     """
 
     def __init__(
@@ -164,6 +166,7 @@ class DatabricksOidcTokenSource(oauth.Refreshable):
         disable_async: bool = False,
         scopes: Optional[str] = None,
         group_id: Optional[str] = None,
+        authorization_details: Optional[str] = None,
     ):
         self._host = host
         self._id_token_source = id_token_source
@@ -173,6 +176,7 @@ class DatabricksOidcTokenSource(oauth.Refreshable):
         self._audience = audience
         self._scopes = scopes
         self._group_id = group_id
+        self._authorization_details = authorization_details
         # Refreshable.__init__ stores disable_async as self._disable_async, which
         # _exchange_id_token reads — no need to duplicate it here.
         super().__init__(disable_async=disable_async)
@@ -224,6 +228,7 @@ class DatabricksOidcTokenSource(oauth.Refreshable):
             scopes=self._scopes,
             use_params=True,
             disable_async=self._disable_async,
+            authorization_details=self._authorization_details,
         )
 
         return client.token()
