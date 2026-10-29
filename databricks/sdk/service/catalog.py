@@ -18,6 +18,7 @@ import logging
 from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
     _enum,
+    _escape_path_parameter,
     _from_dict,
     _int64,
     _repeated_dict,
@@ -16319,7 +16320,7 @@ class EntityTagAssignmentsAPI:
 
         self._api.do(
             "DELETE",
-            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
+            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{_escape_path_parameter(entity_name)}/tags/{_escape_path_parameter(tag_key)}",
             headers=headers,
         )
 
@@ -16346,7 +16347,7 @@ class EntityTagAssignmentsAPI:
 
         res = self._api.do(
             "GET",
-            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
+            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{_escape_path_parameter(entity_name)}/tags/{_escape_path_parameter(tag_key)}",
             headers=headers,
         )
         return EntityTagAssignment.from_dict(res)
@@ -16388,7 +16389,7 @@ class EntityTagAssignmentsAPI:
         while True:
             json = self._api.do(
                 "GET",
-                f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags",
+                f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{_escape_path_parameter(entity_name)}/tags",
                 query=query,
                 headers=headers,
             )
@@ -16450,7 +16451,7 @@ class EntityTagAssignmentsAPI:
 
         res = self._api.do(
             "PATCH",
-            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
+            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{_escape_path_parameter(entity_name)}/tags/{_escape_path_parameter(tag_key)}",
             query=query,
             body=body,
             headers=headers,

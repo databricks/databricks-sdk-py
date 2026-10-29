@@ -63,6 +63,16 @@ def _escape_multi_segment_path_parameter(param: str) -> str:
     return urllib.parse.quote(param)
 
 
+def _escape_path_parameter(param: str) -> str:
+    """Percent-encode a single URL path segment.
+
+    Unlike ``_escape_multi_segment_path_parameter``, this encodes ``/`` as
+    ``%2F`` so values that contain slashes (e.g. Unity Catalog column names)
+    remain a single path segment.
+    """
+    return urllib.parse.quote(param, safe="")
+
+
 def _timestamp(d: Dict[str, any], field: str) -> Optional[Timestamp]:
     """
     Helper function to convert a timestamp string to a Timestamp object.
