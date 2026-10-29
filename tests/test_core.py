@@ -83,14 +83,26 @@ def test_databricks_cli_token_parse_expiry(date_string, expected):
     assert CliTokenSource._parse_expiry(date_string) == expected
 
 
-def write_small_dummy_executable(path: pathlib.Path):
+# The script pip writes for the legacy CLI's entry point.
+LEGACY_CLI_ENTRY_POINT = r"""#!/opt/databricks-cli/bin/python
+# -*- coding: utf-8 -*-
+import re
+import sys
+from databricks_cli.cli import cli
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(cli())
+"""
+
+
+def write_small_dummy_executable(path: pathlib.Path, content: str = LEGACY_CLI_ENTRY_POINT):
     if platform.system() == "Windows":
         cli = path.joinpath("databricks.exe")
         cli.touch()
-        cli.write_text('@echo off\necho "hello world"\n')
+        cli.write_text(content)
     else:
         cli = path.joinpath("databricks")
-        cli.write_text('#!/bin/sh\necho "hello world"\n')
+        cli.write_text(content)
         cli.chmod(0o755)
     assert cli.stat().st_size < 1024
     return cli
@@ -119,11 +131,22 @@ exit 0
     return cli
 
 
-def test_databricks_cli_token_source_installed_legacy(config, monkeypatch, tmp_path):
-    write_small_dummy_executable(tmp_path)
+@pytest.mark.parametrize("name", ["cli", "main"])
+def test_databricks_cli_token_source_installed_legacy(config, monkeypatch, tmp_path, name):
+    write_small_dummy_executable(tmp_path, LEGACY_CLI_ENTRY_POINT.replace("import cli", f"import {name}"))
     monkeypatch.setenv("PATH", tmp_path.as_posix())
     with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
         DatabricksCliTokenSource(config)
+
+
+def test_databricks_cli_token_source_find_small_wrapper(monkeypatch, tmp_path):
+    # Mentions the legacy package name, but is not one of its entry points.
+    content = (
+        '#!/bin/sh\n# Replaces databricks_cli (databricks-cli on PyPI).\nexec /opt/databricks/bin/databricks "$@"\n'
+    )
+    cli = write_small_dummy_executable(tmp_path, content)
+    monkeypatch.setenv("PATH", tmp_path.as_posix())
+    assert DatabricksCliTokenSource._find_executable(cli.name) == str(cli.resolve())
 
 
 def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monkeypatch, tmp_path):
@@ -167,6 +190,29 @@ def test_databricks_cli_token_source_installed_both(config, monkeypatch, tmp_pat
     # Resolve large before small.
     monkeypatch.setenv("PATH", str(os.pathsep).join([dir2.as_posix(), dir1.as_posix()]))
     DatabricksCliTokenSource(config)
+
+
+# A legacy CLI is skipped, but otherwise the first CLI in PATH wins.
+@pytest.mark.parametrize(
+    "order, want",
+    [
+        (["legacy", "shim", "regular"], "shim"),
+        (["shim", "regular"], "shim"),
+        (["regular", "shim"], "regular"),
+    ],
+)
+def test_databricks_cli_token_source_find_executable_path_order(monkeypatch, tmp_path, order, want):
+    contents = {
+        "legacy": LEGACY_CLI_ENTRY_POINT.encode(),
+        "shim": b'#!/bin/sh\nexec /opt/databricks/bin/databricks "$@"\n',
+        "regular": bytes(1024 * 1024),
+    }
+    for name, content in contents.items():
+        tmp_path.joinpath(name).mkdir()
+        tmp_path.joinpath(name, "databricks").write_bytes(content)
+    monkeypatch.setenv("PATH", os.pathsep.join(tmp_path.joinpath(name).as_posix() for name in order))
+    want_path = tmp_path.joinpath(want, "databricks").resolve()
+    assert DatabricksCliTokenSource._find_executable("databricks") == str(want_path)
 
 
 def test_databricks_cli_credential_provider_not_installed(config, monkeypatch):

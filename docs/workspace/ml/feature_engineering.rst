@@ -362,7 +362,7 @@
         :param materialization_set: :class:`MaterializationSet`
           The desired state of the updated materialization set. materialization_set_id selects the set.
         :param update_mask: FieldMask
-          The fields to update. Only 'materialized_features' is supported.
+          The fields to update. Only 'materialized_features' or '*' is supported.
         :param request_id: str (optional)
           Idempotency token for the request. A second request carrying a token that has already been used
           returns the operation the first one created, whatever state it reached, and changes nothing further.

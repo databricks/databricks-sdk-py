@@ -2197,7 +2197,8 @@ class PtServedModel:
     **catalog_name.schema_name.model_name**."""
 
     provisioned_model_units: int
-    """The number of model units to be provisioned."""
+    """The number of model units to be provisioned. Dedicated inference requires positive fixed
+    capacity and does not support scale-to-zero."""
 
     burst_scaling_enabled: Optional[bool] = None
     """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
