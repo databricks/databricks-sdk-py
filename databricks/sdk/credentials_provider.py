@@ -1226,6 +1226,13 @@ class DatabricksCliTokenSource(CliTokenSource):
             cmd += ["--account-id", cfg.account_id]
         return cmd
 
+    # Files at least this large are assumed to be the Go CLI without reading them.
+    _CLI_MIN_SIZE = 1024 * 1024
+
+    # Identifies the legacy CLI's pip entry point script. The imported name is omitted
+    # because it changed from `cli` to `main` in 0.17.8.
+    _LEGACY_CLI_MARKER = b"from databricks_cli.cli import "
+
     @staticmethod
     def _find_executable(name) -> str:
         err = FileNotFoundError("Most likely the Databricks CLI is not installed")
@@ -1234,12 +1241,14 @@ class DatabricksCliTokenSource(CliTokenSource):
             if not path.is_file():
                 continue
 
-            # The new Databricks CLI is a single binary with size > 1MB.
-            # We use the size as a signal to determine which Databricks CLI is installed.
-            stat = path.stat()
-            if stat.st_size < (1024 * 1024):
-                err = FileNotFoundError("Databricks CLI version <0.100.0 detected")
-                continue
+            if path.stat().st_size < DatabricksCliTokenSource._CLI_MIN_SIZE:
+                try:
+                    content = path.read_bytes()
+                except OSError:
+                    continue
+                if DatabricksCliTokenSource._LEGACY_CLI_MARKER in content:
+                    err = FileNotFoundError("Databricks CLI version <0.100.0 detected")
+                    continue
 
             return str(path)
 

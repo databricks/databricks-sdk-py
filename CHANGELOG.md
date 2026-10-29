@@ -1,5 +1,15 @@
 # Version changelog
 
+## Release v0.158.0 (2026-10-29)
+
+### API Changes
+* Add `get_budget_spend_status()` and `list_budget_spend_statuses()` methods for [a.budgets](https://databricks-sdk-py.readthedocs.io/en/latest/account/billing/budgets.html) account-level service.
+
+### Bug Fixes
+* Fix `WorkspaceClient.files.download_to` with `use_parallel=True` always falling back to the Files API for files above the parallel download threshold, instead of downloading byte ranges from presigned URLs (or from the storage proxy when `experimental_files_ext_enable_storage_proxy` is set). A byte range that fails after another range was received now raises, and expired GCP presigned URLs are refreshed like AWS and Azure ones.
+* Fix `WorkspaceClient.files.download_to` with `use_parallel=True` requesting the wrong path from the Files API when the file path contains characters such as `#`, `?` or `%`.
+* Fix Databricks CLI authentication rejecting small wrappers around the CLI (e.g. launcher scripts or version manager shims) as the legacy Python CLI. Small files found in `PATH` are now only rejected if they are the entry point pip installs for the legacy Python CLI.
+
 ## Release v0.157.0 (2026-10-24)
 
 ### API Changes

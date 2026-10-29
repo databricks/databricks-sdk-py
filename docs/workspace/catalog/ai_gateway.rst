@@ -320,8 +320,8 @@
         returned.
 
         :param page_size: int (optional)
-          Maximum number of MCP services to return. Defaults to 200 when unset or 0; the maximum is 200. Use
-          ``page_token`` to retrieve additional pages.
+          Maximum number of MCP services to return. Defaults to 200 when unset or 0; the maximum is 1000 for
+          ``view = BASIC`` and 200 for ``view = FULL``. Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
         :param parent: str (optional)
@@ -346,8 +346,8 @@
         ``MANAGE``) are returned.
 
         :param page_size: int (optional)
-          Maximum number of provider services to return. Defaults to 200 when unset or 0; the maximum is 200.
-          Use ``page_token`` to retrieve additional pages.
+          Maximum number of provider services to return. Defaults to 200 when unset or 0; the maximum is 1000
+          for ``view = BASIC`` and 200 for ``view = FULL``. Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
         :param parent: str (optional)
@@ -372,8 +372,8 @@
         returned by default.
 
         :param page_size: int (optional)
-          Maximum number of model services to return. Defaults to 200 when unset or 0; the maximum is 200. Use
-          ``page_token`` to retrieve additional pages.
+          Maximum number of model services to return. Defaults to 200 when unset or 0; the maximum is 1000 for
+          ``view = BASIC`` and 200 for ``view = FULL``. Use ``page_token`` to retrieve additional pages.
         :param page_token: str (optional)
           Opaque pagination token from the previous response.
         :param parent: str (optional)

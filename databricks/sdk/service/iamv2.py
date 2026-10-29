@@ -38,7 +38,7 @@ class DirectGroupMember:
     """Display name of the principal."""
 
     external_id: Optional[str] = None
-    """The external ID of the principal in Databricks."""
+    """The external ID of the principal in the customer's IdP."""
 
     group_id: Optional[int] = None
     """The internal ID of the group this member belongs to."""
@@ -2549,7 +2549,7 @@ class AccountIamV2API:
         :param group: :class:`Group`
           Required. Group to be updated in Databricks
         :param update_mask: str
-          Optional. The list of fields to update.
+          Required. The list of fields to update.
 
         :returns: :class:`Group`
         """
@@ -2578,6 +2578,8 @@ class AccountIamV2API:
         """Updates an existing service principal in the Databricks account. Only the fields named in the update
         mask are modified. Returns the updated ServicePrincipal resource.
 
+        For locally managed service principals, is_agent must be set to true or false when updated.
+
         When AIM is enabled and the service principal is an external identity (its external_id is set), only
         external_id can be updated; its other fields are sourced from your identity provider.
 
@@ -2586,7 +2588,7 @@ class AccountIamV2API:
         :param service_principal: :class:`ServicePrincipal`
           Required. Service Principal to be updated in Databricks
         :param update_mask: str
-          Optional. The list of fields to update.
+          Required. The list of fields to update.
 
         :returns: :class:`ServicePrincipal`
         """
@@ -2622,7 +2624,7 @@ class AccountIamV2API:
         :param user: :class:`User`
           Required. User to be updated in Databricks
         :param update_mask: str
-          Optional. The list of fields to update.
+          Required. The list of fields to update.
 
         :returns: :class:`User`
         """
@@ -3648,7 +3650,7 @@ class WorkspaceIamV2API:
         :param group: :class:`Group`
           Required. Group to be updated in Databricks
         :param update_mask: str
-          Optional. The list of fields to update.
+          Required. The list of fields to update.
 
         :returns: :class:`Group`
         """
@@ -3675,6 +3677,8 @@ class WorkspaceIamV2API:
         """Updates an existing service principal in the Databricks account that parents the calling workspace.
         Only the fields named in the update mask are modified. Returns the updated ServicePrincipal resource.
 
+        For locally managed service principals, is_agent must be set to true or false when updated.
+
         When AIM is enabled and the service principal is an external identity (its external_id is set), only
         external_id can be updated; its other fields are sourced from your identity provider.
 
@@ -3683,7 +3687,7 @@ class WorkspaceIamV2API:
         :param service_principal: :class:`ServicePrincipal`
           Required. Service principal to be updated in Databricks
         :param update_mask: str
-          Optional. The list of fields to update.
+          Required. The list of fields to update.
 
         :returns: :class:`ServicePrincipal`
         """
@@ -3723,7 +3727,7 @@ class WorkspaceIamV2API:
         :param user: :class:`User`
           Required. User to be updated in Databricks
         :param update_mask: str
-          Optional. The list of fields to update.
+          Required. The list of fields to update.
 
         :returns: :class:`User`
         """
