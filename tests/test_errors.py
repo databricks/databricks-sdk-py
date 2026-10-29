@@ -415,3 +415,35 @@ def test_debug_headers_enabled_shows_headers():
     assert "debug-token-12345" in error_message
     assert "X-Databricks-Azure-SP-Management-Token" in error_message
     assert "debug-azure-token-67890" in error_message
+
+
+def test_resource_exhausted_is_not_retried():
+    """RESOURCE_EXHAUSTED is a permanent capacity error (e.g. Vector Search index
+    storage full), not a transient rate limit. It must not be retried, so
+    retry_after_secs must not be set."""
+    resp = fake_valid_response(
+        "POST",
+        429,
+        "RESOURCE_EXHAUSTED",
+        "Endpoint capacity has reached capacity limit",
+    )
+    resp.headers["Retry-After"] = "60"
+
+    parser = errors._Parser()
+    error = parser.get_api_error(resp)
+
+    assert isinstance(error, errors.ResourceExhausted)
+    assert error.retry_after_secs is None
+
+
+def test_transient_429_still_gets_retry_after_secs():
+    """A transient 429 rate-limit error must still be retried according to the
+    Retry-After header (regression test)."""
+    resp = fake_valid_response("POST", 429, "REQUEST_LIMIT_EXCEEDED", "throttled")
+    resp.headers["Retry-After"] = "30"
+
+    parser = errors._Parser()
+    error = parser.get_api_error(resp)
+
+    assert isinstance(error, errors.TooManyRequests)
+    assert error.retry_after_secs == 30
