@@ -68,6 +68,48 @@
 
         
 
+    .. py:method:: download_file(parent: str, path: str [, byte_range: Optional[str], if_match: Optional[str], if_modified_since: Optional[str], if_none_match: Optional[str], if_range: Optional[str], if_unmodified_since: Optional[str]]) -> DownloadFileResponse
+
+        Downloads a regular file from a sandbox as an application/octet-stream body. The sandbox starts
+        automatically if it is stopped. Filesystem access uses the sandbox user's permissions and follows
+        symbolic links.
+
+        A full download returns 200 OK. A satisfiable single byte range returns 206 Partial Content. Multiple
+        byte ranges are unsupported and return 400. Invalid ranges are ignored; an unsatisfiable range returns
+        416 with Content-Range describing the file length. Range is ignored for empty files.
+
+        Conditional requests can return 304 Not Modified or 412 Precondition Failed. If-Range selects a
+        partial response only when its strong entity tag matches; otherwise, the entire file is returned.
+        HTTP-date validators in If-Range cause a full download. Reads are not snapshots: concurrent in-place
+        writes can affect the returned bytes. HEAD is unsupported.
+
+        Range and conditional options may be supplied as query parameters or HTTP headers. A parameter and one
+        header may both be supplied when their values match exactly. Conflicting values or repeated parameters
+        return 400.
+
+        :param parent: str
+          The sandbox resource name, in the form sandboxes/{sandbox_id}.
+        :param path: str
+          The absolute UTF-8 path of the file inside the sandbox.
+        :param byte_range: str (optional)
+          A single byte range, such as bytes=0-1023 or bytes=-1024. Equivalent to the Range header.
+        :param if_match: str (optional)
+          Entity tags or *. A mismatch returns 412 Precondition Failed. Equivalent to the If-Match header.
+        :param if_modified_since: str (optional)
+          An HTTP-date. Returns 304 if the file has not changed since this time. Ignored when If-None-Match is
+          present. Equivalent to the If-Modified-Since header.
+        :param if_none_match: str (optional)
+          Entity tags or *. A match returns 304 Not Modified. Equivalent to the If-None-Match header.
+        :param if_range: str (optional)
+          A strong entity tag. A mismatch, weak entity tag, or HTTP-date causes a full download. Equivalent to
+          the If-Range header.
+        :param if_unmodified_since: str (optional)
+          An HTTP-date. Returns 412 if the file has changed since this time. Ignored when If-Match is present.
+          Equivalent to the If-Unmodified-Since header.
+
+        :returns: :class:`DownloadFileResponse`
+        
+
     .. py:method:: execute_command(name: str, cmd: str [, args: Optional[list[str]], envs: Optional[Dict[str, str]], text: bool = True, stdout: StreamMode = StreamMode.PIPE, stderr: StreamMode = StreamMode.PIPE]) -> CommandProcess
 
         Start ``cmd`` in sandbox ``name`` and return a :class:`CommandProcess`
@@ -218,4 +260,27 @@
           - spec.compute.inactivity_timeout Any other path returns INVALID_PARAMETER_VALUE.
 
         :returns: :class:`Sandbox`
+        
+
+    .. py:method:: upload_file(parent: str, contents: BinaryIO, path: str)
+
+        Uploads an application/octet-stream body to a sandbox. The sandbox starts automatically if it is
+        stopped. Filesystem access uses the sandbox user's permissions and follows symbolic links.
+
+        Creates the file or replaces its entire contents, creating parent directories if missing. The
+        completed upload becomes visible atomically. A failure before commit leaves an existing destination
+        unchanged; a lost response after commit does not undo the upload. Completion does not guarantee crash
+        durability.
+
+        Returns 201 Created for a new file or 204 No Content for a replacement. Partial and conditional
+        uploads are unsupported: Content-Range, If-Match, If-None-Match, and If-Unmodified-Since return 400.
+
+        :param parent: str
+          The sandbox resource name, in the form sandboxes/{sandbox_id}.
+        :param contents: BinaryIO
+          The complete file contents. An empty body creates an empty file.
+        :param path: str
+          The absolute UTF-8 destination path inside the sandbox.
+
+
         

@@ -146,12 +146,16 @@
         :param role: :class:`Role`
           The desired specification of a Role.
         :param replace_existing: bool (optional)
-          If true, update the role if it already exists instead of returning an error.
+          If true, update the role if it already exists instead of returning an error. This requires
+          ``role_id`` to be set. Without ``role_id``, the request follows the normal create path and fails if
+          the role name already exists.
 
-          When the role already exists, the provided ``role`` spec fully replaces the existing one:
-          ``membership_roles`` is overwritten, not merged. Leaving ``membership_roles`` empty clears all of
-          the role's existing memberships, including ``DATABRICKS_SUPERUSER``. Always send the complete
-          desired list of memberships when using this field.
+          When the role already exists, only mutable fields are updated. Attributes omitted from the request
+          retain their current values. Set an attribute explicitly to false to disable it. ``identity_type``,
+          ``auth_method``, and ``postgres_role`` retain their existing values; supplied values for these
+          fields are ignored. ``membership_roles`` is overwritten, not merged. Leaving ``membership_roles``
+          empty clears all of the role's existing memberships, including ``DATABRICKS_SUPERUSER``. Always send
+          the complete desired list of memberships when using this field.
         :param role_id: str (optional)
           The ID to use for the Role, which will become the final component of the role's resource name. This
           ID becomes the role in Postgres.
@@ -725,7 +729,12 @@
 
     .. py:method:: update_role(name: str, role: Role, update_mask: FieldMask) -> UpdateRoleOperation
 
-        Update a role for a branch.
+        Updates the mutable fields of a Postgres role for a branch.
+
+        The fields ``spec.identity_type``, ``spec.auth_method``, and ``spec.postgres_role`` are fixed when the
+        role is created. UpdateRole ignores values supplied for these fields in the request body and retains
+        their existing values. Explicitly naming one of these fields in ``update_mask`` returns an
+        INVALID_PARAMETER_VALUE error.
 
         :param name: str
           Output only. The full resource path of the role. Format:
@@ -736,7 +745,17 @@
           The role's ``name`` field is used to identify the role to update. Format:
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param update_mask: FieldMask
-          The list of fields to update.
+          The list of fields to update. Supported fields are ``spec.membership_roles``,
+          ``spec.attributes.createdb``, ``spec.attributes.createrole``, and ``spec.attributes.bypassrls``.
+
+          ``spec.identity_type``, ``spec.auth_method``, and ``spec.postgres_role`` cannot be changed. Values
+          supplied for these fields in the request body are ignored. Including one of these fields as an
+          explicit path in update_mask returns an INVALID_PARAMETER_VALUE error. When ``spec`` is the only
+          path in the mask, only the supplied mutable attributes are updated. ``*`` by itself, or ``spec``
+          combined with other supported paths, selects all supported mutable fields. For these masks, all
+          three attributes (``createdb``, ``createrole``, and ``bypassrls``) must be supplied; omitting any
+          returns an INVALID_PARAMETER_VALUE error. Each of these mask forms replaces ``membership_roles``.
+          Omitting it or supplying an empty list clears all memberships, including ``DATABRICKS_SUPERUSER``.
 
         :returns: :class:`Operation`
         

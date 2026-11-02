@@ -130,6 +130,7 @@ AUTO_PACKAGES = [
     Package("catalog", "", ""),
     Package("cleanrooms", "", ""),
     Package("compute", "", ""),
+    Package("computemigrations", "Compute Migrations", "Manage migrations of Classic compute workloads to Serverless."),
     Package("dashboards", "", ""),
     Package(
         "database",
@@ -158,6 +159,11 @@ AUTO_PACKAGES = [
         "APIs to manage environment resources.\n\nThe Environments API provides management capabilities for different types of environments\nincluding workspace-level base environments that define the environment version and\ndependencies to be used in serverless notebooks and jobs.",
     ),
     Package("files", "", ""),
+    Package(
+        "genieagents",
+        "Genie Agents",
+        "Genie provides a no-code experience for business users, powered by AI/BI. Analysts set up Genie Agents that business users can use to ask questions using natural language. Genie uses data registered to Unity Catalog and requires at least CAN USE permission on a Pro or Serverless SQL warehouse. Also, Databricks Assistant must be enabled.",
+    ),
     Package("iam", "", ""),
     Package("iamv2", "", ""),
     Package("jobs", "", ""),

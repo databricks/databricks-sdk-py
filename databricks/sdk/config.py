@@ -179,7 +179,7 @@ class Config:
     # File multipart upload/download parameters
     # ----------------------
 
-    # Minimal input stream size (bytes) to use multipart / resumable uploads.
+    # Minimal input stream size (bytes) to use multipart uploads.
     # For small files it's more efficient to make one single-shot upload request.
     # When uploading a file, SDK will initially buffer this many bytes from input stream.
     # This parameter can be less or bigger than multipart_upload_chunk_size.
@@ -247,12 +247,9 @@ class Config:
     # but a maximum time between consecutive data reception events (even 1 byte) from the server
     files_ext_network_transfer_inactivity_timeout_seconds: float = 60
 
-    # Cap on the number of custom retries during incremental uploads:
-    # 1) multipart: upload part URL is expired, so new upload URLs must be requested to continue upload
-    # 2) resumable: chunk upload produced a retryable response (or exception), so upload status must be
-    # retrieved to continue the upload.
-    # In these two cases standard SDK retries (which are capped by the `retry_timeout_seconds` option) are not used.
-    # Note that retry counter is reset when upload is successfully resumed.
+    # Cap on the number of custom retries during multipart uploads, when an upload part URL is expired and new
+    # upload URLs must be requested to continue the upload. Standard SDK retries (capped by the
+    # `retry_timeout_seconds` option) are not used in this case.
     files_ext_multipart_upload_max_retries = 3
 
     # Cap on the number of custom retries during parallel downloads.

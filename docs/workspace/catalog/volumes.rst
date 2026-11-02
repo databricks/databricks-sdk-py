@@ -232,7 +232,7 @@
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 
         :param name: str
-          The three-level (fully qualified) name of the volume
+          The fully qualified name of the volume.
         :param include_browse: bool (optional)
           Whether to include volumes in the response for which the principal can only access selective
           metadata for

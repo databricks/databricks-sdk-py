@@ -2587,8 +2587,9 @@ class EndpointInfo:
     """the jdbc connection string for this warehouse"""
 
     max_dbu: Optional[int] = None
-    """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
-    between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity."""
+    """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be at least the
+    minimum DBU for the selected warehouse size and no greater than the configured DBU limit. Actual
+    capacity may be below this ceiling."""
 
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
@@ -3269,8 +3270,9 @@ class GetWarehouseResponse:
     """the jdbc connection string for this warehouse"""
 
     max_dbu: Optional[int] = None
-    """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
-    between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity."""
+    """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be at least the
+    minimum DBU for the selected warehouse size and no greater than the configured DBU limit. Actual
+    capacity may be below this ceiling."""
 
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
@@ -10027,8 +10029,9 @@ class WarehousesAPI:
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
         :param max_dbu: int (optional)
-          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
-          between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity.
+          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be at least the minimum
+          DBU for the selected warehouse size and no greater than the configured DBU limit. Actual capacity
+          may be below this ceiling.
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
@@ -10321,8 +10324,9 @@ class WarehousesAPI:
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
         :param max_dbu: int (optional)
-          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be a multiple of 3
-          between 3 and 960. The effective maximum cannot be lower than the warehouse's minimum capacity.
+          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be at least the minimum
+          DBU for the selected warehouse size and no greater than the configured DBU limit. Actual capacity
+          may be below this ceiling.
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 

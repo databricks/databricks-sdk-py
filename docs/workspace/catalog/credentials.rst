@@ -154,23 +154,22 @@
 
         Validates a credential.
 
-        For service credentials (purpose is **SERVICE**), either the **credential_name** or the cloud-specific
-        credential must be provided.
-
         For storage credentials (purpose is **STORAGE**), at least one of **external_location_name** and
         **url** need to be provided. If only one of them is provided, it will be used for validation. And if
         both are provided, the **url** will be used for validation, and **external_location_name** will be
-        ignored when checking overlapping urls. Either the **credential_name** or the cloud-specific
-        credential must be provided.
+        ignored when checking overlapping urls.
 
         The caller must be a metastore admin or the credential owner or have the required permission on the
         metastore and the credential (e.g., **CREATE_EXTERNAL_LOCATION** when purpose is **STORAGE**).
 
         :param aws_iam_role: :class:`AwsIamRole` (optional)
+          Deprecated: create a credential and pass its credential_name instead.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
+          Deprecated: create a credential and pass its credential_name instead.
         :param credential_name: str (optional)
           Required. The name of an existing credential or long-lived cloud credential to validate.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
+          Deprecated: create a credential and pass its credential_name instead.
         :param external_location_name: str (optional)
           The name of an existing external location to validate. Only applicable for storage credentials
           (purpose is **STORAGE**.)

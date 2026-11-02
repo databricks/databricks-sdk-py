@@ -4,6 +4,51 @@ Jobs
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.jobs`` module.
 
 .. py:currentmodule:: databricks.sdk.service.jobs
+.. autoclass:: AiClassifyFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiClassifyFunctionInlineLabels
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiClassifyFunctionLabel
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiExtractFunction
+   :members:
+   :undoc-members:
+
+.. py:class:: AiExtractFunctionMode
+
+   The extraction mode.
+
+   .. py:attribute:: MODE_PRECISION
+      :value: "MODE_PRECISION"
+
+.. autoclass:: AiFunctionTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiFunctionTaskOutput
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiParseDocumentFunction
+   :members:
+   :undoc-members:
+
+.. py:class:: AiParseDocumentFunctionDescriptionElementType
+
+   An element type that AI descriptions can be generated for.
+
+   .. py:attribute:: DESCRIPTION_ELEMENT_TYPE_ALL
+      :value: "DESCRIPTION_ELEMENT_TYPE_ALL"
+
+   .. py:attribute:: DESCRIPTION_ELEMENT_TYPE_FIGURE
+      :value: "DESCRIPTION_ELEMENT_TYPE_FIGURE"
+
 .. autoclass:: AiRuntimeTask
    :members:
    :undoc-members:
@@ -163,6 +208,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ClusterSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: CompletedJob
    :members:
    :undoc-members:
 
@@ -344,6 +393,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeltaTableSource
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeploymentSpec
    :members:
    :undoc-members:
@@ -451,6 +504,43 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: JobCluster
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobClusterServerlessCompute
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobCompletionTriggerConfiguration
+   :members:
+   :undoc-members:
+
+.. py:class:: JobCompletionTriggerConfigurationIfStatus
+
+   The status that all upstream jobs must have before a job completion trigger fires.
+
+   .. py:attribute:: DONE
+      :value: "DONE"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: SUCCESS
+      :value: "SUCCESS"
+
+.. autoclass:: JobCompletionTriggerConfigurationMonitoredJob
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobCompletionTriggerRunInfoDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobCompletionTriggerState
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobCompletionTriggerStateMonitoredJobState
    :members:
    :undoc-members:
 
@@ -721,6 +811,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: QualifiedName
+   :members:
+   :undoc-members:
+
 .. autoclass:: QueueDetails
    :members:
    :undoc-members:
@@ -794,6 +888,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResolvedValues
+   :members:
+   :undoc-members:
+
+.. autoclass:: ResolvedValuesAiFunctionTaskResolvedValues
    :members:
    :undoc-members:
 
@@ -1382,6 +1480,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FILE_ARRIVAL
       :value: "FILE_ARRIVAL"
 
+   .. py:attribute:: JOB_COMPLETION
+      :value: "JOB_COMPLETION"
+
    .. py:attribute:: ONE_TIME
       :value: "ONE_TIME"
 
@@ -1423,6 +1524,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DASHBOARDS
       :value: "DASHBOARDS"
+
+.. autoclass:: VolumeSource
+   :members:
+   :undoc-members:
 
 .. autoclass:: Webhook
    :members:

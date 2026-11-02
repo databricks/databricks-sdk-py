@@ -229,21 +229,24 @@
         the **url** will be used for validation, and **external_location_name** will be ignored when checking
         overlapping urls.
 
-        Either the **storage_credential_name** or the cloud-specific credential must be provided.
-
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
 
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
-          The AWS IAM role configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The AWS IAM
+          role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)
-          The Azure managed identity configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The Azure
+          managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
-          The Azure service principal configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The Azure
+          service principal configuration.
         :param cloudflare_api_token: :class:`CloudflareApiToken` (optional)
-          The Cloudflare API token configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The Cloudflare
+          API token configuration.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The Databricks created GCP service account configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The Databricks
+          created GCP service account configuration.
         :param external_location_name: str (optional)
           The name of an existing external location to validate.
         :param read_only: bool (optional)

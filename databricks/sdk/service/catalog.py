@@ -10857,6 +10857,7 @@ class Privilege(Enum):
     CREATE_EXTERNAL_LOCATION = "CREATE_EXTERNAL_LOCATION"
     CREATE_EXTERNAL_TABLE = "CREATE_EXTERNAL_TABLE"
     CREATE_EXTERNAL_VOLUME = "CREATE_EXTERNAL_VOLUME"
+    CREATE_FEATURE = "CREATE_FEATURE"
     CREATE_FOREIGN_CATALOG = "CREATE_FOREIGN_CATALOG"
     CREATE_FOREIGN_SECURABLE = "CREATE_FOREIGN_SECURABLE"
     CREATE_FUNCTION = "CREATE_FUNCTION"
@@ -10880,6 +10881,7 @@ class Privilege(Enum):
     MANAGE_ALLOWLIST = "MANAGE_ALLOWLIST"
     MODIFY = "MODIFY"
     MODIFY_CLEAN_ROOM = "MODIFY_CLEAN_ROOM"
+    READ_FEATURE = "READ_FEATURE"
     READ_FILES = "READ_FILES"
     READ_METADATA = "READ_METADATA"
     READ_PRIVATE_FILES = "READ_PRIVATE_FILES"
@@ -12010,6 +12012,7 @@ class SecurableType(Enum):
     CREDENTIAL = "CREDENTIAL"
     EXTERNAL_LOCATION = "EXTERNAL_LOCATION"
     EXTERNAL_METADATA = "EXTERNAL_METADATA"
+    FEATURE = "FEATURE"
     FUNCTION = "FUNCTION"
     MCP_SERVICE = "MCP_SERVICE"
     METASTORE = "METASTORE"
@@ -16184,23 +16187,22 @@ class CredentialsAPI:
     ) -> ValidateCredentialResponse:
         """Validates a credential.
 
-        For service credentials (purpose is **SERVICE**), either the **credential_name** or the cloud-specific
-        credential must be provided.
-
         For storage credentials (purpose is **STORAGE**), at least one of **external_location_name** and
         **url** need to be provided. If only one of them is provided, it will be used for validation. And if
         both are provided, the **url** will be used for validation, and **external_location_name** will be
-        ignored when checking overlapping urls. Either the **credential_name** or the cloud-specific
-        credential must be provided.
+        ignored when checking overlapping urls.
 
         The caller must be a metastore admin or the credential owner or have the required permission on the
         metastore and the credential (e.g., **CREATE_EXTERNAL_LOCATION** when purpose is **STORAGE**).
 
         :param aws_iam_role: :class:`AwsIamRole` (optional)
+          Deprecated: create a credential and pass its credential_name instead.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
+          Deprecated: create a credential and pass its credential_name instead.
         :param credential_name: str (optional)
           Required. The name of an existing credential or long-lived cloud credential to validate.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
+          Deprecated: create a credential and pass its credential_name instead.
         :param external_location_name: str (optional)
           The name of an existing external location to validate. Only applicable for storage credentials
           (purpose is **STORAGE**.)
@@ -20507,21 +20509,24 @@ class StorageCredentialsAPI:
         the **url** will be used for validation, and **external_location_name** will be ignored when checking
         overlapping urls.
 
-        Either the **storage_credential_name** or the cloud-specific credential must be provided.
-
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
 
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
-          The AWS IAM role configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The AWS IAM
+          role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)
-          The Azure managed identity configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The Azure
+          managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
-          The Azure service principal configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The Azure
+          service principal configuration.
         :param cloudflare_api_token: :class:`CloudflareApiToken` (optional)
-          The Cloudflare API token configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The Cloudflare
+          API token configuration.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The Databricks created GCP service account configuration.
+          Deprecated: create a storage credential and pass its storage_credential_name instead. The Databricks
+          created GCP service account configuration.
         :param external_location_name: str (optional)
           The name of an existing external location to validate.
         :param read_only: bool (optional)
@@ -21534,7 +21539,7 @@ class VolumesAPI:
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 
         :param name: str
-          The three-level (fully qualified) name of the volume
+          The fully qualified name of the volume.
         :param include_browse: bool (optional)
           Whether to include volumes in the response for which the principal can only access selective
           metadata for

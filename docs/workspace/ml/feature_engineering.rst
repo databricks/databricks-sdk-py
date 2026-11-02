@@ -11,9 +11,11 @@
         Backfill features.
 
         :param feature_full_names: List[str]
-          Full names of the features to backfill.
+          Full names of the features to backfill. All features must share the same interval between values and
+          the same offset. The interval is the slide_duration of a sliding window or the window_duration of a
+          tumbling window.
         :param backfill_ranges: List[:class:`BackfillRange`]
-          Output ranges to backfill.
+          Time ranges of source data to backfill. Ranges must not overlap.
         :param budget_policy_id: str (optional)
           The budget policy ID, in UUID format, used to attribute the serverless compute cost of this
           backfill. If not specified, a default budget policy may be applied.
@@ -374,15 +376,14 @@
 
     .. py:method:: update_materialized_feature(materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str) -> MaterializedFeature
 
-        Update a materialized feature (pause/resume).
+        Updates a materialized feature.
 
         :param materialized_feature_id: str
           Server-assigned unique identifier for the materialized feature.
         :param materialized_feature: :class:`MaterializedFeature`
           The materialized feature to update.
         :param update_mask: str
-          Provide the materialization feature fields which should be updated. Currently, only the
-          pipeline_state field can be updated.
+          The fields to update. Only ``pipeline_schedule_state`` is supported.
 
         :returns: :class:`MaterializedFeature`
         

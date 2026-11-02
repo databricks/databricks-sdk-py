@@ -116,6 +116,20 @@
         :returns: Iterator over :class:`NccPrivateEndpointRule`
         
 
+    .. py:method:: update_network_connectivity_config(network_connectivity_config_id: str, network_connectivity_config: NetworkConnectivityConfiguration, update_mask: FieldMask) -> NetworkConnectivityConfiguration
+
+        Updates the name or billing workspace for a network connectivity configuration.
+
+        :param network_connectivity_config_id: str
+          Your Network Connectivity Configuration ID.
+        :param network_connectivity_config: :class:`NetworkConnectivityConfiguration`
+          The network connectivity configuration fields to update.
+        :param update_mask: FieldMask
+          Must contain at least one of ``name`` or ``billing_workspace_id``.
+
+        :returns: :class:`NetworkConnectivityConfiguration`
+        
+
     .. py:method:: update_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str, private_endpoint_rule: UpdatePrivateEndpointRule, update_mask: str) -> NccPrivateEndpointRule
 
         Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources

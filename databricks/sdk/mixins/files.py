@@ -7,7 +7,6 @@ import math
 import os
 import pathlib
 import platform
-import re
 import shutil
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
@@ -32,7 +31,7 @@ from requests import RequestException
 from .._base_client import _BaseClient, _RawResponse, _StreamingResponse
 from .._property import _cached_property
 from ..config import Config
-from ..errors import AlreadyExists, InternalError, NotFound, PermissionDenied
+from ..errors import InternalError, NotFound, PermissionDenied
 from ..errors.mapper import _error_mapper
 from ..retries import retried
 from databricks.sdk.service import files
@@ -779,8 +778,8 @@ class _Endpoint:
 class _PresignedUrlRequestBuilder:
     """Builds presigned URL requests for file upload operations.
 
-    Encapsulates the coordination API calls (create-upload-part-urls,
-    create-resumable-upload-url) and response parsing into a single place.
+    Encapsulates the coordination API calls (create-upload-part-urls, create-download-url) and response parsing
+    into a single place.
     """
 
     def __init__(self, api, hostname: str):
@@ -816,27 +815,6 @@ class _PresignedUrlRequestBuilder:
                 headers[h["name"]] = h["value"]
             results.append(_PresignedUrl(url=url, headers=headers, part_number=part_number))
         return results
-
-    def build_resumable_upload_url(self, path: str, session_token: str) -> _PresignedUrl:
-        """Fetches a presigned URL for resumable upload."""
-        body = {"path": path, "session_token": session_token}
-        # The _api.do() method handles retries and will raise an exception in case of failure.
-        response = self._api.do(
-            "POST",
-            url=f"{self._hostname}/api/2.0/fs/create-resumable-upload-url",
-            headers={"Content-Type": "application/json"},
-            body=body,
-        )
-        url_node = response.get("resumable_upload_url")
-        if not url_node:
-            raise ValueError(f"Unexpected server response: {response}")
-        url = url_node.get("url")
-        if not url:
-            raise ValueError(f"Unexpected server response: {response}")
-        headers: dict[str, str] = {}
-        for h in url_node.get("headers", []):
-            headers[h["name"]] = h["value"]
-        return _PresignedUrl(url=url, headers=headers)
 
     def build_download_url(self, path: str, expire_time: str) -> CreateDownloadUrlResponse:
         """Fetches a presigned URL for downloading a file."""
@@ -888,21 +866,6 @@ class _StorageProxyRequestBuilder:
             )
         return results
 
-    def build_resumable_upload_url(self, path: str, session_token: str) -> _PresignedUrl:
-        """Builds a URL for resumable upload directly to the storage proxy."""
-        escaped = _escape_multi_segment_path_parameter(path)
-        base = f"{self._hostname}/api/2.0/fs/files{escaped}"
-        query = parse.urlencode(
-            {
-                "session_token": session_token,
-                "upload_type": "resumable",
-            }
-        )
-        return _PresignedUrl(
-            url=f"{base}?{query}",
-            headers={"Content-Type": "application/octet-stream"},
-        )
-
     def build_download_url(self, path: str, expire_time: str) -> CreateDownloadUrlResponse:
         """Builds a URL for downloading a file directly from the storage proxy."""
         escaped = _escape_multi_segment_path_parameter(path)
@@ -952,7 +915,6 @@ class FilesExt(files.FilesAPI):
     def __init__(self, api_client, config: Config):
         super().__init__(api_client)
         self._config = config.copy()
-        self._multipart_upload_read_ahead_bytes = 1
         self._cached_cloud_provider_session: Optional[requests.Session] = None
         self._cloud_provider_session_lock = Lock()
         self._dp_hostname_available: Optional[bool] = None
@@ -1713,16 +1675,6 @@ class FilesExt(files.FilesAPI):
                     # Rethrow the original exception
                     raise e from None
 
-        elif initiate_upload_response.get("resumable_upload"):
-            session_token = initiate_upload_response["resumable_upload"]["session_token"]
-
-            try:
-                self._perform_resumable_upload(ctx, contents, session_token, pre_read_buffer)
-            except FallbackToUploadUsingFilesApi as e:
-                _LOG.info(f"Falling back to single-shot upload with Files API: {e}")
-                # Concatenate the buffered part and the rest of the stream.
-                full_stream = _ConcatenatedInputStream(BytesIO(e.buffer), contents)
-                return self._single_thread_single_shot_upload(ctx, full_stream)
         else:
             raise ValueError(f"Unexpected server response: {initiate_upload_response}")
 
@@ -1734,10 +1686,7 @@ class FilesExt(files.FilesAPI):
         """
         initiate_upload_response = self._initiate_multipart_upload(ctx)
 
-        if initiate_upload_response.get("resumable_upload"):
-            _LOG.warning("GCP does not support parallel resumable uploads, falling back to single-threaded upload")
-            return self._single_thread_multipart_upload(ctx, contents)
-        elif initiate_upload_response.get("multipart_upload"):
+        if initiate_upload_response.get("multipart_upload"):
             session_token = initiate_upload_response["multipart_upload"].get("session_token")
             if not session_token:
                 raise ValueError(f"Unexpected server response: {initiate_upload_response}")
@@ -1803,10 +1752,6 @@ class FilesExt(files.FilesAPI):
                     # Rethrow the original exception.
                     raise e from None
 
-        elif initiate_upload_response.get("resumable_upload"):
-            _LOG.warning("GCP does not support parallel resumable uploads, falling back to single-threaded upload")
-            with open(ctx.source_file_path, "rb") as f:
-                return self._upload_single_thread_with_known_size(ctx, f)
         else:
             raise ValueError(f"Unexpected server response: {initiate_upload_response}")
 
@@ -2339,212 +2284,6 @@ class FilesExt(files.FilesAPI):
                 return True
         return False
 
-    def _perform_resumable_upload(
-        self,
-        ctx: _UploadContext,
-        input_stream: BinaryIO,
-        session_token: str,
-        pre_read_buffer: bytes,
-    ) -> None:
-        """
-        Performs resumable upload on GCP: https://cloud.google.com/storage/docs/performing-resumable-uploads
-        """
-        # Session URI we're using expires after a week
-
-        # Why are we buffering the current chunk?
-        # When using resumable upload API we're uploading data in chunks. During chunk upload
-        # server responds with the "received offset" confirming how much data it stored so far,
-        # so we should continue uploading from that offset. (Note this is not a failure but an
-        # expected behaviour as per the docs.) But, input stream might be consumed beyond that
-        # offset, since server might have read more data than it confirmed received, or some data
-        # might have been pre-cached by e.g. OS or a proxy. So, to continue upload, we must rewind
-        # the input stream back to the byte next to "received offset". This is not possible
-        # for non-seekable input stream, so we must buffer the whole last chunk and seek inside
-        # the buffer. By always uploading from the buffer we fully support non-seekable streams.
-
-        # Why are we doing read-ahead?
-        # It's not possible to upload an empty chunk as "Content-Range" header format does not
-        # support this. So if current chunk happens to finish exactly at the end of the stream,
-        # we need to know that and mark the chunk as last (by passing real file size in the
-        # "Content-Range" header) when uploading it. To detect if we're at the end of the stream
-        # we're reading "ahead" an extra bytes but not uploading them immediately. If
-        # nothing has been read ahead, it means we're at the end of the stream.
-        # On the contrary, in multipart upload we can decide to complete upload *after*
-        # last chunk has been sent.
-
-        builder = self._create_request_builder()
-
-        try:
-            presigned = builder.build_resumable_upload_url(ctx.target_path, session_token)
-        except Exception as e:
-            raise FallbackToUploadUsingFilesApi(
-                pre_read_buffer, f"Failed to obtain resumable upload URL: {e}, falling back to single shot upload"
-            ) from e
-
-        resumable_upload_url = presigned.url
-        base_headers = presigned.headers
-
-        try:
-            # We will buffer this many bytes: one chunk + read-ahead block.
-            # Note buffer may contain more data initially (from pre_read_buffer).
-            min_buffer_size = ctx.part_size + self._multipart_upload_read_ahead_bytes
-
-            buffer = pre_read_buffer
-
-            # How many bytes in the buffer were confirmed to be received by the server.
-            # All the remaining bytes in the buffer must be uploaded.
-            uploaded_bytes_count = 0
-
-            chunk_offset = 0
-
-            retry_count = 0
-            while True:
-                # If needed, fill the buffer to contain at least min_buffer_size bytes
-                # (unless end of stream), discarding already uploaded bytes.
-                bytes_to_read = max(0, min_buffer_size - (len(buffer) - uploaded_bytes_count))
-                next_buf = input_stream.read(bytes_to_read)
-                buffer = buffer[uploaded_bytes_count:] + next_buf
-
-                if len(next_buf) < bytes_to_read:
-                    # This is the last chunk in the stream.
-                    # Let's upload all the remaining bytes in one go.
-                    actual_chunk_length = len(buffer)
-                    file_size = chunk_offset + actual_chunk_length
-                else:
-                    # More chunks expected, let's upload current chunk (excluding read-ahead block).
-                    actual_chunk_length = ctx.part_size
-                    file_size = "*"
-
-                headers: dict = {"Content-Type": "application/octet-stream", **base_headers}
-
-                chunk_last_byte_offset = chunk_offset + actual_chunk_length - 1
-                content_range_header = f"bytes {chunk_offset}-{chunk_last_byte_offset}/{file_size}"
-                _LOG.debug(f"Uploading chunk: {content_range_header}")
-                headers["Content-Range"] = content_range_header
-
-                def retrieve_upload_status() -> Optional[requests.Response]:
-                    def perform():
-                        return self._cloud_provider_session().request(
-                            "PUT",
-                            resumable_upload_url,
-                            headers={"Content-Range": "bytes */*"},
-                            data=b"",
-                            timeout=self._config.files_ext_network_transfer_inactivity_timeout_seconds,
-                        )
-
-                    try:
-                        return self._retry_cloud_idempotent_operation(perform)
-                    except RequestException:
-                        _LOG.warning("Failed to retrieve upload status")
-                        return None
-
-                try:
-                    upload_response = self._cloud_provider_session().request(
-                        "PUT",
-                        resumable_upload_url,
-                        headers=headers,
-                        data=BytesIO(buffer[:actual_chunk_length]),
-                        timeout=self._config.files_ext_network_transfer_inactivity_timeout_seconds,
-                    )
-
-                    # https://cloud.google.com/storage/docs/performing-resumable-uploads#resume-upload
-                    # If an upload request is terminated before receiving a response, or if you receive
-                    # a 503 or 500 response, then you need to resume the interrupted upload from where it left off.
-
-                    # Let's follow that for all potentially retryable status codes.
-                    if upload_response.status_code in self._RETRYABLE_STATUS_CODES:
-                        if retry_count < self._config.files_ext_multipart_upload_max_retries:
-                            retry_count += 1
-                            # let original upload_response be handled as an error
-                            upload_response = retrieve_upload_status() or upload_response
-                    else:
-                        # we received non-retryable response, reset retry count
-                        retry_count = 0
-
-                except RequestException as e:
-                    # Let's do the same for retryable network errors.
-                    if (
-                        _BaseClient._is_retryable(e)
-                        and retry_count < self._config.files_ext_multipart_upload_max_retries
-                    ):
-                        retry_count += 1
-                        upload_response = retrieve_upload_status()
-                        if not upload_response:
-                            # rethrow original exception
-                            raise e from None
-                    else:
-                        # rethrow original exception
-                        raise e from None
-
-                if upload_response.status_code in (200, 201):
-                    if file_size == "*":
-                        raise ValueError(
-                            f"Received unexpected status {upload_response.status_code} before reaching end of stream"
-                        )
-
-                    # upload complete
-                    break
-
-                elif upload_response.status_code == 308:
-                    # chunk accepted (or check-status succeeded), let's determine received offset to resume from there
-                    range_string = upload_response.headers.get("Range")
-                    confirmed_offset = self._extract_range_offset(range_string)
-                    _LOG.debug(f"Received confirmed offset: {confirmed_offset}")
-
-                    if confirmed_offset:
-                        if confirmed_offset < chunk_offset - 1 or confirmed_offset > chunk_last_byte_offset:
-                            raise ValueError(
-                                f"Unexpected received offset: {confirmed_offset} is outside of expected range, chunk offset: {chunk_offset}, chunk last byte offset: {chunk_last_byte_offset}"
-                            )
-                    else:
-                        if chunk_offset > 0:
-                            raise ValueError(
-                                f"Unexpected received offset: {confirmed_offset} is outside of expected range, chunk offset: {chunk_offset}, chunk last byte offset: {chunk_last_byte_offset}"
-                            )
-
-                    # We have just uploaded a part of chunk starting from offset "chunk_offset" and ending
-                    # at offset "confirmed_offset" (inclusive), so the next chunk will start at
-                    # offset "confirmed_offset + 1"
-                    if confirmed_offset:
-                        next_chunk_offset = confirmed_offset + 1
-                    else:
-                        next_chunk_offset = chunk_offset
-                    uploaded_bytes_count = next_chunk_offset - chunk_offset
-                    chunk_offset = next_chunk_offset
-
-                elif upload_response.status_code == 412 and not ctx.overwrite:
-                    # Assuming this is only possible reason
-                    # Full message in this case: "At least one of the pre-conditions you specified did not hold."
-                    raise AlreadyExists("The file being created already exists.")
-
-                else:
-                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"
-                    _LOG.warning(message)
-                    mapped_error = _error_mapper(upload_response, {})
-                    raise mapped_error or ValueError(message)
-
-        except Exception as e:
-            _LOG.info(f"Aborting resumable upload on error: {e}")
-            try:
-                self._abort_resumable_upload(resumable_upload_url, base_headers)
-            except BaseException as ex:
-                _LOG.warning(f"Failed to abort upload: {ex}")
-                # ignore, abort is a best-effort
-            finally:
-                # rethrow original exception
-                raise e from None
-
-    @staticmethod
-    def _extract_range_offset(range_string: Optional[str]) -> Optional[int]:
-        """Parses the response range header to extract the last byte."""
-        if not range_string:
-            return None  # server did not yet confirm any bytes
-
-        if match := re.match("bytes=0-(\\d+)", range_string):
-            return int(match.group(1))
-        else:
-            raise ValueError(f"Cannot parse response header: Range: {range_string}")
-
     def _get_rfc339_timestamp_with_future_offset(self, base_time: datetime.datetime, offset: timedelta) -> str:
         """Generates an offset timestamp in an RFC3339 format suitable for URL generation"""
         offset_timestamp = base_time + offset
@@ -2582,19 +2321,6 @@ class FilesExt(files.FilesAPI):
         )
 
         if not abort_response.ok:
-            raise ValueError(abort_response)
-
-    def _abort_resumable_upload(self, resumable_upload_url: str, headers: dict[str, str]) -> None:
-        """Aborts ongoing resumable upload session to clean up incomplete file. Best-effort, so sent once."""
-        abort_response = self._cloud_provider_session().request(
-            "DELETE",
-            resumable_upload_url,
-            headers=headers,
-            data=b"",
-            timeout=self._config.files_ext_network_transfer_inactivity_timeout_seconds,
-        )
-
-        if abort_response.status_code not in (200, 201):
             raise ValueError(abort_response)
 
     def _cloud_provider_session(self) -> requests.Session:
