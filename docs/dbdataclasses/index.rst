@@ -15,6 +15,7 @@ Dataclasses
    catalog
    cleanrooms
    compute
+   computemigrations
    dashboards
    database
    dataclassification
@@ -23,6 +24,7 @@ Dataclasses
    domains
    environments
    files
+   genieagents
    iam
    iamv2
    jobs

@@ -19,6 +19,7 @@ from databricks.sdk.service import bundledeployments as pkg_bundledeployments
 from databricks.sdk.service import catalog as pkg_catalog
 from databricks.sdk.service import cleanrooms as pkg_cleanrooms
 from databricks.sdk.service import compute as pkg_compute
+from databricks.sdk.service import computemigrations as pkg_computemigrations
 from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
 from databricks.sdk.service import dataclassification as pkg_dataclassification
@@ -27,6 +28,7 @@ from databricks.sdk.service import disasterrecovery as pkg_disasterrecovery
 from databricks.sdk.service import domains as pkg_domains
 from databricks.sdk.service import environments as pkg_environments
 from databricks.sdk.service import files as pkg_files
+from databricks.sdk.service import genieagents as pkg_genieagents
 from databricks.sdk.service import iam as pkg_iam
 from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
@@ -88,6 +90,7 @@ from databricks.sdk.service.compute import ClusterPoliciesAPI
 from databricks.sdk.service.compute import ClustersAPI
 from databricks.sdk.service.compute import CommandExecutionAPI
 from databricks.sdk.service.settings import ComplianceSecurityProfileAPI
+from databricks.sdk.service.computemigrations import ComputeMigrationsAPI
 from databricks.sdk.service.catalog import ConnectionsAPI
 from databricks.sdk.service.marketplace import ConsumerFulfillmentsAPI
 from databricks.sdk.service.marketplace import ConsumerInstallationsAPI
@@ -137,6 +140,7 @@ from databricks.sdk.service.files import FilesAPI
 from databricks.sdk.service.ml import ForecastingAPI
 from databricks.sdk.service.catalog import FunctionsAPI
 from databricks.sdk.service.dashboards import GenieAPI
+from databricks.sdk.service.genieagents import GenieAgentsAPI
 from databricks.sdk.service.workspace import GitCredentialsAPI
 from databricks.sdk.service.compute import GlobalInitScriptsAPI
 from databricks.sdk.service.catalog import GrantsAPI
@@ -389,6 +393,7 @@ class WorkspaceClient:
         self._cluster_policies = pkg_compute.ClusterPoliciesAPI(self._api_client)
         self._clusters = ClustersExt(self._api_client)
         self._command_execution = pkg_compute.CommandExecutionAPI(self._api_client)
+        self._compute_migrations = pkg_computemigrations.ComputeMigrationsAPI(self._api_client)
         self._connections = pkg_catalog.ConnectionsAPI(self._api_client)
         self._consumer_fulfillments = pkg_marketplace.ConsumerFulfillmentsAPI(self._api_client)
         self._consumer_installations = pkg_marketplace.ConsumerInstallationsAPI(self._api_client)
@@ -419,6 +424,7 @@ class WorkspaceClient:
         self._forecasting = pkg_ml.ForecastingAPI(self._api_client)
         self._functions = pkg_catalog.FunctionsAPI(self._api_client)
         self._genie = pkg_dashboards.GenieAPI(self._api_client)
+        self._genie_agents = pkg_genieagents.GenieAgentsAPI(self._api_client)
         self._git_credentials = pkg_workspace.GitCredentialsAPI(self._api_client)
         self._global_init_scripts = pkg_compute.GlobalInitScriptsAPI(self._api_client)
         self._grants = pkg_catalog.GrantsAPI(self._api_client)
@@ -643,6 +649,11 @@ class WorkspaceClient:
         return self._command_execution
 
     @property
+    def compute_migrations(self) -> pkg_computemigrations.ComputeMigrationsAPI:
+        """Manage migrations of Classic compute workloads to Serverless."""
+        return self._compute_migrations
+
+    @property
     def connections(self) -> pkg_catalog.ConnectionsAPI:
         """A connection represents an external data source for use within Databricks."""
         return self._connections
@@ -786,6 +797,11 @@ class WorkspaceClient:
     def genie(self) -> pkg_dashboards.GenieAPI:
         """Genie provides a no-code experience for business users, powered by AI/BI."""
         return self._genie
+
+    @property
+    def genie_agents(self) -> pkg_genieagents.GenieAgentsAPI:
+        """Genie provides a no-code experience for business users, powered by AI/BI."""
+        return self._genie_agents
 
     @property
     def git_credentials(self) -> pkg_workspace.GitCredentialsAPI:

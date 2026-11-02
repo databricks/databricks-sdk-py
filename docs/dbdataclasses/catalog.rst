@@ -1661,6 +1661,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_EXTERNAL_VOLUME
       :value: "CREATE_EXTERNAL_VOLUME"
 
+   .. py:attribute:: CREATE_FEATURE
+      :value: "CREATE_FEATURE"
+
    .. py:attribute:: CREATE_FOREIGN_CATALOG
       :value: "CREATE_FOREIGN_CATALOG"
 
@@ -1729,6 +1732,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: MODIFY_CLEAN_ROOM
       :value: "MODIFY_CLEAN_ROOM"
+
+   .. py:attribute:: READ_FEATURE
+      :value: "READ_FEATURE"
 
    .. py:attribute:: READ_FILES
       :value: "READ_FILES"
@@ -2114,6 +2120,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: EXTERNAL_METADATA
       :value: "EXTERNAL_METADATA"
+
+   .. py:attribute:: FEATURE
+      :value: "FEATURE"
 
    .. py:attribute:: FUNCTION
       :value: "FUNCTION"

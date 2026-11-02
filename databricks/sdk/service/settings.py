@@ -5516,6 +5516,10 @@ class NetworkConnectivityConfiguration:
     account_id: Optional[str] = None
     """Your Databricks account ID. You can find your account ID in your Databricks accounts console."""
 
+    billing_workspace_id: Optional[int] = None
+    """The workspace to which charges for this network connectivity configuration are attributed. The
+    workspace must be active and attached to this network connectivity configuration when set."""
+
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when this object was created."""
 
@@ -5543,6 +5547,8 @@ class NetworkConnectivityConfiguration:
         body = {}
         if self.account_id is not None:
             body["account_id"] = self.account_id
+        if self.billing_workspace_id is not None:
+            body["billing_workspace_id"] = self.billing_workspace_id
         if self.creation_time is not None:
             body["creation_time"] = self.creation_time
         if self.egress_config:
@@ -5562,6 +5568,8 @@ class NetworkConnectivityConfiguration:
         body = {}
         if self.account_id is not None:
             body["account_id"] = self.account_id
+        if self.billing_workspace_id is not None:
+            body["billing_workspace_id"] = self.billing_workspace_id
         if self.creation_time is not None:
             body["creation_time"] = self.creation_time
         if self.egress_config:
@@ -5581,6 +5589,7 @@ class NetworkConnectivityConfiguration:
         """Deserializes the NetworkConnectivityConfiguration from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
+            billing_workspace_id=_int64(d, "billing_workspace_id"),
             creation_time=_int64(d, "creation_time"),
             egress_config=_from_dict(d, "egress_config", NccEgressConfig),
             name=d.get("name", None),
@@ -9335,6 +9344,42 @@ class NetworkConnectivityAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def update_network_connectivity_config(
+        self,
+        network_connectivity_config_id: str,
+        network_connectivity_config: NetworkConnectivityConfiguration,
+        update_mask: FieldMask,
+    ) -> NetworkConnectivityConfiguration:
+        """Updates the name or billing workspace for a network connectivity configuration.
+
+        :param network_connectivity_config_id: str
+          Your Network Connectivity Configuration ID.
+        :param network_connectivity_config: :class:`NetworkConnectivityConfiguration`
+          The network connectivity configuration fields to update.
+        :param update_mask: FieldMask
+          Must contain at least one of ``name`` or ``billing_workspace_id``.
+
+        :returns: :class:`NetworkConnectivityConfiguration`
+        """
+
+        body = network_connectivity_config.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return NetworkConnectivityConfiguration.from_dict(res)
 
     def update_private_endpoint_rule(
         self,

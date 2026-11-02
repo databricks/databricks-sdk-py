@@ -16,6 +16,7 @@ These APIs are available from WorkspaceClient
    catalog/index
    cleanrooms/index
    compute/index
+   computemigrations/index
    dashboards/index
    database/index
    dataclassification/index
@@ -23,6 +24,7 @@ These APIs are available from WorkspaceClient
    domains/index
    environments/index
    files/index
+   genieagents/index
    iam/index
    iamv2/index
    jobs/index

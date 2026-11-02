@@ -559,7 +559,9 @@ class BackfillOperationMetadata:
     """Progress and configuration for a backfill."""
 
     backfill_ranges: Optional[List[BackfillRange]] = None
-    """Output ranges targeted by the backfill."""
+    """The requested time ranges, each aligned outward to the boundaries at which the features emit
+    values. Ranges that overlap after alignment are combined into one. The backfill stops at the
+    most recent materialized values, so a range may extend past the values that it recomputed."""
 
     feature_full_names: Optional[List[str]] = None
     """Full names of the features targeted by the backfill."""
@@ -611,10 +613,14 @@ class BackfillOperationMetadataState(Enum):
 
 @dataclass
 class BackfillRange:
-    """A time range for a backfill."""
+    """A time range of source data for a backfill. The range is aligned outward to the boundaries at
+    which the feature emits values: every slide_duration for a sliding window or every
+    window_duration for a tumbling window, shifted by offset. Feature values up to one
+    window_duration after the aligned end may change. The backfill stops at the most recent
+    materialized values and leaves later values to materialization."""
 
     end_time: Optional[Timestamp] = None
-    """End of the backfill range, exclusive. If unset, defaults to the current time."""
+    """End of the backfill range, exclusive. If unset, defaults to the most recent materialized values."""
 
     start_time: Optional[Timestamp] = None
     """Start of the backfill range, inclusive. If unset, defaults to the earliest source timestamp of
@@ -5386,7 +5392,8 @@ class MaterializationFailureNotification:
 
 @dataclass
 class MaterializationNotifications:
-    """Notifications for the jobs and pipelines that materialize a feature, one field per trigger."""
+    """Notifications for the jobs and pipelines that materialize the features in a set, one field per
+    trigger."""
 
     on_failure: Optional[MaterializationFailureNotification] = None
     """Who to notify when a run fails, and on which attempts."""
@@ -5696,16 +5703,14 @@ class MaterializedFeature:
     operations/{operation_id}."""
 
     materialization_set_id: Optional[str] = None
-    """The materialization set this materialized feature was created for, through DABs or direct-engine
-    creation. Unset for a materialized feature that was not created as part of a set."""
+    """The ID of the materialization set containing this materialized feature. Unset for a materialized
+    feature that is not part of a set."""
 
     materialized_feature_id: Optional[str] = None
     """Server-assigned unique identifier for the materialized feature."""
 
     notifications: Optional[MaterializationNotifications] = None
-    """Notification configuration around the materialization job or pipeline lifecycle. They are
-    applied to every job and pipeline that materializes this feature. Features which are
-    materialized in the same pipeline will share the same notification."""
+    """Notification configuration for the jobs and pipelines that materialize this feature."""
 
     offline_store_config: Optional[OfflineStoreConfig] = None
     """Destination for writing feature values to an offline Delta table. The resulting table is
@@ -5720,8 +5725,7 @@ class MaterializedFeature:
     features."""
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
-    """The schedule state of the materialization pipeline. Hidden from GraphQL: being deprecated, so
-    not exposed to Catalog Explorer."""
+    """Deprecated: This legacy pipeline setting does not control batch job scheduling."""
 
     streaming_mode: Optional[StreamingMode] = None
     """The Structured Streaming trigger mode used for materialization. Real-time mode (RTM) targets
@@ -11881,9 +11885,11 @@ class FeatureEngineeringAPI:
         """Backfill features.
 
         :param feature_full_names: List[str]
-          Full names of the features to backfill.
+          Full names of the features to backfill. All features must share the same interval between values and
+          the same offset. The interval is the slide_duration of a sliding window or the window_duration of a
+          tumbling window.
         :param backfill_ranges: List[:class:`BackfillRange`]
-          Output ranges to backfill.
+          Time ranges of source data to backfill. Ranges must not overlap.
         :param budget_policy_id: str (optional)
           The budget policy ID, in UUID format, used to attribute the serverless compute cost of this
           backfill. If not specified, a default budget policy may be applied.
@@ -12715,15 +12721,14 @@ class FeatureEngineeringAPI:
     def update_materialized_feature(
         self, materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str
     ) -> MaterializedFeature:
-        """Update a materialized feature (pause/resume).
+        """Updates a materialized feature.
 
         :param materialized_feature_id: str
           Server-assigned unique identifier for the materialized feature.
         :param materialized_feature: :class:`MaterializedFeature`
           The materialized feature to update.
         :param update_mask: str
-          Provide the materialization feature fields which should be updated. Currently, only the
-          pipeline_state field can be updated.
+          The fields to update. Only ``pipeline_schedule_state`` is supported.
 
         :returns: :class:`MaterializedFeature`
         """

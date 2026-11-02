@@ -3270,14 +3270,22 @@ class RoleRoleSpec:
     - For the regular postgres roles, authentication based on postgres passwords is used.
     
     NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the default auth method
-    (group can login as well)."""
+    (group can login as well).
+    
+    This field is set when the role is created and cannot be changed by UpdateRole. If provided in
+    an UpdateRole request body, its value is ignored and the existing value is retained. Do not
+    include this field as an explicit path in update_mask."""
 
     identity_type: Optional[RoleIdentityType] = None
     """The type of role. When specifying a managed-identity, the chosen role_id must be a valid:
     
     - application ID for SERVICE_PRINCIPAL
     - user email for USER
-    - group name for GROUP"""
+    - group name for GROUP
+    
+    This field is set when the role is created and cannot be changed by UpdateRole. If provided in
+    an UpdateRole request body, its value is ignored and the existing value is retained. Do not
+    include this field as an explicit path in update_mask."""
 
     membership_roles: Optional[List[RoleMembershipRole]] = None
     """An enum value for a standard role that this role is a member of."""
@@ -3295,7 +3303,11 @@ class RoleRoleSpec:
     
     1. user email for IdentityType.USER
     2. app ID for IdentityType.SERVICE_PRINCIPAL
-    3. group name for IdentityType.GROUP"""
+    3. group name for IdentityType.GROUP
+    
+    This field is set when the role is created and cannot be changed by UpdateRole. If provided in
+    an UpdateRole request body, its value is ignored and the existing value is retained. Do not
+    include this field as an explicit path in update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the RoleRoleSpec into a dictionary suitable for use as a JSON request body."""
@@ -4632,12 +4644,16 @@ class PostgresAPI:
         :param role: :class:`Role`
           The desired specification of a Role.
         :param replace_existing: bool (optional)
-          If true, update the role if it already exists instead of returning an error.
+          If true, update the role if it already exists instead of returning an error. This requires
+          ``role_id`` to be set. Without ``role_id``, the request follows the normal create path and fails if
+          the role name already exists.
 
-          When the role already exists, the provided ``role`` spec fully replaces the existing one:
-          ``membership_roles`` is overwritten, not merged. Leaving ``membership_roles`` empty clears all of
-          the role's existing memberships, including ``DATABRICKS_SUPERUSER``. Always send the complete
-          desired list of memberships when using this field.
+          When the role already exists, only mutable fields are updated. Attributes omitted from the request
+          retain their current values. Set an attribute explicitly to false to disable it. ``identity_type``,
+          ``auth_method``, and ``postgres_role`` retain their existing values; supplied values for these
+          fields are ignored. ``membership_roles`` is overwritten, not merged. Leaving ``membership_roles``
+          empty clears all of the role's existing memberships, including ``DATABRICKS_SUPERUSER``. Always send
+          the complete desired list of memberships when using this field.
         :param role_id: str (optional)
           The ID to use for the Role, which will become the final component of the role's resource name. This
           ID becomes the role in Postgres.
@@ -5851,7 +5867,12 @@ class PostgresAPI:
         return UpdateProjectOperation(self, operation)
 
     def update_role(self, name: str, role: Role, update_mask: FieldMask) -> UpdateRoleOperation:
-        """Update a role for a branch.
+        """Updates the mutable fields of a Postgres role for a branch.
+
+        The fields ``spec.identity_type``, ``spec.auth_method``, and ``spec.postgres_role`` are fixed when the
+        role is created. UpdateRole ignores values supplied for these fields in the request body and retains
+        their existing values. Explicitly naming one of these fields in ``update_mask`` returns an
+        INVALID_PARAMETER_VALUE error.
 
         :param name: str
           Output only. The full resource path of the role. Format:
@@ -5862,7 +5883,17 @@ class PostgresAPI:
           The role's ``name`` field is used to identify the role to update. Format:
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param update_mask: FieldMask
-          The list of fields to update.
+          The list of fields to update. Supported fields are ``spec.membership_roles``,
+          ``spec.attributes.createdb``, ``spec.attributes.createrole``, and ``spec.attributes.bypassrls``.
+
+          ``spec.identity_type``, ``spec.auth_method``, and ``spec.postgres_role`` cannot be changed. Values
+          supplied for these fields in the request body are ignored. Including one of these fields as an
+          explicit path in update_mask returns an INVALID_PARAMETER_VALUE error. When ``spec`` is the only
+          path in the mask, only the supplied mutable attributes are updated. ``*`` by itself, or ``spec``
+          combined with other supported paths, selects all supported mutable fields. For these masks, all
+          three attributes (``createdb``, ``createrole``, and ``bypassrls``) must be supplied; omitting any
+          returns an INVALID_PARAMETER_VALUE error. Each of these mask forms replaces ``membership_roles``.
+          Omitting it or supplying an empty list clears all memberships, including ``DATABRICKS_SUPERUSER``.
 
         :returns: :class:`Operation`
         """

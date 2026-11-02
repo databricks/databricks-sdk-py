@@ -9,6 +9,8 @@ from datetime import timedelta
 from enum import Enum
 from typing import Dict, List, Any, Iterator, Callable, Optional
 
+from google.protobuf.duration_pb2 import Duration
+from google.protobuf.timestamp_pb2 import Timestamp
 
 import time
 import random
@@ -16,11 +18,14 @@ import logging
 
 from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
+    _duration,
     _enum,
     _from_dict,
     _int64,
     _repeated_dict,
+    _repeated_enum,
     _repeated_int64,
+    _timestamp,
     Wait,
 )
 
@@ -32,6 +37,423 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class AiClassifyFunction:
+    """Configuration for a task that runs the ``ai_classify`` function.
+
+    The label set comes from exactly one of two places: ``inline_labels``, which holds up to 10
+    labels, or a Unity Catalog table named by ``label_table``. Use ``label_table`` for a larger
+    label set."""
+
+    version: str
+    """The ai_classify function version to invoke (for example, ``2.1``)."""
+
+    enable_confidence_scores: Optional[bool] = None
+    """When true, includes a per-label confidence score in the response."""
+
+    enable_rationales: Optional[bool] = None
+    """When true, includes a rationale explaining each classification in the response."""
+
+    inline_labels: Optional[AiClassifyFunctionInlineLabels] = None
+    """Labels listed inline, for a small label set."""
+
+    instructions: Optional[str] = None
+    """Global description of the task and domain, passed to the model to improve classification
+    quality."""
+
+    multilabel: Optional[bool] = None
+    """When true, more than one label can be returned for each input."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiClassifyFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enable_confidence_scores is not None:
+            body["enable_confidence_scores"] = self.enable_confidence_scores
+        if self.enable_rationales is not None:
+            body["enable_rationales"] = self.enable_rationales
+        if self.inline_labels:
+            body["inline_labels"] = self.inline_labels.as_dict()
+        if self.instructions is not None:
+            body["instructions"] = self.instructions
+        if self.multilabel is not None:
+            body["multilabel"] = self.multilabel
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiClassifyFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enable_confidence_scores is not None:
+            body["enable_confidence_scores"] = self.enable_confidence_scores
+        if self.enable_rationales is not None:
+            body["enable_rationales"] = self.enable_rationales
+        if self.inline_labels:
+            body["inline_labels"] = self.inline_labels
+        if self.instructions is not None:
+            body["instructions"] = self.instructions
+        if self.multilabel is not None:
+            body["multilabel"] = self.multilabel
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiClassifyFunction:
+        """Deserializes the AiClassifyFunction from a dictionary."""
+        return cls(
+            enable_confidence_scores=d.get("enable_confidence_scores", None),
+            enable_rationales=d.get("enable_rationales", None),
+            inline_labels=_from_dict(d, "inline_labels", AiClassifyFunctionInlineLabels),
+            instructions=d.get("instructions", None),
+            multilabel=d.get("multilabel", None),
+            version=d.get("version", None),
+        )
+
+
+@dataclass
+class AiClassifyFunctionInlineLabels:
+    """A label set listed inline."""
+
+    labels: List[AiClassifyFunctionLabel]
+    """The labels an input can be classified as. At least two labels are required unless ``multilabel``
+    is true, which also accepts a single label."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiClassifyFunctionInlineLabels into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.labels:
+            body["labels"] = [v.as_dict() for v in self.labels]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiClassifyFunctionInlineLabels into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.labels:
+            body["labels"] = self.labels
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiClassifyFunctionInlineLabels:
+        """Deserializes the AiClassifyFunctionInlineLabels from a dictionary."""
+        return cls(labels=_repeated_dict(d, "labels", AiClassifyFunctionLabel))
+
+
+@dataclass
+class AiClassifyFunctionLabel:
+    """One label the input can be classified as."""
+
+    name: str
+    """The name returned when an input is classified as this label."""
+
+    description: Optional[str] = None
+    """Guidance describing what belongs under this label."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiClassifyFunctionLabel into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiClassifyFunctionLabel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiClassifyFunctionLabel:
+        """Deserializes the AiClassifyFunctionLabel from a dictionary."""
+        return cls(description=d.get("description", None), name=d.get("name", None))
+
+
+@dataclass
+class AiExtractFunction:
+    """Configuration for a task that runs the ``ai_extract`` function.
+
+    The fields to extract come from exactly one of two places: an existing AI Extract agent, named
+    by ``agent_id``, or the inline ``schema`` and ``instructions``. Set ``agent_id`` or the inline
+    fields, not both."""
+
+    version: str
+    """The ai_extract function version to invoke (for example, ``2.1``)."""
+
+    enable_citations: Optional[bool] = None
+    """When true, includes citation metadata locating each extracted value in the source."""
+
+    enable_confidence_scores: Optional[bool] = None
+    """When true, includes a per-field confidence score in the response."""
+
+    instructions: Optional[str] = None
+    """Global description of the task and domain, passed to the model to improve extraction quality."""
+
+    mode: Optional[AiExtractFunctionMode] = None
+    """The extraction mode. Defaults to standard extraction when unspecified."""
+
+    schema: Optional[str] = None
+    """The extraction schema defining the fields to extract, as a JSON string. Either an array of field
+    names (e.g. ["company", "valuation"]) or an object mapping each field name to a type and an
+    optional description. Supported types are string, integer, number, boolean, enum, object, and
+    array; all fields are optional."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiExtractFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enable_citations is not None:
+            body["enable_citations"] = self.enable_citations
+        if self.enable_confidence_scores is not None:
+            body["enable_confidence_scores"] = self.enable_confidence_scores
+        if self.instructions is not None:
+            body["instructions"] = self.instructions
+        if self.mode is not None:
+            body["mode"] = self.mode.value
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiExtractFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enable_citations is not None:
+            body["enable_citations"] = self.enable_citations
+        if self.enable_confidence_scores is not None:
+            body["enable_confidence_scores"] = self.enable_confidence_scores
+        if self.instructions is not None:
+            body["instructions"] = self.instructions
+        if self.mode is not None:
+            body["mode"] = self.mode
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiExtractFunction:
+        """Deserializes the AiExtractFunction from a dictionary."""
+        return cls(
+            enable_citations=d.get("enable_citations", None),
+            enable_confidence_scores=d.get("enable_confidence_scores", None),
+            instructions=d.get("instructions", None),
+            mode=_enum(d, "mode", AiExtractFunctionMode),
+            schema=d.get("schema", None),
+            version=d.get("version", None),
+        )
+
+
+class AiExtractFunctionMode(Enum):
+    """The extraction mode."""
+
+    MODE_PRECISION = "MODE_PRECISION"
+
+
+@dataclass
+class AiFunctionTask:
+    """A task that applies an AI function to a set of input documents or rows."""
+
+    output: QualifiedName
+    """Output destination table. When ``table`` is unset the task generates a stable name from the
+    function and task identity so a downstream task can reference it."""
+
+    ai_classify: Optional[AiClassifyFunction] = None
+    """Classifies each input document or row into one or more labels."""
+
+    ai_extract: Optional[AiExtractFunction] = None
+    """Extracts structured fields from the input documents or rows."""
+
+    ai_parse_document: Optional[AiParseDocumentFunction] = None
+    """Parses the input documents into structured text."""
+
+    delta_table: Optional[DeltaTableSource] = None
+    """A Unity Catalog Delta table. The function is applied to each row."""
+
+    volume: Optional[VolumeSource] = None
+    """A Unity Catalog volume. The function is applied to each file."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiFunctionTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.ai_classify:
+            body["ai_classify"] = self.ai_classify.as_dict()
+        if self.ai_extract:
+            body["ai_extract"] = self.ai_extract.as_dict()
+        if self.ai_parse_document:
+            body["ai_parse_document"] = self.ai_parse_document.as_dict()
+        if self.delta_table:
+            body["delta_table"] = self.delta_table.as_dict()
+        if self.output:
+            body["output"] = self.output.as_dict()
+        if self.volume:
+            body["volume"] = self.volume.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiFunctionTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ai_classify:
+            body["ai_classify"] = self.ai_classify
+        if self.ai_extract:
+            body["ai_extract"] = self.ai_extract
+        if self.ai_parse_document:
+            body["ai_parse_document"] = self.ai_parse_document
+        if self.delta_table:
+            body["delta_table"] = self.delta_table
+        if self.output:
+            body["output"] = self.output
+        if self.volume:
+            body["volume"] = self.volume
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiFunctionTask:
+        """Deserializes the AiFunctionTask from a dictionary."""
+        return cls(
+            ai_classify=_from_dict(d, "ai_classify", AiClassifyFunction),
+            ai_extract=_from_dict(d, "ai_extract", AiExtractFunction),
+            ai_parse_document=_from_dict(d, "ai_parse_document", AiParseDocumentFunction),
+            delta_table=_from_dict(d, "delta_table", DeltaTableSource),
+            output=_from_dict(d, "output", QualifiedName),
+            volume=_from_dict(d, "volume", VolumeSource),
+        )
+
+
+@dataclass
+class AiFunctionTaskOutput:
+    """The result of an AI function task run. Also reported mid-run, so the counts can be partial."""
+
+    estimated_time_remaining: Optional[Duration] = None
+    """Coarse estimate of the time left to run the function over the inputs, from the throughput so
+    far. Covers that work only, not the merge into the output table that follows it."""
+
+    failed_row_count: Optional[int] = None
+    """Inputs permanently failed so far. Each lands in the output table as an error row, and does not
+    on its own fail the run."""
+
+    output_table: Optional[QualifiedName] = None
+    """The table the run writes its results to. Reported even when ``output.table`` is unset and the
+    name is generated, so a client can read the table."""
+
+    succeeded_row_count: Optional[int] = None
+    """Inputs with a result so far. Reported per batch, so it can lag mid-run."""
+
+    total_row_count: Optional[int] = None
+    """Inputs to process: rows for a Delta table source, files for a volume source. Stays well inside
+    2^53, so a JavaScript client can hold it exactly."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiFunctionTaskOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.estimated_time_remaining is not None:
+            body["estimated_time_remaining"] = self.estimated_time_remaining.ToJsonString()
+        if self.failed_row_count is not None:
+            body["failed_row_count"] = self.failed_row_count
+        if self.output_table:
+            body["output_table"] = self.output_table.as_dict()
+        if self.succeeded_row_count is not None:
+            body["succeeded_row_count"] = self.succeeded_row_count
+        if self.total_row_count is not None:
+            body["total_row_count"] = self.total_row_count
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiFunctionTaskOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.estimated_time_remaining is not None:
+            body["estimated_time_remaining"] = self.estimated_time_remaining
+        if self.failed_row_count is not None:
+            body["failed_row_count"] = self.failed_row_count
+        if self.output_table:
+            body["output_table"] = self.output_table
+        if self.succeeded_row_count is not None:
+            body["succeeded_row_count"] = self.succeeded_row_count
+        if self.total_row_count is not None:
+            body["total_row_count"] = self.total_row_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiFunctionTaskOutput:
+        """Deserializes the AiFunctionTaskOutput from a dictionary."""
+        return cls(
+            estimated_time_remaining=_duration(d, "estimated_time_remaining"),
+            failed_row_count=_int64(d, "failed_row_count"),
+            output_table=_from_dict(d, "output_table", QualifiedName),
+            succeeded_row_count=_int64(d, "succeeded_row_count"),
+            total_row_count=_int64(d, "total_row_count"),
+        )
+
+
+@dataclass
+class AiParseDocumentFunction:
+    """Configuration for a task that runs the ``ai_parse_document`` function."""
+
+    version: str
+    """The ai_parse_document output schema version to invoke (for example, ``2.0``)."""
+
+    description_element_types: Optional[List[AiParseDocumentFunctionDescriptionElementType]] = None
+    """Element types to generate AI descriptions for. Leave empty to generate no descriptions; use ALL
+    for every supported type, or list specific types to restrict generation to only those."""
+
+    image_output_path: Optional[str] = None
+    """Unity Catalog volume path where rendered page and element images are written."""
+
+    page_range: Optional[str] = None
+    """Pages to parse (1-indexed), as a comma-separated list of page numbers or ranges (e.g.
+    "1,3,5-10")."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiParseDocumentFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description_element_types:
+            body["description_element_types"] = [v.value for v in self.description_element_types]
+        if self.image_output_path is not None:
+            body["image_output_path"] = self.image_output_path
+        if self.page_range is not None:
+            body["page_range"] = self.page_range
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiParseDocumentFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description_element_types:
+            body["description_element_types"] = self.description_element_types
+        if self.image_output_path is not None:
+            body["image_output_path"] = self.image_output_path
+        if self.page_range is not None:
+            body["page_range"] = self.page_range
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiParseDocumentFunction:
+        """Deserializes the AiParseDocumentFunction from a dictionary."""
+        return cls(
+            description_element_types=_repeated_enum(
+                d, "description_element_types", AiParseDocumentFunctionDescriptionElementType
+            ),
+            image_output_path=d.get("image_output_path", None),
+            page_range=d.get("page_range", None),
+            version=d.get("version", None),
+        )
+
+
+class AiParseDocumentFunctionDescriptionElementType(Enum):
+    """An element type that AI descriptions can be generated for."""
+
+    DESCRIPTION_ELEMENT_TYPE_ALL = "DESCRIPTION_ELEMENT_TYPE_ALL"
+    DESCRIPTION_ELEMENT_TYPE_FIGURE = "DESCRIPTION_ELEMENT_TYPE_FIGURE"
 
 
 @dataclass
@@ -1106,6 +1528,67 @@ class ClusterSpec:
 
 
 @dataclass
+class CompletedJob:
+    """A single upstream completion that contributed to triggering the run, captured at trigger time"""
+
+    completion_time: Optional[Timestamp] = None
+    """The completion time of the upstream run"""
+
+    job_id: Optional[str] = None
+    """The ID of the upstream job"""
+
+    run_id: Optional[str] = None
+    """The ID of the upstream run whose completion contributed to the trigger"""
+
+    termination_code: Optional[TerminationCodeCode] = None
+    """The termination code of the upstream run"""
+
+    workspace_id: Optional[str] = None
+    """The ID of the workspace containing the upstream job"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CompletedJob into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.completion_time is not None:
+            body["completion_time"] = self.completion_time.ToJsonString()
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        if self.termination_code is not None:
+            body["termination_code"] = self.termination_code.value
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CompletedJob into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.completion_time is not None:
+            body["completion_time"] = self.completion_time
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        if self.termination_code is not None:
+            body["termination_code"] = self.termination_code
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CompletedJob:
+        """Deserializes the CompletedJob from a dictionary."""
+        return cls(
+            completion_time=_timestamp(d, "completion_time"),
+            job_id=d.get("job_id", None),
+            run_id=d.get("run_id", None),
+            termination_code=_enum(d, "termination_code", TerminationCodeCode),
+            workspace_id=d.get("workspace_id", None),
+        )
+
+
+@dataclass
 class Compute:
     hardware_accelerator: Optional[compute.HardwareAcceleratorType] = None
     """Hardware accelerator configuration for Serverless GPU workloads."""
@@ -2117,6 +2600,55 @@ class DbtTask:
 
 
 @dataclass
+class DeltaTableSource:
+    """A Unity Catalog Delta table input source. The function is applied to each row."""
+
+    table_name: str
+    """Fully qualified three-part name of the source table (catalog.schema.table)."""
+
+    input_column: str
+    """Name of the column holding the content the function is applied to."""
+
+    merge_key_columns: Optional[List[str]] = None
+    """Columns that together identify a row across incremental runs, so results can be matched back to
+    their source rows. When unset, the task derives an implicit key from Delta row tracking. If row
+    tracking is also disabled there is no stable key, so each run reprocesses the entire source (a
+    full refresh) rather than only the changed rows; set a key column or enable row tracking to keep
+    runs incremental."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeltaTableSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input_column is not None:
+            body["input_column"] = self.input_column
+        if self.merge_key_columns:
+            body["merge_key_columns"] = [v for v in self.merge_key_columns]
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeltaTableSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input_column is not None:
+            body["input_column"] = self.input_column
+        if self.merge_key_columns:
+            body["merge_key_columns"] = self.merge_key_columns
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaTableSource:
+        """Deserializes the DeltaTableSource from a dictionary."""
+        return cls(
+            input_column=d.get("input_column", None),
+            merge_key_columns=d.get("merge_key_columns", None),
+            table_name=d.get("table_name", None),
+        )
+
+
+@dataclass
 class DeploymentSpec:
     """DeploymentSpec: configuration for one deployment within an AiRuntimeTask. Each entry in
     ``AiRuntimeTask.deployments`` describes a group of nodes that share the same command and
@@ -3113,6 +3645,11 @@ class JobCluster:
     new_cluster: Optional[compute.ClusterSpec] = None
     """If new_cluster, a description of a cluster that is created for each task."""
 
+    serverless_compute: Optional[JobClusterServerlessCompute] = None
+    """Serverless compute settings for this cluster. At most one job cluster per job may set this
+    field; the rate limit defined on the referenced policy applies across all tasks bound to this
+    cluster."""
+
     serverless_compute_id: Optional[str] = None
     """The ID of the serverless compute object to bind this cluster to. At most one JobCluster per job
     may set this field; the rate limit defined on the referenced serverless compute applies across
@@ -3125,6 +3662,8 @@ class JobCluster:
             body["job_cluster_key"] = self.job_cluster_key
         if self.new_cluster:
             body["new_cluster"] = self.new_cluster.as_dict()
+        if self.serverless_compute:
+            body["serverless_compute"] = self.serverless_compute.as_dict()
         if self.serverless_compute_id is not None:
             body["serverless_compute_id"] = self.serverless_compute_id
         return body
@@ -3136,6 +3675,8 @@ class JobCluster:
             body["job_cluster_key"] = self.job_cluster_key
         if self.new_cluster:
             body["new_cluster"] = self.new_cluster
+        if self.serverless_compute:
+            body["serverless_compute"] = self.serverless_compute
         if self.serverless_compute_id is not None:
             body["serverless_compute_id"] = self.serverless_compute_id
         return body
@@ -3146,7 +3687,259 @@ class JobCluster:
         return cls(
             job_cluster_key=d.get("job_cluster_key", None),
             new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
+            serverless_compute=_from_dict(d, "serverless_compute", JobClusterServerlessCompute),
             serverless_compute_id=d.get("serverless_compute_id", None),
+        )
+
+
+@dataclass
+class JobClusterServerlessCompute:
+    """Serverless compute settings for a job cluster."""
+
+    policy_id: Optional[str] = None
+    """The ID of the serverless compute policy to apply to this cluster."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobClusterServerlessCompute into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobClusterServerlessCompute into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobClusterServerlessCompute:
+        """Deserializes the JobClusterServerlessCompute from a dictionary."""
+        return cls(policy_id=d.get("policy_id", None))
+
+
+@dataclass
+class JobCompletionTriggerConfiguration:
+    """A trigger that starts a run after every upstream job completes with a configured status."""
+
+    jobs: List[JobCompletionTriggerConfigurationMonitoredJob]
+    """The upstream jobs to monitor. Each job must be in a workspace attached to the same Unity Catalog
+    metastore as the downstream job. A maximum of 10 jobs can be monitored."""
+
+    if_status: Optional[JobCompletionTriggerConfigurationIfStatus] = None
+    """The status that all upstream jobs must have before this trigger fires. Defaults to SUCCESS."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.if_status is not None:
+            body["if_status"] = self.if_status.value
+        if self.jobs:
+            body["jobs"] = [v.as_dict() for v in self.jobs]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.if_status is not None:
+            body["if_status"] = self.if_status
+        if self.jobs:
+            body["jobs"] = self.jobs
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobCompletionTriggerConfiguration:
+        """Deserializes the JobCompletionTriggerConfiguration from a dictionary."""
+        return cls(
+            if_status=_enum(d, "if_status", JobCompletionTriggerConfigurationIfStatus),
+            jobs=_repeated_dict(d, "jobs", JobCompletionTriggerConfigurationMonitoredJob),
+        )
+
+
+class JobCompletionTriggerConfigurationIfStatus(Enum):
+    """The status that all upstream jobs must have before a job completion trigger fires."""
+
+    DONE = "DONE"
+    FAILED = "FAILED"
+    SUCCESS = "SUCCESS"
+
+
+@dataclass
+class JobCompletionTriggerConfigurationMonitoredJob:
+    """An upstream job to monitor."""
+
+    workspace_id: str
+    """The ID of the workspace containing the upstream job. This can differ from the caller's workspace
+    and downstream services enforce correct entitlements and CAN_VIEW permissions for the user + job
+    combination. SDR: https://databricks.atlassian.net/browse/SDR-5267"""
+
+    job_id: str
+    """The ID of the upstream job."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerConfigurationMonitoredJob into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerConfigurationMonitoredJob into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobCompletionTriggerConfigurationMonitoredJob:
+        """Deserializes the JobCompletionTriggerConfigurationMonitoredJob from a dictionary."""
+        return cls(job_id=d.get("job_id", None), workspace_id=d.get("workspace_id", None))
+
+
+@dataclass
+class JobCompletionTriggerRunInfoDetails:
+    """Contains the immutable set of upstream completions that triggered the run, in configured jobs
+    order"""
+
+    completed_jobs: Optional[List[CompletedJob]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerRunInfoDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.completed_jobs:
+            body["completed_jobs"] = [v.as_dict() for v in self.completed_jobs]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerRunInfoDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.completed_jobs:
+            body["completed_jobs"] = self.completed_jobs
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobCompletionTriggerRunInfoDetails:
+        """Deserializes the JobCompletionTriggerRunInfoDetails from a dictionary."""
+        return cls(completed_jobs=_repeated_dict(d, "completed_jobs", CompletedJob))
+
+
+@dataclass
+class JobCompletionTriggerState:
+    """Runtime state for a job completion trigger."""
+
+    monitored_job_states: Optional[List[JobCompletionTriggerStateMonitoredJobState]] = None
+    """State for each configured upstream job, in the same order as ``jobs``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.monitored_job_states:
+            body["monitored_job_states"] = [v.as_dict() for v in self.monitored_job_states]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.monitored_job_states:
+            body["monitored_job_states"] = self.monitored_job_states
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobCompletionTriggerState:
+        """Deserializes the JobCompletionTriggerState from a dictionary."""
+        return cls(
+            monitored_job_states=_repeated_dict(d, "monitored_job_states", JobCompletionTriggerStateMonitoredJobState)
+        )
+
+
+@dataclass
+class JobCompletionTriggerStateMonitoredJobState:
+    has_seen_completion: Optional[bool] = None
+    """Whether this job has contributed a matching completion toward the next trigger fire."""
+
+    is_deleted: Optional[bool] = None
+    """Whether the upstream job was missing or deleted when last observed by this trigger. Omitted when
+    deletion status is unknown. This observation may become stale while the trigger is paused or
+    evaluation cannot access the upstream job."""
+
+    job_id: Optional[str] = None
+    """The ID of the upstream job."""
+
+    last_seen_completion_time: Optional[Timestamp] = None
+    """The completion time of the latest matching upstream run observed by the trigger."""
+
+    last_seen_result: Optional[TerminationCodeCode] = None
+    """The termination code of the latest matching upstream run observed by the trigger."""
+
+    last_seen_run_id: Optional[str] = None
+    """The ID of the latest matching upstream run observed by the trigger."""
+
+    latest_non_matching_result: Optional[TerminationCodeCode] = None
+    """The termination code of the latest upstream run if it does not satisfy ``if_status``. Unset when
+    the latest run matches or no run has been observed."""
+
+    workspace_id: Optional[str] = None
+    """The ID of the workspace containing the upstream job."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerStateMonitoredJobState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.has_seen_completion is not None:
+            body["has_seen_completion"] = self.has_seen_completion
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.last_seen_completion_time is not None:
+            body["last_seen_completion_time"] = self.last_seen_completion_time.ToJsonString()
+        if self.last_seen_result is not None:
+            body["last_seen_result"] = self.last_seen_result.value
+        if self.last_seen_run_id is not None:
+            body["last_seen_run_id"] = self.last_seen_run_id
+        if self.latest_non_matching_result is not None:
+            body["latest_non_matching_result"] = self.latest_non_matching_result.value
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobCompletionTriggerStateMonitoredJobState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.has_seen_completion is not None:
+            body["has_seen_completion"] = self.has_seen_completion
+        if self.is_deleted is not None:
+            body["is_deleted"] = self.is_deleted
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.last_seen_completion_time is not None:
+            body["last_seen_completion_time"] = self.last_seen_completion_time
+        if self.last_seen_result is not None:
+            body["last_seen_result"] = self.last_seen_result
+        if self.last_seen_run_id is not None:
+            body["last_seen_run_id"] = self.last_seen_run_id
+        if self.latest_non_matching_result is not None:
+            body["latest_non_matching_result"] = self.latest_non_matching_result
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobCompletionTriggerStateMonitoredJobState:
+        """Deserializes the JobCompletionTriggerStateMonitoredJobState from a dictionary."""
+        return cls(
+            has_seen_completion=d.get("has_seen_completion", None),
+            is_deleted=d.get("is_deleted", None),
+            job_id=d.get("job_id", None),
+            last_seen_completion_time=_timestamp(d, "last_seen_completion_time"),
+            last_seen_result=_enum(d, "last_seen_result", TerminationCodeCode),
+            last_seen_run_id=d.get("last_seen_run_id", None),
+            latest_non_matching_result=_enum(d, "latest_non_matching_result", TerminationCodeCode),
+            workspace_id=d.get("workspace_id", None),
         )
 
 
@@ -3825,10 +4618,11 @@ class JobSettings:
     serverless compute or a compute resource that uses Environments mode.
     
     For notebook tasks that use serverless compute or a compute resource that uses Environments
-    mode, if the environment_key is not specified, the notebook environment will be used if present.
-    If a jobs environment is specified, it will override the notebook environment. For other tasks
-    that use serverless compute or a compute resource that uses Environments mode, the task
-    environment is required to be specified using environment_key in the task settings."""
+    mode, if the ``environment_key`` is not specified, the notebook environment will be used if
+    present. If a jobs environment is specified, it will override the notebook environment.
+    
+    For other tasks that use serverless compute or a compute resource that uses Environments mode,
+    the task environment is required to be specified using ``environment_key`` in the task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -4719,6 +5513,8 @@ class PerTriggerState:
 
     file_arrival: Optional[FileArrivalTriggerState] = None
 
+    job_completion: Optional[JobCompletionTriggerState] = None
+
     model: Optional[ModelTriggerState] = None
 
     pause_status: Optional[PauseStatus] = None
@@ -4740,6 +5536,8 @@ class PerTriggerState:
             body["continuous"] = self.continuous.as_dict()
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.job_completion:
+            body["job_completion"] = self.job_completion.as_dict()
         if self.model:
             body["model"] = self.model.as_dict()
         if self.pause_status is not None:
@@ -4761,6 +5559,8 @@ class PerTriggerState:
             body["continuous"] = self.continuous
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.job_completion:
+            body["job_completion"] = self.job_completion
         if self.model:
             body["model"] = self.model
         if self.pause_status is not None:
@@ -4781,6 +5581,7 @@ class PerTriggerState:
         return cls(
             continuous=_from_dict(d, "continuous", ContinuousTriggerState),
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerState),
+            job_completion=_from_dict(d, "job_completion", JobCompletionTriggerState),
             model=_from_dict(d, "model", ModelTriggerState),
             pause_status=_enum(d, "pause_status", PauseStatus),
             periodic=_from_dict(d, "periodic", PeriodicTriggerState),
@@ -5286,6 +6087,47 @@ class PythonWheelTask:
 
 
 @dataclass
+class QualifiedName:
+    """A three-level Unity Catalog name (catalog.schema.table); any level may be unset."""
+
+    catalog: Optional[str] = None
+    """Unity Catalog catalog."""
+
+    schema: Optional[str] = None
+    """Unity Catalog schema, within the catalog."""
+
+    table: Optional[str] = None
+    """Table, within the catalog and schema."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QualifiedName into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.table is not None:
+            body["table"] = self.table
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QualifiedName into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.table is not None:
+            body["table"] = self.table
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> QualifiedName:
+        """Deserializes the QualifiedName from a dictionary."""
+        return cls(catalog=d.get("catalog", None), schema=d.get("schema", None), table=d.get("table", None))
+
+
+@dataclass
 class QueueDetails:
     code: Optional[QueueDetailsCodeCode] = None
 
@@ -5696,6 +6538,10 @@ class ResolvedStringParamsValues:
 
 @dataclass
 class ResolvedValues:
+    ai_function_task: Optional[ResolvedValuesAiFunctionTaskResolvedValues] = None
+    """Resolved values for an AI Function task: the Delta table input with upstream-task references
+    replaced by concrete values before the run."""
+
     ai_runtime_task: Optional[ResolvedValuesAiRuntimeTaskResolvedValues] = None
     """Resolved values for an AI Runtime task — env_vars with ``{{tasks.<key>.values.<name>}}``
     references substituted to concrete values before submission to the training service."""
@@ -5725,6 +6571,8 @@ class ResolvedValues:
     def as_dict(self) -> dict:
         """Serializes the ResolvedValues into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_function_task:
+            body["ai_function_task"] = self.ai_function_task.as_dict()
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.condition_task:
@@ -5754,6 +6602,8 @@ class ResolvedValues:
     def as_shallow_dict(self) -> dict:
         """Serializes the ResolvedValues into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_function_task:
+            body["ai_function_task"] = self.ai_function_task
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task
         if self.condition_task:
@@ -5784,6 +6634,7 @@ class ResolvedValues:
     def from_dict(cls, d: Dict[str, Any]) -> ResolvedValues:
         """Deserializes the ResolvedValues from a dictionary."""
         return cls(
+            ai_function_task=_from_dict(d, "ai_function_task", ResolvedValuesAiFunctionTaskResolvedValues),
             ai_runtime_task=_from_dict(d, "ai_runtime_task", ResolvedValuesAiRuntimeTaskResolvedValues),
             condition_task=_from_dict(d, "condition_task", ResolvedConditionTaskValues),
             dbt_task=_from_dict(d, "dbt_task", ResolvedDbtTaskValues),
@@ -5797,6 +6648,26 @@ class ResolvedValues:
             spark_submit_task=_from_dict(d, "spark_submit_task", ResolvedStringParamsValues),
             sql_task=_from_dict(d, "sql_task", ResolvedParamPairValues),
         )
+
+
+@dataclass
+class ResolvedValuesAiFunctionTaskResolvedValues:
+    """Resolved values for an AI Function task's Delta table input."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResolvedValuesAiFunctionTaskResolvedValues into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedValuesAiFunctionTaskResolvedValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedValuesAiFunctionTaskResolvedValues:
+        """Deserializes the ResolvedValuesAiFunctionTaskResolvedValues from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -6610,6 +7481,9 @@ class RunNowResponse:
 class RunOutput:
     """Run output was retrieved successfully."""
 
+    ai_function_task_output: Optional[AiFunctionTaskOutput] = None
+    """The output of an AI function task, if available"""
+
     ai_runtime_task_output: Optional[AiRuntimeTaskOutput] = None
     """The output of an AiRuntimeTask, if available — MLflow identifiers, artifact paths, and
     per-replica allocated compute. Run lifecycle / termination status lives on the surrounding
@@ -6673,6 +7547,8 @@ class RunOutput:
     def as_dict(self) -> dict:
         """Serializes the RunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_function_task_output:
+            body["ai_function_task_output"] = self.ai_function_task_output.as_dict()
         if self.ai_runtime_task_output:
             body["ai_runtime_task_output"] = self.ai_runtime_task_output.as_dict()
         if self.alert_output:
@@ -6710,6 +7586,8 @@ class RunOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_function_task_output:
+            body["ai_function_task_output"] = self.ai_function_task_output
         if self.ai_runtime_task_output:
             body["ai_runtime_task_output"] = self.ai_runtime_task_output
         if self.alert_output:
@@ -6748,6 +7626,7 @@ class RunOutput:
     def from_dict(cls, d: Dict[str, Any]) -> RunOutput:
         """Deserializes the RunOutput from a dictionary."""
         return cls(
+            ai_function_task_output=_from_dict(d, "ai_function_task_output", AiFunctionTaskOutput),
             ai_runtime_task_output=_from_dict(d, "ai_runtime_task_output", AiRuntimeTaskOutput),
             alert_output=_from_dict(d, "alert_output", AlertTaskOutput),
             clean_rooms_notebook_output=_from_dict(
@@ -7056,6 +7935,9 @@ class RunTask:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    ai_function_task: Optional[AiFunctionTask] = None
+    """Applies an AI function to a set of input documents or rows."""
+
     ai_runtime_task: Optional[AiRuntimeTask] = None
     """The task runs a multi-gpu compute workload on Databricks AI Runtime. Specify the accelerator
     type and count, the command to run, and where the workload's code and MLflow output are stored."""
@@ -7288,6 +8170,8 @@ class RunTask:
     def as_dict(self) -> dict:
         """Serializes the RunTask into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_function_task:
+            body["ai_function_task"] = self.ai_function_task.as_dict()
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.alert_task:
@@ -7405,6 +8289,8 @@ class RunTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunTask into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_function_task:
+            body["ai_function_task"] = self.ai_function_task
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task
         if self.alert_task:
@@ -7523,6 +8409,7 @@ class RunTask:
     def from_dict(cls, d: Dict[str, Any]) -> RunTask:
         """Deserializes the RunTask from a dictionary."""
         return cls(
+            ai_function_task=_from_dict(d, "ai_function_task", AiFunctionTask),
             ai_runtime_task=_from_dict(d, "ai_runtime_task", AiRuntimeTask),
             alert_task=_from_dict(d, "alert_task", AlertTask),
             attempt_number=d.get("attempt_number", None),
@@ -8775,6 +9662,9 @@ class SubmitTask:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    ai_function_task: Optional[AiFunctionTask] = None
+    """Applies an AI function to a set of input documents or rows."""
+
     ai_runtime_task: Optional[AiRuntimeTask] = None
     """The task runs a multi-gpu compute workload on Databricks AI Runtime. Specify the accelerator
     type and count, the command to run, and where the workload's code and MLflow output are stored."""
@@ -8926,6 +9816,8 @@ class SubmitTask:
     def as_dict(self) -> dict:
         """Serializes the SubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_function_task:
+            body["ai_function_task"] = self.ai_function_task.as_dict()
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.alert_task:
@@ -9011,6 +9903,8 @@ class SubmitTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the SubmitTask into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_function_task:
+            body["ai_function_task"] = self.ai_function_task
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task
         if self.alert_task:
@@ -9097,6 +9991,7 @@ class SubmitTask:
     def from_dict(cls, d: Dict[str, Any]) -> SubmitTask:
         """Deserializes the SubmitTask from a dictionary."""
         return cls(
+            ai_function_task=_from_dict(d, "ai_function_task", AiFunctionTask),
             ai_runtime_task=_from_dict(d, "ai_runtime_task", AiRuntimeTask),
             alert_task=_from_dict(d, "alert_task", AlertTask),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
@@ -9546,6 +10441,9 @@ class Task:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    ai_function_task: Optional[AiFunctionTask] = None
+    """Applies an AI function to a set of input documents or rows."""
+
     ai_runtime_task: Optional[AiRuntimeTask] = None
     """The task runs a multi-gpu compute workload on Databricks AI Runtime. Specify the accelerator
     type and count, the command to run, and where the workload's code and MLflow output are stored."""
@@ -9705,6 +10603,8 @@ class Task:
     def as_dict(self) -> dict:
         """Serializes the Task into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_function_task:
+            body["ai_function_task"] = self.ai_function_task.as_dict()
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.alert_task:
@@ -9792,6 +10692,8 @@ class Task:
     def as_shallow_dict(self) -> dict:
         """Serializes the Task into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_function_task:
+            body["ai_function_task"] = self.ai_function_task
         if self.ai_runtime_task:
             body["ai_runtime_task"] = self.ai_runtime_task
         if self.alert_task:
@@ -9880,6 +10782,7 @@ class Task:
     def from_dict(cls, d: Dict[str, Any]) -> Task:
         """Deserializes the Task from a dictionary."""
         return cls(
+            ai_function_task=_from_dict(d, "ai_function_task", AiFunctionTask),
             ai_runtime_task=_from_dict(d, "ai_runtime_task", AiRuntimeTask),
             alert_task=_from_dict(d, "alert_task", AlertTask),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
@@ -10273,6 +11176,9 @@ class TriggerConfiguration:
     file_arrival: Optional[FileArrivalTriggerConfiguration] = None
     """File arrival trigger configuration."""
 
+    job_completion: Optional[JobCompletionTriggerConfiguration] = None
+    """Job completion trigger configuration."""
+
     model: Optional[ModelTriggerConfiguration] = None
     """Model trigger configuration."""
 
@@ -10300,6 +11206,8 @@ class TriggerConfiguration:
             body["continuous"] = self.continuous.as_dict()
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.job_completion:
+            body["job_completion"] = self.job_completion.as_dict()
         if self.model:
             body["model"] = self.model.as_dict()
         if self.pause_status is not None:
@@ -10321,6 +11229,8 @@ class TriggerConfiguration:
             body["continuous"] = self.continuous
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.job_completion:
+            body["job_completion"] = self.job_completion
         if self.model:
             body["model"] = self.model
         if self.pause_status is not None:
@@ -10341,6 +11251,7 @@ class TriggerConfiguration:
         return cls(
             continuous=_from_dict(d, "continuous", ContinuousTriggerConfiguration),
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerConfiguration),
+            job_completion=_from_dict(d, "job_completion", JobCompletionTriggerConfiguration),
             model=_from_dict(d, "model", ModelTriggerConfiguration),
             pause_status=_enum(d, "pause_status", PauseStatus),
             periodic=_from_dict(d, "periodic", PeriodicTriggerConfiguration),
@@ -10474,6 +11385,10 @@ class TriggerHistory:
 class TriggerInfo:
     """Additional details about what triggered the run"""
 
+    job_completion: Optional[JobCompletionTriggerRunInfoDetails] = None
+    """Additional details for job runs triggered by a job completion trigger (trigger:
+    "JOB_COMPLETION")"""
+
     run_id: Optional[int] = None
     """The run id of the Run Job task run"""
 
@@ -10483,6 +11398,8 @@ class TriggerInfo:
     def as_dict(self) -> dict:
         """Serializes the TriggerInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.job_completion:
+            body["job_completion"] = self.job_completion.as_dict()
         if self.run_id is not None:
             body["run_id"] = self.run_id
         if self.sql_condition:
@@ -10492,6 +11409,8 @@ class TriggerInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the TriggerInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.job_completion:
+            body["job_completion"] = self.job_completion
         if self.run_id is not None:
             body["run_id"] = self.run_id
         if self.sql_condition:
@@ -10501,13 +11420,20 @@ class TriggerInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TriggerInfo:
         """Deserializes the TriggerInfo from a dictionary."""
-        return cls(run_id=_int64(d, "run_id"), sql_condition=_from_dict(d, "sql_condition", SqlConditionRunInfoDetails))
+        return cls(
+            job_completion=_from_dict(d, "job_completion", JobCompletionTriggerRunInfoDetails),
+            run_id=_int64(d, "run_id"),
+            sql_condition=_from_dict(d, "sql_condition", SqlConditionRunInfoDetails),
+        )
 
 
 @dataclass
 class TriggerSettings:
     file_arrival: Optional[FileArrivalTriggerConfiguration] = None
     """File arrival trigger settings."""
+
+    job_completion: Optional[JobCompletionTriggerConfiguration] = None
+    """Job completion trigger settings."""
 
     model: Optional[ModelTriggerConfiguration] = None
 
@@ -10528,6 +11454,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.job_completion:
+            body["job_completion"] = self.job_completion.as_dict()
         if self.model:
             body["model"] = self.model.as_dict()
         if self.pause_status is not None:
@@ -10545,6 +11473,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.job_completion:
+            body["job_completion"] = self.job_completion
         if self.model:
             body["model"] = self.model
         if self.pause_status is not None:
@@ -10562,6 +11492,7 @@ class TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerConfiguration),
+            job_completion=_from_dict(d, "job_completion", JobCompletionTriggerConfiguration),
             model=_from_dict(d, "model", ModelTriggerConfiguration),
             pause_status=_enum(d, "pause_status", PauseStatus),
             periodic=_from_dict(d, "periodic", PeriodicTriggerConfiguration),
@@ -10573,6 +11504,8 @@ class TriggerSettings:
 @dataclass
 class TriggerStateProto:
     file_arrival: Optional[FileArrivalTriggerState] = None
+
+    job_completion: Optional[JobCompletionTriggerState] = None
 
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not. For continuous schedules, it can differ from the
@@ -10589,6 +11522,8 @@ class TriggerStateProto:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.job_completion:
+            body["job_completion"] = self.job_completion.as_dict()
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
         if self.sql_condition:
@@ -10602,6 +11537,8 @@ class TriggerStateProto:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.job_completion:
+            body["job_completion"] = self.job_completion
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
         if self.sql_condition:
@@ -10615,6 +11552,7 @@ class TriggerStateProto:
         """Deserializes the TriggerStateProto from a dictionary."""
         return cls(
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerState),
+            job_completion=_from_dict(d, "job_completion", JobCompletionTriggerState),
             pause_status=_enum(d, "pause_status", PauseStatus),
             sql_condition=_from_dict(d, "sql_condition", SqlConditionState),
             table=_from_dict(d, "table", TableTriggerState),
@@ -10641,6 +11579,7 @@ class TriggerType(Enum):
     CONTINUOUS = "CONTINUOUS"
     CONTINUOUS_RESTART = "CONTINUOUS_RESTART"
     FILE_ARRIVAL = "FILE_ARRIVAL"
+    JOB_COMPLETION = "JOB_COMPLETION"
     ONE_TIME = "ONE_TIME"
     PERIODIC = "PERIODIC"
     RETRY = "RETRY"
@@ -10704,6 +11643,34 @@ class ViewsToExport(Enum):
     ALL = "ALL"
     CODE = "CODE"
     DASHBOARDS = "DASHBOARDS"
+
+
+@dataclass
+class VolumeSource:
+    """A Unity Catalog volume input source. The function is applied to each file."""
+
+    volume_path: str
+    """Unity Catalog volume path to the input files (e.g.
+    ``/Volumes/<catalog>/<schema>/<volume>/...``)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the VolumeSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.volume_path is not None:
+            body["volume_path"] = self.volume_path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VolumeSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.volume_path is not None:
+            body["volume_path"] = self.volume_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VolumeSource:
+        """Deserializes the VolumeSource from a dictionary."""
+        return cls(volume_path=d.get("volume_path", None))
 
 
 @dataclass
@@ -11031,10 +11998,11 @@ class JobsAPI:
           serverless compute or a compute resource that uses Environments mode.
 
           For notebook tasks that use serverless compute or a compute resource that uses Environments mode, if
-          the environment_key is not specified, the notebook environment will be used if present. If a jobs
-          environment is specified, it will override the notebook environment. For other tasks that use
-          serverless compute or a compute resource that uses Environments mode, the task environment is
-          required to be specified using environment_key in the task settings.
+          the ``environment_key`` is not specified, the notebook environment will be used if present. If a
+          jobs environment is specified, it will override the notebook environment.
+
+          For other tasks that use serverless compute or a compute resource that uses Environments mode, the
+          task environment is required to be specified using ``environment_key`` in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to ``"MULTI_TASK"``.

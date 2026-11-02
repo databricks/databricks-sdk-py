@@ -6,19 +6,19 @@
 
     These APIs are used to manage identities and the workspace access of these identities in Databricks.
 
-    .. py:method:: create_direct_group_member_proxy(group_id: int, direct_group_member: DirectGroupMember) -> DirectGroupMember
+    .. py:method:: create_direct_group_member_proxy(parent: str, direct_group_member: DirectGroupMember) -> DirectGroupMember
 
         Creates a group membership (assigns a principal to a group).
 
-        :param group_id: int
-          Required. Internal ID of the group in Databricks.
+        :param parent: str
+          The parent resource name of the group to add the member to. Format: groups/{group_id}
         :param direct_group_member: :class:`DirectGroupMember`
           Required. The group membership to create.
 
         :returns: :class:`DirectGroupMember`
         
 
-    .. py:method:: create_group_proxy(group: Group) -> Group
+    .. py:method:: create_group_proxy(group: Group [, parent: Optional[str]]) -> Group
 
         Creates a local group in the Databricks account that parents the calling workspace and returns the
         created group. A local group is one that is not synced from the customer's identity provider, and can
@@ -30,11 +30,14 @@
 
         :param group: :class:`Group`
           Required. Group to be created in Databricks
+        :param parent: str (optional)
+          The resource name of the account to create the group in, ``accounts/{account_id}``. Optional:
+          defaults to the account of the calling workspace, and any other account is rejected.
 
         :returns: :class:`Group`
         
 
-    .. py:method:: create_service_principal_proxy(service_principal: ServicePrincipal) -> ServicePrincipal
+    .. py:method:: create_service_principal_proxy(service_principal: ServicePrincipal [, parent: Optional[str]]) -> ServicePrincipal
 
         Creates a local service principal in the Databricks account that parents the calling workspace and
         returns the created service principal. A local service principal is one that is not synced from the
@@ -47,11 +50,14 @@
 
         :param service_principal: :class:`ServicePrincipal`
           Required. Service principal to be created in Databricks
+        :param parent: str (optional)
+          The resource name of the account to create the service principal in, ``accounts/{account_id}``.
+          Optional: defaults to the account of the calling workspace, and any other account is rejected.
 
         :returns: :class:`ServicePrincipal`
         
 
-    .. py:method:: create_user_proxy(user: User) -> User
+    .. py:method:: create_user_proxy(user: User [, parent: Optional[str]]) -> User
 
         Creates a local user in the Databricks account that parents the calling workspace and returns the
         created user. A local user is one that is not synced from the customer's identity provider, and can be
@@ -63,6 +69,9 @@
 
         :param user: :class:`User`
           Required. User to be created in Databricks
+        :param parent: str (optional)
+          The resource name of the account to create the user in, ``accounts/{account_id}``. Optional:
+          defaults to the account of the calling workspace, and any other account is rejected.
 
         :returns: :class:`User`
         
@@ -77,7 +86,7 @@
         :returns: :class:`WorkspaceAssignmentDetail`
         
 
-    .. py:method:: create_workspace_assignment_proxy(workspace_assignment: WorkspaceAssignment) -> WorkspaceAssignment
+    .. py:method:: create_workspace_assignment_proxy(workspace_assignment: WorkspaceAssignment [, parent: Optional[str]]) -> WorkspaceAssignment
 
         Creates a workspace assignment for a principal in the calling workspace. Entitlements are granted one
         at a time rather than atomically. If the request fails partway through, the principal stays assigned
@@ -86,49 +95,51 @@
 
         :param workspace_assignment: :class:`WorkspaceAssignment`
           Required. Workspace assignment to be created in Databricks.
+        :param parent: str (optional)
+          The resource name of the workspace to assign the principal to,
+          ``accounts/{account_id}/workspaces/{workspace_id}``. Optional: defaults to the calling workspace,
+          and any other workspace is rejected.
 
         :returns: :class:`WorkspaceAssignment`
         
 
-    .. py:method:: delete_direct_group_member_proxy(group_id: int, principal_id: int)
+    .. py:method:: delete_direct_group_member_proxy(name: str)
 
         Deletes a group membership (unassigns a principal from a group).
 
-        :param group_id: int
-          Required. Internal ID of the group in Databricks.
-        :param principal_id: int
-          Required. Internal ID of the principal to be unassigned from the group.
+        :param name: str
+          The resource name of the group membership. Format: groups/{group_id}/direct-members/{principal_id}
 
 
         
 
-    .. py:method:: delete_group_proxy(group_id: str)
+    .. py:method:: delete_group_proxy(name: str)
 
         Deletes a group by its internal ID from the Databricks account that parents the calling workspace.
 
-        :param group_id: str
-          Required. Internal ID of the group in Databricks.
+        :param name: str
+          The resource name of the group. Format: groups/{group_id}
 
 
         
 
-    .. py:method:: delete_service_principal_proxy(service_principal_id: str)
+    .. py:method:: delete_service_principal_proxy(name: str)
 
         Deletes a service principal by its internal ID from the Databricks account that parents the calling
         workspace.
 
-        :param service_principal_id: str
-          Required. Internal ID of the service principal in Databricks.
+        :param name: str
+          The resource name of the service principal. Format: service-principals/{service_principal_id}
 
 
         
 
-    .. py:method:: delete_user_proxy(user_id: str)
+    .. py:method:: delete_user_proxy(name: str)
 
         Deletes a user by its internal ID from the Databricks account that parents the calling workspace.
 
-        :param user_id: str
-          Required. Internal ID of the user in Databricks.
+        :param name: str
+          The resource name of the user. Format: users/{user_id}
 
 
         
@@ -146,27 +157,25 @@
 
         
 
-    .. py:method:: delete_workspace_assignment_proxy(principal_id: int)
+    .. py:method:: delete_workspace_assignment_proxy(name: str)
 
         Deletes a workspace assignment for a principal in the calling workspace, revoking all of its
         entitlements. Entitlements are revoked one at a time rather than atomically. If the request fails
         partway through, the principal stays assigned with some of its original entitlements. Retrying is
         safe.
 
-        :param principal_id: int
-          Required. ID of the principal in Databricks to delete workspace assignment for.
+        :param name: str
+          The resource name of the workspace assignment. Format: workspace-assignments/{principal_id}
 
 
         
 
-    .. py:method:: get_direct_group_member_proxy(group_id: int, principal_id: int) -> DirectGroupMember
+    .. py:method:: get_direct_group_member_proxy(name: str) -> DirectGroupMember
 
         Gets a provisioned direct member of a group.
 
-        :param group_id: int
-          Required. Internal ID of the group in Databricks.
-        :param principal_id: int
-          Required. Internal ID of the principal belonging to the group in Databricks.
+        :param name: str
+          The resource name of the group membership. Format: groups/{group_id}/direct-members/{principal_id}
 
         :returns: :class:`DirectGroupMember`
         
@@ -210,38 +219,38 @@
         :returns: :class:`ExternalUser`
         
 
-    .. py:method:: get_group_proxy(group_id: str) -> Group
+    .. py:method:: get_group_proxy(name: str) -> Group
 
         Fetches a group by its internal ID from the Databricks account that parents the calling workspace.
 
-        :param group_id: str
-          Required. Internal ID of the group in Databricks.
+        :param name: str
+          The resource name of the group. Format: groups/{group_id}
 
         :returns: :class:`Group`
         
 
-    .. py:method:: get_service_principal_proxy(service_principal_id: str) -> ServicePrincipal
+    .. py:method:: get_service_principal_proxy(name: str) -> ServicePrincipal
 
         Fetches a service principal by its internal ID from the Databricks account that parents the calling
         workspace.
 
-        :param service_principal_id: str
-          Required. Internal ID of the service principal in Databricks.
+        :param name: str
+          The resource name of the service principal. Format: service-principals/{service_principal_id}
 
         :returns: :class:`ServicePrincipal`
         
 
-    .. py:method:: get_user_proxy(user_id: str) -> User
+    .. py:method:: get_user_proxy(name: str) -> User
 
         Fetches a user by its internal ID from the Databricks account that parents the calling workspace.
 
-        :param user_id: str
-          Required. Internal ID of the user in Databricks.
+        :param name: str
+          The resource name of the user. Format: users/{user_id}
 
         :returns: :class:`User`
         
 
-    .. py:method:: get_workspace_access_detail_local(principal_id: int [, view: Optional[WorkspaceAccessDetailView]]) -> WorkspaceAccessDetail
+    .. py:method:: get_workspace_access_detail_local(name: str [, view: Optional[WorkspaceAccessDetailView]]) -> WorkspaceAccessDetail
 
         Returns the access details for a principal in the current workspace. Allows for checking access
         details for any provisioned principal (user, service principal, or group) in the current workspace.
@@ -250,9 +259,8 @@
           IdP or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to
           control what fields are returned (BASIC by default or FULL).
 
-        :param principal_id: int
-          Required. The internal ID of the principal (user/sp/group) for which the access details are being
-          requested.
+        :param name: str
+          The resource name of the workspace access detail. Format: workspace-access-details/{principal_id}
         :param view: :class:`WorkspaceAccessDetailView` (optional)
           Controls what fields are returned.
 
@@ -270,35 +278,34 @@
         :returns: :class:`WorkspaceAssignmentDetail`
         
 
-    .. py:method:: get_workspace_assignment_proxy(principal_id: int) -> WorkspaceAssignment
+    .. py:method:: get_workspace_assignment_proxy(name: str) -> WorkspaceAssignment
 
         Returns the assignment for a principal in the calling workspace.
 
-        :param principal_id: int
-          Required. The internal ID of the principal (user/sp/group) for which the assignment is being
-          requested.
+        :param name: str
+          The resource name of the workspace assignment. Format: workspace-assignments/{principal_id}
 
         :returns: :class:`WorkspaceAssignment`
         
 
-    .. py:method:: get_workspace_identity_detail(principal_id: int) -> WorkspaceIdentityDetail
+    .. py:method:: get_workspace_identity_detail(name: str) -> WorkspaceIdentityDetail
 
         Returns the identity details for a principal in a workspace.
 
-        :param principal_id: int
-          Required. The internal ID of the principal (user/sp/group) for which the identity details are being
-          requested.
+        :param name: str
+          The resource name of the workspace identity detail. Format:
+          principals/{principal_id}/workspace-identity-detail
 
         :returns: :class:`WorkspaceIdentityDetail`
         
 
-    .. py:method:: list_direct_group_members_proxy(group_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DirectGroupMember]
+    .. py:method:: list_direct_group_members_proxy(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DirectGroupMember]
 
         Lists provisioned direct members of a group with their membership source (internal or from identity
         provider).
 
-        :param group_id: int
-          Required. Internal ID of the group in Databricks whose direct members are being listed.
+        :param parent: str
+          The parent resource name of the group whose direct members to list. Format: groups/{group_id}
         :param page_size: int (optional)
           The maximum number of members to return. The service may return fewer than this value. If not
           provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
@@ -309,7 +316,7 @@
         :returns: Iterator over :class:`DirectGroupMember`
         
 
-    .. py:method:: list_groups_proxy( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Group]
+    .. py:method:: list_groups_proxy( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[Group]
 
         Lists the groups in the Databricks account that parents the calling workspace, returning one page per
         call. Supports filtering by group name or external ID.
@@ -323,11 +330,14 @@
         :param page_token: str (optional)
           A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
           page.
+        :param parent: str (optional)
+          The resource name of the account to list groups in, ``accounts/{account_id}``. Optional: defaults to
+          the account of the calling workspace, and any other account is rejected.
 
         :returns: Iterator over :class:`Group`
         
 
-    .. py:method:: list_service_principals_proxy( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ServicePrincipal]
+    .. py:method:: list_service_principals_proxy( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[ServicePrincipal]
 
         Lists the service principals in the Databricks account that parents the calling workspace, returning
         one page per call. Supports filtering by application ID or external ID.
@@ -341,17 +351,20 @@
         :param page_token: str (optional)
           A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
           subsequent page.
+        :param parent: str (optional)
+          The resource name of the account to list service principals in, ``accounts/{account_id}``. Optional:
+          defaults to the account of the calling workspace, and any other account is rejected.
 
         :returns: Iterator over :class:`ServicePrincipal`
         
 
-    .. py:method:: list_transitive_parent_groups_proxy(principal_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListTransitiveParentGroupsResponse
+    .. py:method:: list_transitive_parent_groups_proxy(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> ListTransitiveParentGroupsResponse
 
         Lists all transitive parent groups of a principal.
 
-        :param principal_id: int
-          Required. Internal ID of the principal in Databricks whose transitive parent groups are being
-          listed.
+        :param parent: str
+          The parent resource name of the principal whose transitive parent groups to list. Format:
+          principals/{principal_id}
         :param page_size: int (optional)
           The maximum number of parent groups to return. The service may return fewer than this value. If not
           provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
@@ -363,7 +376,7 @@
         :returns: :class:`ListTransitiveParentGroupsResponse`
         
 
-    .. py:method:: list_users_proxy( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[User]
+    .. py:method:: list_users_proxy( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[User]
 
         Lists the users in the Databricks account that parents the calling workspace, returning one page per
         call. Supports filtering by username or external ID.
@@ -376,6 +389,9 @@
           are clamped to 1000.
         :param page_token: str (optional)
           A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
+        :param parent: str (optional)
+          The resource name of the account to list users in, ``accounts/{account_id}``. Optional: defaults to
+          the account of the calling workspace, and any other account is rejected.
 
         :returns: Iterator over :class:`User`
         
@@ -396,7 +412,7 @@
         :returns: Iterator over :class:`WorkspaceAssignmentDetail`
         
 
-    .. py:method:: list_workspace_assignments_proxy( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceAssignment]
+    .. py:method:: list_workspace_assignments_proxy( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[WorkspaceAssignment]
 
         Lists workspace assignments for the calling workspace. The response omits the per-principal
         entitlement fields (``entitlements`` and ``effective_entitlements``). To read the entitlements for a
@@ -408,6 +424,10 @@
           maximum are clamped to 1000.
         :param page_token: str (optional)
           A page token from a previous list call. Provide this to retrieve the subsequent page.
+        :param parent: str (optional)
+          The resource name of the workspace to list assignments of,
+          ``accounts/{account_id}/workspaces/{workspace_id}``. Optional: defaults to the calling workspace,
+          and any other workspace is rejected.
 
         :returns: Iterator over :class:`WorkspaceAssignment`
         
@@ -448,7 +468,7 @@
         :returns: :class:`ResolveUserResponse`
         
 
-    .. py:method:: update_group_proxy(group_id: str, group: Group, update_mask: str) -> Group
+    .. py:method:: update_group_proxy(name: str, group: Group, update_mask: str) -> Group
 
         Updates an existing group in the Databricks account that parents the calling workspace. Only the
         fields named in the update mask are modified. Returns the updated Group resource.
@@ -458,8 +478,11 @@
         visibility filters, a new nonempty external_id must identify a visible group. Clearing external_id is
         allowed.
 
-        :param group_id: str
-          Required. Internal ID of the group in Databricks.
+        :param name: str
+          The resource name of the group. The format depends on the API that returned it:
+
+          - Account-scoped: accounts/{account_id}/groups/{group_id}
+          - Workspace-scoped: groups/{group_id}
         :param group: :class:`Group`
           Required. Group to be updated in Databricks
         :param update_mask: str
@@ -468,18 +491,22 @@
         :returns: :class:`Group`
         
 
-    .. py:method:: update_service_principal_proxy(service_principal_id: str, service_principal: ServicePrincipal, update_mask: str) -> ServicePrincipal
+    .. py:method:: update_service_principal_proxy(name: str, service_principal: ServicePrincipal, update_mask: str) -> ServicePrincipal
 
         Updates an existing service principal in the Databricks account that parents the calling workspace.
         Only the fields named in the update mask are modified. Returns the updated ServicePrincipal resource.
 
-        For locally managed service principals, is_agent must be set to true or false when updated.
+        To change is_agent on a locally managed service principal, set it to true or false. Naming is_agent in
+        the update mask without a value leaves it unchanged.
 
         When AIM is enabled and the service principal is an external identity (its external_id is set), only
         external_id can be updated; its other fields are sourced from your identity provider.
 
-        :param service_principal_id: str
-          Required. Internal ID of the service principal in Databricks.
+        :param name: str
+          The resource name of the service principal. The format depends on the API that returned it:
+
+          - Account-scoped: accounts/{account_id}/service-principals/{service_principal_id}
+          - Workspace-scoped: service-principals/{service_principal_id}
         :param service_principal: :class:`ServicePrincipal`
           Required. Service principal to be updated in Databricks
         :param update_mask: str
@@ -488,7 +515,7 @@
         :returns: :class:`ServicePrincipal`
         
 
-    .. py:method:: update_user_proxy(user_id: str, user: User, update_mask: str) -> User
+    .. py:method:: update_user_proxy(name: str, user: User, update_mask: str) -> User
 
         Updates an existing user in the Databricks account that parents the calling workspace and returns the
         updated user. Only the fields named in the update mask are modified. The updatable fields are
@@ -497,8 +524,11 @@
         When AIM is enabled and the user is an external identity (its external_id is set), only external_id
         can be updated; its other fields are sourced from your identity provider.
 
-        :param user_id: str
-          Required. Internal ID of the user in Databricks.
+        :param name: str
+          The resource name of the user. The format depends on the API that returned it:
+
+          - Account-scoped: accounts/{account_id}/users/{user_id}
+          - Workspace-scoped: users/{user_id}
         :param user: :class:`User`
           Required. User to be updated in Databricks
         :param update_mask: str
@@ -523,14 +553,18 @@
         :returns: :class:`WorkspaceAssignmentDetail`
         
 
-    .. py:method:: update_workspace_assignment_proxy(principal_id: int, workspace_assignment: WorkspaceAssignment, update_mask: FieldMask) -> WorkspaceAssignment
+    .. py:method:: update_workspace_assignment_proxy(name: str, workspace_assignment: WorkspaceAssignment, update_mask: FieldMask) -> WorkspaceAssignment
 
         Updates the entitlements of a directly assigned principal in the calling workspace. Changes are
         applied one at a time rather than atomically. If the request fails partway through, only some of the
         requested changes take effect. Get the assignment afterwards to confirm the final state.
 
-        :param principal_id: int
-          Required. ID of the principal in Databricks.
+        :param name: str
+          The resource name of the workspace assignment. The format depends on the API that returned it:
+
+          - Account-scoped:
+            accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
+          - Workspace-scoped: workspace-assignments/{principal_id}
         :param workspace_assignment: :class:`WorkspaceAssignment`
           Required. Workspace assignment to be updated in Databricks.
         :param update_mask: FieldMask
@@ -539,12 +573,13 @@
         :returns: :class:`WorkspaceAssignment`
         
 
-    .. py:method:: update_workspace_identity_detail(principal_id: int, workspace_identity_detail: WorkspaceIdentityDetail, update_mask: FieldMask) -> WorkspaceIdentityDetail
+    .. py:method:: update_workspace_identity_detail(name: str, workspace_identity_detail: WorkspaceIdentityDetail, update_mask: FieldMask) -> WorkspaceIdentityDetail
 
         Updates a workspace identity detail for a principal.
 
-        :param principal_id: int
-          Required. ID of the principal in Databricks.
+        :param name: str
+          The resource name of the workspace identity detail. Format:
+          principals/{principal_id}/workspace-identity-detail
         :param workspace_identity_detail: :class:`WorkspaceIdentityDetail`
           Required. Workspace identity detail to be updated in Databricks.
         :param update_mask: FieldMask

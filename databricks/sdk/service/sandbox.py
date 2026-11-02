@@ -6,7 +6,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Any, Iterator, Optional
+from typing import Dict, List, Any, Iterator, Optional, BinaryIO
 
 from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -163,6 +163,80 @@ class DeletePathResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeletePathResponse:
         """Deserializes the DeletePathResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class DownloadFileResponse:
+    accept_ranges: Optional[str] = None
+    """The supported range unit: bytes."""
+
+    content_length: Optional[int] = None
+    """The length of the response body in bytes."""
+
+    content_range: Optional[str] = None
+    """The returned byte range and full file length, for a partial response."""
+
+    content_type: Optional[str] = None
+    """The media type of the response body: application/octet-stream."""
+
+    contents: Optional[BinaryIO] = None
+
+    etag: Optional[str] = None
+    """The entity tag used for conditional requests."""
+
+    last_modified: Optional[str] = None
+    """The modification time as an HTTP-date, when representable."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DownloadFileResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.accept_ranges is not None:
+            body["Accept-Ranges"] = self.accept_ranges
+        if self.content_length is not None:
+            body["Content-Length"] = self.content_length
+        if self.content_range is not None:
+            body["Content-Range"] = self.content_range
+        if self.content_type is not None:
+            body["Content-Type"] = self.content_type
+        if self.contents:
+            body["contents"] = self.contents
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.last_modified is not None:
+            body["Last-Modified"] = self.last_modified
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DownloadFileResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.accept_ranges is not None:
+            body["Accept-Ranges"] = self.accept_ranges
+        if self.content_length is not None:
+            body["Content-Length"] = self.content_length
+        if self.content_range is not None:
+            body["Content-Range"] = self.content_range
+        if self.content_type is not None:
+            body["Content-Type"] = self.content_type
+        if self.contents:
+            body["contents"] = self.contents
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.last_modified is not None:
+            body["Last-Modified"] = self.last_modified
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DownloadFileResponse:
+        """Deserializes the DownloadFileResponse from a dictionary."""
+        return cls(
+            accept_ranges=d.get("Accept-Ranges", None),
+            content_length=_int64(d, "Content-Length"),
+            content_range=d.get("Content-Range", None),
+            content_type=d.get("Content-Type", None),
+            contents=d.get("contents", None),
+            etag=d.get("etag", None),
+            last_modified=d.get("Last-Modified", None),
+        )
 
 
 @dataclass
@@ -810,6 +884,99 @@ class SandboxAPI:
 
         self._api.do("DELETE", f"/api/2.0/{name}", headers=headers)
 
+    def download_file(
+        self,
+        parent: str,
+        path: str,
+        *,
+        byte_range: Optional[str] = None,
+        if_match: Optional[str] = None,
+        if_modified_since: Optional[str] = None,
+        if_none_match: Optional[str] = None,
+        if_range: Optional[str] = None,
+        if_unmodified_since: Optional[str] = None,
+    ) -> DownloadFileResponse:
+        """Downloads a regular file from a sandbox as an application/octet-stream body. The sandbox starts
+        automatically if it is stopped. Filesystem access uses the sandbox user's permissions and follows
+        symbolic links.
+
+        A full download returns 200 OK. A satisfiable single byte range returns 206 Partial Content. Multiple
+        byte ranges are unsupported and return 400. Invalid ranges are ignored; an unsatisfiable range returns
+        416 with Content-Range describing the file length. Range is ignored for empty files.
+
+        Conditional requests can return 304 Not Modified or 412 Precondition Failed. If-Range selects a
+        partial response only when its strong entity tag matches; otherwise, the entire file is returned.
+        HTTP-date validators in If-Range cause a full download. Reads are not snapshots: concurrent in-place
+        writes can affect the returned bytes. HEAD is unsupported.
+
+        Range and conditional options may be supplied as query parameters or HTTP headers. A parameter and one
+        header may both be supplied when their values match exactly. Conflicting values or repeated parameters
+        return 400.
+
+        :param parent: str
+          The sandbox resource name, in the form sandboxes/{sandbox_id}.
+        :param path: str
+          The absolute UTF-8 path of the file inside the sandbox.
+        :param byte_range: str (optional)
+          A single byte range, such as bytes=0-1023 or bytes=-1024. Equivalent to the Range header.
+        :param if_match: str (optional)
+          Entity tags or *. A mismatch returns 412 Precondition Failed. Equivalent to the If-Match header.
+        :param if_modified_since: str (optional)
+          An HTTP-date. Returns 304 if the file has not changed since this time. Ignored when If-None-Match is
+          present. Equivalent to the If-Modified-Since header.
+        :param if_none_match: str (optional)
+          Entity tags or *. A match returns 304 Not Modified. Equivalent to the If-None-Match header.
+        :param if_range: str (optional)
+          A strong entity tag. A mismatch, weak entity tag, or HTTP-date causes a full download. Equivalent to
+          the If-Range header.
+        :param if_unmodified_since: str (optional)
+          An HTTP-date. Returns 412 if the file has changed since this time. Ignored when If-Match is present.
+          Equivalent to the If-Unmodified-Since header.
+
+        :returns: :class:`DownloadFileResponse`
+        """
+
+        query = {}
+        if byte_range is not None:
+            query["byte_range"] = byte_range
+        if if_match is not None:
+            query["if_match"] = if_match
+        if if_modified_since is not None:
+            query["if_modified_since"] = if_modified_since
+        if if_none_match is not None:
+            query["if_none_match"] = if_none_match
+        if if_range is not None:
+            query["if_range"] = if_range
+        if if_unmodified_since is not None:
+            query["if_unmodified_since"] = if_unmodified_since
+        if path is not None:
+            query["path"] = path
+        headers = {
+            "Accept": "application/octet-stream",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        response_headers = [
+            "Accept-Ranges",
+            "Content-Length",
+            "Content-Range",
+            "Content-Type",
+            "etag",
+            "Last-Modified",
+        ]
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/sandbox-files/{parent}/content",
+            query=query,
+            headers=headers,
+            response_headers=response_headers,
+            raw=True,
+        )
+        return DownloadFileResponse.from_dict(res)
+
     def execute_command_sync(
         self,
         name: str,
@@ -1119,3 +1286,38 @@ class SandboxAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/{name}", query=query, body=body, headers=headers)
         return Sandbox.from_dict(res)
+
+    def upload_file(self, parent: str, contents: BinaryIO, path: str):
+        """Uploads an application/octet-stream body to a sandbox. The sandbox starts automatically if it is
+        stopped. Filesystem access uses the sandbox user's permissions and follows symbolic links.
+
+        Creates the file or replaces its entire contents, creating parent directories if missing. The
+        completed upload becomes visible atomically. A failure before commit leaves an existing destination
+        unchanged; a lost response after commit does not undo the upload. Completion does not guarantee crash
+        durability.
+
+        Returns 201 Created for a new file or 204 No Content for a replacement. Partial and conditional
+        uploads are unsupported: Content-Range, If-Match, If-None-Match, and If-Unmodified-Since return 400.
+
+        :param parent: str
+          The sandbox resource name, in the form sandboxes/{sandbox_id}.
+        :param contents: BinaryIO
+          The complete file contents. An empty body creates an empty file.
+        :param path: str
+          The absolute UTF-8 destination path inside the sandbox.
+
+
+        """
+
+        query = {}
+        if path is not None:
+            query["path"] = path
+        headers = {
+            "Content-Type": "application/octet-stream",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("PUT", f"/api/2.0/sandbox-files/{parent}/content", query=query, headers=headers, data=contents)

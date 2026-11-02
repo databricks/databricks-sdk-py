@@ -3658,38 +3658,41 @@ class Environment:
     base_environment: Optional[str] = None
     """The base environment this environment is built on top of. A base environment defines the
     environment version and a list of dependencies for serverless compute. The value can be a file
-    path to a custom ``env.yaml`` file (e.g., ``/Workspace/path/to/env.yaml``). Support for a
-    Databricks-provided base environment ID (e.g., ``workspace-base-environments/databricks_ai_v4``)
-    and workspace base environment ID (e.g.,
-    ``workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7``) is in Beta. Either
-    ``environment_version`` or ``base_environment`` can be provided. For more information about
-    Databricks-provided base environments, see the [list workspace base
-    environments](:method:Environments/ListWorkspaceBaseEnvironments) API. For more information, see"""
+    path to a custom ``env.yaml`` file (e.g., ``/Workspace/path/to/env.yaml``).
+    
+    Support for a Databricks-provided base environment ID (e.g.,
+    ``workspace-base-environments/databricks_ai_v4``) and workspace base environment ID (e.g.,
+    ``workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7``) is in Beta.
+    
+    Either ``environment_version`` or ``base_environment`` can be provided.
+    
+    For more information about Databricks-provided base environments, see the [list workspace base
+    environments](:method:Environments/ListWorkspaceBaseEnvironments) API."""
 
     client: Optional[str] = None
     """Use ``environment_version`` instead."""
 
     dependencies: Optional[List[str]] = None
     """List of pip dependencies, as supported by the version of pip in this environment. Each
-    dependency is a valid pip requirements file line per
-    https://pip.pypa.io/en/stable/reference/requirements-file-format/. Allowed dependencies include
-    a requirement specifier, an archive URL, a local project path (such as WSFS or UC Volumes in
-    Databricks), or a VCS project URL."""
+    dependency is a valid `pip requirements file line
+    <https://pip.pypa.io/en/stable/reference/requirements-file-format/>`__. Allowed dependencies
+    include a requirement specifier, an archive URL, a local project path (such as WSFS or UC
+    Volumes in Databricks), or a VCS project URL."""
 
     environment_version: Optional[str] = None
-    """Either ``environment_version`` or ``base_environment`` needs to be provided. Environment version
-    used by the environment. Each version comes with a specific Python version and a set of Python
-    packages. The version is a string, consisting of an integer."""
+    """The environment version used by this environment. Either ``environment_version`` or
+    ``base_environment`` must be provided. Each version comes with a specific Python version and a
+    set of Python packages. The version is a string, consisting of an integer."""
 
     java_dependencies: Optional[List[str]] = None
-    """List of java dependencies. Each dependency is a string representing a java library path. For
+    """List of Java dependencies. Each dependency is a string representing a Java library path. For
     example: ``/Volumes/path/to/test.jar``."""
 
     project_environment: Optional[str] = None
     """Path to the ``pyproject.toml`` file that defines the project environment. This field cannot be
     combined with ``environment_version``, ``base_environment``, dependency fields, or any other
     environment-source fields. Set the environment version and dependencies in ``pyproject.toml``
-    instead. For more information, see the serverless dependencies documentation."""
+    instead."""
 
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""

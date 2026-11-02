@@ -1,13 +1,12 @@
-# Running commands in sandboxes
+# Sandboxes
 
 Databricks Sandbox lets you run untrusted code in an isolated environment. For
 sandbox lifecycle operations (create, delete, etc.), see the
 [`WorkspaceClient.sandbox` reference](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sandbox/sandbox.html).
 
-This guide shows how to run a command in a sandbox, read its output as it is
-being produced, send it input, and get its exit code.
+## Commands
 
-## Prerequisites
+### Prerequisites
 
 Install the SDK with the `sandbox` extra:
 
@@ -20,7 +19,7 @@ value corresponds to the `name` field of the `Sandbox` object returned by
 `create_sandbox`, `get_sandbox`, or `list_sandboxes` (a bare `{sandbox_id}` is
 also accepted). If the sandbox is stopped, running a command starts it first.
 
-## Run a command
+### Run a command
 
 `execute_command` starts a command and returns a `CommandProcess`. You can read
 its standard output and standard error through `stdout` and `stderr`, and use
@@ -46,7 +45,7 @@ print(process.wait())  # 3
 `read(size)` returns up to `size` characters (or bytes). Output is `str` by
 default; pass `text=False` to `execute_command` to get `bytes`.
 
-## Read output as it is produced
+### Read output as it is produced
 
 Iterate `stdout` or `stderr` to read it line by line as the command writes it,
 or call `readline()` for a single line:
@@ -62,7 +61,7 @@ For output that arrives without a trailing newline (a prompt, a progress bar),
 use `read1()` to receive output the instant it is written, without waiting for a
 full line.
 
-## Send input
+### Send input
 
 Write to `stdin`, then call `close()` to signal end of input:
 
@@ -73,7 +72,7 @@ process.stdin.close()
 print(process.stdout.read())  # hello from stdin
 ```
 
-## Choose where output goes
+### Choose where output goes
 
 The SDK keeps each stream's output in memory until you read it, so read
 long-running output as it is produced rather than buffering it all; if you don't
@@ -99,7 +98,7 @@ process = w.sandbox.execute_command(
 print(process.wait())  # 0
 ```
 
-## Stop waiting on a command
+### Stop waiting on a command
 
 `wait(timeout=)` and `read(timeout=)` raise `TimeoutError` if the command does
 not finish in time. Call `close()` to stop receiving its output and release the
@@ -117,7 +116,7 @@ with w.sandbox.execute_command(name, "/bin/sleep", args=["60"]) as process:
 # leaving the block closes the handle
 ```
 
-## Reconnect to a command
+### Reconnect to a command
 
 If the connection is interrupted, the SDK reconnects and resumes the output
 where it left off.
@@ -134,3 +133,45 @@ again = w.sandbox.connect_command(name, process.command_id)
 print(again.stdout.read())  # saved
 print(again.wait())  # 0
 ```
+
+## Files
+
+Pass the sandbox resource name (`sandboxes/{sandbox_id}`) to each method on `w.sandbox`:
+
+```python
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient()
+sandbox_name = "sandboxes/my-sandbox"
+
+w.sandbox.create_directory(sandbox_name, "/home/sandbox/data")
+w.sandbox.rename_path(sandbox_name, "/home/sandbox/input.csv", "/home/sandbox/data/input.csv")
+info = w.sandbox.get_metadata(sandbox_name, "/home/sandbox/data/input.csv").file
+for child in w.sandbox.list_directory_contents(sandbox_name, "/home/sandbox/data"):
+    print(child.path, child.size)
+w.sandbox.delete_path(sandbox_name, "/home/sandbox/data/input.csv")
+```
+
+- `create_directory` creates missing parents and succeeds if the directory exists. With `parents=False`, the parent must exist and the destination must be absent.
+- `rename_path` moves to the exact destination path. It fails if the destination exists or the move crosses filesystems.
+- `delete_path` removes files, symlinks, and empty directories. Use `recursive=True` for nonempty directories. Deleting a missing path succeeds.
+- `get_metadata` describes the final symlink itself. The response's `file` field contains the metadata; `modify_time` preserves nanosecond precision.
+- `list_directory_contents` includes dotfiles and fetches pages as you iterate. Concurrent directory changes can affect the results.
+
+Uploads and downloads stream bytes:
+
+```python
+with open("report.bin", "rb") as source:
+    w.sandbox.upload_file(parent=sandbox_name, path="/home/sandbox/report.bin", contents=source)
+
+download = w.sandbox.download_file(parent=sandbox_name, path="/home/sandbox/report.bin")
+with download.contents as source, open("report-copy.bin", "wb") as destination:
+    for chunk in iter(lambda: source.read(1024 * 1024), b""):
+        destination.write(chunk)
+```
+
+Uploads atomically replace the destination file. The parent directory must exist; `upload_file` has no `overwrite` option.
+
+`download_file` returns a `DownloadFileResponse` with a readable `contents` stream and HTTP metadata, including `content_length`, `content_type`, `etag`, and `last_modified`. Pass `byte_range="bytes=0-1023"` for a byte range and `if_range=etag` to require a matching file version. A mismatch returns the full file; an unsatisfiable range raises an SDK error. Close the contents stream after use.
+
+API and transport failures raise standard SDK exceptions.
