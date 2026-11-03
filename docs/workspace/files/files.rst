@@ -82,7 +82,8 @@
         :param file_path: str
           The remote path of the file, e.g. /Volumes/path/to/your/file
         :param destination: str
-          The local path where the file will be saved.
+          The local path where the file will be saved. A new file is written next to it and moved into place when the
+          download completes; an existing destination is written in place.
         :param overwrite: bool
           If true, an existing file will be overwritten. When not specified, defaults to True.
         :param use_parallel: bool

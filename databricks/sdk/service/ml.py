@@ -3643,11 +3643,17 @@ class IngestionDestination:
     delta_table_name: Optional[str] = None
     """The full three-part name (catalog, schema, name) of the Delta table to be created for ingestion."""
 
+    view_name: Optional[str] = None
+    """The full three-part name (catalog, schema, name) of an existing view to use instead of creating
+    a Delta table. The view is dropped when the Stream is deleted."""
+
     def as_dict(self) -> dict:
         """Serializes the IngestionDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.delta_table_name is not None:
             body["delta_table_name"] = self.delta_table_name
+        if self.view_name is not None:
+            body["view_name"] = self.view_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3655,12 +3661,14 @@ class IngestionDestination:
         body = {}
         if self.delta_table_name is not None:
             body["delta_table_name"] = self.delta_table_name
+        if self.view_name is not None:
+            body["view_name"] = self.view_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> IngestionDestination:
         """Deserializes the IngestionDestination from a dictionary."""
-        return cls(delta_table_name=d.get("delta_table_name", None))
+        return cls(delta_table_name=d.get("delta_table_name", None), view_name=d.get("view_name", None))
 
 
 @dataclass
@@ -5439,6 +5447,11 @@ class MaterializationSet:
     """The materialized features in this set. Order is not significant. Updating the set with a
     materialized feature removed from this set will cause it to be deleted."""
 
+    notifications: Optional[MaterializationNotifications] = None
+    """Notification configuration around the materialization job or pipeline lifecycle. They are
+    applied to every job and pipeline that materializes a feature in this set. Features which are
+    materialized in the same pipeline will share the same notification."""
+
     def as_dict(self) -> dict:
         """Serializes the MaterializationSet into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5446,6 +5459,8 @@ class MaterializationSet:
             body["materialization_set_id"] = self.materialization_set_id
         if self.materialized_features:
             body["materialized_features"] = [v.as_dict() for v in self.materialized_features]
+        if self.notifications:
+            body["notifications"] = self.notifications.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5455,6 +5470,8 @@ class MaterializationSet:
             body["materialization_set_id"] = self.materialization_set_id
         if self.materialized_features:
             body["materialized_features"] = self.materialized_features
+        if self.notifications:
+            body["notifications"] = self.notifications
         return body
 
     @classmethod
@@ -5463,6 +5480,7 @@ class MaterializationSet:
         return cls(
             materialization_set_id=d.get("materialization_set_id", None),
             materialized_features=_repeated_dict(d, "materialized_features", MaterializedFeature),
+            notifications=_from_dict(d, "notifications", MaterializationNotifications),
         )
 
 
