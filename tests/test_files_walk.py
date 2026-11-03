@@ -16,8 +16,8 @@ import json
 import os
 import platform
 from dataclasses import dataclass
-from tempfile import NamedTemporaryFile
-from threading import Lock
+from tempfile import TemporaryDirectory
+from threading import Lock, Thread
 from typing import Callable, Dict, List, Optional, Tuple, Union
 from urllib.parse import parse_qs, urlparse
 
@@ -28,6 +28,8 @@ from urllib3.exceptions import ProtocolError
 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
+from databricks.sdk.mixins import files as files_mixin
+from databricks.sdk.errors.platform import AlreadyExists
 
 from .test_files_utils import NonSeekableBuffer
 
@@ -417,8 +419,8 @@ DOWNLOAD_SCENARIOS = _scenarios("download", DOWNLOAD_MODES, [None])
 
 
 def _first_endpoint(scenario: Scenario) -> str:
-    """The endpoint a multipart upload or a download starts on: the storage proxy when it is enabled and its
-    probe reaches it, otherwise presigned URLs."""
+    """The endpoint a transfer starts on: the storage proxy when it is enabled and its probe reaches it, otherwise
+    presigned URLs."""
     if scenario.endpoint_list.storage_proxy and dict(scenario.availability)["proxy"] != DOWN:
         return "proxy"
     return "presigned"
@@ -429,40 +431,39 @@ def _first_endpoint(scenario: Scenario) -> str:
 def expected_upload(scenario: Scenario):
     """The outcome an upload has.
 
-    - A file under one part is sent in a single shot to the workspace.
-    - A non-seekable stream's size is known only once it is read. Read sequentially, a short one is sent in a
-      single shot as above. Read in parallel, an upload session is opened first; an empty stream is then sent in a
-      single shot to the workspace, and a short one as one part.
-    - Anything else is a multipart upload on the first endpoint. A failure there raises, except a rejected
-      transfer (403), which falls back to a single shot on the workspace.
-    - A single shot that follows a rejected part replays the part read plus the unread rest, which can't be
-      rewound, so the API client sends it once. An upload from a file in parallel reopens the file instead.
+    - Endpoints are tried in order: the first endpoint, then the workspace, which takes single-shot uploads only.
+    - A file under one part is sent in a single shot, which presigned URLs can't take, so they are skipped.
+    - A non-seekable stream's size is known only once it is read, so it is read up to one part first: a short one
+      is sent in a single shot as above.
+    - A failure before any data was committed moves the upload to the next endpoint; after a part has landed, a
+      failure raises.
+    - A stream of a part or more is replayed as the part read plus the unread rest, which can't be rewound, so the
+      API client sends it once.
     """
     states = dict(scenario.availability)
     size = SIZES[scenario.size]
-    session_first = scenario.source == "non-seekable" and scenario.mode == "parallel"
-    workspace_up = states["workspace"] == UP
-    if size < PART_SIZE and not session_first:
-        return SUCCEEDS if workspace_up else TimeoutError
-    if session_first and size == 0:
-        return SUCCEEDS if workspace_up else requests.ConnectionError
-    state = states[_first_endpoint(scenario)]
-    if state == UP:
+    non_seekable = scenario.source == "non-seekable"
+    first = _first_endpoint(scenario)
+    if size < PART_SIZE:
+        if first == "proxy" and states[first] == UP:
+            return SUCCEEDS
+    else:
+        if states[first] == UP:
+            return SUCCEEDS
+        if states[first] == BREAKS:
+            return RuntimeError
+    if states["workspace"] == UP:
         return SUCCEEDS
-    if state != REJECTS:
-        return RuntimeError
-    if workspace_up:
-        return SUCCEEDS
-    return TimeoutError if scenario.source == "file" and scenario.mode == "parallel" else requests.ConnectionError
+    return requests.ConnectionError if non_seekable and size >= PART_SIZE else TimeoutError
 
 
 def expected_download(scenario: Scenario):
     """The outcome a download has.
 
-    - It starts on the first endpoint. A failure there raises, except a rejected transfer (403), which falls back
-      to the Files API on the workspace.
-    - After bytes arrived, a stream resumes on that endpoint and, if that fails too, raises its broken connection;
-      a parallel download raises the failure of a later range.
+    - Endpoints are tried in order: the first endpoint, then the workspace.
+    - A failure before any bytes arrived moves the download to the next endpoint.
+    - After bytes arrived, the download stays on that endpoint. A stream resumes there and, if that fails too,
+      raises its broken connection; a parallel download raises the failure of a later range.
     """
     states = dict(scenario.availability)
     state = states[_first_endpoint(scenario)]
@@ -470,9 +471,7 @@ def expected_download(scenario: Scenario):
         return SUCCEEDS
     if state == BREAKS:
         return RuntimeError if scenario.mode == "parallel" else requests.exceptions.ChunkedEncodingError
-    if state == REJECTS:
-        return SUCCEEDS if states["workspace"] == UP else TimeoutError
-    return RuntimeError
+    return SUCCEEDS if states["workspace"] == UP else TimeoutError
 
 
 def _scenario_client(config: Config, scenario: Scenario) -> WorkspaceClient:
@@ -503,18 +502,20 @@ def _download(w: WorkspaceClient) -> bytes:
     return w.files.download(FILE_PATH).contents.read()
 
 
-def _download_to(w: WorkspaceClient, use_parallel: bool, parallelism: Optional[int] = None) -> bytes:
+def _skip_parallel_on_windows(use_parallel: bool) -> None:
     if use_parallel and platform.system() == "Windows":
         # FilesExt downloads sequentially on Windows, so the parallel rules don't apply there.
         pytest.skip("Skipping parallel download tests on Windows")
-    with NamedTemporaryFile(delete=False) as f:
-        destination = f.name
-    try:
+
+
+def _download_to(w: WorkspaceClient, use_parallel: bool, parallelism: Optional[int] = None) -> bytes:
+    _skip_parallel_on_windows(use_parallel)
+    # A new file, the usual destination.
+    with TemporaryDirectory() as directory:
+        destination = os.path.join(directory, "downloaded.bin")
         w.files.download_to(FILE_PATH, destination, use_parallel=use_parallel, parallelism=parallelism)
         with open(destination, "rb") as f:
             return f.read()
-    finally:
-        os.remove(destination)
 
 
 @pytest.mark.parametrize("scenario", DOWNLOAD_SCENARIOS, ids=str)
@@ -535,3 +536,165 @@ def test_download_scenario(config, scenario):
         with pytest.raises(expected):
             _run(server, download)
     server.assert_credentials()
+
+
+# ======================== Uploads before commit ========================
+
+
+def test_upload_retries_a_transient_failure_once_before_moving_to_the_workspace(config, tmp_path):
+    # The workspace takes single-shot uploads only, so one dropped connection must not send a large file there.
+    server = FakeFilesServer({"offload.initiate": lambda call: requests.ConnectionError if call == 1 else None})
+    w = _client(config, storage_proxy=False)
+
+    _run(server, lambda: _upload(w, "file", LARGE, False, tmp_path))
+
+    assert server.stored_file() == LARGE
+    assert server.counts["offload.initiate"] == 2
+    assert "floor.single" not in server.calls
+
+
+def test_upload_over_the_workspace_limit_stays_on_presigned_urls(config, tmp_path, monkeypatch):
+    monkeypatch.setattr(files_mixin, "_WORKSPACE_MAX_SINGLE_SHOT_SIZE", len(LARGE) - 1)
+    server = FakeFilesServer({"offload.initiate": always(503)})
+    w = _client(config, storage_proxy=False)
+
+    # Presigned URLs are the only endpoint left, so their own failure is raised, not a too-large single shot.
+    with pytest.raises(TimeoutError):
+        _run(server, lambda: _upload(w, "file", LARGE, False, tmp_path))
+    assert "floor.single" not in server.calls
+
+
+def test_upload_over_the_workspace_limit_without_multipart_endpoints_fails_before_sending(
+    config, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(files_mixin, "_WORKSPACE_MAX_SINGLE_SHOT_SIZE", len(LARGE) - 1)
+    server = FakeFilesServer()
+    w = _client(config, storage_proxy=False)
+    workspace_only = [e for e in w.files._default_endpoints() if not e.multipart_upload_supported]
+    monkeypatch.setattr(w.files, "_upload_endpoints", lambda: workspace_only)
+
+    with pytest.raises(ValueError, match="at most 5 GiB"):
+        _run(server, lambda: _upload(w, "file", LARGE, False, tmp_path))
+    assert server.calls == []
+
+
+# ======================== download_to onto an existing destination ========================
+
+
+def _symlink_or_skip(target, link) -> None:
+    try:
+        os.symlink(target, link)
+    except (OSError, NotImplementedError) as e:
+        # Windows needs Developer Mode or admin rights to create symlinks.
+        pytest.skip(f"Cannot create symlinks here: {e}")
+
+
+def _download_onto(config: Config, destination, use_parallel: bool, server: Optional[FakeFilesServer] = None):
+    _skip_parallel_on_windows(use_parallel)
+    server = server or FakeFilesServer()
+    server.download_content = LARGE
+    w = _client(config, storage_proxy=False)
+    _run(server, lambda: w.files.download_to(FILE_PATH, str(destination), use_parallel=use_parallel))
+    return server
+
+
+@pytest.mark.parametrize("use_parallel", [False, True], ids=["sequential", "parallel"])
+def test_download_to_an_existing_file_writes_it_in_place(config, tmp_path, use_parallel):
+    destination = tmp_path / "out.bin"
+    destination.write_bytes(b"old content")
+    link = tmp_path / "link.bin"
+    os.link(destination, link)
+    if platform.system() != "Windows":
+        os.chmod(destination, 0o600)
+
+    _download_onto(config, destination, use_parallel)
+
+    assert destination.read_bytes() == LARGE
+    # The same file was written: another link to it sees the new content, and nothing else is left behind.
+    assert link.read_bytes() == LARGE
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["link.bin", "out.bin"]
+    if platform.system() != "Windows":
+        assert os.stat(destination).st_mode & 0o777 == 0o600
+
+
+@pytest.mark.parametrize("use_parallel", [False, True], ids=["sequential", "parallel"])
+def test_download_to_a_symlink_writes_through_it(config, tmp_path, use_parallel):
+    target = tmp_path / "target.bin"
+    target.write_bytes(b"old content")
+    link = tmp_path / "link.bin"
+    _symlink_or_skip(target, link)
+
+    _download_onto(config, link, use_parallel)
+
+    assert link.is_symlink()
+    assert target.read_bytes() == LARGE
+
+
+def test_download_to_a_broken_symlink_creates_its_target(config, tmp_path):
+    target = tmp_path / "target.bin"
+    link = tmp_path / "link.bin"
+    _symlink_or_skip(target, link)
+
+    _download_onto(config, link, use_parallel=False)
+
+    assert link.is_symlink()
+    assert target.read_bytes() == LARGE
+
+
+@pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="needs named pipes")
+def test_download_to_a_pipe_is_sequential(config, tmp_path):
+    pipe = tmp_path / "pipe"
+    os.mkfifo(pipe)
+    received = []
+    reader = Thread(target=lambda: received.append(open(pipe, "rb").read()), daemon=True)
+    reader.start()
+
+    server = _download_onto(config, pipe, use_parallel=True)
+    reader.join(10)
+
+    assert received == [LARGE]
+    assert all(r is None for ranges in server.ranges.values() for r in ranges), dict(server.ranges)
+
+
+def test_download_to_an_existing_file_that_fails_before_any_data_leaves_it_as_it_was(config, tmp_path):
+    destination = tmp_path / "out.bin"
+    destination.write_bytes(b"old content")
+    server = FakeFilesServer({"offload.get": always(403), "floor.get": always(403)})
+
+    with pytest.raises(Exception):
+        _download_onto(config, destination, use_parallel=False, server=server)
+
+    assert destination.read_bytes() == b"old content"
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["out.bin"]
+
+
+@pytest.mark.parametrize("storage_proxy", [False, True], ids=["workspace", "storage proxy"])
+@pytest.mark.parametrize("source", SOURCES)
+def test_an_empty_upload_is_sent_with_a_content_length(config, tmp_path, source, storage_proxy):
+    server = FakeFilesServer()
+    w = _client(config, storage_proxy=storage_proxy)
+
+    _run(server, lambda: _upload(w, source, b"", False, tmp_path))
+
+    singles = [op for op in server.calls if op.endswith(".single")]
+    assert singles, server.calls
+    for op in singles:
+        for headers in server.request_headers[op]:
+            assert headers.get("Content-Length") == "0", (op, headers)
+            assert "Transfer-Encoding" not in headers, (op, headers)
+    assert server.stored_file() == b""
+
+
+@pytest.mark.parametrize("source", ["file", "seekable"])
+def test_storage_proxy_single_shot_onto_an_existing_file_is_already_exists(config, tmp_path, source):
+    server = FakeFilesServer({"dp.single": always(412)})
+    config = config.copy()
+    config.workspace_id = "1234"
+    w = _client(config)
+
+    with pytest.raises(AlreadyExists):
+        _run(server, lambda: _upload(w, source, SMALL, False, tmp_path, overwrite=False))
+
+    # The conflict is the caller's, so the upload does not move on to the workspace.
+    assert "floor.single" not in server.calls
+    assert server.request_headers["dp.single"][0]["X-Databricks-Workspace-Id"] == "1234"

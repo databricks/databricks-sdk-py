@@ -1192,13 +1192,13 @@ class PresignedUrlDownloadTestCase:
             custom_response_download_from_url=CustomResponse(code=500),
         ),
         PresignedUrlDownloadTestCase(
-            name="Intermittent error fails after retry: Presigned URL expires with 403 when downloading from URL",
+            # Nothing was received before the retries ran out, so the download moves to the next endpoint.
+            name="Presigned URL keeps expiring before any range is received, parallel download moves to Files API",
             file_size=100 * 1024 * 1024,
-            expected_exception_type=ValueError,
             custom_response_download_from_url=CustomResponse(
                 code=403, body=PresignedUrlDownloadTestCase.expired_url_aws_response
             ),
-            expected_download_api="presigned_url",
+            expected_download_api="files_api",
             use_parallel=True,
             download_mode=DownloadMode.FILE,
         ),
@@ -1223,10 +1223,13 @@ class PresignedUrlDownloadTestCase:
         ),
         # Recoverable errors
         PresignedUrlDownloadTestCase(
-            name="Intermittent error should succeed after retry: Presigned URL download fails with 502 when downloading from URL",
+            # Nothing was received yet and another endpoint is left, so the download moves on instead of retrying. One
+            # range at a time, so that no other range commits the download before the 502.
+            name="Presigned URL download fails with 502 before any bytes, the download moves to Files API",
             file_size=100 * 1024 * 1024,
             custom_response_download_from_url=CustomResponse(code=502, only_invocation=1),
-            expected_download_api="presigned_url",
+            parallelism=1,
+            expected_download_api="files_api",
         ),
         PresignedUrlDownloadTestCase(
             name="Intermittent error should succeed after retry: Presigned URL expires with 403 when downloading from URL",
@@ -1238,6 +1241,34 @@ class PresignedUrlDownloadTestCase:
                 body=PresignedUrlDownloadTestCase.expired_url_aws_response,
             ),
             expected_download_api="presigned_url",
+        ),
+        PresignedUrlDownloadTestCase(
+            # One thread, so the three expiries hit the same range: within files_ext_parallel_download_max_retries.
+            name="Presigned URL expires 3 times in a row in a parallel download, the URL is replaced each time",
+            file_size=100 * 1024 * 1024,
+            custom_response_download_from_url=CustomResponse(
+                code=403,
+                first_invocation=2,
+                last_invocation=4,
+                body=PresignedUrlDownloadTestCase.expired_url_aws_response,
+            ),
+            download_mode=DownloadMode.FILE,
+            use_parallel=True,
+            parallelism=1,
+            expected_download_api="presigned_url",
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL keeps expiring in a parallel download, files_ext_parallel_download_max_retries is exhausted",
+            file_size=100 * 1024 * 1024,
+            custom_response_download_from_url=CustomResponse(
+                code=403,
+                first_invocation=2,
+                body=PresignedUrlDownloadTestCase.expired_url_aws_response,
+            ),
+            download_mode=DownloadMode.FILE,
+            use_parallel=True,
+            parallelism=1,
+            expected_exception_type=ValueError,
         ),
         PresignedUrlDownloadTestCase(
             name="Intermittent error should succeed after retry: GCP presigned URL expires with 400 when downloading from URL",
@@ -1391,6 +1422,20 @@ def test_parallel_download_of_a_file_that_fits_one_range_is_sequential(config: C
     with open(destination, "rb") as f:
         assert f.read() == _RANGED_CONTENT
     assert not any("Range" in r.headers for r in requests_mock.request_history)
+
+
+@pytest.mark.parametrize("use_parallel", [False, True])
+def test_download_to_a_directory_fails_before_any_request(config: Config, requests_mock, tmp_path, use_parallel):
+    destination = tmp_path / "downloads"
+    destination.mkdir()
+
+    with pytest.raises(IsADirectoryError):
+        WorkspaceClient(config=config).files.download_to(
+            "/Volumes/main/default/volume/file.bin", str(destination), use_parallel=use_parallel
+        )
+
+    assert requests_mock.request_history == []
+    assert list(destination.iterdir()) == []
 
 
 class FileContent:
@@ -1682,7 +1727,7 @@ class UploadTestCase:
                     ):
 
                         def processor() -> list:
-                            body = request.body.read()
+                            body = request.body.read() if hasattr(request.body, "read") else (request.body or b"")
                             single_shot_server_state.upload(body)
                             return [200, "", {}]
 
@@ -1928,7 +1973,7 @@ class MultipartUploadTestCase(UploadTestCase):
             part_num = int(request_query["part_number"][0])
 
             def processor() -> list:
-                body = request.body.read()
+                body = request.body.read() if hasattr(request.body, "read") else (request.body or b"")
                 etag = "etag-" + MultipartUploadServerState.randomstr()
                 server_state.save_part(part_num, body, etag)
                 return [200, "", {"ETag": etag}]
@@ -2140,78 +2185,79 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         # -------------------------- failures on "initiate upload" --------------------------
         MultipartUploadTestCase(
-            "Initiate: 400 response is not retried",
+            "Initiate: 400 response falls back to single-shot",
             content_size=1024 * 1024,
             multipart_upload_min_stream_size=1024 * 1024,  # still multipart upload is used
             custom_response_on_initiate=CustomResponse(code=400, only_invocation=1),
-            expected_exception_type=BadRequest,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Initiate: 403 response is not retried",
+            "Initiate: 403 response falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(code=403, only_invocation=1),
-            expected_exception_type=PermissionDenied,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Initiate: 500 response is not retried",
+            "Initiate: 500 response falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(code=500, only_invocation=1),
-            expected_exception_type=InternalError,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Initiate: non-JSON response is not retried",
+            "Initiate: non-JSON response falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(body="this is not a JSON", only_invocation=1),
-            expected_exception_type=requests.exceptions.JSONDecodeError,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Initiate: meaningless JSON response is not retried",
+            "Initiate: meaningless JSON response falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(body='{"foo": 123}', only_invocation=1),
-            expected_exception_type=ValueError,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Initiate: no session token in response is not retried",
+            "Initiate: no session token in response falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(
                 body='{"multipart_upload":{"session_token1": "token123"}}', only_invocation=1
             ),
-            expected_exception_type=ValueError,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Initiate: permanent retryable exception",
+            "Initiate: permanent retryable exception falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(exception=requests.ConnectionError),
-            expected_exception_type=TimeoutError,  # SDK throws this if retries are taking too long
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Initiate: intermittent retryable exception",
+            # Nothing was sent yet and another endpoint is left, so the upload moves on instead of retrying.
+            "Initiate: intermittent retryable exception falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(
                 exception=requests.ConnectionError,
-                # 3 calls fail, but request is successfully retried
                 first_invocation=1,
                 last_invocation=3,
             ),
             expected_multipart_upload_aborted=False,
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Initiate: intermittent retryable status code",
+            "Initiate: intermittent retryable status code falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(
                 code=429,
-                # 3 calls fail, then retry succeeds
                 first_invocation=1,
                 last_invocation=3,
             ),
             expected_multipart_upload_aborted=False,
+            expected_single_shot_upload=True,
         ),
         # -------------------------- failures on "create upload URL" --------------------------
         MultipartUploadTestCase(
@@ -2507,6 +2553,15 @@ class MultipartUploadTestCase(UploadTestCase):
             content_size=100 * 1024 * 1024,  # 10 parts
             multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(code=502, first_invocation=2, last_invocation=3),
+            expected_multipart_upload_aborted=False,
+        ),
+        # -------------------------- failures on complete --------------------------
+        MultipartUploadTestCase(
+            # The parts landed, so the workspace retries a transient complete-upload failure.
+            "Complete: intermittent retryable status code 503",
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
+            custom_response_on_complete=CustomResponse(code=503, only_invocation=1),
             expected_multipart_upload_aborted=False,
         ),
         # -------------------------- failures on abort --------------------------
@@ -2998,37 +3053,37 @@ def test_resolve_endpoints_returns_copy_callers_cannot_corrupt_cache(config: Con
     assert w.files._resolve_endpoints() == [_PARSED_FILES_V2_DP, _PARSED_FILES_V2_GIG]
 
 
-def test_active_endpoint_defaults_to_offload_on_workspace_host(config: Config):
+def test_default_endpoints_are_offload_then_the_workspace(config: Config):
     w = WorkspaceClient(config=config)
 
-    endpoint = w.files._active_endpoint()
+    assert w.files._default_endpoints() == [
+        _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, config.host, multipart_upload_supported=True),
+        _Endpoint(_ResolvedEndpoint.FILES_API_V2, config.host, multipart_upload_supported=False),
+    ]
 
-    assert endpoint == _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, config.host, multipart_upload_supported=True)
 
-
-def test_active_endpoint_uses_storage_proxy_when_probe_succeeds(config: Config):
+def test_default_endpoints_start_with_the_storage_proxy_when_probe_succeeds(config: Config):
     config = config.copy()
     config.experimental_files_ext_enable_storage_proxy = True
     w = WorkspaceClient(config=config)
     # Skip the network probe; this test only covers the selection that follows a successful probe.
     w.files._dp_hostname_available = True
 
-    endpoint = w.files._active_endpoint()
+    assert w.files._default_endpoints() == [
+        _Endpoint(_ResolvedEndpoint.FILES_API_V2, w.files._STORAGE_PROXY_HOSTNAME, multipart_upload_supported=True),
+        _Endpoint(_ResolvedEndpoint.FILES_API_V2, config.host, multipart_upload_supported=False),
+    ]
 
-    assert endpoint == _Endpoint(
-        _ResolvedEndpoint.FILES_API_V2, w.files._STORAGE_PROXY_HOSTNAME, multipart_upload_supported=True
-    )
 
-
-def test_active_endpoint_falls_back_to_offload_when_probe_fails(config: Config):
+def test_default_endpoints_start_with_offload_when_probe_fails(config: Config):
     config = config.copy()
     config.experimental_files_ext_enable_storage_proxy = True
     w = WorkspaceClient(config=config)
     w.files._dp_hostname_available = False
 
-    endpoint = w.files._active_endpoint()
-
-    assert endpoint == _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, config.host, multipart_upload_supported=True)
+    assert w.files._default_endpoints()[0] == _Endpoint(
+        _ResolvedEndpoint.IO_OFFLOAD, config.host, multipart_upload_supported=True
+    )
 
 
 def test_request_builder_for_offload_is_presigned(config: Config):
@@ -3051,11 +3106,3 @@ def test_request_builder_for_files_api_is_storage_proxy(config: Config):
 
     assert isinstance(builder, _StorageProxyRequestBuilder)
     assert builder._hostname == "http://storage-proxy.example.com"
-
-
-def test_create_request_builder_matches_active_endpoint(config: Config):
-    # The default flow (no storage proxy) uses the offload/presigned builder on the workspace host.
-    w = WorkspaceClient(config=config)
-
-    assert w.files._get_hostname() == config.host
-    assert isinstance(w.files._create_request_builder(), _PresignedUrlRequestBuilder)
