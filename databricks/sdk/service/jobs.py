@@ -633,7 +633,6 @@ class AiRuntimeTaskPriorityClass(Enum):
     ranks pending work."""
 
     BEST_EFFORT = "BEST_EFFORT"
-    CRITICAL = "CRITICAL"
     NORMAL = "NORMAL"
 
 

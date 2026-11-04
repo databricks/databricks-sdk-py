@@ -153,3 +153,47 @@
 
         :returns: :class:`AiParseDocumentResponse`
         
+
+    .. py:method:: cancel_batch(name: str) -> CancelBatchResponse
+
+        Cancel a batch. Cancellation is asynchronous: requests in flight drain first, so read the batch to
+        observe the ``CANCELLING`` and ``CANCELLED`` statuses.
+
+        :param name: str
+          ID of the batch, in the form ``batch_<id>``.
+
+        :returns: :class:`CancelBatchResponse`
+        
+
+    .. py:method:: create_batch(batch: Batch) -> Batch
+
+        Run an AI function over every request in a file on a Unity Catalog volume. The batch runs
+        asynchronously; read it to follow its progress.
+
+        :param batch: :class:`Batch`
+          The batch to create.
+
+        :returns: :class:`Batch`
+        
+
+    .. py:method:: get_batch(name: str) -> Batch
+
+        Read one batch, with its status and progress.
+
+        :param name: str
+          ID of the batch, in the form ``batch_<id>``.
+
+        :returns: :class:`Batch`
+        
+
+    .. py:method:: list_batches( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Batch]
+
+        List the batches the caller created in this workspace.
+
+        :param page_size: int (optional)
+          Maximum number of batches to return in one page.
+        :param page_token: str (optional)
+          Page token from an earlier response. Omit it to read the first page.
+
+        :returns: Iterator over :class:`Batch`
+        

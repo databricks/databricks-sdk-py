@@ -29,6 +29,7 @@ Dataclasses
    iamv2
    jobs
    knowledgeassistants
+   lakewatch
    marketplace
    ml
    networking

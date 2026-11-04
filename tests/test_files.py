@@ -822,6 +822,33 @@ class PresignedUrlDownloadServerState:
         return resp
 
 
+def _storage_proxy_endpoints_response(request: requests.Request) -> requests.Response:
+    """GET /api/2.0/fs/endpoints as a data-plane workspace answers it: the storage proxy, then the workspace."""
+    endpoints = [
+        {
+            "api": "FILES_API",
+            "api_version": "2.0",
+            "scheme": "http",
+            "hostname": "storage-proxy.databricks.com",
+            "multipart_upload_supported": True,
+        },
+        {
+            "api": "FILES_API",
+            "api_version": "2.0",
+            "scheme": "http",
+            "hostname": "localhost",
+            "multipart_upload_supported": False,
+        },
+    ]
+    resp = requests.Response()
+    resp.status_code = 200
+    resp._content = json.dumps({"endpoints": endpoints}).encode()
+    resp.headers["Content-Type"] = "application/json"
+    resp.request = request
+    resp.url = request.url
+    return resp
+
+
 class PresignedUrlDownloadTestCase:
     _FILE_PATH = "/testfile/remote/path"  # A fake path for the remote location of the file to be downloaded
     presigned_url_disabled_response = """
@@ -972,34 +999,14 @@ class PresignedUrlDownloadTestCase:
         request_url = urlparse(request.url)
         request_query = parse_qs(request_url.query)
 
-        # Storage proxy: workspace ID resolution via SCIM Me.
+        # Storage proxy: the workspace lists it first.
         if (
             self.use_storage_proxy
             and request_url.hostname == "localhost"
-            and request_url.path == "/api/2.0/preview/scim/v2/Me"
+            and request_url.path == "/api/2.0/fs/endpoints"
             and request.method == "GET"
         ):
-            resp = requests.Response()
-            resp.status_code = 200
-            resp._content = b"{}"
-            resp.headers["X-Databricks-Org-Id"] = "12345"
-            resp.request = request
-            resp.url = request.url
-            return resp
-
-        # Storage proxy: probe.
-        elif (
-            self.use_storage_proxy
-            and request_url.hostname == self._expected_hostname
-            and request_url.path == "/api/2.0/fs/files/DatabricksInternal/Probe/fullstack/wis"
-            and request.method == "HEAD"
-        ):
-            resp = requests.Response()
-            resp.status_code = 200
-            resp._content = b""
-            resp.request = request
-            resp.url = request.url
-            return resp
+            return _storage_proxy_endpoints_response(request)
 
         # Storage proxy: direct download.
         elif (
@@ -1083,7 +1090,7 @@ class PresignedUrlDownloadTestCase:
         if self.parallel_upload_part_size is not None:
             config.files_ext_parallel_upload_part_size = self.parallel_upload_part_size
         if self.use_storage_proxy:
-            config.experimental_files_ext_enable_storage_proxy = True
+            config.experimental_files_ext_enable_endpoints_api = True
 
         w = WorkspaceClient(config=config)
         state = PresignedUrlDownloadServerState(self.file_size, self.last_modified)
@@ -1671,7 +1678,7 @@ class UploadTestCase:
         self.customize_config(config)
 
         if self.use_storage_proxy:
-            config.experimental_files_ext_enable_storage_proxy = True
+            config.experimental_files_ext_enable_endpoints_api = True
 
         multipart_server_state = self.create_multipart_upload_server_state()
         single_shot_server_state = SingleShotUploadServerState()
@@ -1686,37 +1693,13 @@ class UploadTestCase:
                 def custom_matcher(request: requests.Request) -> Optional[requests.Response]:
                     parsed_url = urlparse(request.url)
 
-                    if self.use_storage_proxy:
-                        # Handle workspace ID resolution via SCIM Me.
-                        if (
-                            parsed_url.hostname == "localhost"
-                            and parsed_url.path == "/api/2.0/preview/scim/v2/Me"
-                            and request.method == "GET"
-                        ):
-                            resp = requests.Response()
-                            resp.status_code = 200
-                            resp._content = b"{}"
-                            resp.headers["X-Databricks-Org-Id"] = "12345"
-                            resp.request = request
-                            resp.url = request.url
-                            return resp
-
-                        # Handle storage proxy probe with workspace ID.
-                        if (
-                            parsed_url.hostname == self._expected_hostname
-                            and parsed_url.path == "/api/2.0/fs/files/DatabricksInternal/Probe/fullstack/wis"
-                            and request.method == "HEAD"
-                        ):
-                            probe_query = parse_qs(parsed_url.query)
-                            assert probe_query.get("ew") == [
-                                "12345"
-                            ], f"Expected ew=12345 in probe URL, got: {probe_query}"
-                            resp = requests.Response()
-                            resp.status_code = 200
-                            resp._content = b""
-                            resp.request = request
-                            resp.url = request.url
-                            return resp
+                    if (
+                        self.use_storage_proxy
+                        and parsed_url.hostname == "localhost"
+                        and parsed_url.path == "/api/2.0/fs/endpoints"
+                        and request.method == "GET"
+                    ):
+                        return _storage_proxy_endpoints_response(request)
 
                     # Try to match single-shot upload.
                     if (
@@ -2783,6 +2766,9 @@ _PARSED_FILES_V2_GIG = _Endpoint(
 _PARSED_FILES_V2_DP = _Endpoint(
     _ResolvedEndpoint.FILES_API_V2, "http://storage-proxy.example.com", multipart_upload_supported=True
 )
+_PARSED_FILES_V3_RIG = _Endpoint(
+    _ResolvedEndpoint.FILES_API_V3, "https://123.storage.us-west-2.example.com", multipart_upload_supported=True
+)
 
 
 @pytest.mark.parametrize(
@@ -2794,10 +2780,21 @@ _PARSED_FILES_V2_DP = _Endpoint(
             expected=[_PARSED_FILES_V2_DP, _PARSED_IO_OFFLOAD_WS, _PARSED_FILES_V2_GIG],
         ),
         ResolveEndpointsTestCase(
-            # This SDK version does not speak Files API 3.0, so RIG is skipped and the rest keeps its order.
-            name="Files API 3.0 is skipped",
+            name="Files API 3.0 is recognized",
             response={"endpoints": [_IO_OFFLOAD_WS, _FILES_V3_RIG, _FILES_V2_GIG]},
-            expected=[_PARSED_IO_OFFLOAD_WS, _PARSED_FILES_V2_GIG],
+            expected=[_PARSED_IO_OFFLOAD_WS, _PARSED_FILES_V3_RIG, _PARSED_FILES_V2_GIG],
+        ),
+        ResolveEndpointsTestCase(
+            # Presigned URLs are coordinated by the workspace; plain HTTP to another host would expose credentials.
+            name="IO_OFFLOAD over plain HTTP to another host is skipped",
+            response={"endpoints": [{**_IO_OFFLOAD_WS, "scheme": "http"}, _FILES_V2_GIG]},
+            expected=[_PARSED_FILES_V2_GIG],
+        ),
+        ResolveEndpointsTestCase(
+            # Workspace credentials go to a Files API 3.0 host, so it must use TLS.
+            name="Files API 3.0 over plain HTTP is skipped",
+            response={"endpoints": [{**_FILES_V3_RIG, "scheme": "http"}, _FILES_V2_GIG]},
+            expected=[_PARSED_FILES_V2_GIG],
         ),
         ResolveEndpointsTestCase(
             name="unknown and unspecified api values are skipped",
@@ -2864,7 +2861,9 @@ _PARSED_FILES_V2_DP = _Endpoint(
         ),
         ResolveEndpointsTestCase(
             name="only unrecognized entries falls back to the default",
-            response={"endpoints": [_FILES_V3_RIG, {**_IO_OFFLOAD_WS, "api": "SOMETHING_NEW"}]},
+            response={
+                "endpoints": [{**_FILES_V2_GIG, "api_version": "9.9"}, {**_IO_OFFLOAD_WS, "api": "SOMETHING_NEW"}]
+            },
             expected=_DEFAULT_ENDPOINTS,
         ),
         ResolveEndpointsTestCase(
@@ -3062,28 +3061,17 @@ def test_default_endpoints_are_offload_then_the_workspace(config: Config):
     ]
 
 
-def test_default_endpoints_start_with_the_storage_proxy_when_probe_succeeds(config: Config):
+def test_storage_proxy_flag_does_not_change_the_built_in_order(config: Config, requests_mock):
     config = config.copy()
     config.experimental_files_ext_enable_storage_proxy = True
+    config.experimental_files_ext_enable_endpoints_api = False
     w = WorkspaceClient(config=config)
-    # Skip the network probe; this test only covers the selection that follows a successful probe.
-    w.files._dp_hostname_available = True
 
-    assert w.files._default_endpoints() == [
-        _Endpoint(_ResolvedEndpoint.FILES_API_V2, w.files._STORAGE_PROXY_HOSTNAME, multipart_upload_supported=True),
+    assert w.files._resolve_endpoints() == [
+        _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, config.host, multipart_upload_supported=True),
         _Endpoint(_ResolvedEndpoint.FILES_API_V2, config.host, multipart_upload_supported=False),
     ]
-
-
-def test_default_endpoints_start_with_offload_when_probe_fails(config: Config):
-    config = config.copy()
-    config.experimental_files_ext_enable_storage_proxy = True
-    w = WorkspaceClient(config=config)
-    w.files._dp_hostname_available = False
-
-    assert w.files._default_endpoints()[0] == _Endpoint(
-        _ResolvedEndpoint.IO_OFFLOAD, config.host, multipart_upload_supported=True
-    )
+    assert requests_mock.call_count == 0
 
 
 def test_request_builder_for_offload_is_presigned(config: Config):
@@ -3106,3 +3094,93 @@ def test_request_builder_for_files_api_is_storage_proxy(config: Config):
 
     assert isinstance(builder, _StorageProxyRequestBuilder)
     assert builder._hostname == "http://storage-proxy.example.com"
+
+
+def _storage_proxy_client(config: Config, endpoints_api: bool = False) -> WorkspaceClient:
+    config = config.copy()
+    config.experimental_files_ext_enable_storage_proxy = True
+    config.experimental_files_ext_enable_endpoints_api = endpoints_api
+    return WorkspaceClient(config=config)
+
+
+def test_resolve_endpoints_skips_plain_http_to_a_tls_workspace(config: Config, requests_mock, caplog):
+    # Workspace credentials must not leave over plain HTTP when the SDK reaches the workspace over TLS.
+    config = config.copy()
+    config.host = "https://ws.example.com"
+    requests_mock.get(
+        "https://ws.example.com/api/2.0/fs/endpoints",
+        json={"endpoints": [{**_FILES_V2_GIG, "scheme": "http"}, {**_IO_OFFLOAD_WS, "scheme": "http"}, _FILES_V2_GIG]},
+    )
+    w = _endpoints_client(config)
+
+    with caplog.at_level(logging.INFO, logger="databricks.sdk.mixins.files"):
+        assert w.files._resolve_endpoints() == [_PARSED_FILES_V2_GIG]
+
+    assert [rec.levelname for rec in caplog.records if "Skipping" in rec.message] == ["WARNING", "WARNING"]
+
+
+@pytest.mark.parametrize(
+    "hostname",
+    [
+        "storage-proxy.example.com:abc",
+        "storage-proxy.example.com:70000",
+        "[::1",
+        "*.example.com",
+        ".example.com",
+        "localhost?x",
+        "localhost#x",
+        "localhost/x",
+        "storage-proxy.example.com@localhost",
+        "%6cocalhost",
+        "localhost\\",
+    ],
+)
+@pytest.mark.parametrize("scheme", ["http", "https"])
+def test_resolve_endpoints_skips_malformed_address(config: Config, requests_mock, caplog, scheme, hostname):
+    # Transfers route by each endpoint's parsed host, so an address that does not parse, or that names more than a
+    # host and port, must not reach them.
+    requests_mock.get(
+        _ENDPOINTS_URL,
+        json={"endpoints": [{**_FILES_V2_DP, "scheme": scheme, "hostname": hostname}, _FILES_V2_GIG]},
+    )
+    w = _endpoints_client(config)
+
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk.mixins.files"):
+        assert w.files._resolve_endpoints() == [_PARSED_FILES_V2_GIG]
+
+    assert any(rec.levelname == "WARNING" and repr(hostname) in rec.message for rec in caplog.records)
+
+
+@pytest.mark.parametrize("hostname", ["storage-proxy.example.com:8443", "[::1]", "[::1]:8443"])
+def test_resolve_endpoints_accepts_host_with_port(config: Config, requests_mock, hostname):
+    requests_mock.get(_ENDPOINTS_URL, json={"endpoints": [{**_FILES_V2_DP, "scheme": "https", "hostname": hostname}]})
+    w = _endpoints_client(config)
+
+    assert w.files._resolve_endpoints() == [_Endpoint(_ResolvedEndpoint.FILES_API_V2, f"https://{hostname}", True)]
+
+
+def test_resolve_endpoints_ignores_the_storage_proxy_flag(config: Config, requests_mock):
+    requests_mock.get(_ENDPOINTS_URL, json={"endpoints": [_FILES_V2_GIG]})
+    w = _storage_proxy_client(config, endpoints_api=True)
+
+    assert w.files._resolve_endpoints() == [_PARSED_FILES_V2_GIG]
+    assert requests_mock.call_count == 1
+
+
+def test_resolve_endpoints_failure_falls_back_to_the_built_in_order_with_the_storage_proxy_flag(
+    config: Config, requests_mock
+):
+    requests_mock.get(_ENDPOINTS_URL, status_code=404, json={"error_code": "NOT_FOUND", "message": "no"})
+    w = _storage_proxy_client(config, endpoints_api=True)
+
+    assert w.files._resolve_endpoints() == _DEFAULT_ENDPOINTS
+    assert requests_mock.call_count == 1
+
+
+def test_uses_api_client_for_the_workspace_host_however_it_is_spelled(config: Config):
+    w = WorkspaceClient(config=config)
+
+    assert w.files._uses_api_client(_Endpoint(_ResolvedEndpoint.FILES_API_V2, "HTTP://LocalHost:80", False))
+    assert not w.files._uses_api_client(_Endpoint(_ResolvedEndpoint.FILES_API_V2, "http://localhost:8080", False))
+    assert not w.files._uses_api_client(_Endpoint(_ResolvedEndpoint.FILES_API_V2, "http://other", False))
+    assert not w.files._uses_api_client(_Endpoint(_ResolvedEndpoint.IO_OFFLOAD, "http://localhost", True))

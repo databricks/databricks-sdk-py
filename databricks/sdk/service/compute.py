@@ -4453,7 +4453,7 @@ class GetInstancePool:
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
     compute intensive workloads. A list of available node types can be retrieved by using the
     `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
-    API call."""
+    API call. The node type cannot be changed after the pool is created."""
 
     preloaded_docker_images: Optional[List[DockerImage]] = None
     """Custom Docker Image BYOC"""
@@ -5298,7 +5298,7 @@ class InstancePoolAndStats:
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
     compute intensive workloads. A list of available node types can be retrieved by using the
     `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
-    API call."""
+    API call. The node type cannot be changed after the pool is created."""
 
     preloaded_docker_images: Optional[List[DockerImage]] = None
     """Custom Docker Image BYOC"""
@@ -10922,7 +10922,7 @@ class InstancePoolsAPI:
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
           `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
-          call.
+          call. The node type cannot be changed after the pool is created.
         :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
           Attributes related to instance pools running on Amazon Web Services. If not specified at pool
           creation, a set of default values will be used.
@@ -11067,7 +11067,7 @@ class InstancePoolsAPI:
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
           `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
-          call.
+          call. The node type cannot be changed after the pool is created.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
           EBS volumes) with these tags in addition to ``default_tags``. Notes:

@@ -5,16 +5,20 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, List, Any, Optional
+from enum import Enum
+from typing import Dict, List, Any, Iterator, Optional
 
+from google.protobuf.timestamp_pb2 import Timestamp
 
 import logging
 
 from databricks.sdk.service._internal import (
+    _enum,
     _from_dict,
     _int64,
     _repeated_dict,
     _repeated_int64,
+    _timestamp,
 )
 
 
@@ -773,6 +777,206 @@ class AiParseDocumentResponseMetadata:
         )
 
 
+@dataclass
+class Batch:
+    """An asynchronous run of one AI function over a file of requests."""
+
+    endpoint: str
+    """The AI function to run for every request, for example ``ai_extract``."""
+
+    input_ref: str
+    """Path of the JSONL input file on a Unity Catalog volume. Each line is one request."""
+
+    create_time: Optional[Timestamp] = None
+    """Output only. Time the batch was created."""
+
+    name: Optional[str] = None
+    """ID of the batch, in the form ``batch_<id>``. The service assigns it."""
+
+    output_ref: Optional[str] = None
+    """Path on a Unity Catalog volume to write the JSONL output to. When it is omitted, the output
+    stays on Databricks-managed storage and a finished batch returns a short-lived download URL in
+    this field instead."""
+
+    params: Optional[Dict[str, any]] = None
+    """Function options applied to every request in the batch, for example the extraction schema."""
+
+    percent_complete: Optional[float] = None
+    """Output only. Percentage of the requests that finished, from 0 to 100. Returned when one batch is
+    read, not when batches are listed."""
+
+    request_counts: Optional[BatchRequestCounts] = None
+    """Output only. Request counts. Returned when one batch is read, not when batches are listed."""
+
+    status: Optional[BatchStatus] = None
+    """Output only. Status of the batch."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Batch into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.endpoint is not None:
+            body["endpoint"] = self.endpoint
+        if self.input_ref is not None:
+            body["input_ref"] = self.input_ref
+        if self.name is not None:
+            body["name"] = self.name
+        if self.output_ref is not None:
+            body["output_ref"] = self.output_ref
+        if self.params:
+            body["params"] = self.params
+        if self.percent_complete is not None:
+            body["percent_complete"] = self.percent_complete
+        if self.request_counts:
+            body["request_counts"] = self.request_counts.as_dict()
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Batch into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.endpoint is not None:
+            body["endpoint"] = self.endpoint
+        if self.input_ref is not None:
+            body["input_ref"] = self.input_ref
+        if self.name is not None:
+            body["name"] = self.name
+        if self.output_ref is not None:
+            body["output_ref"] = self.output_ref
+        if self.params:
+            body["params"] = self.params
+        if self.percent_complete is not None:
+            body["percent_complete"] = self.percent_complete
+        if self.request_counts:
+            body["request_counts"] = self.request_counts
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Batch:
+        """Deserializes the Batch from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            endpoint=d.get("endpoint", None),
+            input_ref=d.get("input_ref", None),
+            name=d.get("name", None),
+            output_ref=d.get("output_ref", None),
+            params=d.get("params", None),
+            percent_complete=d.get("percent_complete", None),
+            request_counts=_from_dict(d, "request_counts", BatchRequestCounts),
+            status=_enum(d, "status", BatchStatus),
+        )
+
+
+@dataclass
+class BatchRequestCounts:
+    """Counts of the requests in a batch."""
+
+    failed: Optional[int] = None
+    """Output only. Number of requests that failed and will not be retried."""
+
+    succeeded: Optional[int] = None
+    """Output only. Number of requests that finished successfully."""
+
+    total: Optional[int] = None
+    """Output only. Number of requests in the input file."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BatchRequestCounts into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.failed is not None:
+            body["failed"] = self.failed
+        if self.succeeded is not None:
+            body["succeeded"] = self.succeeded
+        if self.total is not None:
+            body["total"] = self.total
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BatchRequestCounts into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.failed is not None:
+            body["failed"] = self.failed
+        if self.succeeded is not None:
+            body["succeeded"] = self.succeeded
+        if self.total is not None:
+            body["total"] = self.total
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BatchRequestCounts:
+        """Deserializes the BatchRequestCounts from a dictionary."""
+        return cls(failed=_int64(d, "failed"), succeeded=_int64(d, "succeeded"), total=_int64(d, "total"))
+
+
+class BatchStatus(Enum):
+    """The status of a batch."""
+
+    CANCELLED = "CANCELLED"
+    CANCELLING = "CANCELLING"
+    COMPLETED = "COMPLETED"
+    EXPIRED = "EXPIRED"
+    FAILED = "FAILED"
+    FINALIZING = "FINALIZING"
+    IN_PROGRESS = "IN_PROGRESS"
+    PENDING = "PENDING"
+
+
+@dataclass
+class CancelBatchResponse:
+    def as_dict(self) -> dict:
+        """Serializes the CancelBatchResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelBatchResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CancelBatchResponse:
+        """Deserializes the CancelBatchResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class ListBatchesResponse:
+    batches: Optional[List[Batch]] = None
+    """The batches in this page."""
+
+    next_page_token: Optional[str] = None
+    """Token that reads the next page. It is empty on the last page."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListBatchesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.batches:
+            body["batches"] = [v.as_dict() for v in self.batches]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListBatchesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.batches:
+            body["batches"] = self.batches
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListBatchesResponse:
+        """Deserializes the ListBatchesResponse from a dictionary."""
+        return cls(batches=_repeated_dict(d, "batches", Batch), next_page_token=d.get("next_page_token", None))
+
+
 class AiFunctionsAPI:
     """Transform and enrich data with AI on Databricks."""
 
@@ -1000,3 +1204,103 @@ class AiFunctionsAPI:
 
         res = self._api.do("POST", "/api/2.0/ai-functions/ai-parse-document", body=body, headers=headers)
         return AiParseDocumentResponse.from_dict(res)
+
+    def cancel_batch(self, name: str) -> CancelBatchResponse:
+        """Cancel a batch. Cancellation is asynchronous: requests in flight drain first, so read the batch to
+        observe the ``CANCELLING`` and ``CANCELLED`` statuses.
+
+        :param name: str
+          ID of the batch, in the form ``batch_<id>``.
+
+        :returns: :class:`CancelBatchResponse`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/ai-functions/batches/{name}/cancel", body=body, headers=headers)
+        return CancelBatchResponse.from_dict(res)
+
+    def create_batch(self, batch: Batch) -> Batch:
+        """Run an AI function over every request in a file on a Unity Catalog volume. The batch runs
+        asynchronously; read it to follow its progress.
+
+        :param batch: :class:`Batch`
+          The batch to create.
+
+        :returns: :class:`Batch`
+        """
+
+        body = batch.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/ai-functions/batches", body=body, headers=headers)
+        return Batch.from_dict(res)
+
+    def get_batch(self, name: str) -> Batch:
+        """Read one batch, with its status and progress.
+
+        :param name: str
+          ID of the batch, in the form ``batch_<id>``.
+
+        :returns: :class:`Batch`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/ai-functions/batches/{name}", headers=headers)
+        return Batch.from_dict(res)
+
+    def list_batches(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Batch]:
+        """List the batches the caller created in this workspace.
+
+        :param page_size: int (optional)
+          Maximum number of batches to return in one page.
+        :param page_token: str (optional)
+          Page token from an earlier response. Omit it to read the first page.
+
+        :returns: Iterator over :class:`Batch`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/ai-functions/batches", query=query, headers=headers)
+            if "batches" in json:
+                for v in json["batches"]:
+                    yield Batch.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]

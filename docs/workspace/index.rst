@@ -29,6 +29,7 @@ These APIs are available from WorkspaceClient
    iamv2/index
    jobs/index
    knowledgeassistants/index
+   lakewatch/index
    marketplace/index
    ml/index
    oauth2/index

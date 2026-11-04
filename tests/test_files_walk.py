@@ -1,8 +1,11 @@
 """Which endpoints FilesExt transfers files through, and what a caller sees when they fail.
 
+With experimental_files_ext_enable_endpoints_api, the endpoint list comes from GET /api/2.0/fs/endpoints. Otherwise,
+or when the workspace does not answer with a usable list, it is the built-in order.
+
 FakeFilesServer stands in for the hosts a transfer can reach: the workspace (the Files API and the presigned URL
-coordination API), the data-plane storage proxy, and cloud storage behind presigned URLs. It records every
-operation per endpoint.
+coordination API), the data-plane storage proxy, a Files API 3.0 host (RIG), and cloud storage behind presigned URLs.
+It records every operation per endpoint.
 
 The scenario matrix runs every combination of endpoint configuration, endpoint availability and transfer input,
 and checks only what a caller sees: the file stored or downloaded, or the error raised. The outcome each scenario
@@ -28,17 +31,45 @@ from urllib3.exceptions import ProtocolError
 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
+from databricks.sdk.errors.platform import AlreadyExists, InternalError, PermissionDenied
 from databricks.sdk.mixins import files as files_mixin
-from databricks.sdk.errors.platform import AlreadyExists
 
 from .test_files_utils import NonSeekableBuffer
 
 WORKSPACE = "localhost"
 STORAGE_PROXY = "storage-proxy.databricks.com"
+RIG = "rig.example.com"
 CLOUD = "cloud.example.com"
 FILE_PATH = "/Volumes/catalog/schema/volume/file.bin"
 LAST_MODIFIED = "Thu, 28 Nov 2024 16:39:14 GMT"
 PART_SIZE = 1024
+
+DP_ENTRY = {
+    "api": "FILES_API",
+    "api_version": "2.0",
+    "scheme": "http",
+    "hostname": STORAGE_PROXY,
+    "multipart_upload_supported": True,
+}
+RIG_ENTRY = {
+    "api": "FILES_API",
+    "api_version": "3.0",
+    "scheme": "https",
+    "hostname": RIG,
+    "multipart_upload_supported": True,
+}
+OFFLOAD_ENTRY = {"api": "IO_OFFLOAD", "scheme": "http", "hostname": WORKSPACE, "multipart_upload_supported": True}
+FLOOR_ENTRY = {
+    "api": "FILES_API",
+    "api_version": "2.0",
+    "scheme": "http",
+    "hostname": WORKSPACE,
+    "multipart_upload_supported": False,
+}
+# What a data-plane caller gets: storage proxy, then presigned URLs, then the single-shot floor.
+DATA_PLANE = [DP_ENTRY, OFFLOAD_ENTRY, FLOOR_ENTRY]
+# What a caller that can reach RIG gets: Files API 3.0 there, then presigned URLs, then the single-shot floor.
+RIG_PLAN = [RIG_ENTRY, OFFLOAD_ENTRY, FLOOR_ENTRY]
 
 _ERROR_CODES = {
     400: "INVALID_PARAMETER_VALUE",
@@ -50,6 +81,9 @@ _ERROR_CODES = {
 
 # Operations on presigned cloud URLs. They must never carry workspace credentials.
 _PRESIGNED_OPS = {"offload.part", "offload.get"}
+
+# Requests that pick the endpoint list or read file metadata rather than transfer data.
+_NOT_ENDPOINTS = {"endpoints", "scim", "probe", "workspace"}
 
 
 class BreakAfter:
@@ -96,8 +130,16 @@ def always(fault: Fault) -> Callable[[int], Optional[Fault]]:
     return lambda call: fault
 
 
+def on_calls(fault: Fault, *calls: int) -> Callable[[int], Optional[Fault]]:
+    return lambda call: fault if call in calls else None
+
+
 class FakeFilesServer:
-    def __init__(self, faults: Optional[Dict[str, Callable[[int], Optional[Fault]]]] = None):
+    def __init__(
+        self, faults: Optional[Dict[str, Callable[[int], Optional[Fault]]]] = None, plan: Optional[List[dict]] = None
+    ):
+        # The list GET /api/2.0/fs/endpoints answers with; None means the workspace does not serve it.
+        self.plan = plan
         self.faults = faults or {}
         self.download_content = b""
         self.calls: List[str] = []
@@ -112,6 +154,18 @@ class FakeFilesServer:
         # Protocol checks that failed; a client that catches its request errors would otherwise hide them.
         self.violations: List[str] = []
         self._lock = Lock()
+
+    def ops(self, prefix: str) -> List[str]:
+        return [op for op in self.calls if op.startswith(prefix)]
+
+    def endpoints_touched(self) -> List[str]:
+        """Endpoints in the order they were first used, ignoring the probe and metadata requests."""
+        seen = []
+        for op in self.calls:
+            endpoint = op.split(".")[0]
+            if endpoint not in _NOT_ENDPOINTS and endpoint not in seen:
+                seen.append(endpoint)
+        return seen
 
     def stored_file(self) -> Optional[bytes]:
         """The file as a caller would read it back, whichever endpoint stored it."""
@@ -129,10 +183,24 @@ class FakeFilesServer:
         url = urlparse(request.url)
         query = parse_qs(url.query)
         host, method, path = url.hostname, request.method, url.path
+        if host == WORKSPACE and path == "/api/2.0/fs/endpoints" and method == "GET":
+            return "endpoints"
         if host == WORKSPACE and path == "/api/2.0/preview/scim/v2/Me" and method == "GET":
             return "scim"
         if host == STORAGE_PROXY and path == "/api/2.0/fs/files/DatabricksInternal/Probe/fullstack/wis":
             return "probe"
+        if path == f"/api/3.0/fs/files{FILE_PATH}":
+            assert host == RIG, f"Files API 3.0 request to {host}"
+            assert not {"upload_type", "session_token"} & query.keys(), f"2.0 parameters on {request.url}"
+            action = query.get("action", [None])[0]
+            if method == "POST" and action in ("initiate-upload", "complete-upload", "abort-upload"):
+                return f"rig.{action.split('-')[0]}"
+            if method == "PUT" and "part_number" in query:
+                return "rig.part"
+            if method == "PUT":
+                return "rig.single"
+            if method == "GET":
+                return "rig.get"
         if path == f"/api/2.0/fs/files{FILE_PATH}":
             assert host in (WORKSPACE, STORAGE_PROXY), f"Files API 2.0 request to {host}"
             endpoint = "dp" if host == STORAGE_PROXY else None
@@ -180,6 +248,11 @@ class FakeFilesServer:
         return self._respond(op, request, fault)
 
     def _respond(self, op: str, request: requests.Request, fault: Optional[Fault]) -> requests.Response:
+        if op == "endpoints":
+            if self.plan is None:
+                body = {"error_code": "NOT_FOUND", "message": "no endpoints API"}
+                return requests_mock.create_response(request, status_code=404, json=body)
+            return requests_mock.create_response(request, json={"endpoints": self.plan})
         if op == "scim":
             return requests_mock.create_response(request, json={}, headers={"X-Databricks-Org-Id": "12345"})
         if op == "probe":
@@ -187,6 +260,12 @@ class FakeFilesServer:
         endpoint, action = op.split(".", 1)
         url = urlparse(request.url)
         query = parse_qs(url.query)
+        if endpoint == "rig" and action in ("part", "complete", "abort"):
+            assert query.get("upload_id") == ["upload-rig"], f"{op} without the upload_id from initiate-upload"
+        if endpoint == "rig" and action in ("part", "single"):
+            assert request.headers.get("Content-Length") is not None, f"Files API 3.0 requires a Content-Length on {op}"
+        if op == "rig.initiate":
+            return requests_mock.create_response(request, json={"upload_id": "upload-rig"})
         if action == "initiate":
             return requests_mock.create_response(
                 request, json={"multipart_upload": {"session_token": f"token-{endpoint}"}}
@@ -214,7 +293,8 @@ class FakeFilesServer:
             self.stored[endpoint] = b"".join(self.parts[endpoint][n] for n in numbers)
             return requests_mock.create_response(request, json={})
         if action == "abort":
-            assert query.get("session_token") == [f"token-{endpoint}"]
+            if endpoint != "rig":
+                assert query.get("session_token") == [f"token-{endpoint}"]
             self.aborted.add(endpoint)
             return requests_mock.create_response(request, json={})
         if action == "single":
@@ -262,9 +342,10 @@ def _read_body(request: requests.Request) -> bytes:
     return body.encode() if isinstance(body, str) else bytes(body)
 
 
-def _client(config: Config, storage_proxy: bool = True) -> WorkspaceClient:
+def _client(config: Config, storage_proxy: bool = False, endpoints_api: bool = False) -> WorkspaceClient:
     config = config.copy()
     config.experimental_files_ext_enable_storage_proxy = storage_proxy
+    config.experimental_files_ext_enable_endpoints_api = endpoints_api
     config._header_factory = lambda: {"Authorization": "Bearer workspace-token"}
     config.files_ext_multipart_upload_min_stream_size = PART_SIZE
     config.files_ext_parallel_download_min_file_size = PART_SIZE
@@ -321,11 +402,17 @@ class EndpointList:
     # The endpoints a transfer can use, best first.
     endpoints: Tuple[str, ...]
     storage_proxy: bool = False
+    # Served by GET /api/2.0/fs/endpoints; None leaves the client on its built-in order.
+    plan: Optional[List[dict]] = None
 
 
 ENDPOINT_LISTS = [
     EndpointList("built-in", ("presigned", "workspace")),
-    EndpointList("built-in with the storage proxy", ("proxy", "presigned", "workspace"), storage_proxy=True),
+    # The storage-proxy flag is deprecated and has no effect.
+    EndpointList("built-in with the storage-proxy flag", ("presigned", "workspace"), storage_proxy=True),
+    EndpointList("server: proxy, presigned, workspace", ("proxy", "presigned", "workspace"), plan=DATA_PLANE),
+    EndpointList("server: rig, presigned, workspace", ("rig", "presigned", "workspace"), plan=RIG_PLAN),
+    EndpointList("server: presigned only", ("presigned",), plan=[OFFLOAD_ENTRY]),
 ]
 
 # up: the endpoint works. down: every request to it fails, as when it can't be reached. rejects data: its probe and
@@ -344,9 +431,10 @@ _DOWN_OPS = {
     "proxy": ["probe", "dp.initiate", "dp.part", "dp.complete", "dp.abort", "dp.single", "dp.get"],
     "presigned": ["offload.part", "offload.get"],
     "workspace": ["floor.single", "floor.get"],
+    "rig": ["rig.initiate", "rig.part", "rig.complete", "rig.abort", "rig.single", "rig.get"],
 }
 # The fake's name for each endpoint that can come first in a list.
-_FAKE_NAMES = {"proxy": "dp", "presigned": "offload"}
+_FAKE_NAMES = {"proxy": "dp", "presigned": "offload", "rig": "rig"}
 
 SUCCEEDS = "succeeds"
 
@@ -418,20 +506,24 @@ UPLOAD_SCENARIOS = _scenarios("upload", UPLOAD_MODES, SOURCES)
 DOWNLOAD_SCENARIOS = _scenarios("download", DOWNLOAD_MODES, [None])
 
 
-def _first_endpoint(scenario: Scenario) -> str:
-    """The endpoint a transfer starts on: the storage proxy when it is enabled and its probe reaches it, otherwise
-    presigned URLs."""
-    if scenario.endpoint_list.storage_proxy and dict(scenario.availability)["proxy"] != DOWN:
-        return "proxy"
-    return "presigned"
+def _walk_order(scenario: Scenario) -> List[str]:
+    """The endpoints a transfer tries, in order. The built-in order is presigned URLs, then the workspace. A list from
+    the server is used as it is."""
+    endpoints = scenario.endpoint_list.endpoints
+    if scenario.endpoint_list.plan is not None:
+        # An upload with only presigned URLs listed gets the workspace after them, for small files.
+        if "workspace" not in endpoints and scenario.transfer == "upload":
+            return list(endpoints) + ["workspace"]
+        return list(endpoints)
+    return ["presigned", "workspace"]
 
 
 # Retries that run out raise TimeoutError from the API client's retry budget, which covers the workspace, and
-# RuntimeError from the bounded retries of transfers to presigned URLs and the storage proxy.
+# RuntimeError from the bounded retries of transfers to other hosts.
 def expected_upload(scenario: Scenario):
     """The outcome an upload has.
 
-    - Endpoints are tried in order: the first endpoint, then the workspace, which takes single-shot uploads only.
+    - Endpoints are tried in order, ending with the workspace, which takes single-shot uploads only.
     - A file under one part is sent in a single shot, which presigned URLs can't take, so they are skipped.
     - A non-seekable stream's size is known only once it is read, so it is read up to one part first: a short one
       is sent in a single shot as above.
@@ -443,44 +535,51 @@ def expected_upload(scenario: Scenario):
     states = dict(scenario.availability)
     size = SIZES[scenario.size]
     non_seekable = scenario.source == "non-seekable"
-    first = _first_endpoint(scenario)
-    if size < PART_SIZE:
-        if first == "proxy" and states[first] == UP:
+    for endpoint in _walk_order(scenario):
+        state = states[endpoint]
+        if endpoint == "workspace":
+            if state == UP:
+                return SUCCEEDS
+            return requests.ConnectionError if non_seekable and size >= PART_SIZE else TimeoutError
+        if size < PART_SIZE and endpoint == "presigned":
+            continue
+        if state == UP:
             return SUCCEEDS
-    else:
-        if states[first] == UP:
-            return SUCCEEDS
-        if states[first] == BREAKS:
+        if state == BREAKS:
             return RuntimeError
-    if states["workspace"] == UP:
-        return SUCCEEDS
-    return requests.ConnectionError if non_seekable and size >= PART_SIZE else TimeoutError
+    raise AssertionError("every walk ends with the workspace")
 
 
 def expected_download(scenario: Scenario):
     """The outcome a download has.
 
-    - Endpoints are tried in order: the first endpoint, then the workspace.
-    - A failure before any bytes arrived moves the download to the next endpoint.
+    - Endpoints are tried in order.
+    - A failure before any bytes arrived moves the download to the next endpoint. When no endpoint could serve it,
+      the last failure is raised.
     - After bytes arrived, the download stays on that endpoint. A stream resumes there and, if that fails too,
       raises its broken connection; a parallel download raises the failure of a later range.
     """
     states = dict(scenario.availability)
-    state = states[_first_endpoint(scenario)]
-    if state == UP:
-        return SUCCEEDS
-    if state == BREAKS:
-        return RuntimeError if scenario.mode == "parallel" else requests.exceptions.ChunkedEncodingError
-    return SUCCEEDS if states["workspace"] == UP else TimeoutError
+    for endpoint in _walk_order(scenario):
+        state = states[endpoint]
+        if state == UP:
+            return SUCCEEDS
+        if state == BREAKS:
+            return RuntimeError if scenario.mode == "parallel" else requests.exceptions.ChunkedEncodingError
+    if endpoint == "workspace":
+        return TimeoutError
+    # The last endpoint retries a dropped connection until its budget runs out, but not a rejected transfer.
+    return PermissionDenied if state == REJECTS else RuntimeError
 
 
 def _scenario_client(config: Config, scenario: Scenario) -> WorkspaceClient:
-    return _client(config, storage_proxy=scenario.endpoint_list.storage_proxy)
+    endpoint_list = scenario.endpoint_list
+    return _client(config, storage_proxy=endpoint_list.storage_proxy, endpoints_api=endpoint_list.plan is not None)
 
 
 @pytest.mark.parametrize("scenario", UPLOAD_SCENARIOS, ids=str)
 def test_upload_scenario(config, tmp_path, scenario):
-    server = FakeFilesServer(scenario.faults())
+    server = FakeFilesServer(scenario.faults(), scenario.endpoint_list.plan)
     w = _scenario_client(config, scenario)
     data = _DATA[scenario.size]
     expected = expected_upload(scenario)
@@ -496,6 +595,7 @@ def test_upload_scenario(config, tmp_path, scenario):
             _run(server, upload)
         assert server.stored_file() is None
     server.assert_credentials()
+    assert "probe" not in server.calls and "scim" not in server.calls
 
 
 def _download(w: WorkspaceClient) -> bytes:
@@ -520,7 +620,7 @@ def _download_to(w: WorkspaceClient, use_parallel: bool, parallelism: Optional[i
 
 @pytest.mark.parametrize("scenario", DOWNLOAD_SCENARIOS, ids=str)
 def test_download_scenario(config, scenario):
-    server = FakeFilesServer(scenario.faults())
+    server = FakeFilesServer(scenario.faults(), scenario.endpoint_list.plan)
     server.download_content = _DATA[scenario.size]
     w = _scenario_client(config, scenario)
     download = {
@@ -536,6 +636,7 @@ def test_download_scenario(config, scenario):
         with pytest.raises(expected):
             _run(server, download)
     server.assert_credentials()
+    assert "probe" not in server.calls and "scim" not in server.calls
 
 
 # ======================== Uploads before commit ========================
@@ -687,10 +788,10 @@ def test_an_empty_upload_is_sent_with_a_content_length(config, tmp_path, source,
 
 @pytest.mark.parametrize("source", ["file", "seekable"])
 def test_storage_proxy_single_shot_onto_an_existing_file_is_already_exists(config, tmp_path, source):
-    server = FakeFilesServer({"dp.single": always(412)})
+    server = FakeFilesServer({"dp.single": always(412)}, DATA_PLANE)
     config = config.copy()
     config.workspace_id = "1234"
-    w = _client(config)
+    w = _client(config, endpoints_api=True)
 
     with pytest.raises(AlreadyExists):
         _run(server, lambda: _upload(w, source, SMALL, False, tmp_path, overwrite=False))
@@ -698,3 +799,313 @@ def test_storage_proxy_single_shot_onto_an_existing_file_is_already_exists(confi
     # The conflict is the caller's, so the upload does not move on to the workspace.
     assert "floor.single" not in server.calls
     assert server.request_headers["dp.single"][0]["X-Databricks-Workspace-Id"] == "1234"
+
+
+# ======================== Files API 3.0 (white box) ========================
+
+
+def _download_server(faults=None, plan=None) -> FakeFilesServer:
+    server = FakeFilesServer(faults, plan)
+    server.download_content = LARGE
+    return server
+
+
+@pytest.mark.parametrize("use_parallel", [False, True], ids=["sequential", "parallel"])
+@pytest.mark.parametrize("source", SOURCES)
+def test_rig_upload_uses_the_files_api_3_protocol(config, tmp_path, source, use_parallel):
+    server = FakeFilesServer(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, source, LARGE, use_parallel, tmp_path))
+
+    assert server.endpoints_touched() == ["rig"]
+    assert server.ops("rig") == ["rig.initiate"] + ["rig.part"] * 5 + ["rig.complete"]
+    assert server.stored == {"rig": LARGE}
+    server.assert_credentials()
+
+
+@pytest.mark.parametrize("source", ["file", "seekable"])
+def test_rig_small_upload_uses_single_shot(config, tmp_path, source):
+    server = FakeFilesServer(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, source, SMALL, False, tmp_path))
+
+    assert server.calls == ["endpoints", "rig.single"]
+    assert server.stored == {"rig": SMALL}
+    server.assert_credentials()
+
+
+@pytest.mark.parametrize("use_parallel", [False, True], ids=["sequential", "parallel"])
+@pytest.mark.parametrize("source", SOURCES)
+def test_rig_first_part_failure_aborts_on_rig_and_moves_to_presigned(config, tmp_path, source, use_parallel):
+    server = FakeFilesServer({"rig.part": always(403)}, RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, source, LARGE, use_parallel, tmp_path))
+
+    assert server.endpoints_touched() == ["rig", "offload"]
+    assert server.counts["rig.part"] == 1
+    assert server.aborted == {"rig"}
+    assert server.stored == {"offload": LARGE}
+    server.assert_credentials()
+
+
+@pytest.mark.parametrize("use_parallel", [False, True], ids=["sequential", "parallel"])
+@pytest.mark.parametrize("source", SOURCES)
+def test_rig_later_part_failure_raises_without_walking(config, tmp_path, source, use_parallel):
+    server = FakeFilesServer({"rig.part": on_calls(500, 2)}, RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+
+    with pytest.raises(InternalError):
+        _run(server, lambda: _upload(w, source, LARGE, use_parallel, tmp_path))
+
+    assert server.endpoints_touched() == ["rig"]
+    assert server.aborted == {"rig"}
+    assert server.stored == {}
+
+
+@pytest.mark.parametrize("source", ["file", "seekable"])
+def test_rig_single_shot_onto_an_existing_file_is_already_exists(config, tmp_path, source):
+    server = FakeFilesServer({"rig.single": always(409)}, RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+
+    with pytest.raises(AlreadyExists):
+        _run(server, lambda: _upload(w, source, SMALL, False, tmp_path, overwrite=False))
+
+    assert server.endpoints_touched() == ["rig"]
+    assert parse_qs(urlparse(server.urls["rig.single"][0]).query) == {"overwrite": ["false"]}
+
+
+@pytest.mark.parametrize("use_parallel", [False, True], ids=["sequential", "parallel"])
+@pytest.mark.parametrize("source", SOURCES)
+def test_rig_complete_onto_an_existing_file_is_already_exists(config, tmp_path, source, use_parallel):
+    server = FakeFilesServer({"rig.complete": always(409)}, RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+
+    with pytest.raises(AlreadyExists):
+        _run(server, lambda: _upload(w, source, LARGE, use_parallel, tmp_path, overwrite=False))
+
+    # The parts landed, so the upload stays on RIG and aborts there.
+    assert server.endpoints_touched() == ["rig"]
+    assert server.aborted == {"rig"}
+
+
+def test_rig_initiate_failure_moves_to_presigned(config, tmp_path):
+    server = FakeFilesServer({"rig.initiate": always(500)}, RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, "file", LARGE, False, tmp_path))
+
+    assert server.endpoints_touched() == ["rig", "offload"]
+    assert server.stored == {"offload": LARGE}
+
+
+def test_rig_parts_are_capped_at_the_files_api_3_part_size_limit(config, tmp_path, monkeypatch):
+    monkeypatch.setattr(files_mixin, "_FILES_API_V3_MAX_PART_SIZE", PART_SIZE)
+    server = FakeFilesServer(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    local = tmp_path / "source.bin"
+    local.write_bytes(LARGE)
+
+    _run(server, lambda: w.files.upload_from(FILE_PATH, str(local), part_size=2 * PART_SIZE, use_parallel=False))
+
+    assert server.stored == {"rig": LARGE}
+    assert max(len(part) for part in server.parts["rig"].values()) == PART_SIZE
+
+
+@pytest.mark.parametrize("download", ["stream", "to-file"])
+def test_rig_download(config, download):
+    server = _download_server(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    result = {}
+
+    _run(server, lambda: result.update(data=_download(w) if download == "stream" else _download_to(w, False)))
+
+    assert result["data"] == LARGE
+    assert server.endpoints_touched() == ["rig"]
+    server.assert_credentials()
+
+
+def test_rig_parallel_download_uses_rig_for_every_range(config):
+    server = _download_server(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    result = {}
+
+    _run(server, lambda: result.update(data=_download_to(w, True, parallelism=2)))
+
+    assert result["data"] == LARGE
+    assert server.endpoints_touched() == ["rig"]
+    assert len(server.ranges["rig"]) == 5
+    server.assert_credentials()
+
+
+@pytest.mark.parametrize("download", ["stream", "to-file", "parallel"])
+def test_rig_download_failure_before_any_bytes_moves_to_presigned(config, download):
+    server = _download_server({"rig.get": always(500)}, RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    result = {}
+
+    def run():
+        if download == "stream":
+            result.update(data=_download(w))
+        else:
+            result.update(data=_download_to(w, download == "parallel", parallelism=2))
+
+    _run(server, run)
+
+    assert result["data"] == LARGE
+    assert server.endpoints_touched() == ["rig", "offload"]
+    server.assert_credentials()
+
+
+def test_rig_download_reopens_on_rig_after_a_dropped_connection(config):
+    server = _download_server({"rig.get": on_calls(BreakAfter(3 * 512), 1)}, RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    result = {}
+
+    _run(server, lambda: result.update(data=_download(w)))
+
+    assert result["data"] == LARGE
+    assert server.endpoints_touched() == ["rig"]
+    assert server.counts["rig.get"] == 2
+
+
+# ======================== Endpoints API: the workspace's list (white box) ========================
+
+
+@pytest.mark.parametrize("source", SOURCES)
+def test_upload_follows_the_workspace_list(config, tmp_path, source):
+    server = FakeFilesServer({"dp.part": always(403)}, DATA_PLANE)
+    w = _client(config, storage_proxy=False, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, source, LARGE, False, tmp_path))
+
+    assert server.endpoints_touched() == ["dp", "offload"]
+    assert server.stored == {"offload": LARGE}
+    server.assert_credentials()
+
+
+def test_server_list_takes_precedence_over_the_storage_proxy_probe(config, tmp_path):
+    server = FakeFilesServer(plan=[OFFLOAD_ENTRY, FLOOR_ENTRY])
+    w = _client(config, storage_proxy=True, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, "file", LARGE, False, tmp_path))
+
+    assert "scim" not in server.calls and "probe" not in server.calls
+    assert server.endpoints_touched() == ["offload"]
+
+
+@pytest.mark.parametrize("storage_proxy", [False, True], ids=["default", "storage-proxy-flag"])
+def test_unusable_endpoints_api_uses_the_built_in_order(config, tmp_path, storage_proxy):
+    server = FakeFilesServer()
+    w = _client(config, storage_proxy=storage_proxy, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, "file", LARGE, False, tmp_path))
+
+    assert server.calls[0] == "endpoints"
+    assert "probe" not in server.calls
+    assert server.endpoints_touched() == ["offload"]
+
+
+def test_endpoints_are_resolved_once_per_client(config, tmp_path):
+    server = _download_server(plan=DATA_PLANE)
+    w = _client(config, storage_proxy=False, endpoints_api=True)
+
+    def transfers():
+        _upload(w, "file", LARGE, False, tmp_path)
+        _upload(w, "seekable", SMALL, False, tmp_path)
+        _download(w)
+
+    _run(server, transfers)
+
+    assert server.counts["endpoints"] == 1
+
+
+@pytest.mark.parametrize(
+    "source, data, use_parallel",
+    [
+        ("file", SMALL, False),
+        # Their size is only known once read, so they reach the presigned path before they turn out to need a
+        # single-shot upload.
+        ("non-seekable", SMALL, False),
+        ("non-seekable", b"", False),
+        ("non-seekable", b"", True),
+    ],
+)
+def test_small_upload_with_only_presigned_listed_uses_the_workspace(config, tmp_path, source, data, use_parallel):
+    server = FakeFilesServer(plan=[OFFLOAD_ENTRY])
+    w = _client(config, storage_proxy=False, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, source, data, use_parallel, tmp_path))
+
+    assert server.calls[0] == "endpoints"
+    assert server.stored == {"floor": data}
+
+
+def test_upload_walks_the_non_data_plane_order_from_presigned_to_rig(config, tmp_path):
+    server = FakeFilesServer({"offload.part": always(403)}, [OFFLOAD_ENTRY, RIG_ENTRY, FLOOR_ENTRY])
+    w = _client(config, storage_proxy=False, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, "file", LARGE, False, tmp_path))
+
+    assert server.endpoints_touched() == ["offload", "rig"]
+    assert server.aborted == {"offload"}
+    assert server.stored == {"rig": LARGE}
+    server.assert_credentials()
+
+
+@pytest.mark.parametrize("use_parallel", [False, True], ids=["sequential", "parallel"])
+@pytest.mark.parametrize("source", SOURCES)
+def test_large_upload_on_single_shot_only_endpoint_uses_single_shot(config, tmp_path, source, use_parallel):
+    server = FakeFilesServer(plan=[FLOOR_ENTRY])
+    w = _client(config, storage_proxy=False, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, source, LARGE, use_parallel, tmp_path))
+
+    assert server.calls == ["endpoints", "floor.single"]
+    assert server.stored == {"floor": LARGE}
+
+
+@pytest.mark.parametrize("source", ["file", "seekable"])
+def test_failed_single_shot_is_replayed_from_a_rereadable_source(config, tmp_path, source):
+    single_shot_dp = {**DP_ENTRY, "multipart_upload_supported": False}
+    server = FakeFilesServer({"dp.single": always(500)}, [single_shot_dp, OFFLOAD_ENTRY])
+    w = _client(config, storage_proxy=False, endpoints_api=True)
+
+    _run(server, lambda: _upload(w, source, LARGE, False, tmp_path))
+
+    assert server.endpoints_touched() == ["dp", "offload"]
+    assert server.stored == {"offload": LARGE}
+
+
+def test_failed_single_shot_of_a_non_seekable_stream_cannot_be_replayed(config, tmp_path):
+    # The whole stream was handed to the single-shot PUT, so nothing is left to send to the next endpoint.
+    single_shot_dp = {**DP_ENTRY, "multipart_upload_supported": False}
+    server = FakeFilesServer({"dp.single": always(500)}, [single_shot_dp, OFFLOAD_ENTRY])
+    w = _client(config, storage_proxy=False, endpoints_api=True)
+
+    with pytest.raises(InternalError):
+        _run(server, lambda: _upload(w, "non-seekable", LARGE, False, tmp_path))
+
+    assert server.endpoints_touched() == ["dp"]
+
+
+@pytest.mark.parametrize("download", ["stream", "to-file", "parallel"])
+def test_download_follows_the_workspace_list(config, download):
+    server = _download_server({"offload.get": always(403)}, [OFFLOAD_ENTRY, FLOOR_ENTRY])
+    w = _client(config, storage_proxy=True, endpoints_api=True)
+    result = {}
+
+    def run():
+        if download == "stream":
+            result.update(data=_download(w))
+        else:
+            result.update(data=_download_to(w, download == "parallel", parallelism=2))
+
+    _run(server, run)
+
+    assert result["data"] == LARGE
+    assert "probe" not in server.calls
+    assert server.endpoints_touched() == ["offload", "floor"]
+    server.assert_credentials()
