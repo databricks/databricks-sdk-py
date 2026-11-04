@@ -525,6 +525,45 @@ def test_oidc_supplier_sends_group(requests_mock):
 
 
 @pytest.mark.parametrize(
+    ("provider", "supplier_class"),
+    [
+        (credentials_provider.github_oidc, "GitHubOIDCTokenSupplier"),
+        (credentials_provider.azure_devops_oidc, "AzureDevOpsOIDCTokenSupplier"),
+    ],
+)
+def test_ci_oidc_provider_caches_exchanged_token(mocker, requests_mock, provider, supplier_class):
+    token_endpoint = "https://workspace.cloud.databricks.com/oidc/v1/token"
+    token_request = requests_mock.post(
+        token_endpoint,
+        json={"access_token": "token", "token_type": "Bearer", "expires_in": 3600},
+    )
+    supplier = Mock()
+    supplier.get_oidc_token.return_value = "id-token"
+    mocker.patch.object(credentials_provider.oidc_token_supplier, supplier_class, return_value=supplier)
+    cfg = Mock(
+        auth_type=provider.auth_type(),
+        host="https://workspace.cloud.databricks.com",
+        group_id=None,
+        token_audience="audience",
+        client_id="client-id",
+        account_id=None,
+        databricks_oidc_endpoints=oauth.OidcEndpoints("unused", token_endpoint),
+        disable_async_token_refresh=True,
+        authorization_details=None,
+    )
+    cfg.get_scopes_as_string.return_value = "all-apis"
+
+    credentials = provider(cfg)
+
+    assert credentials() == {"Authorization": "Bearer token"}
+    assert credentials() == {"Authorization": "Bearer token"}
+    assert credentials.oauth_token().access_token == "token"
+    assert token_request.call_count == 1
+    assert supplier.get_oidc_token.call_count == 2
+    supplier.get_oidc_token.assert_called_with("audience")
+
+
+@pytest.mark.parametrize(
     "provider",
     [
         credentials_provider.pat_auth,
