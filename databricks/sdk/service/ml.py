@@ -1497,6 +1497,67 @@ class DatasetInput:
 
 
 @dataclass
+class DeclarativeFeature:
+    """A reference to a Feature."""
+
+    feature: str
+    """Three-part Unity Catalog name (catalog.schema.feature) of the Feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeclarativeFeature into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature is not None:
+            body["feature"] = self.feature
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeclarativeFeature into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature is not None:
+            body["feature"] = self.feature
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeclarativeFeature:
+        """Deserializes the DeclarativeFeature from a dictionary."""
+        return cls(feature=d.get("feature", None))
+
+
+@dataclass
+class DefaultValue:
+    """A default value for a looked-up feature."""
+
+    feature: str
+    """Name of the feature: its output name if it is renamed, otherwise its name in the feature table."""
+
+    default_value: Optional[str] = None
+    """Default value for the feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DefaultValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_value is not None:
+            body["default_value"] = self.default_value
+        if self.feature is not None:
+            body["feature"] = self.feature
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_value is not None:
+            body["default_value"] = self.default_value
+        if self.feature is not None:
+            body["feature"] = self.feature
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultValue:
+        """Deserializes the DefaultValue from a dictionary."""
+        return cls(default_value=d.get("default_value", None), feature=d.get("feature", None))
+
+
+@dataclass
 class DeleteCommentResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteCommentResponse into a dictionary suitable for use as a JSON request body."""
@@ -2528,6 +2589,85 @@ class Feature:
 
 
 @dataclass
+class FeatureFunction:
+    """A Python UDF that computes a feature."""
+
+    udf: str
+    """Three-part name of the Python UDF."""
+
+    input_bindings: Optional[List[FeatureFunctionInputBinding]] = None
+    """Bindings of the UDF's parameters to features."""
+
+    output: Optional[str] = None
+    """Output name of the feature that the UDF computes."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input_bindings:
+            body["input_bindings"] = [v.as_dict() for v in self.input_bindings]
+        if self.output is not None:
+            body["output"] = self.output
+        if self.udf is not None:
+            body["udf"] = self.udf
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input_bindings:
+            body["input_bindings"] = self.input_bindings
+        if self.output is not None:
+            body["output"] = self.output
+        if self.udf is not None:
+            body["udf"] = self.udf
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureFunction:
+        """Deserializes the FeatureFunction from a dictionary."""
+        return cls(
+            input_bindings=_repeated_dict(d, "input_bindings", FeatureFunctionInputBinding),
+            output=d.get("output", None),
+            udf=d.get("udf", None),
+        )
+
+
+@dataclass
+class FeatureFunctionInputBinding:
+    """Binds one parameter of the UDF to a feature."""
+
+    parameter: str
+    """Name of the UDF parameter."""
+
+    bound_feature: str
+    """Name of the feature bound to the parameter."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureFunctionInputBinding into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bound_feature is not None:
+            body["bound_feature"] = self.bound_feature
+        if self.parameter is not None:
+            body["parameter"] = self.parameter
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureFunctionInputBinding into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bound_feature is not None:
+            body["bound_feature"] = self.bound_feature
+        if self.parameter is not None:
+            body["parameter"] = self.parameter
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureFunctionInputBinding:
+        """Deserializes the FeatureFunctionInputBinding from a dictionary."""
+        return cls(bound_feature=d.get("bound_feature", None), parameter=d.get("parameter", None))
+
+
+@dataclass
 class FeatureLineage:
     feature_specs: Optional[List[FeatureLineageFeatureSpec]] = None
     """List of feature specs that contain this feature."""
@@ -2686,6 +2826,83 @@ class FeatureList:
 
 
 @dataclass
+class FeatureLookup:
+    """Features to look up from a feature table."""
+
+    table: str
+    """Three-part name of the feature table."""
+
+    lookup_keys: List[str]
+    """Keys to use when joining with the feature table."""
+
+    default_values: Optional[List[DefaultValue]] = None
+    """Default values for features."""
+
+    feature_names: Optional[List[str]] = None
+    """Names of the features to look up, or empty to look up every feature in the table."""
+
+    lookback_window: Optional[Duration] = None
+    """Lookback window to use when performing point-in-time lookup."""
+
+    rename_outputs: Optional[List[RenameOutput]] = None
+    """Output names for features, in place of their names in the feature table."""
+
+    timestamp_lookup_keys: Optional[List[str]] = None
+    """Keys to use when performing point-in-time lookup."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureLookup into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_values:
+            body["default_values"] = [v.as_dict() for v in self.default_values]
+        if self.feature_names:
+            body["feature_names"] = [v for v in self.feature_names]
+        if self.lookback_window is not None:
+            body["lookback_window"] = self.lookback_window.ToJsonString()
+        if self.lookup_keys:
+            body["lookup_keys"] = [v for v in self.lookup_keys]
+        if self.rename_outputs:
+            body["rename_outputs"] = [v.as_dict() for v in self.rename_outputs]
+        if self.table is not None:
+            body["table"] = self.table
+        if self.timestamp_lookup_keys:
+            body["timestamp_lookup_keys"] = [v for v in self.timestamp_lookup_keys]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureLookup into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_values:
+            body["default_values"] = self.default_values
+        if self.feature_names:
+            body["feature_names"] = self.feature_names
+        if self.lookback_window is not None:
+            body["lookback_window"] = self.lookback_window
+        if self.lookup_keys:
+            body["lookup_keys"] = self.lookup_keys
+        if self.rename_outputs:
+            body["rename_outputs"] = self.rename_outputs
+        if self.table is not None:
+            body["table"] = self.table
+        if self.timestamp_lookup_keys:
+            body["timestamp_lookup_keys"] = self.timestamp_lookup_keys
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureLookup:
+        """Deserializes the FeatureLookup from a dictionary."""
+        return cls(
+            default_values=_repeated_dict(d, "default_values", DefaultValue),
+            feature_names=d.get("feature_names", None),
+            lookback_window=_duration(d, "lookback_window"),
+            lookup_keys=d.get("lookup_keys", None),
+            rename_outputs=_repeated_dict(d, "rename_outputs", RenameOutput),
+            table=d.get("table", None),
+            timestamp_lookup_keys=d.get("timestamp_lookup_keys", None),
+        )
+
+
+@dataclass
 class FeatureReference:
     """A reference to one registered upstream Feature. A message rather than a bare name so an upstream
     can later be pinned more precisely (e.g. by version) without a breaking type change."""
@@ -2711,6 +2928,62 @@ class FeatureReference:
     def from_dict(cls, d: Dict[str, Any]) -> FeatureReference:
         """Deserializes the FeatureReference from a dictionary."""
         return cls(feature=d.get("feature", None))
+
+
+@dataclass
+class FeatureSpec:
+    """A named set of features to serve, stored as a Unity Catalog function."""
+
+    name: str
+    """Three-part name (catalog.schema.feature_spec) of the feature spec."""
+
+    exclude_columns: Optional[List[str]] = None
+    """Output names of columns to leave out of the feature spec."""
+
+    extra_pip_requirements: Optional[PipRequirements] = None
+    """Extra pip requirements to install in the serving container, in addition to the defaults and
+    those resolved from the features."""
+
+    features: Optional[List[Features]] = None
+    """The Features (either a declarative one, or a lookup from a feature table, or a feature function)
+    to serve. A declarative feature (``DeclarativeFeature``) cannot be combined with lookups
+    (``FeatureLookup``) and functions (``FeatureFunction``) in one feature spec."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.exclude_columns:
+            body["exclude_columns"] = [v for v in self.exclude_columns]
+        if self.extra_pip_requirements:
+            body["extra_pip_requirements"] = self.extra_pip_requirements.as_dict()
+        if self.features:
+            body["features"] = [v.as_dict() for v in self.features]
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.exclude_columns:
+            body["exclude_columns"] = self.exclude_columns
+        if self.extra_pip_requirements:
+            body["extra_pip_requirements"] = self.extra_pip_requirements
+        if self.features:
+            body["features"] = self.features
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureSpec:
+        """Deserializes the FeatureSpec from a dictionary."""
+        return cls(
+            exclude_columns=d.get("exclude_columns", None),
+            extra_pip_requirements=_from_dict(d, "extra_pip_requirements", PipRequirements),
+            features=_repeated_dict(d, "features", Features),
+            name=d.get("name", None),
+        )
 
 
 @dataclass
@@ -2770,6 +3043,51 @@ class FeatureViewSource:
     def from_dict(cls, d: Dict[str, Any]) -> FeatureViewSource:
         """Deserializes the FeatureViewSource from a dictionary."""
         return cls(feature_references=_repeated_dict(d, "feature_references", FeatureReference))
+
+
+@dataclass
+class Features:
+    """One entry of a feature spec: a Feature, a feature table lookup, or a feature function."""
+
+    declarative_feature: Optional[DeclarativeFeature] = None
+    """A Feature, referenced by its three-part Unity Catalog name."""
+
+    feature_function: Optional[FeatureFunction] = None
+    """A feature function."""
+
+    feature_lookup: Optional[FeatureLookup] = None
+    """A feature table lookup."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Features into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.declarative_feature:
+            body["declarative_feature"] = self.declarative_feature.as_dict()
+        if self.feature_function:
+            body["feature_function"] = self.feature_function.as_dict()
+        if self.feature_lookup:
+            body["feature_lookup"] = self.feature_lookup.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Features into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.declarative_feature:
+            body["declarative_feature"] = self.declarative_feature
+        if self.feature_function:
+            body["feature_function"] = self.feature_function
+        if self.feature_lookup:
+            body["feature_lookup"] = self.feature_lookup
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Features:
+        """Deserializes the Features from a dictionary."""
+        return cls(
+            declarative_feature=_from_dict(d, "declarative_feature", DeclarativeFeature),
+            feature_function=_from_dict(d, "feature_function", FeatureFunction),
+            feature_lookup=_from_dict(d, "feature_lookup", FeatureLookup),
+        )
 
 
 @dataclass
@@ -5527,14 +5845,13 @@ class MaterializationSetDeletionProgress:
 
 @dataclass
 class MaterializationSetOperationMetadata:
-    """Progress of a materialization set operation. Shared by create, update and delete, because
-    databricks.longrunning freezes a method's metadata type once it ships."""
+    """Progress of a materialization set operation."""
 
     create_time: Optional[Timestamp] = None
     """Time at which the operation was requested."""
 
     deletion_progress: Optional[MaterializationSetDeletionProgress] = None
-    """Set by a DeleteMaterializationSet operation."""
+    """Set by a ``DeleteMaterializationSet`` operation."""
 
     feature_full_names: Optional[List[str]] = None
     """Full names of the features the set materializes, one entry per feature."""
@@ -5546,7 +5863,7 @@ class MaterializationSetOperationMetadata:
     """Current state of the operation."""
 
     update_progress: Optional[MaterializationSetUpdateProgress] = None
-    """Set by an UpdateMaterializationSet operation."""
+    """Set by an ``UpdateMaterializationSet`` operation."""
 
     def as_dict(self) -> dict:
         """Serializes the MaterializationSetOperationMetadata into a dictionary suitable for use as a JSON request body."""
@@ -7047,6 +7364,33 @@ class PermissionLevel(Enum):
 
 
 @dataclass
+class PipRequirements:
+    """Pip requirements to install in a serving container."""
+
+    requirements: List[str]
+    """Pip requirement strings (PEP 508) or UC Volume whl paths (/Volumes/...)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipRequirements into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.requirements:
+            body["requirements"] = [v for v in self.requirements]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PipRequirements into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.requirements:
+            body["requirements"] = self.requirements
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PipRequirements:
+        """Deserializes the PipRequirements from a dictionary."""
+        return cls(requirements=d.get("requirements", None))
+
+
+@dataclass
 class ProtoSchemaSpec:
     """A Protocol Buffer schema paired with the name of the message within it that describes the Kafka
     payload. A .proto file may declare multiple messages; message_name disambiguates."""
@@ -7281,7 +7625,11 @@ class PurgeFeatureEntitiesMetadataState(Enum):
     CANCELLED = "CANCELLED"
     FAILED = "FAILED"
     PENDING = "PENDING"
+    PENDING_CLEANUP = "PENDING_CLEANUP"
+    PENDING_PURGE = "PENDING_PURGE"
     RUNNING = "RUNNING"
+    RUNNING_CLEANUP = "RUNNING_CLEANUP"
+    RUNNING_PURGE = "RUNNING_PURGE"
     SUCCEEDED = "SUCCEEDED"
 
 
@@ -7827,6 +8175,40 @@ class RenameModelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> RenameModelResponse:
         """Deserializes the RenameModelResponse from a dictionary."""
         return cls(registered_model=_from_dict(d, "registered_model", Model))
+
+
+@dataclass
+class RenameOutput:
+    """An output name for a looked-up feature."""
+
+    feature: str
+    """Name of the feature in the feature table."""
+
+    output: str
+    """Output name for the feature."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RenameOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature is not None:
+            body["feature"] = self.feature
+        if self.output is not None:
+            body["output"] = self.output
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RenameOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature is not None:
+            body["feature"] = self.feature
+        if self.output is not None:
+            body["output"] = self.output
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RenameOutput:
+        """Deserializes the RenameOutput from a dictionary."""
+        return cls(feature=d.get("feature", None), output=d.get("output", None))
 
 
 @dataclass
@@ -12022,6 +12404,29 @@ class FeatureEngineeringAPI:
         res = self._api.do("POST", "/api/2.0/feature-engineering/features", body=body, headers=headers)
         return Feature.from_dict(res)
 
+    def create_feature_spec(self, feature_spec: FeatureSpec) -> FeatureSpec:
+        """Create a feature spec.
+
+        :param feature_spec: :class:`FeatureSpec`
+          The feature spec to create.
+
+        :returns: :class:`FeatureSpec`
+        """
+
+        body = feature_spec.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/feature-engineering/feature-specs", body=body, headers=headers)
+        return FeatureSpec.from_dict(res)
+
     def create_kafka_config(self, kafka_config: KafkaConfig) -> KafkaConfig:
         """Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
         the entire metastore. Only the creator of the Kafka config can delete it.
@@ -12148,6 +12553,25 @@ class FeatureEngineeringAPI:
 
         self._api.do("DELETE", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
 
+    def delete_feature_spec(self, name: str):
+        """Delete a feature spec.
+
+        :param name: str
+          Three-part name (catalog.schema.feature_spec) of the feature spec to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/feature-engineering/feature-specs/{name}", headers=headers)
+
     def delete_kafka_config(self, name: str):
         """Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
         the entire metastore. Only the creator of the Kafka config can delete it.
@@ -12272,6 +12696,26 @@ class FeatureEngineeringAPI:
 
         res = self._api.do("GET", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
         return Feature.from_dict(res)
+
+    def get_feature_spec(self, name: str) -> FeatureSpec:
+        """Get a feature spec.
+
+        :param name: str
+          Three-part name (catalog.schema.feature_spec) of the feature spec to get.
+
+        :returns: :class:`FeatureSpec`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/feature-engineering/feature-specs/{name}", headers=headers)
+        return FeatureSpec.from_dict(res)
 
     def get_kafka_config(self, name: str) -> KafkaConfig:
         """Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the

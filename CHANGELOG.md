@@ -1,5 +1,20 @@
 # Version changelog
 
+## Release v0.161.0 (2026-11-04)
+
+### New Features and Improvements
+* `WorkspaceClient.files` uploads and downloads move to the next transfer endpoint whenever an attempt fails before any data was committed: presigned URLs, then the Files API on the workspace. Once data was committed, the transfer stays on its endpoint and raises. Before commit, a failure is retried only on the last endpoint.
+* With the experimental `experimental_files_ext_enable_endpoints_api` config option, `WorkspaceClient.files` follows the transfer endpoints the workspace lists (`GET /api/2.0/fs/endpoints`), including the storage proxy and Files API 3.0 endpoints.
+* `experimental_files_ext_enable_storage_proxy` is deprecated and has no effect: the storage proxy is used when the workspace lists it, with `experimental_files_ext_enable_endpoints_api`.
+* `WorkspaceClient.files.download_to` writes a new file through a temp file next to it, so a failed download leaves no partial file. An existing destination (a file, a symlink, a pipe or a device) is written in place as before, and a parallel download to anything other than a regular file is sequential.
+
+### API Changes
+* Add `databricks.sdk.service.lakewatch` package.
+* Add [w.lakewatch](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakewatch/lakewatch.html) workspace-level service.
+* Add `cancel_batch()`, `create_batch()`, `get_batch()` and `list_batches()` methods for [w.ai_functions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/aifunctions/ai_functions.html) workspace-level service.
+* Add `create_feature_spec()`, `delete_feature_spec()` and `get_feature_spec()` methods for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service.
+* [Breaking] Remove `critical` enum value for `databricks.sdk.service.jobs.AiRuntimeTaskPriorityClass`.
+
 ## Release v0.160.0 (2026-11-03)
 
 ### API Changes

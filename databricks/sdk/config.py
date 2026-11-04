@@ -260,12 +260,12 @@ class Config:
     # is hit first will stop the retry loop.
     experimental_files_ext_cloud_api_max_retries: int = 3
 
-    # Whether to enable the storage proxy for file operations.
-    # When enabled, the SDK will probe the storage proxy and use it if available.
+    # Deprecated and unused: the storage proxy is used when the workspace lists it, see
+    # experimental_files_ext_enable_endpoints_api.
     experimental_files_ext_enable_storage_proxy: bool = False
 
     # Whether to ask the workspace which endpoints to use for file transfers (GET /api/2.0/fs/endpoints).
-    # When disabled, or when the server cannot answer, the SDK uses a built-in order: Presigned URL, then
+    # When disabled, or when the server cannot answer, the SDK uses a built-in order: presigned URLs, then
     # Files API 2.0 on the workspace host.
     experimental_files_ext_enable_endpoints_api: bool = False
 

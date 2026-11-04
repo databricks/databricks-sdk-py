@@ -778,6 +778,7 @@ class _ResolvedEndpoint(Enum):
 
     IO_OFFLOAD = "IO_OFFLOAD"
     FILES_API_V2 = "FILES_API_V2"
+    FILES_API_V3 = "FILES_API_V3"
 
 
 # Maps the server's (api, api_version) to a protocol compiled into this SDK. Pairs not listed here are
@@ -786,6 +787,7 @@ class _ResolvedEndpoint(Enum):
 _RECOGNIZED_ENDPOINTS: dict[tuple[str, Optional[str]], _ResolvedEndpoint] = {
     ("IO_OFFLOAD", None): _ResolvedEndpoint.IO_OFFLOAD,
     ("FILES_API", "2.0"): _ResolvedEndpoint.FILES_API_V2,
+    ("FILES_API", "3.0"): _ResolvedEndpoint.FILES_API_V3,
 }
 
 # The Files API path each protocol initiates, completes, uploads and downloads through. IO_OFFLOAD initiates
@@ -793,7 +795,11 @@ _RECOGNIZED_ENDPOINTS: dict[tuple[str, Optional[str]], _ResolvedEndpoint] = {
 _FILES_API_PATHS: dict[_ResolvedEndpoint, str] = {
     _ResolvedEndpoint.IO_OFFLOAD: "/api/2.0/fs/files",
     _ResolvedEndpoint.FILES_API_V2: "/api/2.0/fs/files",
+    _ResolvedEndpoint.FILES_API_V3: "/api/3.0/fs/files",
 }
+
+# Files API 3.0 rejects multipart parts above 4000 MiB, below the largest part size the SDK may pick.
+_FILES_API_V3_MAX_PART_SIZE = 4000 * 1024 * 1024
 
 _ENDPOINT_SCHEMES = ("http", "https")
 
@@ -913,14 +919,43 @@ class _StorageProxyRequestBuilder:
         )
 
 
+class _FilesApiV3RequestBuilder:
+    """Builds Files API 3.0 multipart requests, sent directly to the endpoint host.
+
+    3.0 identifies a multipart upload by the `upload_id` returned from initiate-upload, which callers pass
+    as `session_token`. Parts go straight to the host, so there is no URL to presign or expire.
+    """
+
+    def __init__(self, hostname: str):
+        self._hostname = hostname
+
+    def _file_url(self, path: str) -> str:
+        return f"{self._hostname}/api/3.0/fs/files{_files_api_file_path(path)}"
+
+    def build_upload_part_urls(
+        self, path: str, session_token: str, start_part_number: int, count: int, expire_time: str
+    ) -> list[_PresignedUrl]:
+        """Builds URLs for uploading multipart parts."""
+        base = self._file_url(path)
+        results = []
+        for part_number in range(start_part_number, start_part_number + count):
+            query = parse.urlencode({"upload_id": session_token, "part_number": part_number})
+            results.append(
+                _PresignedUrl(
+                    url=f"{base}?{query}",
+                    headers={"Content-Type": "application/octet-stream"},
+                    part_number=part_number,
+                )
+            )
+        return results
+
+    def build_download_url(self, path: str, expire_time: str) -> CreateDownloadUrlResponse:
+        """Builds a URL for downloading a file directly from the host."""
+        return CreateDownloadUrlResponse(url=self._file_url(path), headers={})
+
+
 class FilesExt(files.FilesAPI):
     __doc__ = files.FilesAPI.__doc__
-
-    # Storage-proxy hostname for data plane file operations.
-    _STORAGE_PROXY_HOSTNAME: str = "http://storage-proxy.databricks.com"
-
-    # Timeout in seconds for the storage-proxy health check probe.
-    _STORAGE_PROXY_PROBE_TIMEOUT: float = 3.0
 
     _ENDPOINTS_API_PATH: str = "/api/2.0/fs/endpoints"
 
@@ -934,8 +969,6 @@ class FilesExt(files.FilesAPI):
         self._multipart_upload_read_ahead_bytes = 1
         self._cached_cloud_provider_session: Optional[requests.Session] = None
         self._cloud_provider_session_lock = Lock()
-        self._dp_hostname_available: Optional[bool] = None
-        self._storage_proxy_probe_lock = Lock()
         self._cached_authenticated_session: Optional[requests.Session] = None
         self._authenticated_session_lock = Lock()
         self._cached_endpoints: Optional[list[_Endpoint]] = None
@@ -956,41 +989,18 @@ class FilesExt(files.FilesAPI):
             return list(self._cached_endpoints)
 
     def _default_endpoints(self) -> list[_Endpoint]:
-        """The built-in order: presigned URLs, or the storage proxy when experimental_files_ext_enable_storage_proxy
-        is set and the probe finds it can serve this workspace; then the Files API on the workspace host, which takes
-        uploads only in a single shot.
+        """The built-in order: presigned URLs, then the Files API on the workspace host, which takes uploads only in a
+        single shot.
         """
         host = self._config.host
-        if self._storage_proxy_available():
-            first = _Endpoint(
-                _ResolvedEndpoint.FILES_API_V2, self._STORAGE_PROXY_HOSTNAME, multipart_upload_supported=True
-            )
-        else:
-            first = _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, host, multipart_upload_supported=True)
-        return [first, _Endpoint(_ResolvedEndpoint.FILES_API_V2, host, multipart_upload_supported=False)]
+        return [
+            _Endpoint(_ResolvedEndpoint.IO_OFFLOAD, host, multipart_upload_supported=True),
+            _Endpoint(_ResolvedEndpoint.FILES_API_V2, host, multipart_upload_supported=False),
+        ]
 
     def _transfer_endpoints(self) -> list[_Endpoint]:
         """The endpoints a transfer walks, best first."""
-        return self._default_endpoints()
-
-    def _storage_proxy_available(self) -> bool:
-        """Whether the storage-proxy flag is set and the proxy can serve this workspace.
-
-        The probe runs once per client and its result, including a failure, is cached.
-        """
-        if not self._config.experimental_files_ext_enable_storage_proxy:
-            return False
-        available = self._dp_hostname_available
-        if available is not None:
-            return available
-        with self._storage_proxy_probe_lock:
-            if self._dp_hostname_available is None:
-                self._dp_hostname_available = self._probe_storage_proxy()
-                if self._dp_hostname_available:
-                    _LOG.info("Storage proxy is available, will use it for file operations.")
-                else:
-                    _LOG.info("Storage proxy is not available, will use presigned URLs.")
-            return self._dp_hostname_available
+        return self._resolve_endpoints()
 
     def _fetch_endpoints(self) -> list[_Endpoint]:
         """Fetches the endpoint list from the server, keeping only entries this SDK can speak.
@@ -1072,15 +1082,41 @@ class FilesExt(files.FilesAPI):
             return None
         return _RECOGNIZED_ENDPOINTS.get((api, api_version))
 
-    @staticmethod
-    def _parse_endpoint(entry: dict, kind: _ResolvedEndpoint) -> Optional[_Endpoint]:
+    def _parse_endpoint(self, entry: dict, kind: _ResolvedEndpoint) -> Optional[_Endpoint]:
         scheme = entry.get("scheme")
         hostname = entry.get("hostname")
         if scheme not in _ENDPOINT_SCHEMES or not isinstance(hostname, str) or not hostname:
             return None
+        # A Files API 3.0 host is reached over the internet with workspace credentials, so it must use TLS.
+        if kind == _ResolvedEndpoint.FILES_API_V3 and scheme != "https":
+            return None
+        base_url = f"{scheme}://{hostname}"
+        # Only a bare host and port that requests sends to as written. Transfers route by the host parsed here, so it
+        # must be the host the request reaches, and a parse error mid-transfer is not something every walk survives.
+        try:
+            parsed = parse.urlsplit(base_url)
+            origin = _origin(base_url)
+            prepared = requests.PreparedRequest()
+            prepared.prepare_url(base_url, None)
+            sent_as_written = _origin(prepared.url) == origin
+        except ValueError:
+            return None
+        if not sent_as_written or parsed.netloc != hostname or parsed.username is not None:
+            return None
+        host = origin[1]
+        # Plain HTTP carries workspace credentials in the clear. The workspace host may use it only if the SDK is
+        # configured to reach the workspace that way; another host only for Files API 2.0, i.e. the in-cluster
+        # storage proxy.
+        if scheme == "http":
+            workspace_scheme, workspace_host, _ = _origin(self._config.host)
+            if host == workspace_host:
+                if workspace_scheme != "http":
+                    return None
+            elif kind != _ResolvedEndpoint.FILES_API_V2:
+                return None
         # Mirrors the proto getter: an unset optional bool reads as false.
         multipart_upload_supported = entry.get("multipart_upload_supported") is True
-        return _Endpoint(kind, f"{scheme}://{hostname}", multipart_upload_supported)
+        return _Endpoint(kind, base_url, multipart_upload_supported)
 
     def _uses_api_client(self, endpoint: _Endpoint) -> bool:
         """Whether transfers to the endpoint go through the workspace API client.
@@ -1105,45 +1141,9 @@ class FilesExt(files.FilesAPI):
         """
         if endpoint.kind == _ResolvedEndpoint.IO_OFFLOAD:
             return _PresignedUrlRequestBuilder(self._api, endpoint.base_url)
+        if endpoint.kind == _ResolvedEndpoint.FILES_API_V3:
+            return _FilesApiV3RequestBuilder(endpoint.base_url)
         return _StorageProxyRequestBuilder(endpoint.base_url)
-
-    def _resolve_workspace_id(self) -> Optional[str]:
-        """Resolves the workspace ID by querying the SCIM Me endpoint."""
-        try:
-            response = self._api.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Org-Id"])
-            workspace_id = response.get("X-Databricks-Org-Id")
-            if workspace_id:
-                return str(workspace_id)
-        except Exception:
-            _LOG.debug("Failed to resolve workspace ID for storage proxy probe.")
-        return None
-
-    def _probe_storage_proxy(self) -> bool:
-        """Probes the storage proxy to check if it can serve this workspace.
-
-        Uses a HEAD request to the probe endpoint with the workspace ID as a
-        query parameter. The proxy returns 200 if it can serve this workspace,
-        403 for a wrong workspace, and connection errors if unreachable.
-        Returns False if the workspace ID cannot be resolved.
-        """
-        workspace_id = self._resolve_workspace_id()
-        if not workspace_id:
-            _LOG.debug("Workspace ID not available, skipping storage proxy probe.")
-            return False
-        proxy_host = self._STORAGE_PROXY_HOSTNAME
-        probe_url = f"{proxy_host}/api/2.0/fs/files/DatabricksInternal/Probe/fullstack/wis?ew={workspace_id}"
-        try:
-            headers = self._config.authenticate()
-            session = self._cloud_provider_session()
-            response = session.request(
-                "HEAD",
-                probe_url,
-                headers=headers,
-                timeout=self._STORAGE_PROXY_PROBE_TIMEOUT,
-            )
-            return response.status_code == 200
-        except Exception:
-            return False
 
     def _authenticated_session(self) -> requests.Session:
         """Returns an HTTP session with SDK auth for direct Files API data requests.
@@ -1501,6 +1501,8 @@ class FilesExt(files.FilesAPI):
         for endpoint in endpoints:
             if endpoint.kind == _ResolvedEndpoint.IO_OFFLOAD:
                 clients.append(_PresignedEndpointClient(self, endpoint))
+            elif endpoint.kind == _ResolvedEndpoint.FILES_API_V3:
+                clients.append(_FilesApiV3EndpointClient(self, endpoint))
             else:
                 clients.append(_FilesApiV2EndpointClient(self, endpoint))
         return clients
@@ -2178,6 +2180,27 @@ class _FilesApiV2EndpointClient:
 
     def _abort_query(self, session_token: str) -> dict:
         return {"action": "abort-upload", "upload_type": "multipart", "session_token": session_token}
+
+
+class _FilesApiV3EndpointClient(_FilesApiV2EndpointClient):
+    """FILES_API 3.0 (RIG): the 2.0 protocol with `upload_id` in place of `session_token`, and parts of at most
+    _FILES_API_V3_MAX_PART_SIZE."""
+
+    @property
+    def max_part_size_opt(self) -> Optional[int]:
+        return _FILES_API_V3_MAX_PART_SIZE
+
+    def _session_from(self, response: dict, path: str, overwrite_opt: Optional[bool]):
+        upload_id = response.get("upload_id")
+        if not upload_id:
+            raise ValueError(f"Unexpected server response: {response}")
+        return _FilesApiMultipartSession(self, path, upload_id)
+
+    def _complete_query(self, session_token: str) -> dict:
+        return {"action": "complete-upload", "upload_id": session_token}
+
+    def _abort_query(self, session_token: str) -> dict:
+        return {"action": "abort-upload", "upload_id": session_token}
 
 
 class _FilesApiMultipartSession(_MultipartUploadSession):

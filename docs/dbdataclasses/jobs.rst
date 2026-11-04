@@ -64,9 +64,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BEST_EFFORT
       :value: "BEST_EFFORT"
 
-   .. py:attribute:: CRITICAL
-      :value: "CRITICAL"
-
    .. py:attribute:: NORMAL
       :value: "NORMAL"
 

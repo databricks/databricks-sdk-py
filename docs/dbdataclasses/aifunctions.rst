@@ -67,3 +67,47 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: AiParseDocumentResponseMetadata
    :members:
    :undoc-members:
+
+.. autoclass:: Batch
+   :members:
+   :undoc-members:
+
+.. autoclass:: BatchRequestCounts
+   :members:
+   :undoc-members:
+
+.. py:class:: BatchStatus
+
+   The status of a batch.
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: CANCELLING
+      :value: "CANCELLING"
+
+   .. py:attribute:: COMPLETED
+      :value: "COMPLETED"
+
+   .. py:attribute:: EXPIRED
+      :value: "EXPIRED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: FINALIZING
+      :value: "FINALIZING"
+
+   .. py:attribute:: IN_PROGRESS
+      :value: "IN_PROGRESS"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+.. autoclass:: CancelBatchResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListBatchesResponse
+   :members:
+   :undoc-members:

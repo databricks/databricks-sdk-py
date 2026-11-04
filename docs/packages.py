@@ -172,6 +172,11 @@ AUTO_PACKAGES = [
         "Knowledge Assistants (legacy)",
         "Manage legacy Knowledge Assistants and related resources.",
     ),
+    Package(
+        "lakewatch",
+        "Lakewatch",
+        "Manage Lakewatch: security-analytics data sources, detection rules, and per-catalog configuration.",
+    ),
     Package("marketplace", "", ""),
     Package("ml", "", ""),
     Package("networking", "", ""),

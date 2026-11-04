@@ -33,6 +33,7 @@ from databricks.sdk.service import iam as pkg_iam
 from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
 from databricks.sdk.service import knowledgeassistants as pkg_knowledgeassistants
+from databricks.sdk.service import lakewatch as pkg_lakewatch
 from databricks.sdk.service import marketplace as pkg_marketplace
 from databricks.sdk.service import ml as pkg_ml
 from databricks.sdk.service import networking as pkg_networking
@@ -155,6 +156,7 @@ from databricks.sdk.service.jobs import JobsAPI
 from databricks.sdk.service.knowledgeassistants import KnowledgeAssistantsAPI
 from databricks.sdk.service.dashboards import LakeviewAPI
 from databricks.sdk.service.dashboards import LakeviewEmbeddedAPI
+from databricks.sdk.service.lakewatch import LakewatchAPI
 from databricks.sdk.service.compute import LibrariesAPI
 from databricks.sdk.service.settings import LlmProxyPartnerPoweredAccountAPI
 from databricks.sdk.service.settings import LlmProxyPartnerPoweredEnforceAPI
@@ -436,6 +438,7 @@ class WorkspaceClient:
         self._knowledge_assistants = pkg_knowledgeassistants.KnowledgeAssistantsAPI(self._api_client)
         self._lakeview = pkg_dashboards.LakeviewAPI(self._api_client)
         self._lakeview_embedded = pkg_dashboards.LakeviewEmbeddedAPI(self._api_client)
+        self._lakewatch = pkg_lakewatch.LakewatchAPI(self._api_client)
         self._libraries = pkg_compute.LibrariesAPI(self._api_client)
         self._materialized_features = pkg_ml.MaterializedFeaturesAPI(self._api_client)
         self._metastores = pkg_catalog.MetastoresAPI(self._api_client)
@@ -857,6 +860,11 @@ class WorkspaceClient:
     def lakeview_embedded(self) -> pkg_dashboards.LakeviewEmbeddedAPI:
         """Token-based Lakeview APIs for embedding dashboards in external applications."""
         return self._lakeview_embedded
+
+    @property
+    def lakewatch(self) -> pkg_lakewatch.LakewatchAPI:
+        """Manage Lakewatch: security-analytics data sources, detection rules, and per-catalog configuration."""
+        return self._lakewatch
 
     @property
     def libraries(self) -> pkg_compute.LibrariesAPI:

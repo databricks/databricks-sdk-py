@@ -659,10 +659,10 @@ class NotificationDestination:
     """Destination of the data quality monitoring notification."""
 
     destination_ids: Optional[List[str]] = None
-    """The notification-destination IDs (Slack / Teams / webhook) to send the notification to. The
-    destinations must already exist in the workspace; a workspace admin creates them. A maximum of
-    25 destination IDs is supported. Only supported on schema monitors, via
-    ``anomaly_detection_config``; rejected on table monitors."""
+    """The notification-destination IDs (Slack / Teams / webhook / Asana / ServiceNow / AWS
+    EventBridge) to send the notification to. The destinations must already exist in the workspace;
+    a workspace admin creates them. A maximum of 25 destination IDs is supported. Only supported on
+    schema monitors, via ``anomaly_detection_config``; rejected on table monitors."""
 
     destination_user_ids: Optional[List[int]] = None
     """The IDs of the workspace users to notify by email. A maximum of 25 user IDs is supported. Only

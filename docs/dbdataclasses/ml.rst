@@ -237,6 +237,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeclarativeFeature
+   :members:
+   :undoc-members:
+
+.. autoclass:: DefaultValue
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteCommentResponse
    :members:
    :undoc-members:
@@ -601,6 +609,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FeatureFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: FeatureFunctionInputBinding
+   :members:
+   :undoc-members:
+
 .. autoclass:: FeatureLineage
    :members:
    :undoc-members:
@@ -621,7 +637,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FeatureLookup
+   :members:
+   :undoc-members:
+
 .. autoclass:: FeatureReference
+   :members:
+   :undoc-members:
+
+.. autoclass:: FeatureSpec
    :members:
    :undoc-members:
 
@@ -630,6 +654,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: FeatureViewSource
+   :members:
+   :undoc-members:
+
+.. autoclass:: Features
    :members:
    :undoc-members:
 
@@ -1225,6 +1253,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CAN_READ
       :value: "CAN_READ"
 
+.. autoclass:: PipRequirements
+   :members:
+   :undoc-members:
+
 .. autoclass:: ProtoSchemaSpec
    :members:
    :undoc-members:
@@ -1265,8 +1297,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PENDING
       :value: "PENDING"
 
+   .. py:attribute:: PENDING_CLEANUP
+      :value: "PENDING_CLEANUP"
+
+   .. py:attribute:: PENDING_PURGE
+      :value: "PENDING_PURGE"
+
    .. py:attribute:: RUNNING
       :value: "RUNNING"
+
+   .. py:attribute:: RUNNING_CLEANUP
+      :value: "RUNNING_CLEANUP"
+
+   .. py:attribute:: RUNNING_PURGE
+      :value: "RUNNING_PURGE"
 
    .. py:attribute:: SUCCEEDED
       :value: "SUCCEEDED"
@@ -1409,6 +1453,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RenameModelResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: RenameOutput
    :members:
    :undoc-members:
 

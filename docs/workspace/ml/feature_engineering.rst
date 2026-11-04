@@ -62,6 +62,16 @@
         :returns: :class:`Feature`
         
 
+    .. py:method:: create_feature_spec(feature_spec: FeatureSpec) -> FeatureSpec
+
+        Create a feature spec.
+
+        :param feature_spec: :class:`FeatureSpec`
+          The feature spec to create.
+
+        :returns: :class:`FeatureSpec`
+        
+
     .. py:method:: create_kafka_config(kafka_config: KafkaConfig) -> KafkaConfig
 
         Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
@@ -114,6 +124,16 @@
 
         :param full_name: str
           Name of the feature to delete.
+
+
+        
+
+    .. py:method:: delete_feature_spec(name: str)
+
+        Delete a feature spec.
+
+        :param name: str
+          Three-part name (catalog.schema.feature_spec) of the feature spec to delete.
 
 
         
@@ -176,6 +196,16 @@
           Name of the feature to get.
 
         :returns: :class:`Feature`
+        
+
+    .. py:method:: get_feature_spec(name: str) -> FeatureSpec
+
+        Get a feature spec.
+
+        :param name: str
+          Three-part name (catalog.schema.feature_spec) of the feature spec to get.
+
+        :returns: :class:`FeatureSpec`
         
 
     .. py:method:: get_kafka_config(name: str) -> KafkaConfig
