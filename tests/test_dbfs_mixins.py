@@ -175,3 +175,30 @@ def test_volume_exists_reads_file_metadata_over_http(config, requests_mock):
 
     assert exists is True
     assert requests_mock.last_request.method == "HEAD"
+
+
+@pytest.mark.parametrize("payload", [b"", b"short data"])
+@pytest.mark.parametrize("stale_size", [False, True])
+@pytest.mark.parametrize("consume", ["read", "iterate"])
+def test_dbfs_read_stops_at_eof(config, requests_mock, payload, stale_size, consume):
+    path = "/tmp/truncated.txt"
+    requests_mock.get(
+        "http://localhost/api/2.0/dbfs/get-status",
+        json={"path": path, "is_dir": False, "file_size": len(payload) + (50 if stale_size else 0)},
+    )
+    eof_reads = 0
+
+    def read_chunk(request, context):
+        nonlocal eof_reads
+        offset = int(request.qs["offset"][0])
+        chunk = payload[offset:]
+        if not chunk:
+            eof_reads += 1
+            assert eof_reads <= 1, "reader repeated a request after EOF"
+        return {"bytes_read": len(chunk), "data": base64.b64encode(chunk).decode()}
+
+    requests_mock.get("http://localhost/api/2.0/dbfs/read", json=read_chunk)
+    with WorkspaceClient(config=config).dbfs.open(path, read=True) as stream:
+        result = stream.read() if consume == "read" else b"".join(stream)
+    assert result == payload
+    assert eof_reads == int(stale_size)
