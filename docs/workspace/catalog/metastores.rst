@@ -256,6 +256,18 @@
 
         
 
+    .. py:method:: undrop_metastore_by_id(id: str) -> MetastoreInfo
+
+        Restores a soft-deleted metastore identified by its ID. The caller must be an account admin. A
+        metastore may be eligible for restoration for up to five days after deletion. Restoration may become
+        unavailable earlier once permanent deletion begins. Returns the restored metastore.
+
+        :param id: str
+          Required. Id of the metastore to undrop.
+
+        :returns: :class:`MetastoreInfo`
+        
+
     .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[DeltaSharingScopeEnum], external_access_enabled: Optional[bool], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
 
 

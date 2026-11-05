@@ -1,5 +1,10 @@
 # Version changelog
 
+## Release v0.162.0 (2026-11-05)
+
+### API Changes
+* Add `undrop_metastore_by_id()` method for [w.metastores](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/metastores.html) workspace-level service.
+
 ## Release v0.161.0 (2026-11-04)
 
 ### New Features and Improvements

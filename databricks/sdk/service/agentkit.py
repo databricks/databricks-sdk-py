@@ -462,7 +462,9 @@ class ManagedMemoryEntry:
     applies across the actor's sessions."""
 
     source_type: Optional[ManagedMemoryEntrySourceType] = None
-    """Which writer created this entry. Caller sets this on Create; immutable after creation."""
+    """Which writer created this entry. Caller sets this on Create; immutable after creation. While the
+    workspace's default-source-type rollout flag is on, omitted or UNSPECIFIED is stored as AGENT.
+    While it is off, omitted is stored unset and UNSPECIFIED as UNSPECIFIED."""
 
     update_time: Optional[Timestamp] = None
     """Time when the entry was last updated."""

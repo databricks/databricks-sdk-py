@@ -385,16 +385,32 @@
 
     .. py:method:: update_materialization_set(materialization_set_id: str, materialization_set: MaterializationSet, update_mask: FieldMask [, request_id: Optional[str]]) -> UpdateMaterializationSetOperation
 
-        Update the materialization set's state to match the supplied materialization set. Changes are applied
-        member by member and are not atomic: when one member fails, the error reports which members were
-        already changed.
+        Updates a materialization set. Supports changing pause settings and deleting materialized features
+        from the set.
+
+        Changes are not atomic. Some updates or deletions may succeed even if the operation fails. Individual
+        outcomes are available in ``MaterializationSetUpdateProgress``.
 
         :param materialization_set_id: str
           Server-assigned unique identifier for the materialization set.
         :param materialization_set: :class:`MaterializationSet`
-          The desired state of the updated materialization set. materialization_set_id selects the set.
+          The desired state of the materialization set. ``materialization_set_id`` identifies the set.
+
+          A request that changes pause settings must request the same ``paused`` value for all retained
+          members with a cron schedule or table trigger.
         :param update_mask: FieldMask
-          The fields to update. Only 'materialized_features' or '*' is supported.
+          The fields to update, relative to the materialization set. Supported values are
+          ``materialized_features`` and ``*``.
+
+          The ``materialized_features`` mask updates retained members and deletes omitted materialized
+          features. The ``*`` mask selects all fields of the set and follows the same membership rules. Adding
+          members is not supported.
+
+          To change pause settings without changing membership, include every member of the set. An omitted
+          ``paused`` is reset to ``false``.
+
+          Fields outside the mask are unchanged. Trigger types and settings other than ``paused`` must remain
+          unchanged.
         :param request_id: str (optional)
           Idempotency token for the request. A second request carrying a token that has already been used
           returns the operation the first one created, whatever state it reached, and changes nothing further.

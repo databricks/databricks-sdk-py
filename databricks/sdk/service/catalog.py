@@ -17890,6 +17890,32 @@ class MetastoresAPI:
             "DELETE", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", query=query, headers=headers
         )
 
+    def undrop_metastore_by_id(self, id: str) -> MetastoreInfo:
+        """Restores a soft-deleted metastore identified by its ID. The caller must be an account admin. A
+        metastore may be eligible for restoration for up to five days after deletion. Restoration may become
+        unavailable earlier once permanent deletion begins. Returns the restored metastore.
+
+        :param id: str
+          Required. Id of the metastore to undrop.
+
+        :returns: :class:`MetastoreInfo`
+        """
+
+        body = {}
+        if id is not None:
+            body["id"] = id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/metastores:undropById", body=body, headers=headers)
+        return MetastoreInfo.from_dict(res)
+
     def update(
         self,
         id: str,
