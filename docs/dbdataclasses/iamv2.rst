@@ -10,6 +10,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: Entitlement
 
+   A permission to use part of a Databricks workspace.
+
    .. py:attribute:: ALLOW_CLUSTER_CREATE
       :value: "ALLOW_CLUSTER_CREATE"
 
@@ -54,7 +56,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: GroupMembershipSource
 
-   The source of the group membership (internal or from identity provider).
+   Where a group membership comes from.
 
    .. py:attribute:: IDENTITY_PROVIDER
       :value: "IDENTITY_PROVIDER"
@@ -104,7 +106,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PrincipalType
 
-   The type of the principal (user/sp/group).
+   The type of a principal.
 
    .. py:attribute:: GROUP
       :value: "GROUP"
@@ -137,7 +139,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: State
 
-   The activity status of a user or service principal in a Databricks account or workspace.
+   Whether a user or service principal is active in an account or workspace.
 
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
@@ -195,7 +197,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: WorkspaceIdentityDetailAssignmentType
 
-   The type of assignment the principal has to the workspace.
+   How a principal has access to a workspace.
 
    .. py:attribute:: DIRECT
       :value: "DIRECT"

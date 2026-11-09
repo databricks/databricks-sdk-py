@@ -47,6 +47,7 @@ from databricks.sdk.service import serving as pkg_serving
 from databricks.sdk.service import settings as pkg_settings
 from databricks.sdk.service import settingsv2 as pkg_settingsv2
 from databricks.sdk.service import sharing as pkg_sharing
+from databricks.sdk.service import softwareartifacts as pkg_softwareartifacts
 from databricks.sdk.service import sql as pkg_sql
 from databricks.sdk.service import supervisoragents as pkg_supervisoragents
 from databricks.sdk.service import tags as pkg_tags
@@ -214,6 +215,7 @@ from databricks.sdk.service.sandbox import SandboxAPI
 from databricks.sdk.service.catalog import SchemasAPI
 from databricks.sdk.service.workspace import SecretsAPI
 from databricks.sdk.service.catalog import SecretsUcAPI
+from databricks.sdk.service.compute import ServerlessComputeServiceAPI
 from databricks.sdk.service.oauth2 import ServicePrincipalFederationPolicyAPI
 from databricks.sdk.service.oauth2 import ServicePrincipalSecretsAPI
 from databricks.sdk.service.oauth2 import ServicePrincipalSecretsProxyAPI
@@ -225,6 +227,7 @@ from databricks.sdk.service.settings import SettingsAPI
 from databricks.sdk.service.settings import AccountSettingsAPI
 from databricks.sdk.service.settingsv2 import AccountSettingsV2API
 from databricks.sdk.service.sharing import SharesAPI
+from databricks.sdk.service.softwareartifacts import SoftwareArtifactsAPI
 from databricks.sdk.service.settings import SqlResultsDownloadAPI
 from databricks.sdk.service.sql import StatementExecutionAPI
 from databricks.sdk.service.provisioning import StorageAPI
@@ -483,6 +486,7 @@ class WorkspaceClient:
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
         self._secrets_uc = pkg_catalog.SecretsUcAPI(self._api_client)
+        self._serverless_compute_service = pkg_compute.ServerlessComputeServiceAPI(self._api_client)
         self._service_principal_secrets_proxy = pkg_oauth2.ServicePrincipalSecretsProxyAPI(self._api_client)
         self._service_principals_v2 = pkg_iam.ServicePrincipalsV2API(self._api_client)
         self._serving_endpoints = serving_endpoints
@@ -494,6 +498,7 @@ class WorkspaceClient:
         )
         self._settings = pkg_settings.SettingsAPI(self._api_client)
         self._shares = pkg_sharing.SharesAPI(self._api_client)
+        self._software_artifacts = pkg_softwareartifacts.SoftwareArtifactsAPI(self._api_client)
         self._statement_execution = pkg_sql.StatementExecutionAPI(self._api_client)
         self._storage_credentials = pkg_catalog.StorageCredentialsAPI(self._api_client)
         self._supervisor_agents = pkg_supervisoragents.SupervisorAgentsAPI(self._api_client)
@@ -1077,6 +1082,11 @@ class WorkspaceClient:
         return self._secrets_uc
 
     @property
+    def serverless_compute_service(self) -> pkg_compute.ServerlessComputeServiceAPI:
+        """ServerlessCompute Service API."""
+        return self._serverless_compute_service
+
+    @property
     def service_principal_secrets_proxy(self) -> pkg_oauth2.ServicePrincipalSecretsProxyAPI:
         """These APIs enable administrators to manage service principal secrets at the workspace level."""
         return self._service_principal_secrets_proxy
@@ -1105,6 +1115,11 @@ class WorkspaceClient:
     def shares(self) -> pkg_sharing.SharesAPI:
         """A share is a container instantiated with :method:shares/create."""
         return self._shares
+
+    @property
+    def software_artifacts(self) -> pkg_softwareartifacts.SoftwareArtifactsAPI:
+        """Manage software artifacts and their versions in Unity Catalog."""
+        return self._software_artifacts
 
     @property
     def statement_execution(self) -> pkg_sql.StatementExecutionAPI:

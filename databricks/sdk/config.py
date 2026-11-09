@@ -267,7 +267,7 @@ class Config:
     # Whether to ask the workspace which endpoints to use for file transfers (GET /api/2.0/fs/endpoints).
     # When disabled, or when the server cannot answer, the SDK uses a built-in order: presigned URLs, then
     # Files API 2.0 on the workspace host.
-    experimental_files_ext_enable_endpoints_api: bool = False
+    experimental_files_ext_enable_endpoints_api: bool = True
 
     def __init__(
         self,

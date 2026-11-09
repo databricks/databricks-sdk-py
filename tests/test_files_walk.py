@@ -342,10 +342,12 @@ def _read_body(request: requests.Request) -> bytes:
     return body.encode() if isinstance(body, str) else bytes(body)
 
 
-def _client(config: Config, storage_proxy: bool = False, endpoints_api: bool = False) -> WorkspaceClient:
+def _client(config: Config, storage_proxy: bool = False, endpoints_api: Optional[bool] = False) -> WorkspaceClient:
+    """endpoints_api=None keeps the flag's default."""
     config = config.copy()
     config.experimental_files_ext_enable_storage_proxy = storage_proxy
-    config.experimental_files_ext_enable_endpoints_api = endpoints_api
+    if endpoints_api is not None:
+        config.experimental_files_ext_enable_endpoints_api = endpoints_api
     config._header_factory = lambda: {"Authorization": "Bearer workspace-token"}
     config.files_ext_multipart_upload_min_stream_size = PART_SIZE
     config.files_ext_parallel_download_min_file_size = PART_SIZE
@@ -984,6 +986,16 @@ def test_upload_follows_the_workspace_list(config, tmp_path, source):
     assert server.endpoints_touched() == ["dp", "offload"]
     assert server.stored == {"offload": LARGE}
     server.assert_credentials()
+
+
+def test_transfers_follow_the_workspace_list_by_default(config, tmp_path):
+    server = FakeFilesServer(plan=RIG_PLAN)
+    w = _client(config, storage_proxy=False, endpoints_api=None)
+
+    _run(server, lambda: _upload(w, "file", LARGE, False, tmp_path))
+
+    assert server.endpoints_touched() == ["rig"]
+    assert server.stored == {"rig": LARGE}
 
 
 def test_server_list_takes_precedence_over_the_storage_proxy_probe(config, tmp_path):

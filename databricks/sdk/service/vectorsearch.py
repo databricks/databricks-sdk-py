@@ -630,6 +630,24 @@ class EndpointScalingInfo:
     """Scaling information for a Standard endpoint: the current scaling state, the requested QPS
     target, and the progress of an in-progress scaling change."""
 
+    delayed_reason: Optional[EndpointScalingInfoScalingDelayReason] = None
+    """Reason the in-progress scaling change is delayed. When set, ``estimated_completion_timestamp``
+    is unset. Unset when the change is not delayed or no scaling change is in progress."""
+
+    estimated_completion_timestamp: Optional[int] = None
+    """Estimated time at which the in-progress scaling change will complete, in milliseconds since the
+    Unix epoch. The estimate may change as the scaling change progresses. Unset when no scaling
+    change is in progress, when no estimate is available, or when the change is delayed (see
+    ``delayed_reason``)."""
+
+    index_initialization_percentage: Optional[int] = None
+    """Percentage of index initialization completed, from 0 to 100. Set only during the
+    ``INITIALIZING_INDEX`` phase; unset in other phases or when progress is not available."""
+
+    phase: Optional[EndpointScalingInfoScalingPhase] = None
+    """Current phase of the in-progress scaling change. Unset when no scaling change is in progress or
+    the phase is not available."""
+
     requested_target_qps: Optional[int] = None
     """The requested QPS target for the endpoint. Best-effort; the system does not guarantee this QPS
     will be achieved."""
@@ -637,28 +655,77 @@ class EndpointScalingInfo:
     state: Optional[ScalingChangeState] = None
     """The current state of the scaling change request."""
 
+    target_qps_change_allowed_after_timestamp: Optional[int] = None
+    """Earliest time a new Target QPS change is accepted, in milliseconds since the Unix epoch. Set
+    only while a scaling change is in progress, the change lock is on, and the endpoint has a
+    recorded last throughput change; may be in the past once the lock has expired."""
+
     def as_dict(self) -> dict:
         """Serializes the EndpointScalingInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.delayed_reason is not None:
+            body["delayed_reason"] = self.delayed_reason.value
+        if self.estimated_completion_timestamp is not None:
+            body["estimated_completion_timestamp"] = self.estimated_completion_timestamp
+        if self.index_initialization_percentage is not None:
+            body["index_initialization_percentage"] = self.index_initialization_percentage
+        if self.phase is not None:
+            body["phase"] = self.phase.value
         if self.requested_target_qps is not None:
             body["requested_target_qps"] = self.requested_target_qps
         if self.state is not None:
             body["state"] = self.state.value
+        if self.target_qps_change_allowed_after_timestamp is not None:
+            body["target_qps_change_allowed_after_timestamp"] = self.target_qps_change_allowed_after_timestamp
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EndpointScalingInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.delayed_reason is not None:
+            body["delayed_reason"] = self.delayed_reason
+        if self.estimated_completion_timestamp is not None:
+            body["estimated_completion_timestamp"] = self.estimated_completion_timestamp
+        if self.index_initialization_percentage is not None:
+            body["index_initialization_percentage"] = self.index_initialization_percentage
+        if self.phase is not None:
+            body["phase"] = self.phase
         if self.requested_target_qps is not None:
             body["requested_target_qps"] = self.requested_target_qps
         if self.state is not None:
             body["state"] = self.state
+        if self.target_qps_change_allowed_after_timestamp is not None:
+            body["target_qps_change_allowed_after_timestamp"] = self.target_qps_change_allowed_after_timestamp
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointScalingInfo:
         """Deserializes the EndpointScalingInfo from a dictionary."""
-        return cls(requested_target_qps=_int64(d, "requested_target_qps"), state=_enum(d, "state", ScalingChangeState))
+        return cls(
+            delayed_reason=_enum(d, "delayed_reason", EndpointScalingInfoScalingDelayReason),
+            estimated_completion_timestamp=_int64(d, "estimated_completion_timestamp"),
+            index_initialization_percentage=d.get("index_initialization_percentage", None),
+            phase=_enum(d, "phase", EndpointScalingInfoScalingPhase),
+            requested_target_qps=_int64(d, "requested_target_qps"),
+            state=_enum(d, "state", ScalingChangeState),
+            target_qps_change_allowed_after_timestamp=_int64(d, "target_qps_change_allowed_after_timestamp"),
+        )
+
+
+class EndpointScalingInfoScalingDelayReason(Enum):
+    """Reason an in-progress scaling change is delayed."""
+
+    CAPACITY_UNAVAILABLE = "CAPACITY_UNAVAILABLE"
+    SCALE_DOWN_BLOCKED = "SCALE_DOWN_BLOCKED"
+    TAKING_LONGER_THAN_EXPECTED = "TAKING_LONGER_THAN_EXPECTED"
+
+
+class EndpointScalingInfoScalingPhase(Enum):
+    """Phase of an in-progress scaling change."""
+
+    ADJUSTING_CAPACITY = "ADJUSTING_CAPACITY"
+    ESTIMATING = "ESTIMATING"
+    INITIALIZING_INDEX = "INITIALIZING_INDEX"
 
 
 @dataclass

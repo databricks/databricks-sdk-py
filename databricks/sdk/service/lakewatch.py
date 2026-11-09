@@ -483,21 +483,14 @@ class Datasource:
     ``effective_schema_name``."""
 
     datasource_name: str
-    """Name of the datasource in Unity Catalog, unique within its schema. Required on create and cannot
-    be changed afterward. Reads return the value as supplied; the datasource's current Unity Catalog
-    name, which reflects renames, is reported in ``effective_datasource_name``."""
+    """Name of the datasource in Unity Catalog, unique within its schema. Required on create and can be
+    updated within the same catalog and schema. Get synchronizes this field with the current Unity
+    Catalog name, also reported in ``effective_datasource_name``."""
 
     schedule: Schedule
     """Schedule on which the datasource's ingestion job runs. A datasource cannot be paused, so a
     request that sets ``schedule.enabled`` to ``false`` is rejected. Continuous schedules are not
     supported for Unity Catalog connection datasources."""
-
-    warehouse_id: str
-    """ID of the SQL warehouse that runs the checks Lakewatch performs to validate a create or update
-    request, such as source and destination access checks. Required and non-blank on every create
-    and update request; there is no default warehouse. The requester must be able to use the
-    warehouse. Used only for those checks: it is not stored, is not returned on reads, and does not
-    affect the compute that runs the ingestion job."""
 
     annotations: Optional[Dict[str, str]] = None
     """Free-form key-value annotations on the datasource, managed by the client."""
@@ -589,6 +582,13 @@ class Datasource:
     version: Optional[int] = None
     """Version number of the datasource, incremented on each update. Informational only; use ``etag``
     for optimistic concurrency control."""
+
+    warehouse_id: Optional[str] = None
+    """ID of the SQL warehouse that runs the checks Lakewatch performs to validate a create or update
+    request, such as source and destination access checks. Required and non-blank on every create
+    and update request except a rename-only PATCH; there is no default warehouse. The requester must
+    be able to use the warehouse. It is not stored, is not returned on reads, and does not affect
+    the compute that runs the ingestion job."""
 
     def as_dict(self) -> dict:
         """Serializes the Datasource into a dictionary suitable for use as a JSON request body."""
@@ -1512,8 +1512,9 @@ class Rule:
     ``effective_schema_name``."""
 
     rule_name: str
-    """Name of the rule within its Unity Catalog schema. Required. Cannot be changed after creation.
-    Reads return the value as supplied; the current UC name is reported in ``effective_rule_name``."""
+    """Name of the rule within its Unity Catalog schema. Required on create; can be updated within the
+    same catalog and schema. Get synchronizes this field with the current Unity Catalog name, also
+    reported in ``effective_rule_name``."""
 
     severity: str
     """Free-form severity label, such as ``Informational``, ``Medium``, ``High``, or ``Critical``."""

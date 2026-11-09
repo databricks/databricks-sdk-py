@@ -387,6 +387,783 @@ class CollaborationPlatformConnectivityMessageConnectivity(Enum):
 
 
 @dataclass
+class DashboardTheme:
+    """Theme settings for customizing AI/BI dashboard UI, including visualization colors, font colors,
+    background colors, and more."""
+
+    axis_line_color: Optional[DashboardThemeDashboardThemeColor] = None
+    """Color of the zero-value grid line, making it visually distinct from other grid lines."""
+
+    canvas_background_color: Optional[DashboardThemeDashboardThemeColor] = None
+    """The background color of the dashboard canvas."""
+
+    continuous_gradient: Optional[DashboardThemeContinuousGradient] = None
+    """The continuous gradient configuration for the dashboard."""
+
+    font_color: Optional[DashboardThemeDashboardThemeColor] = None
+    """The default font color applied to all text in the dashboard. Superseded by
+    font_settings.base.font_color when font_settings is set. More specific font settings in turn
+    override base."""
+
+    font_family: Optional[str] = None
+    """Font family to customize all text within the dashboard. Unsupported font names fall back to the
+    default font. Superseded by font_settings.base.font_family when font_settings is set."""
+
+    font_settings: Optional[DashboardThemeFontSettings] = None
+    """The per-category typography overrides for the dashboard."""
+
+    grid_line_color: Optional[DashboardThemeDashboardThemeColor] = None
+    """Color of chart grid lines in visualizations (horizontal and vertical guide lines)."""
+
+    mark_corner_radius: Optional[int] = None
+    """The corner radius in pixels for rectangular marks in visualizations (bars, columns, histogram
+    bins, etc.)."""
+
+    selection_color: Optional[DashboardThemeDashboardThemeColor] = None
+    """The highlight color for selected elements in widgets."""
+
+    sentiment_colors: Optional[DashboardThemeSentimentColors] = None
+    """The sentiment color palette for the dashboard."""
+
+    text_box_vertical_align: Optional[DashboardThemeVerticalAlign] = None
+    """The default vertical alignment for all text box widgets in the dashboard. Individual text box
+    widgets can override this."""
+
+    visualization_color_01: Optional[str] = None
+    """Color palette for visualizations. Colors are applied in order (visualization_color_01,
+    visualization_color_02, etc.). Invalid color values are preserved but ignored during rendering."""
+
+    visualization_color_02: Optional[str] = None
+    """The color at position 2 in the visualization color palette."""
+
+    visualization_color_03: Optional[str] = None
+    """The color at position 3 in the visualization color palette."""
+
+    visualization_color_04: Optional[str] = None
+    """The color at position 4 in the visualization color palette."""
+
+    visualization_color_05: Optional[str] = None
+    """The color at position 5 in the visualization color palette."""
+
+    visualization_color_06: Optional[str] = None
+    """The color at position 6 in the visualization color palette."""
+
+    visualization_color_07: Optional[str] = None
+    """The color at position 7 in the visualization color palette."""
+
+    visualization_color_08: Optional[str] = None
+    """The color at position 8 in the visualization color palette."""
+
+    visualization_color_09: Optional[str] = None
+    """The color at position 9 in the visualization color palette."""
+
+    visualization_color_10: Optional[str] = None
+    """The color at position 10 in the visualization color palette."""
+
+    visualization_color_11: Optional[str] = None
+    """The color at position 11 in the visualization color palette."""
+
+    visualization_color_12: Optional[str] = None
+    """The color at position 12 in the visualization color palette."""
+
+    visualization_color_13: Optional[str] = None
+    """The color at position 13 in the visualization color palette."""
+
+    visualization_color_14: Optional[str] = None
+    """The color at position 14 in the visualization color palette."""
+
+    visualization_color_15: Optional[str] = None
+    """The color at position 15 in the visualization color palette."""
+
+    visualization_color_16: Optional[str] = None
+    """The color at position 16 in the visualization color palette."""
+
+    visualization_color_17: Optional[str] = None
+    """The color at position 17 in the visualization color palette."""
+
+    visualization_color_18: Optional[str] = None
+    """The color at position 18 in the visualization color palette."""
+
+    visualization_color_19: Optional[str] = None
+    """The color at position 19 in the visualization color palette."""
+
+    visualization_color_20: Optional[str] = None
+    """The color at position 20 in the visualization color palette."""
+
+    widget_background_color: Optional[DashboardThemeDashboardThemeColor] = None
+    """The background color of widgets."""
+
+    widget_border_color: Optional[DashboardThemeDashboardThemeColor] = None
+    """The border color of widgets."""
+
+    widget_corner_radius: Optional[int] = None
+    """The widget border radius in pixels."""
+
+    widget_header_alignment: Optional[DashboardThemeAlignment] = None
+    """Alignment setting for all widget titles and descriptions at the dashboard level."""
+
+    widget_margin: Optional[int] = None
+    """The gap between widgets in pixels."""
+
+    widget_padding: Optional[int] = None
+    """The content padding inside each widget in pixels."""
+
+    widget_shadow: Optional[int] = None
+    """The shadow intensity level applied to widgets (0 = no shadow, 100 = maximum). The actual CSS
+    box-shadow is computed at render time from this value, factoring in background colors and color
+    mode."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardTheme into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.axis_line_color:
+            body["axis_line_color"] = self.axis_line_color.as_dict()
+        if self.canvas_background_color:
+            body["canvas_background_color"] = self.canvas_background_color.as_dict()
+        if self.continuous_gradient:
+            body["continuous_gradient"] = self.continuous_gradient.as_dict()
+        if self.font_color:
+            body["font_color"] = self.font_color.as_dict()
+        if self.font_family is not None:
+            body["font_family"] = self.font_family
+        if self.font_settings:
+            body["font_settings"] = self.font_settings.as_dict()
+        if self.grid_line_color:
+            body["grid_line_color"] = self.grid_line_color.as_dict()
+        if self.mark_corner_radius is not None:
+            body["mark_corner_radius"] = self.mark_corner_radius
+        if self.selection_color:
+            body["selection_color"] = self.selection_color.as_dict()
+        if self.sentiment_colors:
+            body["sentiment_colors"] = self.sentiment_colors.as_dict()
+        if self.text_box_vertical_align is not None:
+            body["text_box_vertical_align"] = self.text_box_vertical_align.value
+        if self.visualization_color_01 is not None:
+            body["visualization_color_01"] = self.visualization_color_01
+        if self.visualization_color_02 is not None:
+            body["visualization_color_02"] = self.visualization_color_02
+        if self.visualization_color_03 is not None:
+            body["visualization_color_03"] = self.visualization_color_03
+        if self.visualization_color_04 is not None:
+            body["visualization_color_04"] = self.visualization_color_04
+        if self.visualization_color_05 is not None:
+            body["visualization_color_05"] = self.visualization_color_05
+        if self.visualization_color_06 is not None:
+            body["visualization_color_06"] = self.visualization_color_06
+        if self.visualization_color_07 is not None:
+            body["visualization_color_07"] = self.visualization_color_07
+        if self.visualization_color_08 is not None:
+            body["visualization_color_08"] = self.visualization_color_08
+        if self.visualization_color_09 is not None:
+            body["visualization_color_09"] = self.visualization_color_09
+        if self.visualization_color_10 is not None:
+            body["visualization_color_10"] = self.visualization_color_10
+        if self.visualization_color_11 is not None:
+            body["visualization_color_11"] = self.visualization_color_11
+        if self.visualization_color_12 is not None:
+            body["visualization_color_12"] = self.visualization_color_12
+        if self.visualization_color_13 is not None:
+            body["visualization_color_13"] = self.visualization_color_13
+        if self.visualization_color_14 is not None:
+            body["visualization_color_14"] = self.visualization_color_14
+        if self.visualization_color_15 is not None:
+            body["visualization_color_15"] = self.visualization_color_15
+        if self.visualization_color_16 is not None:
+            body["visualization_color_16"] = self.visualization_color_16
+        if self.visualization_color_17 is not None:
+            body["visualization_color_17"] = self.visualization_color_17
+        if self.visualization_color_18 is not None:
+            body["visualization_color_18"] = self.visualization_color_18
+        if self.visualization_color_19 is not None:
+            body["visualization_color_19"] = self.visualization_color_19
+        if self.visualization_color_20 is not None:
+            body["visualization_color_20"] = self.visualization_color_20
+        if self.widget_background_color:
+            body["widget_background_color"] = self.widget_background_color.as_dict()
+        if self.widget_border_color:
+            body["widget_border_color"] = self.widget_border_color.as_dict()
+        if self.widget_corner_radius is not None:
+            body["widget_corner_radius"] = self.widget_corner_radius
+        if self.widget_header_alignment is not None:
+            body["widget_header_alignment"] = self.widget_header_alignment.value
+        if self.widget_margin is not None:
+            body["widget_margin"] = self.widget_margin
+        if self.widget_padding is not None:
+            body["widget_padding"] = self.widget_padding
+        if self.widget_shadow is not None:
+            body["widget_shadow"] = self.widget_shadow
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardTheme into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.axis_line_color:
+            body["axis_line_color"] = self.axis_line_color
+        if self.canvas_background_color:
+            body["canvas_background_color"] = self.canvas_background_color
+        if self.continuous_gradient:
+            body["continuous_gradient"] = self.continuous_gradient
+        if self.font_color:
+            body["font_color"] = self.font_color
+        if self.font_family is not None:
+            body["font_family"] = self.font_family
+        if self.font_settings:
+            body["font_settings"] = self.font_settings
+        if self.grid_line_color:
+            body["grid_line_color"] = self.grid_line_color
+        if self.mark_corner_radius is not None:
+            body["mark_corner_radius"] = self.mark_corner_radius
+        if self.selection_color:
+            body["selection_color"] = self.selection_color
+        if self.sentiment_colors:
+            body["sentiment_colors"] = self.sentiment_colors
+        if self.text_box_vertical_align is not None:
+            body["text_box_vertical_align"] = self.text_box_vertical_align
+        if self.visualization_color_01 is not None:
+            body["visualization_color_01"] = self.visualization_color_01
+        if self.visualization_color_02 is not None:
+            body["visualization_color_02"] = self.visualization_color_02
+        if self.visualization_color_03 is not None:
+            body["visualization_color_03"] = self.visualization_color_03
+        if self.visualization_color_04 is not None:
+            body["visualization_color_04"] = self.visualization_color_04
+        if self.visualization_color_05 is not None:
+            body["visualization_color_05"] = self.visualization_color_05
+        if self.visualization_color_06 is not None:
+            body["visualization_color_06"] = self.visualization_color_06
+        if self.visualization_color_07 is not None:
+            body["visualization_color_07"] = self.visualization_color_07
+        if self.visualization_color_08 is not None:
+            body["visualization_color_08"] = self.visualization_color_08
+        if self.visualization_color_09 is not None:
+            body["visualization_color_09"] = self.visualization_color_09
+        if self.visualization_color_10 is not None:
+            body["visualization_color_10"] = self.visualization_color_10
+        if self.visualization_color_11 is not None:
+            body["visualization_color_11"] = self.visualization_color_11
+        if self.visualization_color_12 is not None:
+            body["visualization_color_12"] = self.visualization_color_12
+        if self.visualization_color_13 is not None:
+            body["visualization_color_13"] = self.visualization_color_13
+        if self.visualization_color_14 is not None:
+            body["visualization_color_14"] = self.visualization_color_14
+        if self.visualization_color_15 is not None:
+            body["visualization_color_15"] = self.visualization_color_15
+        if self.visualization_color_16 is not None:
+            body["visualization_color_16"] = self.visualization_color_16
+        if self.visualization_color_17 is not None:
+            body["visualization_color_17"] = self.visualization_color_17
+        if self.visualization_color_18 is not None:
+            body["visualization_color_18"] = self.visualization_color_18
+        if self.visualization_color_19 is not None:
+            body["visualization_color_19"] = self.visualization_color_19
+        if self.visualization_color_20 is not None:
+            body["visualization_color_20"] = self.visualization_color_20
+        if self.widget_background_color:
+            body["widget_background_color"] = self.widget_background_color
+        if self.widget_border_color:
+            body["widget_border_color"] = self.widget_border_color
+        if self.widget_corner_radius is not None:
+            body["widget_corner_radius"] = self.widget_corner_radius
+        if self.widget_header_alignment is not None:
+            body["widget_header_alignment"] = self.widget_header_alignment
+        if self.widget_margin is not None:
+            body["widget_margin"] = self.widget_margin
+        if self.widget_padding is not None:
+            body["widget_padding"] = self.widget_padding
+        if self.widget_shadow is not None:
+            body["widget_shadow"] = self.widget_shadow
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardTheme:
+        """Deserializes the DashboardTheme from a dictionary."""
+        return cls(
+            axis_line_color=_from_dict(d, "axis_line_color", DashboardThemeDashboardThemeColor),
+            canvas_background_color=_from_dict(d, "canvas_background_color", DashboardThemeDashboardThemeColor),
+            continuous_gradient=_from_dict(d, "continuous_gradient", DashboardThemeContinuousGradient),
+            font_color=_from_dict(d, "font_color", DashboardThemeDashboardThemeColor),
+            font_family=d.get("font_family", None),
+            font_settings=_from_dict(d, "font_settings", DashboardThemeFontSettings),
+            grid_line_color=_from_dict(d, "grid_line_color", DashboardThemeDashboardThemeColor),
+            mark_corner_radius=d.get("mark_corner_radius", None),
+            selection_color=_from_dict(d, "selection_color", DashboardThemeDashboardThemeColor),
+            sentiment_colors=_from_dict(d, "sentiment_colors", DashboardThemeSentimentColors),
+            text_box_vertical_align=_enum(d, "text_box_vertical_align", DashboardThemeVerticalAlign),
+            visualization_color_01=d.get("visualization_color_01", None),
+            visualization_color_02=d.get("visualization_color_02", None),
+            visualization_color_03=d.get("visualization_color_03", None),
+            visualization_color_04=d.get("visualization_color_04", None),
+            visualization_color_05=d.get("visualization_color_05", None),
+            visualization_color_06=d.get("visualization_color_06", None),
+            visualization_color_07=d.get("visualization_color_07", None),
+            visualization_color_08=d.get("visualization_color_08", None),
+            visualization_color_09=d.get("visualization_color_09", None),
+            visualization_color_10=d.get("visualization_color_10", None),
+            visualization_color_11=d.get("visualization_color_11", None),
+            visualization_color_12=d.get("visualization_color_12", None),
+            visualization_color_13=d.get("visualization_color_13", None),
+            visualization_color_14=d.get("visualization_color_14", None),
+            visualization_color_15=d.get("visualization_color_15", None),
+            visualization_color_16=d.get("visualization_color_16", None),
+            visualization_color_17=d.get("visualization_color_17", None),
+            visualization_color_18=d.get("visualization_color_18", None),
+            visualization_color_19=d.get("visualization_color_19", None),
+            visualization_color_20=d.get("visualization_color_20", None),
+            widget_background_color=_from_dict(d, "widget_background_color", DashboardThemeDashboardThemeColor),
+            widget_border_color=_from_dict(d, "widget_border_color", DashboardThemeDashboardThemeColor),
+            widget_corner_radius=d.get("widget_corner_radius", None),
+            widget_header_alignment=_enum(d, "widget_header_alignment", DashboardThemeAlignment),
+            widget_margin=d.get("widget_margin", None),
+            widget_padding=d.get("widget_padding", None),
+            widget_shadow=d.get("widget_shadow", None),
+        )
+
+
+class DashboardThemeAlignment(Enum):
+    """Horizontal alignment options for widget titles and descriptions."""
+
+    CENTER = "CENTER"
+    LEFT = "LEFT"
+    RIGHT = "RIGHT"
+
+
+@dataclass
+class DashboardThemeContinuousGradient:
+    """Configuration for continuous color gradients, with separate values for light and dark mode. Each
+    mode's gradient can reference the visualization color palette via from_categorical_index, use a
+    named color scheme, or define a custom sequential or diverging ramp."""
+
+    dark_mode: Optional[DashboardThemeContinuousGradientGradientValue] = None
+    """Gradient value used when the dashboard is rendered in dark mode."""
+
+    light_mode: Optional[DashboardThemeContinuousGradientGradientValue] = None
+    """Gradient value used when the dashboard is rendered in light mode."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardThemeContinuousGradient into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dark_mode:
+            body["dark_mode"] = self.dark_mode.as_dict()
+        if self.light_mode:
+            body["light_mode"] = self.light_mode.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardThemeContinuousGradient into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dark_mode:
+            body["dark_mode"] = self.dark_mode
+        if self.light_mode:
+            body["light_mode"] = self.light_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardThemeContinuousGradient:
+        """Deserializes the DashboardThemeContinuousGradient from a dictionary."""
+        return cls(
+            dark_mode=_from_dict(d, "dark_mode", DashboardThemeContinuousGradientGradientValue),
+            light_mode=_from_dict(d, "light_mode", DashboardThemeContinuousGradientGradientValue),
+        )
+
+
+@dataclass
+class DashboardThemeContinuousGradientCustomDivergingRamp:
+    """A custom three-stop diverging gradient ramp."""
+
+    end: Optional[DashboardThemeDashboardThemeColor] = None
+    """The color at the end of the gradient (highest value)."""
+
+    mid: Optional[DashboardThemeDashboardThemeColor] = None
+    """The color at the midpoint of the gradient."""
+
+    start: Optional[DashboardThemeDashboardThemeColor] = None
+    """The color at the start of the gradient (lowest value)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardThemeContinuousGradientCustomDivergingRamp into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.end:
+            body["end"] = self.end.as_dict()
+        if self.mid:
+            body["mid"] = self.mid.as_dict()
+        if self.start:
+            body["start"] = self.start.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardThemeContinuousGradientCustomDivergingRamp into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.end:
+            body["end"] = self.end
+        if self.mid:
+            body["mid"] = self.mid
+        if self.start:
+            body["start"] = self.start
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardThemeContinuousGradientCustomDivergingRamp:
+        """Deserializes the DashboardThemeContinuousGradientCustomDivergingRamp from a dictionary."""
+        return cls(
+            end=_from_dict(d, "end", DashboardThemeDashboardThemeColor),
+            mid=_from_dict(d, "mid", DashboardThemeDashboardThemeColor),
+            start=_from_dict(d, "start", DashboardThemeDashboardThemeColor),
+        )
+
+
+@dataclass
+class DashboardThemeContinuousGradientCustomSequentialRamp:
+    """A custom two-stop sequential gradient ramp."""
+
+    end: Optional[DashboardThemeDashboardThemeColor] = None
+    """The color at the end of the gradient (highest value)."""
+
+    start: Optional[DashboardThemeDashboardThemeColor] = None
+    """The color at the start of the gradient (lowest value)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardThemeContinuousGradientCustomSequentialRamp into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.end:
+            body["end"] = self.end.as_dict()
+        if self.start:
+            body["start"] = self.start.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardThemeContinuousGradientCustomSequentialRamp into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.end:
+            body["end"] = self.end
+        if self.start:
+            body["start"] = self.start
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardThemeContinuousGradientCustomSequentialRamp:
+        """Deserializes the DashboardThemeContinuousGradientCustomSequentialRamp from a dictionary."""
+        return cls(
+            end=_from_dict(d, "end", DashboardThemeDashboardThemeColor),
+            start=_from_dict(d, "start", DashboardThemeDashboardThemeColor),
+        )
+
+
+@dataclass
+class DashboardThemeContinuousGradientGradientValue:
+    """The gradient for one color mode. Set at most one field."""
+
+    color: Optional[str] = None
+    """A static color string (for example, '#FF0000')."""
+
+    color_scheme: Optional[str] = None
+    """A named color scheme (for example, 'blues', 'viridis', 'spectral')."""
+
+    custom_diverging: Optional[DashboardThemeContinuousGradientCustomDivergingRamp] = None
+    """A custom three-stop diverging gradient."""
+
+    custom_sequential: Optional[DashboardThemeContinuousGradientCustomSequentialRamp] = None
+    """A custom two-stop sequential gradient."""
+
+    from_categorical_index: Optional[int] = None
+    """A 0-based index into the visualization color palette, where 0 is visualization_color_01. Valid
+    values are 0 to 19."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardThemeContinuousGradientGradientValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.color is not None:
+            body["color"] = self.color
+        if self.color_scheme is not None:
+            body["color_scheme"] = self.color_scheme
+        if self.custom_diverging:
+            body["custom_diverging"] = self.custom_diverging.as_dict()
+        if self.custom_sequential:
+            body["custom_sequential"] = self.custom_sequential.as_dict()
+        if self.from_categorical_index is not None:
+            body["from_categorical_index"] = self.from_categorical_index
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardThemeContinuousGradientGradientValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.color is not None:
+            body["color"] = self.color
+        if self.color_scheme is not None:
+            body["color_scheme"] = self.color_scheme
+        if self.custom_diverging:
+            body["custom_diverging"] = self.custom_diverging
+        if self.custom_sequential:
+            body["custom_sequential"] = self.custom_sequential
+        if self.from_categorical_index is not None:
+            body["from_categorical_index"] = self.from_categorical_index
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardThemeContinuousGradientGradientValue:
+        """Deserializes the DashboardThemeContinuousGradientGradientValue from a dictionary."""
+        return cls(
+            color=d.get("color", None),
+            color_scheme=d.get("color_scheme", None),
+            custom_diverging=_from_dict(d, "custom_diverging", DashboardThemeContinuousGradientCustomDivergingRamp),
+            custom_sequential=_from_dict(d, "custom_sequential", DashboardThemeContinuousGradientCustomSequentialRamp),
+            from_categorical_index=d.get("from_categorical_index", None),
+        )
+
+
+@dataclass
+class DashboardThemeDashboardThemeColor:
+    """Represents a color value with optional overrides for light and dark modes. Authors can customize
+    colors separately to cater to each mode, based on the viewer's user-level theme preference."""
+
+    dark: Optional[str] = None
+    """The color used when the dashboard is rendered in dark mode (for example, '#FF0000')."""
+
+    light: Optional[str] = None
+    """The color used when the dashboard is rendered in light mode (for example, '#FF0000')."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardThemeDashboardThemeColor into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dark is not None:
+            body["dark"] = self.dark
+        if self.light is not None:
+            body["light"] = self.light
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardThemeDashboardThemeColor into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dark is not None:
+            body["dark"] = self.dark
+        if self.light is not None:
+            body["light"] = self.light
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardThemeDashboardThemeColor:
+        """Deserializes the DashboardThemeDashboardThemeColor from a dictionary."""
+        return cls(dark=d.get("dark", None), light=d.get("light", None))
+
+
+@dataclass
+class DashboardThemeFontConfig:
+    """Defines the typography settings for a single text category."""
+
+    font_color: Optional[DashboardThemeDashboardThemeColor] = None
+    """The font color applied to text in this category."""
+
+    font_family: Optional[str] = None
+    """The font family name used for text in this category."""
+
+    font_size: Optional[int] = None
+    """The font size in pixels."""
+
+    font_style: Optional[DashboardThemeFontStyle] = None
+    """The font style (slant) applied to text in this category."""
+
+    font_weight: Optional[int] = None
+    """The font weight value (for example, 400 for normal, 700 for bold)."""
+
+    text_case: Optional[DashboardThemeTextCase] = None
+    """The text case transformation applied to text in this category."""
+
+    text_decoration: Optional[DashboardThemeTextDecoration] = None
+    """The text decoration applied to text in this category."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardThemeFontConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.font_color:
+            body["font_color"] = self.font_color.as_dict()
+        if self.font_family is not None:
+            body["font_family"] = self.font_family
+        if self.font_size is not None:
+            body["font_size"] = self.font_size
+        if self.font_style is not None:
+            body["font_style"] = self.font_style.value
+        if self.font_weight is not None:
+            body["font_weight"] = self.font_weight
+        if self.text_case is not None:
+            body["text_case"] = self.text_case.value
+        if self.text_decoration is not None:
+            body["text_decoration"] = self.text_decoration.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardThemeFontConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.font_color:
+            body["font_color"] = self.font_color
+        if self.font_family is not None:
+            body["font_family"] = self.font_family
+        if self.font_size is not None:
+            body["font_size"] = self.font_size
+        if self.font_style is not None:
+            body["font_style"] = self.font_style
+        if self.font_weight is not None:
+            body["font_weight"] = self.font_weight
+        if self.text_case is not None:
+            body["text_case"] = self.text_case
+        if self.text_decoration is not None:
+            body["text_decoration"] = self.text_decoration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardThemeFontConfig:
+        """Deserializes the DashboardThemeFontConfig from a dictionary."""
+        return cls(
+            font_color=_from_dict(d, "font_color", DashboardThemeDashboardThemeColor),
+            font_family=d.get("font_family", None),
+            font_size=d.get("font_size", None),
+            font_style=_enum(d, "font_style", DashboardThemeFontStyle),
+            font_weight=d.get("font_weight", None),
+            text_case=_enum(d, "text_case", DashboardThemeTextCase),
+            text_decoration=_enum(d, "text_decoration", DashboardThemeTextDecoration),
+        )
+
+
+@dataclass
+class DashboardThemeFontSettings:
+    """Per-category typography overrides. When font_settings.base is set, it takes precedence over the
+    top-level font_family and font_color. More specific categories (widget_title,
+    widget_description, field_title, field_value) in turn override base."""
+
+    base: Optional[DashboardThemeFontConfig] = None
+    """The default font config applied to all text unless overridden by a more specific category."""
+
+    field_title: Optional[DashboardThemeFontConfig] = None
+    """The font config applied to field titles (for example, axis titles, table heading titles)."""
+
+    field_value: Optional[DashboardThemeFontConfig] = None
+    """The font config applied to field values (for example, axis tick labels, table cell values,
+    tooltip values)."""
+
+    widget_description: Optional[DashboardThemeFontConfig] = None
+    """The font config applied to widget descriptions."""
+
+    widget_title: Optional[DashboardThemeFontConfig] = None
+    """The font config applied to widget titles."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardThemeFontSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.base:
+            body["base"] = self.base.as_dict()
+        if self.field_title:
+            body["field_title"] = self.field_title.as_dict()
+        if self.field_value:
+            body["field_value"] = self.field_value.as_dict()
+        if self.widget_description:
+            body["widget_description"] = self.widget_description.as_dict()
+        if self.widget_title:
+            body["widget_title"] = self.widget_title.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardThemeFontSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.base:
+            body["base"] = self.base
+        if self.field_title:
+            body["field_title"] = self.field_title
+        if self.field_value:
+            body["field_value"] = self.field_value
+        if self.widget_description:
+            body["widget_description"] = self.widget_description
+        if self.widget_title:
+            body["widget_title"] = self.widget_title
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardThemeFontSettings:
+        """Deserializes the DashboardThemeFontSettings from a dictionary."""
+        return cls(
+            base=_from_dict(d, "base", DashboardThemeFontConfig),
+            field_title=_from_dict(d, "field_title", DashboardThemeFontConfig),
+            field_value=_from_dict(d, "field_value", DashboardThemeFontConfig),
+            widget_description=_from_dict(d, "widget_description", DashboardThemeFontConfig),
+            widget_title=_from_dict(d, "widget_title", DashboardThemeFontConfig),
+        )
+
+
+class DashboardThemeFontStyle(Enum):
+    """Defines the font style (slant) applied to rendered text."""
+
+    FONT_STYLE_ITALIC = "FONT_STYLE_ITALIC"
+    FONT_STYLE_NORMAL = "FONT_STYLE_NORMAL"
+
+
+@dataclass
+class DashboardThemeSentimentColors:
+    """Shared sentiment colors reusable across visualizations, primarily for conditional formatting,
+    ensuring consistent positive, negative, and neutral meaning throughout the dashboard."""
+
+    negative: Optional[DashboardThemeDashboardThemeColor] = None
+    """The color applied to negative sentiment values."""
+
+    neutral: Optional[DashboardThemeDashboardThemeColor] = None
+    """The color applied to neutral sentiment values."""
+
+    positive: Optional[DashboardThemeDashboardThemeColor] = None
+    """The color applied to positive sentiment values."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardThemeSentimentColors into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.negative:
+            body["negative"] = self.negative.as_dict()
+        if self.neutral:
+            body["neutral"] = self.neutral.as_dict()
+        if self.positive:
+            body["positive"] = self.positive.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardThemeSentimentColors into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.negative:
+            body["negative"] = self.negative
+        if self.neutral:
+            body["neutral"] = self.neutral
+        if self.positive:
+            body["positive"] = self.positive
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardThemeSentimentColors:
+        """Deserializes the DashboardThemeSentimentColors from a dictionary."""
+        return cls(
+            negative=_from_dict(d, "negative", DashboardThemeDashboardThemeColor),
+            neutral=_from_dict(d, "neutral", DashboardThemeDashboardThemeColor),
+            positive=_from_dict(d, "positive", DashboardThemeDashboardThemeColor),
+        )
+
+
+class DashboardThemeTextCase(Enum):
+    """Defines the text case transformation applied to rendered text."""
+
+    TEXT_CASE_CAPITALIZE = "TEXT_CASE_CAPITALIZE"
+    TEXT_CASE_LOWERCASE = "TEXT_CASE_LOWERCASE"
+    TEXT_CASE_UPPERCASE = "TEXT_CASE_UPPERCASE"
+
+
+class DashboardThemeTextDecoration(Enum):
+    """Defines the decoration line applied to rendered text."""
+
+    TEXT_DECORATION_NONE = "TEXT_DECORATION_NONE"
+    TEXT_DECORATION_UNDERLINE = "TEXT_DECORATION_UNDERLINE"
+
+
+class DashboardThemeVerticalAlign(Enum):
+    """Vertical alignment options for text box content."""
+
+    VERTICAL_ALIGN_BOTTOM = "VERTICAL_ALIGN_BOTTOM"
+    VERTICAL_ALIGN_CENTER = "VERTICAL_ALIGN_CENTER"
+    VERTICAL_ALIGN_TOP = "VERTICAL_ALIGN_TOP"
+
+
+@dataclass
 class IntegerMessage:
     value: Optional[int] = None
 
@@ -701,6 +1478,10 @@ class Setting:
     """Effective setting value for string type setting. This is the final effective value of setting.
     To set a value use string_val."""
 
+    effective_workspace_dashboard_theme: Optional[DashboardTheme] = None
+    """Effective setting value for the workspace_dashboard_theme setting. This is the final effective
+    value of the setting. To set a value, use workspace_dashboard_theme."""
+
     effective_workspace_label: Optional[WorkspaceLabelMessage] = None
     """Effective setting value for workspace_label setting. This is the final effective value of
     setting. To set a value use workspace_label."""
@@ -727,6 +1508,10 @@ class Setting:
     string_val: Optional[StringMessage] = None
     """Setting value for string type setting. This is the setting value set by consumers, check
     effective_string_val for final setting value."""
+
+    workspace_dashboard_theme: Optional[DashboardTheme] = None
+    """Setting value for the workspace_dashboard_theme setting. This is the setting value set by
+    consumers. Check effective_workspace_dashboard_theme for the final setting value."""
 
     workspace_label: Optional[WorkspaceLabelMessage] = None
     """Setting value for workspace_label setting. This is the setting value set by consumers, check
@@ -779,6 +1564,8 @@ class Setting:
             body["effective_restrict_workspace_admins"] = self.effective_restrict_workspace_admins.as_dict()
         if self.effective_string_val:
             body["effective_string_val"] = self.effective_string_val.as_dict()
+        if self.effective_workspace_dashboard_theme:
+            body["effective_workspace_dashboard_theme"] = self.effective_workspace_dashboard_theme.as_dict()
         if self.effective_workspace_label:
             body["effective_workspace_label"] = self.effective_workspace_label.as_dict()
         if self.integer_val:
@@ -793,6 +1580,8 @@ class Setting:
             body["restrict_workspace_admins"] = self.restrict_workspace_admins.as_dict()
         if self.string_val:
             body["string_val"] = self.string_val.as_dict()
+        if self.workspace_dashboard_theme:
+            body["workspace_dashboard_theme"] = self.workspace_dashboard_theme.as_dict()
         if self.workspace_label:
             body["workspace_label"] = self.workspace_label.as_dict()
         return body
@@ -838,6 +1627,8 @@ class Setting:
             body["effective_restrict_workspace_admins"] = self.effective_restrict_workspace_admins
         if self.effective_string_val:
             body["effective_string_val"] = self.effective_string_val
+        if self.effective_workspace_dashboard_theme:
+            body["effective_workspace_dashboard_theme"] = self.effective_workspace_dashboard_theme
         if self.effective_workspace_label:
             body["effective_workspace_label"] = self.effective_workspace_label
         if self.integer_val:
@@ -852,6 +1643,8 @@ class Setting:
             body["restrict_workspace_admins"] = self.restrict_workspace_admins
         if self.string_val:
             body["string_val"] = self.string_val
+        if self.workspace_dashboard_theme:
+            body["workspace_dashboard_theme"] = self.workspace_dashboard_theme
         if self.workspace_label:
             body["workspace_label"] = self.workspace_label
         return body
@@ -899,6 +1692,7 @@ class Setting:
                 d, "effective_restrict_workspace_admins", RestrictWorkspaceAdminsMessage
             ),
             effective_string_val=_from_dict(d, "effective_string_val", StringMessage),
+            effective_workspace_dashboard_theme=_from_dict(d, "effective_workspace_dashboard_theme", DashboardTheme),
             effective_workspace_label=_from_dict(d, "effective_workspace_label", WorkspaceLabelMessage),
             integer_val=_from_dict(d, "integer_val", IntegerMessage),
             name=d.get("name", None),
@@ -908,6 +1702,7 @@ class Setting:
             personal_compute=_from_dict(d, "personal_compute", PersonalComputeMessage),
             restrict_workspace_admins=_from_dict(d, "restrict_workspace_admins", RestrictWorkspaceAdminsMessage),
             string_val=_from_dict(d, "string_val", StringMessage),
+            workspace_dashboard_theme=_from_dict(d, "workspace_dashboard_theme", DashboardTheme),
             workspace_label=_from_dict(d, "workspace_label", WorkspaceLabelMessage),
         )
 

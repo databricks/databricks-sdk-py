@@ -1,3 +1,4 @@
+import functools
 import io
 import json
 import logging
@@ -19,6 +20,9 @@ from .logger import RoundTrip
 from .retries import retried
 
 logger = logging.getLogger("databricks.sdk")
+
+# HTTP methods that are not safe to retry by default in the Databricks REST API.
+_NON_IDEMPOTENT_HTTP_METHODS = frozenset({"POST"})
 
 
 def _json_default(o: Any) -> Any:
@@ -189,11 +193,12 @@ class _BaseClient:
         if isinstance(data, (str, bytes)):
             data = io.BytesIO(data.encode("utf-8") if isinstance(data, str) else data)
 
+        is_retryable = functools.partial(self._is_retryable, method=method)
         if not data:
             # The request is not a stream.
             call = retried(
                 timeout=timedelta(seconds=self._retry_timeout_seconds),
-                is_retryable=self._is_retryable,
+                is_retryable=is_retryable,
                 clock=self._clock,
             )(self._perform)
         elif self._is_seekable_stream(data):
@@ -207,7 +212,7 @@ class _BaseClient:
 
             call = retried(
                 timeout=timedelta(seconds=self._retry_timeout_seconds),
-                is_retryable=self._is_retryable,
+                is_retryable=is_retryable,
                 clock=self._clock,
                 before_retry=rewind,
             )(self._perform)
@@ -250,7 +255,7 @@ class _BaseClient:
         return {**resp, **json_response}
 
     @staticmethod
-    def _is_retryable(err: BaseException) -> Optional[str]:
+    def _is_retryable(err: BaseException, method: Optional[str] = None) -> Optional[str]:
         # this method is Databricks-specific port of urllib3 retries
         # (see https://github.com/urllib3/urllib3/blob/main/src/urllib3/util/retry.py)
         # and Databricks SDK for Go retries
@@ -271,6 +276,11 @@ class _BaseClient:
         if isinstance(err, requests.Timeout):
             # corresponds to `TLS handshake timeout` and `i/o timeout` in Go.
             #
+            # A connect timeout is a ConnectionError and returns above, so the request was sent and
+            # the server may have executed it. Repeating a non-idempotent method (POST) would apply
+            # its side effect twice.
+            if method is not None and method.upper() in _NON_IDEMPOTENT_HTTP_METHODS:
+                return None
             # return a simple string for debug log readability, as `raise TimeoutError(...) from err`
             # will bubble up the original exception in case we reach max retries.
             return "timeout"

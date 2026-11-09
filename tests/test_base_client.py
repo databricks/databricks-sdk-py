@@ -9,7 +9,7 @@ from typing import Callable, Iterator, List, Optional, Tuple, Type
 from unittest.mock import Mock
 
 import pytest
-from requests import PreparedRequest, Response, Timeout
+from requests import ConnectTimeout, PreparedRequest, ReadTimeout, Response
 
 from databricks.sdk import errors, useragent
 from databricks.sdk._base_client import _BaseClient, _json_default, _RawResponse, _StreamingResponse
@@ -450,7 +450,8 @@ class MockSession:
 
     @classmethod
     def raise_timeout_exception(cls):
-        raise Timeout("Fake timeout")
+        # A connect timeout is retried for every HTTP method, including the POST used below.
+        raise ConnectTimeout("Fake timeout")
 
     @classmethod
     def return_retryable_response(cls):
@@ -539,7 +540,7 @@ class MockSession:
 @pytest.mark.parametrize(
     "failure",
     [
-        [MockSession.raise_timeout_exception, Timeout],
+        [MockSession.raise_timeout_exception, ConnectTimeout],
         [MockSession.return_retryable_response, errors.TooManyRequests],
     ],
 )
@@ -565,6 +566,80 @@ def test_rewind_seekable_stream(test_case: RetryTestCase, failure: Tuple[Callabl
         do()
 
     assert session._received_requests == [test_case._expected_result for _ in range(expected_attempts_made)]
+
+
+class _FailOnceSession:
+    """Session stub that raises the given exception on the first request and succeeds afterwards."""
+
+    def __init__(self, exception: BaseException):
+        self._exception = exception
+        self.methods: List[str] = []
+        self.bodies: List[Optional[bytes]] = []
+
+    def request(self, method, url, **kwargs):
+        self.methods.append(method)
+        data = kwargs.get("data")
+        self.bodies.append(data.read() if data is not None else None)
+        if len(self.methods) == 1:
+            raise self._exception
+        response = Response()
+        response._content = b""
+        response.status_code = 200
+        response.reason = "OK"
+        response.url = url
+        response.request = PreparedRequest()
+        response.request.url = url
+        response.request.method = method
+        response.request.headers = kwargs.get("headers")
+        response.request.body = b""
+        return response
+
+
+def _do_with_failing_session(method: str, exception: BaseException, data=None) -> _FailOnceSession:
+    session = _FailOnceSession(exception)
+    client = _BaseClient(clock=FakeClock())
+    client._session = session
+    client.do(method, "http://test.com/foo", data=data)
+    return session
+
+
+@pytest.mark.parametrize("method", ["POST", "post"])
+def test_read_timeout_not_retried_for_non_idempotent_method(method):
+    # The server may have received and executed the request. Repeating it without an
+    # idempotency key would run the side effect twice, so the error surfaces unchanged.
+    with pytest.raises(ReadTimeout):
+        _do_with_failing_session(method, ReadTimeout("read timed out"))
+
+
+@pytest.mark.parametrize("method", ["GET", "PUT", "PATCH", "DELETE"])
+def test_read_timeout_retried_for_idempotent_method(method):
+    session = _do_with_failing_session(method, ReadTimeout("read timed out"))
+    assert session.methods == [method, method]
+
+
+def test_read_timeout_not_retried_for_non_idempotent_method_with_stream_body():
+    # The seekable-stream path in do() builds its own retry loop; it must apply the same rule.
+    with pytest.raises(ReadTimeout):
+        _do_with_failing_session("POST", ReadTimeout("read timed out"), data=io.BytesIO(b"payload"))
+
+
+def test_read_timeout_retried_for_idempotent_method_with_stream_body():
+    session = _do_with_failing_session("PUT", ReadTimeout("read timed out"), data=io.BytesIO(b"payload"))
+    assert session.methods == ["PUT", "PUT"]
+    # The stream is rewound before the retry, so both attempts send the full body.
+    assert session.bodies == [b"payload", b"payload"]
+
+
+@pytest.mark.parametrize("method", ["POST", "GET"])
+def test_connect_timeout_retried_for_any_method(method):
+    # The request never left the client, so repeating it is always safe.
+    session = _do_with_failing_session(method, ConnectTimeout("connect timed out"))
+    assert session.methods == [method, method]
+
+
+def test_is_retryable_without_method_keeps_timeouts_retryable():
+    # Callers outside do() classify errors without an HTTP method; they keep the broad behavior.
+    assert _BaseClient._is_retryable(ReadTimeout("read timed out")) == "timeout"
 
 
 @dataclass

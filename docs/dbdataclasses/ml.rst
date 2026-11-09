@@ -605,6 +605,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ExternalTrigger
+   :members:
+   :undoc-members:
+
 .. autoclass:: Feature
    :members:
    :undoc-members:
@@ -1071,6 +1075,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MaterializationRunProgress
+   :members:
+   :undoc-members:
+
+.. py:class:: MaterializationRunProgressState
+
+   Lifecycle state of a requested materialization run.
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
+
 .. autoclass:: MaterializationSet
    :members:
    :undoc-members:
@@ -1101,6 +1128,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SUCCEEDED
       :value: "SUCCEEDED"
+
+.. autoclass:: MaterializationSetTriggerProgress
+   :members:
+   :undoc-members:
 
 .. autoclass:: MaterializationSetUpdateProgress
    :members:
@@ -1781,6 +1812,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TransitionStageResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: TriggerMaterializationSetResponse
    :members:
    :undoc-members:
 
