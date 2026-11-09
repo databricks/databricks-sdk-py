@@ -17,6 +17,27 @@
     resource contains this full path and is output-only. Note that ``name`` refers to this resource path, not
     the user-visible ``display_name``.
 
+    .. py:method:: acknowledge_assessment_warnings(name: str) -> AcknowledgeAssessmentWarningsOperation
+
+        Acknowledges non-blocking warnings on a specific assessment.
+
+        :param name: str
+          Required. The assessment resource name, in the format
+          ``migrations/{migration}/assessments/{assessment}``.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: assess_migration(name: str) -> AssessMigrationOperation
+
+        Creates an immutable assessment run for the migration's current source configuration.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: create_branch(parent: str, branch: Branch, branch_id: str [, replace_existing: Optional[bool]]) -> CreateBranchOperation
 
         Creates a new database branch in the project.
@@ -122,6 +143,20 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_migration(migration: Migration, migration_id: str) -> CreateMigrationOperation
+
+        Creates a migration.
+
+        :param migration: :class:`Migration`
+          Required. The migration to create.
+        :param migration_id: str
+          Required. The ID to use for the migration. It becomes the final component of the resource name
+          (``migrations/{migration_id}``). It must be 1-63 characters long, start with a lowercase letter, and
+          contain only lowercase letters, numbers, and hyphens.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: create_project(project: Project, project_id: str) -> CreateProjectOperation
 
         Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute
@@ -152,10 +187,12 @@
 
           When the role already exists, only mutable fields are updated. Attributes omitted from the request
           retain their current values. Set an attribute explicitly to false to disable it. ``identity_type``,
-          ``auth_method``, and ``postgres_role`` retain their existing values; supplied values for these
-          fields are ignored. ``membership_roles`` is overwritten, not merged. Leaving ``membership_roles``
-          empty clears all of the role's existing memberships, including ``DATABRICKS_SUPERUSER``. Always send
-          the complete desired list of memberships when using this field.
+          ``auth_method``, and ``postgres_role`` retain their existing values. Omit these fields or supply
+          their current values. A differing supplied value returns INVALID_PARAMETER_VALUE and rejects the
+          entire request, including changes to mutable fields. ``membership_roles`` is overwritten, not
+          merged. Leaving ``membership_roles`` empty clears all of the role's existing memberships, including
+          ``DATABRICKS_SUPERUSER``. Always send the complete desired list of memberships when using this
+          field.
         :param role_id: str (optional)
           The ID to use for the Role, which will become the final component of the role's resource name. This
           ID becomes the role in Postgres.
@@ -275,6 +312,16 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: delete_migration(name: str) -> DeleteMigrationOperation
+
+        Soft-deletes a migration.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: delete_project(name: str [, purge: Optional[bool]]) -> DeleteProjectOperation
 
         Deletes the specified database project.
@@ -341,6 +388,17 @@
           minutes) and at most 3600 seconds (1 hour).
 
         :returns: :class:`DatabaseCredential`
+        
+
+    .. py:method:: get_assessment(name: str) -> Assessment
+
+        Gets a migration assessment run.
+
+        :param name: str
+          Required. The assessment resource name, in the format
+          ``migrations/{migration}/assessments/{assessment}``.
+
+        :returns: :class:`Assessment`
         
 
     .. py:method:: get_branch(name: str) -> Branch
@@ -422,6 +480,16 @@
         :returns: :class:`Endpoint`
         
 
+    .. py:method:: get_migration(name: str) -> Migration
+
+        Gets a migration.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
+
+        :returns: :class:`Migration`
+        
+
     .. py:method:: get_operation(name: str) -> Operation
 
         Retrieves the status of a long-running operation.
@@ -485,6 +553,21 @@
           where (catalog, schema, table) are the entity names in the Unity Catalog.
 
         :returns: :class:`SyncedTable`
+        
+
+    .. py:method:: list_assessments(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Assessment]
+
+        Lists assessment runs for a migration.
+
+        :param parent: str
+          Required. The parent migration resource name, in the format ``migrations/{migration}``.
+        :param page_size: int (optional)
+          The maximum number of assessments to return. The server default is 100; values above 1000 are capped
+          to 1000.
+        :param page_token: str (optional)
+          A page token from a previous call.
+
+        :returns: Iterator over :class:`Assessment`
         
 
     .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str], show_deleted: Optional[bool]]) -> Iterator[Branch]
@@ -566,6 +649,22 @@
         :returns: Iterator over :class:`Endpoint`
         
 
+    .. py:method:: list_migrations( [, page_size: Optional[int], page_token: Optional[str], show_deleted: Optional[bool]]) -> Iterator[Migration]
+
+        Lists migrations in the workspace.
+
+        :param page_size: int (optional)
+          The maximum number of migrations to return. The server default is 100; values above 1000 are capped
+          to 1000.
+        :param page_token: str (optional)
+          A page token from a previous call.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted migrations in the response. Hard-deleted and already-purged
+          migrations are never returned.
+
+        :returns: Iterator over :class:`Migration`
+        
+
     .. py:method:: list_projects( [, page_size: Optional[int], page_token: Optional[str], show_deleted: Optional[bool]]) -> Iterator[Project]
 
         Returns a paginated list of database projects in the workspace that the user has permission to access.
@@ -620,12 +719,34 @@
         :returns: :class:`RevealRolePasswordResponse`
         
 
+    .. py:method:: start_migration(name: str) -> StartMigrationOperation
+
+        Starts the assessed migration named in the request, moving it from READY_TO_START into execution. Its
+        first phase, SCHEMA_LOAD, creates the target databases, roles, and schema on the migration's target
+        Lakebase branch without copying any table data, ahead of INITIAL_DATA_LOAD.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: undelete_branch(name: str) -> UndeleteBranchOperation
 
         Undeletes the specified database branch.
 
         :param name: str
           The full resource path of the branch to undelete. Format: projects/{project_id}/branches/{branch_id}
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: undelete_migration(name: str) -> UndeleteMigrationOperation
+
+        Restores a soft-deleted migration before it is permanently purged.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
 
         :returns: :class:`Operation`
         
@@ -710,6 +831,20 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: update_migration(name: str, migration: Migration, update_mask: FieldMask) -> UpdateMigrationOperation
+
+        Updates user-owned migration configuration.
+
+        :param name: str
+          The migration resource name, in the format ``migrations/{migration}``.
+        :param migration: :class:`Migration`
+          Required. The migration containing the user-owned fields to update.
+        :param update_mask: FieldMask
+          Required. The fields to update.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: update_project(name: str, project: Project, update_mask: FieldMask) -> UpdateProjectOperation
 
         Updates the specified database project.
@@ -748,14 +883,13 @@
           The list of fields to update. Supported fields are ``spec.membership_roles``,
           ``spec.attributes.createdb``, ``spec.attributes.createrole``, and ``spec.attributes.bypassrls``.
 
-          ``spec.identity_type``, ``spec.auth_method``, and ``spec.postgres_role`` cannot be changed. Values
-          supplied for these fields in the request body are ignored. Including one of these fields as an
-          explicit path in update_mask returns an INVALID_PARAMETER_VALUE error. When ``spec`` is the only
-          path in the mask, only the supplied mutable attributes are updated. ``*`` by itself, or ``spec``
-          combined with other supported paths, selects all supported mutable fields. For these masks, all
-          three attributes (``createdb``, ``createrole``, and ``bypassrls``) must be supplied; omitting any
-          returns an INVALID_PARAMETER_VALUE error. Each of these mask forms replaces ``membership_roles``.
-          Omitting it or supplying an empty list clears all memberships, including ``DATABRICKS_SUPERUSER``.
+          ``spec.identity_type``, ``spec.auth_method``, and ``spec.postgres_role`` cannot be changed.
+          Including an immutable field as an explicit path in update_mask returns INVALID_PARAMETER_VALUE.
+          With ``*`` or masks containing only mutable fields, supplied values for these immutable fields are
+          ignored. ``*`` by itself selects all supported mutable fields. For this mask, all three attributes
+          (``createdb``, ``createrole``, and ``bypassrls``) must be supplied; omitting any returns an
+          INVALID_PARAMETER_VALUE error. The ``*`` mask replaces ``membership_roles``. Omitting it or
+          supplying an empty list clears all memberships, including ``DATABRICKS_SUPERUSER``.
 
         :returns: :class:`Operation`
         

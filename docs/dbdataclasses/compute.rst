@@ -12,7 +12,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AllowedComputeProducts
+   :members:
+   :undoc-members:
+
 .. autoclass:: AutoScale
+   :members:
+   :undoc-members:
+
+.. autoclass:: AutomatedConstraints
    :members:
    :undoc-members:
 
@@ -225,6 +233,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "RUNNING"
 
 .. autoclass:: CommandStatusResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ComputePolicy
    :members:
    :undoc-members:
 
@@ -821,6 +833,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CLASSIC_PREVIEW
       :value: "CLASSIC_PREVIEW"
 
+.. autoclass:: LakebaseConstraints
+   :members:
+   :undoc-members:
+
 .. py:class:: Language
 
    .. py:attribute:: PYTHON
@@ -911,6 +927,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DEFAULT
       :value: "DEFAULT"
 
+.. autoclass:: ListComputePoliciesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListGlobalInitScriptsResponse
    :members:
    :undoc-members:
@@ -932,6 +952,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListPolicyFamiliesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListServerlessComputesResponse
    :members:
    :undoc-members:
 
@@ -1019,6 +1043,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RateLimitConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: RemoveResponse
    :members:
    :undoc-members:
@@ -1064,6 +1092,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STANDARD"
 
 .. autoclass:: S3StorageInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ServerlessCompute
    :members:
    :undoc-members:
 
@@ -1696,6 +1728,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
+
+.. py:class:: TshirtSize
+
+   T-shirt size for per-workload Spark executor limits.
+
+   .. py:attribute:: T_SHIRT_SIZE_2X_LARGE
+      :value: "T_SHIRT_SIZE_2X_LARGE"
+
+   .. py:attribute:: T_SHIRT_SIZE_3X_LARGE
+      :value: "T_SHIRT_SIZE_3X_LARGE"
+
+   .. py:attribute:: T_SHIRT_SIZE_4X_LARGE
+      :value: "T_SHIRT_SIZE_4X_LARGE"
+
+   .. py:attribute:: T_SHIRT_SIZE_LARGE
+      :value: "T_SHIRT_SIZE_LARGE"
+
+   .. py:attribute:: T_SHIRT_SIZE_MEDIUM
+      :value: "T_SHIRT_SIZE_MEDIUM"
+
+   .. py:attribute:: T_SHIRT_SIZE_SMALL
+      :value: "T_SHIRT_SIZE_SMALL"
+
+   .. py:attribute:: T_SHIRT_SIZE_UNSPECIFIED
+      :value: "T_SHIRT_SIZE_UNSPECIFIED"
+
+   .. py:attribute:: T_SHIRT_SIZE_X_LARGE
+      :value: "T_SHIRT_SIZE_X_LARGE"
 
 .. autoclass:: UninstallLibrariesResponse
    :members:

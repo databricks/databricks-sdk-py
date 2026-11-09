@@ -43,6 +43,7 @@ Dataclasses
    settings
    settingsv2
    sharing
+   softwareartifacts
    sql
    supervisoragents
    tags

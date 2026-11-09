@@ -67,6 +67,32 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: EndpointScalingInfoScalingDelayReason
+
+   Reason an in-progress scaling change is delayed.
+
+   .. py:attribute:: CAPACITY_UNAVAILABLE
+      :value: "CAPACITY_UNAVAILABLE"
+
+   .. py:attribute:: SCALE_DOWN_BLOCKED
+      :value: "SCALE_DOWN_BLOCKED"
+
+   .. py:attribute:: TAKING_LONGER_THAN_EXPECTED
+      :value: "TAKING_LONGER_THAN_EXPECTED"
+
+.. py:class:: EndpointScalingInfoScalingPhase
+
+   Phase of an in-progress scaling change.
+
+   .. py:attribute:: ADJUSTING_CAPACITY
+      :value: "ADJUSTING_CAPACITY"
+
+   .. py:attribute:: ESTIMATING
+      :value: "ESTIMATING"
+
+   .. py:attribute:: INITIALIZING_INDEX
+      :value: "INITIALIZING_INDEX"
+
 .. autoclass:: EndpointStatus
    :members:
    :undoc-members:

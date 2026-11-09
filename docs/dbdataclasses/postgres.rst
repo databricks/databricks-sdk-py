@@ -4,6 +4,70 @@ Postgres
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.postgres`` module.
 
 .. py:currentmodule:: databricks.sdk.service.postgres
+.. autoclass:: AcknowledgeAssessmentWarningsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AssessMigrationResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: Assessment
+   :members:
+   :undoc-members:
+
+.. autoclass:: AssessmentCheck
+   :members:
+   :undoc-members:
+
+.. autoclass:: AssessmentCheckDetails
+   :members:
+   :undoc-members:
+
+.. py:class:: AssessmentCheckVerdict
+
+   The verdict of a single assessment check.
+
+   .. py:attribute:: ASSESSMENT_CHECK_VERDICT_ACTION_REQUIRED
+      :value: "ASSESSMENT_CHECK_VERDICT_ACTION_REQUIRED"
+
+   .. py:attribute:: ASSESSMENT_CHECK_VERDICT_ERROR
+      :value: "ASSESSMENT_CHECK_VERDICT_ERROR"
+
+   .. py:attribute:: ASSESSMENT_CHECK_VERDICT_PASS
+      :value: "ASSESSMENT_CHECK_VERDICT_PASS"
+
+   .. py:attribute:: ASSESSMENT_CHECK_VERDICT_UNSUPPORTED
+      :value: "ASSESSMENT_CHECK_VERDICT_UNSUPPORTED"
+
+   .. py:attribute:: ASSESSMENT_CHECK_VERDICT_WARNING
+      :value: "ASSESSMENT_CHECK_VERDICT_WARNING"
+
+.. py:class:: AssessmentState
+
+   The aggregate state of an assessment run.
+
+   .. py:attribute:: ASSESSMENT_STATE_ASSESSING
+      :value: "ASSESSMENT_STATE_ASSESSING"
+
+   .. py:attribute:: ASSESSMENT_STATE_AWAITING_ACK
+      :value: "ASSESSMENT_STATE_AWAITING_ACK"
+
+   .. py:attribute:: ASSESSMENT_STATE_BLOCKED
+      :value: "ASSESSMENT_STATE_BLOCKED"
+
+   .. py:attribute:: ASSESSMENT_STATE_EXPIRED
+      :value: "ASSESSMENT_STATE_EXPIRED"
+
+   .. py:attribute:: ASSESSMENT_STATE_FAILED
+      :value: "ASSESSMENT_STATE_FAILED"
+
+   .. py:attribute:: ASSESSMENT_STATE_NEEDS_ACTION
+      :value: "ASSESSMENT_STATE_NEEDS_ACTION"
+
+   .. py:attribute:: ASSESSMENT_STATE_READY
+      :value: "ASSESSMENT_STATE_READY"
+
 .. autoclass:: Branch
    :members:
    :undoc-members:
@@ -122,7 +186,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DatabaseMapping
+   :members:
+   :undoc-members:
+
 .. autoclass:: DatabaseOperationMetadata
+   :members:
+   :undoc-members:
+
+.. autoclass:: DatabaseSizeDetails
    :members:
    :undoc-members:
 
@@ -472,6 +544,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListAssessmentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListBranchesResponse
    :members:
    :undoc-members:
@@ -492,6 +568,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListMigrationsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListProjectsResponse
    :members:
    :undoc-members:
@@ -503,6 +583,60 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ListSnapshotsResponse
    :members:
    :undoc-members:
+
+.. autoclass:: LongTransactionDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: Migration
+   :members:
+   :undoc-members:
+
+.. autoclass:: MigrationError
+   :members:
+   :undoc-members:
+
+.. autoclass:: MigrationOperationMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: MigrationState
+
+   The lifecycle state of a migration.
+
+   .. py:attribute:: MIGRATION_STATE_ASSESSING
+      :value: "MIGRATION_STATE_ASSESSING"
+
+   .. py:attribute:: MIGRATION_STATE_ASSESSMENT_NEEDS_ACTION
+      :value: "MIGRATION_STATE_ASSESSMENT_NEEDS_ACTION"
+
+   .. py:attribute:: MIGRATION_STATE_COMPLETED
+      :value: "MIGRATION_STATE_COMPLETED"
+
+   .. py:attribute:: MIGRATION_STATE_DRAFT
+      :value: "MIGRATION_STATE_DRAFT"
+
+   .. py:attribute:: MIGRATION_STATE_FAILED
+      :value: "MIGRATION_STATE_FAILED"
+
+   .. py:attribute:: MIGRATION_STATE_INITIAL_DATA_LOAD
+      :value: "MIGRATION_STATE_INITIAL_DATA_LOAD"
+
+   .. py:attribute:: MIGRATION_STATE_READY_TO_START
+      :value: "MIGRATION_STATE_READY_TO_START"
+
+   .. py:attribute:: MIGRATION_STATE_SCHEMA_LOAD
+      :value: "MIGRATION_STATE_SCHEMA_LOAD"
+
+.. py:class:: MigrationType
+
+   The intended data transfer mode of a migration.
+
+   .. py:attribute:: MIGRATION_TYPE_ONE_TIME_COPY
+      :value: "MIGRATION_TYPE_ONE_TIME_COPY"
+
+   .. py:attribute:: MIGRATION_TYPE_ONLINE
+      :value: "MIGRATION_TYPE_ONLINE"
 
 .. autoclass:: MonthlySchedule
    :members:
@@ -691,6 +825,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: StartMigrationResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: SyncedTable
    :members:
    :undoc-members:
@@ -790,6 +928,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SyncedTableSyncedTableStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: UndeleteMigrationResponse
    :members:
    :undoc-members:
 

@@ -1179,6 +1179,15 @@ class CronSchedule:
     mode: Optional[CronScheduleMode] = None
     """How the schedule is determined. Defaults to MANUAL when unset."""
 
+    paused: Optional[bool] = None
+    """Whether automatic materialization is paused. Defaults to ``false``. Supported only for
+    materializations in a materialization set. Use the ``UpdateMaterializationSet`` API to pause or
+    resume the set.
+    
+    Pausing does not cancel running or queued runs. Runs can still be triggered through the
+    ``TriggerMaterializationSet`` API. Resuming does not submit a run. Creating a paused
+    materialization skips its initial run."""
+
     timezone_id: Optional[str] = None
     """A Java timezone ID. The schedule is resolved with respect to this timezone. Defaults to UTC when
     omitted. Can only be configured for MANUAL schedules; DERIVED schedules are always aligned to
@@ -1191,6 +1200,8 @@ class CronSchedule:
             body["cron_expression"] = self.cron_expression
         if self.mode is not None:
             body["mode"] = self.mode.value
+        if self.paused is not None:
+            body["paused"] = self.paused
         if self.timezone_id is not None:
             body["timezone_id"] = self.timezone_id
         return body
@@ -1202,6 +1213,8 @@ class CronSchedule:
             body["cron_expression"] = self.cron_expression
         if self.mode is not None:
             body["mode"] = self.mode
+        if self.paused is not None:
+            body["paused"] = self.paused
         if self.timezone_id is not None:
             body["timezone_id"] = self.timezone_id
         return body
@@ -1212,6 +1225,7 @@ class CronSchedule:
         return cls(
             cron_expression=d.get("cron_expression", None),
             mode=_enum(d, "mode", CronScheduleMode),
+            paused=d.get("paused", None),
             timezone_id=d.get("timezone_id", None),
         )
 
@@ -2444,6 +2458,28 @@ class ExperimentTraceLocation:
     def from_dict(cls, d: Dict[str, Any]) -> ExperimentTraceLocation:
         """Deserializes the ExperimentTraceLocation from a dictionary."""
         return cls(uc_trace_location=_from_dict(d, "uc_trace_location", UcTraceLocation))
+
+
+@dataclass
+class ExternalTrigger:
+    """A trigger that disables automatic materialization, including the initial run at creation. Runs
+    are instead triggered through the ``TriggerMaterializationSet`` API. Supported only for batch
+    materializations in a materialization set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalTrigger into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalTrigger into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalTrigger:
+        """Deserializes the ExternalTrigger from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -5755,6 +5791,61 @@ class MaterializationNotifications:
 
 
 @dataclass
+class MaterializationRunProgress:
+    """Progress of a requested run, which may materialize multiple members of the set."""
+
+    error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
+    """The failure, including a failure to submit the run. Present when ``state`` is ``FAILED``."""
+
+    materialized_feature_ids: Optional[List[str]] = None
+    """IDs of the materialized features assigned to this run when the operation was created."""
+
+    state: Optional[MaterializationRunProgressState] = None
+    """Current state of the requested run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializationRunProgress into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error:
+            body["error"] = self.error.as_dict()
+        if self.materialized_feature_ids:
+            body["materialized_feature_ids"] = [v for v in self.materialized_feature_ids]
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializationRunProgress into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error:
+            body["error"] = self.error
+        if self.materialized_feature_ids:
+            body["materialized_feature_ids"] = self.materialized_feature_ids
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializationRunProgress:
+        """Deserializes the MaterializationRunProgress from a dictionary."""
+        return cls(
+            error=_from_dict(d, "error", DatabricksServiceExceptionWithDetailsProto),
+            materialized_feature_ids=d.get("materialized_feature_ids", None),
+            state=_enum(d, "state", MaterializationRunProgressState),
+        )
+
+
+class MaterializationRunProgressState(Enum):
+    """Lifecycle state of a requested materialization run."""
+
+    CANCELLED = "CANCELLED"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
+
+
+@dataclass
 class MaterializationSet:
     """A group of materialized features created and managed as a single unit."""
 
@@ -5863,6 +5954,9 @@ class MaterializationSetOperationMetadata:
     state: Optional[MaterializationSetOperationMetadataState] = None
     """Current state of the operation."""
 
+    trigger_progress: Optional[MaterializationSetTriggerProgress] = None
+    """Set by a ``TriggerMaterializationSet`` operation."""
+
     update_progress: Optional[MaterializationSetUpdateProgress] = None
     """Set by an ``UpdateMaterializationSet`` operation."""
 
@@ -5879,6 +5973,8 @@ class MaterializationSetOperationMetadata:
             body["materialization_set_id"] = self.materialization_set_id
         if self.state is not None:
             body["state"] = self.state.value
+        if self.trigger_progress:
+            body["trigger_progress"] = self.trigger_progress.as_dict()
         if self.update_progress:
             body["update_progress"] = self.update_progress.as_dict()
         return body
@@ -5896,6 +5992,8 @@ class MaterializationSetOperationMetadata:
             body["materialization_set_id"] = self.materialization_set_id
         if self.state is not None:
             body["state"] = self.state
+        if self.trigger_progress:
+            body["trigger_progress"] = self.trigger_progress
         if self.update_progress:
             body["update_progress"] = self.update_progress
         return body
@@ -5909,6 +6007,7 @@ class MaterializationSetOperationMetadata:
             feature_full_names=d.get("feature_full_names", None),
             materialization_set_id=d.get("materialization_set_id", None),
             state=_enum(d, "state", MaterializationSetOperationMetadataState),
+            trigger_progress=_from_dict(d, "trigger_progress", MaterializationSetTriggerProgress),
             update_progress=_from_dict(d, "update_progress", MaterializationSetUpdateProgress),
         )
 
@@ -5921,6 +6020,37 @@ class MaterializationSetOperationMetadataState(Enum):
     PENDING = "PENDING"
     RUNNING = "RUNNING"
     SUCCEEDED = "SUCCEEDED"
+
+
+@dataclass
+class MaterializationSetTriggerProgress:
+    """Progress and outcomes of the runs requested by ``TriggerMaterializationSet``. Entries remain
+    available after the operation finishes.
+
+    Once all requested runs have finished, the operation fails if any run failed. Otherwise, it is
+    cancelled if any run was cancelled, and succeeds if all runs succeeded."""
+
+    runs: Optional[List[MaterializationRunProgress]] = None
+    """One entry per requested run, including runs that fail or are cancelled before submission."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializationSetTriggerProgress into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.runs:
+            body["runs"] = [v.as_dict() for v in self.runs]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializationSetTriggerProgress into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.runs:
+            body["runs"] = self.runs
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializationSetTriggerProgress:
+        """Deserializes the MaterializationSetTriggerProgress from a dictionary."""
+        return cls(runs=_repeated_dict(d, "runs", MaterializationRunProgress))
 
 
 @dataclass
@@ -6021,6 +6151,11 @@ class MaterializedFeature:
     cron_schedule_trigger: Optional[CronSchedule] = None
     """A cron-based schedule trigger for batch materialization."""
 
+    external_trigger: Optional[ExternalTrigger] = None
+    """A trigger that disables automatic materialization, including the initial run at creation. Runs
+    are instead triggered through the ``TriggerMaterializationSet`` API. Supported only for batch
+    materializations in a materialization set."""
+
     is_online: Optional[bool] = None
     """True if this is an online materialized feature. False if it is an offline materialized feature."""
 
@@ -6091,6 +6226,8 @@ class MaterializedFeature:
             body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
             body["cron_schedule_trigger"] = self.cron_schedule_trigger.as_dict()
+        if self.external_trigger:
+            body["external_trigger"] = self.external_trigger.as_dict()
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.is_online is not None:
@@ -6134,6 +6271,8 @@ class MaterializedFeature:
             body["cron_schedule"] = self.cron_schedule
         if self.cron_schedule_trigger:
             body["cron_schedule_trigger"] = self.cron_schedule_trigger
+        if self.external_trigger:
+            body["external_trigger"] = self.external_trigger
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.is_online is not None:
@@ -6175,6 +6314,7 @@ class MaterializedFeature:
             budget_policy_id=d.get("budget_policy_id", None),
             cron_schedule=d.get("cron_schedule", None),
             cron_schedule_trigger=_from_dict(d, "cron_schedule_trigger", CronSchedule),
+            external_trigger=_from_dict(d, "external_trigger", ExternalTrigger),
             feature_name=d.get("feature_name", None),
             is_online=d.get("is_online", None),
             job_id=_int64(d, "job_id"),
@@ -8877,7 +9017,7 @@ class SdpSource:
     """The full three-part names of the tables the pipeline reads from. Required to materialize this
     feature with a TableTrigger, which starts a run when these tables update. Each table must exist
     when the feature is created. Feature Store doesn't confirm that the pipeline reads from these
-    tables. At most 100 tables."""
+    tables. At most 25 tables."""
 
     output_table: Optional[str] = None
     """The full three-part (catalog, schema, table) name of the pipeline's output table to read from.
@@ -10055,6 +10195,15 @@ class TableTrigger:
     and a feature with a tumbling window uses half its window_duration, clamped to between 5 minutes
     and 1 hour. Other features have no minimum."""
 
+    paused: Optional[bool] = None
+    """Whether automatic materialization is paused. Defaults to ``false``. Supported only for
+    materializations in a materialization set. Use the ``UpdateMaterializationSet`` API to pause or
+    resume the set.
+    
+    Pausing does not cancel running or queued runs. Runs can still be triggered through the
+    ``TriggerMaterializationSet`` API. Resuming does not submit a run. Creating a paused
+    materialization skips its initial run."""
+
     wait_after_last_change: Optional[Duration] = None
     """How long the source table must go without updates before a run starts, so a series of updates
     settles before the run. If not set, a run starts as soon as the source table updates."""
@@ -10066,6 +10215,8 @@ class TableTrigger:
             body["condition"] = self.condition.value
         if self.min_time_between_triggers is not None:
             body["min_time_between_triggers"] = self.min_time_between_triggers.ToJsonString()
+        if self.paused is not None:
+            body["paused"] = self.paused
         if self.wait_after_last_change is not None:
             body["wait_after_last_change"] = self.wait_after_last_change.ToJsonString()
         return body
@@ -10077,6 +10228,8 @@ class TableTrigger:
             body["condition"] = self.condition
         if self.min_time_between_triggers is not None:
             body["min_time_between_triggers"] = self.min_time_between_triggers
+        if self.paused is not None:
+            body["paused"] = self.paused
         if self.wait_after_last_change is not None:
             body["wait_after_last_change"] = self.wait_after_last_change
         return body
@@ -10087,6 +10240,7 @@ class TableTrigger:
         return cls(
             condition=_enum(d, "condition", TableTriggerTableTriggerCondition),
             min_time_between_triggers=_duration(d, "min_time_between_triggers"),
+            paused=d.get("paused", None),
             wait_after_last_change=_duration(d, "wait_after_last_change"),
         )
 
@@ -10320,6 +10474,26 @@ class TransitionStageResponse:
     def from_dict(cls, d: Dict[str, Any]) -> TransitionStageResponse:
         """Deserializes the TransitionStageResponse from a dictionary."""
         return cls(model_version_databricks=_from_dict(d, "model_version_databricks", ModelVersionDatabricks))
+
+
+@dataclass
+class TriggerMaterializationSetResponse:
+    """Result of a successful ``TriggerMaterializationSet`` operation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TriggerMaterializationSetResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TriggerMaterializationSetResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerMaterializationSetResponse:
+        """Deserializes the TriggerMaterializationSetResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -13056,6 +13230,56 @@ class FeatureEngineeringAPI:
         operation = Operation.from_dict(res)
         return PurgeFeatureEntitiesOperation(self, operation)
 
+    def trigger_materialization_set(
+        self, materialization_set_id: str, *, request_id: Optional[str] = None
+    ) -> TriggerMaterializationSetOperation:
+        """Requests materialization of all members of the set. The set must be nonempty and contain only batch
+        materializations. Runs are allowed while automatic scheduling is paused. Requested runs may wait in a
+        queue, subject to queue limits and expiry.
+
+        Returns a long-running operation that completes when every requested run reaches a terminal state.
+        Success requires all runs and any required online synchronization to succeed. Individual outcomes are
+        available in ``MaterializationSetTriggerProgress``.
+
+        Use ``CancelOperation`` to request cancellation of this operation's unfinished work. Cancellation is
+        best effort and does not undo completed writes. Online synchronization already in progress may
+        continue.
+
+        Runs use the features' configured windows and settling delay.
+
+        :param materialization_set_id: str
+          The ID of the materialization set to trigger.
+        :param request_id: str (optional)
+          Idempotency token in UUID format. Reusing it returns the original operation without starting
+          additional runs, even if the request differs or the operation has finished. If omitted, each request
+          triggers independently.
+
+        :returns: :class:`Operation`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = {}
+        if request_id is not None:
+            body["request_id"] = request_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/feature-engineering/materialization-sets/{materialization_set_id}/trigger",
+            body=body,
+            headers=headers,
+        )
+        operation = Operation.from_dict(res)
+        return TriggerMaterializationSetOperation(self, operation)
+
     def update_feature(self, full_name: str, feature: Feature, update_mask: str) -> Feature:
         """Update a Feature.
 
@@ -13561,6 +13785,89 @@ class PurgeFeatureEntitiesOperation:
             return None
 
         return PurgeFeatureEntitiesMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class TriggerMaterializationSetOperation:
+    """Long-running operation for trigger_materialization_set"""
+
+    def __init__(self, impl: FeatureEngineeringAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> TriggerMaterializationSetResponse:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`TriggerMaterializationSetResponse`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            trigger_materialization_set_response = TriggerMaterializationSetResponse.from_dict(operation.response)
+
+            return trigger_materialization_set_response, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def cancel(self):
+        """Starts asynchronous cancellation on a long-running operation. The server
+        makes a best effort to cancel the operation, but success is not guaranteed.
+        """
+        self._impl.cancel_operation(name=self._operation.name)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MaterializationSetOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MaterializationSetOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MaterializationSetOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

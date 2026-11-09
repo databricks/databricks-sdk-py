@@ -16,3 +16,4 @@ Use and configure compute for Databricks
    libraries
    policy_compliance_for_clusters
    policy_families
+   serverless_compute_service

@@ -1,5 +1,29 @@
 # Version changelog
 
+## Release v0.163.0 (2026-11-09)
+
+### New Features and Improvements
+* `experimental_files_ext_enable_endpoints_api` is now enabled by default: `WorkspaceClient.files` follows the transfer endpoints the workspace lists, and keeps the built-in order when the workspace has no usable answer. To always use the built-in order, set `config.experimental_files_ext_enable_endpoints_api = False` on the `Config` before creating the `WorkspaceClient`; it can't be passed to the `Config` constructor.
+
+### API Changes
+* Add `databricks.sdk.service.softwareartifacts` package.
+* Add [w.serverless_compute_service](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/compute/serverless_compute_service.html) workspace-level service.
+* Add [w.software_artifacts](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/softwareartifacts/software_artifacts.html) workspace-level service.
+* Add `trigger_materialization_set()` method for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service.
+* Add `acknowledge_assessment_warnings()`, `assess_migration()`, `create_migration()`, `delete_migration()`, `get_assessment()`, `get_migration()`, `list_assessments()`, `list_migrations()`, `start_migration()`, `undelete_migration()` and `update_migration()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `delayed_reason`, `estimated_completion_time`, `index_initialization_percentage`, `phase` and `target_qps_change_allowed_after_time` fields for `databricks.sdk.service.aisearch.EndpointScalingInfo`.
+* Add `delta_table` field for `databricks.sdk.service.jobs.ResolvedValuesAiFunctionTaskResolvedValues`.
+* Add `paused` field for `databricks.sdk.service.ml.CronSchedule`.
+* Add `external_trigger` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `paused` field for `databricks.sdk.service.ml.TableTrigger`.
+* Add `effective_workspace_dashboard_theme` and `workspace_dashboard_theme` fields for `databricks.sdk.service.settingsv2.Setting`.
+* Add `delayed_reason`, `estimated_completion_timestamp`, `index_initialization_percentage`, `phase` and `target_qps_change_allowed_after_timestamp` fields for `databricks.sdk.service.vectorsearch.EndpointScalingInfo`.
+* [Breaking] Change `warehouse_id` field for `databricks.sdk.service.lakewatch.Datasource` to no longer be required.
+* Change `warehouse_id` field for `databricks.sdk.service.lakewatch.Datasource` to no longer be required.
+
+### Bug Fixes
+* `POST` requests are no longer retried after a read timeout, because the server may have already executed them. Other methods and connect timeouts keep retrying.
+
 ## Release v0.162.0 (2026-11-05)
 
 ### API Changes

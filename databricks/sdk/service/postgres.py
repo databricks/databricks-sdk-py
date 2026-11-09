@@ -34,6 +34,259 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
+class AcknowledgeAssessmentWarningsResponse:
+    """Response produced after assessment warnings are acknowledged."""
+
+    assessment: Optional[Assessment] = None
+    """The assessment after its warnings are acknowledged."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AcknowledgeAssessmentWarningsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assessment:
+            body["assessment"] = self.assessment.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AcknowledgeAssessmentWarningsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.assessment:
+            body["assessment"] = self.assessment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AcknowledgeAssessmentWarningsResponse:
+        """Deserializes the AcknowledgeAssessmentWarningsResponse from a dictionary."""
+        return cls(assessment=_from_dict(d, "assessment", Assessment))
+
+
+@dataclass
+class AssessMigrationResponse:
+    """Response produced after an assessment run is created."""
+
+    assessment: Optional[Assessment] = None
+    """The assessment run created for the migration."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AssessMigrationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assessment:
+            body["assessment"] = self.assessment.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AssessMigrationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.assessment:
+            body["assessment"] = self.assessment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AssessMigrationResponse:
+        """Deserializes the AssessMigrationResponse from a dictionary."""
+        return cls(assessment=_from_dict(d, "assessment", Assessment))
+
+
+@dataclass
+class Assessment:
+    """A server-managed assessment of a migration's source configuration. Completed check results are
+    immutable."""
+
+    checks: Optional[List[AssessmentCheck]] = None
+    """Output-only. Results of the checks performed by this assessment."""
+
+    complete_time: Optional[Timestamp] = None
+    """Output-only. The time when the assessment completed."""
+
+    create_time: Optional[Timestamp] = None
+    """Output-only. The time when the assessment started."""
+
+    expire_time: Optional[Timestamp] = None
+    """Output-only. The time when the assessment expires."""
+
+    name: Optional[str] = None
+    """The assessment resource name, in the format ``migrations/{migration}/assessments/{assessment}``."""
+
+    state: Optional[AssessmentState] = None
+    """Output-only. The aggregate assessment state."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Assessment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.checks:
+            body["checks"] = [v.as_dict() for v in self.checks]
+        if self.complete_time is not None:
+            body["complete_time"] = self.complete_time.ToJsonString()
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Assessment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.checks:
+            body["checks"] = self.checks
+        if self.complete_time is not None:
+            body["complete_time"] = self.complete_time
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Assessment:
+        """Deserializes the Assessment from a dictionary."""
+        return cls(
+            checks=_repeated_dict(d, "checks", AssessmentCheck),
+            complete_time=_timestamp(d, "complete_time"),
+            create_time=_timestamp(d, "create_time"),
+            expire_time=_timestamp(d, "expire_time"),
+            name=d.get("name", None),
+            state=_enum(d, "state", AssessmentState),
+        )
+
+
+@dataclass
+class AssessmentCheck:
+    """The result of one assessment check."""
+
+    blocks_migration: Optional[bool] = None
+    """Output-only. Whether this result blocks migration from starting."""
+
+    check_id: Optional[str] = None
+    """Output-only. Stable identifier of the check."""
+
+    database: Optional[str] = None
+    """Output-only. The source database the check evaluated. Unset for checks that assess the whole
+    source server rather than a single database."""
+
+    details: Optional[AssessmentCheckDetails] = None
+    """Output-only. Measurements observed by this check. Absent when unavailable."""
+
+    reason: Optional[str] = None
+    """Output-only. Explanation of the result."""
+
+    verdict: Optional[AssessmentCheckVerdict] = None
+    """Output-only. The check verdict."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AssessmentCheck into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.blocks_migration is not None:
+            body["blocks_migration"] = self.blocks_migration
+        if self.check_id is not None:
+            body["check_id"] = self.check_id
+        if self.database is not None:
+            body["database"] = self.database
+        if self.details:
+            body["details"] = self.details.as_dict()
+        if self.reason is not None:
+            body["reason"] = self.reason
+        if self.verdict is not None:
+            body["verdict"] = self.verdict.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AssessmentCheck into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.blocks_migration is not None:
+            body["blocks_migration"] = self.blocks_migration
+        if self.check_id is not None:
+            body["check_id"] = self.check_id
+        if self.database is not None:
+            body["database"] = self.database
+        if self.details:
+            body["details"] = self.details
+        if self.reason is not None:
+            body["reason"] = self.reason
+        if self.verdict is not None:
+            body["verdict"] = self.verdict
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AssessmentCheck:
+        """Deserializes the AssessmentCheck from a dictionary."""
+        return cls(
+            blocks_migration=d.get("blocks_migration", None),
+            check_id=d.get("check_id", None),
+            database=d.get("database", None),
+            details=_from_dict(d, "details", AssessmentCheckDetails),
+            reason=d.get("reason", None),
+            verdict=_enum(d, "verdict", AssessmentCheckVerdict),
+        )
+
+
+@dataclass
+class AssessmentCheckDetails:
+    """Measurements observed when an assessment check ran. Unset for older assessments."""
+
+    database_size: Optional[DatabaseSizeDetails] = None
+    """Output-only. Physical size of the source database observed by this check."""
+
+    long_transaction: Optional[LongTransactionDetails] = None
+    """Output-only. Age of the oldest source transaction observed by this check."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AssessmentCheckDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.database_size:
+            body["database_size"] = self.database_size.as_dict()
+        if self.long_transaction:
+            body["long_transaction"] = self.long_transaction.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AssessmentCheckDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.database_size:
+            body["database_size"] = self.database_size
+        if self.long_transaction:
+            body["long_transaction"] = self.long_transaction
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AssessmentCheckDetails:
+        """Deserializes the AssessmentCheckDetails from a dictionary."""
+        return cls(
+            database_size=_from_dict(d, "database_size", DatabaseSizeDetails),
+            long_transaction=_from_dict(d, "long_transaction", LongTransactionDetails),
+        )
+
+
+class AssessmentCheckVerdict(Enum):
+    """The verdict of a single assessment check."""
+
+    ASSESSMENT_CHECK_VERDICT_ACTION_REQUIRED = "ASSESSMENT_CHECK_VERDICT_ACTION_REQUIRED"
+    ASSESSMENT_CHECK_VERDICT_ERROR = "ASSESSMENT_CHECK_VERDICT_ERROR"
+    ASSESSMENT_CHECK_VERDICT_PASS = "ASSESSMENT_CHECK_VERDICT_PASS"
+    ASSESSMENT_CHECK_VERDICT_UNSUPPORTED = "ASSESSMENT_CHECK_VERDICT_UNSUPPORTED"
+    ASSESSMENT_CHECK_VERDICT_WARNING = "ASSESSMENT_CHECK_VERDICT_WARNING"
+
+
+class AssessmentState(Enum):
+    """The aggregate state of an assessment run."""
+
+    ASSESSMENT_STATE_ASSESSING = "ASSESSMENT_STATE_ASSESSING"
+    ASSESSMENT_STATE_AWAITING_ACK = "ASSESSMENT_STATE_AWAITING_ACK"
+    ASSESSMENT_STATE_BLOCKED = "ASSESSMENT_STATE_BLOCKED"
+    ASSESSMENT_STATE_EXPIRED = "ASSESSMENT_STATE_EXPIRED"
+    ASSESSMENT_STATE_FAILED = "ASSESSMENT_STATE_FAILED"
+    ASSESSMENT_STATE_NEEDS_ACTION = "ASSESSMENT_STATE_NEEDS_ACTION"
+    ASSESSMENT_STATE_READY = "ASSESSMENT_STATE_READY"
+
+
+@dataclass
 class Branch:
     branch_id: Optional[str] = None
     """The part of the name, chosen by the user when the resource was created."""
@@ -1298,6 +1551,53 @@ class DatabaseDatabaseStatus:
 
 
 @dataclass
+class DatabaseMapping:
+    """A mapping between one source and target database."""
+
+    source_database: str
+    """Required. The exact PostgreSQL database name on the source server."""
+
+    effective_target_database: Optional[str] = None
+    """Output-only. The resolved target PostgreSQL database name. Equal to ``target_database`` when
+    provided; otherwise equal to ``source_database``."""
+
+    target_database: Optional[str] = None
+    """The PostgreSQL database name to create on the target branch. When omitted, the source database
+    name is preserved."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseMapping into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.effective_target_database is not None:
+            body["effective_target_database"] = self.effective_target_database
+        if self.source_database is not None:
+            body["source_database"] = self.source_database
+        if self.target_database is not None:
+            body["target_database"] = self.target_database
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseMapping into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.effective_target_database is not None:
+            body["effective_target_database"] = self.effective_target_database
+        if self.source_database is not None:
+            body["source_database"] = self.source_database
+        if self.target_database is not None:
+            body["target_database"] = self.target_database
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseMapping:
+        """Deserializes the DatabaseMapping from a dictionary."""
+        return cls(
+            effective_target_database=d.get("effective_target_database", None),
+            source_database=d.get("source_database", None),
+            target_database=d.get("target_database", None),
+        )
+
+
+@dataclass
 class DatabaseOperationMetadata:
     def as_dict(self) -> dict:
         """Serializes the DatabaseOperationMetadata into a dictionary suitable for use as a JSON request body."""
@@ -1313,6 +1613,33 @@ class DatabaseOperationMetadata:
     def from_dict(cls, d: Dict[str, Any]) -> DatabaseOperationMetadata:
         """Deserializes the DatabaseOperationMetadata from a dictionary."""
         return cls()
+
+
+@dataclass
+class DatabaseSizeDetails:
+    """Physical database size, including indexes and bloat; not a dump archive size estimate."""
+
+    size_bytes: Optional[int] = None
+    """Size reported by pg_database_size, in bytes. Zero is a measured empty size."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseSizeDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.size_bytes is not None:
+            body["size_bytes"] = self.size_bytes
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseSizeDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.size_bytes is not None:
+            body["size_bytes"] = self.size_bytes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseSizeDetails:
+        """Deserializes the DatabaseSizeDetails from a dictionary."""
+        return cls(size_bytes=_int64(d, "size_bytes"))
 
 
 @dataclass
@@ -2096,6 +2423,42 @@ class InitialEndpointSpec:
 
 
 @dataclass
+class ListAssessmentsResponse:
+    """Response to list assessments."""
+
+    assessments: Optional[List[Assessment]] = None
+    """Assessment runs ordered from newest to oldest."""
+
+    next_page_token: Optional[str] = None
+    """A token for retrieving the next page. Empty when there are no more results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAssessmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assessments:
+            body["assessments"] = [v.as_dict() for v in self.assessments]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAssessmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.assessments:
+            body["assessments"] = self.assessments
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListAssessmentsResponse:
+        """Deserializes the ListAssessmentsResponse from a dictionary."""
+        return cls(
+            assessments=_repeated_dict(d, "assessments", Assessment), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
 class ListBranchesResponse:
     branches: Optional[List[Branch]] = None
     """List of branches in the project."""
@@ -2266,6 +2629,42 @@ class ListEndpointsResponse:
 
 
 @dataclass
+class ListMigrationsResponse:
+    """Response to list migrations."""
+
+    migrations: Optional[List[Migration]] = None
+    """Migrations visible to the caller."""
+
+    next_page_token: Optional[str] = None
+    """A token for retrieving the next page. Empty when there are no more results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListMigrationsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.migrations:
+            body["migrations"] = [v.as_dict() for v in self.migrations]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListMigrationsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.migrations:
+            body["migrations"] = self.migrations
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListMigrationsResponse:
+        """Deserializes the ListMigrationsResponse from a dictionary."""
+        return cls(
+            migrations=_repeated_dict(d, "migrations", Migration), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
 class ListProjectsResponse:
     next_page_token: Optional[str] = None
     """Token to request the next page of projects."""
@@ -2359,6 +2758,220 @@ class ListSnapshotsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListSnapshotsResponse:
         """Deserializes the ListSnapshotsResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), snapshots=_repeated_dict(d, "snapshots", Snapshot))
+
+
+@dataclass
+class LongTransactionDetails:
+    """Oldest active source transaction at assessment time."""
+
+    oldest_transaction_age: Optional[Duration] = None
+    """Age of the oldest active transaction when assessed. Zero when none is active."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LongTransactionDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.oldest_transaction_age is not None:
+            body["oldest_transaction_age"] = self.oldest_transaction_age.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LongTransactionDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.oldest_transaction_age is not None:
+            body["oldest_transaction_age"] = self.oldest_transaction_age
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LongTransactionDetails:
+        """Deserializes the LongTransactionDetails from a dictionary."""
+        return cls(oldest_transaction_age=_duration(d, "oldest_transaction_age"))
+
+
+@dataclass
+class Migration:
+    """A managed migration of PostgreSQL databases into a Lakebase branch."""
+
+    source_connection: str
+    """Required. The name of the Unity Catalog connection (a UC securable name, such as
+    ``my_postgres_connection``) used to connect to the source PostgreSQL server."""
+
+    database_mappings: List[DatabaseMapping]
+    """Required. Mappings from source databases to target databases."""
+
+    migration_type: MigrationType
+    """Required. Immutable. The intended migration mode, selected when the migration is created."""
+
+    create_time: Optional[Timestamp] = None
+    """Output-only. The time when the migration was created."""
+
+    delete_time: Optional[Timestamp] = None
+    """Output-only. The time when the migration was soft-deleted. Empty if the migration is active."""
+
+    error: Optional[MigrationError] = None
+    """Output-only. The current error preventing migration progress, if any."""
+
+    name: Optional[str] = None
+    """The migration resource name, in the format ``migrations/{migration}``."""
+
+    purge_time: Optional[Timestamp] = None
+    """Output-only. The time when the soft-deleted migration is scheduled for permanent deletion. Empty
+    if the migration is active or permanent deletion is not scheduled."""
+
+    state: Optional[MigrationState] = None
+    """Output-only. The authoritative migration lifecycle state."""
+
+    target_branch: Optional[str] = None
+    """The Lakebase branch receiving the migrated databases, in the format
+    ``projects/{project_id}/branches/{branch_id}``. May be omitted during assessment, but must be
+    set before the migration starts, and may be changed until then."""
+
+    update_time: Optional[Timestamp] = None
+    """Output-only. The time when the migration was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Migration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.database_mappings:
+            body["database_mappings"] = [v.as_dict() for v in self.database_mappings]
+        if self.delete_time is not None:
+            body["delete_time"] = self.delete_time.ToJsonString()
+        if self.error:
+            body["error"] = self.error.as_dict()
+        if self.migration_type is not None:
+            body["migration_type"] = self.migration_type.value
+        if self.name is not None:
+            body["name"] = self.name
+        if self.purge_time is not None:
+            body["purge_time"] = self.purge_time.ToJsonString()
+        if self.source_connection is not None:
+            body["source_connection"] = self.source_connection
+        if self.state is not None:
+            body["state"] = self.state.value
+        if self.target_branch is not None:
+            body["target_branch"] = self.target_branch
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Migration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.database_mappings:
+            body["database_mappings"] = self.database_mappings
+        if self.delete_time is not None:
+            body["delete_time"] = self.delete_time
+        if self.error:
+            body["error"] = self.error
+        if self.migration_type is not None:
+            body["migration_type"] = self.migration_type
+        if self.name is not None:
+            body["name"] = self.name
+        if self.purge_time is not None:
+            body["purge_time"] = self.purge_time
+        if self.source_connection is not None:
+            body["source_connection"] = self.source_connection
+        if self.state is not None:
+            body["state"] = self.state
+        if self.target_branch is not None:
+            body["target_branch"] = self.target_branch
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Migration:
+        """Deserializes the Migration from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            database_mappings=_repeated_dict(d, "database_mappings", DatabaseMapping),
+            delete_time=_timestamp(d, "delete_time"),
+            error=_from_dict(d, "error", MigrationError),
+            migration_type=_enum(d, "migration_type", MigrationType),
+            name=d.get("name", None),
+            purge_time=_timestamp(d, "purge_time"),
+            source_connection=d.get("source_connection", None),
+            state=_enum(d, "state", MigrationState),
+            target_branch=d.get("target_branch", None),
+            update_time=_timestamp(d, "update_time"),
+        )
+
+
+@dataclass
+class MigrationError:
+    """An error that prevents migration progress."""
+
+    code: Optional[str] = None
+    """A stable machine-readable error code."""
+
+    message: Optional[str] = None
+    """A concise explanation of the failure."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MigrationError into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.code is not None:
+            body["code"] = self.code
+        if self.message is not None:
+            body["message"] = self.message
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MigrationError into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.code is not None:
+            body["code"] = self.code
+        if self.message is not None:
+            body["message"] = self.message
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MigrationError:
+        """Deserializes the MigrationError from a dictionary."""
+        return cls(code=d.get("code", None), message=d.get("message", None))
+
+
+@dataclass
+class MigrationOperationMetadata:
+    """Metadata for a long-running operation that applies an action to a migration."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MigrationOperationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MigrationOperationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MigrationOperationMetadata:
+        """Deserializes the MigrationOperationMetadata from a dictionary."""
+        return cls()
+
+
+class MigrationState(Enum):
+    """The lifecycle state of a migration."""
+
+    MIGRATION_STATE_ASSESSING = "MIGRATION_STATE_ASSESSING"
+    MIGRATION_STATE_ASSESSMENT_NEEDS_ACTION = "MIGRATION_STATE_ASSESSMENT_NEEDS_ACTION"
+    MIGRATION_STATE_COMPLETED = "MIGRATION_STATE_COMPLETED"
+    MIGRATION_STATE_DRAFT = "MIGRATION_STATE_DRAFT"
+    MIGRATION_STATE_FAILED = "MIGRATION_STATE_FAILED"
+    MIGRATION_STATE_INITIAL_DATA_LOAD = "MIGRATION_STATE_INITIAL_DATA_LOAD"
+    MIGRATION_STATE_READY_TO_START = "MIGRATION_STATE_READY_TO_START"
+    MIGRATION_STATE_SCHEMA_LOAD = "MIGRATION_STATE_SCHEMA_LOAD"
+
+
+class MigrationType(Enum):
+    """The intended data transfer mode of a migration."""
+
+    MIGRATION_TYPE_ONE_TIME_COPY = "MIGRATION_TYPE_ONE_TIME_COPY"
+    MIGRATION_TYPE_ONLINE = "MIGRATION_TYPE_ONLINE"
 
 
 @dataclass
@@ -3272,9 +3885,11 @@ class RoleRoleSpec:
     NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the default auth method
     (group can login as well).
     
-    This field is set when the role is created and cannot be changed by UpdateRole. If provided in
-    an UpdateRole request body, its value is ignored and the existing value is retained. Do not
-    include this field as an explicit path in update_mask."""
+    This field is set when the role is created and cannot be changed. When replacing an existing
+    role with replace_existing=true, omit this field or supply its current value. A differing value
+    returns INVALID_PARAMETER_VALUE and rejects the entire request, including changes to mutable
+    fields. With ``*`` or masks containing only mutable fields, supplied values are ignored.
+    Including this field as an explicit path in update_mask returns INVALID_PARAMETER_VALUE."""
 
     identity_type: Optional[RoleIdentityType] = None
     """The type of role. When specifying a managed-identity, the chosen role_id must be a valid:
@@ -3283,9 +3898,11 @@ class RoleRoleSpec:
     - user email for USER
     - group name for GROUP
     
-    This field is set when the role is created and cannot be changed by UpdateRole. If provided in
-    an UpdateRole request body, its value is ignored and the existing value is retained. Do not
-    include this field as an explicit path in update_mask."""
+    This field is set when the role is created and cannot be changed. When replacing an existing
+    role with replace_existing=true, omit this field or supply its current value. A differing value
+    returns INVALID_PARAMETER_VALUE and rejects the entire request, including changes to mutable
+    fields. With ``*`` or masks containing only mutable fields, supplied values are ignored.
+    Including this field as an explicit path in update_mask returns INVALID_PARAMETER_VALUE."""
 
     membership_roles: Optional[List[RoleMembershipRole]] = None
     """An enum value for a standard role that this role is a member of."""
@@ -3305,9 +3922,11 @@ class RoleRoleSpec:
     2. app ID for IdentityType.SERVICE_PRINCIPAL
     3. group name for IdentityType.GROUP
     
-    This field is set when the role is created and cannot be changed by UpdateRole. If provided in
-    an UpdateRole request body, its value is ignored and the existing value is retained. Do not
-    include this field as an explicit path in update_mask."""
+    This field is set when the role is created and cannot be changed. When replacing an existing
+    role with replace_existing=true, omit this field or supply its current value. A differing value
+    returns INVALID_PARAMETER_VALUE and rejects the entire request, including changes to mutable
+    fields. With ``*`` or masks containing only mutable fields, supplied values are ignored.
+    Including this field as an explicit path in update_mask returns INVALID_PARAMETER_VALUE."""
 
     def as_dict(self) -> dict:
         """Serializes the RoleRoleSpec into a dictionary suitable for use as a JSON request body."""
@@ -3754,6 +4373,33 @@ class SnapshotStatus:
             no_expiry=d.get("no_expiry", None),
             source_branch=d.get("source_branch", None),
         )
+
+
+@dataclass
+class StartMigrationResponse:
+    """Response produced after migration preparation has started."""
+
+    migration: Optional[Migration] = None
+    """The migration after the start action is applied."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StartMigrationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.migration:
+            body["migration"] = self.migration.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StartMigrationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.migration:
+            body["migration"] = self.migration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StartMigrationResponse:
+        """Deserializes the StartMigrationResponse from a dictionary."""
+        return cls(migration=_from_dict(d, "migration", Migration))
 
 
 @dataclass
@@ -4335,6 +4981,33 @@ class SyncedTableSyncedTableStatus:
 
 
 @dataclass
+class UndeleteMigrationResponse:
+    """Response produced after a soft-deleted migration is restored."""
+
+    migration: Optional[Migration] = None
+    """The restored migration."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UndeleteMigrationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.migration:
+            body["migration"] = self.migration.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UndeleteMigrationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.migration:
+            body["migration"] = self.migration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UndeleteMigrationResponse:
+        """Deserializes the UndeleteMigrationResponse from a dictionary."""
+        return cls(migration=_from_dict(d, "migration", Migration))
+
+
+@dataclass
 class WeeklySchedule:
     """Take a snapshot once per week, on the configured day at the configured hour."""
 
@@ -4384,6 +5057,53 @@ class PostgresAPI:
 
     def __init__(self, api_client):
         self._api = api_client
+
+    def acknowledge_assessment_warnings(self, name: str) -> AcknowledgeAssessmentWarningsOperation:
+        """Acknowledges non-blocking warnings on a specific assessment.
+
+        :param name: str
+          Required. The assessment resource name, in the format
+          ``migrations/{migration}/assessments/{assessment}``.
+
+        :returns: :class:`Operation`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/acknowledgeWarnings", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return AcknowledgeAssessmentWarningsOperation(self, operation)
+
+    def assess_migration(self, name: str) -> AssessMigrationOperation:
+        """Creates an immutable assessment run for the migration's current source configuration.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
+
+        :returns: :class:`Operation`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/assess", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return AssessMigrationOperation(self, operation)
 
     def create_branch(
         self, parent: str, branch: Branch, branch_id: str, *, replace_existing: Optional[bool] = None
@@ -4603,6 +5323,36 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateEndpointOperation(self, operation)
 
+    def create_migration(self, migration: Migration, migration_id: str) -> CreateMigrationOperation:
+        """Creates a migration.
+
+        :param migration: :class:`Migration`
+          Required. The migration to create.
+        :param migration_id: str
+          Required. The ID to use for the migration. It becomes the final component of the resource name
+          (``migrations/{migration_id}``). It must be 1-63 characters long, start with a lowercase letter, and
+          contain only lowercase letters, numbers, and hyphens.
+
+        :returns: :class:`Operation`
+        """
+
+        body = migration.as_dict()
+        query = {}
+        if migration_id is not None:
+            query["migration_id"] = migration_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/postgres/migrations", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return CreateMigrationOperation(self, operation)
+
     def create_project(self, project: Project, project_id: str) -> CreateProjectOperation:
         """Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute
         endpoints.
@@ -4650,10 +5400,12 @@ class PostgresAPI:
 
           When the role already exists, only mutable fields are updated. Attributes omitted from the request
           retain their current values. Set an attribute explicitly to false to disable it. ``identity_type``,
-          ``auth_method``, and ``postgres_role`` retain their existing values; supplied values for these
-          fields are ignored. ``membership_roles`` is overwritten, not merged. Leaving ``membership_roles``
-          empty clears all of the role's existing memberships, including ``DATABRICKS_SUPERUSER``. Always send
-          the complete desired list of memberships when using this field.
+          ``auth_method``, and ``postgres_role`` retain their existing values. Omit these fields or supply
+          their current values. A differing supplied value returns INVALID_PARAMETER_VALUE and rejects the
+          entire request, including changes to mutable fields. ``membership_roles`` is overwritten, not
+          merged. Leaving ``membership_roles`` empty clears all of the role's existing memberships, including
+          ``DATABRICKS_SUPERUSER``. Always send the complete desired list of memberships when using this
+          field.
         :param role_id: str (optional)
           The ID to use for the Role, which will become the final component of the role's resource name. This
           ID becomes the role in Postgres.
@@ -4896,6 +5648,27 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return DeleteEndpointOperation(self, operation)
 
+    def delete_migration(self, name: str) -> DeleteMigrationOperation:
+        """Soft-deletes a migration.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
+
+        :returns: :class:`Operation`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteMigrationOperation(self, operation)
+
     def delete_project(self, name: str, *, purge: Optional[bool] = None) -> DeleteProjectOperation:
         """Deletes the specified database project.
 
@@ -5040,6 +5813,27 @@ class PostgresAPI:
 
         res = self._api.do("POST", "/api/2.0/postgres/credentials", body=body, headers=headers)
         return DatabaseCredential.from_dict(res)
+
+    def get_assessment(self, name: str) -> Assessment:
+        """Gets a migration assessment run.
+
+        :param name: str
+          Required. The assessment resource name, in the format
+          ``migrations/{migration}/assessments/{assessment}``.
+
+        :returns: :class:`Assessment`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return Assessment.from_dict(res)
 
     def get_branch(self, name: str) -> Branch:
         """Retrieves information about the specified database branch.
@@ -5190,6 +5984,26 @@ class PostgresAPI:
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Endpoint.from_dict(res)
 
+    def get_migration(self, name: str) -> Migration:
+        """Gets a migration.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
+
+        :returns: :class:`Migration`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return Migration.from_dict(res)
+
     def get_operation(self, name: str) -> Operation:
         """Retrieves the status of a long-running operation.
 
@@ -5314,6 +6128,44 @@ class PostgresAPI:
 
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return SyncedTable.from_dict(res)
+
+    def list_assessments(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[Assessment]:
+        """Lists assessment runs for a migration.
+
+        :param parent: str
+          Required. The parent migration resource name, in the format ``migrations/{migration}``.
+        :param page_size: int (optional)
+          The maximum number of assessments to return. The server default is 100; values above 1000 are capped
+          to 1000.
+        :param page_token: str (optional)
+          A page token from a previous call.
+
+        :returns: Iterator over :class:`Assessment`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/postgres/{parent}/assessments", query=query, headers=headers)
+            if "assessments" in json:
+                for v in json["assessments"]:
+                    yield Assessment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def list_branches(
         self,
@@ -5516,6 +6368,47 @@ class PostgresAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_migrations(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, show_deleted: Optional[bool] = None
+    ) -> Iterator[Migration]:
+        """Lists migrations in the workspace.
+
+        :param page_size: int (optional)
+          The maximum number of migrations to return. The server default is 100; values above 1000 are capped
+          to 1000.
+        :param page_token: str (optional)
+          A page token from a previous call.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted migrations in the response. Hard-deleted and already-purged
+          migrations are never returned.
+
+        :returns: Iterator over :class:`Migration`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if show_deleted is not None:
+            query["show_deleted"] = show_deleted
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/postgres/migrations", query=query, headers=headers)
+            if "migrations" in json:
+                for v in json["migrations"]:
+                    yield Migration.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def list_projects(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, show_deleted: Optional[bool] = None
     ) -> Iterator[Project]:
@@ -5653,6 +6546,31 @@ class PostgresAPI:
         res = self._api.do("POST", f"/api/2.0/postgres/{name}/password", body=body, headers=headers)
         return RevealRolePasswordResponse.from_dict(res)
 
+    def start_migration(self, name: str) -> StartMigrationOperation:
+        """Starts the assessed migration named in the request, moving it from READY_TO_START into execution. Its
+        first phase, SCHEMA_LOAD, creates the target databases, roles, and schema on the migration's target
+        Lakebase branch without copying any table data, ahead of INITIAL_DATA_LOAD.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
+
+        :returns: :class:`Operation`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/start", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return StartMigrationOperation(self, operation)
+
     def undelete_branch(self, name: str) -> UndeleteBranchOperation:
         """Undeletes the specified database branch.
 
@@ -5675,6 +6593,29 @@ class PostgresAPI:
         res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", body=body, headers=headers)
         operation = Operation.from_dict(res)
         return UndeleteBranchOperation(self, operation)
+
+    def undelete_migration(self, name: str) -> UndeleteMigrationOperation:
+        """Restores a soft-deleted migration before it is permanently purged.
+
+        :param name: str
+          Required. The migration resource name, in the format ``migrations/{migration}``.
+
+        :returns: :class:`Operation`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return UndeleteMigrationOperation(self, operation)
 
     def undelete_project(self, name: str) -> UndeleteProjectOperation:
         """Undeletes a soft-deleted project.
@@ -5833,6 +6774,36 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return UpdateEndpointOperation(self, operation)
 
+    def update_migration(self, name: str, migration: Migration, update_mask: FieldMask) -> UpdateMigrationOperation:
+        """Updates user-owned migration configuration.
+
+        :param name: str
+          The migration resource name, in the format ``migrations/{migration}``.
+        :param migration: :class:`Migration`
+          Required. The migration containing the user-owned fields to update.
+        :param update_mask: FieldMask
+          Required. The fields to update.
+
+        :returns: :class:`Operation`
+        """
+
+        body = migration.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return UpdateMigrationOperation(self, operation)
+
     def update_project(self, name: str, project: Project, update_mask: FieldMask) -> UpdateProjectOperation:
         """Updates the specified database project.
 
@@ -5886,14 +6857,13 @@ class PostgresAPI:
           The list of fields to update. Supported fields are ``spec.membership_roles``,
           ``spec.attributes.createdb``, ``spec.attributes.createrole``, and ``spec.attributes.bypassrls``.
 
-          ``spec.identity_type``, ``spec.auth_method``, and ``spec.postgres_role`` cannot be changed. Values
-          supplied for these fields in the request body are ignored. Including one of these fields as an
-          explicit path in update_mask returns an INVALID_PARAMETER_VALUE error. When ``spec`` is the only
-          path in the mask, only the supplied mutable attributes are updated. ``*`` by itself, or ``spec``
-          combined with other supported paths, selects all supported mutable fields. For these masks, all
-          three attributes (``createdb``, ``createrole``, and ``bypassrls``) must be supplied; omitting any
-          returns an INVALID_PARAMETER_VALUE error. Each of these mask forms replaces ``membership_roles``.
-          Omitting it or supplying an empty list clears all memberships, including ``DATABRICKS_SUPERUSER``.
+          ``spec.identity_type``, ``spec.auth_method``, and ``spec.postgres_role`` cannot be changed.
+          Including an immutable field as an explicit path in update_mask returns INVALID_PARAMETER_VALUE.
+          With ``*`` or masks containing only mutable fields, supplied values for these immutable fields are
+          ignored. ``*`` by itself selects all supported mutable fields. For this mask, all three attributes
+          (``createdb``, ``createrole``, and ``bypassrls``) must be supplied; omitting any returns an
+          INVALID_PARAMETER_VALUE error. The ``*`` mask replaces ``membership_roles``. Omitting it or
+          supplying an empty list clears all memberships, including ``DATABRICKS_SUPERUSER``.
 
         :returns: :class:`Operation`
         """
@@ -5950,6 +6920,162 @@ class PostgresAPI:
         res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return UpdateSnapshotScheduleOperation(self, operation)
+
+
+class AcknowledgeAssessmentWarningsOperation:
+    """Long-running operation for acknowledge_assessment_warnings"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> AcknowledgeAssessmentWarningsResponse:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`AcknowledgeAssessmentWarningsResponse`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            acknowledge_assessment_warnings_response = AcknowledgeAssessmentWarningsResponse.from_dict(
+                operation.response
+            )
+
+            return acknowledge_assessment_warnings_response, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MigrationOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MigrationOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MigrationOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class AssessMigrationOperation:
+    """Long-running operation for assess_migration"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> AssessMigrationResponse:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`AssessMigrationResponse`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            assess_migration_response = AssessMigrationResponse.from_dict(operation.response)
+
+            return assess_migration_response, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MigrationOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MigrationOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MigrationOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
 
 
 class CreateBranchOperation:
@@ -6399,6 +7525,83 @@ class CreateEndpointOperation:
             return None
 
         return EndpointOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class CreateMigrationOperation:
+    """Long-running operation for create_migration"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Migration:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Migration`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            migration = Migration.from_dict(operation.response)
+
+            return migration, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MigrationOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MigrationOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MigrationOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.
@@ -7172,6 +8375,83 @@ class DeleteEndpointOperation:
         return operation.done
 
 
+class DeleteMigrationOperation:
+    """Long-running operation for delete_migration"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Migration:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Migration`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            migration = Migration.from_dict(operation.response)
+
+            return migration, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MigrationOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MigrationOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MigrationOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
 class DeleteProjectOperation:
     """Long-running operation for delete_project"""
 
@@ -7472,6 +8752,83 @@ class DeleteSyncedTableOperation:
         return operation.done
 
 
+class StartMigrationOperation:
+    """Long-running operation for start_migration"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> StartMigrationResponse:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`StartMigrationResponse`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            start_migration_response = StartMigrationResponse.from_dict(operation.response)
+
+            return start_migration_response, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MigrationOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MigrationOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MigrationOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
 class UndeleteBranchOperation:
     """Long-running operation for undelete_branch"""
 
@@ -7532,6 +8889,83 @@ class UndeleteBranchOperation:
             return None
 
         return BranchOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UndeleteMigrationOperation:
+    """Long-running operation for undelete_migration"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> UndeleteMigrationResponse:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`UndeleteMigrationResponse`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            undelete_migration_response = UndeleteMigrationResponse.from_dict(operation.response)
+
+            return undelete_migration_response, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MigrationOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MigrationOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MigrationOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.
@@ -7915,6 +9349,83 @@ class UpdateEndpointOperation:
             return None
 
         return EndpointOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UpdateMigrationOperation:
+    """Long-running operation for update_migration"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Migration:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Migration`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            migration = Migration.from_dict(operation.response)
+
+            return migration, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> MigrationOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`MigrationOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return MigrationOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

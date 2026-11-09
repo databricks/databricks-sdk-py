@@ -6653,20 +6653,29 @@ class ResolvedValues:
 class ResolvedValuesAiFunctionTaskResolvedValues:
     """Resolved values for an AI Function task's Delta table input."""
 
+    delta_table: Optional[DeltaTableSource] = None
+    """The Delta table source with any upstream-task references (such as
+    ``{{tasks.<task_key>.values.output_table_name}}``) in the table name replaced by concrete values
+    before the run."""
+
     def as_dict(self) -> dict:
         """Serializes the ResolvedValuesAiFunctionTaskResolvedValues into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.delta_table:
+            body["delta_table"] = self.delta_table.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ResolvedValuesAiFunctionTaskResolvedValues into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.delta_table:
+            body["delta_table"] = self.delta_table
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResolvedValuesAiFunctionTaskResolvedValues:
         """Deserializes the ResolvedValuesAiFunctionTaskResolvedValues from a dictionary."""
-        return cls()
+        return cls(delta_table=_from_dict(d, "delta_table", DeltaTableSource))
 
 
 @dataclass
@@ -8809,16 +8818,16 @@ class SqlConditionRunInfoDetails:
     """SQL condition evaluation details captured at the time the run was triggered"""
 
     condition_evaluation_satisfied: Optional[bool] = None
-    """Whether the last condition evaluation was satisfied (query returned truthy result)."""
+    """Whether the last condition evaluation was satisfied. For QUERY_RETURNS_ROWS, the query returned
+    at least one row. For RESULT_VALUE_CHANGES, the result value changed."""
 
     condition_evaluation_sql_session_id: Optional[str] = None
-    """The ID of the SQL session, used by the UI to track session context. Set for the
-    QUERY_RETURNS_ROWS trigger mode."""
+    """The ID of the SQL session of the condition evaluation. Not set by current evaluations. Use
+    condition_evaluation_sql_statement_id instead."""
 
     condition_evaluation_sql_statement_id: Optional[str] = None
-    """The SQL statement ID of the condition evaluation, set when the condition is evaluated by running
-    a single SQL statement (the RESULT_VALUE_CHANGES trigger mode). The UI uses it to link to the
-    query execution details."""
+    """The SQL statement ID of the condition evaluation. Set for both the QUERY_RETURNS_ROWS and
+    RESULT_VALUE_CHANGES trigger modes."""
 
     def as_dict(self) -> dict:
         """Serializes the SqlConditionRunInfoDetails into a dictionary suitable for use as a JSON request body."""
@@ -8855,15 +8864,16 @@ class SqlConditionRunInfoDetails:
 @dataclass
 class SqlConditionState:
     latest_condition_evaluation_satisfied: Optional[bool] = None
-    """Whether the last condition evaluation was satisfied (query returned truthy result)."""
+    """Whether the last condition evaluation was satisfied. For QUERY_RETURNS_ROWS, the query returned
+    at least one row. For RESULT_VALUE_CHANGES, the result value changed."""
 
     latest_condition_evaluation_sql_session_id: Optional[str] = None
-    """The ID of the SQL session, used by UI to track session context. Populated for
-    QUERY_RETURNS_ROWS, which executes the query through Redash."""
+    """The ID of the SQL session of the latest condition evaluation. Not set by current evaluations.
+    Use latest_condition_evaluation_sql_statement_id instead."""
 
     latest_condition_evaluation_sql_statement_id: Optional[str] = None
-    """The SEA statement ID of the SQL statement executed for the latest condition evaluation.
-    Populated for RESULT_VALUE_CHANGES, which executes the query through the SQL execution API."""
+    """The ID of the SQL statement executed for the latest condition evaluation. Populated for both
+    QUERY_RETURNS_ROWS and RESULT_VALUE_CHANGES."""
 
     def as_dict(self) -> dict:
         """Serializes the SqlConditionState into a dictionary suitable for use as a JSON request body."""
@@ -8906,8 +8916,8 @@ class SqlConditionTriggerMode(Enum):
     - ``QUERY_RETURNS_ROWS``: Fires whenever the result set has at least one row. Zero rows means
       the condition is not met. This is the original SQL condition behavior.
     - ``RESULT_VALUE_CHANGES``: Fires whenever the query's single result value differs from the
-      previous evaluation. The first evaluation always fires. Queries must return exactly one cell
-      (one row, one column)."""
+      previous evaluation. The first evaluation stores the result as a baseline and does not fire.
+      Queries must return exactly one cell (one row, one column)."""
 
     QUERY_RETURNS_ROWS = "QUERY_RETURNS_ROWS"
     RESULT_VALUE_CHANGES = "RESULT_VALUE_CHANGES"

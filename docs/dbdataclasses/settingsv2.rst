@@ -115,6 +115,101 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DENY_ALL
       :value: "DENY_ALL"
 
+.. autoclass:: DashboardTheme
+   :members:
+   :undoc-members:
+
+.. py:class:: DashboardThemeAlignment
+
+   Horizontal alignment options for widget titles and descriptions.
+
+   .. py:attribute:: CENTER
+      :value: "CENTER"
+
+   .. py:attribute:: LEFT
+      :value: "LEFT"
+
+   .. py:attribute:: RIGHT
+      :value: "RIGHT"
+
+.. autoclass:: DashboardThemeContinuousGradient
+   :members:
+   :undoc-members:
+
+.. autoclass:: DashboardThemeContinuousGradientCustomDivergingRamp
+   :members:
+   :undoc-members:
+
+.. autoclass:: DashboardThemeContinuousGradientCustomSequentialRamp
+   :members:
+   :undoc-members:
+
+.. autoclass:: DashboardThemeContinuousGradientGradientValue
+   :members:
+   :undoc-members:
+
+.. autoclass:: DashboardThemeDashboardThemeColor
+   :members:
+   :undoc-members:
+
+.. autoclass:: DashboardThemeFontConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: DashboardThemeFontSettings
+   :members:
+   :undoc-members:
+
+.. py:class:: DashboardThemeFontStyle
+
+   Defines the font style (slant) applied to rendered text.
+
+   .. py:attribute:: FONT_STYLE_ITALIC
+      :value: "FONT_STYLE_ITALIC"
+
+   .. py:attribute:: FONT_STYLE_NORMAL
+      :value: "FONT_STYLE_NORMAL"
+
+.. autoclass:: DashboardThemeSentimentColors
+   :members:
+   :undoc-members:
+
+.. py:class:: DashboardThemeTextCase
+
+   Defines the text case transformation applied to rendered text.
+
+   .. py:attribute:: TEXT_CASE_CAPITALIZE
+      :value: "TEXT_CASE_CAPITALIZE"
+
+   .. py:attribute:: TEXT_CASE_LOWERCASE
+      :value: "TEXT_CASE_LOWERCASE"
+
+   .. py:attribute:: TEXT_CASE_UPPERCASE
+      :value: "TEXT_CASE_UPPERCASE"
+
+.. py:class:: DashboardThemeTextDecoration
+
+   Defines the decoration line applied to rendered text.
+
+   .. py:attribute:: TEXT_DECORATION_NONE
+      :value: "TEXT_DECORATION_NONE"
+
+   .. py:attribute:: TEXT_DECORATION_UNDERLINE
+      :value: "TEXT_DECORATION_UNDERLINE"
+
+.. py:class:: DashboardThemeVerticalAlign
+
+   Vertical alignment options for text box content.
+
+   .. py:attribute:: VERTICAL_ALIGN_BOTTOM
+      :value: "VERTICAL_ALIGN_BOTTOM"
+
+   .. py:attribute:: VERTICAL_ALIGN_CENTER
+      :value: "VERTICAL_ALIGN_CENTER"
+
+   .. py:attribute:: VERTICAL_ALIGN_TOP
+      :value: "VERTICAL_ALIGN_TOP"
+
 .. autoclass:: IntegerMessage
    :members:
    :undoc-members:

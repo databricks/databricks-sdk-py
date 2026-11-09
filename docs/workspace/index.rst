@@ -41,6 +41,7 @@ These APIs are available from WorkspaceClient
    settings/index
    settingsv2/index
    sharing/index
+   softwareartifacts/index
    sql/index
    supervisoragents/index
    tags/index

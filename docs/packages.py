@@ -206,6 +206,9 @@ AUTO_PACKAGES = [
     Package("settings", "", ""),
     Package("settingsv2", "", ""),
     Package("sharing", "", ""),
+    Package(
+        "softwareartifacts", "Software Artifacts", "Manage software artifacts and their versions in Unity Catalog."
+    ),
     Package("sql", "", ""),
     Package("supervisoragents", "Supervisor Agents (legacy)", "Manage legacy Supervisor Agents and related resources."),
     Package("tags", "", ""),

@@ -29,38 +29,37 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class DirectGroupMember:
-    """Represents a principal that is a direct member of a group, with its source of membership."""
+    """A user, service principal, or group that's a direct member of a group."""
 
     principal_id: int
-    """Internal ID of the principal in Databricks."""
+    """The Databricks ID of the member."""
 
     display_name: Optional[str] = None
-    """Display name of the principal."""
+    """The member's display name."""
 
     external_id: Optional[str] = None
-    """The external ID of the principal in the customer's IdP."""
+    """The ID of the member in your identity provider (IdP)."""
 
     group_id: Optional[int] = None
-    """The internal ID of the group this member belongs to."""
+    """The Databricks ID of the group."""
 
     membership_source: Optional[GroupMembershipSource] = None
-    """The source of group membership (internal or from identity provider)."""
+    """Where the membership comes from."""
 
     name: Optional[str] = None
-    """The resource name of the group membership. The format depends on the API that returned it:
+    """The resource name of the membership, in one of these formats:
     
-    - Account-scoped: accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}
-    - Workspace-scoped: groups/{group_id}/direct-members/{principal_id}"""
+    - Account APIs: ``accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}``
+    - Workspace APIs: ``groups/{group_id}/direct-members/{principal_id}``"""
 
     parent: Optional[str] = None
-    """The resource name of the group that contains the membership. The format depends on the API that
-    returned it:
+    """The resource name of the group, in one of these formats:
     
-    - Account-scoped: accounts/{account_id}/groups/{group_id}
-    - Workspace-scoped: groups/{group_id}"""
+    - Account APIs: ``accounts/{account_id}/groups/{group_id}``
+    - Workspace APIs: ``groups/{group_id}``"""
 
     principal_type: Optional[PrincipalType] = None
-    """The type of the principal (user/service principal/group)."""
+    """Whether the member is a user, service principal, or group."""
 
     def as_dict(self) -> dict:
         """Serializes the DirectGroupMember into a dictionary suitable for use as a JSON request body."""
@@ -120,6 +119,8 @@ class DirectGroupMember:
 
 
 class Entitlement(Enum):
+    """A permission to use part of a Databricks workspace."""
+
     ALLOW_CLUSTER_CREATE = "ALLOW_CLUSTER_CREATE"
     ALLOW_INSTANCE_POOL_CREATE = "ALLOW_INSTANCE_POOL_CREATE"
     DATABRICKS_SQL_ACCESS = "DATABRICKS_SQL_ACCESS"
@@ -130,11 +131,10 @@ class Entitlement(Enum):
 
 @dataclass
 class ExactMatchRule:
-    """An exact-match rule that matches a group's external ID from the identity provider."""
+    """A rule that matches a group by its ID in your identity provider (IdP)."""
 
     external_id: str
-    """The identity provider's external ID for the group to match. This is not the Databricks group ID.
-    The value must be non-empty and is matched exactly, including case."""
+    """The ID of the group in your IdP, not its Databricks ID. It's matched exactly, including case."""
 
     def as_dict(self) -> dict:
         """Serializes the ExactMatchRule into a dictionary suitable for use as a JSON request body."""
@@ -158,27 +158,28 @@ class ExactMatchRule:
 
 @dataclass
 class ExternalGroup:
-    """An external group from the customer's Identity Provider, resolved into Databricks. This is a
-    read-only resource keyed by the IdP external ID. The Get method may trigger an idempotent sync
-    from the customer's IdP to provision or refresh the group's data in Databricks."""
+    """A group from your identity provider (IdP), identified by its ID in your IdP. This resource is
+    read-only. Getting an external group syncs its name and parent groups from your IdP, and adds it
+    to your account if it isn't already there. If your account has group visibility filters, the
+    group must match them."""
 
     account_id: Optional[str] = None
-    """The parent account ID, from Databricks."""
+    """The ID of the account that contains the group."""
 
     display_name: Optional[str] = None
-    """Display name of the group from the customer's IdP."""
+    """The name of the group, from your IdP. It's the same as the group's ``group_name``."""
 
     external_group_id: Optional[str] = None
-    """The external ID of the group in the customer's IdP."""
+    """The ID of the group in your IdP."""
 
     internal_id: Optional[str] = None
-    """Internal groupId of the group in Databricks."""
+    """The Databricks ID of the group. Use it as the ``group_id`` in the group APIs."""
 
     name: Optional[str] = None
-    """The resource name of the external group. The format depends on the API that returned it:
+    """The resource name of the external group, in one of these formats:
     
-    - Account-scoped: accounts/{account_id}/external-groups/{external_group_id}
-    - Workspace-scoped: external-groups/{external_group_id}"""
+    - Account APIs: ``accounts/{account_id}/external-groups/{external_group_id}``
+    - Workspace APIs: ``external-groups/{external_group_id}``"""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalGroup into a dictionary suitable for use as a JSON request body."""
@@ -224,36 +225,36 @@ class ExternalGroup:
 
 @dataclass
 class ExternalServicePrincipal:
-    """An external service principal from the customer's Identity Provider, resolved into Databricks.
-    This is a read-only resource keyed by the IdP external ID. The Get method may trigger an
-    idempotent sync from the customer's IdP to provision or refresh the service principal's data in
-    Databricks."""
+    """A service principal from your identity provider (IdP), identified by its ID in your IdP. This
+    resource is read-only and requires Microsoft Entra ID as your IdP. Getting an external service
+    principal syncs its details and group memberships from your IdP, and adds it to your account if
+    it isn't already there."""
 
     account_id: Optional[str] = None
-    """The parent account ID, from Databricks."""
+    """The ID of the account that contains the service principal."""
 
     account_sp_status: Optional[State] = None
-    """The activity status of the service principal in the Databricks account."""
+    """Whether the service principal is active in the account."""
 
     application_id: Optional[str] = None
-    """Application ID of the service principal, from the customer's IdP."""
+    """The service principal's application ID, from your IdP."""
 
     display_name: Optional[str] = None
-    """Display name of the service principal, from the customer's IdP."""
+    """The service principal's display name, from your IdP."""
 
     external_service_principal_id: Optional[str] = None
-    """The external ID of the service principal in the customer's IdP."""
+    """The ID of the service principal in your IdP."""
 
     internal_id: Optional[str] = None
-    """Internal servicePrincipalId of the service principal in Databricks."""
+    """The Databricks ID of the service principal. Use it as the ``service_principal_id`` in the
+    service principal APIs."""
 
     name: Optional[str] = None
-    """The resource name of the external service principal. The format depends on the API that returned
-    it:
+    """The resource name of the external service principal, in one of these formats:
     
-    - Account-scoped:
-      accounts/{account_id}/external-service-principals/{external_service_principal_id}
-    - Workspace-scoped: external-service-principals/{external_service_principal_id}"""
+    - Account APIs:
+      ``accounts/{account_id}/external-service-principals/{external_service_principal_id}``
+    - Workspace APIs: ``external-service-principals/{external_service_principal_id}``"""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalServicePrincipal into a dictionary suitable for use as a JSON request body."""
@@ -309,38 +310,36 @@ class ExternalServicePrincipal:
 
 @dataclass
 class ExternalUser:
-    """An external user from the customer's Identity Provider, resolved into Databricks. This is a
-    read-only resource that allows customers to look up external user identities by their IdP
-    external ID and retrieve the corresponding Databricks internal ID and metadata. The Get method
-    may trigger an idempotent sync from the customer's IdP to provision or refresh the user's data
-    in Databricks."""
+    """A user from your identity provider (IdP), identified by their ID in your IdP. This resource is
+    read-only. Getting an external user syncs the user's details and group memberships from your
+    IdP, and adds the user to your account if they aren't already there."""
 
     account_id: Optional[str] = None
-    """The parent account ID, from Databricks."""
+    """The ID of the account that contains the user."""
 
     account_user_status: Optional[State] = None
-    """The activity status of the user in the Databricks account."""
+    """Whether the user is active in the account."""
 
     display_name: Optional[str] = None
-    """Display name of the user from the customer's IdP."""
+    """The user's given and family names from your IdP, separated by a space."""
 
     external_user_id: Optional[str] = None
-    """The external ID of the user in the customer's IdP."""
+    """The ID of the user in your IdP."""
 
     full_name: Optional[FullName] = None
-    """The full name of the user, from the customer's IdP."""
+    """The user's name, from your IdP."""
 
     internal_id: Optional[str] = None
-    """Internal userId of the user in Databricks."""
+    """The Databricks ID of the user. Use it as the ``user_id`` in the user APIs."""
 
     name: Optional[str] = None
-    """The resource name of the external user. The format depends on the API that returned it:
+    """The resource name of the external user, in one of these formats:
     
-    - Account-scoped: accounts/{account_id}/external-users/{external_user_id}
-    - Workspace-scoped: external-users/{external_user_id}"""
+    - Account APIs: ``accounts/{account_id}/external-users/{external_user_id}``
+    - Workspace APIs: ``external-users/{external_user_id}``"""
 
     username: Optional[str] = None
-    """Username/email of the user, from Databricks."""
+    """The user's username, which is their email address."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalUser into a dictionary suitable for use as a JSON request body."""
@@ -401,13 +400,13 @@ class ExternalUser:
 
 @dataclass
 class FullName:
-    """The full name of a user."""
+    """A user's name, from your identity provider (IdP)."""
 
     family_name: Optional[str] = None
-    """The family (last) name of the user, from the customer's IdP."""
+    """The user's family (last) name."""
 
     given_name: Optional[str] = None
-    """The given (first) name of the user, from the customer's IdP."""
+    """The user's given (first) name."""
 
     def as_dict(self) -> dict:
         """Serializes the FullName into a dictionary suitable for use as a JSON request body."""
@@ -435,29 +434,29 @@ class FullName:
 
 @dataclass
 class Group:
-    """The details of a Group resource."""
+    """A group in your Databricks account."""
 
     account_id: Optional[str] = None
-    """The parent account ID for group in Databricks."""
+    """The ID of the account that contains the group."""
 
     external_id: Optional[str] = None
-    """ExternalId of the group in the customer's IdP."""
+    """The ID of the group in your identity provider (IdP)."""
 
     group_id: Optional[str] = None
-    """Internal group ID of the group in Databricks."""
+    """The Databricks ID of the group."""
 
     group_name: Optional[str] = None
-    """Display name of the group."""
+    """The name of the group."""
 
     name: Optional[str] = None
-    """The resource name of the group. The format depends on the API that returned it:
+    """The resource name of the group, in one of these formats:
     
-    - Account-scoped: accounts/{account_id}/groups/{group_id}
-    - Workspace-scoped: groups/{group_id}"""
+    - Account APIs: ``accounts/{account_id}/groups/{group_id}``
+    - Workspace APIs: ``groups/{group_id}``"""
 
     parent: Optional[str] = None
-    """The resource name of the account that contains the group, ``accounts/{account_id}``. Both the
-    account-scoped and workspace-scoped APIs return it."""
+    """The resource name of the account that contains the group, in the format
+    ``accounts/{account_id}``. Workspace APIs return the same format."""
 
     def as_dict(self) -> dict:
         """Serializes the Group into a dictionary suitable for use as a JSON request body."""
@@ -507,7 +506,7 @@ class Group:
 
 
 class GroupMembershipSource(Enum):
-    """The source of the group membership (internal or from identity provider)."""
+    """Where a group membership comes from."""
 
     IDENTITY_PROVIDER = "IDENTITY_PROVIDER"
     INTERNAL = "INTERNAL"
@@ -515,34 +514,32 @@ class GroupMembershipSource(Enum):
 
 @dataclass
 class IdentityVisibilityFilter:
-    """An account-level rule that controls which identity provider groups are discoverable in directory
-    search and group pickers when automatic identity management is enabled. Filters apply across all
-    workspaces in the account.
+    """An account-level rule that controls which groups from your identity provider (IdP) can be found
+    in directory search and group pickers when automatic identity management is on. Filters apply to
+    every workspace in the account.
 
-    If no group filters are configured, all groups are visible. Otherwise, a group is visible if it
-    or any of its transitive parent groups matches at least one rule. A group is also visible if it
-    or any transitive parent group is already provisioned in the account. Local Databricks groups
-    remain visible regardless of the filters.
+    If you have no group filters, all groups are visible. Otherwise, a group is visible if it or any
+    of its parent groups matches at least one filter. A group is also visible if it or any of its
+    parent groups is already in your account. Local Databricks groups are always visible.
 
-    Only group filters can be created. Filters do not change provisioning or sign-in for users and
-    service principals. Filters are immutable: to change a rule, delete it and create a new one."""
+    You can only create group filters. Filters don't affect provisioning or sign-in for users and
+    service principals. You can't change a filter: to change a rule, delete it and create a new one."""
 
     principal_type: PrincipalType
-    """The type of principal this rule applies to. Set to ``GROUP`` when creating a filter. Other
-    principal types are not supported for creation."""
+    """The type of principal the filter applies to. Set it to ``GROUP``. Other types aren't supported."""
 
     exact: Optional[ExactMatchRule] = None
-    """Exact match on the group's external ID from the identity provider."""
+    """Matches a group by its ID in your IdP."""
 
     name: Optional[str] = None
-    """The resource name of the identity-visibility filter. Format:
-    accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}"""
+    """The resource name of the filter, in the format
+    ``accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}``."""
 
     prefix: Optional[PrefixMatchRule] = None
-    """Case-sensitive starts-with match on the group's display name."""
+    """Matches groups whose display name starts with a prefix."""
 
     regex: Optional[RegexMatchRule] = None
-    """Full, case-sensitive RE2 match on the identity's display name."""
+    """Matches groups whose display name matches a regular expression."""
 
     def as_dict(self) -> dict:
         """Serializes the IdentityVisibilityFilter into a dictionary suitable for use as a JSON request body."""
@@ -588,14 +585,13 @@ class IdentityVisibilityFilter:
 
 @dataclass
 class ListDirectGroupMembersResponse:
-    """Response message for listing direct group members."""
+    """A page of direct members of a group."""
 
     direct_group_members: Optional[List[DirectGroupMember]] = None
-    """The list of direct group members with their membership source type."""
+    """The members on this page."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """The token for the next page. Not set on the last page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListDirectGroupMembersResponse into a dictionary suitable for use as a JSON request body."""
@@ -626,13 +622,13 @@ class ListDirectGroupMembersResponse:
 
 @dataclass
 class ListGroupsResponse:
-    """Response message containing a page of groups in the account."""
+    """A page of groups."""
 
     groups: Optional[List[Group]] = None
+    """The groups on this page."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """The token for the next page. Not set on the last page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListGroupsResponse into a dictionary suitable for use as a JSON request body."""
@@ -660,14 +656,13 @@ class ListGroupsResponse:
 
 @dataclass
 class ListIdentityVisibilityFiltersResponse:
-    """Response message containing a page of identity-visibility filters in the account."""
+    """A page of group visibility filters."""
 
     identity_visibility_filters: Optional[List[IdentityVisibilityFilter]] = None
-    """The filters in this page. These are filter rules, not the groups matched by the rules."""
+    """The filters on this page. These are the rules, not the groups they match."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as page_token to retrieve the next page. If omitted, there are no
-    subsequent pages."""
+    """The token for the next page. Not set on the last page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListIdentityVisibilityFiltersResponse into a dictionary suitable for use as a JSON request body."""
@@ -698,13 +693,13 @@ class ListIdentityVisibilityFiltersResponse:
 
 @dataclass
 class ListServicePrincipalsResponse:
-    """Response message containing a page of service principals in the account."""
+    """A page of service principals."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """The token for the next page. Not set on the last page."""
 
     service_principals: Optional[List[ServicePrincipal]] = None
+    """The service principals on this page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListServicePrincipalsResponse into a dictionary suitable for use as a JSON request body."""
@@ -735,14 +730,13 @@ class ListServicePrincipalsResponse:
 
 @dataclass
 class ListTransitiveParentGroupsResponse:
-    """Response message for listing all transitive parent groups of a principal."""
+    """A page of the groups a principal belongs to."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """The token for the next page. Not set on the last page."""
 
     transitive_parent_groups: Optional[List[TransitiveParentGroup]] = None
-    """The list of transitive parent groups."""
+    """The groups on this page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListTransitiveParentGroupsResponse into a dictionary suitable for use as a JSON request body."""
@@ -773,11 +767,13 @@ class ListTransitiveParentGroupsResponse:
 
 @dataclass
 class ListUsersResponse:
+    """A page of users."""
+
     next_page_token: Optional[str] = None
-    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """The token for the next page. Not set on the last page."""
 
     users: Optional[List[User]] = None
+    """The users on this page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListUsersResponse into a dictionary suitable for use as a JSON request body."""
@@ -842,13 +838,13 @@ class ListWorkspaceAssignmentDetailsResponse:
 
 @dataclass
 class ListWorkspaceAssignmentsResponse:
-    """Response message for listing workspace assignments."""
+    """A page of workspace assignments."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """The token for the next page. Not set on the last page."""
 
     workspace_assignments: Optional[List[WorkspaceAssignment]] = None
+    """The assignments on this page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListWorkspaceAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
@@ -879,12 +875,12 @@ class ListWorkspaceAssignmentsResponse:
 
 @dataclass
 class PrefixMatchRule:
-    """A starts-with rule that matches groups whose display name begins with a specified prefix.
-    Matching is case-sensitive. For example, the prefix ``data-`` matches ``data-platform``."""
+    """A rule that matches groups whose display name starts with a prefix. Matching is case-sensitive.
+    For example, the prefix ``data-`` matches ``data-platform``."""
 
     display_name_prefix: str
-    """The display-name prefix to match. Must contain at least one non-whitespace character. Leading
-    and trailing whitespace are preserved, and matching is case-sensitive."""
+    """The prefix to match. It must contain at least one non-whitespace character. Leading and trailing
+    spaces are kept."""
 
     def as_dict(self) -> dict:
         """Serializes the PrefixMatchRule into a dictionary suitable for use as a JSON request body."""
@@ -907,7 +903,7 @@ class PrefixMatchRule:
 
 
 class PrincipalType(Enum):
-    """The type of the principal (user/sp/group)."""
+    """The type of a principal."""
 
     GROUP = "GROUP"
     SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
@@ -916,11 +912,11 @@ class PrincipalType(Enum):
 
 @dataclass
 class RegexMatchRule:
-    """A rule that matches an identity whose complete display name matches an RE2 regular expression.
-    Matching is case-sensitive. Use .* explicitly when substring matching is desired."""
+    """A rule that matches groups whose whole display name matches an RE2 regular expression. Matching
+    is case-sensitive. To match part of a name, add ``.*``, for example ``.*-admins``."""
 
     display_name_regex: str
-    """The RE2 regular expression matched against the complete display name."""
+    """The RE2 regular expression to match against the whole display name. At most 255 characters."""
 
     def as_dict(self) -> dict:
         """Serializes the RegexMatchRule into a dictionary suitable for use as a JSON request body."""
@@ -944,8 +940,10 @@ class RegexMatchRule:
 
 @dataclass
 class ResolveGroupResponse:
+    """The response to resolving a group."""
+
     group: Optional[Group] = None
-    """The group that was resolved."""
+    """The resolved group."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolveGroupResponse into a dictionary suitable for use as a JSON request body."""
@@ -969,8 +967,10 @@ class ResolveGroupResponse:
 
 @dataclass
 class ResolveServicePrincipalResponse:
+    """The response to resolving a service principal."""
+
     service_principal: Optional[ServicePrincipal] = None
-    """The service principal that was resolved."""
+    """The resolved service principal."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolveServicePrincipalResponse into a dictionary suitable for use as a JSON request body."""
@@ -994,8 +994,10 @@ class ResolveServicePrincipalResponse:
 
 @dataclass
 class ResolveUserResponse:
+    """The response to resolving a user."""
+
     user: Optional[User] = None
-    """The user that was resolved."""
+    """The resolved user."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolveUserResponse into a dictionary suitable for use as a JSON request body."""
@@ -1019,36 +1021,36 @@ class ResolveUserResponse:
 
 @dataclass
 class ServicePrincipal:
-    """The details of a ServicePrincipal resource."""
+    """A service principal in your Databricks account."""
 
     display_name: str
-    """Display name of the service principal."""
+    """The service principal's display name."""
 
     account_sp_status: State
-    """The activity status of a service principal in a Databricks account."""
+    """Whether the service principal is active in the account."""
 
     account_id: Optional[str] = None
-    """The parent account ID for the service principal in Databricks."""
+    """The ID of the account that contains the service principal."""
 
     application_id: Optional[str] = None
-    """Application ID of the service principal. Set at creation time and cannot be changed afterwards;
-    when omitted, the server generates one."""
+    """The service principal's application ID, a UUID. If you don't set it when you create the service
+    principal, Databricks generates one. It must be unique in the account and can't be changed."""
 
     external_id: Optional[str] = None
-    """ExternalId of the service principal in the customer's IdP."""
+    """The ID of the service principal in your identity provider (IdP)."""
 
     name: Optional[str] = None
-    """The resource name of the service principal. The format depends on the API that returned it:
+    """The resource name of the service principal, in one of these formats:
     
-    - Account-scoped: accounts/{account_id}/service-principals/{service_principal_id}
-    - Workspace-scoped: service-principals/{service_principal_id}"""
+    - Account APIs: ``accounts/{account_id}/service-principals/{service_principal_id}``
+    - Workspace APIs: ``service-principals/{service_principal_id}``"""
 
     parent: Optional[str] = None
-    """The resource name of the account that contains the service principal, ``accounts/{account_id}``.
-    Both the account-scoped and workspace-scoped APIs return it."""
+    """The resource name of the account that contains the service principal, in the format
+    ``accounts/{account_id}``. Workspace APIs return the same format."""
 
     service_principal_id: Optional[str] = None
-    """Internal service principal ID of the service principal in Databricks."""
+    """The Databricks ID of the service principal."""
 
     def as_dict(self) -> dict:
         """Serializes the ServicePrincipal into a dictionary suitable for use as a JSON request body."""
@@ -1108,7 +1110,7 @@ class ServicePrincipal:
 
 
 class State(Enum):
-    """The activity status of a user or service principal in a Databricks account or workspace."""
+    """Whether a user or service principal is active in an account or workspace."""
 
     ACTIVE = "ACTIVE"
     INACTIVE = "INACTIVE"
@@ -1116,24 +1118,23 @@ class State(Enum):
 
 @dataclass
 class TransitiveParentGroup:
-    """Represents a group that is a transitive parent of a principal."""
+    """A group that a principal belongs to, either directly or through another group."""
 
     account_id: Optional[str] = None
-    """The parent account ID for group in Databricks."""
+    """The ID of the account that contains the group."""
 
     external_id: Optional[str] = None
-    """ExternalId of the group in the customer's IdP."""
+    """The ID of the group in your identity provider (IdP)."""
 
     group_id: Optional[str] = None
-    """Internal group ID of the group in Databricks."""
+    """The Databricks ID of the group."""
 
     name: Optional[str] = None
-    """The resource name of the transitive parent group. The format depends on the API that returned
-    it:
+    """The resource name of the parent group, in one of these formats:
     
-    - Account-scoped:
-      accounts/{account_id}/principals/{principal_id}/transitive-parent-groups/{group_id}
-    - Workspace-scoped: principals/{principal_id}/transitive-parent-groups/{group_id}"""
+    - Account APIs:
+      ``accounts/{account_id}/principals/{principal_id}/transitive-parent-groups/{group_id}``
+    - Workspace APIs: ``principals/{principal_id}/transitive-parent-groups/{group_id}``"""
 
     def as_dict(self) -> dict:
         """Serializes the TransitiveParentGroup into a dictionary suitable for use as a JSON request body."""
@@ -1174,34 +1175,37 @@ class TransitiveParentGroup:
 
 @dataclass
 class User:
-    """The details of a User resource."""
+    """A user in your Databricks account."""
 
     username: str
-    """Username/email of the user."""
+    """The user's username, which is their email address. It can't be changed after the user is
+    created."""
 
     full_name: UserFullName
+    """The user's name."""
 
     account_user_status: State
-    """The activity status of a user in a Databricks account."""
+    """Whether the user is active in the account. New users are active unless you set this to
+    ``INACTIVE``."""
 
     account_id: Optional[str] = None
-    """The accountId parent of the user in Databricks."""
+    """The ID of the account that contains the user."""
 
     external_id: Optional[str] = None
-    """ExternalId of the user in the customer's IdP."""
+    """The ID of the user in your identity provider (IdP)."""
 
     name: Optional[str] = None
-    """The resource name of the user. The format depends on the API that returned it:
+    """The resource name of the user, in one of these formats:
     
-    - Account-scoped: accounts/{account_id}/users/{user_id}
-    - Workspace-scoped: users/{user_id}"""
+    - Account APIs: ``accounts/{account_id}/users/{user_id}``
+    - Workspace APIs: ``users/{user_id}``"""
 
     parent: Optional[str] = None
-    """The resource name of the account that contains the user, ``accounts/{account_id}``. Both the
-    account-scoped and workspace-scoped APIs return it."""
+    """The resource name of the account that contains the user, in the format
+    ``accounts/{account_id}``. Workspace APIs return the same format."""
 
     user_id: Optional[str] = None
-    """Internal userId of the user in Databricks."""
+    """The Databricks ID of the user."""
 
     def as_dict(self) -> dict:
         """Serializes the User into a dictionary suitable for use as a JSON request body."""
@@ -1262,9 +1266,13 @@ class User:
 
 @dataclass
 class UserFullName:
+    """A user's name."""
+
     family_name: Optional[str] = None
+    """The user's family (last) name."""
 
     given_name: Optional[str] = None
+    """The user's given (first) name."""
 
     def as_dict(self) -> dict:
         """Serializes the UserFullName into a dictionary suitable for use as a JSON request body."""
@@ -1394,61 +1402,51 @@ class WorkspaceAccessDetailView(Enum):
 
 @dataclass
 class WorkspaceAssignment:
-    """The direct assignment of a provisioned account-level principal (user, service principal, or
-    group) to a workspace, together with the entitlements that assignment grants in the workspace.
+    """A principal's direct assignment to a workspace, and the entitlements it grants there.
 
-    This resource covers only principals assigned directly to the workspace. Principals that inherit
-    workspace access through a group are not represented here. See WorkspaceAccessDetail and
-    WorkspaceIdentityDetail for the effective, direct-or-indirect view. Creating the resource
-    assigns the principal to the workspace, and deleting it removes the assignment.
+    Only principals assigned directly to the workspace have an assignment. A principal that gets
+    access only through a group doesn't. Creating an assignment gives the principal access to the
+    workspace, and deleting it removes that direct access. These APIs replace managing workspace
+    assignments through SCIM and the permission assignment APIs. They require a workspace with
+    identity federation enabled. You can't assign, change, or unassign principals that Databricks
+    manages.
 
-    ``entitlements`` is the only client-settable field. It holds the entitlements granted directly
-    on this assignment, including any the principal also holds through a group.
-    ``effective_entitlements`` is the read-only union of those and any granted through group
-    membership.
-
-    A direct assignment always carries at least one directly-assigned entitlement, because the
-    assignment is what grants it. Create and update both reject an empty ``entitlements`` set. To
-    remove a principal's assignment entirely, delete the resource.
-
-    This resource replaces workspace assignment previously managed through the workspace SCIM and
-    permission-assignment APIs, and is intended for account and workspace admins."""
+    ``entitlements`` is the only field you set. ``effective_entitlements`` also includes the
+    entitlements the principal gets through its groups. An assignment must grant at least one
+    entitlement. To remove a principal's direct access, delete the assignment."""
 
     principal_id: int
-    """The internal ID of the principal (user/sp/group) in Databricks. Set when the assignment is
-    created and cannot be changed afterwards; to assign a different principal, create a new
-    assignment."""
+    """The Databricks ID of the assigned user, service principal, or group. It can't be changed after
+    the assignment is created."""
 
     account_id: Optional[str] = None
-    """The account ID parent of the workspace where the principal is assigned"""
+    """The ID of the account that contains the workspace."""
 
     effective_entitlements: Optional[List[Entitlement]] = None
-    """Every entitlement the principal holds in this workspace, whether granted directly or through
-    group membership. Get responses populate this field. List responses leave it empty."""
+    """Every entitlement the principal has in the workspace, granted directly or through a group. List
+    responses leave it empty."""
 
     entitlements: Optional[List[Entitlement]] = None
-    """Entitlements granted directly to the principal on this workspace. This is the only
-    client-settable field. Create and update manage exactly this set, including entitlements the
-    principal also holds through a group. List responses leave this field empty. Get a single
-    principal to read its entitlements."""
+    """The entitlements granted directly by this assignment. Create and update set exactly this list,
+    even if the principal also gets some of these entitlements through a group. List responses leave
+    it empty."""
 
     name: Optional[str] = None
-    """The resource name of the workspace assignment. The format depends on the API that returned it:
+    """The resource name of the assignment, in one of these formats:
     
-    - Account-scoped:
-      accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
-    - Workspace-scoped: workspace-assignments/{principal_id}"""
+    - Account APIs:
+      ``accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}``
+    - Workspace APIs: ``workspace-assignments/{principal_id}``"""
 
     parent: Optional[str] = None
-    """The resource name of the workspace that contains the assignment,
-    ``accounts/{account_id}/workspaces/{workspace_id}``. Both the account-scoped and
-    workspace-scoped APIs return it."""
+    """The resource name of the workspace, in the format
+    ``accounts/{account_id}/workspaces/{workspace_id}``. Workspace APIs return the same format."""
 
     principal_type: Optional[PrincipalType] = None
-    """The type of the principal (user/service principal/group) that is assigned."""
+    """Whether the assigned principal is a user, service principal, or group."""
 
     workspace_id: Optional[int] = None
-    """The workspace ID where the principal is assigned."""
+    """The ID of the workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceAssignment into a dictionary suitable for use as a JSON request body."""
@@ -1599,23 +1597,25 @@ class WorkspaceAssignmentDetail:
 
 @dataclass
 class WorkspaceIdentityDetail:
-    """The details of a directly or indirectly assigned principal's details in a workspace."""
+    """A user, service principal, or group's status in a workspace, and whether it has access to the
+    workspace directly or through a group. Update it to activate or deactivate a user or service
+    principal in the workspace."""
 
     assignment_type: Optional[WorkspaceIdentityDetailAssignmentType] = None
-    """The type of assignment the principal has to the workspace (direct or indirect)."""
+    """Whether the principal is assigned to the workspace directly or has access through a group."""
 
     name: Optional[str] = None
-    """The resource name of the workspace identity detail. Format:
-    principals/{principal_id}/workspace-identity-detail"""
+    """The resource name of the workspace identity detail, in the format
+    ``principals/{principal_id}/workspace-identity-detail``."""
 
     principal_id: Optional[int] = None
-    """The internal ID of the principal (user/sp/group) in Databricks."""
+    """The Databricks ID of the user, service principal, or group."""
 
     principal_type: Optional[PrincipalType] = None
-    """The type of the principal (user/service principal/group)."""
+    """Whether the principal is a user, service principal, or group."""
 
     workspace_identity_status: Optional[State] = None
-    """The activity status of an identity in a Databricks workspace."""
+    """Whether the principal is active in the workspace. Groups are always ``ACTIVE``."""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceIdentityDetail into a dictionary suitable for use as a JSON request body."""
@@ -1660,7 +1660,7 @@ class WorkspaceIdentityDetail:
 
 
 class WorkspaceIdentityDetailAssignmentType(Enum):
-    """The type of assignment the principal has to the workspace."""
+    """How a principal has access to a workspace."""
 
     DIRECT = "DIRECT"
     INDIRECT = "INDIRECT"
@@ -1680,16 +1680,16 @@ class AccountIamV2API:
         self._api = api_client
 
     def create_direct_group_member(self, parent: str, direct_group_member: DirectGroupMember) -> DirectGroupMember:
-        """Creates a group membership (assigns a principal to a group).
+        """Adds a user, service principal, or group as a direct member of a group.
 
-        Authorization: the caller must be an account admin or a manager of the group (holds the
-        ``roles/group.manager`` role on it).
+        If automatic identity management is on and the group has an ``external_id``, its members come from
+        your identity provider and can't be changed in Databricks.
 
         :param parent: str
-          The parent resource name of the group to add the member to. Format:
-          accounts/{account_id}/groups/{group_id}
+          The resource name of the group to add the member to, in the format
+          ``accounts/{account_id}/groups/{group_id}``.
         :param direct_group_member: :class:`DirectGroupMember`
-          Required. The direct group member to be added to the group.
+          The member to add. Set its ``principal_id``.
 
         :returns: :class:`DirectGroupMember`
         """
@@ -1705,18 +1705,16 @@ class AccountIamV2API:
         return DirectGroupMember.from_dict(res)
 
     def create_group(self, parent: str, group: Group) -> Group:
-        """Creates a local group in the Databricks account and returns the created group. A local group is one
-        that is not synced from the customer's identity provider, and can be created whether or not Account
-        Identity Management (AIM) is enabled.
+        """Creates a local group, which is a group that isn't synced from your identity provider (IdP). You
+        become a manager of the new group.
 
-        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
-        identity provider, resolve it by its external ID with ResolveGroup; to read an existing external
-        identity, use the ExternalGroup resource.
+        If automatic identity management is on, you can't set ``external_id``. To add a group from your IdP,
+        get it as an external group instead.
 
         :param parent: str
-          The parent resource name of the account in which to create the group. Format: accounts/{account_id}
+          The resource name of the account to create the group in, in the format ``accounts/{account_id}``.
         :param group: :class:`Group`
-          Required. Group to be created in Databricks
+          The group to create.
 
         :returns: :class:`Group`
         """
@@ -1738,22 +1736,20 @@ class AccountIamV2API:
         *,
         identity_visibility_filter_id: Optional[str] = None,
     ) -> IdentityVisibilityFilter:
-        """Creates a group visibility filter in the account. Requires account admin privileges. Set
-        ``principal_type`` to ``GROUP`` and specify exactly one of ``exact`` (external ID), ``prefix``
-        (display-name starts with), or ``regex`` (full RE2 display-name match). The filter applies across all
-        workspaces in the account. A duplicate filter ID or an existing rule with the same type and match
-        value returns ``ALREADY_EXISTS``. Filters are immutable; to change a rule, delete it and create a new
-        one.
+        """Creates a group visibility filter. It applies to every workspace in the account.
+
+        Returns ``ALREADY_EXISTS`` if a filter with the same ID, or the same type and match value, already
+        exists. Returns ``RESOURCE_EXHAUSTED`` if the account already has the maximum number of filters of
+        that type. You can't change a filter: to change a rule, delete it and create a new one.
 
         :param parent: str
-          Required. The parent account. Format: accounts/{account_id}
+          The resource name of the account, in the format ``accounts/{account_id}``.
         :param identity_visibility_filter: :class:`IdentityVisibilityFilter`
-          Required. The filter to create. Set ``principal_type`` to ``GROUP`` and specify exactly one of
-          ``exact``, ``prefix``, or ``regex``. The server assigns the resource name; any supplied ``name`` is
-          ignored.
+          The filter to create. Set ``principal_type`` to ``GROUP`` and exactly one of ``exact``, ``prefix``,
+          or ``regex``. Databricks sets ``name``, so any value you set is ignored.
         :param identity_visibility_filter_id: str (optional)
-          Optional. The ID to use for the filter, which becomes the final component of its resource name. If
-          not specified or empty, the server generates one. Must not contain ``/``.
+          The ID to give the filter, which becomes the last part of its resource name. If you leave it empty,
+          Databricks generates one. It can't contain ``/``.
 
         :returns: :class:`IdentityVisibilityFilter`
         """
@@ -1773,19 +1769,17 @@ class AccountIamV2API:
         return IdentityVisibilityFilter.from_dict(res)
 
     def create_service_principal(self, parent: str, service_principal: ServicePrincipal) -> ServicePrincipal:
-        """Creates a local service principal in the Databricks account and returns the created service principal.
-        A local service principal is one that is not synced from the customer's identity provider, and can be
-        created whether or not Account Identity Management (AIM) is enabled.
+        """Creates a local service principal, which is a service principal that isn't synced from your identity
+        provider (IdP).
 
-        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
-        identity provider, resolve it by its external ID with ResolveServicePrincipal; to read an existing
-        external identity, use the ExternalServicePrincipal resource.
+        If automatic identity management is on, you can't set ``external_id``. To add a service principal from
+        your IdP, get it as an external service principal instead.
 
         :param parent: str
-          The parent resource name of the account in which to create the service principal. Format:
-          accounts/{account_id}
+          The resource name of the account to create the service principal in, in the format
+          ``accounts/{account_id}``.
         :param service_principal: :class:`ServicePrincipal`
-          Required. Service principal to be created in Databricks
+          The service principal to create.
 
         :returns: :class:`ServicePrincipal`
         """
@@ -1801,18 +1795,15 @@ class AccountIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def create_user(self, parent: str, user: User) -> User:
-        """Creates a local user in the Databricks account and returns the created user. A local user is one that
-        is not synced from the customer's identity provider, and can be created whether or not Account
-        Identity Management (AIM) is enabled.
+        """Creates a local user, which is a user that isn't synced from your identity provider (IdP).
 
-        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
-        identity provider, resolve it by its external ID with ResolveUser; to read an existing external
-        identity, use the ExternalUser resource.
+        If automatic identity management is on, you can't set ``external_id``. To add a user from your IdP,
+        get them as an external user instead.
 
         :param parent: str
-          The parent resource name of the account in which to create the user. Format: accounts/{account_id}
+          The resource name of the account to create the user in, in the format ``accounts/{account_id}``.
         :param user: :class:`User`
-          Required. User to be created in Databricks
+          The user to create.
 
         :returns: :class:`User`
         """
@@ -1830,16 +1821,18 @@ class AccountIamV2API:
     def create_workspace_assignment(
         self, parent: str, workspace_assignment: WorkspaceAssignment
     ) -> WorkspaceAssignment:
-        """Creates a workspace assignment for a principal. Entitlements are granted one at a time rather than
-        atomically. If the request fails partway through, the principal stays assigned to the workspace with
-        only some of the requested entitlements. Get the assignment afterwards to confirm which entitlements
-        were granted.
+        """Assigns a user, service principal, or group directly to a workspace with the given entitlements.
+        Returns an error if the principal is already assigned directly.
+
+        Entitlements are granted one at a time. If the request fails partway through, the principal stays
+        assigned with only some of the entitlements. Get the assignment afterwards to check which were
+        granted.
 
         :param parent: str
-          The parent resource name of the workspace to assign the principal to. Format:
-          accounts/{account_id}/workspaces/{workspace_id}
+          The resource name of the workspace, in the format
+          ``accounts/{account_id}/workspaces/{workspace_id}``.
         :param workspace_assignment: :class:`WorkspaceAssignment`
-          Required. Workspace assignment to be created in Databricks.
+          The assignment to create. Set its ``principal_id`` and ``entitlements``.
 
         :returns: :class:`WorkspaceAssignment`
         """
@@ -1883,14 +1876,14 @@ class AccountIamV2API:
         return WorkspaceAssignmentDetail.from_dict(res)
 
     def delete_direct_group_member(self, name: str):
-        """Deletes a group membership (unassigns a principal from a group).
+        """Removes a direct member from a group.
 
-        Authorization: the caller must be an account admin or a manager of the group (holds the
-        ``roles/group.manager`` role on it).
+        If automatic identity management is on and the group has an ``external_id``, its members come from
+        your identity provider and can't be changed in Databricks.
 
         :param name: str
-          The resource name of the group membership. Format:
-          accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}
+          The resource name of the membership, in the format
+          ``accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}``.
 
 
         """
@@ -1902,13 +1895,10 @@ class AccountIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def delete_group(self, name: str):
-        """Deletes a group from the Databricks account by its internal ID.
-
-        Authorization: the caller must be an account admin or a manager of the group (holds the
-        ``roles/group.manager`` role on it).
+        """Deletes a group from your account and removes it from the workspaces it's assigned to.
 
         :param name: str
-          The resource name of the group. Format: accounts/{account_id}/groups/{group_id}
+          The resource name of the group, in the format ``accounts/{account_id}/groups/{group_id}``.
 
 
         """
@@ -1920,15 +1910,14 @@ class AccountIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def delete_identity_visibility_filter(self, name: str):
-        """Deletes a group visibility filter by its resource name. Requires account admin privileges. Deleting a
-        filter does not delete groups or revoke access. Groups covered only by this rule stop being
-        discoverable unless they or a transitive parent are already provisioned in the account. If no group
-        filters remain, all groups become visible again. Deleting a filter that does not exist succeeds
-        without making any changes.
+        """Deletes a group visibility filter. Deleting a filter doesn't delete groups or remove access. Groups
+        that only this filter matched stop being visible, unless they or a parent group are already in your
+        account. If no group filters remain, all groups become visible again. Deleting a filter that doesn't
+        exist succeeds.
 
         :param name: str
-          Required. The resource name of the filter. Format:
-          accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}
+          The resource name of the filter, in the format
+          ``accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}``.
 
 
         """
@@ -1940,11 +1929,12 @@ class AccountIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def delete_service_principal(self, name: str):
-        """Deletes a service principal from the Databricks account by its internal ID.
+        """Deletes a service principal from your account and removes it from the workspaces it's assigned to. You
+        can't delete service principals that Databricks manages.
 
         :param name: str
-          The resource name of the service principal. Format:
-          accounts/{account_id}/service-principals/{service_principal_id}
+          The resource name of the service principal, in the format
+          ``accounts/{account_id}/service-principals/{service_principal_id}``.
 
 
         """
@@ -1956,10 +1946,10 @@ class AccountIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def delete_user(self, name: str):
-        """Deletes a user from the Databricks account by its internal ID.
+        """Deletes a user from your account and removes them from the workspaces they're assigned to.
 
         :param name: str
-          The resource name of the user. Format: accounts/{account_id}/users/{user_id}
+          The resource name of the user, in the format ``accounts/{account_id}/users/{user_id}``.
 
 
         """
@@ -1971,13 +1961,15 @@ class AccountIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def delete_workspace_assignment(self, name: str):
-        """Deletes a workspace assignment for a principal, revoking all of its entitlements. Entitlements are
-        revoked one at a time rather than atomically. If the request fails partway through, the principal
-        stays assigned with some of its original entitlements. Retrying is safe.
+        """Removes a principal's direct assignment to a workspace and revokes the entitlements it granted. The
+        principal keeps any access it gets through groups.
+
+        Entitlements are revoked one at a time. If the request fails partway through, the principal stays
+        assigned with some of its entitlements. You can retry the request.
 
         :param name: str
-          The resource name of the workspace assignment. Format:
-          accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
+          The resource name of the assignment, in the format
+          ``accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}``.
 
 
         """
@@ -2012,11 +2004,12 @@ class AccountIamV2API:
         )
 
     def get_direct_group_member(self, name: str) -> DirectGroupMember:
-        """Gets a provisioned direct member of a group.
+        """Gets a direct member of a group, including where the membership comes from. Returns an error if the
+        principal isn't a direct member.
 
         :param name: str
-          The resource name of the group membership. Format:
-          accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}
+          The resource name of the membership, in the format
+          ``accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}``.
 
         :returns: :class:`DirectGroupMember`
         """
@@ -2029,13 +2022,13 @@ class AccountIamV2API:
         return DirectGroupMember.from_dict(res)
 
     def get_external_group(self, name: str) -> ExternalGroup:
-        """Retrieves an external group with the given external ID from the customer's IdP. If the group does not
-        exist, it will be created in the account. If the customer is not onboarded onto Automatic Identity
-        Management (AIM), this will return an error.
+        """Gets a group by its ID in your identity provider (IdP) and syncs its name and parent groups from your
+        IdP. If the group isn't in your account yet, it's added. Requires automatic identity management. If
+        your account has group visibility filters, the group must match them.
 
         :param name: str
-          Required. The resource name of the external group. Format:
-          accounts/{account_id}/external-groups/{external_group_id}
+          The resource name of the external group, in the format
+          ``accounts/{account_id}/external-groups/{external_group_id}``.
 
         :returns: :class:`ExternalGroup`
         """
@@ -2048,13 +2041,13 @@ class AccountIamV2API:
         return ExternalGroup.from_dict(res)
 
     def get_external_service_principal(self, name: str) -> ExternalServicePrincipal:
-        """Retrieves an external service principal with the given external ID from the customer's IdP. If the
-        service principal does not exist, it will be created. If the customer is not onboarded onto Automatic
-        Identity Management (AIM), this will return an error.
+        """Gets a service principal by its ID in your identity provider (IdP) and syncs its details and group
+        memberships from your IdP. If the service principal isn't in your account yet, it's added. Requires
+        automatic identity management with Microsoft Entra ID as your IdP.
 
         :param name: str
-          Required. The resource name of the external service principal. Format:
-          accounts/{account_id}/external-service-principals/{external_service_principal_id}
+          The resource name of the external service principal, in the format
+          ``accounts/{account_id}/external-service-principals/{external_service_principal_id}``.
 
         :returns: :class:`ExternalServicePrincipal`
         """
@@ -2067,13 +2060,13 @@ class AccountIamV2API:
         return ExternalServicePrincipal.from_dict(res)
 
     def get_external_user(self, name: str) -> ExternalUser:
-        """Retrieves an external user with the given external ID from the customer's IdP. If the user does not
-        exist, it will be created. If the customer is not onboarded onto Automatic Identity Management (AIM),
-        this will return an error.
+        """Gets a user by their ID in your identity provider (IdP) and syncs their details and group memberships
+        from your IdP. If the user isn't in your account yet, they're added. Requires automatic identity
+        management.
 
         :param name: str
-          Required. The resource name of the external user. Format:
-          accounts/{account_id}/external-users/{external_user_id}
+          The resource name of the external user, in the format
+          ``accounts/{account_id}/external-users/{external_user_id}``.
 
         :returns: :class:`ExternalUser`
         """
@@ -2086,10 +2079,10 @@ class AccountIamV2API:
         return ExternalUser.from_dict(res)
 
     def get_group(self, name: str) -> Group:
-        """Fetches a group from the Databricks account by its internal ID.
+        """Gets a group by its Databricks ID.
 
         :param name: str
-          The resource name of the group. Format: accounts/{account_id}/groups/{group_id}
+          The resource name of the group, in the format ``accounts/{account_id}/groups/{group_id}``.
 
         :returns: :class:`Group`
         """
@@ -2102,12 +2095,11 @@ class AccountIamV2API:
         return Group.from_dict(res)
 
     def get_identity_visibility_filter(self, name: str) -> IdentityVisibilityFilter:
-        """Gets a group visibility filter by its resource name. Requires account admin privileges. Returns the
-        filter rule, not the groups matched by the rule.
+        """Gets a group visibility filter. It returns the rule, not the groups it matches.
 
         :param name: str
-          Required. The resource name of the filter. Format:
-          accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}
+          The resource name of the filter, in the format
+          ``accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}``.
 
         :returns: :class:`IdentityVisibilityFilter`
         """
@@ -2120,11 +2112,11 @@ class AccountIamV2API:
         return IdentityVisibilityFilter.from_dict(res)
 
     def get_service_principal(self, name: str) -> ServicePrincipal:
-        """Fetches a service principal from the Databricks account by its internal ID.
+        """Gets a service principal by its Databricks ID.
 
         :param name: str
-          The resource name of the service principal. Format:
-          accounts/{account_id}/service-principals/{service_principal_id}
+          The resource name of the service principal, in the format
+          ``accounts/{account_id}/service-principals/{service_principal_id}``.
 
         :returns: :class:`ServicePrincipal`
         """
@@ -2137,10 +2129,10 @@ class AccountIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def get_user(self, name: str) -> User:
-        """Fetches a user from the Databricks account by its internal ID.
+        """Gets a user by their Databricks ID.
 
         :param name: str
-          The resource name of the user. Format: accounts/{account_id}/users/{user_id}
+          The resource name of the user, in the format ``accounts/{account_id}/users/{user_id}``.
 
         :returns: :class:`User`
         """
@@ -2182,11 +2174,12 @@ class AccountIamV2API:
         return WorkspaceAccessDetail.from_dict(res)
 
     def get_workspace_assignment(self, name: str) -> WorkspaceAssignment:
-        """Returns the assignment for a principal in a workspace.
+        """Gets a principal's direct assignment to a workspace, including its effective entitlements. Returns an
+        error if the principal isn't assigned directly.
 
         :param name: str
-          The resource name of the workspace assignment. Format:
-          accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
+          The resource name of the assignment, in the format
+          ``accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}``.
 
         :returns: :class:`WorkspaceAssignment`
         """
@@ -2224,19 +2217,16 @@ class AccountIamV2API:
     def list_direct_group_members(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DirectGroupMember]:
-        """Lists provisioned direct members of a group with their membership source (internal or from identity
-        provider).
+        """Lists the direct members of a group, sorted by display name, with where each membership comes from.
+        Members in your identity provider who haven't been added to Databricks aren't included.
 
         :param parent: str
-          The parent resource name of the group whose direct members to list. Format:
-          accounts/{account_id}/groups/{group_id}
+          The resource name of the group, in the format ``accounts/{account_id}/groups/{group_id}``.
         :param page_size: int (optional)
-          The maximum number of members to return. The service may return fewer than this value. If not
-          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
-          are clamped to 1000.
+          The maximum number of members to return, up to 1000. The default is 1000. A page can contain fewer
+          members.
         :param page_token: str (optional)
-          A page token, received from a previous ListDirectGroupMembers call. Provide this to retrieve the
-          subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
 
         :returns: Iterator over :class:`DirectGroupMember`
         """
@@ -2267,20 +2257,19 @@ class AccountIamV2API:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[Group]:
-        """Lists the groups in the Databricks account, returning one page per call. Supports filtering by group
-        name or external ID.
+        """Lists the groups in your account, sorted by Databricks ID. Groups in your identity provider that
+        haven't been added to Databricks aren't included.
 
         :param parent: str
-          The parent resource name of the account whose groups to list. Format: accounts/{account_id}
+          The resource name of the account to list groups in, in the format ``accounts/{account_id}``.
         :param filter: str (optional)
-          Optional. Allows filtering groups by group name or external id.
+          Filters groups by ``group_name`` or ``external_id``, for example ``group_name eq "Data engineers"``.
+          Put the value in quotes.
         :param page_size: int (optional)
-          The maximum number of groups to return. The service may return fewer than this value. If not
-          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
-          are clamped to 1000.
+          The maximum number of groups to return, up to 1000. The default is 1000. A page can contain fewer
+          groups.
         :param page_token: str (optional)
-          A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
-          page.
+          The ``next_page_token`` from a previous response, to get the next page.
 
         :returns: Iterator over :class:`Group`
         """
@@ -2308,19 +2297,15 @@ class AccountIamV2API:
     def list_identity_visibility_filters(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[IdentityVisibilityFilter]:
-        """Lists group visibility filters in the account, returning one page per call. Requires account admin
-        privileges. Returns filter rules, not the groups matched by those rules. To retrieve the next page,
-        pass the response's ``next_page_token`` as ``page_token`` in the next request. If ``next_page_token``
-        is omitted, there are no more pages.
+        """Lists the group visibility filters in an account. It returns the rules, not the groups they match.
 
         :param parent: str
-          Required. The parent account. Format: accounts/{account_id}
+          The resource name of the account, in the format ``accounts/{account_id}``.
         :param page_size: int (optional)
-          The maximum number of filters to return. The service may return fewer than this value. If omitted or
-          non-positive, defaults to 100. Values above 1000 are reduced to 1000.
+          The maximum number of filters to return, up to 1000. The default is 100. A page can contain fewer
+          filters.
         :param page_token: str (optional)
-          A page token, received from a previous ListIdentityVisibilityFilters call. Provide this to retrieve
-          the subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
 
         :returns: Iterator over :class:`IdentityVisibilityFilter`
         """
@@ -2353,21 +2338,20 @@ class AccountIamV2API:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ServicePrincipal]:
-        """Lists the service principals in the Databricks account, returning one page per call. Supports
-        filtering by application ID or external ID.
+        """Lists the service principals in your account, sorted by Databricks ID. Service principals in your
+        identity provider that haven't been added to Databricks aren't included.
 
         :param parent: str
-          The parent resource name of the account whose service principals to list. Format:
-          accounts/{account_id}
+          The resource name of the account to list service principals in, in the format
+          ``accounts/{account_id}``.
         :param filter: str (optional)
-          Optional. Allows filtering service principals by application id or external id.
+          Filters service principals by ``application_id`` or ``external_id``, for example ``application_id eq
+          "<application-id>"``. Put the value in quotes.
         :param page_size: int (optional)
-          The maximum number of service principals to return. The service may return fewer than this value. If
-          not provided, defaults to 1000, which is also the maximum allowed. Requests for more than the
-          maximum are clamped to 1000.
+          The maximum number of service principals to return, up to 1000. The default is 1000. A page can
+          contain fewer service principals.
         :param page_token: str (optional)
-          A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
-          subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
 
         :returns: Iterator over :class:`ServicePrincipal`
         """
@@ -2395,18 +2379,18 @@ class AccountIamV2API:
     def list_transitive_parent_groups(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> ListTransitiveParentGroupsResponse:
-        """Lists all transitive parent groups of a principal.
+        """Lists every group that a user, service principal, or group belongs to, directly or through other
+        groups, sorted by Databricks ID. If automatic identity management is on, the principal's group
+        memberships are synced from your identity provider first.
 
         :param parent: str
-          The parent resource name of the principal whose transitive parent groups to list. Format:
-          accounts/{account_id}/principals/{principal_id}
+          The user, service principal, or group whose parent groups to list, in the format
+          ``accounts/{account_id}/principals/{principal_id}``.
         :param page_size: int (optional)
-          The maximum number of parent groups to return. The service may return fewer than this value. If not
-          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
-          are clamped to 1000.
+          The maximum number of groups to return, up to 1000. The default is 1000. A page can contain fewer
+          groups.
         :param page_token: str (optional)
-          A page token, received from a previous ListTransitiveParentGroups call. Provide this to retrieve the
-          subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
 
         :returns: :class:`ListTransitiveParentGroupsResponse`
         """
@@ -2431,19 +2415,19 @@ class AccountIamV2API:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[User]:
-        """Lists the users in the Databricks account, returning one page per call. Supports filtering by username
-        or external ID.
+        """Lists the users in your account, sorted by Databricks ID. Users in your identity provider who haven't
+        been added to Databricks aren't included.
 
         :param parent: str
-          The parent resource name of the account whose users to list. Format: accounts/{account_id}
+          The resource name of the account to list users in, in the format ``accounts/{account_id}``.
         :param filter: str (optional)
-          Optional. Allows filtering users by username or external id.
+          Filters users by ``username`` or ``external_id``, for example ``username eq "someone@example.com"``.
+          Put the value in quotes.
         :param page_size: int (optional)
-          The maximum number of users to return. The service may return fewer than this value. If not
-          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
-          are clamped to 1000.
+          The maximum number of users to return, up to 1000. The default is 1000. A page can contain fewer
+          users.
         :param page_token: str (optional)
-          A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
 
         :returns: Iterator over :class:`User`
         """
@@ -2514,20 +2498,17 @@ class AccountIamV2API:
     def list_workspace_assignments(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[WorkspaceAssignment]:
-        """Lists workspace assignments for a workspace. The response omits the per-principal entitlement fields
-        (``entitlements`` and ``effective_entitlements``). To read the entitlements for a single principal,
-        get that principal's assignment.
+        """Lists the principals assigned directly to a workspace. The response leaves ``entitlements`` and
+        ``effective_entitlements`` empty. To read a principal's entitlements, get its assignment.
 
         :param parent: str
-          The parent resource name of the workspace whose assignments to list. Format:
-          accounts/{account_id}/workspaces/{workspace_id}
+          The resource name of the workspace, in the format
+          ``accounts/{account_id}/workspaces/{workspace_id}``.
         :param page_size: int (optional)
-          The maximum number of workspace assignments to return. The service may return fewer than this value.
-          If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than the
-          maximum are clamped to 1000.
+          The maximum number of assignments to return, up to 1000. The default is 1000. A page can contain
+          fewer assignments.
         :param page_token: str (optional)
-          A page token, received from a previous ListWorkspaceAssignments call. Provide this to retrieve the
-          subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
 
         :returns: Iterator over :class:`WorkspaceAssignment`
         """
@@ -2553,12 +2534,12 @@ class AccountIamV2API:
             query["page_token"] = json["next_page_token"]
 
     def resolve_group(self, external_id: str) -> ResolveGroupResponse:
-        """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
-        will be created in the account. If the customer is not onboarded onto Automatic Identity Management
-        (AIM), this will return an error.
+        """Gets a group by its ID in your identity provider (IdP) and syncs its name and parent groups from your
+        IdP. If the group isn't in your account yet, it's added. Requires automatic identity management. If
+        your account has group visibility filters, the group must match them.
 
         :param external_id: str
-          Required. The external ID of the group in the customer's IdP.
+          The ID of the group in your IdP.
 
         :returns: :class:`ResolveGroupResponse`
         """
@@ -2580,12 +2561,12 @@ class AccountIamV2API:
         return ResolveGroupResponse.from_dict(res)
 
     def resolve_service_principal(self, external_id: str) -> ResolveServicePrincipalResponse:
-        """Resolves a service principal with the given external ID from the customer's IdP. If the service
-        principal does not exist, it will be created. If the customer is not onboarded onto Automatic Identity
-        Management (AIM), this will return an error.
+        """Gets a service principal by its ID in your identity provider (IdP) and syncs its details and group
+        memberships from your IdP. If the service principal isn't in your account yet, it's added. Requires
+        automatic identity management with Microsoft Entra ID as your IdP.
 
         :param external_id: str
-          Required. The external ID of the service principal in the customer's IdP.
+          The ID of the service principal in your IdP.
 
         :returns: :class:`ResolveServicePrincipalResponse`
         """
@@ -2607,12 +2588,12 @@ class AccountIamV2API:
         return ResolveServicePrincipalResponse.from_dict(res)
 
     def resolve_user(self, external_id: str) -> ResolveUserResponse:
-        """Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it
-        will be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
-        return an error.
+        """Gets a user by their ID in your identity provider (IdP) and syncs their details and group memberships
+        from your IdP. If the user isn't in your account yet, they're added. Requires automatic identity
+        management.
 
         :param external_id: str
-          Required. The external ID of the user in the customer's IdP.
+          The ID of the user in your IdP.
 
         :returns: :class:`ResolveUserResponse`
         """
@@ -2634,26 +2615,21 @@ class AccountIamV2API:
         return ResolveUserResponse.from_dict(res)
 
     def update_group(self, name: str, group: Group, update_mask: str) -> Group:
-        """Updates an existing group in the Databricks account. Only the fields named in the update mask are
-        modified. Returns the updated Group resource.
+        """Updates a group. Only the fields in ``update_mask`` change.
 
-        When AIM is enabled and the group is an external identity (its external_id is set), only external_id
-        can be updated; its other fields are sourced from your identity provider. With AIM and group
-        visibility filters, a new nonempty external_id must identify a visible group. Clearing external_id is
-        allowed.
-
-        Authorization: the caller must be an account admin or a manager of the group (holds the
-        ``roles/group.manager`` role on it).
+        If automatic identity management is on and the group has an ``external_id``, you can only update
+        ``external_id``. The group's other fields come from your identity provider. If your account also has
+        group visibility filters, a new ``external_id`` must match them. You can always clear ``external_id``.
 
         :param name: str
-          The resource name of the group. The format depends on the API that returned it:
+          The resource name of the group, in one of these formats:
 
-          - Account-scoped: accounts/{account_id}/groups/{group_id}
-          - Workspace-scoped: groups/{group_id}
+          - Account APIs: ``accounts/{account_id}/groups/{group_id}``
+          - Workspace APIs: ``groups/{group_id}``
         :param group: :class:`Group`
-          Required. Group to be updated in Databricks
+          The group to update. Its ``name`` identifies the group.
         :param update_mask: str
-          Required. The list of fields to update.
+          The fields to update, separated by commas. You can update ``group_name`` and ``external_id``.
 
         :returns: :class:`Group`
         """
@@ -2673,24 +2649,22 @@ class AccountIamV2API:
     def update_service_principal(
         self, name: str, service_principal: ServicePrincipal, update_mask: str
     ) -> ServicePrincipal:
-        """Updates an existing service principal in the Databricks account. Only the fields named in the update
-        mask are modified. Returns the updated ServicePrincipal resource.
+        """Updates a service principal. Only the fields in ``update_mask`` change.
 
-        To change is_agent on a locally managed service principal, set it to true or false. Naming is_agent in
-        the update mask without a value leaves it unchanged.
-
-        When AIM is enabled and the service principal is an external identity (its external_id is set), only
-        external_id can be updated; its other fields are sourced from your identity provider.
+        If automatic identity management is on and the service principal has an ``external_id``, you can only
+        update ``external_id``. Its other fields come from your identity provider. A service principal can't
+        deactivate itself, and you can't update service principals that Databricks manages.
 
         :param name: str
-          The resource name of the service principal. The format depends on the API that returned it:
+          The resource name of the service principal, in one of these formats:
 
-          - Account-scoped: accounts/{account_id}/service-principals/{service_principal_id}
-          - Workspace-scoped: service-principals/{service_principal_id}
+          - Account APIs: ``accounts/{account_id}/service-principals/{service_principal_id}``
+          - Workspace APIs: ``service-principals/{service_principal_id}``
         :param service_principal: :class:`ServicePrincipal`
-          Required. Service Principal to be updated in Databricks
+          The service principal to update. Its ``name`` identifies the service principal.
         :param update_mask: str
-          Required. The list of fields to update.
+          The fields to update, separated by commas. You can update ``display_name``, ``account_sp_status``,
+          and ``external_id``.
 
         :returns: :class:`ServicePrincipal`
         """
@@ -2708,22 +2682,22 @@ class AccountIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def update_user(self, name: str, user: User, update_mask: str) -> User:
-        """Updates an existing user in the Databricks account and returns the updated user. Only the fields named
-        in the update mask are modified. The updatable fields are fullName.givenName, fullName.familyName,
-        status, and externalId.
+        """Updates a user. Only the fields in ``update_mask`` change.
 
-        When AIM is enabled and the user is an external identity (its external_id is set), only external_id
-        can be updated; its other fields are sourced from your identity provider.
+        If automatic identity management is on and the user has an ``external_id``, you can only update
+        ``external_id``. The user's other fields come from your identity provider. You can't deactivate
+        yourself or change the status of the account owner.
 
         :param name: str
-          The resource name of the user. The format depends on the API that returned it:
+          The resource name of the user, in one of these formats:
 
-          - Account-scoped: accounts/{account_id}/users/{user_id}
-          - Workspace-scoped: users/{user_id}
+          - Account APIs: ``accounts/{account_id}/users/{user_id}``
+          - Workspace APIs: ``users/{user_id}``
         :param user: :class:`User`
-          Required. User to be updated in Databricks
+          The user to update. Its ``name`` identifies the user.
         :param update_mask: str
-          Required. The list of fields to update.
+          The fields to update, separated by commas. You can update ``full_name.given_name``,
+          ``full_name.family_name``, ``account_user_status``, and ``external_id``.
 
         :returns: :class:`User`
         """
@@ -2743,20 +2717,22 @@ class AccountIamV2API:
     def update_workspace_assignment(
         self, name: str, workspace_assignment: WorkspaceAssignment, update_mask: FieldMask
     ) -> WorkspaceAssignment:
-        """Updates the entitlements of a directly assigned principal in a workspace. Changes are applied one at a
-        time rather than atomically. If the request fails partway through, only some of the requested changes
-        take effect. Get the assignment afterwards to confirm the final state.
+        """Replaces the entitlements of a principal's direct assignment to a workspace. The new list can't be
+        empty.
+
+        Entitlements are changed one at a time. If the request fails partway through, only some of the changes
+        take effect. Get the assignment afterwards to check the result.
 
         :param name: str
-          The resource name of the workspace assignment. The format depends on the API that returned it:
+          The resource name of the assignment, in one of these formats:
 
-          - Account-scoped:
-            accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
-          - Workspace-scoped: workspace-assignments/{principal_id}
+          - Account APIs:
+            ``accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}``
+          - Workspace APIs: ``workspace-assignments/{principal_id}``
         :param workspace_assignment: :class:`WorkspaceAssignment`
-          Required. Workspace assignment to be updated in Databricks.
+          The assignment to update. Its ``name`` identifies the assignment.
         :param update_mask: FieldMask
-          Required. The list of fields to update.
+          The fields to update. The only supported field is ``entitlements``.
 
         :returns: :class:`WorkspaceAssignment`
         """
@@ -2824,12 +2800,16 @@ class WorkspaceIamV2API:
     def create_direct_group_member_proxy(
         self, parent: str, direct_group_member: DirectGroupMember
     ) -> DirectGroupMember:
-        """Creates a group membership (assigns a principal to a group).
+        """Adds a user, service principal, or group as a direct member of a group in the account that contains
+        this workspace.
+
+        If automatic identity management is on and the group has an ``external_id``, its members come from
+        your identity provider and can't be changed in Databricks.
 
         :param parent: str
-          The parent resource name of the group to add the member to. Format: groups/{group_id}
+          The resource name of the group to add the member to, in the format ``groups/{group_id}``.
         :param direct_group_member: :class:`DirectGroupMember`
-          Required. The group membership to create.
+          The member to add. Set its ``principal_id``.
 
         :returns: :class:`DirectGroupMember`
         """
@@ -2849,19 +2829,17 @@ class WorkspaceIamV2API:
         return DirectGroupMember.from_dict(res)
 
     def create_group_proxy(self, group: Group, *, parent: Optional[str] = None) -> Group:
-        """Creates a local group in the Databricks account that parents the calling workspace and returns the
-        created group. A local group is one that is not synced from the customer's identity provider, and can
-        be created whether or not Account Identity Management (AIM) is enabled.
+        """Creates a local group in the account that contains this workspace. A local group is a group that isn't
+        synced from your identity provider (IdP). You become a manager of the new group.
 
-        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
-        identity provider, resolve it by its external ID with ResolveGroup; to read an existing external
-        identity, use the ExternalGroup resource.
+        If automatic identity management is on, you can't set ``external_id``. To add a group from your IdP,
+        get it as an external group instead.
 
         :param group: :class:`Group`
-          Required. Group to be created in Databricks
+          The group to create.
         :param parent: str (optional)
-          The resource name of the account to create the group in, ``accounts/{account_id}``. Optional:
-          defaults to the account of the calling workspace, and any other account is rejected.
+          The resource name of the account to create the group in, in the format ``accounts/{account_id}``.
+          Defaults to the account that contains this workspace. Any other account is rejected.
 
         :returns: :class:`Group`
         """
@@ -2885,20 +2863,18 @@ class WorkspaceIamV2API:
     def create_service_principal_proxy(
         self, service_principal: ServicePrincipal, *, parent: Optional[str] = None
     ) -> ServicePrincipal:
-        """Creates a local service principal in the Databricks account that parents the calling workspace and
-        returns the created service principal. A local service principal is one that is not synced from the
-        customer's identity provider, and can be created whether or not Account Identity Management (AIM) is
-        enabled.
+        """Creates a local service principal in the account that contains this workspace. A local service
+        principal is one that isn't synced from your identity provider (IdP).
 
-        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
-        identity provider, resolve it by its external ID with ResolveServicePrincipal; to read an existing
-        external identity, use the ExternalServicePrincipal resource.
+        If automatic identity management is on, you can't set ``external_id``. To add a service principal from
+        your IdP, get it as an external service principal instead.
 
         :param service_principal: :class:`ServicePrincipal`
-          Required. Service principal to be created in Databricks
+          The service principal to create.
         :param parent: str (optional)
-          The resource name of the account to create the service principal in, ``accounts/{account_id}``.
-          Optional: defaults to the account of the calling workspace, and any other account is rejected.
+          The resource name of the account to create the service principal in, in the format
+          ``accounts/{account_id}``. Defaults to the account that contains this workspace. Any other account
+          is rejected.
 
         :returns: :class:`ServicePrincipal`
         """
@@ -2920,19 +2896,17 @@ class WorkspaceIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def create_user_proxy(self, user: User, *, parent: Optional[str] = None) -> User:
-        """Creates a local user in the Databricks account that parents the calling workspace and returns the
-        created user. A local user is one that is not synced from the customer's identity provider, and can be
-        created whether or not Account Identity Management (AIM) is enabled.
+        """Creates a local user in the account that contains this workspace. A local user is a user that isn't
+        synced from your identity provider (IdP).
 
-        When AIM is enabled, supplying an external ID returns an error. To provision the identity from your
-        identity provider, resolve it by its external ID with ResolveUser; to read an existing external
-        identity, use the ExternalUser resource.
+        If automatic identity management is on, you can't set ``external_id``. To add a user from your IdP,
+        get them as an external user instead.
 
         :param user: :class:`User`
-          Required. User to be created in Databricks
+          The user to create.
         :param parent: str (optional)
-          The resource name of the account to create the user in, ``accounts/{account_id}``. Optional:
-          defaults to the account of the calling workspace, and any other account is rejected.
+          The resource name of the account to create the user in, in the format ``accounts/{account_id}``.
+          Defaults to the account that contains this workspace. Any other account is rejected.
 
         :returns: :class:`User`
         """
@@ -2981,17 +2955,19 @@ class WorkspaceIamV2API:
     def create_workspace_assignment_proxy(
         self, workspace_assignment: WorkspaceAssignment, *, parent: Optional[str] = None
     ) -> WorkspaceAssignment:
-        """Creates a workspace assignment for a principal in the calling workspace. Entitlements are granted one
-        at a time rather than atomically. If the request fails partway through, the principal stays assigned
-        to the workspace with only some of the requested entitlements. Get the assignment afterwards to
-        confirm which entitlements were granted.
+        """Assigns a user, service principal, or group directly to this workspace with the given entitlements.
+        Returns an error if the principal is already assigned directly.
+
+        Entitlements are granted one at a time. If the request fails partway through, the principal stays
+        assigned with only some of the entitlements. Get the assignment afterwards to check which were
+        granted.
 
         :param workspace_assignment: :class:`WorkspaceAssignment`
-          Required. Workspace assignment to be created in Databricks.
+          The assignment to create. Set its ``principal_id`` and ``entitlements``.
         :param parent: str (optional)
-          The resource name of the workspace to assign the principal to,
-          ``accounts/{account_id}/workspaces/{workspace_id}``. Optional: defaults to the calling workspace,
-          and any other workspace is rejected.
+          The resource name of the workspace, in the format
+          ``accounts/{account_id}/workspaces/{workspace_id}``. Defaults to this workspace. Any other workspace
+          is rejected.
 
         :returns: :class:`WorkspaceAssignment`
         """
@@ -3013,10 +2989,14 @@ class WorkspaceIamV2API:
         return WorkspaceAssignment.from_dict(res)
 
     def delete_direct_group_member_proxy(self, name: str):
-        """Deletes a group membership (unassigns a principal from a group).
+        """Removes a direct member from a group in the account that contains this workspace.
+
+        If automatic identity management is on and the group has an ``external_id``, its members come from
+        your identity provider and can't be changed in Databricks.
 
         :param name: str
-          The resource name of the group membership. Format: groups/{group_id}/direct-members/{principal_id}
+          The resource name of the membership, in the format
+          ``groups/{group_id}/direct-members/{principal_id}``.
 
 
         """
@@ -3032,10 +3012,11 @@ class WorkspaceIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def delete_group_proxy(self, name: str):
-        """Deletes a group by its internal ID from the Databricks account that parents the calling workspace.
+        """Deletes a group from the account that contains this workspace and removes it from the workspaces it's
+        assigned to.
 
         :param name: str
-          The resource name of the group. Format: groups/{group_id}
+          The resource name of the group, in the format ``groups/{group_id}``.
 
 
         """
@@ -3051,11 +3032,12 @@ class WorkspaceIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def delete_service_principal_proxy(self, name: str):
-        """Deletes a service principal by its internal ID from the Databricks account that parents the calling
-        workspace.
+        """Deletes a service principal from the account that contains this workspace and removes it from the
+        workspaces it's assigned to. You can't delete service principals that Databricks manages.
 
         :param name: str
-          The resource name of the service principal. Format: service-principals/{service_principal_id}
+          The resource name of the service principal, in the format
+          ``service-principals/{service_principal_id}``.
 
 
         """
@@ -3071,10 +3053,11 @@ class WorkspaceIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def delete_user_proxy(self, name: str):
-        """Deletes a user by its internal ID from the Databricks account that parents the calling workspace.
+        """Deletes a user from the account that contains this workspace and removes them from the workspaces
+        they're assigned to.
 
         :param name: str
-          The resource name of the user. Format: users/{user_id}
+          The resource name of the user, in the format ``users/{user_id}``.
 
 
         """
@@ -3112,13 +3095,14 @@ class WorkspaceIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/workspace-assignment-details/{principal_id}", headers=headers)
 
     def delete_workspace_assignment_proxy(self, name: str):
-        """Deletes a workspace assignment for a principal in the calling workspace, revoking all of its
-        entitlements. Entitlements are revoked one at a time rather than atomically. If the request fails
-        partway through, the principal stays assigned with some of its original entitlements. Retrying is
-        safe.
+        """Removes a principal's direct assignment to this workspace and revokes the entitlements it granted. The
+        principal keeps any access it gets through groups.
+
+        Entitlements are revoked one at a time. If the request fails partway through, the principal stays
+        assigned with some of its entitlements. You can retry the request.
 
         :param name: str
-          The resource name of the workspace assignment. Format: workspace-assignments/{principal_id}
+          The resource name of the assignment, in the format ``workspace-assignments/{principal_id}``.
 
 
         """
@@ -3134,10 +3118,12 @@ class WorkspaceIamV2API:
         self._api.do("DELETE", f"/api/2.0/identity/{name}", headers=headers)
 
     def get_direct_group_member_proxy(self, name: str) -> DirectGroupMember:
-        """Gets a provisioned direct member of a group.
+        """Gets a direct member of a group in the account that contains this workspace, including where the
+        membership comes from. Returns an error if the principal isn't a direct member.
 
         :param name: str
-          The resource name of the group membership. Format: groups/{group_id}/direct-members/{principal_id}
+          The resource name of the membership, in the format
+          ``groups/{group_id}/direct-members/{principal_id}``.
 
         :returns: :class:`DirectGroupMember`
         """
@@ -3154,13 +3140,13 @@ class WorkspaceIamV2API:
         return DirectGroupMember.from_dict(res)
 
     def get_external_group_proxy(self, name: str) -> ExternalGroup:
-        """Retrieves an external group with the given external ID from the customer's IdP. If the group does not
-        exist, it will be created in the account. If the customer is not onboarded onto Automatic Identity
-        Management (AIM), this will return an error. Workspace-scoped variant for workspace-authenticated
-        callers.
+        """Gets a group by its ID in your identity provider (IdP) and syncs its name and parent groups from your
+        IdP. If the group isn't in the account that contains this workspace yet, it's added. Requires
+        automatic identity management. If your account has group visibility filters, the group must match
+        them.
 
         :param name: str
-          Required. The resource name of the external group. Format: external-groups/{external_group_id}
+          The resource name of the external group, in the format ``external-groups/{external_group_id}``.
 
         :returns: :class:`ExternalGroup`
         """
@@ -3177,14 +3163,13 @@ class WorkspaceIamV2API:
         return ExternalGroup.from_dict(res)
 
     def get_external_service_principal_proxy(self, name: str) -> ExternalServicePrincipal:
-        """Retrieves an external service principal with the given external ID from the customer's IdP. If the
-        service principal does not exist, it will be created. If the customer is not onboarded onto Automatic
-        Identity Management (AIM), this will return an error. Workspace-scoped variant for
-        workspace-authenticated callers.
+        """Gets a service principal by its ID in your identity provider (IdP) and syncs its details and group
+        memberships from your IdP. If the service principal isn't in the account that contains this workspace
+        yet, it's added. Requires automatic identity management with Microsoft Entra ID as your IdP.
 
         :param name: str
-          Required. The resource name of the external service principal. Format:
-          external-service-principals/{external_service_principal_id}
+          The resource name of the external service principal, in the format
+          ``external-service-principals/{external_service_principal_id}``.
 
         :returns: :class:`ExternalServicePrincipal`
         """
@@ -3201,12 +3186,12 @@ class WorkspaceIamV2API:
         return ExternalServicePrincipal.from_dict(res)
 
     def get_external_user_proxy(self, name: str) -> ExternalUser:
-        """Retrieves an external user with the given external ID from the customer's IdP. If the user does not
-        exist, it will be created. If the customer is not onboarded onto Automatic Identity Management (AIM),
-        this will return an error. Workspace-scoped variant for workspace-authenticated callers.
+        """Gets a user by their ID in your identity provider (IdP) and syncs their details and group memberships
+        from your IdP. If the user isn't in the account that contains this workspace yet, they're added.
+        Requires automatic identity management.
 
         :param name: str
-          Required. The resource name of the external user. Format: external-users/{external_user_id}
+          The resource name of the external user, in the format ``external-users/{external_user_id}``.
 
         :returns: :class:`ExternalUser`
         """
@@ -3223,10 +3208,10 @@ class WorkspaceIamV2API:
         return ExternalUser.from_dict(res)
 
     def get_group_proxy(self, name: str) -> Group:
-        """Fetches a group by its internal ID from the Databricks account that parents the calling workspace.
+        """Gets a group in the account that contains this workspace by its Databricks ID.
 
         :param name: str
-          The resource name of the group. Format: groups/{group_id}
+          The resource name of the group, in the format ``groups/{group_id}``.
 
         :returns: :class:`Group`
         """
@@ -3243,11 +3228,11 @@ class WorkspaceIamV2API:
         return Group.from_dict(res)
 
     def get_service_principal_proxy(self, name: str) -> ServicePrincipal:
-        """Fetches a service principal by its internal ID from the Databricks account that parents the calling
-        workspace.
+        """Gets a service principal in the account that contains this workspace by its Databricks ID.
 
         :param name: str
-          The resource name of the service principal. Format: service-principals/{service_principal_id}
+          The resource name of the service principal, in the format
+          ``service-principals/{service_principal_id}``.
 
         :returns: :class:`ServicePrincipal`
         """
@@ -3264,10 +3249,10 @@ class WorkspaceIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def get_user_proxy(self, name: str) -> User:
-        """Fetches a user by its internal ID from the Databricks account that parents the calling workspace.
+        """Gets a user in the account that contains this workspace by their Databricks ID.
 
         :param name: str
-          The resource name of the user. Format: users/{user_id}
+          The resource name of the user, in the format ``users/{user_id}``.
 
         :returns: :class:`User`
         """
@@ -3337,10 +3322,11 @@ class WorkspaceIamV2API:
         return WorkspaceAssignmentDetail.from_dict(res)
 
     def get_workspace_assignment_proxy(self, name: str) -> WorkspaceAssignment:
-        """Returns the assignment for a principal in the calling workspace.
+        """Gets a principal's direct assignment to this workspace, including its effective entitlements. Returns
+        an error if the principal isn't assigned directly.
 
         :param name: str
-          The resource name of the workspace assignment. Format: workspace-assignments/{principal_id}
+          The resource name of the assignment, in the format ``workspace-assignments/{principal_id}``.
 
         :returns: :class:`WorkspaceAssignment`
         """
@@ -3357,11 +3343,12 @@ class WorkspaceIamV2API:
         return WorkspaceAssignment.from_dict(res)
 
     def get_workspace_identity_detail(self, name: str) -> WorkspaceIdentityDetail:
-        """Returns the identity details for a principal in a workspace.
+        """Gets a principal's status in this workspace and whether it has access directly or through a group.
+        Returns an error if the principal doesn't have access to the workspace.
 
         :param name: str
-          The resource name of the workspace identity detail. Format:
-          principals/{principal_id}/workspace-identity-detail
+          The resource name of the workspace identity detail, in the format
+          ``principals/{principal_id}/workspace-identity-detail``.
 
         :returns: :class:`WorkspaceIdentityDetail`
         """
@@ -3380,17 +3367,17 @@ class WorkspaceIamV2API:
     def list_direct_group_members_proxy(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DirectGroupMember]:
-        """Lists provisioned direct members of a group with their membership source (internal or from identity
-        provider).
+        """Lists the direct members of a group in the account that contains this workspace, sorted by display
+        name, with where each membership comes from. Members in your identity provider who haven't been added
+        to Databricks aren't included.
 
         :param parent: str
-          The parent resource name of the group whose direct members to list. Format: groups/{group_id}
+          The resource name of the group, in the format ``groups/{group_id}``.
         :param page_size: int (optional)
-          The maximum number of members to return. The service may return fewer than this value. If not
-          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
-          are clamped to 1000.
+          The maximum number of members to return, up to 1000. The default is 1000. A page can contain fewer
+          members.
         :param page_token: str (optional)
-          A page token from a previous list call. Provide this to retrieve the subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
 
         :returns: Iterator over :class:`DirectGroupMember`
         """
@@ -3425,21 +3412,20 @@ class WorkspaceIamV2API:
         page_token: Optional[str] = None,
         parent: Optional[str] = None,
     ) -> Iterator[Group]:
-        """Lists the groups in the Databricks account that parents the calling workspace, returning one page per
-        call. Supports filtering by group name or external ID.
+        """Lists the groups in the account that contains this workspace, sorted by Databricks ID. Groups in your
+        identity provider that haven't been added to Databricks aren't included.
 
         :param filter: str (optional)
-          Optional. Allows filtering groups by group name or external id.
+          Filters groups by ``group_name`` or ``external_id``, for example ``group_name eq "Data engineers"``.
+          Put the value in quotes.
         :param page_size: int (optional)
-          The maximum number of groups to return. The service may return fewer than this value. If not
-          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
-          are clamped to 1000.
+          The maximum number of groups to return, up to 1000. The default is 1000. A page can contain fewer
+          groups.
         :param page_token: str (optional)
-          A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
-          page.
+          The ``next_page_token`` from a previous response, to get the next page.
         :param parent: str (optional)
-          The resource name of the account to list groups in, ``accounts/{account_id}``. Optional: defaults to
-          the account of the calling workspace, and any other account is rejected.
+          The resource name of the account to list groups in, in the format ``accounts/{account_id}``.
+          Defaults to the account that contains this workspace. Any other account is rejected.
 
         :returns: Iterator over :class:`Group`
         """
@@ -3478,21 +3464,21 @@ class WorkspaceIamV2API:
         page_token: Optional[str] = None,
         parent: Optional[str] = None,
     ) -> Iterator[ServicePrincipal]:
-        """Lists the service principals in the Databricks account that parents the calling workspace, returning
-        one page per call. Supports filtering by application ID or external ID.
+        """Lists the service principals in the account that contains this workspace, sorted by Databricks ID.
+        Service principals in your identity provider that haven't been added to Databricks aren't included.
 
         :param filter: str (optional)
-          Optional. Allows filtering service principals by application id or external id.
+          Filters service principals by ``application_id`` or ``external_id``, for example ``application_id eq
+          "<application-id>"``. Put the value in quotes.
         :param page_size: int (optional)
-          The maximum number of SPs to return. The service may return fewer than this value. If not provided,
-          defaults to 1000, which is also the maximum allowed. Requests for more than the maximum are clamped
-          to 1000.
+          The maximum number of service principals to return, up to 1000. The default is 1000. A page can
+          contain fewer service principals.
         :param page_token: str (optional)
-          A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
-          subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
         :param parent: str (optional)
-          The resource name of the account to list service principals in, ``accounts/{account_id}``. Optional:
-          defaults to the account of the calling workspace, and any other account is rejected.
+          The resource name of the account to list service principals in, in the format
+          ``accounts/{account_id}``. Defaults to the account that contains this workspace. Any other account
+          is rejected.
 
         :returns: Iterator over :class:`ServicePrincipal`
         """
@@ -3526,18 +3512,19 @@ class WorkspaceIamV2API:
     def list_transitive_parent_groups_proxy(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> ListTransitiveParentGroupsResponse:
-        """Lists all transitive parent groups of a principal.
+        """Lists every group that a user, service principal, or group belongs to, directly or through other
+        groups, in the account that contains this workspace. Results are sorted by Databricks ID. If automatic
+        identity management is on, the principal's group memberships are synced from your identity provider
+        first.
 
         :param parent: str
-          The parent resource name of the principal whose transitive parent groups to list. Format:
-          principals/{principal_id}
+          The user, service principal, or group whose parent groups to list, in the format
+          ``principals/{principal_id}``.
         :param page_size: int (optional)
-          The maximum number of parent groups to return. The service may return fewer than this value. If not
-          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
-          are clamped to 1000.
+          The maximum number of groups to return, up to 1000. The default is 1000. A page can contain fewer
+          groups.
         :param page_token: str (optional)
-          A page token, received from a previous ListTransitiveParentGroups call. Provide this to retrieve the
-          subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
 
         :returns: :class:`ListTransitiveParentGroupsResponse`
         """
@@ -3566,20 +3553,20 @@ class WorkspaceIamV2API:
         page_token: Optional[str] = None,
         parent: Optional[str] = None,
     ) -> Iterator[User]:
-        """Lists the users in the Databricks account that parents the calling workspace, returning one page per
-        call. Supports filtering by username or external ID.
+        """Lists the users in the account that contains this workspace, sorted by Databricks ID. Users in your
+        identity provider who haven't been added to Databricks aren't included.
 
         :param filter: str (optional)
-          Optional. Allows filtering users by username or external id.
+          Filters users by ``username`` or ``external_id``, for example ``username eq "someone@example.com"``.
+          Put the value in quotes.
         :param page_size: int (optional)
-          The maximum number of users to return. The service may return fewer than this value. If not
-          provided, defaults to 1000, which is also the maximum allowed. Requests for more than the maximum
-          are clamped to 1000.
+          The maximum number of users to return, up to 1000. The default is 1000. A page can contain fewer
+          users.
         :param page_token: str (optional)
-          A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
         :param parent: str (optional)
-          The resource name of the account to list users in, ``accounts/{account_id}``. Optional: defaults to
-          the account of the calling workspace, and any other account is rejected.
+          The resource name of the account to list users in, in the format ``accounts/{account_id}``. Defaults
+          to the account that contains this workspace. Any other account is rejected.
 
         :returns: Iterator over :class:`User`
         """
@@ -3652,20 +3639,18 @@ class WorkspaceIamV2API:
     def list_workspace_assignments_proxy(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, parent: Optional[str] = None
     ) -> Iterator[WorkspaceAssignment]:
-        """Lists workspace assignments for the calling workspace. The response omits the per-principal
-        entitlement fields (``entitlements`` and ``effective_entitlements``). To read the entitlements for a
-        single principal, get that principal's assignment.
+        """Lists the principals assigned directly to this workspace. The response leaves ``entitlements`` and
+        ``effective_entitlements`` empty. To read a principal's entitlements, get its assignment.
 
         :param page_size: int (optional)
-          The maximum number of workspace assignments to return. The service may return fewer than this value.
-          If not provided, defaults to 1000, which is also the maximum allowed. Requests for more than the
-          maximum are clamped to 1000.
+          The maximum number of assignments to return, up to 1000. The default is 1000. A page can contain
+          fewer assignments.
         :param page_token: str (optional)
-          A page token from a previous list call. Provide this to retrieve the subsequent page.
+          The ``next_page_token`` from a previous response, to get the next page.
         :param parent: str (optional)
-          The resource name of the workspace to list assignments of,
-          ``accounts/{account_id}/workspaces/{workspace_id}``. Optional: defaults to the calling workspace,
-          and any other workspace is rejected.
+          The resource name of the workspace, in the format
+          ``accounts/{account_id}/workspaces/{workspace_id}``. Defaults to this workspace. Any other workspace
+          is rejected.
 
         :returns: Iterator over :class:`WorkspaceAssignment`
         """
@@ -3695,12 +3680,13 @@ class WorkspaceIamV2API:
             query["page_token"] = json["next_page_token"]
 
     def resolve_group_proxy(self, external_id: str) -> ResolveGroupResponse:
-        """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
-        will be created in the account. If the customer is not onboarded onto Automatic Identity Management
-        (AIM), this will return an error.
+        """Gets a group by its ID in your identity provider (IdP) and syncs its name and parent groups from your
+        IdP. If the group isn't in the account that contains this workspace yet, it's added. Requires
+        automatic identity management. If your account has group visibility filters, the group must match
+        them.
 
         :param external_id: str
-          Required. The external ID of the group in the customer's IdP.
+          The ID of the group in your IdP.
 
         :returns: :class:`ResolveGroupResponse`
         """
@@ -3721,12 +3707,12 @@ class WorkspaceIamV2API:
         return ResolveGroupResponse.from_dict(res)
 
     def resolve_service_principal_proxy(self, external_id: str) -> ResolveServicePrincipalResponse:
-        """Resolves a service principal with the given external ID from the customer's IdP. If the service
-        principal does not exist, it will be created. If the customer is not onboarded onto Automatic Identity
-        Management (AIM), this will return an error.
+        """Gets a service principal by its ID in your identity provider (IdP) and syncs its details and group
+        memberships from your IdP. If the service principal isn't in the account that contains this workspace
+        yet, it's added. Requires automatic identity management with Microsoft Entra ID as your IdP.
 
         :param external_id: str
-          Required. The external ID of the service principal in the customer's IdP.
+          The ID of the service principal in your IdP.
 
         :returns: :class:`ResolveServicePrincipalResponse`
         """
@@ -3749,12 +3735,12 @@ class WorkspaceIamV2API:
         return ResolveServicePrincipalResponse.from_dict(res)
 
     def resolve_user_proxy(self, external_id: str) -> ResolveUserResponse:
-        """Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it
-        will be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
-        return an error.
+        """Gets a user by their ID in your identity provider (IdP) and syncs their details and group memberships
+        from your IdP. If the user isn't in the account that contains this workspace yet, they're added.
+        Requires automatic identity management.
 
         :param external_id: str
-          Required. The external ID of the user in the customer's IdP.
+          The ID of the user in your IdP.
 
         :returns: :class:`ResolveUserResponse`
         """
@@ -3775,23 +3761,22 @@ class WorkspaceIamV2API:
         return ResolveUserResponse.from_dict(res)
 
     def update_group_proxy(self, name: str, group: Group, update_mask: str) -> Group:
-        """Updates an existing group in the Databricks account that parents the calling workspace. Only the
-        fields named in the update mask are modified. Returns the updated Group resource.
+        """Updates a group in the account that contains this workspace. Only the fields in ``update_mask``
+        change.
 
-        When AIM is enabled and the group is an external identity (its external_id is set), only external_id
-        can be updated; its other fields are sourced from your identity provider. With AIM and group
-        visibility filters, a new nonempty external_id must identify a visible group. Clearing external_id is
-        allowed.
+        If automatic identity management is on and the group has an ``external_id``, you can only update
+        ``external_id``. The group's other fields come from your identity provider. If your account also has
+        group visibility filters, a new ``external_id`` must match them. You can always clear ``external_id``.
 
         :param name: str
-          The resource name of the group. The format depends on the API that returned it:
+          The resource name of the group, in one of these formats:
 
-          - Account-scoped: accounts/{account_id}/groups/{group_id}
-          - Workspace-scoped: groups/{group_id}
+          - Account APIs: ``accounts/{account_id}/groups/{group_id}``
+          - Workspace APIs: ``groups/{group_id}``
         :param group: :class:`Group`
-          Required. Group to be updated in Databricks
+          The group to update. Its ``name`` identifies the group.
         :param update_mask: str
-          Required. The list of fields to update.
+          The fields to update, separated by commas. You can update ``group_name`` and ``external_id``.
 
         :returns: :class:`Group`
         """
@@ -3815,24 +3800,23 @@ class WorkspaceIamV2API:
     def update_service_principal_proxy(
         self, name: str, service_principal: ServicePrincipal, update_mask: str
     ) -> ServicePrincipal:
-        """Updates an existing service principal in the Databricks account that parents the calling workspace.
-        Only the fields named in the update mask are modified. Returns the updated ServicePrincipal resource.
+        """Updates a service principal in the account that contains this workspace. Only the fields in
+        ``update_mask`` change.
 
-        To change is_agent on a locally managed service principal, set it to true or false. Naming is_agent in
-        the update mask without a value leaves it unchanged.
-
-        When AIM is enabled and the service principal is an external identity (its external_id is set), only
-        external_id can be updated; its other fields are sourced from your identity provider.
+        If automatic identity management is on and the service principal has an ``external_id``, you can only
+        update ``external_id``. Its other fields come from your identity provider. A service principal can't
+        deactivate itself, and you can't update service principals that Databricks manages.
 
         :param name: str
-          The resource name of the service principal. The format depends on the API that returned it:
+          The resource name of the service principal, in one of these formats:
 
-          - Account-scoped: accounts/{account_id}/service-principals/{service_principal_id}
-          - Workspace-scoped: service-principals/{service_principal_id}
+          - Account APIs: ``accounts/{account_id}/service-principals/{service_principal_id}``
+          - Workspace APIs: ``service-principals/{service_principal_id}``
         :param service_principal: :class:`ServicePrincipal`
-          Required. Service principal to be updated in Databricks
+          The service principal to update. Its ``name`` identifies the service principal.
         :param update_mask: str
-          Required. The list of fields to update.
+          The fields to update, separated by commas. You can update ``display_name``, ``account_sp_status``,
+          and ``external_id``.
 
         :returns: :class:`ServicePrincipal`
         """
@@ -3854,22 +3838,22 @@ class WorkspaceIamV2API:
         return ServicePrincipal.from_dict(res)
 
     def update_user_proxy(self, name: str, user: User, update_mask: str) -> User:
-        """Updates an existing user in the Databricks account that parents the calling workspace and returns the
-        updated user. Only the fields named in the update mask are modified. The updatable fields are
-        fullName.givenName, fullName.familyName, status, and externalId.
+        """Updates a user in the account that contains this workspace. Only the fields in ``update_mask`` change.
 
-        When AIM is enabled and the user is an external identity (its external_id is set), only external_id
-        can be updated; its other fields are sourced from your identity provider.
+        If automatic identity management is on and the user has an ``external_id``, you can only update
+        ``external_id``. The user's other fields come from your identity provider. You can't deactivate
+        yourself or change the status of the account owner.
 
         :param name: str
-          The resource name of the user. The format depends on the API that returned it:
+          The resource name of the user, in one of these formats:
 
-          - Account-scoped: accounts/{account_id}/users/{user_id}
-          - Workspace-scoped: users/{user_id}
+          - Account APIs: ``accounts/{account_id}/users/{user_id}``
+          - Workspace APIs: ``users/{user_id}``
         :param user: :class:`User`
-          Required. User to be updated in Databricks
+          The user to update. Its ``name`` identifies the user.
         :param update_mask: str
-          Required. The list of fields to update.
+          The fields to update, separated by commas. You can update ``full_name.given_name``,
+          ``full_name.family_name``, ``account_user_status``, and ``external_id``.
 
         :returns: :class:`User`
         """
@@ -3932,20 +3916,22 @@ class WorkspaceIamV2API:
     def update_workspace_assignment_proxy(
         self, name: str, workspace_assignment: WorkspaceAssignment, update_mask: FieldMask
     ) -> WorkspaceAssignment:
-        """Updates the entitlements of a directly assigned principal in the calling workspace. Changes are
-        applied one at a time rather than atomically. If the request fails partway through, only some of the
-        requested changes take effect. Get the assignment afterwards to confirm the final state.
+        """Replaces the entitlements of a principal's direct assignment to this workspace. The new list can't be
+        empty.
+
+        Entitlements are changed one at a time. If the request fails partway through, only some of the changes
+        take effect. Get the assignment afterwards to check the result.
 
         :param name: str
-          The resource name of the workspace assignment. The format depends on the API that returned it:
+          The resource name of the assignment, in one of these formats:
 
-          - Account-scoped:
-            accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}
-          - Workspace-scoped: workspace-assignments/{principal_id}
+          - Account APIs:
+            ``accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}``
+          - Workspace APIs: ``workspace-assignments/{principal_id}``
         :param workspace_assignment: :class:`WorkspaceAssignment`
-          Required. Workspace assignment to be updated in Databricks.
+          The assignment to update. Its ``name`` identifies the assignment.
         :param update_mask: FieldMask
-          Required. The list of fields to update.
+          The fields to update. The only supported field is ``entitlements``.
 
         :returns: :class:`WorkspaceAssignment`
         """
@@ -3969,15 +3955,16 @@ class WorkspaceIamV2API:
     def update_workspace_identity_detail(
         self, name: str, workspace_identity_detail: WorkspaceIdentityDetail, update_mask: FieldMask
     ) -> WorkspaceIdentityDetail:
-        """Updates a workspace identity detail for a principal.
+        """Activates or deactivates a user or service principal in this workspace. You can only update
+        ``workspace_identity_status``. You can't change your own status or the status of a group.
 
         :param name: str
-          The resource name of the workspace identity detail. Format:
-          principals/{principal_id}/workspace-identity-detail
+          The resource name of the workspace identity detail, in the format
+          ``principals/{principal_id}/workspace-identity-detail``.
         :param workspace_identity_detail: :class:`WorkspaceIdentityDetail`
-          Required. Workspace identity detail to be updated in Databricks.
+          The workspace identity detail to update. Its ``name`` identifies the principal.
         :param update_mask: FieldMask
-          Required. The list of fields to update.
+          The fields to update. The only supported field is ``workspace_identity_status``.
 
         :returns: :class:`WorkspaceIdentityDetail`
         """

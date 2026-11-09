@@ -1134,7 +1134,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: SqlConditionTriggerMode
 
    The strategy used to evaluate a SQL condition trigger against a query result set.
-   - ``SQL_CONDITION_TRIGGER_MODE_UNSPECIFIED``: Sentinel zero-value. Not a valid input — the validator rejects this when sent explicitly. Internally treated as ``QUERY_RETURNS_ROWS`` when reading legacy data that predates this field. - ``QUERY_RETURNS_ROWS``: Fires whenever the result set has at least one row. Zero rows means the condition is not met. This is the original SQL condition behavior. - ``RESULT_VALUE_CHANGES``: Fires whenever the query's single result value differs from the previous evaluation. The first evaluation always fires. Queries must return exactly one cell (one row, one column).
+   - ``SQL_CONDITION_TRIGGER_MODE_UNSPECIFIED``: Sentinel zero-value. Not a valid input — the validator rejects this when sent explicitly. Internally treated as ``QUERY_RETURNS_ROWS`` when reading legacy data that predates this field. - ``QUERY_RETURNS_ROWS``: Fires whenever the result set has at least one row. Zero rows means the condition is not met. This is the original SQL condition behavior. - ``RESULT_VALUE_CHANGES``: Fires whenever the query's single result value differs from the previous evaluation. The first evaluation stores the result as a baseline and does not fire. Queries must return exactly one cell (one row, one column).
 
    .. py:attribute:: QUERY_RETURNS_ROWS
       :value: "QUERY_RETURNS_ROWS"

@@ -352,6 +352,32 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: trigger_materialization_set(materialization_set_id: str [, request_id: Optional[str]]) -> TriggerMaterializationSetOperation
+
+        Requests materialization of all members of the set. The set must be nonempty and contain only batch
+        materializations. Runs are allowed while automatic scheduling is paused. Requested runs may wait in a
+        queue, subject to queue limits and expiry.
+
+        Returns a long-running operation that completes when every requested run reaches a terminal state.
+        Success requires all runs and any required online synchronization to succeed. Individual outcomes are
+        available in ``MaterializationSetTriggerProgress``.
+
+        Use ``CancelOperation`` to request cancellation of this operation's unfinished work. Cancellation is
+        best effort and does not undo completed writes. Online synchronization already in progress may
+        continue.
+
+        Runs use the features' configured windows and settling delay.
+
+        :param materialization_set_id: str
+          The ID of the materialization set to trigger.
+        :param request_id: str (optional)
+          Idempotency token in UUID format. Reusing it returns the original operation without starting
+          additional runs, even if the request differs or the operation has finished. If omitted, each request
+          triggers independently.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: update_feature(full_name: str, feature: Feature, update_mask: str) -> Feature
 
         Update a Feature.

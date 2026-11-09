@@ -80,6 +80,44 @@ class Adlsgen2Info:
 
 
 @dataclass
+class AllowedComputeProducts:
+    """Compute products allowed by a policy and their product-specific constraints. At least one
+    product must be set."""
+
+    automated: Optional[AutomatedConstraints] = None
+    """Constraints for serverless automated compute. Absence disallows automated compute."""
+
+    lakebase: Optional[LakebaseConstraints] = None
+    """Constraints for Lakebase instances. Absence disallows Lakebase."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AllowedComputeProducts into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.automated:
+            body["automated"] = self.automated.as_dict()
+        if self.lakebase:
+            body["lakebase"] = self.lakebase.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AllowedComputeProducts into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.automated:
+            body["automated"] = self.automated
+        if self.lakebase:
+            body["lakebase"] = self.lakebase
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AllowedComputeProducts:
+        """Deserializes the AllowedComputeProducts from a dictionary."""
+        return cls(
+            automated=_from_dict(d, "automated", AutomatedConstraints),
+            lakebase=_from_dict(d, "lakebase", LakebaseConstraints),
+        )
+
+
+@dataclass
 class AutoScale:
     max_workers: Optional[int] = None
     """The maximum number of workers to which the cluster can scale up when overloaded. Note that
@@ -111,6 +149,33 @@ class AutoScale:
     def from_dict(cls, d: Dict[str, Any]) -> AutoScale:
         """Deserializes the AutoScale from a dictionary."""
         return cls(max_workers=d.get("max_workers", None), min_workers=d.get("min_workers", None))
+
+
+@dataclass
+class AutomatedConstraints:
+    """Constraints applied to serverless automated workloads by a compute policy."""
+
+    per_workload_max: Optional[RateLimitConfig] = None
+    """Maximum per-workload Spark executor allocation. Absence imposes no limit."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AutomatedConstraints into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.per_workload_max:
+            body["per_workload_max"] = self.per_workload_max.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AutomatedConstraints into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.per_workload_max:
+            body["per_workload_max"] = self.per_workload_max
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AutomatedConstraints:
+        """Deserializes the AutomatedConstraints from a dictionary."""
+        return cls(per_workload_max=_from_dict(d, "per_workload_max", RateLimitConfig))
 
 
 @dataclass
@@ -2523,6 +2588,96 @@ class CommandStatusResponse:
         """Deserializes the CommandStatusResponse from a dictionary."""
         return cls(
             id=d.get("id", None), results=_from_dict(d, "results", Results), status=_enum(d, "status", CommandStatus)
+        )
+
+
+@dataclass
+class ComputePolicy:
+    """A compute policy resource. A workspace-scoped policy that allows one or more compute products,
+    each with product-specific constraints."""
+
+    allowed_compute_products: Optional[AllowedComputeProducts] = None
+    """The compute products allowed by this policy and their constraints. At least one product must be
+    set."""
+
+    can_manage: Optional[bool] = None
+    """Whether the calling user has manage permission on this compute policy. Manage includes use, so
+    can_use is also true whenever this is true."""
+
+    can_use: Optional[bool] = None
+    """Whether the calling user has use permission on this compute policy."""
+
+    compute_policy_id: Optional[str] = None
+    """The unique identifier of the compute policy (UUID). Server-assigned on create."""
+
+    create_time: Optional[Timestamp] = None
+    """The creation timestamp."""
+
+    display_name: Optional[str] = None
+    """The display name of the compute policy."""
+
+    is_default: Optional[bool] = None
+    """Whether this is the workspace default policy for its single allowed compute product. Default
+    policies are system-provisioned and cannot be deleted or renamed."""
+
+    tags: Optional[Dict[str, str]] = None
+    """User-defined key/value tags on the compute policy, provided at creation and validated.
+    unified-tagging is the system of record for tag assignments."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ComputePolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allowed_compute_products:
+            body["allowed_compute_products"] = self.allowed_compute_products.as_dict()
+        if self.can_manage is not None:
+            body["can_manage"] = self.can_manage
+        if self.can_use is not None:
+            body["can_use"] = self.can_use
+        if self.compute_policy_id is not None:
+            body["compute_policy_id"] = self.compute_policy_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.is_default is not None:
+            body["is_default"] = self.is_default
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ComputePolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_compute_products:
+            body["allowed_compute_products"] = self.allowed_compute_products
+        if self.can_manage is not None:
+            body["can_manage"] = self.can_manage
+        if self.can_use is not None:
+            body["can_use"] = self.can_use
+        if self.compute_policy_id is not None:
+            body["compute_policy_id"] = self.compute_policy_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.is_default is not None:
+            body["is_default"] = self.is_default
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ComputePolicy:
+        """Deserializes the ComputePolicy from a dictionary."""
+        return cls(
+            allowed_compute_products=_from_dict(d, "allowed_compute_products", AllowedComputeProducts),
+            can_manage=d.get("can_manage", None),
+            can_use=d.get("can_use", None),
+            compute_policy_id=d.get("compute_policy_id", None),
+            create_time=_timestamp(d, "create_time"),
+            display_name=d.get("display_name", None),
+            is_default=d.get("is_default", None),
+            tags=d.get("tags", None),
         )
 
 
@@ -5972,6 +6127,43 @@ class Kind(Enum):
     CLASSIC_PREVIEW = "CLASSIC_PREVIEW"
 
 
+@dataclass
+class LakebaseConstraints:
+    """Constraints applied to Lakebase instances by a compute policy."""
+
+    max_capacity_units_per_instance: Optional[int] = None
+    """Maximum capacity units permitted per instance. Absence imposes no limit."""
+
+    max_idle_minutes_before_scale_to_zero: Optional[int] = None
+    """Maximum idle time in minutes before scale-to-zero. Absence imposes no requirement."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LakebaseConstraints into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.max_capacity_units_per_instance is not None:
+            body["max_capacity_units_per_instance"] = self.max_capacity_units_per_instance
+        if self.max_idle_minutes_before_scale_to_zero is not None:
+            body["max_idle_minutes_before_scale_to_zero"] = self.max_idle_minutes_before_scale_to_zero
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LakebaseConstraints into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.max_capacity_units_per_instance is not None:
+            body["max_capacity_units_per_instance"] = self.max_capacity_units_per_instance
+        if self.max_idle_minutes_before_scale_to_zero is not None:
+            body["max_idle_minutes_before_scale_to_zero"] = self.max_idle_minutes_before_scale_to_zero
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LakebaseConstraints:
+        """Deserializes the LakebaseConstraints from a dictionary."""
+        return cls(
+            max_capacity_units_per_instance=_int64(d, "max_capacity_units_per_instance"),
+            max_idle_minutes_before_scale_to_zero=_int64(d, "max_idle_minutes_before_scale_to_zero"),
+        )
+
+
 class Language(Enum):
     PYTHON = "python"
     R = "r"
@@ -6376,6 +6568,43 @@ class ListClustersSortByField(Enum):
 
 
 @dataclass
+class ListComputePoliciesResponse:
+    """Response for listing compute policies."""
+
+    compute_policies: Optional[List[ComputePolicy]] = None
+    """The list of compute policies."""
+
+    next_page_token: Optional[str] = None
+    """Token for the next page of results. Empty if no more results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListComputePoliciesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.compute_policies:
+            body["compute_policies"] = [v.as_dict() for v in self.compute_policies]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListComputePoliciesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.compute_policies:
+            body["compute_policies"] = self.compute_policies
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListComputePoliciesResponse:
+        """Deserializes the ListComputePoliciesResponse from a dictionary."""
+        return cls(
+            compute_policies=_repeated_dict(d, "compute_policies", ComputePolicy),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListGlobalInitScriptsResponse:
     scripts: Optional[List[GlobalInitScriptDetails]] = None
 
@@ -6531,6 +6760,43 @@ class ListPolicyFamiliesResponse:
         return cls(
             next_page_token=d.get("next_page_token", None),
             policy_families=_repeated_dict(d, "policy_families", PolicyFamily),
+        )
+
+
+@dataclass
+class ListServerlessComputesResponse:
+    """Response for listing serverless computes."""
+
+    next_page_token: Optional[str] = None
+    """Token for the next page of results. Empty if no more results."""
+
+    serverless_computes: Optional[List[ServerlessCompute]] = None
+    """The list of serverless computes."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListServerlessComputesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.serverless_computes:
+            body["serverless_computes"] = [v.as_dict() for v in self.serverless_computes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListServerlessComputesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.serverless_computes:
+            body["serverless_computes"] = self.serverless_computes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListServerlessComputesResponse:
+        """Deserializes the ListServerlessComputesResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            serverless_computes=_repeated_dict(d, "serverless_computes", ServerlessCompute),
         )
 
 
@@ -7353,6 +7619,43 @@ class RCranLibrary:
 
 
 @dataclass
+class RateLimitConfig:
+    """Rate-limit configuration for serverless compute workloads."""
+
+    t_shirt_size: Optional[TshirtSize] = None
+
+    t_shirt_size_name: Optional[str] = None
+    """Proto enum name of t_shirt_size (e.g. T_SHIRT_SIZE_SMALL). Output-only; derived on read so a
+    minting client that does not know a new enum value can still put the name on the cost-control
+    token."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RateLimitConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.t_shirt_size is not None:
+            body["t_shirt_size"] = self.t_shirt_size.value
+        if self.t_shirt_size_name is not None:
+            body["t_shirt_size_name"] = self.t_shirt_size_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RateLimitConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.t_shirt_size is not None:
+            body["t_shirt_size"] = self.t_shirt_size
+        if self.t_shirt_size_name is not None:
+            body["t_shirt_size_name"] = self.t_shirt_size_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RateLimitConfig:
+        """Deserializes the RateLimitConfig from a dictionary."""
+        return cls(
+            t_shirt_size=_enum(d, "t_shirt_size", TshirtSize), t_shirt_size_name=d.get("t_shirt_size_name", None)
+        )
+
+
+@dataclass
 class RemoveResponse:
     def as_dict(self) -> dict:
         """Serializes the RemoveResponse into a dictionary suitable for use as a JSON request body."""
@@ -7608,6 +7911,76 @@ class S3StorageInfo:
             endpoint=d.get("endpoint", None),
             kms_key=d.get("kms_key", None),
             region=d.get("region", None),
+        )
+
+
+@dataclass
+class ServerlessCompute:
+    """A serverless compute resource."""
+
+    can_manage: Optional[bool] = None
+    """Whether the calling user has ManageServerlessComputePermission on this compute."""
+
+    can_use: Optional[bool] = None
+    """Whether the calling user has UseServerlessComputePermission on this compute."""
+
+    create_time: Optional[Timestamp] = None
+    """The creation timestamp."""
+
+    is_default: Optional[bool] = None
+    """Whether this is the workspace default compute for its compute_type. Default computes are
+    system-provisioned and cannot be deleted or renamed."""
+
+    name: Optional[str] = None
+    """The display name of the serverless compute."""
+
+    serverless_compute_id: Optional[str] = None
+    """The unique identifier of the serverless compute (UUID)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ServerlessCompute into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.can_manage is not None:
+            body["can_manage"] = self.can_manage
+        if self.can_use is not None:
+            body["can_use"] = self.can_use
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.is_default is not None:
+            body["is_default"] = self.is_default
+        if self.name is not None:
+            body["name"] = self.name
+        if self.serverless_compute_id is not None:
+            body["serverless_compute_id"] = self.serverless_compute_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServerlessCompute into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.can_manage is not None:
+            body["can_manage"] = self.can_manage
+        if self.can_use is not None:
+            body["can_use"] = self.can_use
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.is_default is not None:
+            body["is_default"] = self.is_default
+        if self.name is not None:
+            body["name"] = self.name
+        if self.serverless_compute_id is not None:
+            body["serverless_compute_id"] = self.serverless_compute_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ServerlessCompute:
+        """Deserializes the ServerlessCompute from a dictionary."""
+        return cls(
+            can_manage=d.get("can_manage", None),
+            can_use=d.get("can_use", None),
+            create_time=_timestamp(d, "create_time"),
+            is_default=d.get("is_default", None),
+            name=d.get("name", None),
+            serverless_compute_id=d.get("serverless_compute_id", None),
         )
 
 
@@ -8041,6 +8414,19 @@ class TerminationReasonType(Enum):
     CLOUD_FAILURE = "CLOUD_FAILURE"
     SERVICE_FAULT = "SERVICE_FAULT"
     SUCCESS = "SUCCESS"
+
+
+class TshirtSize(Enum):
+    """T-shirt size for per-workload Spark executor limits."""
+
+    T_SHIRT_SIZE_2X_LARGE = "T_SHIRT_SIZE_2X_LARGE"
+    T_SHIRT_SIZE_3X_LARGE = "T_SHIRT_SIZE_3X_LARGE"
+    T_SHIRT_SIZE_4X_LARGE = "T_SHIRT_SIZE_4X_LARGE"
+    T_SHIRT_SIZE_LARGE = "T_SHIRT_SIZE_LARGE"
+    T_SHIRT_SIZE_MEDIUM = "T_SHIRT_SIZE_MEDIUM"
+    T_SHIRT_SIZE_SMALL = "T_SHIRT_SIZE_SMALL"
+    T_SHIRT_SIZE_UNSPECIFIED = "T_SHIRT_SIZE_UNSPECIFIED"
+    T_SHIRT_SIZE_X_LARGE = "T_SHIRT_SIZE_X_LARGE"
 
 
 @dataclass
@@ -11802,6 +12188,85 @@ class PolicyFamiliesAPI:
             if "policy_families" in json:
                 for v in json["policy_families"]:
                     yield PolicyFamily.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+
+class ServerlessComputeServiceAPI:
+    """ServerlessCompute Service API."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ServerlessCompute]:
+        """Lists Interactive serverless computes that the caller can use or manage. Results are returned in an
+        unspecified order.
+
+        :param page_size: int (optional)
+          Maximum number of computes to return per response. Unset or zero defaults to 100. The server caps
+          requests above 150 to bound per-request RBAC fan-out.
+        :param page_token: str (optional)
+          Token for cursor-based pagination.
+
+        :returns: Iterator over :class:`ServerlessCompute`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/serverless-compute", query=query, headers=headers)
+            if "serverless_computes" in json:
+                for v in json["serverless_computes"]:
+                    yield ServerlessCompute.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_compute_policies(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[ComputePolicy]:
+        """Lists compute policies in the workspace. Results are returned in an unspecified order; callers should
+        sort client-side if a specific order is needed.
+
+        :param page_size: int (optional)
+          Maximum number of policies to return per response. Unset or zero defaults to 100. The server caps
+          requests above 150.
+        :param page_token: str (optional)
+          Token for cursor-based pagination.
+
+        :returns: Iterator over :class:`ComputePolicy`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/policies/compute", query=query, headers=headers)
+            if "compute_policies" in json:
+                for v in json["compute_policies"]:
+                    yield ComputePolicy.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
