@@ -464,11 +464,6 @@ class CleanRoomAssetJarAnalysis:
 
 @dataclass
 class CleanRoomAssetNotebook:
-    notebook_content: str
-    """Base 64 representation of the notebook contents. This is the same format as returned by
-    `workspace/export <https://docs.databricks.com/api/workspace/workspace/export>`__ with the
-    format of **HTML**."""
-
     description: Optional[str] = None
     """Optional description of the notebook shown to all collaborators."""
 
@@ -478,6 +473,11 @@ class CleanRoomAssetNotebook:
 
     etag: Optional[str] = None
     """Server generated etag that represents the notebook version."""
+
+    notebook_content: Optional[str] = None
+    """Base 64 representation of the notebook contents. This is the same format as returned by
+    `workspace/export <https://docs.databricks.com/api/workspace/workspace/export>`__ with the
+    format of **HTML**."""
 
     review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
     """Top-level status derived from all reviews"""

@@ -866,6 +866,11 @@ class CdfConfig:
     """Output only. The full resource name of the CdfConfig. Format:
     projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}"""
 
+    service_principal: Optional[str] = None
+    """The service principal (application id) whose identity authorizes this change data feed's ongoing
+    writes to Unity Catalog. When unset, writes are authorized as the creating identity. Changing it
+    requires a new CdfConfig, which writes to new Delta tables."""
+
     def as_dict(self) -> dict:
         """Serializes the CdfConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -881,6 +886,8 @@ class CdfConfig:
             body["postgres_schema"] = self.postgres_schema
         if self.schema is not None:
             body["schema"] = self.schema
+        if self.service_principal is not None:
+            body["service_principal"] = self.service_principal
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -898,6 +905,8 @@ class CdfConfig:
             body["postgres_schema"] = self.postgres_schema
         if self.schema is not None:
             body["schema"] = self.schema
+        if self.service_principal is not None:
+            body["service_principal"] = self.service_principal
         return body
 
     @classmethod
@@ -910,6 +919,7 @@ class CdfConfig:
             name=d.get("name", None),
             postgres_schema=d.get("postgres_schema", None),
             schema=d.get("schema", None),
+            service_principal=d.get("service_principal", None),
         )
 
 
@@ -5774,6 +5784,7 @@ class PostgresAPI:
         *,
         claims: Optional[List[RequestedClaims]] = None,
         expire_time: Optional[Timestamp] = None,
+        group_name: Optional[str] = None,
         ttl: Optional[Duration] = None,
     ) -> DatabaseCredential:
         """Generate OAuth credentials for a Postgres database.
@@ -5786,6 +5797,10 @@ class PostgresAPI:
         :param expire_time: Timestamp (optional)
           Timestamp in UTC of when this credential should expire. Must be at least 300 seconds (5 minutes) and
           at most 1 hour from the current time.
+        :param group_name: str (optional)
+          The display name of a ``Databricks`` workspace group. When set, the returned credential is scoped to
+          this group, so the caller connects directly as the group's Postgres role. The caller must be a
+          member of the group. When omitted, the credential is scoped to the caller's own identity.
         :param ttl: Duration (optional)
           The requested time-to-live for the generated credential token. Must be at least 300 seconds (5
           minutes) and at most 3600 seconds (1 hour).
@@ -5800,6 +5815,8 @@ class PostgresAPI:
             body["endpoint"] = endpoint
         if expire_time is not None:
             body["expire_time"] = expire_time.ToJsonString()
+        if group_name is not None:
+            body["group_name"] = group_name
         if ttl is not None:
             body["ttl"] = ttl.ToJsonString()
         headers = {
