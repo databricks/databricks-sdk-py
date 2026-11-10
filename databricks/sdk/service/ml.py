@@ -2523,6 +2523,10 @@ class Feature:
     name: Optional[str] = None
     """Name of the feature, extracted from the full three-part name (catalog.schema.name)."""
 
+    output_type_text: Optional[str] = None
+    """Output type in Databricks SQL DDL (e.g., "BIGINT", "DECIMAL(10,2)", "ARRAY<STRING>",
+    "STRUCTname:STRING")."""
+
     schema_name: Optional[str] = None
     """Name of parent schema relative to its parent catalog."""
 
@@ -2557,6 +2561,8 @@ class Feature:
             body["lineage_context"] = self.lineage_context.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.output_type_text is not None:
+            body["output_type_text"] = self.output_type_text
         if self.schema_name is not None:
             body["schema_name"] = self.schema_name
         if self.source:
@@ -2592,6 +2598,8 @@ class Feature:
             body["lineage_context"] = self.lineage_context
         if self.name is not None:
             body["name"] = self.name
+        if self.output_type_text is not None:
+            body["output_type_text"] = self.output_type_text
         if self.schema_name is not None:
             body["schema_name"] = self.schema_name
         if self.source:
@@ -2617,6 +2625,7 @@ class Feature:
             inputs=d.get("inputs", None),
             lineage_context=_from_dict(d, "lineage_context", LineageContext),
             name=d.get("name", None),
+            output_type_text=d.get("output_type_text", None),
             schema_name=d.get("schema_name", None),
             source=_from_dict(d, "source", DataSource),
             time_window=_from_dict(d, "time_window", TimeWindow),
@@ -2632,7 +2641,8 @@ class FeatureFunction:
     """Three-part name of the Python UDF."""
 
     input_bindings: Optional[List[FeatureFunctionInputBinding]] = None
-    """Bindings of the UDF's parameters to features."""
+    """Bindings of the UDF's parameters to features. Order is not significant, and GetFeatureSpec can
+    return them in a different order."""
 
     output: Optional[str] = None
     """Output name of the feature that the UDF computes."""
@@ -2872,7 +2882,8 @@ class FeatureLookup:
     """Keys to use when joining with the feature table."""
 
     default_values: Optional[List[DefaultValue]] = None
-    """Default values for features."""
+    """Default values for features. Order is not significant, and GetFeatureSpec can return them in a
+    different order."""
 
     feature_names: Optional[List[str]] = None
     """Names of the features to look up, or empty to look up every feature in the table."""
@@ -2881,7 +2892,8 @@ class FeatureLookup:
     """Lookback window to use when performing point-in-time lookup."""
 
     rename_outputs: Optional[List[RenameOutput]] = None
-    """Output names for features, in place of their names in the feature table."""
+    """Output names for features, in place of their names in the feature table. Order is not
+    significant, and GetFeatureSpec can return them in a different order."""
 
     timestamp_lookup_keys: Optional[List[str]] = None
     """Keys to use when performing point-in-time lookup."""
@@ -2974,7 +2986,8 @@ class FeatureSpec:
     """Three-part name (catalog.schema.feature_spec) of the feature spec."""
 
     exclude_columns: Optional[List[str]] = None
-    """Output names of columns to leave out of the feature spec."""
+    """Output names of columns to leave out of the feature spec. Order is not significant, and
+    GetFeatureSpec can return them in a different order."""
 
     extra_pip_requirements: Optional[PipRequirements] = None
     """Extra pip requirements to install in the serving container, in addition to the defaults and
