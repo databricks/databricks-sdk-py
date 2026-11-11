@@ -5767,8 +5767,7 @@ class MaterializationFailureNotification:
 
 @dataclass
 class MaterializationNotifications:
-    """Notifications for the jobs and pipelines that materialize the features in a set, one field per
-    trigger."""
+    """Notifications for the jobs and pipelines that materialize features, one field per trigger."""
 
     on_failure: Optional[MaterializationFailureNotification] = None
     """Who to notify when a run fails, and on which attempts."""
@@ -6192,7 +6191,8 @@ class MaterializedFeature:
     """Server-assigned unique identifier for the materialized feature."""
 
     notifications: Optional[MaterializationNotifications] = None
-    """Notification configuration for the jobs and pipelines that materialize this feature."""
+    """Notification configuration around the lifecycle of the job or pipeline that materializes this
+    feature. Features which are materialized in the same pipeline will share the same notification."""
 
     offline_store_config: Optional[OfflineStoreConfig] = None
     """Destination for writing feature values to an offline Delta table. The resulting table is
@@ -12642,8 +12642,12 @@ class FeatureEngineeringAPI:
         """Create a materialization set.
 
         :param materialization_set: :class:`MaterializationSet`
-          The materialization set to create. Supply materialization_set_id to choose the identifier; leave it
-          unset to have one assigned.
+          The materialization set to create. Set ``materialization_set_id`` to choose the identifier, or omit
+          it to have one assigned.
+
+          Members with a cron schedule or table trigger must request the same ``paused`` value. An omitted
+          ``paused`` defaults to ``false``. A set can be created paused only if all members are batch
+          materializations.
         :param request_id: str (optional)
           Idempotency token for the request. A second request carrying a token that has already been used
           returns the operation the first one created, whatever state it reached, and creates no second set.
