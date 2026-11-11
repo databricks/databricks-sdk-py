@@ -207,6 +207,28 @@
         :returns: Iterator over :class:`Sandbox`
         
 
+    .. py:method:: port_forward(name: str, remote_port: int [, local_port: int = 0]) -> PortForward
+
+        Forward ``127.0.0.1:<local_port>`` to an app listening on ``remote_port``
+        in sandbox ``name``, and return a :class:`PortForward` for the forward.
+
+        The local listener is bound before this returns; forwarding runs on
+        background threads until :meth:`PortForward.close` or the end of a ``with``
+        block. ``local_port=0`` picks a free port; read it from
+        :attr:`PortForward.local_port`.
+
+        ``name`` is the sandbox's resource name, ``sandboxes/{sandbox_id}``; a bare
+        ``{sandbox_id}`` is also accepted. :attr:`PortForward.url` is the local URL
+        to send requests to.
+
+        The app must listen on ``0.0.0.0`` inside the sandbox. Ports 10000-65535
+        are forwardable except 10101, 18767, and 19090. Clients speak HTTP/1.1 to
+        the local port, including WebSocket upgrades; each local connection carries
+        one request. Requests whose path contains a ``.`` or ``..`` segment get a
+        local 400 response and are never sent. The caller's ``Authorization``
+        header is replaced with the SDK's credentials.
+        
+
     .. py:method:: rename_path(parent: str, source: str, destination: str) -> RenamePathResponse
 
         Renames a path within a sandbox. The destination must be absent and on the same filesystem.

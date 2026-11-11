@@ -133,6 +133,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: CommitmentTerm
+
+   The commitment term length for a Provisioned Throughput pool.
+
+   .. py:attribute:: COMMITMENT_TERM_12_HOURS
+      :value: "COMMITMENT_TERM_12_HOURS"
+
+   .. py:attribute:: COMMITMENT_TERM_1_DAY
+      :value: "COMMITMENT_TERM_1_DAY"
+
+   .. py:attribute:: COMMITMENT_TERM_1_HOUR
+      :value: "COMMITMENT_TERM_1_HOUR"
+
+   .. py:attribute:: COMMITMENT_TERM_1_MONTH
+      :value: "COMMITMENT_TERM_1_MONTH"
+
+   .. py:attribute:: COMMITMENT_TERM_1_WEEK
+      :value: "COMMITMENT_TERM_1_WEEK"
+
+   .. py:attribute:: COMMITMENT_TERM_1_YEAR
+      :value: "COMMITMENT_TERM_1_YEAR"
+
+   .. py:attribute:: COMMITMENT_TERM_3_MONTHS
+      :value: "COMMITMENT_TERM_3_MONTHS"
+
+   .. py:attribute:: COMMITMENT_TERM_6_MONTHS
+      :value: "COMMITMENT_TERM_6_MONTHS"
+
 .. autoclass:: CustomProviderConfig
    :members:
    :undoc-members:

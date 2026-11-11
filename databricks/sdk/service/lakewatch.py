@@ -342,17 +342,6 @@ class CommonConfig:
     """Catch-all per-catalog config — settings that don't belong to any one resource family.
     Singleton. Name format: ``catalogs/{catalog}/commonConfig``."""
 
-    custom_content_pack_path: Optional[str] = None
-    """UC volume path holding user-authored custom content packs, e.g.
-    ``/Volumes/{catalog}/{schema}/{volume}``. User-provided with no default: when unset, custom
-    content packs are unavailable (referencing one is rejected) and only built-in content packs
-    apply."""
-
-    custom_presets_path: Optional[str] = None
-    """UC volume path holding user-authored custom presets, e.g.
-    ``/Volumes/{catalog}/{schema}/{volume}``. User-provided with no default: when unset, custom
-    presets are unavailable and only built-in presets apply."""
-
     etag: Optional[str] = None
     """Opaque entity tag for optimistic concurrency. Returned on every read; pass it back as the Update
     request's ``etag`` to make the update conditional on the resource being unchanged."""
@@ -374,10 +363,6 @@ class CommonConfig:
     def as_dict(self) -> dict:
         """Serializes the CommonConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.custom_content_pack_path is not None:
-            body["custom_content_pack_path"] = self.custom_content_pack_path
-        if self.custom_presets_path is not None:
-            body["custom_presets_path"] = self.custom_presets_path
         if self.etag is not None:
             body["etag"] = self.etag
         if self.name is not None:
@@ -395,10 +380,6 @@ class CommonConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the CommonConfig into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.custom_content_pack_path is not None:
-            body["custom_content_pack_path"] = self.custom_content_pack_path
-        if self.custom_presets_path is not None:
-            body["custom_presets_path"] = self.custom_presets_path
         if self.etag is not None:
             body["etag"] = self.etag
         if self.name is not None:
@@ -417,8 +398,6 @@ class CommonConfig:
     def from_dict(cls, d: Dict[str, Any]) -> CommonConfig:
         """Deserializes the CommonConfig from a dictionary."""
         return cls(
-            custom_content_pack_path=d.get("custom_content_pack_path", None),
-            custom_presets_path=d.get("custom_presets_path", None),
             etag=d.get("etag", None),
             name=d.get("name", None),
             per_resource_permissions_enabled=d.get("per_resource_permissions_enabled", None),
@@ -1622,7 +1601,8 @@ class Rule:
 
     runbook: Optional[str] = None
     """Long-form operational guidance carried from the authored rule metadata. Supports up to 4096
-    characters. Requests exceeding this limit are rejected."""
+    characters. Requests exceeding this limit are rejected. Supports Markdown; analysts and the
+    investigation agent follow it when triaging this rule's alerts."""
 
     status: Optional[ResourceStatus] = None
     """Read-only lifecycle status."""

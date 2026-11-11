@@ -87,8 +87,12 @@
         Create a materialization set.
 
         :param materialization_set: :class:`MaterializationSet`
-          The materialization set to create. Supply materialization_set_id to choose the identifier; leave it
-          unset to have one assigned.
+          The materialization set to create. Set ``materialization_set_id`` to choose the identifier, or omit
+          it to have one assigned.
+
+          Members with a cron schedule or table trigger must request the same ``paused`` value. An omitted
+          ``paused`` defaults to ``false``. A set can be created paused only if all members are batch
+          materializations.
         :param request_id: str (optional)
           Idempotency token for the request. A second request carrying a token that has already been used
           returns the operation the first one created, whatever state it reached, and creates no second set.
