@@ -175,3 +175,54 @@ Uploads atomically replace the destination file. The parent directory must exist
 `download_file` returns a `DownloadFileResponse` with a readable `contents` stream and HTTP metadata, including `content_length`, `content_type`, `etag`, and `last_modified`. Pass `byte_range="bytes=0-1023"` for a byte range and `if_range=etag` to require a matching file version. A mismatch returns the full file; an unsatisfiable range raises an SDK error. Close the contents stream after use.
 
 API and transport failures raise standard SDK exceptions.
+
+## Port forwarding
+
+`w.sandbox.port_forward` lets you open an app running in a sandbox, such as a web
+server, a notebook server, or a dev server, from your machine. It forwards a port
+on `127.0.0.1` to a port in the sandbox through your workspace, so the app doesn't
+need a public address.
+
+### Forward a port
+
+This example starts a web server in the sandbox and fetches a page from it:
+
+```python
+import urllib.request
+
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient()
+name = "sandboxes/my-sandbox"
+
+server = w.sandbox.execute_command(
+    name, "python3", args=["-m", "http.server", "10080", "--bind", "0.0.0.0"]
+)
+# Wait until the server accepts connections.
+w.sandbox.execute_command(
+    name, "/bin/bash", args=["-c", "until ss -ltn | grep -q ':10080 '; do sleep 0.2; done"]
+).wait()
+
+with w.sandbox.port_forward(name, 10080) as forward:
+    with urllib.request.urlopen(f"{forward.url}/") as response:
+        print(response.status)  # 200
+        print(response.read().decode()[:15])  # <!DOCTYPE HTML>
+
+w.sandbox.execute_command(name, "/bin/kill", args=[str(server.pid)]).wait()
+server.close()
+```
+
+`forward.url` is `http://127.0.0.1:<local_port>`. Any HTTP client, or a browser
+on the same machine, can use it while the forward is open. The forward stays
+open until you call `close()` or leave the `with` block. It uses a free local
+port unless you pass `local_port=`.
+
+### Requirements and limits
+
+- The app must listen on `0.0.0.0` inside the sandbox, not only on `127.0.0.1`.
+- You can forward ports 10000-65535, except 10101, 18767, and 19090.
+- HTTP/1.1 and WebSocket traffic is supported. HTTP/2 and other protocols, such
+  as database connections, are not.
+- Requests are sent with your workspace credentials. An `Authorization` header
+  that your client sets doesn't reach the app, so an app that expects a token in
+  that header needs another way to sign in, such as a token in the URL.

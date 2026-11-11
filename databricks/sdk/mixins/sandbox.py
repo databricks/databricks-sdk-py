@@ -1,10 +1,14 @@
-"""Sandbox command-execution mixin.
+"""Sandbox mixin.
 
 Extends the generated :class:`~databricks.sdk.service.sandbox.SandboxAPI` with
 ``execute_command`` and ``connect_command``, which return a
 :class:`CommandProcess` handle exposing a command's stdout, stderr, stdin, and
 exit code as an ergonomic, file-like interface - without the caller handling the
 raw gRPC process-event stream.
+
+``port_forward`` returns a :class:`PortForward` that relays a local TCP listener
+to an app in the sandbox through the workspace's sandbox proxy. It uses only
+the standard library, so it works without the optional ``sandbox`` extra.
 
 The handle is implemented over the sandbox daemon's streaming RPCs
 (ExecuteCommand / AttachCommand / StreamInput), which codegen does not produce a
@@ -23,10 +27,15 @@ from __future__ import annotations
 import codecs
 import itertools
 import queue
+import socket
+import socketserver
+import ssl
+import sys
 import threading
 import time
 from enum import Enum
-from typing import TYPE_CHECKING, Callable, Dict, Iterable, Iterator, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Callable, Dict, Iterable, Iterator, List, NamedTuple, Optional, Set, Tuple, Union
+from urllib.parse import quote, urlsplit
 
 from databricks.sdk.mixins._grpc_transport import (
     _DEFAULT_MAX_ATTEMPTS,
@@ -477,6 +486,428 @@ class CommandProcess:
             raise self._error
 
 
+# Bounds a malformed or hostile request head; real heads are a few KiB.
+_MAX_HEAD_BYTES = 64 * 1024
+_CHUNK_BYTES = 64 * 1024
+# A client that never finishes its request head would otherwise hold a relay thread forever.
+_HEAD_TIMEOUT_SECONDS = 60.0
+# close() cannot interrupt a connect or TLS handshake, because the socket is tracked only once it is connected.
+_CONNECT_TIMEOUT_SECONDS = 30.0
+# Body length marker for a request sent with Transfer-Encoding: chunked.
+_CHUNKED = -1
+_HOP_BY_HOP_HEADERS = frozenset(
+    {
+        "connection",
+        "keep-alive",
+        "proxy-authenticate",
+        "proxy-connection",
+        "te",
+        "trailer",
+        "upgrade",
+    }
+)
+
+
+class PortForward:
+    """An active port forward from ``127.0.0.1`` to an app in a sandbox, returned
+    by :meth:`SandboxExt.port_forward`.
+
+    Forwarding runs on background threads until :meth:`close`, which also closes
+    connections still open. Usable as a context manager.
+    """
+
+    def __init__(
+        self,
+        *,
+        host: str,
+        authenticate: Callable[[], Dict[str, str]],
+        name: str,
+        remote_port: int,
+        local_port: int = 0,
+    ) -> None:
+        # The name becomes a path segment of every request, so it must not be able to add segments.
+        sandbox_id = name.removeprefix("sandboxes/")
+        if sandbox_id in ("", ".", "..") or quote(sandbox_id, safe="") != sandbox_id:
+            raise ValueError(f"not a sandbox name: {name!r}; expected sandboxes/{{sandbox_id}}")
+        workspace = urlsplit(host if "://" in host else f"https://{host}")
+        self._server = _RelayServer(
+            ("127.0.0.1", local_port),
+            _Target(
+                scheme=workspace.scheme,
+                netloc=workspace.netloc,
+                hostname=workspace.hostname or "",
+                port=workspace.port or (443 if workspace.scheme == "https" else 80),
+                path_prefix=f"{workspace.path.rstrip('/')}/sandbox-proxy/sandboxes/{sandbox_id}/ports/{remote_port}",
+                authenticate=authenticate,
+            ),
+        )
+        self._thread = threading.Thread(
+            target=self._server.serve_forever,
+            name=f"port-forward-{remote_port}",
+            daemon=True,
+        )
+        self._thread.start()
+
+    @property
+    def local_port(self) -> int:
+        """The port bound on ``127.0.0.1``."""
+        return self._server.server_address[1]
+
+    @property
+    def url(self) -> str:
+        """The local URL of the forwarded app, ``http://127.0.0.1:<local_port>``."""
+        return f"http://127.0.0.1:{self.local_port}"
+
+    def close(self) -> None:
+        """Stop forwarding and close open connections."""
+        self._server.shutdown()
+        self._server.server_close()
+        self._server.close_connections()
+        self._thread.join()
+
+    def __enter__(self) -> "PortForward":
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        self.close()
+
+
+class _Target:
+    def __init__(
+        self,
+        *,
+        scheme: str,
+        netloc: str,
+        hostname: str,
+        port: int,
+        path_prefix: str,
+        authenticate: Callable[[], Dict[str, str]],
+    ) -> None:
+        self.scheme = scheme
+        self.netloc = netloc
+        self.hostname = hostname
+        self.port = port
+        self.path_prefix = path_prefix
+        # Resolved per connection so OAuth tokens refresh over a long-lived forward.
+        self.authenticate = authenticate
+        self.tls = ssl.create_default_context() if scheme == "https" else None
+
+    def connect(self) -> socket.socket:
+        connection = socket.create_connection((self.hostname, self.port), timeout=_CONNECT_TIMEOUT_SECONDS)
+        try:
+            if self.tls is not None:
+                connection = self.tls.wrap_socket(connection, server_hostname=self.hostname)
+        except BaseException:
+            connection.close()
+            raise
+        # Responses and WebSocket sessions can stay quiet for long stretches.
+        connection.settimeout(None)
+        return connection
+
+
+class _RelayServer(socketserver.ThreadingTCPServer):
+    daemon_threads = True
+    block_on_close = False
+    # Lets a new forward bind the same local port while the last one's connections are in TIME_WAIT.
+    # On Windows, SO_REUSEADDR would also let another socket take a port that is in use.
+    allow_reuse_address = sys.platform != "win32"
+
+    def __init__(self, address: Tuple[str, int], target: _Target) -> None:
+        self.target = target
+        self._connections: Set[socket.socket] = set()
+        self._connections_lock = threading.Lock()
+        self._closed = False
+        super().__init__(address, _RelayHandler)
+
+    def track(self, connection: socket.socket) -> None:
+        with self._connections_lock:
+            if not self._closed:
+                self._connections.add(connection)
+                return
+        # Registered after close: a handler that was already running when the forward closed.
+        _shutdown(connection)
+
+    def untrack(self, connection: socket.socket) -> None:
+        with self._connections_lock:
+            self._connections.discard(connection)
+
+    def close_connections(self) -> None:
+        with self._connections_lock:
+            self._closed = True
+            connections = list(self._connections)
+        for connection in connections:
+            _shutdown(connection)
+
+
+class _RelayHandler(socketserver.BaseRequestHandler):
+    server: _RelayServer
+
+    def handle(self) -> None:
+        client: socket.socket = self.request
+        self.server.track(client)
+        try:
+            self._relay(client)
+        finally:
+            self.server.untrack(client)
+
+    def _relay(self, client: socket.socket) -> None:
+        head, rest = _read_head(client)
+        if head is None:
+            return
+        target = self.server.target
+        try:
+            auth_headers = target.authenticate()
+        except Exception:  # noqa: BLE001 - reported to the client; raising here would only drop the connection
+            client.sendall(_error_response(502, "Bad Gateway", "could not authenticate with the workspace"))
+            return
+        rewritten = _rewrite_head(head, target, auth_headers)
+        if rewritten is None:
+            client.sendall(_error_response(400, "Bad Request", "malformed request, or a path with . or .. segments"))
+            return
+        try:
+            sandbox = target.connect()
+        except OSError as error:
+            client.sendall(_error_response(502, "Bad Gateway", str(error)))
+            return
+        self.server.track(sandbox)
+        try:
+            if rewritten.upgrade:
+                sandbox.sendall(rewritten.head + rest)
+                upstream = threading.Thread(target=_copy, args=(client, sandbox), daemon=True)
+            else:
+                sandbox.sendall(rewritten.head)
+                upstream = threading.Thread(
+                    target=_copy_request_body,
+                    args=(client, sandbox, rest, _RequestBody(rewritten.body_length)),
+                    daemon=True,
+                )
+            upstream.start()
+            _copy(sandbox, client)
+            upstream.join()
+        except OSError:
+            # The peer went away; closing both sides below is all that is left to do.
+            pass
+        finally:
+            self.server.untrack(sandbox)
+            sandbox.close()
+
+
+class _Rewritten(NamedTuple):
+    head: bytes
+    upgrade: bool
+    # A byte count, or _CHUNKED.
+    body_length: int
+
+
+def _read_head(client: socket.socket) -> Tuple[Optional[bytes], bytes]:
+    """Reads up to the end of the request head. Returns the head and any bytes after it, or
+    ``(None, b"")`` when the client stops, stalls, or sends a head over the limit."""
+    buffer = b""
+    client.settimeout(_HEAD_TIMEOUT_SECONDS)
+    try:
+        while (end := buffer.find(b"\r\n\r\n")) == -1:
+            if len(buffer) > _MAX_HEAD_BYTES:
+                return None, b""
+            chunk = client.recv(_CHUNK_BYTES)
+            if not chunk:
+                return None, b""
+            buffer += chunk
+    except OSError:
+        # Includes the timeout.
+        return None, b""
+    finally:
+        client.settimeout(None)
+    if end > _MAX_HEAD_BYTES:
+        return None, b""
+    return buffer[:end], buffer[end + 4 :]
+
+
+def _rewrite_head(head: bytes, target: _Target, auth_headers: Dict[str, str]) -> Optional[_Rewritten]:
+    """Points the request at the sandbox port and replaces the caller's credentials with ``auth_headers``.
+
+    Returns ``None`` for a malformed head, or for a path with ``.`` or ``..`` segments: the
+    workspace would resolve those out of the port prefix, onto another API with the SDK's
+    credentials attached.
+
+    Also returns ``None`` when the body's length is ambiguous, such as both
+    ``Content-Length`` and ``Transfer-Encoding``, because the relay forwards
+    exactly one request per connection and must agree with the workspace on where
+    it ends. ``Connection: close`` makes the workspace end the connection after
+    the response.
+    """
+    try:
+        request_line, *header_lines = head.decode("latin-1").split("\r\n")
+        method, request_target, version = request_line.split(" ")
+    except ValueError:
+        return None
+    if request_target.startswith(("http://", "https://")):
+        absolute = urlsplit(request_target)
+        request_target = absolute.path + (f"?{absolute.query}" if absolute.query else "")
+    if not request_target.startswith("/") or _has_dot_segment(request_target.split("?", 1)[0]):
+        return None
+
+    headers: List[Tuple[str, str]] = []
+    for line in header_lines:
+        name, separator, value = line.partition(":")
+        if not separator:
+            return None
+        headers.append((name.strip(), value.strip()))
+    connection_tokens = {
+        token.strip().lower() for name, value in headers if name.lower() == "connection" for token in value.split(",")
+    }
+    upgrade = "upgrade" in connection_tokens and any(name.lower() == "upgrade" for name, _ in headers)
+    body_length = _body_length(headers)
+    if body_length is None:
+        return None
+
+    # Caller-supplied credentials are dropped in favor of the SDK's, so a local header of the same name cannot override them.
+    replaced = {name.lower() for name in auth_headers} | {"authorization", "host", "proxy-authorization"}
+    lines = [f"{method} {target.path_prefix}{request_target} {version}", f"Host: {target.netloc}"]
+    lines.extend(f"{name}: {value}" for name, value in auth_headers.items())
+    lines.append("Connection: upgrade" if upgrade else "Connection: close")
+    for name, value in headers:
+        lowered = name.lower()
+        if upgrade and lowered == "upgrade":
+            lines.append(f"{name}: {value}")
+        elif not (lowered in _HOP_BY_HOP_HEADERS or lowered in connection_tokens or lowered in replaced):
+            lines.append(f"{name}: {value}")
+    return _Rewritten(("\r\n".join(lines) + "\r\n\r\n").encode("latin-1"), upgrade, body_length)
+
+
+def _body_length(headers: List[Tuple[str, str]]) -> Optional[int]:
+    """The request body's length, ``_CHUNKED``, or ``None`` for framing the relay and the
+    workspace could read differently."""
+    lengths = {value for name, value in headers if name.lower() == "content-length"}
+    codings = [value for name, value in headers if name.lower() == "transfer-encoding"]
+    if codings:
+        if lengths or [coding.strip().lower() for coding in ",".join(codings).split(",")] != ["chunked"]:
+            return None
+        return _CHUNKED
+    if not lengths:
+        return 0
+    if len(lengths) > 1:
+        return None
+    (length,) = lengths
+    return int(length) if length.isascii() and length.isdigit() else None
+
+
+class _RequestBody:
+    """Finds where one request body ends in the bytes a client sends.
+
+    Raises ``ValueError`` for malformed chunked framing.
+    """
+
+    def __init__(self, length: int) -> None:
+        self._chunked = length == _CHUNKED
+        self._remaining = 0 if self._chunked else length
+        self._state = "size" if self._chunked else "data"
+        self._line = b""
+        self.complete = length == 0
+
+    def take(self, data: bytes) -> bytes:
+        """Returns the part of ``data`` that belongs to the body, and sets ``complete`` at its end."""
+        taken = 0
+        while taken < len(data) and not self.complete:
+            if self._state == "data":
+                step = min(self._remaining, len(data) - taken)
+                taken += step
+                self._remaining -= step
+                if self._remaining == 0:
+                    if self._chunked:
+                        self._state = "data-end"
+                    else:
+                        self.complete = True
+                continue
+            # The other states read one CRLF-terminated line: a chunk size, the CRLF after chunk data, or a trailer.
+            newline = data.find(b"\n", taken)
+            stop = len(data) if newline == -1 else newline + 1
+            self._line += data[taken:stop]
+            taken = stop
+            if len(self._line) > _MAX_HEAD_BYTES:
+                raise ValueError("chunked framing line too long")
+            if newline == -1:
+                continue
+            line, self._line = self._line, b""
+            if not line.endswith(b"\r\n"):
+                raise ValueError("chunked framing line without CRLF")
+            self._read_line(line[:-2])
+        return data[:taken]
+
+    def _read_line(self, line: bytes) -> None:
+        if self._state == "data-end":
+            if line:
+                raise ValueError("chunk longer than its size")
+            self._state = "size"
+        elif self._state == "size":
+            size = line.split(b";", 1)[0].strip()
+            if not size or len(size) > 16 or size.strip(b"0123456789abcdefABCDEF"):
+                raise ValueError("invalid chunk size")
+            self._remaining = int(size, 16)
+            self._state = "data" if self._remaining else "trailer"
+        elif not line:
+            # The empty line after the trailers ends the body.
+            self.complete = True
+
+
+def _has_dot_segment(path: str) -> bool:
+    """Whether a segment is ``.`` or ``..``, including percent-encoded and backslash-separated forms."""
+    segments = path.replace("\\", "/").split("/")
+    return any(segment.lower().replace("%2e", ".") in (".", "..") for segment in segments)
+
+
+def _copy(source: socket.socket, destination: socket.socket) -> None:
+    """Copies until the source ends, then shuts both sockets down, which also stops the copy in
+    the other direction."""
+    try:
+        while chunk := source.recv(_CHUNK_BYTES):
+            destination.sendall(chunk)
+    except OSError:
+        # A socket error ends the relay like an EOF.
+        pass
+    _shutdown(source)
+    _shutdown(destination)
+
+
+def _copy_request_body(client: socket.socket, sandbox: socket.socket, rest: bytes, body: _RequestBody) -> None:
+    """Forwards the request body and nothing after it: later bytes, such as a pipelined second
+    request, would reach the workspace without a rewritten head. Stops reading once the body is
+    complete, so a client that half-closes still gets the response. A client that stops sending
+    before the body is complete aborts the exchange, so the workspace does not wait for the rest."""
+    data = rest
+    try:
+        while True:
+            if data:
+                sandbox.sendall(body.take(data))
+            if body.complete:
+                return
+            data = client.recv(_CHUNK_BYTES)
+            if not data:
+                break
+    except (OSError, ValueError):
+        # Ends the exchange like an incomplete body.
+        pass
+    _shutdown(client)
+    _shutdown(sandbox)
+
+
+def _shutdown(connection: socket.socket) -> None:
+    try:
+        connection.shutdown(socket.SHUT_RDWR)
+    except OSError:
+        # Already closed or never connected.
+        pass
+
+
+def _error_response(status: int, reason: str, message: str) -> bytes:
+    body = f"port forward failed: {message}\n".encode()
+    return (
+        f"HTTP/1.1 {status} {reason}\r\n"
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        f"Content-Length: {len(body)}\r\n"
+        "Connection: close\r\n\r\n"
+    ).encode("latin-1") + body
+
+
 class SandboxExt(SandboxAPI):
     __doc__ = SandboxAPI.__doc__
 
@@ -580,6 +1011,37 @@ class SandboxExt(SandboxAPI):
             process._pid = first.process_event.start.pid  # synchronous when the replay starts at the start event
         process._start(handle, first, responses)
         return process
+
+    def port_forward(self, name: str, remote_port: int, *, local_port: int = 0) -> PortForward:
+        """Forward ``127.0.0.1:<local_port>`` to an app listening on ``remote_port``
+        in sandbox ``name``, and return a :class:`PortForward` for the forward.
+
+        The local listener is bound before this returns; forwarding runs on
+        background threads until :meth:`PortForward.close` or the end of a ``with``
+        block. ``local_port=0`` picks a free port; read it from
+        :attr:`PortForward.local_port`.
+
+        ``name`` is the sandbox's resource name, ``sandboxes/{sandbox_id}``; a bare
+        ``{sandbox_id}`` is also accepted. :attr:`PortForward.url` is the local URL
+        to send requests to.
+
+        The app must listen on ``0.0.0.0`` inside the sandbox. Ports 10000-65535
+        are forwardable except 10101, 18767, and 19090. Clients speak HTTP/1.1 to
+        the local port, including WebSocket upgrades; each local connection carries
+        one request. Requests whose path contains a ``.`` or ``..`` segment get a
+        local 400 response and are never sent. The caller's ``Authorization``
+        header is replaced with the SDK's credentials.
+        """
+        cfg = self._api._cfg
+        if not cfg.host:
+            raise ValueError("Cannot forward a port without a workspace host")
+        return PortForward(
+            host=cfg.host,
+            authenticate=cfg.authenticate,
+            name=name,
+            remote_port=remote_port,
+            local_port=local_port,
+        )
 
     def _open_stream_handle(
         self,

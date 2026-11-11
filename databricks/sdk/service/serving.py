@@ -884,6 +884,19 @@ class CohereConfig:
         )
 
 
+class CommitmentTerm(Enum):
+    """The commitment term length for a Provisioned Throughput pool."""
+
+    COMMITMENT_TERM_12_HOURS = "COMMITMENT_TERM_12_HOURS"
+    COMMITMENT_TERM_1_DAY = "COMMITMENT_TERM_1_DAY"
+    COMMITMENT_TERM_1_HOUR = "COMMITMENT_TERM_1_HOUR"
+    COMMITMENT_TERM_1_MONTH = "COMMITMENT_TERM_1_MONTH"
+    COMMITMENT_TERM_1_WEEK = "COMMITMENT_TERM_1_WEEK"
+    COMMITMENT_TERM_1_YEAR = "COMMITMENT_TERM_1_YEAR"
+    COMMITMENT_TERM_3_MONTHS = "COMMITMENT_TERM_3_MONTHS"
+    COMMITMENT_TERM_6_MONTHS = "COMMITMENT_TERM_6_MONTHS"
+
+
 @dataclass
 class CustomProviderConfig:
     """Configs needed to create a custom provider model route."""
@@ -2213,6 +2226,10 @@ class PtServedModel:
     model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
     not specified for other entities, it defaults to entity_name-entity_version."""
 
+    pt_term: Optional[CommitmentTerm] = None
+    """Commitment term to purchase for this served entity; its presence marks the entity as reserved
+    (vs on-demand) PT. Valid on create and on update (purchases a commitment for a scale-up)."""
+
     def as_dict(self) -> dict:
         """Serializes the PtServedModel into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2226,6 +2243,8 @@ class PtServedModel:
             body["name"] = self.name
         if self.provisioned_model_units is not None:
             body["provisioned_model_units"] = self.provisioned_model_units
+        if self.pt_term is not None:
+            body["pt_term"] = self.pt_term.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2241,6 +2260,8 @@ class PtServedModel:
             body["name"] = self.name
         if self.provisioned_model_units is not None:
             body["provisioned_model_units"] = self.provisioned_model_units
+        if self.pt_term is not None:
+            body["pt_term"] = self.pt_term
         return body
 
     @classmethod
@@ -2252,6 +2273,7 @@ class PtServedModel:
             entity_version=d.get("entity_version", None),
             name=d.get("name", None),
             provisioned_model_units=_int64(d, "provisioned_model_units"),
+            pt_term=_enum(d, "pt_term", CommitmentTerm),
         )
 
 
