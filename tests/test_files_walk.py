@@ -20,7 +20,7 @@ import os
 import platform
 from dataclasses import dataclass
 from tempfile import TemporaryDirectory
-from threading import Lock, Thread
+from threading import Event, Lock, Thread
 from typing import Callable, Dict, List, Optional, Tuple, Union
 from urllib.parse import parse_qs, urlparse
 
@@ -1032,6 +1032,223 @@ def test_endpoints_are_resolved_once_per_client(config, tmp_path):
     _run(server, transfers)
 
     assert server.counts["endpoints"] == 1
+
+
+def test_endpoints_are_asked_again_once_the_ttl_passes(config):
+    server = _download_server(plan=DATA_PLANE)
+    w = _client(config, endpoints_api=True)
+    ttl = files_mixin.FilesExt._ENDPOINTS_CACHE_TTL_SECONDS
+
+    _run(server, lambda: _download(w))
+    server.plan = RIG_PLAN
+    config.clock.sleep(ttl - 1)
+    _run(server, lambda: _download(w))
+    assert server.counts["endpoints"] == 1
+    assert "rig.get" not in server.calls
+
+    config.clock.sleep(1)
+    _run(server, lambda: _download(w))
+
+    assert server.counts["endpoints"] == 2
+    assert server.counts["rig.get"] == 1
+
+
+def test_a_failed_answer_is_kept_for_the_failure_ttl(config):
+    # The workspace does not serve the endpoints API yet, so the client uses the built-in order.
+    server = _download_server()
+    w = _client(config, endpoints_api=True)
+    failure_ttl = files_mixin.FilesExt._ENDPOINTS_FAILURE_CACHE_TTL_SECONDS
+
+    _run(server, lambda: _download(w))
+    server.plan = RIG_PLAN
+    config.clock.sleep(failure_ttl - 1)
+    _run(server, lambda: _download(w))
+    assert server.counts["endpoints"] == 1
+    assert server.endpoints_touched() == ["offload"]
+
+    config.clock.sleep(1)
+    _run(server, lambda: _download(w))
+
+    assert server.counts["endpoints"] == 2
+    assert server.endpoints_touched() == ["offload", "rig"]
+
+
+@pytest.mark.parametrize(
+    "fault", [503, 429, requests.exceptions.ConnectionError], ids=["503", "429", "connection-error"]
+)
+def test_a_transient_refresh_failure_keeps_the_servers_list(config, fault):
+    server = _download_server(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    ttl = files_mixin.FilesExt._ENDPOINTS_CACHE_TTL_SECONDS
+
+    _run(server, lambda: _download(w))
+    server.faults["endpoints"] = on_calls(fault, 2)
+    config.clock.sleep(ttl)
+    _run(server, lambda: _download(w))
+    # The blip did not move the client off RIG.
+    assert server.counts["endpoints"] == 2
+    assert server.endpoints_touched() == ["rig"]
+
+    # It asks again after the failure TTL, not the full TTL.
+    server.plan = DATA_PLANE
+    config.clock.sleep(files_mixin.FilesExt._ENDPOINTS_FAILURE_CACHE_TTL_SECONDS)
+    _run(server, lambda: _download(w))
+
+    assert server.counts["endpoints"] == 3
+    assert server.endpoints_touched() == ["rig", "dp"]
+
+
+def test_a_list_kept_through_failing_refreshes_expires_at_the_stale_limit(config):
+    server = _download_server(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    ext = files_mixin.FilesExt
+
+    _run(server, lambda: _download(w))
+    # Discovery breaks for good with an error that looks transient.
+    server.faults["endpoints"] = always(503)
+    config.clock.sleep(ext._ENDPOINTS_CACHE_TTL_SECONDS)
+    while config.clock.time() + ext._ENDPOINTS_FAILURE_CACHE_TTL_SECONDS < ext._ENDPOINTS_MAX_STALE_SECONDS:
+        _run(server, lambda: _download(w))
+        assert server.endpoints_touched() == ["rig"]
+        config.clock.sleep(ext._ENDPOINTS_FAILURE_CACHE_TTL_SECONDS)
+    config.clock.sleep(ext._ENDPOINTS_FAILURE_CACHE_TTL_SECONDS)
+    _run(server, lambda: _download(w))
+
+    assert server.endpoints_touched() == ["rig", "offload"]
+
+
+def test_a_failing_refresh_just_before_the_stale_limit_keeps_the_list_only_until_the_limit(config):
+    server = _download_server(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    ext = files_mixin.FilesExt
+
+    _run(server, lambda: _download(w))
+    server.faults["endpoints"] = always(503)
+    # A refresh one minute before the limit fails and keeps the list, but only until the limit, not a failure TTL more.
+    config.clock.sleep(ext._ENDPOINTS_MAX_STALE_SECONDS - 60)
+    _run(server, lambda: _download(w))
+    assert server.endpoints_touched() == ["rig"]
+    config.clock.sleep(60)
+    _run(server, lambda: _download(w))
+
+    assert server.endpoints_touched() == ["rig", "offload"]
+
+
+def test_transfers_drop_a_list_past_the_stale_limit_while_another_thread_asks_again(config, monkeypatch):
+    server = _download_server(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    asking = Event()
+    release = Event()
+    fetch = w.files._fetch_endpoints
+    calls = []
+
+    # Holds the second ask, standing in for a refresh stuck in authentication before its request timeout applies.
+    def fetch_blocking_the_second_ask():
+        calls.append(None)
+        if len(calls) == 2:
+            asking.set()
+            assert release.wait(10), "the test never released the second ask"
+        return fetch()
+
+    monkeypatch.setattr(w.files, "_fetch_endpoints", fetch_blocking_the_second_ask)
+    results = []
+
+    def run():
+        results.append(_download(w))
+        config.clock.sleep(files_mixin.FilesExt._ENDPOINTS_MAX_STALE_SECONDS)
+        asker = Thread(target=lambda: results.append(_download(w)))
+        asker.start()
+        try:
+            assert asking.wait(10), "the expired list was not asked again"
+            before = server.counts["rig.get"]
+            results.append(_download(w))
+            # The list is past the stale limit, so this transfer used the built-in order, not the stale RIG list.
+            assert server.counts["rig.get"] == before
+        finally:
+            release.set()
+            asker.join()
+
+    _run(server, run)
+
+    assert results == [LARGE, LARGE, LARGE]
+    assert server.counts["offload.get"] >= 1
+
+
+def test_discovery_does_not_use_the_transfer_sessions(config, monkeypatch):
+    # Their pools block while transfers hold every connection, which would stall a refresh before its timeout starts.
+    server = _download_server(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+    cloud_session = w.files._cloud_provider_session()
+    send = cloud_session.request
+
+    def no_discovery(method, url, **kwargs):
+        assert files_mixin.FilesExt._ENDPOINTS_API_PATH not in url, "discovery went through a transfer session"
+        return send(method, url, **kwargs)
+
+    monkeypatch.setattr(cloud_session, "request", no_discovery)
+    monkeypatch.setattr(w.files._authenticated_session(), "request", no_discovery)
+
+    _run(server, lambda: _download(w))
+
+    assert server.counts["endpoints"] == 1
+    assert w.files._discovery_session() not in (cloud_session, w.files._authenticated_session())
+
+
+@pytest.mark.parametrize("status", [403, 404])
+def test_discovery_turned_off_moves_the_client_to_the_built_in_order(config, status):
+    # How the server rolls discovery back: the endpoints API answers 403 (or 404 where it is not served).
+    server = _download_server(plan=RIG_PLAN)
+    w = _client(config, endpoints_api=True)
+
+    _run(server, lambda: _download(w))
+    server.faults["endpoints"] = always(status)
+    config.clock.sleep(files_mixin.FilesExt._ENDPOINTS_CACHE_TTL_SECONDS)
+    _run(server, lambda: _download(w))
+
+    assert server.endpoints_touched() == ["rig", "offload"]
+
+
+def test_transfers_keep_the_expired_list_while_another_thread_asks_again(config, monkeypatch):
+    server = _download_server(plan=DATA_PLANE)
+    w = _client(config, endpoints_api=True)
+    asking = Event()
+    release = Event()
+    fetch = w.files._fetch_endpoints
+    calls = []
+
+    # Blocks the second ask before it is sent: requests_mock serializes requests, so blocking inside the fake server
+    # would also block the transfer this test runs alongside it.
+    def fetch_blocking_the_second_ask():
+        calls.append(None)
+        if len(calls) == 2:
+            asking.set()
+            assert release.wait(10), "the test never released the second ask"
+        return fetch()
+
+    monkeypatch.setattr(w.files, "_fetch_endpoints", fetch_blocking_the_second_ask)
+    results = []
+
+    def run():
+        results.append(_download(w))
+        config.clock.sleep(files_mixin.FilesExt._ENDPOINTS_CACHE_TTL_SECONDS)
+        server.plan = RIG_PLAN
+        asker = Thread(target=lambda: results.append(_download(w)))
+        asker.start()
+        try:
+            assert asking.wait(10), "the expired list was not asked again"
+            # The asking thread holds the refresh, so this transfer neither asks nor waits for it.
+            results.append(_download(w))
+        finally:
+            release.set()
+            asker.join()
+
+    _run(server, run)
+
+    assert results == [LARGE, LARGE, LARGE]
+    assert len(calls) == 2
+    # The transfer that ran during the ask used the expired list; the asking one used the new list.
+    assert server.counts["dp.get"] == 2
+    assert server.counts["rig.get"] == 1
 
 
 @pytest.mark.parametrize(

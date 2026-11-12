@@ -1511,15 +1511,15 @@ class Rule:
     """Free-form client-managed key/value annotations."""
 
     batch: Optional[RuleInputBatch] = None
-    """Batch SQL rule input."""
+    """Scheduled detection (also known as batch detection) input."""
 
     category: Optional[str] = None
     """Free-form rule category."""
 
     compute_workspace_id: Optional[str] = None
     """ID of the workspace whose compute runs this rule's jobs and owns its associated resources, such
-    as the SQL warehouse a scheduled rule runs on. Server-assigned; a rule's warehouse can only be
-    changed from this workspace."""
+    as the SQL warehouse a scheduled detection runs on. Server-assigned; a rule's warehouse can only
+    be changed from this workspace."""
 
     content_resource_id: Optional[str] = None
     """Immutable UUIDv4 identifying the authored content resource installed as this rule."""
@@ -1611,8 +1611,8 @@ class Rule:
     """If set, this rule's signals do not open new alerts until the given time."""
 
     timerange: Optional[RuleTimeRange] = None
-    """Time-range configuration for batch rules. If unset, the execution time range is extended by a
-    fixed ``15m`` lookback."""
+    """Time-range configuration for scheduled detections. If unset, the execution time range is
+    extended by a fixed ``15m`` lookback."""
 
     update_time: Optional[Timestamp] = None
     """Time the rule was last updated."""
@@ -1964,7 +1964,7 @@ class RuleFidelity(Enum):
 
 @dataclass
 class RuleInputBatch:
-    """Batch input for a detection rule."""
+    """Input for a scheduled detection (also known as batch detection)."""
 
     custom: Optional[RuleInputCustomNotebook] = None
     """Custom-notebook user function. The output is used as input data for the rule."""
@@ -1973,7 +1973,7 @@ class RuleInputBatch:
     """SQL query evaluated as the rule input."""
 
     warehouse_id: Optional[str] = None
-    """SQL warehouse used to run this batch rule."""
+    """SQL warehouse that runs this scheduled detection."""
 
     def as_dict(self) -> dict:
         """Serializes the RuleInputBatch into a dictionary suitable for use as a JSON request body."""
@@ -2009,7 +2009,7 @@ class RuleInputBatch:
 
 @dataclass
 class RuleInputBatchSql:
-    """Batch SQL input for a detection rule."""
+    """SQL query input for a scheduled detection."""
 
     query: str
     """SQL query evaluated as the rule input."""
@@ -2056,7 +2056,7 @@ class RuleInputBatchSql:
 
 @dataclass
 class RuleInputCustomNotebook:
-    """Reference to a custom-user-function notebook for stream or batch input."""
+    """Reference to a custom-user-function notebook for scheduled detection input."""
 
     notebook: str
     """Fully-qualified notebook path, or a path relative to the configured base notebook directory."""
@@ -2216,17 +2216,14 @@ class RuleOutput:
 class RuleSchedule:
     """Defines when a detection rule executes.
 
-    A batch rule sets exactly one of ``at_least_every`` or ``cron_expression``. A streaming rule
-    runs continuously and sets no timing; it accepts only ``enabled``, and an omitted schedule means
-    enabled. The server rejects any other combination. ``enabled`` is orthogonal to the timing."""
+    A scheduled detection sets exactly one of ``at_least_every`` or ``cron_expression``. A streaming
+    rule runs continuously and sets no timing; it accepts only ``enabled``, and an omitted schedule
+    means enabled. The server rejects any other combination. ``enabled`` is orthogonal to the
+    timing."""
 
     at_least_every: Optional[str] = None
     """Defines the minimum cadence as a duration string. It may contain components for days, hours,
     minutes, and seconds (e.g. ``5d``, ``5d3h``, ``3d2h5m12s``, ``12m16s``)."""
-
-    continuous: Optional[bool] = None
-    """Runs the rule continuously. Detection rules do not accept it: batch rules reject it, and
-    streaming rules run continuously without it."""
 
     cron_expression: Optional[str] = None
     """Defines the schedule using a Quartz cron expression."""
@@ -2239,8 +2236,6 @@ class RuleSchedule:
         body = {}
         if self.at_least_every is not None:
             body["at_least_every"] = self.at_least_every
-        if self.continuous is not None:
-            body["continuous"] = self.continuous
         if self.cron_expression is not None:
             body["cron_expression"] = self.cron_expression
         if self.enabled is not None:
@@ -2252,8 +2247,6 @@ class RuleSchedule:
         body = {}
         if self.at_least_every is not None:
             body["at_least_every"] = self.at_least_every
-        if self.continuous is not None:
-            body["continuous"] = self.continuous
         if self.cron_expression is not None:
             body["cron_expression"] = self.cron_expression
         if self.enabled is not None:
@@ -2265,7 +2258,6 @@ class RuleSchedule:
         """Deserializes the RuleSchedule from a dictionary."""
         return cls(
             at_least_every=d.get("at_least_every", None),
-            continuous=d.get("continuous", None),
             cron_expression=d.get("cron_expression", None),
             enabled=d.get("enabled", None),
         )
@@ -2273,14 +2265,14 @@ class RuleSchedule:
 
 @dataclass
 class RuleTimeRange:
-    """Time-range configuration for a batch detection rule."""
+    """Time-range configuration for a scheduled detection."""
 
     extend_lookback: Optional[str] = None
     """Extends the start of the execution time range by a compact duration with integer days, hours,
     minutes, and seconds in that order, such as ``1h30m`` or ``15m``. Zero duration disables
     extension. Unset or empty uses a fixed ``15m`` at execution time. Only the start moves; the end
-    is unchanged. Has no effect on batch SQL that does not use ``IN_TIMERANGE``. Values must fit
-    signed 64-bit microseconds."""
+    is unchanged. Has no effect on a detection query that does not use ``IN_TIMERANGE``. Values must
+    fit signed 64-bit microseconds."""
 
     def as_dict(self) -> dict:
         """Serializes the RuleTimeRange into a dictionary suitable for use as a JSON request body."""

@@ -1,5 +1,18 @@
 # Version changelog
 
+## Release v0.166.0 (2026-11-12)
+
+### API Changes
+* Add [w.assume_group](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iam/assume_group.html) workspace-level service.
+* Add `effective_resources` field for `databricks.sdk.service.apps.App`.
+* Change `output_ref` field for `databricks.sdk.service.aifunctions.Batch` to be required.
+* [Breaking] Change `output_ref` field for `databricks.sdk.service.aifunctions.Batch` to be required.
+* [Breaking] Remove `continuous` field for `databricks.sdk.service.lakewatch.RuleSchedule`.
+* [Breaking] Remove `expired` enum value for `databricks.sdk.service.aifunctions.BatchStatus`.
+
+### Bug Fixes
+* `WorkspaceClient.files` now sends the SDK User-Agent on Files API requests made outside the API client: endpoint discovery, multipart complete and abort, and Files API 3.0 data transfers.
+
 ## Release v0.165.0 (2026-11-11)
 
 ### API Changes

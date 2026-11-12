@@ -975,6 +975,44 @@ class ListResponseSchema(Enum):
 
 
 @dataclass
+class ListRestrictedSharingGroupsResponse:
+    """A page of restricted sharing groups in the caller's workspace."""
+
+    next_page_token: Optional[str] = None
+    """A token that can be sent as page_token to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    restricted_sharing_groups: Optional[List[RestrictedSharingGroup]] = None
+    """The restricted sharing groups in the workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListRestrictedSharingGroupsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.restricted_sharing_groups:
+            body["restricted_sharing_groups"] = [v.as_dict() for v in self.restricted_sharing_groups]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListRestrictedSharingGroupsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.restricted_sharing_groups:
+            body["restricted_sharing_groups"] = self.restricted_sharing_groups
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListRestrictedSharingGroupsResponse:
+        """Deserializes the ListRestrictedSharingGroupsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            restricted_sharing_groups=_repeated_dict(d, "restricted_sharing_groups", RestrictedSharingGroup),
+        )
+
+
+@dataclass
 class ListServicePrincipalResponse:
     items_per_page: Optional[int] = None
     """Total results returned in the response."""
@@ -1813,6 +1851,56 @@ class ResourceMeta:
     def from_dict(cls, d: Dict[str, Any]) -> ResourceMeta:
         """Deserializes the ResourceMeta from a dictionary."""
         return cls(resource_type=d.get("resourceType", None))
+
+
+@dataclass
+class RestrictedSharingGroup:
+    """A RestrictedSharingGroup is a workspace group whose members cannot grant or revoke permissions
+    on workspace assets while they have assumed the group or one of its child groups. Users acting
+    as themselves are not affected."""
+
+    group_display_name: Optional[str] = None
+    """The display name of the restricted workspace group."""
+
+    name: Optional[str] = None
+    """The resource name of the restricted sharing group. Format:
+    ``restricted-sharing-groups/{restricted_sharing_group_id}`` Example:
+    ``restricted-sharing-groups/123``"""
+
+    restricted_sharing_group_id: Optional[str] = None
+    """The id of the restricted workspace group: the numeric id of an existing and non-system workspace
+    group."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RestrictedSharingGroup into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.group_display_name is not None:
+            body["group_display_name"] = self.group_display_name
+        if self.name is not None:
+            body["name"] = self.name
+        if self.restricted_sharing_group_id is not None:
+            body["restricted_sharing_group_id"] = self.restricted_sharing_group_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestrictedSharingGroup into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_display_name is not None:
+            body["group_display_name"] = self.group_display_name
+        if self.name is not None:
+            body["name"] = self.name
+        if self.restricted_sharing_group_id is not None:
+            body["restricted_sharing_group_id"] = self.restricted_sharing_group_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RestrictedSharingGroup:
+        """Deserializes the RestrictedSharingGroup from a dictionary."""
+        return cls(
+            group_display_name=d.get("group_display_name", None),
+            name=d.get("name", None),
+            restricted_sharing_group_id=d.get("restricted_sharing_group_id", None),
+        )
 
 
 @dataclass
@@ -3244,6 +3332,128 @@ class AccountUsersV2API:
         }
 
         self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", body=body, headers=headers)
+
+
+class AssumeGroupAPI:
+    """Manage the workspace's restricted sharing groups."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_restricted_sharing_group(
+        self, restricted_sharing_group: RestrictedSharingGroup, restricted_sharing_group_id: str
+    ) -> RestrictedSharingGroup:
+        """Adds a group to the workspace's restricted list. The workspace allows at most 100 restricted sharing
+        groups. Requires workspace admin.
+
+        :param restricted_sharing_group: :class:`RestrictedSharingGroup`
+          The restricted sharing group to create. It has no client-set fields; the group is identified by
+          restricted_sharing_group_id.
+        :param restricted_sharing_group_id: str
+          The id of the workspace group to restrict: the numeric id of an existing and non-system workspace
+          group.
+
+        :returns: :class:`RestrictedSharingGroup`
+        """
+
+        body = restricted_sharing_group.as_dict()
+        query = {}
+        if restricted_sharing_group_id is not None:
+            query["restricted_sharing_group_id"] = restricted_sharing_group_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", "/api/2.0/access-control/restricted-sharing-groups", query=query, body=body, headers=headers
+        )
+        return RestrictedSharingGroup.from_dict(res)
+
+    def delete_restricted_sharing_group(self, name: str):
+        """Removes a group from the workspace's restricted list. Requires workspace admin.
+
+        :param name: str
+          The name of the restricted sharing group to delete. Format:
+          ``restricted-sharing-groups/{restricted_sharing_group_id}``
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/access-control/{name}", headers=headers)
+
+    def get_restricted_sharing_group(self, name: str) -> RestrictedSharingGroup:
+        """Gets a restricted sharing group in the workspace. Use it to check whether a group is on the
+        workspace's restricted list. Requires workspace admin.
+
+        :param name: str
+          The name of the restricted sharing group to get. Format:
+          ``restricted-sharing-groups/{restricted_sharing_group_id}``
+
+        :returns: :class:`RestrictedSharingGroup`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/access-control/{name}", headers=headers)
+        return RestrictedSharingGroup.from_dict(res)
+
+    def list_restricted_sharing_groups(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[RestrictedSharingGroup]:
+        """Lists the restricted sharing groups in the workspace. Requires workspace admin.
+
+        :param page_size: int (optional)
+          The maximum number of groups to return. The service may return fewer. If unspecified or 0, at most
+          100 groups are returned. Values above 100 are coerced to 100. Negative values are rejected.
+        :param page_token: str (optional)
+          A page token from a previous ListRestrictedSharingGroups call. Provide this to retrieve the
+          subsequent page.
+
+        :returns: Iterator over :class:`RestrictedSharingGroup`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET", "/api/2.0/access-control/restricted-sharing-groups", query=query, headers=headers
+            )
+            if "restricted_sharing_groups" in json:
+                for v in json["restricted_sharing_groups"]:
+                    yield RestrictedSharingGroup.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
 
 class CurrentUserAPI:

@@ -779,37 +779,43 @@ class AiParseDocumentResponseMetadata:
 
 @dataclass
 class Batch:
-    """An asynchronous run of one AI function over a file of requests."""
+    """The AI Functions Asynchronous API lets you process large volumes of requests as a batch in a
+    single call."""
 
     endpoint: str
-    """The AI function to run for every request, for example ``ai_extract``."""
+    """The AI function, for example ``ai_parse_document``."""
 
     input_ref: str
-    """Path of the JSONL input file on a Unity Catalog volume. Each line is one request."""
+    """Unity Catalog volume path of the JSONL input file. Each line is one request, in the form
+    ``{"custom_id": ..., "body": ...}``. The file can hold up to 50,000 requests and be up to 200
+    MiB."""
+
+    output_ref: str
+    """Unity Catalog volume path to write the JSONL output file to. If the path is a directory, the
+    file is ``<path>/<name>_output.jsonl``."""
 
     create_time: Optional[Timestamp] = None
-    """Output only. Time the batch was created."""
+    """Output only. The time when the batch was created."""
 
     name: Optional[str] = None
-    """ID of the batch, in the form ``batch_<id>``. The service assigns it."""
-
-    output_ref: Optional[str] = None
-    """Path on a Unity Catalog volume to write the JSONL output to. When it is omitted, the output
-    stays on Databricks-managed storage and a finished batch returns a short-lived download URL in
-    this field instead."""
+    """Output only. Identifier. Resource name of the batch, returned by create. Format: ``batch_<id>``."""
 
     params: Optional[Dict[str, any]] = None
-    """Function options applied to every request in the batch, for example the extraction schema."""
+    """Parameters of the function other than its input, applied to every request in the batch, for
+    example ``schema`` for ``ai_extract``. Put function options, such as ``version``, in a nested
+    ``options`` object. For the parameters of each function, see [AI
+    Functions](/large-language-models/ai-functions)."""
 
     percent_complete: Optional[float] = None
-    """Output only. Percentage of the requests that finished, from 0 to 100. Returned when one batch is
-    read, not when batches are listed."""
+    """Output only. The percentage of requests that are processed, from 0 to 100. Returned when you get
+    a batch, not when you list batches."""
 
     request_counts: Optional[BatchRequestCounts] = None
-    """Output only. Request counts. Returned when one batch is read, not when batches are listed."""
+    """Output only. The number of requests in the batch, by result. Returned when you get a batch, not
+    when you list batches."""
 
     status: Optional[BatchStatus] = None
-    """Output only. Status of the batch."""
+    """Output only. The status of the batch."""
 
     def as_dict(self) -> dict:
         """Serializes the Batch into a dictionary suitable for use as a JSON request body."""
@@ -878,13 +884,13 @@ class BatchRequestCounts:
     """Counts of the requests in a batch."""
 
     failed: Optional[int] = None
-    """Output only. Number of requests that failed and will not be retried."""
+    """Output only. The number of requests that failed. The service does not retry them."""
 
     succeeded: Optional[int] = None
-    """Output only. Number of requests that finished successfully."""
+    """Output only. The number of requests that were processed successfully."""
 
     total: Optional[int] = None
-    """Output only. Number of requests in the input file."""
+    """Output only. The number of requests in the batch."""
 
     def as_dict(self) -> dict:
         """Serializes the BatchRequestCounts into a dictionary suitable for use as a JSON request body."""
@@ -920,7 +926,6 @@ class BatchStatus(Enum):
     CANCELLED = "CANCELLED"
     CANCELLING = "CANCELLING"
     COMPLETED = "COMPLETED"
-    EXPIRED = "EXPIRED"
     FAILED = "FAILED"
     FINALIZING = "FINALIZING"
     IN_PROGRESS = "IN_PROGRESS"
@@ -951,7 +956,7 @@ class ListBatchesResponse:
     """The batches in this page."""
 
     next_page_token: Optional[str] = None
-    """Token that reads the next page. It is empty on the last page."""
+    """A token to get the next page. It is empty on the last page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListBatchesResponse into a dictionary suitable for use as a JSON request body."""
@@ -1206,11 +1211,11 @@ class AiFunctionsAPI:
         return AiParseDocumentResponse.from_dict(res)
 
     def cancel_batch(self, name: str) -> CancelBatchResponse:
-        """Cancel a batch. Cancellation is asynchronous: requests in flight drain first, so read the batch to
-        observe the ``CANCELLING`` and ``CANCELLED`` statuses.
+        """Starts the asynchronous cancellation of a batch. Requests in progress are drained first. Cancellation
+        is best effort, so the batch can still complete.
 
         :param name: str
-          ID of the batch, in the form ``batch_<id>``.
+          Resource name of the batch. Format: ``batch_<id>``.
 
         :returns: :class:`CancelBatchResponse`
         """
@@ -1229,8 +1234,8 @@ class AiFunctionsAPI:
         return CancelBatchResponse.from_dict(res)
 
     def create_batch(self, batch: Batch) -> Batch:
-        """Run an AI function over every request in a file on a Unity Catalog volume. The batch runs
-        asynchronously; read it to follow its progress.
+        """Creates a batch that runs an AI function on every request in a JSONL file on a Unity Catalog volume.
+        The batch runs asynchronously. To follow its progress, get the batch.
 
         :param batch: :class:`Batch`
           The batch to create.
@@ -1253,10 +1258,10 @@ class AiFunctionsAPI:
         return Batch.from_dict(res)
 
     def get_batch(self, name: str) -> Batch:
-        """Read one batch, with its status and progress.
+        """Gets the latest status and progress of a batch.
 
         :param name: str
-          ID of the batch, in the form ``batch_<id>``.
+          Resource name of the batch. Format: ``batch_<id>``.
 
         :returns: :class:`Batch`
         """
@@ -1273,12 +1278,12 @@ class AiFunctionsAPI:
         return Batch.from_dict(res)
 
     def list_batches(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Batch]:
-        """List the batches the caller created in this workspace.
+        """Lists the batches that the caller created in this workspace.
 
         :param page_size: int (optional)
           Maximum number of batches to return in one page.
         :param page_token: str (optional)
-          Page token from an earlier response. Omit it to read the first page.
+          A page token from a previous call to list batches. Omit it to get the first page.
 
         :returns: Iterator over :class:`Batch`
         """

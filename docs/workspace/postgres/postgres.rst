@@ -111,8 +111,8 @@
         :param database: :class:`Database`
           The desired specification of a Database.
         :param database_id: str (optional)
-          The ID to use for the Database, which will become the final component of the database's resource
-          name. This ID becomes the database name in postgres.
+          The ID used to identify and manage the Database resource through the API. The Postgres database name
+          is specified in ``spec.postgres_database``.
 
           This value should be 4-63 characters, and only use characters available in DNS names, as defined by
           RFC-1123
@@ -194,8 +194,8 @@
           ``DATABRICKS_SUPERUSER``. Always send the complete desired list of memberships when using this
           field.
         :param role_id: str (optional)
-          The ID to use for the Role, which will become the final component of the role's resource name. This
-          ID becomes the role in Postgres.
+          The ID used to identify and manage the Role resource through the API. The Postgres role name is
+          specified in ``spec.postgres_role``.
 
           This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and
           hyphens, as defined by RFC 1123.
@@ -308,6 +308,9 @@
         :param name: str
           The full resource path of the endpoint to delete. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+
+          Read-write endpoints currently cannot be deleted directly. Their deletion is managed by the parent
+          branch. To avoid compute costs, set ``disabled`` to ``true`` on the endpoint.
 
         :returns: :class:`Operation`
         

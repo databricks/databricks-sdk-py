@@ -120,6 +120,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_LIST_RESPONSE
       :value: "URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_LIST_RESPONSE"
 
+.. autoclass:: ListRestrictedSharingGroupsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListServicePrincipalResponse
    :members:
    :undoc-members:
@@ -300,6 +304,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResourceMeta
+   :members:
+   :undoc-members:
+
+.. autoclass:: RestrictedSharingGroup
    :members:
    :undoc-members:
 
