@@ -1832,15 +1832,14 @@ class DeltaTableSource:
     entity_columns: Optional[List[str]] = None
 
     filter_condition: Optional[str] = None
-    """Single WHERE clause to filter delta table before applying transformations. Will be row-wise
-    evaluated, so should only include conditionals and projections."""
+    """A single WHERE clause to filter the Delta table before applying transformations. The predicate
+    is evaluated for each row."""
 
     timeseries_column: Optional[str] = None
 
     transformation_sql: Optional[str] = None
-    """A single SQL SELECT expression applied after filter_condition. Should contains all the columns
-    needed (eg. "SELECT *, col_a + col_b AS col_c FROM x.y.z WHERE col_a > 0" would have
-    ``transformation_sql`` "*, col_a + col_b AS col_c") If transformation_sql is not provided, all
+    """A single SQL SELECT expression applied after filter_condition. The expression must contain all
+    required columns (e.g., "*, col_a + col_b AS col_c"). If transformation_sql is not provided, all
     columns of the delta table are present in the DataSource dataframe."""
 
     def as_dict(self) -> dict:

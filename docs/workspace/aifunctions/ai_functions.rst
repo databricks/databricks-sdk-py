@@ -156,19 +156,19 @@
 
     .. py:method:: cancel_batch(name: str) -> CancelBatchResponse
 
-        Cancel a batch. Cancellation is asynchronous: requests in flight drain first, so read the batch to
-        observe the ``CANCELLING`` and ``CANCELLED`` statuses.
+        Starts the asynchronous cancellation of a batch. Requests in progress are drained first. Cancellation
+        is best effort, so the batch can still complete.
 
         :param name: str
-          ID of the batch, in the form ``batch_<id>``.
+          Resource name of the batch. Format: ``batch_<id>``.
 
         :returns: :class:`CancelBatchResponse`
         
 
     .. py:method:: create_batch(batch: Batch) -> Batch
 
-        Run an AI function over every request in a file on a Unity Catalog volume. The batch runs
-        asynchronously; read it to follow its progress.
+        Creates a batch that runs an AI function on every request in a JSONL file on a Unity Catalog volume.
+        The batch runs asynchronously. To follow its progress, get the batch.
 
         :param batch: :class:`Batch`
           The batch to create.
@@ -178,22 +178,22 @@
 
     .. py:method:: get_batch(name: str) -> Batch
 
-        Read one batch, with its status and progress.
+        Gets the latest status and progress of a batch.
 
         :param name: str
-          ID of the batch, in the form ``batch_<id>``.
+          Resource name of the batch. Format: ``batch_<id>``.
 
         :returns: :class:`Batch`
         
 
     .. py:method:: list_batches( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Batch]
 
-        List the batches the caller created in this workspace.
+        Lists the batches that the caller created in this workspace.
 
         :param page_size: int (optional)
           Maximum number of batches to return in one page.
         :param page_token: str (optional)
-          Page token from an earlier response. Omit it to read the first page.
+          A page token from a previous call to list batches. Omit it to get the first page.
 
         :returns: Iterator over :class:`Batch`
         

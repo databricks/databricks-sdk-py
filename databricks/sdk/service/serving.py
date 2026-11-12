@@ -666,6 +666,7 @@ class AutoCaptureConfigOutput:
     the inference table is already enabled."""
 
     state: Optional[AutoCaptureState] = None
+    """The state of the inference table."""
 
     table_name_prefix: Optional[str] = None
     """The prefix of the table in Unity Catalog. NOTE: On update, you cannot change the prefix name if
@@ -716,6 +717,7 @@ class AutoCaptureConfigOutput:
 @dataclass
 class AutoCaptureState:
     payload_table: Optional[PayloadTable] = None
+    """The payload table that stores the logged requests and responses."""
 
     def as_dict(self) -> dict:
         """Serializes the AutoCaptureState into a dictionary suitable for use as a JSON request body."""
@@ -1332,7 +1334,8 @@ class EndpointPendingConfig:
     update to the serving endpoint."""
 
     start_time: Optional[int] = None
-    """The timestamp when the update to the pending config started."""
+    """The timestamp when the update to the pending config started, in milliseconds since the Unix
+    epoch."""
 
     traffic_config: Optional[TrafficConfig] = None
     """The traffic config defining how invocations to the serving endpoint should be routed."""
@@ -1471,6 +1474,7 @@ class EndpointTag:
 @dataclass
 class EndpointTags:
     tags: Optional[List[EndpointTag]] = None
+    """The tags attached to the serving endpoint after the update."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointTags into a dictionary suitable for use as a JSON request body."""
@@ -1733,12 +1737,16 @@ class FoundationModel:
     customers."""
 
     description: Optional[str] = None
+    """A description of the foundation model."""
 
     display_name: Optional[str] = None
+    """The human-readable display name of the foundation model."""
 
     docs: Optional[str] = None
+    """The URL of the Databricks documentation page for the foundation model."""
 
     name: Optional[str] = None
+    """The name of the foundation model."""
 
     def as_dict(self) -> dict:
         """Serializes the FoundationModel into a dictionary suitable for use as a JSON request body."""
@@ -2134,10 +2142,13 @@ class PaLmConfig:
 @dataclass
 class PayloadTable:
     name: Optional[str] = None
+    """The name of the payload table within the configured catalog and schema."""
 
     status: Optional[str] = None
+    """The status of the payload table. One of PENDING, READY, FAILED or DISABLED."""
 
     status_message: Optional[str] = None
+    """More information about the status of the payload table, if available."""
 
     def as_dict(self) -> dict:
         """Serializes the PayloadTable into a dictionary suitable for use as a JSON request body."""
@@ -2173,6 +2184,7 @@ class PtEndpointCoreConfig:
     """The list of served entities under the serving endpoint config."""
 
     traffic_config: Optional[TrafficConfig] = None
+    """The traffic configuration associated with the serving endpoint config."""
 
     def as_dict(self) -> dict:
         """Serializes the PtEndpointCoreConfig into a dictionary suitable for use as a JSON request body."""
@@ -2219,6 +2231,7 @@ class PtServedModel:
     fixed capacity at provisioned_model_units."""
 
     entity_version: Optional[str] = None
+    """The version of the model in Unity Catalog to be served."""
 
     name: Optional[str] = None
     """The name of a served entity. It must be unique across an endpoint. A served entity name can
@@ -2541,6 +2554,7 @@ class Route:
     100 inclusive."""
 
     served_entity_name: Optional[str] = None
+    """The name of the served entity this route configures traffic for."""
 
     served_model_name: Optional[str] = None
     """The name of the served model this route configures traffic for."""
@@ -2591,6 +2605,8 @@ class ServedEntityInput:
     **catalog_name.schema_name.model_name**."""
 
     entity_version: Optional[str] = None
+    """The version of the model in Databricks Model Registry or Unity Catalog to be served, or empty if
+    the entity is a FEATURE_SPEC function."""
 
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
@@ -2751,8 +2767,10 @@ class ServedEntityOutput:
     fixed capacity at provisioned_model_units."""
 
     creation_timestamp: Optional[int] = None
+    """The timestamp when the served entity was created, in milliseconds since the Unix epoch."""
 
     creator: Optional[str] = None
+    """The email of the user who created the served entity."""
 
     entity_name: Optional[str] = None
     """The name of the entity to be served. The entity may be a model in the Databricks Model Registry,
@@ -2761,6 +2779,8 @@ class ServedEntityOutput:
     **catalog_name.schema_name.model_name**."""
 
     entity_version: Optional[str] = None
+    """The version of the model in Databricks Model Registry or Unity Catalog to be served, or empty if
+    the entity is a FEATURE_SPEC function."""
 
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
@@ -2777,6 +2797,8 @@ class ServedEntityOutput:
     external_model later. The task type of all external models within an endpoint must be the same."""
 
     foundation_model: Optional[FoundationModel] = None
+    """The foundation model that is served. Present for served entities that serve a Databricks-hosted
+    foundation model."""
 
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
@@ -2808,6 +2830,7 @@ class ServedEntityOutput:
     """Whether the compute resources for the served entity should scale down to zero."""
 
     state: Optional[ServedModelState] = None
+    """Information corresponding to the state of the served entity."""
 
     workload_size: Optional[str] = None
     """The workload size of the served entity. The workload size corresponds to a range of provisioned
@@ -2940,14 +2963,25 @@ class ServedEntityOutput:
 @dataclass
 class ServedEntitySpec:
     entity_name: Optional[str] = None
+    """The name of the entity to be served. The entity may be a model in the Databricks Model Registry,
+    a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC
+    object, the full name of the object is given in the form of
+    **catalog_name.schema_name.model_name**."""
 
     entity_version: Optional[str] = None
+    """The version of the model in Databricks Model Registry or Unity Catalog to be served, or empty if
+    the entity is a FEATURE_SPEC function."""
 
     external_model: Optional[ExternalModel] = None
+    """The external model that is served. NOTE: Only one of external_model, foundation_model, and
+    (entity_name, entity_version) is returned based on the endpoint type."""
 
     foundation_model: Optional[FoundationModel] = None
+    """The foundation model that is served. NOTE: Only one of foundation_model, external_model, and
+    (entity_name, entity_version) is returned based on the endpoint type."""
 
     name: Optional[str] = None
+    """The name of the served entity."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedEntitySpec into a dictionary suitable for use as a JSON request body."""
@@ -2997,8 +3031,12 @@ class ServedModelInput:
     """Whether the compute resources for the served entity should scale down to zero."""
 
     model_name: str
+    """The name of the model in Databricks Model Registry to be served or, if the model resides in
+    Unity Catalog, the full name of the model in the form of
+    **catalog_name.schema_name.model_name**."""
 
     model_version: str
+    """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
 
     burst_scaling_enabled: Optional[bool] = None
     """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
@@ -3162,8 +3200,10 @@ class ServedModelOutput:
     fixed capacity at provisioned_model_units."""
 
     creation_timestamp: Optional[int] = None
+    """The timestamp when the served entity was created, in milliseconds since the Unix epoch."""
 
     creator: Optional[str] = None
+    """The email of the user who created the served entity."""
 
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
@@ -3183,8 +3223,12 @@ class ServedModelOutput:
     workload_size is specified."""
 
     model_name: Optional[str] = None
+    """The name of the model in Databricks Model Registry to be served or, if the model resides in
+    Unity Catalog, the full name of the model in the form of
+    **catalog_name.schema_name.model_name**."""
 
     model_version: Optional[str] = None
+    """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
 
     name: Optional[str] = None
     """The name of a served entity. It must be unique across an endpoint. A served entity name can
@@ -3199,6 +3243,7 @@ class ServedModelOutput:
     """Whether the compute resources for the served entity should scale down to zero."""
 
     state: Optional[ServedModelState] = None
+    """Information corresponding to the state of the served entity."""
 
     workload_size: Optional[str] = None
     """The workload size of the served entity. The workload size corresponds to a range of provisioned
@@ -3311,12 +3356,15 @@ class ServedModelOutput:
 @dataclass
 class ServedModelSpec:
     model_name: Optional[str] = None
-    """Only one of model_name and entity_name should be populated"""
+    """The name of the model in Databricks Model Registry to be served or, if the model resides in
+    Unity Catalog, the full name of the model in the form of
+    **catalog_name.schema_name.model_name**."""
 
     model_version: Optional[str] = None
-    """Only one of model_version and entity_version should be populated"""
+    """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
 
     name: Optional[str] = None
+    """The name of the served entity."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelSpec into a dictionary suitable for use as a JSON request body."""
@@ -3351,8 +3399,18 @@ class ServedModelSpec:
 @dataclass
 class ServedModelState:
     deployment: Optional[ServedModelStateDeployment] = None
+    """The state of the deployment of the served entity. DEPLOYMENT_CREATING indicates that the served
+    entity is not ready yet because the deployment is still being created (for example, the
+    container image is building or the model server is starting for the first time).
+    DEPLOYMENT_RECOVERING indicates that the served entity was previously ready but no longer is and
+    is attempting to recover. DEPLOYMENT_READY indicates that the served entity is ready to receive
+    traffic. DEPLOYMENT_FAILED indicates that there was an error bringing up the served entity (for
+    example, the container image build failed or the model server failed to start due to a model
+    loading error). DEPLOYMENT_ABORTED indicates that the deployment was terminated, likely due to a
+    failure in bringing up another served entity under the same endpoint and config version."""
 
     deployment_state_message: Optional[str] = None
+    """More information about the state of the served entity, if available."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelState into a dictionary suitable for use as a JSON request body."""
@@ -3428,7 +3486,7 @@ class ServingEndpoint:
     """The config that is currently being served by the endpoint."""
 
     creation_timestamp: Optional[int] = None
-    """The timestamp when the endpoint was created in Unix time."""
+    """The timestamp when the endpoint was created, in milliseconds since the Unix epoch."""
 
     creator: Optional[str] = None
     """The email of the user who created the serving endpoint."""
@@ -3440,7 +3498,8 @@ class ServingEndpoint:
     """System-generated ID of the endpoint, included to be used by the Permissions API."""
 
     last_updated_timestamp: Optional[int] = None
-    """The timestamp when the endpoint was last updated by a user in Unix time."""
+    """The timestamp when the endpoint was last updated by a user, in milliseconds since the Unix
+    epoch."""
 
     name: Optional[str] = None
     """The name of the serving endpoint."""
@@ -3670,7 +3729,7 @@ class ServingEndpointDetailed:
     """The config that is currently being served by the endpoint."""
 
     creation_timestamp: Optional[int] = None
-    """The timestamp when the endpoint was created in Unix time."""
+    """The timestamp when the endpoint was created, in milliseconds since the Unix epoch."""
 
     creator: Optional[str] = None
     """The email of the user who created the serving endpoint."""
@@ -3679,7 +3738,7 @@ class ServingEndpointDetailed:
     """Information required to query DataPlane APIs."""
 
     description: Optional[str] = None
-    """Description of the serving model"""
+    """Description of the serving endpoint."""
 
     email_notifications: Optional[EmailNotifications] = None
     """Email notification settings."""
@@ -3692,7 +3751,8 @@ class ServingEndpointDetailed:
     API"""
 
     last_updated_timestamp: Optional[int] = None
-    """The timestamp when the endpoint was last updated by a user in Unix time."""
+    """The timestamp when the endpoint was last updated by a user, in milliseconds since the Unix
+    epoch."""
 
     name: Optional[str] = None
     """The name of the serving endpoint."""
@@ -4153,8 +4213,10 @@ class UnityCatalogTableNames:
 @dataclass
 class UpdateInferenceEndpointNotificationsResponse:
     email_notifications: Optional[EmailNotifications] = None
+    """The email notification settings now in effect for the serving endpoint."""
 
     name: Optional[str] = None
+    """The name of the serving endpoint whose notification settings were updated."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateInferenceEndpointNotificationsResponse into a dictionary suitable for use as a JSON request body."""
@@ -4343,6 +4405,7 @@ class ServingEndpointsAPI:
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
         :param description: str (optional)
+          The description of the serving endpoint.
         :param email_notifications: :class:`EmailNotifications` (optional)
           Email notification settings.
         :param rate_limits: List[:class:`RateLimit`] (optional)
@@ -4509,6 +4572,7 @@ class ServingEndpointsAPI:
         """Delete a serving endpoint.
 
         :param name: str
+          The name of the serving endpoint to delete.
 
 
         """
@@ -5182,6 +5246,7 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the pt endpoint to update. This field is required.
         :param config: :class:`PtEndpointCoreConfig`
+          The core config of the serving endpoint.
 
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.

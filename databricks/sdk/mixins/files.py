@@ -48,6 +48,7 @@ from .files_utils import (
     _RangeResponse,
     _RequestFailed,
     _ResilientDownload,
+    _RETRYABLE_STATUS_CODES,
     _retry,
     _RetryBudget,
     _split_into_ranges,
@@ -814,6 +815,22 @@ class _Endpoint:
     multipart_upload_supported: bool
 
 
+@dataclass(frozen=True)
+class _CachedEndpoints:
+    """The endpoint list a client resolved, and when to ask the server again."""
+
+    endpoints: tuple[_Endpoint, ...]
+    expires_at: float
+    """In the config clock's time."""
+    from_server: bool
+    """The endpoints are the server's list, not the built-in order."""
+    fetched_at: float
+    """When the server gave the list, in the config clock's time. Meaningless unless from_server."""
+
+    def is_expired(self, now: float) -> bool:
+        return now >= self.expires_at
+
+
 def _files_api_file_path(path: str) -> str:
     """The escaped file path that follows /fs/files in a Files API URL."""
     escaped = _escape_multi_segment_path_parameter(path)
@@ -963,6 +980,14 @@ class FilesExt(files.FilesAPI):
     # must fail fast to the default order rather than retry and stall the upload or download.
     _ENDPOINTS_RESOLVE_TIMEOUT_SECONDS: float = 10.0
 
+    # How long a client keeps the endpoint list before asking the workspace again, so that a change on the server
+    # reaches long-running processes. A failed answer is asked again after the failure TTL.
+    _ENDPOINTS_CACHE_TTL_SECONDS: float = 30 * 60
+    _ENDPOINTS_FAILURE_CACHE_TTL_SECONDS: float = 30 * 60
+    # How long after the server's last answer a client keeps its list through refreshes that fail transiently. Past it,
+    # a discovery that keeps failing, for example with a 5xx, moves the client to the built-in order.
+    _ENDPOINTS_MAX_STALE_SECONDS: float = 2 * 60 * 60
+
     def __init__(self, api_client, config: Config):
         super().__init__(api_client)
         self._config = config.copy()
@@ -971,22 +996,70 @@ class FilesExt(files.FilesAPI):
         self._cloud_provider_session_lock = Lock()
         self._cached_authenticated_session: Optional[requests.Session] = None
         self._authenticated_session_lock = Lock()
-        self._cached_endpoints: Optional[list[_Endpoint]] = None
+        self._cached_endpoints: Optional[_CachedEndpoints] = None
+        # Created and used only while holding _endpoints_refresh_lock.
+        self._cached_discovery_session: Optional[requests.Session] = None
+        # Guards _cached_endpoints; held only to read or replace it.
         self._endpoints_lock = Lock()
+        # Held by the one thread that asks the server, so that concurrent transfers do not each ask.
+        self._endpoints_refresh_lock = Lock()
 
     def _resolve_endpoints(self) -> list[_Endpoint]:
         """Returns the ordered endpoints to try for a file transfer, best first.
 
-        The server is asked once per client and its answer, including a failure, is cached. Anything
-        short of a usable list falls back to the built-in order, so endpoint discovery never fails a
-        transfer.
+        The server's answer, including a failure, is cached per client until its TTL passes, then asked again on the
+        next transfer. Anything short of a usable list falls back to the built-in order, so endpoint discovery never
+        fails a transfer. A refresh that fails transiently keeps the last list the server gave.
         """
         if not self._config.experimental_files_ext_enable_endpoints_api:
             return self._default_endpoints()
         with self._endpoints_lock:
-            if self._cached_endpoints is None:
-                self._cached_endpoints = self._fetch_endpoints() or self._default_endpoints()
-            return list(self._cached_endpoints)
+            cached = self._cached_endpoints
+        if cached is not None and not cached.is_expired(self._config.clock.time()):
+            return list(cached.endpoints)
+        if cached is None:
+            # Nothing to serve yet: wait for whichever thread is asking.
+            self._endpoints_refresh_lock.acquire()
+        elif not self._endpoints_refresh_lock.acquire(blocking=False):
+            # Another thread is already asking: keep transferring on the expired list rather than wait for it, unless
+            # the list is past the stale limit, which must hold however long that thread takes.
+            if self._is_past_stale_limit(cached, self._config.clock.time()):
+                return self._default_endpoints()
+            return list(cached.endpoints)
+        try:
+            with self._endpoints_lock:
+                cached = self._cached_endpoints
+            if cached is not None and not cached.is_expired(self._config.clock.time()):
+                # Refreshed by another thread while this one waited.
+                return list(cached.endpoints)
+            fetched = self._fetch_endpoints()
+            now = self._config.clock.time()
+            failure_ttl = self._ENDPOINTS_FAILURE_CACHE_TTL_SECONDS
+            if (
+                fetched is None
+                and cached is not None
+                and cached.from_server
+                and not self._is_past_stale_limit(cached, now)
+            ):
+                # A blip in discovery must not move a working client off the server's endpoints. A definitive answer,
+                # such as discovery being turned off, still does, and so does a failure that outlasts the stale limit.
+                stale_limit = cached.fetched_at + self._ENDPOINTS_MAX_STALE_SECONDS
+                cached = _CachedEndpoints(
+                    cached.endpoints, min(now + failure_ttl, stale_limit), True, cached.fetched_at
+                )
+            elif fetched:
+                cached = _CachedEndpoints(tuple(fetched), now + self._ENDPOINTS_CACHE_TTL_SECONDS, True, now)
+            else:
+                cached = _CachedEndpoints(tuple(self._default_endpoints()), now + failure_ttl, False, now)
+            with self._endpoints_lock:
+                self._cached_endpoints = cached
+            return list(cached.endpoints)
+        finally:
+            self._endpoints_refresh_lock.release()
+
+    def _is_past_stale_limit(self, cached: _CachedEndpoints, now: float) -> bool:
+        """Whether a server list is too old to keep through refreshes that fail."""
+        return cached.from_server and now - cached.fetched_at >= self._ENDPOINTS_MAX_STALE_SECONDS
 
     def _default_endpoints(self) -> list[_Endpoint]:
         """The built-in order: presigned URLs, then the Files API on the workspace host, which takes uploads only in a
@@ -1002,8 +1075,11 @@ class FilesExt(files.FilesAPI):
         """The endpoints a transfer walks, best first."""
         return self._resolve_endpoints()
 
-    def _fetch_endpoints(self) -> list[_Endpoint]:
+    def _fetch_endpoints(self) -> Optional[list[_Endpoint]]:
         """Fetches the endpoint list from the server, keeping only entries this SDK can speak.
+
+        Returns None if the failure may be transient (no response, a retryable status, or a body that does not parse),
+        and an empty list if the server's answer leaves nothing to use.
 
         Discovery runs before a transfer, so it is a single short-timeout attempt with no retries: a
         slow or failing endpoint must fall back to the default order quickly rather than hold up the
@@ -1011,16 +1087,20 @@ class FilesExt(files.FilesAPI):
         """
         url = f"{self._config.host}{self._ENDPOINTS_API_PATH}"
         try:
-            response = self._cloud_provider_session().request(
+            response = self._discovery_session().request(
                 "GET",
                 url,
-                headers={**self._config.authenticate(), "Accept": "application/json"},
+                headers={
+                    **self._config.authenticate(),
+                    "Accept": "application/json",
+                    "User-Agent": self._config.user_agent,
+                },
                 timeout=self._ENDPOINTS_RESOLVE_TIMEOUT_SECONDS,
             )
         except Exception as e:
             # Broad on purpose: network and auth failures must all fail safe to the default order.
             _LOG.warning(f"Failed to resolve file endpoints, using the default endpoints: {e}")
-            return []
+            return None
 
         # Lets a failure below be traced to the server's request log.
         request_id = response.headers.get("x-request-id")
@@ -1035,14 +1115,15 @@ class FilesExt(files.FilesAPI):
                 f"Unexpected status resolving file endpoints ({response.status_code}, request ID {request_id}), "
                 "using the default endpoints."
             )
-            return []
+            transient = response.status_code >= 500 or response.status_code in _RETRYABLE_STATUS_CODES
+            return None if transient else []
         try:
             body = response.json()
         except Exception as e:
             _LOG.warning(
                 f"Failed to parse endpoints response (request ID {request_id}), using the default endpoints: {e}"
             )
-            return []
+            return None
 
         # Proto3 JSON leaves out an empty repeated field.
         entries = body.get("endpoints", []) if isinstance(body, dict) else None
@@ -1157,6 +1238,8 @@ class FilesExt(files.FilesAPI):
                 return self._cached_authenticated_session
             session = requests.Session()
             config = self._config
+            # Same User-Agent as the API client, so these Databricks-bound requests are attributed to the SDK.
+            session.headers["User-Agent"] = config.user_agent
 
             def authenticate(r: requests.PreparedRequest) -> requests.PreparedRequest:
                 auth_headers = config.authenticate()
@@ -1603,6 +1686,17 @@ class FilesExt(files.FilesAPI):
         return self._get_rfc339_timestamp_with_future_offset(
             current_time, self._config.files_ext_presigned_download_url_expiration_duration
         )
+
+    def _discovery_session(self) -> requests.Session:
+        """Returns the session endpoint discovery uses, cached for reuse.
+
+        Not the transfer sessions: their pools block while transfers hold every connection, and a refresh runs in the
+        middle of a transfer, which must not wait on other transfers before its timeout even starts. Only the thread
+        holding _endpoints_refresh_lock asks, so the default non-blocking pool is enough.
+        """
+        if self._cached_discovery_session is None:
+            self._cached_discovery_session = requests.Session()
+        return self._cached_discovery_session
 
     def _cloud_provider_session(self) -> requests.Session:
         """Returns an unauthenticated session for presigned URL operations.

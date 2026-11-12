@@ -83,6 +83,10 @@ class App:
 
     effective_budget_policy_id: Optional[str] = None
 
+    effective_resources: Optional[List[AppResource]] = None
+    """Resources added to the app, plus the resources it inherits from its space. Empty for apps that
+    are not in a space."""
+
     effective_usage_policy_id: Optional[str] = None
 
     effective_user_api_scopes: Optional[List[str]] = None
@@ -172,6 +176,8 @@ class App:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_resources:
+            body["effective_resources"] = [v.as_dict() for v in self.effective_resources]
         if self.effective_usage_policy_id is not None:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
@@ -249,6 +255,8 @@ class App:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_resources:
+            body["effective_resources"] = self.effective_resources
         if self.effective_usage_policy_id is not None:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
@@ -314,6 +322,7 @@ class App:
             default_source_code_path=d.get("default_source_code_path", None),
             description=d.get("description", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_resources=_repeated_dict(d, "effective_resources", AppResource),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
             forward_user_access_token=d.get("forward_user_access_token", None),

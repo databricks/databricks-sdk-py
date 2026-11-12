@@ -692,6 +692,9 @@ class AlertStatementParameter:
 
 @dataclass
 class AlertV2:
+    """A SQL alert. An alert runs a query on a schedule, evaluates the result against a condition, and
+    notifies users or notification destinations when the condition is met."""
+
     display_name: str
     """The display name of the alert."""
 
@@ -702,17 +705,22 @@ class AlertV2:
     """ID of the SQL warehouse attached to the alert."""
 
     evaluation: AlertV2Evaluation
+    """Condition evaluated against the query result, and who is notified when it is met."""
 
     schedule: CronSchedule
+    """Schedule on which the alert runs its query and evaluates the condition."""
 
     create_time: Optional[str] = None
     """The timestamp indicating when the alert was created."""
 
     custom_description: Optional[str] = None
-    """Custom description for the alert. Interpreted according to ``custom_template_format``."""
+    """Custom description for the alert, used as the notification body. Interpreted according to
+    ``custom_template_format``. The available template variables are listed at
+    https://docs.databricks.com/aws/en/sql/user/alerts/create#notification-templates."""
 
     custom_summary: Optional[str] = None
-    """Custom summary for the alert. Interpreted according to ``custom_template_format``."""
+    """Custom summary for the alert, used as the notification subject. Interpreted according to
+    ``custom_template_format``."""
 
     custom_template_format: Optional[CustomTemplateFormat] = None
     """The format used to interpret the ``custom_summary`` and ``custom_description`` templates.
@@ -733,7 +741,7 @@ class AlertV2:
     """The canonical identifier of the alert to retrieve information about."""
 
     lifecycle_state: Optional[AlertLifecycleState] = None
-    """Indicates whether the query is trashed."""
+    """Indicates whether the alert is active (``ACTIVE``) or has been moved to the trash (``DELETED``)."""
 
     owner_user_name: Optional[str] = None
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
@@ -767,10 +775,10 @@ class AlertV2:
       ``servicePrincipal/user`` role. If not specified, the alert will run as the request user."""
 
     run_as_user_name: Optional[str] = None
-    """The run as username or application ID of service principal. On Create and Update, this field can
-    be set to application ID of an active service principal. Setting this field requires the
-    servicePrincipal/user role. Deprecated: Use ``run_as`` field instead. This field will be removed
-    in a future release."""
+    """Deprecated: Use ``run_as`` field instead. This field will be removed in a future release. The
+    run as username or application ID of service principal. On Create and Update, this field can be
+    set to application ID of an active service principal. Setting this field requires the
+    servicePrincipal/user role."""
 
     update_time: Optional[str] = None
     """The timestamp indicating when the alert was updated."""
@@ -888,11 +896,13 @@ class AlertV2Evaluation:
     """Source column from result to use to evaluate alert"""
 
     comparison_operator: ComparisonOperator
-    """Operator used for comparison in alert evaluation."""
+    """Operator used for comparison in alert evaluation. The alert is triggered when the comparison of
+    the source value with the threshold is true. ``IS_NULL`` and ``IS_NOT_NULL`` take no threshold."""
 
     empty_result_state: Optional[AlertEvaluationState] = None
-    """Alert state if result is empty. Please avoid setting this field to be ``UNKNOWN`` because
-    ``UNKNOWN`` state is planned to be deprecated."""
+    """Alert state if result is empty. If not set, an empty result sets the state to ``ERROR``. Please
+    avoid setting this field to be ``UNKNOWN`` because ``UNKNOWN`` state is planned to be
+    deprecated."""
 
     last_evaluated_at: Optional[str] = None
     """Timestamp of the last evaluation."""
@@ -901,10 +911,12 @@ class AlertV2Evaluation:
     """User or Notification Destination to notify when alert is triggered."""
 
     state: Optional[AlertEvaluationState] = None
-    """Latest state of alert evaluation."""
+    """Latest state of alert evaluation: ``TRIGGERED`` when the condition was met, ``OK`` when it was
+    not, and ``ERROR`` when the evaluation failed."""
 
     threshold: Optional[AlertV2Operand] = None
-    """Threshold to user for alert evaluation, can be a column or a value."""
+    """Threshold to compare the source column against, either another column or a fixed value. Not
+    needed when ``comparison_operator`` is ``IS_NULL`` or ``IS_NOT_NULL``."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertV2Evaluation into a dictionary suitable for use as a JSON request body."""
@@ -971,6 +983,7 @@ class AlertV2Notification:
     purposes."""
 
     subscriptions: Optional[List[AlertV2Subscription]] = None
+    """Users and notification destinations that receive notifications."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertV2Notification into a dictionary suitable for use as a JSON request body."""
@@ -1007,8 +1020,10 @@ class AlertV2Notification:
 @dataclass
 class AlertV2Operand:
     column: Optional[AlertV2OperandColumn] = None
+    """Compare the source against another column of the query result."""
 
     value: Optional[AlertV2OperandValue] = None
+    """Compare the source against a fixed value."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertV2Operand into a dictionary suitable for use as a JSON request body."""
@@ -1039,11 +1054,15 @@ class AlertV2Operand:
 @dataclass
 class AlertV2OperandColumn:
     name: str
+    """Name of the column in the query result."""
 
     aggregation: Optional[Aggregation] = None
-    """If not set, the behavior is equivalent to using ``First row`` in the UI."""
+    """Aggregation applied to the column across all rows of the query result: ``SUM``, ``COUNT``,
+    ``COUNT_DISTINCT``, ``AVG``, ``MEDIAN``, ``MIN``, ``MAX`` or ``STDDEV``. If not set, the value
+    in the first row is used, which is equivalent to using ``First row`` in the UI."""
 
     display: Optional[str] = None
+    """Label for the column in notifications. Defaults to ``name``."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertV2OperandColumn into a dictionary suitable for use as a JSON request body."""
@@ -1078,10 +1097,13 @@ class AlertV2OperandColumn:
 @dataclass
 class AlertV2OperandValue:
     bool_value: Optional[bool] = None
+    """Boolean threshold, for boolean columns."""
 
     double_value: Optional[float] = None
+    """Numeric threshold, for numeric columns."""
 
     string_value: Optional[str] = None
+    """String threshold, for string or timestamp columns."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertV2OperandValue into a dictionary suitable for use as a JSON request body."""
@@ -1151,8 +1173,10 @@ class AlertV2RunAs:
 @dataclass
 class AlertV2Subscription:
     destination_id: Optional[str] = None
+    """ID of the notification destination to notify, as returned by the Notification Destinations API."""
 
     user_email: Optional[str] = None
+    """Email address of the workspace user to notify."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertV2Subscription into a dictionary suitable for use as a JSON request body."""
@@ -1796,8 +1820,8 @@ class CreateWarehouseResponse:
 @dataclass
 class CronSchedule:
     quartz_cron_schedule: str
-    """A cron expression using quartz syntax that specifies the schedule for this pipeline. Should use
-    the quartz format described here:
+    """A cron expression using quartz syntax that specifies the schedule for this alert. Should use the
+    quartz format described here:
     http://www.quartz-scheduler.org/documentation/quartz-2.1.7/tutorials/tutorial-lesson-06.html"""
 
     timezone_id: str
@@ -1807,7 +1831,7 @@ class CronSchedule:
     for details."""
 
     pause_status: Optional[SchedulePauseStatus] = None
-    """Indicate whether this schedule is paused or not."""
+    """Indicates whether this schedule is paused. While paused, the alert is not evaluated."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
@@ -8089,7 +8113,8 @@ class AlertsV2API:
         self._api = api_client
 
     def create_alert(self, alert: AlertV2) -> AlertV2:
-        """Create Alert
+        """Creates an alert that runs ``query_text`` on the given schedule and evaluates the result against the
+        configured condition.
 
         :param alert: :class:`AlertV2`
 
@@ -8114,6 +8139,7 @@ class AlertsV2API:
         """Gets an alert.
 
         :param id: str
+          ID of the alert to retrieve, as returned in the alert's ``id`` field.
 
         :returns: :class:`AlertV2`
         """
@@ -8133,7 +8159,9 @@ class AlertsV2API:
         """Gets a list of alerts accessible to the user, ordered by creation time.
 
         :param page_size: int (optional)
+          Maximum number of alerts to return per page. Values above 100 are coerced to 100.
         :param page_token: str (optional)
+          Page token returned as ``next_page_token`` by a previous call. Omit it to retrieve the first page.
 
         :returns: Iterator over :class:`AlertV2`
         """
@@ -8166,6 +8194,7 @@ class AlertsV2API:
         30 days.
 
         :param id: str
+          ID of the alert to move to the trash.
         :param purge: bool (optional)
           Whether to permanently delete the alert. If not set, the alert will only be soft deleted.
 
@@ -8186,21 +8215,16 @@ class AlertsV2API:
         self._api.do("DELETE", f"/api/2.0/alerts/{id}", query=query, headers=headers)
 
     def update_alert(self, id: str, alert: AlertV2, update_mask: str) -> AlertV2:
-        """Update alert
+        """Updates an alert. Only the fields listed in ``update_mask`` are changed; all other fields keep their
+        current values.
 
         :param id: str
           The canonical identifier of the alert to retrieve information about.
         :param alert: :class:`AlertV2`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          Comma-separated list of the alert fields to update, for example ``display_name,query_text`` or
+          ``schedule.pause_status``. Only the listed fields are changed; all other fields keep their current
+          values. ``parent_path`` cannot be updated.
 
         :returns: :class:`AlertV2`
         """

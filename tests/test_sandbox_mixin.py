@@ -16,9 +16,10 @@ from databricks.sdk.credentials_provider import credentials_strategy
 from databricks.sdk.mixins import sandbox as sandbox_mod
 from databricks.sdk.mixins.sandbox import (
     _CHUNKED,
-    PortForward,
+    Forward,
     SandboxExt,
     StreamMode,
+    _parse_request,
     _RequestBody,
     _rewrite_head,
     _Target,
@@ -724,7 +725,7 @@ _SANDBOX_ID = "happy-panda-4821"
 _PROXY_PREFIX = f"/sandbox-proxy/sandboxes/{_SANDBOX_ID}/ports/10080"
 
 
-@credentials_strategy("sandbox-port-forward-test-bearer", [])
+@credentials_strategy("sandbox-forward-test-bearer", [])
 def _bearer_credentials(_cfg):
     return lambda: {"Authorization": "Bearer dapi-token"}
 
@@ -780,7 +781,7 @@ def workspace():
 
 @pytest.fixture
 def forward(workspace):
-    with PortForward(
+    with Forward(
         host=workspace.url,
         authenticate=lambda: {"Authorization": "Bearer dapi-token"},
         name=_SANDBOX_ID,
@@ -794,10 +795,10 @@ def _connect(port: int) -> socket.socket:
 
 
 @pytest.mark.parametrize("name", [f"sandboxes/{_SANDBOX_ID}", _SANDBOX_ID])
-def test_sandbox_port_forward_targets_the_sandbox_proxy_with_sdk_credentials(workspace, name):
+def test_sandbox_forward_targets_the_sandbox_proxy_with_sdk_credentials(workspace, name):
     client = WorkspaceClient(host=workspace.url, credentials_strategy=_bearer_credentials)
 
-    with client.sandbox.port_forward(name, 10080) as forward:
+    with client.sandbox.forward(name, 10080) as forward:
         connection = http.client.HTTPConnection("127.0.0.1", forward.local_port, timeout=_WAIT_SECONDS)
         connection.request("GET", "/hello", headers={"Authorization": "Basic local-credential"})
         connection.getresponse().read()
@@ -859,6 +860,7 @@ def test_answers_after_the_client_half_closes(forward):
     [
         b"GARBAGE\r\n\r\n",
         b"GET /../../api/2.0/clusters/list HTTP/1.1\r\nHost: x\r\n\r\n",
+        b"GET /..;/..;/..;/..;/..;/api/2.0/preview/scim/v2/Me HTTP/1.1\r\nHost: x\r\n\r\n",
         b"POST /x HTTP/1.1\r\nHost: x\r\nContent-Length: 3\r\nTransfer-Encoding: chunked\r\n\r\n",
         b"POST /x HTTP/1.1\r\nHost: x\r\nContent-Length: 3\r\nContent-Length: 4\r\n\r\n",
         b"POST /x HTTP/1.1\r\nHost: x\r\nTransfer-Encoding: gzip, chunked\r\n\r\n",
@@ -874,11 +876,27 @@ def test_answers_400_without_reaching_the_workspace(forward, workspace, head):
     assert workspace.received.empty()
 
 
+def test_refuses_requests_without_fetching_credentials(workspace):
+    calls = []
+
+    def authenticate():
+        calls.append(None)
+        return {"Authorization": "Bearer t"}
+
+    with Forward(host=workspace.url, authenticate=authenticate, name=_SANDBOX_ID, remote_port=10080) as forward:
+        with _connect(forward.local_port) as client:
+            client.sendall(b"GET /..;/x HTTP/1.1\r\nHost: x\r\n\r\n")
+            client.makefile("rb").read()
+
+    assert calls == []
+    assert workspace.received.empty()
+
+
 def test_answers_502_when_the_workspace_is_unreachable():
     with socket.socket() as unused:
         unused.bind(("127.0.0.1", 0))
         port = unused.getsockname()[1]
-    with PortForward(
+    with Forward(
         host=f"http://127.0.0.1:{port}",
         authenticate=lambda: {"Authorization": "Bearer t"},
         name=_SANDBOX_ID,
@@ -890,14 +908,14 @@ def test_answers_502_when_the_workspace_is_unreachable():
 
         assert response.status == 502
         assert response.getheader("Content-Type") == "text/plain; charset=utf-8"
-        assert response.read().startswith(b"port forward failed:")
+        assert response.read().startswith(b"forward failed:")
 
 
 def test_answers_502_without_reaching_the_workspace_when_authentication_fails(workspace):
     def fail():
         raise RuntimeError("token endpoint unavailable")
 
-    with PortForward(host=workspace.url, authenticate=fail, name=_SANDBOX_ID, remote_port=10080) as forward:
+    with Forward(host=workspace.url, authenticate=fail, name=_SANDBOX_ID, remote_port=10080) as forward:
         connection = http.client.HTTPConnection("127.0.0.1", forward.local_port, timeout=_WAIT_SECONDS)
         connection.request("GET", "/")
         response = connection.getresponse()
@@ -910,7 +928,7 @@ def test_answers_502_without_reaching_the_workspace_when_authentication_fails(wo
 def test_resolves_credentials_for_each_connection(workspace):
     tokens = (f"token-{index}" for index in itertools.count())
 
-    with PortForward(
+    with Forward(
         host=workspace.url,
         authenticate=lambda: {"Authorization": f"Bearer {next(tokens)}"},
         name=_SANDBOX_ID,
@@ -972,7 +990,7 @@ def test_answers_502_when_the_workspace_never_completes_the_tls_handshake(monkey
     with socket.socket() as silent:
         silent.bind(("127.0.0.1", 0))
         silent.listen()
-        with PortForward(
+        with Forward(
             host=f"https://127.0.0.1:{silent.getsockname()[1]}",
             authenticate=lambda: {"Authorization": "Bearer t"},
             name=_SANDBOX_ID,
@@ -987,7 +1005,7 @@ def test_answers_502_when_the_workspace_never_completes_the_tls_handshake(monkey
 @pytest.mark.skipif(sys.platform == "win32", reason="Windows does not reuse local addresses")
 def test_rebinds_a_fixed_local_port_right_after_close(workspace):
     def forward_once(local_port):
-        with PortForward(
+        with Forward(
             host=workspace.url,
             authenticate=lambda: {"Authorization": "Bearer t"},
             name=_SANDBOX_ID,
@@ -1012,7 +1030,7 @@ def test_url_is_the_local_http_address(forward):
 @pytest.mark.parametrize("name", ["", "sandboxes/", "sandboxes/a/ports/9444", "sandboxes/..", "a b"])
 def test_rejects_a_name_that_is_not_one_sandbox(name):
     with pytest.raises(ValueError):
-        PortForward(host="https://workspace.example.com", authenticate=dict, name=name, remote_port=10080)
+        Forward(host="https://workspace.example.com", authenticate=dict, name=name, remote_port=10080)
 
 
 def test_request_body_ends_after_a_chunked_body_split_across_reads():
@@ -1070,11 +1088,11 @@ def test_rewrite_drops_local_credentials_and_hop_by_hop_headers():
         b"Cookie: app=1"
     )
 
-    rewritten = _rewrite_head(head, _TARGET, {"Authorization": "Bearer dapi-token"})
+    request = _parse_request(head)
 
-    assert not rewritten.upgrade
+    assert not request.upgrade
     assert (
-        rewritten.head
+        _rewrite_head(request, _TARGET, {"Authorization": "Bearer dapi-token"})
         == (
             f"GET {_PROXY_PREFIX}/index.html?q=1 HTTP/1.1\r\n"
             "Host: workspace.example.com\r\n"
@@ -1088,25 +1106,75 @@ def test_rewrite_drops_local_credentials_and_hop_by_hop_headers():
 def test_rewrite_replaces_a_local_header_whose_name_matches_an_sdk_header():
     head = b"GET /x HTTP/1.1\r\nHost: x\r\nX-Api-Key: local\r\nx-api-key: also-local"
 
-    rewritten = _rewrite_head(head, _TARGET, {"X-Api-Key": "sdk"})
+    rewritten = _rewrite_head(_parse_request(head), _TARGET, {"X-Api-Key": "sdk"})
 
-    assert b"local" not in rewritten.head
-    assert rewritten.head.count(b"X-Api-Key: sdk") == 1
+    assert b"local" not in rewritten
+    assert rewritten.count(b"X-Api-Key: sdk") == 1
 
 
-def test_rewrite_rejects_a_malformed_request_line():
-    assert _rewrite_head(b"GARBAGE", _TARGET, {}) is None
+def test_rewrite_drops_local_gateway_headers():
+    head = b"GET /x HTTP/1.1\r\nHost: x\r\nX-Databricks-Org-Id: 1\r\nS2S-Principal-Context-Bin: local\r\nX-App: kept"
+
+    rewritten = _rewrite_head(_parse_request(head), _TARGET, {"Authorization": "Bearer dapi-token"})
+
+    assert b"X-Databricks-Org-Id" not in rewritten
+    assert b"S2S-" not in rewritten
+    assert b"X-App: kept" in rewritten
+
+
+@pytest.mark.parametrize(
+    "head",
+    [
+        b"GARBAGE",
+        b"GET /x HTTP/1.1\r\nHost: x\nX-Extra: 1",
+        b"GET /x HTTP/1.1\r\nHost: x\r\n X-Folded: 1",
+        b"GET /x HTTP/1.1\r\nHost : x",
+        b"GET /x HTTP/1.1\r\nHost: x\x00",
+        b"G(T /x HTTP/1.1\r\nHost: x",
+        b"GET /x HTTP/1.0\r\nHost: x",
+        b"GET http://[ HTTP/1.1\r\nHost: x",
+        b"POST /x HTTP/1.1\r\nHost: x\r\nConnection: content-length\r\nContent-Length: 3",
+    ],
+)
+def test_parse_rejects_malformed_heads(head):
+    assert _parse_request(head) is None
 
 
 @pytest.mark.parametrize(
     "path",
-    ["/../../api/2.0/clusters/list", "/a/%2E%2e/b", "/a/.%2e\\b", "/./x?q=1"],
+    [
+        "/../../api/2.0/clusters/list",
+        "/a/%2E%2e/b",
+        "/a/.%2e\\b",
+        "/./x?q=1",
+        "/a/..;/b",
+        "/a/.;v=1/b",
+        "/a/..%3B/b",
+        "/a;v=1/b",
+        "/a/..%2Fb",
+        "/a/b%5C..",
+        "/a/%252e%252e/b",
+        "/a/%zz/b",
+        "/a/..%00/b",
+        "/a/..%3F/b",
+        "/a/..%23/b",
+    ],
 )
-def test_rewrite_rejects_dot_segments(path):
-    assert _rewrite_head(f"GET {path} HTTP/1.1\r\nHost: x".encode(), _TARGET, {}) is None
+def test_parse_rejects_ambiguous_paths(path):
+    assert _parse_request(f"GET {path} HTTP/1.1\r\nHost: x".encode()) is None
 
 
 def test_rewrite_keeps_dots_inside_segments_and_queries():
-    rewritten = _rewrite_head(b"GET /v1.2/file..txt?next=../x HTTP/1.1\r\nHost: x", _TARGET, {})
+    request = _parse_request(b"GET /v1.2/file..txt?next=../x;y HTTP/1.1\r\nHost: x")
 
-    assert rewritten.head.startswith(f"GET {_PROXY_PREFIX}/v1.2/file..txt?next=../x HTTP/1.1\r\n".encode())
+    rewritten = _rewrite_head(request, _TARGET, {})
+
+    assert rewritten.startswith(f"GET {_PROXY_PREFIX}/v1.2/file..txt?next=../x;y HTTP/1.1\r\n".encode())
+
+
+def test_rewrite_keeps_percent_escapes_of_plain_text():
+    request = _parse_request(b"GET /files/a%20b/%E2%9C%93 HTTP/1.1\r\nHost: x")
+
+    rewritten = _rewrite_head(request, _TARGET, {})
+
+    assert rewritten.startswith(f"GET {_PROXY_PREFIX}/files/a%20b/%E2%9C%93 HTTP/1.1\r\n".encode())

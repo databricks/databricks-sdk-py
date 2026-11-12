@@ -6,7 +6,7 @@ Extends the generated :class:`~databricks.sdk.service.sandbox.SandboxAPI` with
 exit code as an ergonomic, file-like interface - without the caller handling the
 raw gRPC process-event stream.
 
-``port_forward`` returns a :class:`PortForward` that relays a local TCP listener
+``forward`` returns a :class:`Forward` that relays a local TCP listener
 to an app in the sandbox through the workspace's sandbox proxy. It uses only
 the standard library, so it works without the optional ``sandbox`` extra.
 
@@ -34,8 +34,21 @@ import sys
 import threading
 import time
 from enum import Enum
-from typing import TYPE_CHECKING, Callable, Dict, Iterable, Iterator, List, NamedTuple, Optional, Set, Tuple, Union
-from urllib.parse import quote, urlsplit
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    Dict,
+    FrozenSet,
+    Iterable,
+    Iterator,
+    List,
+    NamedTuple,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
+from urllib.parse import quote, unquote_to_bytes, urlsplit
 
 from databricks.sdk.mixins._grpc_transport import (
     _DEFAULT_MAX_ATTEMPTS,
@@ -506,11 +519,18 @@ _HOP_BY_HOP_HEADERS = frozenset(
         "upgrade",
     }
 )
+# RFC 9110 token characters. Methods and header names must consist of them, so whitespace or a
+# line break cannot hide a header from the relay's checks.
+_TOKEN_CHARS = frozenset("!#$%&'*+-.^_`|~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+# Naming these in Connection would drop them from the forwarded head while the relay still frames the body by them.
+_FRAMING_HEADERS = frozenset({"content-length", "transfer-encoding"})
+# Workspace gateways read identity and routing from these, so only the SDK's credentials may set them.
+_GATEWAY_HEADER_PREFIXES = ("x-databricks-", "s2s-")
 
 
-class PortForward:
-    """An active port forward from ``127.0.0.1`` to an app in a sandbox, returned
-    by :meth:`SandboxExt.port_forward`.
+class Forward:
+    """An active forward from ``127.0.0.1`` to an app in a sandbox, returned
+    by :meth:`SandboxExt.forward`.
 
     Forwarding runs on background threads until :meth:`close`, which also closes
     connections still open. Usable as a context manager.
@@ -543,7 +563,7 @@ class PortForward:
         )
         self._thread = threading.Thread(
             target=self._server.serve_forever,
-            name=f"port-forward-{remote_port}",
+            name=f"forward-{remote_port}",
             daemon=True,
         )
         self._thread.start()
@@ -565,7 +585,7 @@ class PortForward:
         self._server.close_connections()
         self._thread.join()
 
-    def __enter__(self) -> "PortForward":
+    def __enter__(self) -> "Forward":
         return self
 
     def __exit__(self, *args: object) -> None:
@@ -654,15 +674,16 @@ class _RelayHandler(socketserver.BaseRequestHandler):
         head, rest = _read_head(client)
         if head is None:
             return
+        # Validated before authenticating, so a request the relay refuses never refreshes a token.
+        request = _parse_request(head)
+        if request is None:
+            client.sendall(_error_response(400, "Bad Request", "malformed request, or an unsupported path"))
+            return
         target = self.server.target
         try:
             auth_headers = target.authenticate()
         except Exception:  # noqa: BLE001 - reported to the client; raising here would only drop the connection
             client.sendall(_error_response(502, "Bad Gateway", "could not authenticate with the workspace"))
-            return
-        rewritten = _rewrite_head(head, target, auth_headers)
-        if rewritten is None:
-            client.sendall(_error_response(400, "Bad Request", "malformed request, or a path with . or .. segments"))
             return
         try:
             sandbox = target.connect()
@@ -671,14 +692,15 @@ class _RelayHandler(socketserver.BaseRequestHandler):
             return
         self.server.track(sandbox)
         try:
-            if rewritten.upgrade:
-                sandbox.sendall(rewritten.head + rest)
+            rewritten = _rewrite_head(request, target, auth_headers)
+            if request.upgrade:
+                sandbox.sendall(rewritten + rest)
                 upstream = threading.Thread(target=_copy, args=(client, sandbox), daemon=True)
             else:
-                sandbox.sendall(rewritten.head)
+                sandbox.sendall(rewritten)
                 upstream = threading.Thread(
                     target=_copy_request_body,
-                    args=(client, sandbox, rest, _RequestBody(rewritten.body_length)),
+                    args=(client, sandbox, rest, _RequestBody(request.body_length)),
                     daemon=True,
                 )
             upstream.start()
@@ -692,8 +714,13 @@ class _RelayHandler(socketserver.BaseRequestHandler):
             sandbox.close()
 
 
-class _Rewritten(NamedTuple):
-    head: bytes
+class _Request(NamedTuple):
+    method: str
+    # Origin form: the path and query.
+    target: str
+    version: str
+    headers: List[Tuple[str, str]]
+    connection_tokens: FrozenSet[str]
     upgrade: bool
     # A byte count, or _CHUNKED.
     body_length: int
@@ -722,56 +749,74 @@ def _read_head(client: socket.socket) -> Tuple[Optional[bytes], bytes]:
     return buffer[:end], buffer[end + 4 :]
 
 
-def _rewrite_head(head: bytes, target: _Target, auth_headers: Dict[str, str]) -> Optional[_Rewritten]:
-    """Points the request at the sandbox port and replaces the caller's credentials with ``auth_headers``.
+def _parse_request(head: bytes) -> Optional[_Request]:
+    """Parses a request head, or returns ``None`` for one the relay must not forward.
 
-    Returns ``None`` for a malformed head, or for a path with ``.`` or ``..`` segments: the
-    workspace would resolve those out of the port prefix, onto another API with the SDK's
-    credentials attached.
+    That is a malformed head, or a path that :func:`_is_ambiguous_path` rejects: the workspace
+    could resolve it out of the port prefix, onto another API with the SDK's credentials
+    attached. Lines must end in CRLF and hold no other CR, LF, or NUL, so no header reaches
+    the workspace unseen by these checks.
 
     Also returns ``None`` when the body's length is ambiguous, such as both
     ``Content-Length`` and ``Transfer-Encoding``, because the relay forwards
     exactly one request per connection and must agree with the workspace on where
-    it ends. ``Connection: close`` makes the workspace end the connection after
-    the response.
+    it ends.
     """
+    request_line, *header_lines = lines = head.decode("latin-1").split("\r\n")
+    if any(character in line for line in lines for character in "\r\n\x00"):
+        return None
     try:
-        request_line, *header_lines = head.decode("latin-1").split("\r\n")
         method, request_target, version = request_line.split(" ")
+        if request_target.startswith(("http://", "https://")):
+            absolute = urlsplit(request_target)
+            request_target = absolute.path + (f"?{absolute.query}" if absolute.query else "")
     except ValueError:
         return None
-    if request_target.startswith(("http://", "https://")):
-        absolute = urlsplit(request_target)
-        request_target = absolute.path + (f"?{absolute.query}" if absolute.query else "")
-    if not request_target.startswith("/") or _has_dot_segment(request_target.split("?", 1)[0]):
+    if not method or not _TOKEN_CHARS.issuperset(method) or version != "HTTP/1.1":
+        return None
+    if not request_target.startswith("/") or _is_ambiguous_path(request_target.split("?", 1)[0]):
         return None
 
     headers: List[Tuple[str, str]] = []
     for line in header_lines:
         name, separator, value = line.partition(":")
-        if not separator:
+        if not separator or not name or not _TOKEN_CHARS.issuperset(name):
             return None
-        headers.append((name.strip(), value.strip()))
-    connection_tokens = {
+        headers.append((name, value.strip(" \t")))
+    connection_tokens = frozenset(
         token.strip().lower() for name, value in headers if name.lower() == "connection" for token in value.split(",")
-    }
+    )
+    if not connection_tokens.isdisjoint(_FRAMING_HEADERS):
+        return None
     upgrade = "upgrade" in connection_tokens and any(name.lower() == "upgrade" for name, _ in headers)
     body_length = _body_length(headers)
     if body_length is None:
         return None
+    return _Request(method, request_target, version, headers, connection_tokens, upgrade, body_length)
 
-    # Caller-supplied credentials are dropped in favor of the SDK's, so a local header of the same name cannot override them.
+
+def _rewrite_head(request: _Request, target: _Target, auth_headers: Dict[str, str]) -> bytes:
+    """Points the request at the sandbox port and replaces the caller's credentials with ``auth_headers``.
+
+    ``Connection: close`` makes the workspace end the connection after the response.
+    """
+    # Caller-supplied credentials and gateway headers are dropped, so a local header cannot override or add to the SDK's.
     replaced = {name.lower() for name in auth_headers} | {"authorization", "host", "proxy-authorization"}
-    lines = [f"{method} {target.path_prefix}{request_target} {version}", f"Host: {target.netloc}"]
+    lines = [f"{request.method} {target.path_prefix}{request.target} {request.version}", f"Host: {target.netloc}"]
     lines.extend(f"{name}: {value}" for name, value in auth_headers.items())
-    lines.append("Connection: upgrade" if upgrade else "Connection: close")
-    for name, value in headers:
+    lines.append("Connection: upgrade" if request.upgrade else "Connection: close")
+    for name, value in request.headers:
         lowered = name.lower()
-        if upgrade and lowered == "upgrade":
+        if request.upgrade and lowered == "upgrade":
             lines.append(f"{name}: {value}")
-        elif not (lowered in _HOP_BY_HOP_HEADERS or lowered in connection_tokens or lowered in replaced):
+        elif not (
+            lowered in _HOP_BY_HOP_HEADERS
+            or lowered in request.connection_tokens
+            or lowered in replaced
+            or lowered.startswith(_GATEWAY_HEADER_PREFIXES)
+        ):
             lines.append(f"{name}: {value}")
-    return _Rewritten(("\r\n".join(lines) + "\r\n\r\n").encode("latin-1"), upgrade, body_length)
+    return ("\r\n".join(lines) + "\r\n\r\n").encode("latin-1")
 
 
 def _body_length(headers: List[Tuple[str, str]]) -> Optional[int]:
@@ -849,10 +894,25 @@ class _RequestBody:
             self.complete = True
 
 
-def _has_dot_segment(path: str) -> bool:
-    """Whether a segment is ``.`` or ``..``, including percent-encoded and backslash-separated forms."""
-    segments = path.replace("\\", "/").split("/")
-    return any(segment.lower().replace("%2e", ".") in (".", "..") for segment in segments)
+# Bytes a path segment must not contain once percent-decoded: path parameters, separators,
+# query and fragment delimiters, escapes that survive the decode (double-encoded or
+# malformed), and control characters.
+_AMBIGUOUS_PATH_BYTES = frozenset(b";/\\%?#" + bytes(range(0x20)) + b"\x7f")
+
+
+def _is_ambiguous_path(path: str) -> bool:
+    """Whether a server could resolve a segment of ``path`` as ``.`` or ``..``.
+
+    Proxies on the way to the workspace canonicalize paths before routing, and not only by
+    RFC 3986: some treat a dot segment followed by path parameters as a dot segment. Rather
+    than track those spellings, only segments that decode once to plain text other than
+    ``.`` and ``..`` are accepted.
+    """
+    for segment in path.split("/"):
+        decoded = unquote_to_bytes(segment)
+        if decoded in (b".", b"..") or not _AMBIGUOUS_PATH_BYTES.isdisjoint(decoded):
+            return True
+    return False
 
 
 def _copy(source: socket.socket, destination: socket.socket) -> None:
@@ -899,7 +959,7 @@ def _shutdown(connection: socket.socket) -> None:
 
 
 def _error_response(status: int, reason: str, message: str) -> bytes:
-    body = f"port forward failed: {message}\n".encode()
+    body = f"forward failed: {message}\n".encode()
     return (
         f"HTTP/1.1 {status} {reason}\r\n"
         "Content-Type: text/plain; charset=utf-8\r\n"
@@ -1012,30 +1072,32 @@ class SandboxExt(SandboxAPI):
         process._start(handle, first, responses)
         return process
 
-    def port_forward(self, name: str, remote_port: int, *, local_port: int = 0) -> PortForward:
+    def forward(self, name: str, remote_port: int, *, local_port: int = 0) -> Forward:
         """Forward ``127.0.0.1:<local_port>`` to an app listening on ``remote_port``
-        in sandbox ``name``, and return a :class:`PortForward` for the forward.
+        in sandbox ``name``, and return a :class:`Forward` for the forward.
 
         The local listener is bound before this returns; forwarding runs on
-        background threads until :meth:`PortForward.close` or the end of a ``with``
+        background threads until :meth:`Forward.close` or the end of a ``with``
         block. ``local_port=0`` picks a free port; read it from
-        :attr:`PortForward.local_port`.
+        :attr:`Forward.local_port`.
 
         ``name`` is the sandbox's resource name, ``sandboxes/{sandbox_id}``; a bare
-        ``{sandbox_id}`` is also accepted. :attr:`PortForward.url` is the local URL
+        ``{sandbox_id}`` is also accepted. :attr:`Forward.url` is the local URL
         to send requests to.
 
         The app must listen on ``0.0.0.0`` inside the sandbox. Ports 10000-65535
         are forwardable except 10101, 18767, and 19090. Clients speak HTTP/1.1 to
         the local port, including WebSocket upgrades; each local connection carries
-        one request. Requests whose path contains a ``.`` or ``..`` segment get a
-        local 400 response and are never sent. The caller's ``Authorization``
-        header is replaced with the SDK's credentials.
+        one request. Requests whose path has a ``.`` or ``..`` segment, a ``;``, a
+        backslash, a control character, or an encoded ``/``, ``\\``, ``%``, ``?``,
+        or ``#`` get a local 400 response and are never sent, as do malformed
+        heads. The caller's ``Authorization``, ``X-Databricks-*``, and ``S2S-*``
+        headers are not forwarded, and the SDK's credentials are added.
         """
         cfg = self._api._cfg
         if not cfg.host:
             raise ValueError("Cannot forward a port without a workspace host")
-        return PortForward(
+        return Forward(
             host=cfg.host,
             authenticate=cfg.authenticate,
             name=name,

@@ -43,6 +43,7 @@
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
         :param description: str (optional)
+          The description of the serving endpoint.
         :param email_notifications: :class:`EmailNotifications` (optional)
           Email notification settings.
         :param rate_limits: List[:class:`RateLimit`] (optional)
@@ -94,6 +95,7 @@
         Delete a serving endpoint.
 
         :param name: str
+          The name of the serving endpoint to delete.
 
 
         
@@ -439,6 +441,7 @@
         :param name: str
           The name of the pt endpoint to update. This field is required.
         :param config: :class:`PtEndpointCoreConfig`
+          The core config of the serving endpoint.
 
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.

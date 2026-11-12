@@ -77,6 +77,7 @@ from databricks.sdk.service.sql import AlertsV2API
 from databricks.sdk.service.apps import AppsAPI
 from databricks.sdk.service.apps import AppsSettingsAPI
 from databricks.sdk.service.catalog import ArtifactAllowlistsAPI
+from databricks.sdk.service.iam import AssumeGroupAPI
 from databricks.sdk.service.settings import AutomaticClusterUpdateAPI
 from databricks.sdk.service.billing import BillableUsageAPI
 from databricks.sdk.service.billing import BudgetPolicyAPI
@@ -388,6 +389,7 @@ class WorkspaceClient:
         self._apps = pkg_apps.AppsAPI(self._api_client)
         self._apps_settings = pkg_apps.AppsSettingsAPI(self._api_client)
         self._artifact_allowlists = pkg_catalog.ArtifactAllowlistsAPI(self._api_client)
+        self._assume_group = pkg_iam.AssumeGroupAPI(self._api_client)
         self._bundle_deployments = pkg_bundledeployments.BundleDeploymentsAPI(self._api_client)
         self._catalogs = pkg_catalog.CatalogsAPI(self._api_client)
         self._clean_room_asset_revisions = pkg_cleanrooms.CleanRoomAssetRevisionsAPI(self._api_client)
@@ -605,6 +607,11 @@ class WorkspaceClient:
     def artifact_allowlists(self) -> pkg_catalog.ArtifactAllowlistsAPI:
         """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can use these artifacts on compute configured with shared access mode."""
         return self._artifact_allowlists
+
+    @property
+    def assume_group(self) -> pkg_iam.AssumeGroupAPI:
+        """Manage the workspace's restricted sharing groups."""
+        return self._assume_group
 
     @property
     def bundle_deployments(self) -> pkg_bundledeployments.BundleDeploymentsAPI:

@@ -176,9 +176,9 @@ Uploads atomically replace the destination file. The parent directory must exist
 
 API and transport failures raise standard SDK exceptions.
 
-## Port forwarding
+## Forwarding
 
-`w.sandbox.port_forward` lets you open an app running in a sandbox, such as a web
+`w.sandbox.forward` lets you open an app running in a sandbox, such as a web
 server, a notebook server, or a dev server, from your machine. It forwards a port
 on `127.0.0.1` to a port in the sandbox through your workspace, so the app doesn't
 need a public address.
@@ -203,7 +203,7 @@ w.sandbox.execute_command(
     name, "/bin/bash", args=["-c", "until ss -ltn | grep -q ':10080 '; do sleep 0.2; done"]
 ).wait()
 
-with w.sandbox.port_forward(name, 10080) as forward:
+with w.sandbox.forward(name, 10080) as forward:
     with urllib.request.urlopen(f"{forward.url}/") as response:
         print(response.status)  # 200
         print(response.read().decode()[:15])  # <!DOCTYPE HTML>
@@ -223,6 +223,11 @@ port unless you pass `local_port=`.
 - You can forward ports 10000-65535, except 10101, 18767, and 19090.
 - HTTP/1.1 and WebSocket traffic is supported. HTTP/2 and other protocols, such
   as database connections, are not.
-- Requests are sent with your workspace credentials. An `Authorization` header
-  that your client sets doesn't reach the app, so an app that expects a token in
-  that header needs another way to sign in, such as a token in the URL.
+- Request paths can't contain `.` or `..` segments, `;`, backslashes, control
+  characters, or an encoded `/`, `\`, `%`, `?`, or `#`. Such requests, and
+  malformed ones, get a local `400` response and are never sent. Query strings
+  aren't restricted.
+- Requests are sent with your workspace credentials. `Authorization`,
+  `X-Databricks-*`, and `S2S-*` headers that your client sets don't reach the
+  app, so an app that expects a token in `Authorization` needs another way to
+  sign in, such as a token in the URL.

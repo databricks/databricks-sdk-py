@@ -3052,6 +3052,28 @@ def test_resolve_endpoints_returns_copy_callers_cannot_corrupt_cache(config: Con
     assert w.files._resolve_endpoints() == [_PARSED_FILES_V2_DP, _PARSED_FILES_V2_GIG]
 
 
+def test_resolve_endpoints_request_sends_sdk_user_agent(config: Config, requests_mock):
+    requests_mock.get(_ENDPOINTS_URL, json={"endpoints": []})
+    w = _endpoints_client(config)
+
+    w.files._resolve_endpoints()
+
+    [request] = [r for r in requests_mock.request_history if r.url == _ENDPOINTS_URL]
+    assert request.headers["User-Agent"] == w.config.user_agent
+    assert "databricks-sdk-py/" in request.headers["User-Agent"]
+
+
+def test_authenticated_session_sends_sdk_user_agent(config: Config, requests_mock):
+    requests_mock.get("http://localhost/api/2.0/fs/files/dir/file", content=b"x")
+    w = WorkspaceClient(config=config)
+
+    w.files._authenticated_session().get("http://localhost/api/2.0/fs/files/dir/file")
+
+    [request] = requests_mock.request_history
+    assert request.headers["User-Agent"] == w.config.user_agent
+    assert "databricks-sdk-py/" in request.headers["User-Agent"]
+
+
 def test_default_endpoints_are_offload_then_the_workspace(config: Config):
     w = WorkspaceClient(config=config)
 
