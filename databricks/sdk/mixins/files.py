@@ -1283,10 +1283,11 @@ class FilesExt(files.FilesAPI):
         If the download is successful, the function returns the downloaded file result. If the download is unsuccessful, the function raises an exception.
 
         :param file_path: str
-          The remote path of the file, e.g. /Volumes/path/to/your/file
+          The remote path of the file, e.g. /Volumes/path/to/your/file or dbfs:/Volumes/path/to/your/file.
 
         :returns: :class:`DownloadResponse`
         """
+        file_path = file_path.removeprefix("dbfs:")
         if self._config.disable_experimental_files_api_client:
             _LOG.info("Disable experimental files API client, will use the original download method.")
             return super().download(file_path)
@@ -1315,7 +1316,7 @@ class FilesExt(files.FilesAPI):
         Supports parallel download (use_parallel=True), which may improve performance for large files. This is available on all operating systems except Windows.
 
         :param file_path: str
-          The remote path of the file, e.g. /Volumes/path/to/your/file
+          The remote path of the file, e.g. /Volumes/path/to/your/file or dbfs:/Volumes/path/to/your/file.
         :param destination: str
           The local path where the file will be saved. A new file is written next to it and moved into place when the
           download completes; an existing destination is written in place.
@@ -1328,6 +1329,7 @@ class FilesExt(files.FilesAPI):
 
         :returns: :class:`DownloadFileResult`
         """
+        file_path = file_path.removeprefix("dbfs:")
         if self._config.disable_experimental_files_api_client:
             raise NotImplementedError(
                 "Experimental files API features are disabled, download_to is not supported. Please use download instead."
