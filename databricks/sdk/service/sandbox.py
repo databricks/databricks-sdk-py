@@ -103,7 +103,9 @@ class Command:
 @dataclass
 class ComputeSpec:
     inactivity_timeout: Optional[Duration] = None
-    """Idle duration after which the sandbox is automatically terminated."""
+    """Idle time after which the sandbox is automatically stopped. Unset or 0 disables inactivity
+    auto-stop. Negative values are rejected. Can be changed on an existing sandbox with
+    UpdateSandbox."""
 
     def as_dict(self) -> dict:
         """Serializes the ComputeSpec into a dictionary suitable for use as a JSON request body."""
@@ -242,9 +244,10 @@ class DownloadFileResponse:
 @dataclass
 class EnvironmentSpec:
     image_uri: Optional[str] = None
-    """The Unity Catalog container image to use for the sandbox environment (for example,
-    ``catalog.schema.folder.image:tag``). See `Artifact Registry
-    <https://docs.databricks.com/en/artifact-registry/>`__."""
+    """The Unity Catalog container image to run the sandbox from, in the form
+    ``catalog.schema.artifact:tag``, or ``catalog.schema.artifact@sha256:<digest>`` to pin an exact
+    version. When omitted, the sandbox runs the default sandbox image. See `custom images
+    <https://docs.databricks.com/en/compute/serverless/sandbox-custom-image>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the EnvironmentSpec into a dictionary suitable for use as a JSON request body."""
@@ -449,8 +452,10 @@ class ListSandboxesResponse:
     """A list of Sandboxes."""
 
     next_page_token: Optional[str] = None
+    """Token for retrieving the next page of results. Empty when there are no more results."""
 
     sandboxes: Optional[List[Sandbox]] = None
+    """Sandboxes in this page of results."""
 
     def as_dict(self) -> dict:
         """Serializes the ListSandboxesResponse into a dictionary suitable for use as a JSON request body."""
@@ -498,7 +503,11 @@ class RenamePathResponse:
 
 @dataclass
 class Sandbox:
-    """A Sandbox resource representing an execution environment."""
+    """An isolated, pre-configured, low-latency Serverless compute environment for running code. Create
+    a sandbox, wait until its state is ``SANDBOX_STATE_RUNNING``, then run commands in it with
+    ExecuteCommandSync. The data in its home directory persists across stop and start and is removed
+    when the sandbox is deleted. See `Databricks Sandbox
+    <https://docs.databricks.com/en/compute/serverless/sandbox>`__."""
 
     create_time: Optional[Timestamp] = None
     """Output only. The creation time of the sandbox."""
@@ -507,7 +516,7 @@ class Sandbox:
     """Human-readable display label for the sandbox. At most 256 characters."""
 
     metadata: Optional[SandboxMetadata] = None
-    """Metadata associated with the sandbox."""
+    """Tags and other metadata associated with the sandbox."""
 
     name: Optional[str] = None
     """The sandbox resource name, in the form ``sandboxes/{sandbox_id}``. Derived from ``sandbox_id``;
@@ -706,10 +715,10 @@ class SandboxMetadata:
 @dataclass
 class SandboxSpec:
     compute: Optional[ComputeSpec] = None
-    """Compute configuration (size, inactivity timeout) requested for the sandbox."""
+    """Compute settings requested for the sandbox, such as the inactivity timeout."""
 
     environment: Optional[EnvironmentSpec] = None
-    """The execution environment to use for the sandbox."""
+    """Software environment for the sandbox, such as the container image it runs."""
 
     def as_dict(self) -> dict:
         """Serializes the SandboxSpec into a dictionary suitable for use as a JSON request body."""
@@ -751,7 +760,16 @@ class SandboxState(Enum):
 @dataclass
 class SandboxStatus:
     state: Optional[SandboxState] = None
-    """Lifecycle state of the sandbox."""
+    """Lifecycle state of the sandbox.
+    
+    - ``SANDBOX_STATE_PENDING``: The sandbox is being provisioned after a create or start request
+      and cannot run commands yet.
+    - ``SANDBOX_STATE_RUNNING``: The sandbox is ready and commands can run in it.
+    - ``SANDBOX_STATE_STOPPING``: The sandbox is shutting down. It settles to
+      ``SANDBOX_STATE_STOPPED``, or disappears if it is being deleted.
+    - ``SANDBOX_STATE_STOPPED``: The sandbox is stopped, by a stop request, inactivity auto-stop, or
+      a failed provisioning. Its home directory is kept and it can be started again with
+      StartSandbox."""
 
     def as_dict(self) -> dict:
         """Serializes the SandboxStatus into a dictionary suitable for use as a JSON request body."""
@@ -810,12 +828,18 @@ class SandboxAPI:
         return CreateDirectoryResponse.from_dict(res)
 
     def create_sandbox(self, sandbox: Sandbox, sandbox_id: str) -> Sandbox:
-        """Creates a new Sandbox.
+        """Creates a sandbox with the given ``sandbox_id`` and starts provisioning it. Provisioning is
+        asynchronous: the response usually shows the sandbox in ``SANDBOX_STATE_PENDING``, so poll GetSandbox
+        until the state is ``SANDBOX_STATE_RUNNING`` before running commands in it. A sandbox that fails to
+        provision ends in ``SANDBOX_STATE_STOPPED``. Returns ALREADY_EXISTS if a sandbox with the same ID
+        already exists in the workspace.
 
         :param sandbox: :class:`Sandbox`
-          The sandbox to create.
+          The sandbox to create. An empty body creates a sandbox with the default configuration.
         :param sandbox_id: str
-          Client-supplied ID that becomes the final path segment of the resource name.
+          Client-supplied ID that becomes the final path segment of the resource name. It must start with a
+          lowercase letter, contain only lowercase letters, digits and hyphens, end with a letter or digit,
+          and be at most 63 characters long. Values shaped like a UUID are rejected.
 
         :returns: :class:`Sandbox`
         """
@@ -867,9 +891,12 @@ class SandboxAPI:
         return DeletePathResponse.from_dict(res)
 
     def delete_sandbox(self, name: str):
-        """Deletes a Sandbox.
+        """Deletes a sandbox, including the data in its home directory. A pending or running sandbox is stopped
+        first and is removed once the teardown completes, after which GetSandbox returns NOT_FOUND. Deleting a
+        sandbox that is already being deleted succeeds.
 
         :param name: str
+          Resource name of the sandbox to delete, in the form ``sandboxes/{sandbox_id}``.
 
 
         """
@@ -1056,6 +1083,7 @@ class SandboxAPI:
         """Retrieves a Sandbox by name.
 
         :param name: str
+          Resource name of the sandbox to retrieve, in the form ``sandboxes/{sandbox_id}``.
 
         :returns: :class:`Sandbox`
         """
@@ -1147,10 +1175,15 @@ class SandboxAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_sandboxes(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Sandbox]:
-        """Lists all Sandboxes.
+        """Lists the sandboxes in the workspace that are visible to the caller, including stopped sandboxes.
+        Sandboxes that are being deleted are not returned.
 
         :param page_size: int (optional)
+          Maximum number of sandboxes to return in one page. When unset or 0 the server returns up to 1000
+          sandboxes; values above 5000 are reduced to 5000.
         :param page_token: str (optional)
+          Page token from the ``next_page_token`` of a previous ListSandboxes response. Omit it to retrieve
+          the first page.
 
         :returns: Iterator over :class:`Sandbox`
         """
@@ -1208,8 +1241,10 @@ class SandboxAPI:
         return RenamePathResponse.from_dict(res)
 
     def start_sandbox(self, name: str) -> Sandbox:
-        """Starts a previously stopped Sandbox under the same sandbox name. Returns NOT_FOUND if there is no
-        stopped sandbox to start for the given name.
+        """Starts a previously stopped sandbox under the same sandbox name, with the data in its home directory
+        intact. Starting is asynchronous: the response usually shows the sandbox in ``SANDBOX_STATE_PENDING``,
+        so poll GetSandbox until the state is ``SANDBOX_STATE_RUNNING``. Returns NOT_FOUND if the sandbox does
+        not exist, FAILED_PRECONDITION if it is pending or running, and ABORTED while it is still stopping.
 
         :param name: str
           Resource name of the sandbox to start, in the form ``sandboxes/{sandbox_id}``.
@@ -1231,7 +1266,11 @@ class SandboxAPI:
         return Sandbox.from_dict(res)
 
     def stop_sandbox(self, name: str) -> Sandbox:
-        """Stops a running Sandbox, preserving it so it can later be restarted with a Start request.
+        """Stops a running sandbox, preserving it so it can later be restarted with a Start request. Stopping is
+        asynchronous: the response usually shows the sandbox in ``SANDBOX_STATE_STOPPING``, and it settles to
+        ``SANDBOX_STATE_STOPPED`` once the shutdown completes. The data in the home directory is kept; other
+        local changes are discarded. Stopping a sandbox that is already stopped or stopping succeeds without
+        changes.
 
         :param name: str
           Resource name of the sandbox to stop, in the form ``sandboxes/{sandbox_id}``.
@@ -1287,7 +1326,7 @@ class SandboxAPI:
         res = self._api.do("PATCH", f"/api/2.0/{name}", query=query, body=body, headers=headers)
         return Sandbox.from_dict(res)
 
-    def upload_file(self, parent: str, contents: BinaryIO, path: str):
+    def upload_file(self, parent: str, contents: BinaryIO, path: str, *, overwrite: Optional[bool] = None):
         """Uploads an application/octet-stream body to a sandbox. The sandbox starts automatically if it is
         stopped. Filesystem access uses the sandbox user's permissions. Replacements follow symbolic links.
 
@@ -1308,11 +1347,17 @@ class SandboxAPI:
           The complete file contents. An empty body creates an empty file.
         :param path: str
           The absolute UTF-8 destination path inside the sandbox.
+        :param overwrite: bool (optional)
+          Whether to replace an existing file. Defaults to true when omitted. If false, the upload atomically
+          creates the file only if the destination does not exist, equivalent to If-None-Match: *. An existing
+          entry returns 412 Precondition Failed. Explicit true conflicts with If-None-Match: *.
 
 
         """
 
         query = {}
+        if overwrite is not None:
+            query["overwrite"] = overwrite
         if path is not None:
             query["path"] = path
         headers = {

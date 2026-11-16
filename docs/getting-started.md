@@ -79,6 +79,34 @@ w = WorkspaceClient(
 
 It's also possible to provide a custom authentication implementation if necessary. For more details, see [Authentication](authentication.md).
 
+## Custom HTTP transport
+
+Pass a Requests `BaseAdapter` as `http_adapter` to `Config`, `WorkspaceClient`, or
+`AccountClient` to configure a custom transport, for example mutual TLS. The SDK
+uses it for both HTTP and HTTPS API requests and the initial request to the
+host's `/.well-known/databricks-config` endpoint to discover settings.
+Normal SDK authentication, error decoding, and retry handling still apply.
+OAuth token acquisition uses a separate transport.
+
+When passing `config=` to either client, set `http_adapter` on that `Config`.
+The supplied configuration takes precedence over individual client options.
+
+```python
+from requests.adapters import HTTPAdapter
+
+from databricks.sdk import WorkspaceClient
+
+
+adapter = HTTPAdapter(pool_connections=10, pool_maxsize=50, pool_block=True)
+w = WorkspaceClient(host="https://workspace.example", http_adapter=adapter)
+```
+
+The adapter can be shared between SDK sessions and configuration copies. The
+caller owns its lifetime and must close it after all clients using it are done.
+Pool configuration on a supplied adapter takes precedence over the SDK's pool
+settings. Continue using `custom_headers` for extra HTTP headers and
+`credentials_strategy` for custom authentication.
+
 ## Listing resources
 
 One of the key advantages of the Databricks SDK is that it provides a consistent interface for working with APIs returning paginated responses. The pagination details are hidden from the caller. Instead, the SDK returns a generator that yields each item in the list. For example, to list all clusters in the workspace, you can use the following code:

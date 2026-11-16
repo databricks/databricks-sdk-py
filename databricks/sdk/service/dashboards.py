@@ -163,7 +163,9 @@ class Dashboard:
     """UUID identifying the dashboard."""
 
     display_name: Optional[str] = None
-    """The display name of the dashboard."""
+    """The display name of the dashboard. It is also the file name of the dashboard asset in the
+    workspace, so it must be unique within the parent folder, cannot contain ``/``, and cannot end
+    with ``.json``, ``.lvdash`` or ``.yml``. The display name must not exceed 500 characters."""
 
     etag: Optional[str] = None
     """The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard
@@ -174,18 +176,20 @@ class Dashboard:
 
     parent_path: Optional[str] = None
     """The workspace path of the folder containing the dashboard. Includes leading slash and no
-    trailing slash. This field is excluded in List Dashboards responses."""
+    trailing slash. The folder must already exist; when omitted on create, the dashboard is created
+    in the caller's home folder. This field is excluded in List Dashboards responses."""
 
     path: Optional[str] = None
     """The workspace path of the dashboard asset, including the file name. Exported dashboards always
     have the file extension ``.lvdash.json``. This field is excluded in List Dashboards responses."""
 
     serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form. This field is excluded in List
-    Dashboards responses. Use the `get dashboard API
-    <https://docs.databricks.com/api/workspace/lakeview/get>`__ to retrieve an example response,
-    which includes the ``serialized_dashboard`` field. This field provides the structure of the JSON
-    string that represents the dashboard's layout and components."""
+    """The dashboard definition (datasets, pages and widgets) as a JSON string, in the same format as a
+    dashboard file exported from the workspace (``.lvdash.json``). When omitted on create, an empty
+    dashboard is created; when omitted on update, the existing definition is kept and only the other
+    fields change. Use the `get dashboard API
+    <https://docs.databricks.com/api/workspace/lakeview/get>`__ on an existing dashboard to see a
+    complete example. This field is excluded in List Dashboards responses."""
 
     update_time: Optional[str] = None
     """The timestamp of when the dashboard was last updated by the user. This field is excluded in List
@@ -300,10 +304,11 @@ class EvaluationStatusType(Enum):
 
 @dataclass
 class GenieAttachment:
-    """Genie AI Response"""
+    """One part of Genie's response to a message. Exactly one of the attachment fields is set."""
 
     attachment_id: Optional[str] = None
-    """Attachment ID"""
+    """The ID of the attachment. The attachment query-result, execute-query, download, and
+    visualization endpoints take this ID."""
 
     query: Optional[GenieQueryAttachment] = None
     """Query Attachment if Genie responds with a SQL query"""
@@ -369,19 +374,20 @@ class GenieConversation:
     """Genie space ID"""
 
     title: str
-    """Conversation title"""
+    """Title of the conversation. Genie sets it to the text of the first message, truncated to 255
+    characters."""
 
     conversation_id: str
     """Conversation ID"""
 
     created_timestamp: Optional[int] = None
-    """Timestamp when the message was created"""
+    """Time when the conversation was created, in milliseconds since the Unix epoch."""
 
     id: Optional[str] = None
     """Conversation ID. Legacy identifier, use conversation_id instead"""
 
     last_updated_timestamp: Optional[int] = None
-    """Timestamp when the message was last updated"""
+    """Time when the conversation was last updated, in milliseconds since the Unix epoch."""
 
     user_id: Optional[int] = None
     """ID of the user who created the conversation"""
@@ -440,15 +446,20 @@ class GenieConversation:
 
 @dataclass
 class GenieConversationSummary:
+    """A summary of a conversation, as returned when listing the conversations in a space."""
+
     conversation_id: str
+    """The ID of the conversation."""
 
     agent_type: Optional[GenieConversationType] = None
     """Whether this is a classic chat or an agent-mode conversation. Allows callers to route message
     retrieval (chat vs. agent endpoint) without an extra lookup."""
 
     created_timestamp: Optional[int] = None
+    """Time when the conversation was created, in milliseconds since the Unix epoch."""
 
     title: Optional[str] = None
+    """The title of the conversation."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieConversationSummary into a dictionary suitable for use as a JSON request body."""
@@ -1243,10 +1254,11 @@ class GenieMessage:
     """Message ID"""
 
     attachments: Optional[List[GenieAttachment]] = None
-    """AI-generated response to the message"""
+    """Genie's response to the message. Each attachment holds one part of the response, such as a text
+    answer or a SQL query."""
 
     created_timestamp: Optional[int] = None
-    """Timestamp when the message was created"""
+    """Time when the message was created, in milliseconds since the Unix epoch."""
 
     error: Optional[MessageError] = None
     """Error message if Genie failed to respond to the message"""
@@ -1258,7 +1270,7 @@ class GenieMessage:
     """Message ID. Legacy identifier, use message_id instead"""
 
     last_updated_timestamp: Optional[int] = None
-    """Timestamp when the message was last updated"""
+    """Time when the message was last updated, in milliseconds since the Unix epoch."""
 
     query_result: Optional[Result] = None
     """The result of SQL query if the message includes a query attachment. Deprecated. Use
@@ -1439,6 +1451,7 @@ class GenieQueryAttachment:
     """Time when the user updated the query last"""
 
     parameters: Optional[List[QueryAttachmentParameter]] = None
+    """The parameters of the SQL query, when the query is parameterized."""
 
     query: Optional[str] = None
     """AI generated SQL query"""
@@ -1552,6 +1565,10 @@ class GenieResultMetadata:
 
 @dataclass
 class GenieSpace:
+    """A Genie space that business users query in natural language. Its configuration (data sources,
+    instructions, sample questions and benchmarks) travels as a JSON string in ``serialized_space``;
+    the other fields are metadata about the space."""
+
     space_id: str
     """Genie space ID"""
 
@@ -1569,19 +1586,20 @@ class GenieSpace:
     concurrent changes."""
 
     parent_path: Optional[str] = None
-    """Parent folder path of the Genie Space"""
+    """Path of the workspace folder that contains the space."""
 
     serialized_space: Optional[str] = None
-    """The contents of the Genie Space in serialized string form. This field is excluded in List Genie
-    spaces responses. Use the [Get Genie Space](:method:genie/getspace) API to retrieve an example
-    response, which includes the ``serialized_space`` field. This field provides the structure of
-    the JSON string that represents the space's layout and components."""
+    """Configuration of the space (data sources, instructions, sample questions and benchmarks) as a
+    JSON string. [Get Genie Space](:method:genie/getspace) returns it only when
+    ``include_serialized_space`` is true, and List Genie spaces never returns it. For the JSON
+    format and its validation rules, see
+    https://docs.databricks.com/aws/en/genie-agents/conversation-api."""
 
     update_time: Optional[Timestamp] = None
     """Time when the Genie space was last modified, matching the value shown in the Genie Agent UI."""
 
     warehouse_id: Optional[str] = None
-    """Warehouse associated with the Genie Space"""
+    """ID of the SQL warehouse that runs the queries Genie generates for this space."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieSpace into a dictionary suitable for use as a JSON request body."""
@@ -1654,8 +1672,10 @@ class GenieStartConversationResponse:
     """Conversation ID"""
 
     conversation: Optional[GenieConversation] = None
+    """The newly created conversation."""
 
     message: Optional[GenieMessage] = None
+    """The first message of the conversation, in its initial state."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieStartConversationResponse into a dictionary suitable for use as a JSON request body."""
@@ -1911,8 +1931,10 @@ class ListSubscriptionsResponse:
 @dataclass
 class MessageError:
     error: Optional[str] = None
+    """A human-readable description of the error."""
 
     type: Optional[MessageErrorType] = None
+    """The category of the error."""
 
     def as_dict(self) -> dict:
         """Serializes the MessageError into a dictionary suitable for use as a JSON request body."""
@@ -2087,10 +2109,13 @@ class PublishedDashboard:
 @dataclass
 class QueryAttachmentParameter:
     keyword: Optional[str] = None
+    """The name of the parameter as referenced in the SQL query."""
 
     sql_type: Optional[str] = None
+    """The SQL type of the parameter value."""
 
     value: Optional[str] = None
+    """The value bound to the parameter."""
 
     def as_dict(self) -> dict:
         """Serializes the QueryAttachmentParameter into a dictionary suitable for use as a JSON request body."""
@@ -2703,7 +2728,9 @@ class GenieAPI:
         self, space_id: str, conversation_id: str, content: str, *, enable_visualization: Optional[bool] = None
     ) -> Wait[GenieMessage]:
         """Sends a new message in a chat-mode [conversation](:method:genie/startconversation). The AI response
-        uses all previously created messages in the conversation to respond.
+        uses all previously created messages in the conversation to respond. The message is processed
+        asynchronously. Poll [Get a conversation message](:method:genie/getmessage) until its ``status`` is
+        ``COMPLETED``, ``FAILED``, or ``CANCELLED``.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is started.
@@ -2812,18 +2839,19 @@ class GenieAPI:
         """Creates a Genie space from a serialized payload.
 
         :param warehouse_id: str
-          Warehouse to associate with the new space
+          ID of the SQL warehouse that runs the queries Genie generates for the space, as a 16-character
+          hexadecimal string.
         :param serialized_space: str
-          The contents of the Genie Space in serialized string form. Use the [Get Genie
-          Space](:method:genie/getspace) API to retrieve an example response, which includes the
-          ``serialized_space`` field. This field provides the structure of the JSON string that represents the
-          space's layout and components.
+          Configuration of the new space as a JSON string. To copy an existing space, use the value that [Get
+          Genie Space](:method:genie/getspace) returns when ``include_serialized_space`` is true. For the JSON
+          format and its validation rules, see
+          https://docs.databricks.com/aws/en/genie-agents/conversation-api.
         :param description: str (optional)
-          Optional description
+          Description of the space, up to 16384 bytes.
         :param parent_path: str (optional)
-          Parent folder path where the space will be registered
+          Path of the workspace folder in which to create the space.
         :param title: str (optional)
-          Optional title override
+          Display name of the new space. A default name is assigned when omitted.
 
         :returns: :class:`GenieSpace`
         """
@@ -2852,7 +2880,8 @@ class GenieAPI:
         return GenieSpace.from_dict(res)
 
     def delete_conversation(self, space_id: str, conversation_id: str):
-        """Delete a conversation.
+        """Deletes a conversation and all of its messages. Users can delete their own conversations. Deleting
+        another user's conversation requires at least CAN MANAGE permission on the space.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is located.
@@ -3306,8 +3335,8 @@ class GenieAPI:
     def get_message_attachment_query_result(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """Get the result of SQL query if the message has a query attachment. This is only available if a message
-        has a query attachment and the message status is ``EXECUTING_QUERY`` OR ``COMPLETED``.
+        """Gets the result of the SQL query in a message's query attachment. The result is available only while
+        the message status is ``EXECUTING_QUERY`` or ``COMPLETED``.
 
         :param space_id: str
           Genie space ID
@@ -3406,8 +3435,8 @@ class GenieAPI:
         :param space_id: str
           The ID associated with the Genie space
         :param include_serialized_space: bool (optional)
-          Whether to include the serialized space export in the response. Requires at least CAN EDIT
-          permission on the space.
+          Whether to include the serialized space export in the response. When true, the response also carries
+          the configuration ``etag``. Requires at least CAN EDIT permission on the space.
 
         :returns: :class:`GenieSpace`
         """
@@ -3512,7 +3541,9 @@ class GenieAPI:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> GenieListConversationsResponse:
-        """Get a list of conversations in a Genie Space.
+        """Lists the conversations in a Genie space. By default the list contains only the caller's own
+        conversations, ordered by most recent activity. With ``include_all``, it contains every user's
+        conversations in the space, ordered by creation time with the newest first.
 
         :param space_id: str
           The ID of the Genie space to retrieve conversations from.
@@ -3594,7 +3625,7 @@ class GenieAPI:
     def list_spaces(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> GenieListSpacesResponse:
-        """Get list of Genie Spaces.
+        """Lists the Genie spaces that the caller can access, most recently updated first.
 
         :param page_size: int (optional)
           Maximum number of spaces to return per page
@@ -3669,7 +3700,9 @@ class GenieAPI:
     def start_conversation(
         self, space_id: str, content: str, *, enable_visualization: Optional[bool] = None
     ) -> Wait[GenieMessage]:
-        """Starts a new chat-mode conversation and sends its first message.
+        """Starts a new chat-mode conversation and sends its first message. The message is processed
+        asynchronously. Poll [Get a conversation message](:method:genie/getmessage) until its ``status`` is
+        ``COMPLETED``, ``FAILED``, or ``CANCELLED``.
 
         :param space_id: str
           The ID associated with the Genie space where you want to start a conversation.
@@ -3745,26 +3778,29 @@ class GenieAPI:
         title: Optional[str] = None,
         warehouse_id: Optional[str] = None,
     ) -> GenieSpace:
-        """Updates a Genie space with a serialized payload.
+        """Updates a Genie space. Replaces the whole configuration when ``serialized_space`` is set and changes
+        the title, description, warehouse or folder when those fields are set; omitted fields keep their
+        current values.
 
         :param space_id: str
           Genie space ID
         :param description: str (optional)
-          Optional description
+          New description for the space, up to 16384 bytes.
         :param etag: str (optional)
           ETag returned by a previous GET or UPDATE. When set, the update will fail if the space has been
           modified since. Omit to apply the update unconditionally.
         :param parent_path: str (optional)
           Parent workspace folder path to move this Genie space under.
         :param serialized_space: str (optional)
-          The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
-          Space](:method:genie/getspace) API to retrieve an example response, which includes the
-          ``serialized_space`` field. This field provides the structure of the JSON string that represents the
-          space's layout and components.
+          New configuration of the space as a JSON string. It replaces the whole configuration; when omitted,
+          the current configuration is kept. Start from the value that [Get Genie
+          Space](:method:genie/getspace) returns when ``include_serialized_space`` is true. For the JSON
+          format and its validation rules, see
+          https://docs.databricks.com/aws/en/genie-agents/conversation-api.
         :param title: str (optional)
-          Optional title override
+          New display name for the space. Cannot be empty or contain a slash.
         :param warehouse_id: str (optional)
-          Optional warehouse override
+          ID of the SQL warehouse that runs the queries Genie generates for the space.
 
         :returns: :class:`GenieSpace`
         """
@@ -3806,9 +3842,6 @@ class LakeviewAPI:
         self, dashboard: Dashboard, *, dataset_catalog: Optional[str] = None, dataset_schema: Optional[str] = None
     ) -> Dashboard:
         """Create a draft dashboard.
-
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard: :class:`Dashboard`
         :param dataset_catalog: str (optional)
@@ -3989,9 +4022,6 @@ class LakeviewAPI:
     def get(self, dashboard_id: str) -> Dashboard:
         """Get a draft dashboard.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -4109,10 +4139,8 @@ class LakeviewAPI:
         show_trashed: Optional[bool] = None,
         view: Optional[DashboardView] = None,
     ) -> Iterator[Dashboard]:
-        """List dashboards.
-
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
+        """List the dashboards that the caller can view. Each entry carries summary metadata only; use Get
+        dashboard to retrieve a dashboard's full definition.
 
         :param page_size: int (optional)
           The number of dashboards to return per page.
@@ -4303,9 +4331,6 @@ class LakeviewAPI:
     ) -> PublishedDashboard:
         """Publish the current draft dashboard.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard_id: str
           UUID identifying the dashboard to be published.
         :param embed_credentials: bool (optional)
@@ -4337,9 +4362,6 @@ class LakeviewAPI:
     def revert(self, dashboard_id: str, *, etag: Optional[str] = None) -> RevertDashboardResponse:
         """Revert a dashboard's definition in draft mode to the last published version.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard_id: str
           UUID identifying the dashboard.
         :param etag: str (optional)
@@ -4367,9 +4389,6 @@ class LakeviewAPI:
     def trash(self, dashboard_id: str):
         """Trash a dashboard.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -4388,9 +4407,6 @@ class LakeviewAPI:
 
     def unpublish(self, dashboard_id: str):
         """Unpublish the dashboard.
-
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.
@@ -4417,9 +4433,6 @@ class LakeviewAPI:
         dataset_schema: Optional[str] = None,
     ) -> Dashboard:
         """Update a draft dashboard.
-
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.

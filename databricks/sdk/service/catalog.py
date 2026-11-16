@@ -37,6 +37,10 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class AccessRequestDestinations:
+    """The notification destinations that receive access requests for a Unity Catalog securable. A
+    securable without destinations of its own uses its owner's email when default owner email
+    destinations are on; otherwise it inherits the destinations of its nearest parent that has any."""
+
     securable: Securable
     """The securable for which the access request destinations are being modified or read."""
 
@@ -53,12 +57,10 @@ class AccessRequestDestinations:
     """The access request destinations for the securable."""
 
     full_name: Optional[str] = None
-    """The full name of the securable. Redundant with the name in the securable object, but necessary
-    for Terraform integration"""
+    """The full name of the securable, repeated from **securable**."""
 
     securable_type: Optional[str] = None
-    """The type of the securable. Redundant with the type in the securable object, but necessary for
-    Terraform integration"""
+    """The type of the securable, repeated from **securable** as a plain string."""
 
     def as_dict(self) -> dict:
         """Serializes the AccessRequestDestinations into a dictionary suitable for use as a JSON request body."""
@@ -701,8 +703,8 @@ class AwsSqsQueue:
     """Unique identifier included in the name of file events managed cloud resources."""
 
     queue_url: Optional[str] = None
-    """The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}.
-    Only required for provided_sqs."""
+    """The SQS queue URL in the format ``https://sqs.{region}.amazonaws.com/{account id}/{queue
+    name}``. Only required for provided_sqs."""
 
     def as_dict(self) -> dict:
         """Serializes the AwsSqsQueue into a dictionary suitable for use as a JSON request body."""
@@ -946,8 +948,8 @@ class AzureQueueStorage:
     """Unique identifier included in the name of file events managed cloud resources."""
 
     queue_url: Optional[str] = None
-    """The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name}
-    Only required for provided_aqs."""
+    """The AQS queue URL in the format ``https://{storage account}.queue.core.windows.net/{queue
+    name}``. Only required for provided_aqs."""
 
     resource_group: Optional[str] = None
     """Optional resource group for the queue, event grid subscription, and external location storage
@@ -1069,6 +1071,8 @@ class AzureUserDelegationSas:
 
 @dataclass
 class BatchCreateAccessRequestsResponse:
+    """The access request destinations resolved for each principal and securable in the batch."""
+
     responses: Optional[List[CreateAccessRequestResponse]] = None
     """The access request destinations for each securable object the principal requested."""
 
@@ -1112,17 +1116,29 @@ class CancelRefreshResponse:
 
 @dataclass
 class CatalogInfo:
+    """A catalog is the first layer of Unity Catalog's three-level namespace and groups the schemas,
+    tables, volumes, and other data assets under it. Catalogs created through this API are standard
+    catalogs, Delta Sharing catalogs created from a share, or foreign catalogs that mirror a
+    database behind a connection to an external data source."""
+
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
 
     catalog_type: Optional[CatalogType] = None
+    """The server sets the catalog type from the create request. Catalogs created through this API are
+    MANAGED_CATALOG (standard catalogs), DELTASHARING_CATALOG when created from a share with
+    provider_name and share_name, or FOREIGN_CATALOG when created from a connection with
+    connection_name. The remaining types are provisioned by Databricks."""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
 
     connection_name: Optional[str] = None
-    """The name of the connection to an external data source."""
+    """Naming a connection to an external data source creates a foreign catalog that mirrors a database
+    in that source, which requires ownership of or the CREATE FOREIGN CATALOG privilege on the
+    connection. Connection-specific settings, such as the database to mirror, go in options. The
+    connection cannot be changed after creation."""
 
     created_at: Optional[int] = None
     """Time at which this catalog was created, in epoch milliseconds."""
@@ -1131,27 +1147,40 @@ class CatalogInfo:
     """Username of catalog creator."""
 
     custom_max_retention_hours: Optional[int] = None
-    """Custom maximum retention period in hours for the catalog"""
+    """Dropped objects in the catalog remain recoverable for this number of hours before they are
+    permanently purged. The value applies to standard catalogs only, must be 0 or within the range
+    allowed for the metastore, and is inherited by schemas and tables that do not set their own
+    value."""
 
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
+    """Indicates the predictive optimization setting that is in effect for the catalog once inherited
+    values are resolved."""
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
-    """Whether predictive optimization should be enabled for this object and objects under it."""
+    """Whether predictive optimization is enabled for this catalog and the objects under it. Valid
+    values are ENABLE, DISABLE, and INHERIT, where INHERIT applies the account-level setting.
+    Standard catalogs start as INHERIT and other catalog types as DISABLE. It cannot be set when
+    creating a catalog; use the update method instead."""
 
     full_name: Optional[str] = None
     """The full name of the catalog. Corresponds with the name field."""
 
     isolation_mode: Optional[CatalogIsolationMode] = None
-    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
+    """Whether the catalog is accessible from all workspaces attached to the metastore (OPEN) or only
+    from the workspaces bound to it (ISOLATED). It cannot be set when creating a catalog; change it
+    with the update method and manage the bound workspaces with the workspace bindings API. See
+    `Workspace-catalog binding <https://docs.databricks.com/aws/en/catalogs/binding>`__."""
 
     managed_encryption_settings: Optional[EncryptionSettings] = None
-    """Control CMK encryption for managed catalog data"""
+    """Customer-managed key (CMK) settings control the encryption at rest of the catalog's managed
+    data."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
 
     name: Optional[str] = None
-    """Name of catalog."""
+    """The name of the catalog is stored in lowercase, can be at most 255 characters long, and cannot
+    contain periods, spaces, forward slashes, or control characters."""
 
     options: Optional[Dict[str, str]] = None
     """A map of key-value properties attached to the securable."""
@@ -1163,22 +1192,30 @@ class CatalogInfo:
     """A map of key-value properties attached to the securable."""
 
     provider_name: Optional[str] = None
-    """The name of delta sharing provider.
-    
-    A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server."""
+    """The Delta Sharing provider that owns the share must be named here, together with share_name, to
+    create a Delta Sharing catalog that exposes the data of the share on a remote sharing server.
+    The provider cannot be changed after creation."""
 
     provisioning_info: Optional[ProvisioningInfo] = None
+    """Indicates the provisioning status of the catalog. It is present only for catalogs that are
+    provisioned asynchronously."""
 
     securable_type: Optional[SecurableType] = None
+    """The securable type is always CATALOG for a catalog."""
 
     share_name: Optional[str] = None
-    """The name of the share under the share provider."""
+    """The share under the Delta Sharing provider must be named here, together with provider_name, to
+    create a Delta Sharing catalog. The share cannot be changed after creation."""
 
     storage_location: Optional[str] = None
-    """Storage Location URL (full path) for managed tables within catalog."""
+    """The server derives this full storage location URL for managed tables and volumes within the
+    catalog from storage_root and the catalog ID."""
 
     storage_root: Optional[str] = None
-    """Storage root URL for managed tables within catalog."""
+    """Managed tables and volumes in the catalog are stored under this storage root URL. The path must
+    be inside an external location on which the caller has the CREATE MANAGED STORAGE privilege. If
+    omitted, managed data is stored under the metastore's root storage location, which must then be
+    configured. Delta Sharing catalogs cannot have a storage root."""
 
     updated_at: Optional[int] = None
     """Time at which this catalog was last modified, in epoch milliseconds."""
@@ -1603,9 +1640,13 @@ class ColumnMaskOptions:
 
 @dataclass
 class ColumnRelationship:
+    """Mapping from a column of the source object to a column of the target object."""
+
     source: Optional[str] = None
+    """Name of the column in the source object."""
 
     target: Optional[str] = None
+    """Name of the column in the target object."""
 
     def as_dict(self) -> dict:
         """Serializes the ColumnRelationship into a dictionary suitable for use as a JSON request body."""
@@ -2121,6 +2162,11 @@ class CreateAccountsMetastore:
 
 @dataclass
 class CreateAccountsStorageCredential:
+    """A storage credential represents an authentication and authorization mechanism for accessing data
+    stored on your cloud tenant. It holds exactly one cloud credential, for example an AWS IAM role,
+    an Azure managed identity or service principal, or a GCP service account. Only the field for the
+    selected credential type is set in requests and responses."""
+
     name: str
     """The credential name. The name must be unique among storage and service credentials within the
     metastore."""
@@ -2462,6 +2508,12 @@ class CreateMetastoreAssignment:
 
 @dataclass
 class CreateRequestExternalLineage:
+    """A lineage relationship between a source object and a target object, where at least one of the
+    two is an external metadata object. The other object can be a Unity Catalog table, a cloud
+    storage path, a model version, or another external metadata object. A relationship is identified
+    by its source and target; optional column mappings and key-value properties describe the data
+    flow between them."""
+
     source: ExternalLineageObject
     """Source object of the external lineage relationship."""
 
@@ -2469,13 +2521,15 @@ class CreateRequestExternalLineage:
     """Target object of the external lineage relationship."""
 
     columns: Optional[List[ColumnRelationship]] = None
-    """List of column relationships between source and target objects."""
+    """List of column relationships between source and target objects. The combined size of all source
+    and target column names is limited."""
 
     id: Optional[str] = None
     """Unique identifier of the external lineage relationship."""
 
     properties: Optional[Dict[str, str]] = None
-    """Key-value properties associated with the external lineage relationship."""
+    """Key-value properties associated with the external lineage relationship. The combined length of
+    all keys and values must not exceed 5000 characters."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateRequestExternalLineage into a dictionary suitable for use as a JSON request body."""
@@ -2548,6 +2602,11 @@ class CredentialDependency:
 
 @dataclass
 class CredentialInfo:
+    """A storage credential represents an authentication and authorization mechanism for accessing data
+    stored on your cloud tenant. It holds exactly one cloud credential, for example an AWS IAM role,
+    an Azure managed identity or service principal, or a GCP service account. Only the field for the
+    selected credential type is set in requests and responses."""
+
     aws_iam_role: Optional[AwsIamRole] = None
     """The AWS IAM role configuration."""
 
@@ -2979,6 +3038,12 @@ class DeletePolicyResponse:
 
 @dataclass
 class DeleteRequestExternalLineage:
+    """A lineage relationship between a source object and a target object, where at least one of the
+    two is an external metadata object. The other object can be a Unity Catalog table, a cloud
+    storage path, a model version, or another external metadata object. A relationship is identified
+    by its source and target; optional column mappings and key-value properties describe the data
+    flow between them."""
+
     source: ExternalLineageObject
     """Source object of the external lineage relationship."""
 
@@ -3589,7 +3654,10 @@ class EnvironmentSettings:
 
 @dataclass
 class ExternalLineageExternalMetadata:
+    """An external metadata object at one end of an external lineage relationship."""
+
     name: Optional[str] = None
+    """Name of the external metadata object."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageExternalMetadata into a dictionary suitable for use as a JSON request body."""
@@ -3788,9 +3856,13 @@ class ExternalLineageInfo:
 
 @dataclass
 class ExternalLineageModelVersion:
+    """A version of a Unity Catalog registered model at one end of an external lineage relationship."""
+
     name: Optional[str] = None
+    """Full name of the registered model, in the form ``catalog.schema.model``."""
 
     version: Optional[str] = None
+    """Version number of the model, as a string."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageModelVersion into a dictionary suitable for use as a JSON request body."""
@@ -3861,13 +3933,20 @@ class ExternalLineageModelVersionInfo:
 
 @dataclass
 class ExternalLineageObject:
+    """An object at one end of an external lineage relationship. Exactly one of the fields is set."""
+
     external_metadata: Optional[ExternalLineageExternalMetadata] = None
+    """An external metadata object registered in Unity Catalog."""
 
     model_version: Optional[ExternalLineageModelVersion] = None
+    """A version of a Unity Catalog registered model."""
 
     path: Optional[ExternalLineagePath] = None
+    """A cloud storage path registered in Unity Catalog, i.e. under a table, volume, or external
+    location."""
 
     table: Optional[ExternalLineageTable] = None
+    """A Unity Catalog table."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageObject into a dictionary suitable for use as a JSON request body."""
@@ -3908,7 +3987,11 @@ class ExternalLineageObject:
 
 @dataclass
 class ExternalLineagePath:
+    """A cloud storage path at one end of an external lineage relationship."""
+
     url: Optional[str] = None
+    """URL of the cloud storage path. The path must be registered in Unity Catalog, i.e. under a table,
+    volume, or external location."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalLineagePath into a dictionary suitable for use as a JSON request body."""
@@ -3932,6 +4015,12 @@ class ExternalLineagePath:
 
 @dataclass
 class ExternalLineageRelationship:
+    """A lineage relationship between a source object and a target object, where at least one of the
+    two is an external metadata object. The other object can be a Unity Catalog table, a cloud
+    storage path, a model version, or another external metadata object. A relationship is identified
+    by its source and target; optional column mappings and key-value properties describe the data
+    flow between them."""
+
     source: ExternalLineageObject
     """Source object of the external lineage relationship."""
 
@@ -3939,13 +4028,15 @@ class ExternalLineageRelationship:
     """Target object of the external lineage relationship."""
 
     columns: Optional[List[ColumnRelationship]] = None
-    """List of column relationships between source and target objects."""
+    """List of column relationships between source and target objects. The combined size of all source
+    and target column names is limited."""
 
     id: Optional[str] = None
     """Unique identifier of the external lineage relationship."""
 
     properties: Optional[Dict[str, str]] = None
-    """Key-value properties associated with the external lineage relationship."""
+    """Key-value properties associated with the external lineage relationship. The combined length of
+    all keys and values must not exceed 5000 characters."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageRelationship into a dictionary suitable for use as a JSON request body."""
@@ -3991,6 +4082,12 @@ class ExternalLineageRelationship:
 
 @dataclass
 class ExternalLineageRelationshipInfo:
+    """A lineage relationship between a source object and a target object, where at least one of the
+    two is an external metadata object. The other object can be a Unity Catalog table, a cloud
+    storage path, a model version, or another external metadata object. A relationship is identified
+    by its source and target; optional column mappings and key-value properties describe the data
+    flow between them."""
+
     source: ExternalLineageObject
     """Source object of the external lineage relationship."""
 
@@ -3998,13 +4095,15 @@ class ExternalLineageRelationshipInfo:
     """Target object of the external lineage relationship."""
 
     columns: Optional[List[ColumnRelationship]] = None
-    """List of column relationships between source and target objects."""
+    """List of column relationships between source and target objects. The combined size of all source
+    and target column names is limited."""
 
     id: Optional[str] = None
     """Unique identifier of the external lineage relationship."""
 
     properties: Optional[Dict[str, str]] = None
-    """Key-value properties associated with the external lineage relationship."""
+    """Key-value properties associated with the external lineage relationship. The combined length of
+    all keys and values must not exceed 5000 characters."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageRelationshipInfo into a dictionary suitable for use as a JSON request body."""
@@ -4050,7 +4149,10 @@ class ExternalLineageRelationshipInfo:
 
 @dataclass
 class ExternalLineageTable:
+    """A Unity Catalog table at one end of an external lineage relationship."""
+
     name: Optional[str] = None
+    """Full name of the table, in the form ``catalog.schema.table``."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalLineageTable into a dictionary suitable for use as a JSON request body."""
@@ -4127,6 +4229,11 @@ class ExternalLineageTableInfo:
 
 @dataclass
 class ExternalLocationInfo:
+    """An external location combines a cloud storage path with a storage credential that authorizes
+    access to that path. Privileges granted on the external location control which users and groups
+    can access the cloud storage path, for example to create external tables, external volumes, or
+    managed storage locations under it."""
+
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -4156,11 +4263,12 @@ class ExternalLocationInfo:
     queue state."""
 
     enable_file_events: Optional[bool] = None
-    """Whether to enable file events on this external location. Default to ``true``. Set to ``false``
+    """Whether to enable file events on this external location. Defaults to ``true``. Set to ``false``
     to disable file events. The actual applied value may differ due to server-side defaults; check
     ``effective_enable_file_events`` for the effective state."""
 
     encryption_details: Optional[EncryptionDetails] = None
+    """Encryption options that apply to clients connecting to cloud storage."""
 
     fallback: Optional[bool] = None
     """Indicates whether fallback mode is enabled for this external location. When fallback mode is
@@ -4168,10 +4276,12 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
-    exactly one of the documented properties."""
+    """File event queue settings. When ``enable_file_events`` is ``true``, exactly one of the queue
+    options must be set. Must be omitted when ``enable_file_events`` is ``false``."""
 
     isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+    Cannot be set when creating an external location."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of metastore hosting the external location."""
@@ -4186,13 +4296,14 @@ class ExternalLocationInfo:
     """Indicates whether the external location is read-only."""
 
     updated_at: Optional[int] = None
-    """Time at which external location this was last modified, in epoch milliseconds."""
+    """Time at which this external location was last modified, in epoch milliseconds."""
 
     updated_by: Optional[str] = None
     """Username of user who last modified the external location."""
 
     url: Optional[str] = None
-    """Path URL of the external location."""
+    """URL of the cloud storage path that the external location points to, including the scheme (for
+    example ``s3://``, ``abfss://``, or ``gs://``)."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalLocationInfo into a dictionary suitable for use as a JSON request body."""
@@ -5166,8 +5277,8 @@ class GcpPubsub:
     """Unique identifier included in the name of file events managed cloud resources."""
 
     subscription_name: Optional[str] = None
-    """The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription
-    name}. Only required for provided_pubsub."""
+    """The Pub/Sub subscription name in the format ``projects/{project}/subscriptions/{subscription
+    name}``. Only required for provided_pubsub."""
 
     def as_dict(self) -> dict:
         """Serializes the GcpPubsub into a dictionary suitable for use as a JSON request body."""
@@ -5842,7 +5953,8 @@ class InferenceTableConfig:
     restored or the configuration is updated."""
 
     table: Optional[str] = None
-    """Resolved UC table for payload logs. Format: ``tables/{catalog}.{schema}.{table}``."""
+    """Resource name of the Unity Catalog table that receives the payload logs. Format:
+    ``tables/{catalog}.{schema}.{table}``."""
 
     table_name_prefix: Optional[str] = None
     """Prefix used to form the inference table's registered name. AI Gateway appends ``_payload``; for
@@ -6128,8 +6240,12 @@ class ListEntityTagAssignmentsResponse:
 @dataclass
 class ListExternalLineageRelationshipsResponse:
     external_lineage_relationships: Optional[List[ExternalLineageInfo]] = None
+    """Relationships that match the query. Each entry describes the object at the other end of the
+    relationship in one of ``table_info``, ``file_info``, ``model_info``, or
+    ``external_metadata_info``, together with the relationship itself in ``external_lineage_info``."""
 
     next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Omitted when there are no more results."""
 
     def as_dict(self) -> dict:
         """Serializes the ListExternalLineageRelationshipsResponse into a dictionary suitable for use as a JSON request body."""
@@ -8652,10 +8768,10 @@ class ModelService:
     """Time the model service was created."""
 
     created_by: Optional[str] = None
-    """Creator identity."""
+    """Username of the user who created the model service."""
 
     effective_owner: Optional[str] = None
-    """Owner of the model service."""
+    """Username or group name of the model service owner."""
 
     etag: Optional[str] = None
     """Optimistic concurrency token returned on every read. To make an Update or Delete conditional,
@@ -8663,13 +8779,13 @@ class ModelService:
     base64 string; URL-encode it when setting the ``etag`` query parameter."""
 
     metastore_id: Optional[str] = None
-    """Metastore hosting the model service."""
+    """Unique identifier of the metastore that contains the model service."""
 
     name: Optional[str] = None
     """Resource name of the model service. Format:
     ``model-services/{catalog}.{schema}.{model_service}``. Each ``{...}`` component is capped at 255
-    characters individually. Server-derived on Create from ``parent`` + ``model_service_id``;
-    required and immutable on Update/Get/Delete."""
+    characters individually. The server derives the name on Create from ``parent`` and
+    ``model_service_id``; it is required and immutable on Update, Get, and Delete."""
 
     supported_api_types: Optional[List[str]] = None
     """API types supported across this service's destinations, such as ``openai/v1/chat/completions``,
@@ -8680,7 +8796,7 @@ class ModelService:
     """Time the model service was last modified."""
 
     updated_by: Optional[str] = None
-    """Identity of the last updater."""
+    """Username of the user who last updated the model service."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelService into a dictionary suitable for use as a JSON request body."""
@@ -8759,13 +8875,15 @@ class ModelServiceConfig:
     """Operational configuration wrapped around the ModelService resource."""
 
     inference_table: Optional[InferenceTableConfig] = None
-    """Inference table configuration for payload logging."""
+    """Configuration for logging request and response payloads to a Unity Catalog inference table. Omit
+    this field to leave payload logging off."""
 
     rate_limits: Optional[List[RateLimit]] = None
     """Rate limits applied to requests routed through this model service."""
 
     routing: Optional[ModelServiceConfigRoutingConfig] = None
-    """Routing configuration: destinations and fallback."""
+    """Routing configuration: the primary destinations that receive traffic and the fallback
+    destinations tried when a primary destination fails."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelServiceConfig into a dictionary suitable for use as a JSON request body."""
@@ -8805,7 +8923,8 @@ class ModelServiceConfigDestinationConfig:
     ``type_config`` must be set, and it must match ``destination_type``."""
 
     name: str
-    """User-facing label for this destination, used in routing references."""
+    """Label that identifies this destination. Names are compared case-insensitively and must be unique
+    within the primary destinations and within the fallback destinations."""
 
     destination_type: ModelServiceConfigDestinationConfigDestinationType
     """Backing-model category. Provide the matching type-specific configuration and leave the other
@@ -8972,7 +9091,8 @@ class ModelServiceConfigPayPerTokenConfig:
     by its UC resource name; the platform resolves it to a Model Serving endpoint at request time."""
 
     model: str
-    """Resource name of the Unity Catalog model. Format: ``models/{catalog}.{schema}.{model}``."""
+    """Resource name of the Unity Catalog foundation model. Pay-per-token foundation models live in the
+    ``system.ai`` schema, so the name has the form ``models/system.ai.{model}``."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelServiceConfigPayPerTokenConfig into a dictionary suitable for use as a JSON request body."""
@@ -9007,8 +9127,9 @@ class ModelServiceConfigProvisionedThroughputConfig:
     selects the endpoint to which this destination routes. The endpoint must exist at create time."""
 
     model: Optional[str] = None
-    """UC model FQN of the model served by the backing endpoint (e.g.,
-    ``system.ai.databricks-claude-opus-4-6``). Resolved from Model Serving at Create/Update time."""
+    """Resource name of the Unity Catalog model served by the backing endpoint, in the form
+    ``models/{catalog}.{schema}.{model}``. Resolved from Model Serving when the model service is
+    created or updated."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelServiceConfigProvisionedThroughputConfig into a dictionary suitable for use as a JSON request body."""
@@ -10812,6 +10933,7 @@ class Principal:
     """Databricks user, group or service principal ID."""
 
     principal_type: Optional[PrincipalType] = None
+    """The type of principal that **id** identifies: a user, a group, or a service principal."""
 
     def as_dict(self) -> dict:
         """Serializes the Principal into a dictionary suitable for use as a JSON request body."""
@@ -11121,7 +11243,7 @@ class RateLimit:
     as a whole, or each user by default."""
 
     renewal_period: RateLimitRateLimitRenewalPeriod
-    """Renewal period."""
+    """Interval after which the request and token counters reset."""
 
     principal: Optional[str] = None
     """Principal this limit applies to: user email, group name, or service principal application ID.
@@ -11909,7 +12031,7 @@ class SecurableKind(Enum):
 
 @dataclass
 class SecurableKindManifest:
-    """Manifest of a specific securable kind."""
+    """Manifest of a specific securable kind, or of an Atlas-native securable type, which has no kinds."""
 
     assignable_privileges: Optional[List[str]] = None
     """Privileges that can be assigned to the securable."""
@@ -11921,7 +12043,7 @@ class SecurableKindManifest:
     """Detailed specs of allowed options."""
 
     securable_kind: Optional[SecurableKind] = None
-    """Securable kind to get manifest of."""
+    """Securable kind to get manifest of. Unset for Atlas-native securable types."""
 
     securable_type: Optional[SecurableType] = None
     """Securable Type of the kind."""
@@ -11974,7 +12096,7 @@ class SecurablePermissions:
     """List of requested Unity Catalog permissions."""
 
     securable: Optional[Securable] = None
-    """The securable for which the access request destinations are being requested."""
+    """The securable on which the permissions are requested."""
 
     def as_dict(self) -> dict:
         """Serializes the SecurablePermissions into a dictionary suitable for use as a JSON request body."""
@@ -12217,6 +12339,11 @@ class SseEncryptionDetailsAlgorithm(Enum):
 
 @dataclass
 class StorageCredentialInfo:
+    """A storage credential represents an authentication and authorization mechanism for accessing data
+    stored on your cloud tenant. It holds exactly one cloud credential, for example an AWS IAM role,
+    an Azure managed identity or service principal, or a GCP service account. Only the field for the
+    selected credential type is set in requests and responses."""
+
     aws_iam_role: Optional[AwsIamRoleResponse] = None
     """The AWS IAM role configuration."""
 
@@ -13242,6 +13369,11 @@ class UpdateAccountsMetastore:
 
 @dataclass
 class UpdateAccountsStorageCredential:
+    """A storage credential represents an authentication and authorization mechanism for accessing data
+    stored on your cloud tenant. It holds exactly one cloud credential, for example an AWS IAM role,
+    an Azure managed identity or service principal, or a GCP service account. Only the field for the
+    selected credential type is set in requests and responses."""
+
     aws_iam_role: Optional[AwsIamRoleRequest] = None
     """The AWS IAM role configuration."""
 
@@ -13448,6 +13580,12 @@ class UpdatePermissionsResponse:
 
 @dataclass
 class UpdateRequestExternalLineage:
+    """A lineage relationship between a source object and a target object, where at least one of the
+    two is an external metadata object. The other object can be a Unity Catalog table, a cloud
+    storage path, a model version, or another external metadata object. A relationship is identified
+    by its source and target; optional column mappings and key-value properties describe the data
+    flow between them."""
+
     source: ExternalLineageObject
     """Source object of the external lineage relationship."""
 
@@ -13455,13 +13593,15 @@ class UpdateRequestExternalLineage:
     """Target object of the external lineage relationship."""
 
     columns: Optional[List[ColumnRelationship]] = None
-    """List of column relationships between source and target objects."""
+    """List of column relationships between source and target objects. The combined size of all source
+    and target column names is limited."""
 
     id: Optional[str] = None
     """Unique identifier of the external lineage relationship."""
 
     properties: Optional[Dict[str, str]] = None
-    """Key-value properties associated with the external lineage relationship."""
+    """Key-value properties associated with the external lineage relationship. The combined length of
+    all keys and values must not exceed 5000 characters."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateRequestExternalLineage into a dictionary suitable for use as a JSON request body."""
@@ -13688,7 +13828,7 @@ class ValidationResultResult(Enum):
 @dataclass
 class VolumeInfo:
     access_point: Optional[str] = None
-    """The AWS access point to use when accesing s3 for this external location."""
+    """The AWS access point to use when accessing S3 for the storage location of this volume."""
 
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
@@ -13701,6 +13841,7 @@ class VolumeInfo:
     """The comment attached to the volume"""
 
     created_at: Optional[int] = None
+    """Time at which the volume was created, in epoch milliseconds."""
 
     created_by: Optional[str] = None
     """The identifier of the user who created the volume"""
@@ -13708,7 +13849,7 @@ class VolumeInfo:
     encryption_details: Optional[EncryptionDetails] = None
 
     full_name: Optional[str] = None
-    """The three-level (fully qualified) name of the volume"""
+    """The three-level (fully qualified) name of the volume, in the form catalog_name.schema_name.name."""
 
     metastore_id: Optional[str] = None
     """The unique identifier of the metastore"""
@@ -13717,15 +13858,20 @@ class VolumeInfo:
     """The name of the volume"""
 
     owner: Optional[str] = None
-    """The identifier of the user who owns the volume"""
+    """The user or group that owns the volume. The user who creates a volume becomes its owner; the
+    owner can be changed afterwards with an update."""
 
     schema_name: Optional[str] = None
     """The name of the schema where the volume is"""
 
     storage_location: Optional[str] = None
-    """The storage location on the cloud"""
+    """The cloud storage URL where the files of the volume are stored. For an external volume, it must
+    be set on creation to a path within an existing external location. For a managed volume, it must
+    be omitted on creation; the volume is placed under the managed storage location of the parent
+    schema, catalog, or metastore, and the assigned path is returned in this field."""
 
     updated_at: Optional[int] = None
+    """Time at which the volume was last updated, in epoch milliseconds."""
 
     updated_by: Optional[str] = None
     """The identifier of the user who updated the volume last time"""
@@ -14442,7 +14588,8 @@ class AiGatewayAPI:
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param model_service_id: str
-          Name for the model service, e.g. "my_model_service".
+          Name of the model service within the parent schema. The name must not contain periods, spaces,
+          forward slashes, percent signs, or control characters, and it is stored in lowercase.
 
         :returns: :class:`ModelService`
         """
@@ -15169,8 +15316,9 @@ class AiGatewayAPI:
 
         :param name: str
           Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
-          Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
-          ``parent`` + ``model_service_id``; required and immutable on Update/Get/Delete.
+          Each ``{...}`` component is capped at 255 characters individually. The server derives the name on
+          Create from ``parent`` and ``model_service_id``; it is required and immutable on Update, Get, and
+          Delete.
         :param model_service: :class:`ModelService`
           The model service with the updated field values. ``name`` identifies the resource
           (``model-services/{catalog}.{schema}.{model_service}``); only fields listed in ``update_mask`` are
@@ -15366,27 +15514,37 @@ class CatalogsAPI:
         **CREATE_CATALOG** privilege.
 
         :param name: str
-          Name of catalog.
+          The name of the catalog is stored in lowercase, can be at most 255 characters long, and cannot
+          contain periods, spaces, forward slashes, or control characters.
         :param comment: str (optional)
           User-provided free-form text description.
         :param connection_name: str (optional)
-          The name of the connection to an external data source.
+          Naming a connection to an external data source creates a foreign catalog that mirrors a database in
+          that source, which requires ownership of or the CREATE FOREIGN CATALOG privilege on the connection.
+          Connection-specific settings, such as the database to mirror, go in options. The connection cannot
+          be changed after creation.
         :param custom_max_retention_hours: int (optional)
-          Custom maximum retention period in hours for the catalog
+          Dropped objects in the catalog remain recoverable for this number of hours before they are
+          permanently purged. The value applies to standard catalogs only, must be 0 or within the range
+          allowed for the metastore, and is inherited by schemas and tables that do not set their own value.
         :param managed_encryption_settings: :class:`EncryptionSettings` (optional)
-          Control CMK encryption for managed catalog data
+          Customer-managed key (CMK) settings control the encryption at rest of the catalog's managed data.
         :param options: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param provider_name: str (optional)
-          The name of delta sharing provider.
-
-          A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server.
+          The Delta Sharing provider that owns the share must be named here, together with share_name, to
+          create a Delta Sharing catalog that exposes the data of the share on a remote sharing server. The
+          provider cannot be changed after creation.
         :param share_name: str (optional)
-          The name of the share under the share provider.
+          The share under the Delta Sharing provider must be named here, together with provider_name, to
+          create a Delta Sharing catalog. The share cannot be changed after creation.
         :param storage_root: str (optional)
-          Storage root URL for managed tables within catalog.
+          Managed tables and volumes in the catalog are stored under this storage root URL. The path must be
+          inside an external location on which the caller has the CREATE MANAGED STORAGE privilege. If
+          omitted, managed data is stored under the metastore's root storage location, which must then be
+          configured. Delta Sharing catalogs cannot have a storage root.
 
         :returns: :class:`CatalogInfo`
         """
@@ -15456,8 +15614,8 @@ class CatalogsAPI:
         :param name: str
           The name of the catalog.
         :param include_browse: bool (optional)
-          Whether to include catalogs in the response for which the principal can only access selective
-          metadata for
+          Whether to return the catalog when the principal can only access selective metadata for it through
+          the BROWSE privilege. The response then has browse_only set to true.
 
         :returns: :class:`CatalogInfo`
         """
@@ -15497,8 +15655,8 @@ class CatalogsAPI:
         absent, which is the only indication that the end of results has been reached.
 
         :param include_browse: bool (optional)
-          Whether to include catalogs in the response for which the principal can only access selective
-          metadata for
+          Whether to include catalogs for which the principal can only access selective metadata through the
+          BROWSE privilege. Such catalogs are returned with browse_only set to true.
         :param include_unbound: bool (optional)
           Whether to include catalogs not bound to the workspace. Effective only if the user has permission to
           update the catalog–workspace binding.
@@ -15569,13 +15727,21 @@ class CatalogsAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param custom_max_retention_hours: int (optional)
-          Custom maximum retention period in hours for the catalog
+          Dropped objects in the catalog remain recoverable for this number of hours before they are
+          permanently purged. The value applies to standard catalogs only, must be 0 or within the range
+          allowed for the metastore, and is inherited by schemas and tables that do not set their own value.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
-          Whether predictive optimization should be enabled for this object and objects under it.
+          Whether predictive optimization is enabled for this catalog and the objects under it. Valid values
+          are ENABLE, DISABLE, and INHERIT, where INHERIT applies the account-level setting. Standard catalogs
+          start as INHERIT and other catalog types as DISABLE. It cannot be set when creating a catalog; use
+          the update method instead.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)
-          Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+          Whether the catalog is accessible from all workspaces attached to the metastore (OPEN) or only from
+          the workspaces bound to it (ISOLATED). It cannot be set when creating a catalog; change it with the
+          update method and manage the bound workspaces with the workspace bindings API. See
+          `Workspace-catalog binding <https://docs.databricks.com/aws/en/catalogs/binding>`__.
         :param managed_encryption_settings: :class:`EncryptionSettings` (optional)
-          Control CMK encryption for managed catalog data
+          Customer-managed key (CMK) settings control the encryption at rest of the catalog's managed data.
         :param new_name: str (optional)
           New name for the catalog.
         :param options: Dict[str,str] (optional)
@@ -15945,7 +16111,7 @@ class CredentialsAPI:
         :param name_arg: str
           Name of the credential.
         :param force: bool (optional)
-          Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
+          Force deletion even if there are dependent services (when purpose is **SERVICE**) or dependent
           external locations and external tables (when purpose is **STORAGE**).
 
 
@@ -16499,6 +16665,9 @@ class ExternalLineageAPI:
         external metadata object.
 
         :param external_lineage_relationship: :class:`DeleteRequestExternalLineage`
+          The relationship to delete, identified by its ``source`` and ``target`` objects. Since this field is
+          a query parameter, flatten the nested fields, for example
+          ``external_lineage_relationship.source.table.name=main.sales.orders``.
 
 
         """
@@ -16532,7 +16701,9 @@ class ExternalLineageAPI:
           please flatten the nested fields. For example, if the object is a table, the query parameter should
           look like: ``object_info.table.name=main.sales.customers``
         :param lineage_direction: :class:`LineageDirection`
-          The lineage direction to filter on.
+          Direction of the relationships to return, relative to ``object_info``. ``UPSTREAM`` returns the
+          relationships in which the object is the target, so each result describes a source; ``DOWNSTREAM``
+          returns the relationships in which the object is the source, so each result describes a target.
         :param page_size: int (optional)
           Specifies the maximum number of external lineage relationships to return in a single response. The
           value must be less than or equal to 1000.
@@ -16576,15 +16747,9 @@ class ExternalLineageAPI:
 
         :param external_lineage_relationship: :class:`UpdateRequestExternalLineage`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          The fields of the relationship to update. The field mask must be a single string, with multiple
+          fields separated by commas (no spaces), for example ``columns,properties``. The ``source`` and
+          ``target`` identify the relationship and cannot be changed.
 
         :returns: :class:`ExternalLineageRelationship`
         """
@@ -16646,7 +16811,8 @@ class ExternalLocationsAPI:
         :param name: str
           Name of the external location.
         :param url: str
-          Path URL of the external location.
+          URL of the cloud storage path that the external location points to, including the scheme (for
+          example ``s3://``, ``abfss://``, or ``gs://``).
         :param credential_name: str
           Name of the storage credential used with this location.
         :param comment: str (optional)
@@ -16658,17 +16824,18 @@ class ExternalLocationsAPI:
           when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
           Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
+          Whether to enable file events on this external location. Defaults to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
           ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
+          Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
-          exactly one of the documented properties.
+          File event queue settings. When ``enable_file_events`` is ``true``, exactly one of the queue options
+          must be set. Must be omitted when ``enable_file_events`` is ``false``.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -16747,7 +16914,7 @@ class ExternalLocationsAPI:
           Name of the external location.
         :param include_browse: bool (optional)
           Whether to include external locations in the response for which the principal can only access
-          selective metadata for
+          selective metadata.
 
         :returns: :class:`ExternalLocationInfo`
         """
@@ -16787,7 +16954,7 @@ class ExternalLocationsAPI:
 
         :param include_browse: bool (optional)
           Whether to include external locations in the response for which the principal can only access
-          selective metadata for
+          selective metadata.
         :param include_unbound: bool (optional)
           Whether to include external locations not bound to the workspace. Effective only if the user has
           permission to update the location–workspace binding.
@@ -16870,20 +17037,23 @@ class ExternalLocationsAPI:
           when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
           Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
+          Whether to enable file events on this external location. Defaults to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
           ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
+          Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
-          exactly one of the documented properties.
+          File event queue settings. When ``enable_file_events`` is ``true``, exactly one of the queue options
+          must be set. Must be omitted when ``enable_file_events`` is ``false``.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
+          Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+          Cannot be set when creating an external location.
         :param new_name: str (optional)
           New name for the external location.
         :param owner: str (optional)
@@ -16893,7 +17063,8 @@ class ExternalLocationsAPI:
         :param skip_validation: bool (optional)
           Skips validation of the storage credential associated with the external location.
         :param url: str (optional)
-          Path URL of the external location.
+          URL of the cloud storage path that the external location points to, including the scheme (for
+          example ``s3://``, ``abfss://``, or ``gs://``).
 
         :returns: :class:`ExternalLocationInfo`
         """
@@ -19720,9 +19891,11 @@ class RfaAPI:
         "connection", "credential", "function", "registered_model", and "volume".
 
         :param securable_type: str
-          The type of the securable.
+          The type of the securable. Matching is case-insensitive, and hyphens may replace underscores in
+          multi-word types.
         :param full_name: str
-          The full name of the securable.
+          The full name of the securable: the names of its parents followed by its own name, separated by
+          dots, for example ``main.sales.orders`` for a table.
 
         :returns: :class:`AccessRequestDestinations`
         """
@@ -19745,7 +19918,9 @@ class RfaAPI:
         the owner of the securable, or a user that has the **MANAGE** privilege on the securable in order to
         assign destinations. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft
         Teams, Generic Webhook, Databricks App Slack/Teams, Asana, ServiceNow, and EventBridge destinations)
-        can be assigned to a securable. If a URL destination is assigned, no other destinations can be set.
+        can be assigned to a securable. If a URL destination is assigned, no other destinations can be set. An
+        update replaces every destination assigned directly to the securable in this workspace. An empty list
+        removes them all.
 
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".
@@ -19754,15 +19929,8 @@ class RfaAPI:
           The access request destinations to assign to the securable. For each destination, a
           **destination_id** and **destination_type** must be defined.
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          The paths of the field mask are not evaluated, because an update always replaces the full list of
+          destinations.
 
         :returns: :class:`AccessRequestDestinations`
         """
@@ -20323,8 +20491,7 @@ class StorageCredentialsAPI:
         :param name: str
           Name of the storage credential.
         :param force: bool (optional)
-          Force an update even if there are dependent external locations or external tables (when purpose is
-          **STORAGE**) or dependent services (when purpose is **SERVICE**).
+          Force deletion even if there are dependent external locations or external tables.
 
 
         """
@@ -21397,14 +21564,14 @@ class VolumesAPI:
         created in the specified external location, while a managed volume will be located in the default
         location which is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For the volume creation to succeed, the user must satisfy following conditions:
+        For the volume creation to succeed, the user must satisfy the following conditions:
 
         - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
           **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
           schema.
         - The caller must have **CREATE VOLUME** privilege on the parent schema.
 
-        For an external volume, following conditions also need to satisfy
+        For an external volume, the following conditions must also be satisfied:
 
         - The caller must have **CREATE EXTERNAL VOLUME** privilege on the external location.
         - There are no other tables, nor volumes existing in the specified storage location.
@@ -21425,7 +21592,10 @@ class VolumesAPI:
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)
-          The storage location on the cloud
+          The cloud storage URL where the files of the volume are stored. For an external volume, it must be
+          set on creation to a path within an existing external location. For a managed volume, it must be
+          omitted on creation; the volume is placed under the managed storage location of the parent schema,
+          catalog, or metastore, and the assigned path is returned in this field.
 
         :returns: :class:`VolumeInfo`
         """
@@ -21500,12 +21670,12 @@ class VolumesAPI:
         which is the only indication that the end of results has been reached.
 
         :param catalog_name: str
-          The identifier of the catalog
+          The name of the catalog that contains the schema.
         :param schema_name: str
-          The identifier of the schema
+          The name of the schema whose volumes are listed.
         :param include_browse: bool (optional)
-          Whether to include volumes in the response for which the principal can only access selective
-          metadata for
+          Whether to include volumes for which the principal can only access selective metadata through the
+          BROWSE privilege.
         :param max_results: int (optional)
           Maximum number of volumes to return (page length).
 
@@ -21565,8 +21735,8 @@ class VolumesAPI:
         :param name: str
           The fully qualified name of the volume.
         :param include_browse: bool (optional)
-          Whether to include volumes in the response for which the principal can only access selective
-          metadata for
+          Whether to include volumes for which the principal can only access selective metadata through the
+          BROWSE privilege.
 
         :returns: :class:`VolumeInfo`
         """
@@ -21594,16 +21764,17 @@ class VolumesAPI:
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
 
-        Currently only the name, the owner or the comment of the volume could be updated.
+        Currently only the name, the owner, or the comment of the volume can be updated.
 
         :param name: str
           The three-level (fully qualified) name of the volume
         :param comment: str (optional)
           The comment attached to the volume
         :param new_name: str (optional)
-          New name for the volume.
+          The new name for the volume. Set it to rename the volume.
         :param owner: str (optional)
-          The identifier of the user who owns the volume
+          The user or group that owns the volume. The user who creates a volume becomes its owner; the owner
+          can be changed afterwards with an update.
 
         :returns: :class:`VolumeInfo`
         """

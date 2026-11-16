@@ -11,15 +11,19 @@
         Create a new endpoint.
 
         :param name: str
-          Name of the AI Search endpoint
+          Name of the AI Search endpoint. The name must be unique within the workspace, have at most 50
+          characters, contain only lowercase letters, digits, hyphens, underscores and periods, and start and
+          end with a letter or digit.
         :param endpoint_type: :class:`EndpointType`
-          Type of endpoint
+          Type of endpoint to create. STANDARD endpoints are optimized for low-latency queries and support
+          Target QPS scaling. STORAGE_OPTIMIZED endpoints hold much larger indexes and index faster, with
+          higher query latency. See https://docs.databricks.com/aws/en/ai-search/ai-search#endpoint-options.
         :param budget_policy_id: str (optional)
-          The budget policy id to be applied
+          Budget policy to attribute the endpoint's usage to. If omitted, the default budget policy applies.
         :param target_qps: int (optional)
-          Target QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
-          calculated at index creation/sync time based on this value. Best-effort target; the system does not
-          guarantee this QPS will be achieved.
+          Target queries per second (QPS) for the endpoint. Supported for STANDARD endpoints only. The actual
+          replica count is calculated at index creation/sync time based on this value. Best-effort target; the
+          system does not guarantee this QPS will be achieved.
         :param usage_policy_id: str (optional)
           The usage policy id to be applied once we've migrated to usage policies
 
@@ -84,12 +88,14 @@
 
     .. py:method:: patch_endpoint(endpoint_name: str [, target_qps: Optional[int]]) -> EndpointInfo
 
-        Update an endpoint
+        Update the Target QPS of a STANDARD endpoint. The response is the updated endpoint; its scaling_info
+        shows whether the resulting scaling change is applied or still in progress.
 
         :param endpoint_name: str
           Name of the AI Search endpoint
         :param target_qps: int (optional)
           Target QPS for the endpoint. Best-effort; the system does not guarantee this QPS will be achieved.
+          Set to -1 to clear the Target QPS, as if it had never been set.
 
         :returns: :class:`EndpointInfo`
         
@@ -149,7 +155,7 @@
 
     .. py:method:: update_endpoint_budget_policy(endpoint_name: str, budget_policy_id: str) -> PatchEndpointBudgetPolicyResponse
 
-        Update the budget policy of an endpoint
+        Update the budget policy that the endpoint's usage is attributed to.
 
         :param endpoint_name: str
           Name of the AI Search endpoint

@@ -11,9 +11,6 @@
 
         Create a draft dashboard.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard: :class:`Dashboard`
         :param dataset_catalog: str (optional)
           Sets the default catalog for all datasets in this dashboard. Does not impact table references that
@@ -109,9 +106,6 @@
 
         Get a draft dashboard.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -176,10 +170,8 @@
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str], show_trashed: Optional[bool], view: Optional[DashboardView]]) -> Iterator[Dashboard]
 
-        List dashboards.
-
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
+        List the dashboards that the caller can view. Each entry carries summary metadata only; use Get
+        dashboard to retrieve a dashboard's full definition.
 
         :param page_size: int (optional)
           The number of dashboards to return per page.
@@ -263,9 +255,6 @@
 
         Publish the current draft dashboard.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard_id: str
           UUID identifying the dashboard to be published.
         :param embed_credentials: bool (optional)
@@ -281,9 +270,6 @@
 
         Revert a dashboard's definition in draft mode to the last published version.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard_id: str
           UUID identifying the dashboard.
         :param etag: str (optional)
@@ -297,9 +283,6 @@
 
         Trash a dashboard.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard_id: str
           UUID identifying the dashboard.
 
@@ -310,9 +293,6 @@
 
         Unpublish the dashboard.
 
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
-
         :param dashboard_id: str
           UUID identifying the published dashboard.
 
@@ -322,9 +302,6 @@
     .. py:method:: update(dashboard_id: str, dashboard: Dashboard [, dataset_catalog: Optional[str], dataset_schema: Optional[str]]) -> Dashboard
 
         Update a draft dashboard.
-
-        Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
-        entitlement. Grant Databricks SQL access in addition to Workspace access.
 
         :param dashboard_id: str
           UUID identifying the dashboard.

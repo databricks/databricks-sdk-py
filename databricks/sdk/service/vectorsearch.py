@@ -508,31 +508,35 @@ class EndpointInfo:
     """The user-selected budget policy id for the endpoint."""
 
     creation_timestamp: Optional[int] = None
-    """Timestamp of endpoint creation"""
+    """Time at which the endpoint was created, in milliseconds since the Unix epoch."""
 
     creator: Optional[str] = None
-    """Creator of the endpoint"""
+    """User or service principal that created the endpoint. Users are identified by username and
+    service principals by application ID."""
 
     custom_tags: Optional[List[CustomTag]] = None
     """The custom tags assigned to the endpoint"""
 
     effective_budget_policy_id: Optional[str] = None
-    """The budget policy id applied to the endpoint"""
+    """Budget policy ID in effect for the endpoint. This is the policy set on the endpoint when one was
+    set, and otherwise the default budget policy."""
 
     endpoint_status: Optional[EndpointStatus] = None
     """Current status of the endpoint"""
 
     endpoint_type: Optional[EndpointType] = None
-    """Type of endpoint"""
+    """Type of the endpoint. See
+    https://docs.databricks.com/aws/en/ai-search/ai-search#endpoint-options for how the types
+    differ."""
 
     id: Optional[str] = None
     """Unique identifier of the endpoint"""
 
     last_updated_timestamp: Optional[int] = None
-    """Timestamp of last update to the endpoint"""
+    """Time at which the endpoint was last updated, in milliseconds since the Unix epoch."""
 
     last_updated_user: Optional[str] = None
-    """User who last updated the endpoint"""
+    """User or service principal that last updated the endpoint, in the same form as creator."""
 
     name: Optional[str] = None
     """Name of the AI Search endpoint"""
@@ -541,7 +545,8 @@ class EndpointInfo:
     """Number of indexes on the endpoint"""
 
     scaling_info: Optional[EndpointScalingInfo] = None
-    """Scaling information for the endpoint"""
+    """Scaling information for the endpoint. Present only for STANDARD endpoints that have a Target QPS
+    set."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointInfo into a dictionary suitable for use as a JSON request body."""
@@ -733,7 +738,8 @@ class EndpointStatus:
     """Status information of an endpoint"""
 
     message: Optional[str] = None
-    """Additional status message"""
+    """Additional detail about the state, such as the reason the endpoint is OFFLINE. Absent when there
+    is nothing to report."""
 
     state: Optional[EndpointStatusState] = None
     """Current state of the endpoint"""
@@ -1207,6 +1213,7 @@ class MiniVectorIndex:
 @dataclass
 class PatchEndpointBudgetPolicyResponse:
     budget_policy_id: Optional[str] = None
+    """The requested budget policy ID, returned when the endpoint was already using it."""
 
     effective_budget_policy_id: Optional[str] = None
     """The budget policy applied to the AI Search endpoint."""
@@ -2169,15 +2176,19 @@ class VectorSearchEndpointsAPI:
         """Create a new endpoint.
 
         :param name: str
-          Name of the AI Search endpoint
+          Name of the AI Search endpoint. The name must be unique within the workspace, have at most 50
+          characters, contain only lowercase letters, digits, hyphens, underscores and periods, and start and
+          end with a letter or digit.
         :param endpoint_type: :class:`EndpointType`
-          Type of endpoint
+          Type of endpoint to create. STANDARD endpoints are optimized for low-latency queries and support
+          Target QPS scaling. STORAGE_OPTIMIZED endpoints hold much larger indexes and index faster, with
+          higher query latency. See https://docs.databricks.com/aws/en/ai-search/ai-search#endpoint-options.
         :param budget_policy_id: str (optional)
-          The budget policy id to be applied
+          Budget policy to attribute the endpoint's usage to. If omitted, the default budget policy applies.
         :param target_qps: int (optional)
-          Target QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
-          calculated at index creation/sync time based on this value. Best-effort target; the system does not
-          guarantee this QPS will be achieved.
+          Target queries per second (QPS) for the endpoint. Supported for STANDARD endpoints only. The actual
+          replica count is calculated at index creation/sync time based on this value. Best-effort target; the
+          system does not guarantee this QPS will be achieved.
         :param usage_policy_id: str (optional)
           The usage policy id to be applied once we've migrated to usage policies
 
@@ -2343,12 +2354,14 @@ class VectorSearchEndpointsAPI:
             query["page_token"] = json["next_page_token"]
 
     def patch_endpoint(self, endpoint_name: str, *, target_qps: Optional[int] = None) -> EndpointInfo:
-        """Update an endpoint
+        """Update the Target QPS of a STANDARD endpoint. The response is the updated endpoint; its scaling_info
+        shows whether the resulting scaling change is applied or still in progress.
 
         :param endpoint_name: str
           Name of the AI Search endpoint
         :param target_qps: int (optional)
           Target QPS for the endpoint. Best-effort; the system does not guarantee this QPS will be achieved.
+          Set to -1 to clear the Target QPS, as if it had never been set.
 
         :returns: :class:`EndpointInfo`
         """
@@ -2499,7 +2512,7 @@ class VectorSearchEndpointsAPI:
     def update_endpoint_budget_policy(
         self, endpoint_name: str, budget_policy_id: str
     ) -> PatchEndpointBudgetPolicyResponse:
-        """Update the budget policy of an endpoint
+        """Update the budget policy that the endpoint's usage is attributed to.
 
         :param endpoint_name: str
           Name of the AI Search endpoint

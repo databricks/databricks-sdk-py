@@ -279,6 +279,7 @@ class Config:
         product_version=None,
         clock: Optional[Clock] = None,
         custom_headers: Optional[Dict[str, str]] = None,
+        http_adapter: Optional[requests.adapters.BaseAdapter] = None,
         **kwargs,
     ):
         """Initialize a Config object.
@@ -293,12 +294,16 @@ class Config:
                 These headers will be automatically added to every request made by the client.
                 Request-specific headers passed to individual API calls will override these custom headers
                 if there is a conflict. Example: {"X-Request-ID": "123", "X-Custom-Header": "value"}
+            http_adapter: Optional requests transport adapter for HTTP and HTTPS API requests and host
+                metadata discovery. Authentication and SDK retries still apply. The adapter may be shared
+                by multiple sessions; the caller owns its lifetime. OAuth token requests use their own transport.
             **kwargs: Additional configuration parameters.
         """
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
         self._custom_headers = custom_headers or {}
+        self.http_adapter = http_adapter
         if credentials_strategy and credentials_provider:
             raise ValueError("When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
         if credentials_provider:
@@ -648,6 +653,7 @@ class Config:
         client = _BaseClient(
             retry_timeout_seconds=self.retry_timeout_seconds,
             http_timeout_seconds=self.http_timeout_seconds,
+            http_adapter=self.http_adapter,
         )
         try:
             meta = get_host_metadata(self.host, client=client)

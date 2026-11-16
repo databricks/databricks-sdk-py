@@ -42,7 +42,7 @@
         programmatically must be linked to a remote Git repo, unlike repos created in the browser.
 
         :param url: str
-          URL of the Git repository to be linked.
+          HTTPS URL of the Git repository to be linked. SSH URLs are not supported.
         :param provider: str
           Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
           ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
@@ -53,7 +53,10 @@
           current user.
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
-          is created in ``/Repos``, path must be in the format ``/Repos/{folder}/{repo-name}``.
+          is created in ``/Repos``, path must be in the format ``/Repos/{folder}/{repo-name}``. If omitted,
+          the repo is created in the calling user's home folder (``/Users/{user}``, or ``/Repos/{user}`` in
+          workspaces without workspace files). The repo name is the last path segment of ``url``, for example
+          ``cli.git``.
         :param sparse_checkout: :class:`SparseCheckout` (optional)
           If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
           sparse checkout after the repo is created.
@@ -63,10 +66,11 @@
 
     .. py:method:: delete(repo_id: int)
 
-        Deletes the specified repo.
+        Deletes the Git folder (repo) and its contents from the workspace. The remote Git repository is not
+        affected.
 
         :param repo_id: int
-          The ID for the corresponding repo to delete.
+          ID of the Git folder (repo) to delete.
 
 
         
@@ -196,12 +200,13 @@
             w.repos.delete(repo_id=ri.id)
 
         Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
-        branch.
+        branch. Exactly one of ``branch`` or ``tag`` must be specified.
 
         :param repo_id: int
           ID of the Git folder (repo) object in the workspace.
         :param branch: str (optional)
-          Branch that the local version of the repo is checked out to.
+          Branch to check out. The Git folder (repo) is then updated to the latest commit of the branch.
+          Mutually exclusive with ``tag``.
         :param dangerously_force_discard_all: bool (optional)
           WARNING: DESTRUCTIVE AND IRREVERSIBLE. If true, permanently deletes ALL uncommitted changes in the
           Git folder — staged, unstaged, and untracked files — before updating. Lost data CANNOT be
@@ -218,11 +223,11 @@
           current user.
         :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
           If specified, update the sparse checkout settings. The update will fail if sparse checkout is not
-          enabled for the repo.
+          enabled for the repo. Must be sent together with ``branch`` or ``tag``.
         :param tag: str (optional)
           Tag that the local version of the repo is checked out to. Updating the repo to a tag puts the repo
           in a detached HEAD state. Before committing new changes, you must update the repo to a branch
-          instead of the detached HEAD.
+          instead of the detached HEAD. Mutually exclusive with ``branch``.
 
 
         

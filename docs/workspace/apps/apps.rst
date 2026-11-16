@@ -38,7 +38,12 @@
         of the update can be checked with the GetAppUpdate method.
 
         :param app_name: str
+          The name of the app to update.
         :param update_mask: str
+          Comma-separated names of the ``app`` fields to update, such as ``description`` or ``resources``. A
+          field named in the mask but absent from ``app`` is cleared, except ``compute_size``, which resets to
+          ``MEDIUM``.
+
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
           ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
@@ -49,6 +54,8 @@
           fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
           API changes in the future.
         :param app: :class:`App` (optional)
+          The new values for the app. Only the fields named in ``update_mask`` are applied; the others must
+          still be valid.
 
         :returns:
           Long-running operation waiter for :class:`AppUpdate`.
@@ -60,7 +67,7 @@
 
     .. py:method:: delete(name: str) -> App
 
-        Deletes an app.
+        Deletes an app and the dedicated service principal created for it.
 
         :param name: str
           The name of the app.
@@ -113,6 +120,17 @@
           The name of the app.
 
         :returns: :class:`App`
+        
+
+    .. py:method:: get_app_deployment_scan_finding(name: str) -> AppDeploymentScanFinding
+
+        Retrieves a single security scan finding for an app deployment.
+
+        :param name: str
+          The resource name of the finding, in the form
+          ``apps/{app}/deployments/{deployment}/scanFindings/{finding_id}``.
+
+        :returns: :class:`AppDeploymentScanFinding`
         
 
     .. py:method:: get_deployment(app_name: str, deployment_id: str) -> AppDeployment
@@ -189,6 +207,20 @@
           Filter apps by app space name. When specified, only apps belonging to this space are returned.
 
         :returns: Iterator over :class:`App`
+        
+
+    .. py:method:: list_app_deployment_scan_findings(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[AppDeploymentScanFinding]
+
+        Lists the security scan findings for an app deployment.
+
+        :param parent: str
+          The parent deployment whose findings to list, in the form ``apps/{app}/deployments/{deployment}``.
+        :param page_size: int (optional)
+          Upper bound for the number of findings returned.
+        :param page_token: str (optional)
+          Pagination token to request the next page. Requests the first page if absent.
+
+        :returns: Iterator over :class:`AppDeploymentScanFinding`
         
 
     .. py:method:: list_deployments(app_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[AppDeployment]
@@ -270,6 +302,21 @@
         :param app: :class:`App`
 
         :returns: :class:`App`
+        
+
+    .. py:method:: update_app_deployment_scan_finding(name: str, app_deployment_scan_finding: AppDeploymentScanFinding, update_mask: FieldMask) -> AppDeploymentScanFinding
+
+        Updates the triage status (resolved / ignored / in-progress) of a single scan finding.
+
+        :param name: str
+          The resource name of the finding, in the form
+          ``apps/{app}/deployments/{deployment}/scanFindings/{finding_id}``.
+        :param app_deployment_scan_finding: :class:`AppDeploymentScanFinding`
+          The finding to update. ``name`` identifies the finding and ``status`` is the new triage status.
+        :param update_mask: FieldMask
+          The fields to update. Must be exactly ``status``, the only updatable field on a scan finding.
+
+        :returns: :class:`AppDeploymentScanFinding`
         
 
     .. py:method:: update_app_thumbnail(name: str [, app_thumbnail: Optional[AppThumbnail]]) -> AppThumbnail

@@ -37,6 +37,7 @@ class ApiClient:
             http_timeout_seconds=cfg.http_timeout_seconds,
             extra_error_customizers=[_AddDebugErrorCustomizer(cfg)],
             clock=cfg.clock,
+            http_adapter=cfg.http_adapter,
         )
 
     @property

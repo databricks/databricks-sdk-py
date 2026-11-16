@@ -11,11 +11,17 @@
 
         Cancels a currently running command within an execution context.
 
-        The command ID is obtained from a prior successful call to **execute**.
+        The command ID is obtained from a prior successful call to **execute**. Cancellation is asynchronous:
+        this method returns once the request is accepted, and the command moves through the ``Cancelling``
+        status before reaching a terminal one. Poll **commandStatus** to observe the outcome; a cancelled
+        command ends in the ``Finished`` status with an ``error`` result that describes the cancellation.
 
         :param cluster_id: str (optional)
+          ID of the cluster that hosts the execution context.
         :param command_id: str (optional)
+          ID of the command to cancel, as returned by **execute**.
         :param context_id: str (optional)
+          ID of the execution context the command runs in.
 
         :returns:
           Long-running operation waiter for :class:`CommandStatusResponse`.
@@ -29,11 +35,16 @@
 
         Gets the status of and, if available, the results from a currently executing command.
 
-        The command ID is obtained from a prior successful call to **execute**.
+        The command ID is obtained from a prior successful call to **execute**. Poll this method until the
+        status is one of the terminal values ``Finished``, ``Error`` or ``Cancelled``; the ``results`` field
+        is populated only once the command has reached a terminal status.
 
         :param cluster_id: str
+          ID of the cluster that hosts the execution context.
         :param context_id: str
+          ID of the execution context the command runs in.
         :param command_id: str
+          ID of the command, as returned by **execute**.
 
         :returns: :class:`CommandStatusResponse`
         
@@ -42,8 +53,13 @@
 
         Gets the status for an execution context.
 
+        After **Create**, poll this method until the status is ``Running`` or ``Error``. Requests for a
+        context that has been deleted fail with an error instead of returning a status.
+
         :param cluster_id: str
+          ID of the cluster that hosts the execution context.
         :param context_id: str
+          ID of the execution context, as returned by **Create**.
 
         :returns: :class:`ContextStatusResponse`
         
@@ -71,11 +87,15 @@
 
         Creates an execution context for running cluster commands.
 
-        If successful, this method returns the ID of the new execution context.
+        If successful, this method returns the ID of the new execution context. The context may still be
+        initializing when this method returns, so poll **contextStatus** until the status is ``Running``
+        before running commands in it. This method and the other methods of this API require the CAN ATTACH TO
+        permission on the cluster.
 
         :param cluster_id: str (optional)
-          Running cluster id
+          ID of the cluster to create the execution context on. The cluster must be running.
         :param language: :class:`Language` (optional)
+          Programming language of the execution context.
 
         :returns:
           Long-running operation waiter for :class:`ContextStatusResponse`.
@@ -89,8 +109,13 @@
 
         Deletes an execution context.
 
+        Delete contexts you no longer need, because a cluster can host only a limited number of execution
+        contexts at a time. Deleting a context that no longer exists succeeds, so the call is safe to retry.
+
         :param cluster_id: str
+          ID of the cluster that hosts the execution context.
         :param context_id: str
+          ID of the execution context to delete, as returned by **Create**.
 
 
         
@@ -125,15 +150,18 @@
 
         Runs a cluster command in the given execution context, using the provided language.
 
-        If successful, it returns an ID for tracking the status of the command's execution.
+        If successful, it returns an ID for tracking the status of the command's execution. This method
+        returns as soon as the command is accepted, so poll **commandStatus** with the returned ID to wait for
+        the command to finish and to read its results.
 
         :param cluster_id: str (optional)
-          Running cluster id
+          ID of the cluster that hosts the execution context.
         :param command: str (optional)
-          Executable code
+          Code to run, written in the specified language.
         :param context_id: str (optional)
-          Running context id
+          ID of the execution context to run the command in, as returned by **Create**.
         :param language: :class:`Language` (optional)
+          Language the command is written in.
 
         :returns:
           Long-running operation waiter for :class:`CommandStatusResponse`.

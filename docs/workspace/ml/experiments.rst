@@ -60,7 +60,8 @@
         Creates an issue in an experiment.
 
         :param parent: str
-          experiments/{experiment}
+          The experiment to create the Issue in, as ``experiments/{experiment}``, where ``{experiment}`` is
+          the experiment ID. For example, ``experiments/1234567890``.
         :param issue: :class:`Issue`
           Output-only fields are ignored.
         :param issue_id: str (optional)
@@ -290,7 +291,9 @@
         Gets an issue.
 
         :param name: str
-          experiments/{experiment}/issues/{issue}
+          The Issue to get, as ``experiments/{experiment}/issues/{issue}``, where ``{experiment}`` is the
+          experiment ID and ``{issue}`` is the Issue ID: ``iss-`` followed by 32 lowercase hex digits. For
+          example, ``experiments/1234567890/issues/iss-0123456789abcdef0123456789abcdef``.
 
         :returns: :class:`Issue`
         
@@ -621,7 +624,8 @@
         Searches the issues in an experiment, filtered and sorted.
 
         :param parent: str
-          experiments/{experiment}
+          The experiment to search, as ``experiments/{experiment}``, where ``{experiment}`` is the experiment
+          ID. For example, ``experiments/1234567890``.
         :param categories: List[str] (optional)
           Matches Issues with any of these categories, case-insensitively.
         :param page_size: int (optional)
@@ -800,7 +804,9 @@
         Updates the fields of an issue named in ``update_mask``.
 
         :param name: str
-          experiments/{experiment}/issues/{issue}
+          The Issue's resource name, as ``experiments/{experiment}/issues/{issue}``, where ``{experiment}`` is
+          the experiment ID and ``{issue}`` is the Issue ID: ``iss-`` followed by 32 lowercase hex digits. For
+          example, ``experiments/1234567890/issues/iss-0123456789abcdef0123456789abcdef``.
         :param issue: :class:`Issue`
           ``issue.name`` identifies the target.
         :param update_mask: FieldMask

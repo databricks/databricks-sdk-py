@@ -22,11 +22,12 @@
         used by subsequent dev-mode updates.
 
         :param pipeline_id: str
+          The ID of the pipeline to apply the environment to.
 
         :returns: :class:`ApplyEnvironmentRequestResponse`
         
 
-    .. py:method:: clone(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clone_mode: Optional[CloneMode], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parent_path: Optional[str], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> ClonePipelineResponse
+    .. py:method:: clone(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clone_mode: Optional[CloneMode], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parent_path: Optional[str], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], testing: Optional[PipelineTesting], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> ClonePipelineResponse
 
         Creates a new pipeline using Unity Catalog from a pipeline using Hive Metastore. This method returns
         the ID of the newly created clone. Additionally, this method starts an update for the newly created
@@ -37,14 +38,16 @@
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
         :param budget_policy_id: str (optional)
-          Budget policy of this pipeline.
+          ID (UUID) of the serverless budget policy applied to this pipeline. Only supported for serverless
+          pipelines.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
-          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
-          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
-          Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. Tables are published to the schema
+          set in ``schema`` (or the legacy ``target``) inside this catalog, for example
+          ``catalog``.``schema``.``table``; source code can also use fully qualified names to write to other
+          schemas and catalogs. If ``catalog`` is not specified, the pipeline uses the legacy Hive metastore.
         :param channel: str (optional)
-          SDP Release Channel that specifies which version to use.
+          Release channel that selects the pipeline runtime version: ``CURRENT`` (the default) or ``PREVIEW``,
+          which runs on the upcoming runtime release.
         :param clone_mode: :class:`CloneMode` (optional)
           The type of clone to perform. Currently, only deep copies are supported
         :param clusters: List[:class:`PipelineCluster`] (optional)
@@ -65,7 +68,8 @@
 
           Deprecated: set development mode for each update instead.
         :param edition: str (optional)
-          Pipeline product edition.
+          Pipeline product edition: ``CORE``, ``PRO``, or ``ADVANCED``. Serverless pipelines require
+          ``ADVANCED``.
         :param environment: :class:`PipelinesEnvironment` (optional)
           Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
@@ -118,6 +122,8 @@
           Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
           must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
           deprecated for pipeline creation in favor of the ``schema`` field.
+        :param testing: :class:`PipelineTesting` (optional)
+          Test configuration for this pipeline. Used only by test-only updates.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
@@ -126,7 +132,7 @@
         :returns: :class:`ClonePipelineResponse`
         
 
-    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parameters: Optional[Dict[str, str]], parent_path: Optional[str], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> CreatePipelineResponse
+    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parameters: Optional[Dict[str, str]], parent_path: Optional[str], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], testing: Optional[PipelineTesting], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> CreatePipelineResponse
 
 
         Usage:
@@ -168,14 +174,16 @@
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
         :param budget_policy_id: str (optional)
-          Budget policy of this pipeline.
+          ID (UUID) of the serverless budget policy applied to this pipeline. Only supported for serverless
+          pipelines.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
-          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
-          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
-          Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. Tables are published to the schema
+          set in ``schema`` (or the legacy ``target``) inside this catalog, for example
+          ``catalog``.``schema``.``table``; source code can also use fully qualified names to write to other
+          schemas and catalogs. If ``catalog`` is not specified, the pipeline uses the legacy Hive metastore.
         :param channel: str (optional)
-          SDP Release Channel that specifies which version to use.
+          Release channel that selects the pipeline runtime version: ``CURRENT`` (the default) or ``PREVIEW``,
+          which runs on the upcoming runtime release.
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment. Applies to classic (non-serverless) pipelines. Omit
           this field when ``serverless`` is ``true``.
@@ -194,8 +202,11 @@
 
           Deprecated: set development mode for each update instead.
         :param dry_run: bool (optional)
+          If true, no pipeline is created. The response contains the settings that would be applied, with
+          server defaults filled in, instead of a pipeline ID.
         :param edition: str (optional)
-          Pipeline product edition.
+          Pipeline product edition: ``CORE``, ``PRO``, or ``ADVANCED``. Serverless pipelines require
+          ``ADVANCED``.
         :param environment: :class:`PipelinesEnvironment` (optional)
           Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
@@ -231,6 +242,8 @@
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
           execution.
         :param run_as: :class:`RunAs` (optional)
+          The user or service principal that the pipeline runs as. If not specified, the pipeline runs as the
+          user who created the pipeline.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
@@ -249,6 +262,8 @@
           Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
           must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
           deprecated for pipeline creation in favor of the ``schema`` field.
+        :param testing: :class:`PipelineTesting` (optional)
+          Test configuration for this pipeline. Used only by test-only updates.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
@@ -263,6 +278,7 @@
         pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
+          The ID of the pipeline to delete.
         :param cascade: bool (optional)
           If false, pipeline deletion will not cascade to its datasets (MVs, STs, Views). By default, this
           parameter will be true and all tables will be deleted with the pipeline.
@@ -311,9 +327,11 @@
             # cleanup
             w.pipelines.delete(pipeline_id=created.pipeline_id)
 
-        Get a pipeline.
+        Returns the details of a pipeline, including its settings, current state, and the status of its most
+        recent updates.
 
         :param pipeline_id: str
+          The ID of the pipeline.
 
         :returns: :class:`GetPipelineResponse`
         
@@ -484,13 +502,15 @@
         :returns: :class:`PipelinePermissions`
         
 
-    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], development: Optional[bool], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], full_refresh_selection_by_path: Optional[List[str]], parameters: Optional[Dict[str, str]], refresh_selection: Optional[List[str]], refresh_selection_by_path: Optional[List[str]], replace_where_overrides: Optional[List[ReplaceWhereOverride]], reset_checkpoint_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
+    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], development: Optional[bool], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], full_refresh_selection_by_path: Optional[List[str]], parameters: Optional[Dict[str, str]], refresh_selection: Optional[List[str]], refresh_selection_by_path: Optional[List[str]], replace_where_overrides: Optional[List[ReplaceWhereOverride]], reset_checkpoint_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], test_only: Optional[bool], test_options: Optional[PipelineTestOptions], validate_only: Optional[bool]]) -> StartUpdateResponse
 
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
 
         :param pipeline_id: str
+          The ID of the pipeline to start an update for.
         :param cause: :class:`StartUpdateCause` (optional)
+          What triggered this update, as recorded in the update's ``cause``. Defaults to ``API_CALL``.
         :param development: bool (optional)
           Whether the update is started in the development mode. This is recommended for interactive
           development and testing. Reuses compute for faster iteration and disables automatic retries. Not
@@ -520,6 +540,14 @@
           and full_refresh_selection.
         :param rewind_spec: :class:`RewindSpec` (optional)
           The information about the requested rewind operation. If specified this is a rewind mode update.
+        :param test_only: bool (optional)
+          If true, this is a test-only update: it runs the pipeline's tests and does not update the pipeline's
+          datasets. A failing test does not stop the other tests. The update is ``COMPLETED`` if at least one
+          test runs and no test fails or errors. Otherwise the update is ``FAILED``, including when no tests
+          are found. Cannot be combined with ``validate_only``, ``explore_only``, or ``rewind_spec``.
+        :param test_options: :class:`PipelineTestOptions` (optional)
+          Options for selecting the tests that this test-only update runs. Requires ``test_only``. When
+          absent, every test in the pipeline's test sources runs.
         :param validate_only: bool (optional)
           If true, this update only validates the correctness of pipeline source code but does not materialize
           or publish any datasets.
@@ -533,6 +561,7 @@
         request is a no-op.
 
         :param pipeline_id: str
+          The ID of the pipeline to stop.
 
         :returns:
           Long-running operation waiter for :class:`GetPipelineResponse`.
@@ -542,7 +571,7 @@
     .. py:method:: stop_and_wait(pipeline_id: str, timeout: datetime.timedelta = 0:20:00) -> GetPipelineResponse
 
 
-    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parameters: Optional[Dict[str, str]], parent_path: Optional[str], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]])
+    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parameters: Optional[Dict[str, str]], parent_path: Optional[str], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], testing: Optional[PipelineTesting], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]])
 
 
         Usage:
@@ -601,14 +630,16 @@
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name has changed and conflicts the name of another pipeline.
         :param budget_policy_id: str (optional)
-          Budget policy of this pipeline.
+          ID (UUID) of the serverless budget policy applied to this pipeline. Only supported for serverless
+          pipelines.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
-          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
-          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
-          Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. Tables are published to the schema
+          set in ``schema`` (or the legacy ``target``) inside this catalog, for example
+          ``catalog``.``schema``.``table``; source code can also use fully qualified names to write to other
+          schemas and catalogs. If ``catalog`` is not specified, the pipeline uses the legacy Hive metastore.
         :param channel: str (optional)
-          SDP Release Channel that specifies which version to use.
+          Release channel that selects the pipeline runtime version: ``CURRENT`` (the default) or ``PREVIEW``,
+          which runs on the upcoming runtime release.
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment. Applies to classic (non-serverless) pipelines. Omit
           this field when ``serverless`` is ``true``.
@@ -627,7 +658,8 @@
 
           Deprecated: set development mode for each update instead.
         :param edition: str (optional)
-          Pipeline product edition.
+          Pipeline product edition: ``CORE``, ``PRO``, or ``ADVANCED``. Serverless pipelines require
+          ``ADVANCED``.
         :param environment: :class:`PipelinesEnvironment` (optional)
           Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
@@ -666,6 +698,7 @@
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
           execution.
         :param run_as: :class:`RunAs` (optional)
+          The user or service principal that the pipeline runs as.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
@@ -684,6 +717,8 @@
           Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
           must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
           deprecated for pipeline creation in favor of the ``schema`` field.
+        :param testing: :class:`PipelineTesting` (optional)
+          Test configuration for this pipeline. Used only by test-only updates.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)

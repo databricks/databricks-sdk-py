@@ -36,12 +36,13 @@
             # cleanup
             w.queries.delete(id=query.id)
 
-        Creates a query.
+        Creates a query. The caller becomes the owner of the new query.
 
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
           query's display name conflicts with an existing query's display name.
         :param query: :class:`CreateQueryRequestQuery` (optional)
+          The query to create. A display name and query text are required.
 
         :returns: :class:`Query`
         
@@ -53,6 +54,7 @@
         permanently deleted after 30 days.
 
         :param id: str
+          UUID of the query to move to the trash.
 
 
         
@@ -90,6 +92,7 @@
         Gets a query.
 
         :param id: str
+          UUID of the query to fetch.
 
         :returns: :class:`Query`
         
@@ -100,7 +103,9 @@
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
 
         :param page_size: int (optional)
+          Maximum number of queries to return per page. Values above 100 are coerced to 100.
         :param page_token: str (optional)
+          Token from the ``next_page_token`` of a previous response. Omit it to fetch the first page.
 
         :returns: Iterator over :class:`ListQueryObjectsResponseQuery`
         
@@ -154,10 +159,16 @@
             # cleanup
             w.queries.delete(id=query.id)
 
-        Updates a query.
+        Updates the fields of a query named in ``update_mask``. Changing ``owner_user_name`` requires
+        workspace admin privileges. Changing ``run_as_mode`` requires CAN MANAGE permission on the query, and
+        only the query owner can switch it to ``OWNER``.
 
         :param id: str
+          UUID of the query to update.
         :param update_mask: str
+          Comma-separated list of the query fields to update, such as the display name or query text. Fields
+          not listed keep their current values.
+
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
           ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
@@ -168,9 +179,10 @@
           fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
           API changes in the future.
         :param auto_resolve_display_name: bool (optional)
-          If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
-          alert's display name conflicts with an existing alert's display name.
+          If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
+          query's display name conflicts with an existing query's display name.
         :param query: :class:`UpdateQueryRequestQuery` (optional)
+          Query fields to update. Only the fields named in ``update_mask`` are changed.
 
         :returns: :class:`Query`
         

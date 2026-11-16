@@ -458,6 +458,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DestinationType
 
+   The kind of destination that notifications are sent to.
+
    .. py:attribute:: DATABRICKS_APP_SLACK
       :value: "DATABRICKS_APP_SLACK"
 

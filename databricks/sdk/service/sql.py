@@ -1620,6 +1620,9 @@ class CreateAlertRequestAlert:
 
 @dataclass
 class CreateQueryRequestQuery:
+    """A saved Databricks SQL query. A query stores the SQL text, the SQL warehouse it runs on, its
+    parameters, and metadata such as the display name, description, owner, and tags."""
+
     apply_auto_limit: Optional[bool] = None
     """Whether to apply a 1000 row limit to the query result."""
 
@@ -1642,12 +1645,16 @@ class CreateQueryRequestQuery:
     """Text of the query to be run."""
 
     run_as_mode: Optional[RunAsMode] = None
-    """Sets the "Run as" role for the object."""
+    """Whose credentials the query runs with when it is shared. ``VIEWER`` uses the credentials of the
+    user running the query. ``OWNER`` uses the owner's credentials where the product supports that,
+    such as for legacy alerts and jobs. When omitted on create, the workspace default applies. A
+    workspace admin can disallow ``OWNER``."""
 
     schema: Optional[str] = None
     """Name of the schema where this query will be executed."""
 
     tags: Optional[List[str]] = None
+    """Tags attached to the query. Tags appear in the query list and can be used to filter it."""
 
     warehouse_id: Optional[str] = None
     """ID of the SQL warehouse attached to the query."""
@@ -2163,8 +2170,11 @@ class DatePrecision(Enum):
 @dataclass
 class DateRange:
     start: str
+    """Start of the range in the format ``yyyy-MM-dd``, optionally followed by a time as `` HH:mm`` or
+    `` HH:mm:ss``."""
 
     end: str
+    """End of the range, in the same format as ``start``."""
 
     def as_dict(self) -> dict:
         """Serializes the DateRange into a dictionary suitable for use as a JSON request body."""
@@ -2203,6 +2213,8 @@ class DateRangeValue:
     (YYYY-MM-DD)."""
 
     start_day_of_week: Optional[int] = None
+    """Day the week starts on for week-based dynamic ranges such as ``THIS_WEEK`` and ``LAST_WEEK``,
+    from 0 (Sunday) to 6 (Saturday). Defaults to 0."""
 
     def as_dict(self) -> dict:
         """Serializes the DateRangeValue into a dictionary suitable for use as a JSON request body."""
@@ -2264,7 +2276,8 @@ class DateRangeValueDynamicDateRange(Enum):
 @dataclass
 class DateValue:
     date_value: Optional[str] = None
-    """Manually specified date-time value."""
+    """Manually specified date-time value in the format ``yyyy-MM-dd``, optionally followed by a time
+    as `` HH:mm`` or `` HH:mm:ss``."""
 
     dynamic_date_value: Optional[DateValueDynamicDate] = None
     """Dynamic date-time value based on current date-time."""
@@ -4337,8 +4350,10 @@ class ListQueriesResponse:
 @dataclass
 class ListQueryObjectsResponse:
     next_page_token: Optional[str] = None
+    """Token to pass as ``page_token`` to fetch the next page. Omitted when there are no more pages."""
 
     results: Optional[List[ListQueryObjectsResponseQuery]] = None
+    """Queries on this page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListQueryObjectsResponse into a dictionary suitable for use as a JSON request body."""
@@ -4369,6 +4384,9 @@ class ListQueryObjectsResponse:
 
 @dataclass
 class ListQueryObjectsResponseQuery:
+    """A saved Databricks SQL query. A query stores the SQL text, the SQL warehouse it runs on, its
+    parameters, and metadata such as the display name, description, owner, and tags."""
+
     apply_auto_limit: Optional[bool] = None
     """Whether to apply a 1000 row limit to the query result."""
 
@@ -4403,12 +4421,16 @@ class ListQueryObjectsResponseQuery:
     """Text of the query to be run."""
 
     run_as_mode: Optional[RunAsMode] = None
-    """Sets the "Run as" role for the object."""
+    """Whose credentials the query runs with when it is shared. ``VIEWER`` uses the credentials of the
+    user running the query. ``OWNER`` uses the owner's credentials where the product supports that,
+    such as for legacy alerts and jobs. When omitted on create, the workspace default applies. A
+    workspace admin can disallow ``OWNER``."""
 
     schema: Optional[str] = None
     """Name of the schema where this query will be executed."""
 
     tags: Optional[List[str]] = None
+    """Tags attached to the query. Tags appear in the query list and can be used to filter it."""
 
     update_time: Optional[str] = None
     """Timestamp when this query was last updated."""
@@ -4671,6 +4693,7 @@ class MultiValuesOptions:
 @dataclass
 class NumericValue:
     value: Optional[float] = None
+    """Number substituted for the parameter marker when the query runs."""
 
     def as_dict(self) -> dict:
         """Serializes the NumericValue into a dictionary suitable for use as a JSON request body."""
@@ -4873,6 +4896,9 @@ class PlansState(Enum):
 
 @dataclass
 class Query:
+    """A saved Databricks SQL query. A query stores the SQL text, the SQL warehouse it runs on, its
+    parameters, and metadata such as the display name, description, owner, and tags."""
+
     apply_auto_limit: Optional[bool] = None
     """Whether to apply a 1000 row limit to the query result."""
 
@@ -4910,12 +4936,16 @@ class Query:
     """Text of the query to be run."""
 
     run_as_mode: Optional[RunAsMode] = None
-    """Sets the "Run as" role for the object."""
+    """Whose credentials the query runs with when it is shared. ``VIEWER`` uses the credentials of the
+    user running the query. ``OWNER`` uses the owner's credentials where the product supports that,
+    such as for legacy alerts and jobs. When omitted on create, the workspace default applies. A
+    workspace admin can disallow ``OWNER``."""
 
     schema: Optional[str] = None
     """Name of the schema where this query will be executed."""
 
     tags: Optional[List[str]] = None
+    """Tags attached to the query. Tags appear in the query list and can be used to filter it."""
 
     update_time: Optional[str] = None
     """Timestamp when this query was last updated."""
@@ -6374,6 +6404,10 @@ class StatementParameterListItem:
 
 @dataclass
 class StatementResponse:
+    """Statement Execution works with all SQL warehouse types, including Lakehouse//RT. Statement
+    Execution (Lakehouse//RT) is optimized for Lakehouse//RT warehouses, with lower latency and
+    higher concurrency, and takes ``warehouse_id`` as a path parameter."""
+
     manifest: Optional[ResultManifest] = None
 
     result: Optional[ResultData] = None
@@ -6843,6 +6877,8 @@ class TerminationReasonType(Enum):
 @dataclass
 class TextValue:
     value: Optional[str] = None
+    """Text substituted for the parameter marker when the query runs. Quotation marks are added around
+    the value automatically."""
 
     def as_dict(self) -> dict:
         """Serializes the TextValue into a dictionary suitable for use as a JSON request body."""
@@ -7010,6 +7046,9 @@ class UpdateAlertRequestAlert:
 
 @dataclass
 class UpdateQueryRequestQuery:
+    """A saved Databricks SQL query. A query stores the SQL text, the SQL warehouse it runs on, its
+    parameters, and metadata such as the display name, description, owner, and tags."""
+
     apply_auto_limit: Optional[bool] = None
     """Whether to apply a 1000 row limit to the query result."""
 
@@ -7032,12 +7071,16 @@ class UpdateQueryRequestQuery:
     """Text of the query to be run."""
 
     run_as_mode: Optional[RunAsMode] = None
-    """Sets the "Run as" role for the object."""
+    """Whose credentials the query runs with when it is shared. ``VIEWER`` uses the credentials of the
+    user running the query. ``OWNER`` uses the owner's credentials where the product supports that,
+    such as for legacy alerts and jobs. When omitted on create, the workspace default applies. A
+    workspace admin can disallow ``OWNER``."""
 
     schema: Optional[str] = None
     """Name of the schema where this query will be executed."""
 
     tags: Optional[List[str]] = None
+    """Tags attached to the query. Tags appear in the query list and can be used to filter it."""
 
     warehouse_id: Optional[str] = None
     """ID of the SQL warehouse attached to the query."""
@@ -8724,12 +8767,13 @@ class QueriesAPI:
     def create(
         self, *, auto_resolve_display_name: Optional[bool] = None, query: Optional[CreateQueryRequestQuery] = None
     ) -> Query:
-        """Creates a query.
+        """Creates a query. The caller becomes the owner of the new query.
 
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
           query's display name conflicts with an existing query's display name.
         :param query: :class:`CreateQueryRequestQuery` (optional)
+          The query to create. A display name and query text are required.
 
         :returns: :class:`Query`
         """
@@ -8757,6 +8801,7 @@ class QueriesAPI:
         permanently deleted after 30 days.
 
         :param id: str
+          UUID of the query to move to the trash.
 
 
         """
@@ -8775,6 +8820,7 @@ class QueriesAPI:
         """Gets a query.
 
         :param id: str
+          UUID of the query to fetch.
 
         :returns: :class:`Query`
         """
@@ -8797,7 +8843,9 @@ class QueriesAPI:
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
 
         :param page_size: int (optional)
+          Maximum number of queries to return per page. Values above 100 are coerced to 100.
         :param page_token: str (optional)
+          Token from the ``next_page_token`` of a previous response. Omit it to fetch the first page.
 
         :returns: Iterator over :class:`ListQueryObjectsResponseQuery`
         """
@@ -8866,10 +8914,16 @@ class QueriesAPI:
         auto_resolve_display_name: Optional[bool] = None,
         query: Optional[UpdateQueryRequestQuery] = None,
     ) -> Query:
-        """Updates a query.
+        """Updates the fields of a query named in ``update_mask``. Changing ``owner_user_name`` requires
+        workspace admin privileges. Changing ``run_as_mode`` requires CAN MANAGE permission on the query, and
+        only the query owner can switch it to ``OWNER``.
 
         :param id: str
+          UUID of the query to update.
         :param update_mask: str
+          Comma-separated list of the query fields to update, such as the display name or query text. Fields
+          not listed keep their current values.
+
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
           ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
@@ -8880,9 +8934,10 @@ class QueriesAPI:
           fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
           API changes in the future.
         :param auto_resolve_display_name: bool (optional)
-          If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
-          alert's display name conflicts with an existing alert's display name.
+          If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
+          query's display name conflicts with an existing query's display name.
         :param query: :class:`UpdateQueryRequestQuery` (optional)
+          Query fields to update. Only the fields named in ``update_mask`` are changed.
 
         :returns: :class:`Query`
         """
@@ -9515,6 +9570,13 @@ class StatementExecutionAPI:
 
     We suggest beginning with the `Databricks SQL Statement Execution API tutorial
     <https://docs.databricks.com/sql/api/sql-execution-tutorial.html>`__.
+
+    **Lakehouse//RT warehouses**
+
+    You can run statements on `Lakehouse//RT
+    <https://docs.databricks.com/compute/sql-warehouse/real-time.html>`__ warehouses with this API. For lower
+    latency and higher concurrency, use version 2 of this API, Statement Execution (Lakehouse//RT), instead.
+    It works the same way, except that ``warehouse_id`` is a path parameter.
 
     **Overview of statement execution and result fetching**
 

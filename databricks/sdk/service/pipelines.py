@@ -2227,6 +2227,7 @@ class ListUpdatesResponse:
     """If present, then this token can be used in a subsequent request to fetch the previous page."""
 
     updates: Optional[List[UpdateInfo]] = None
+    """The updates for the pipeline, ordered with the newest update first."""
 
     def as_dict(self) -> dict:
         """Serializes the ListUpdatesResponse into a dictionary suitable for use as a JSON request body."""
@@ -3740,16 +3741,19 @@ class PipelinePermissionsDescription:
 @dataclass
 class PipelineSpec:
     budget_policy_id: Optional[str] = None
-    """Budget policy of this pipeline."""
+    """ID (UUID) of the serverless budget policy applied to this pipeline. Only supported for
+    serverless pipelines."""
 
     catalog: Optional[str] = None
-    """A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified,
-    tables in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
-    ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
-    Catalog."""
+    """A catalog in Unity Catalog to publish data from this pipeline to. Tables are published to the
+    schema set in ``schema`` (or the legacy ``target``) inside this catalog, for example
+    ``catalog``.``schema``.``table``; source code can also use fully qualified names to write to
+    other schemas and catalogs. If ``catalog`` is not specified, the pipeline uses the legacy Hive
+    metastore."""
 
     channel: Optional[str] = None
-    """SDP Release Channel that specifies which version to use."""
+    """Release channel that selects the pipeline runtime version: ``CURRENT`` (the default) or
+    ``PREVIEW``, which runs on the upcoming runtime release."""
 
     clusters: Optional[List[PipelineCluster]] = None
     """Cluster settings for this pipeline deployment. Applies to classic (non-serverless) pipelines.
@@ -3774,7 +3778,8 @@ class PipelineSpec:
     Deprecated: set development mode for each update instead."""
 
     edition: Optional[str] = None
-    """Pipeline product edition."""
+    """Pipeline product edition: ``CORE``, ``PRO``, or ``ADVANCED``. Serverless pipelines require
+    ``ADVANCED``."""
 
     environment: Optional[PipelinesEnvironment] = None
     """Environment specification for this pipeline used to install dependencies."""
@@ -3845,6 +3850,9 @@ class PipelineSpec:
     ``target`` must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy
     field is deprecated for pipeline creation in favor of the ``schema`` field."""
 
+    testing: Optional[PipelineTesting] = None
+    """Test configuration for this pipeline. Used only by test-only updates."""
+
     trigger: Optional[PipelineTrigger] = None
     """Which pipeline trigger to use. Deprecated: Use ``continuous`` instead."""
 
@@ -3910,6 +3918,8 @@ class PipelineSpec:
             body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
+        if self.testing:
+            body["testing"] = self.testing.as_dict()
         if self.trigger:
             body["trigger"] = self.trigger.as_dict()
         if self.usage_policy_id is not None:
@@ -3975,6 +3985,8 @@ class PipelineSpec:
             body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
+        if self.testing:
+            body["testing"] = self.testing
         if self.trigger:
             body["trigger"] = self.trigger
         if self.usage_policy_id is not None:
@@ -4013,6 +4025,7 @@ class PipelineSpec:
             storage=d.get("storage", None),
             tags=d.get("tags", None),
             target=d.get("target", None),
+            testing=_from_dict(d, "testing", PipelineTesting),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
             usage_policy_id=d.get("usage_policy_id", None),
         )
@@ -4057,6 +4070,7 @@ class PipelineStateInfo:
     owner."""
 
     state: Optional[PipelineState] = None
+    """The current state of the pipeline."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineStateInfo into a dictionary suitable for use as a JSON request body."""
@@ -4120,6 +4134,140 @@ class PipelineStateInfoHealth(Enum):
 
     HEALTHY = "HEALTHY"
     UNHEALTHY = "UNHEALTHY"
+
+
+@dataclass
+class PipelineTestEnvironment:
+    """The packages that a pipeline's tests need in addition to the pipeline's environment."""
+
+    dependencies: Optional[List[str]] = None
+    """A list of files that declare the packages the tests need: a project folder, a requirements file,
+    or a wheel, in the workspace or a UC volume. A project folder can take ``--editable`` and an
+    extra, for example ``--editable /Workspace/Users/someone@example.com/orders[test]``. Package
+    names, such as ``faker==33.0``, and URLs are rejected."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipelineTestEnvironment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = [v for v in self.dependencies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PipelineTestEnvironment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = self.dependencies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineTestEnvironment:
+        """Deserializes the PipelineTestEnvironment from a dictionary."""
+        return cls(dependencies=d.get("dependencies", None))
+
+
+@dataclass
+class PipelineTestOptions:
+    """Options for selecting the tests that a test-only update runs."""
+
+    pytest_args: Optional[List[str]] = None
+    """A list of arguments to pass to pytest, for example ``["-m", "slow"]``. Only ``-k`` and ``-m``
+    are accepted, each followed by its value. Other arguments are rejected."""
+
+    test_selection: Optional[List[str]] = None
+    """A list of test files or folders to run, as absolute workspace paths inside the pipeline's test
+    sources. A path outside the test sources is rejected. To run one test, append ``::`` and the
+    test name to a file path, for example ``/Workspace/orders/tests/test_orders.py::test_backfill``.
+    When empty, every test in the test sources runs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipelineTestOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.pytest_args:
+            body["pytest_args"] = [v for v in self.pytest_args]
+        if self.test_selection:
+            body["test_selection"] = [v for v in self.test_selection]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PipelineTestOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.pytest_args:
+            body["pytest_args"] = self.pytest_args
+        if self.test_selection:
+            body["test_selection"] = self.test_selection
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineTestOptions:
+        """Deserializes the PipelineTestOptions from a dictionary."""
+        return cls(pytest_args=d.get("pytest_args", None), test_selection=d.get("test_selection", None))
+
+
+@dataclass
+class PipelineTestSource:
+    """A workspace location that holds pipeline tests."""
+
+    glob: Optional[PathPattern] = None
+    """An absolute workspace path to a test file, or to a folder followed by ``/**``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipelineTestSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.glob:
+            body["glob"] = self.glob.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PipelineTestSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.glob:
+            body["glob"] = self.glob
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineTestSource:
+        """Deserializes the PipelineTestSource from a dictionary."""
+        return cls(glob=_from_dict(d, "glob", PathPattern))
+
+
+@dataclass
+class PipelineTesting:
+    """Test configuration for a pipeline."""
+
+    environment: Optional[PipelineTestEnvironment] = None
+    """Packages that only the tests need. Test-only updates install them in addition to the pipeline's
+    ``environment``. Other updates do not."""
+
+    sources: Optional[List[PipelineTestSource]] = None
+    """The workspace files and folders that hold the pipeline's tests. They must not overlap the
+    pipeline's ``libraries``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipelineTesting into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
+        if self.sources:
+            body["sources"] = [v.as_dict() for v in self.sources]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PipelineTesting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.environment:
+            body["environment"] = self.environment
+        if self.sources:
+            body["sources"] = self.sources
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineTesting:
+        """Deserializes the PipelineTesting from a dictionary."""
+        return cls(
+            environment=_from_dict(d, "environment", PipelineTestEnvironment),
+            sources=_repeated_dict(d, "sources", PipelineTestSource),
+        )
 
 
 @dataclass
@@ -5165,6 +5313,7 @@ class StartUpdateCause(Enum):
 @dataclass
 class StartUpdateResponse:
     update_id: Optional[str] = None
+    """The ID of the update that was started."""
 
     def as_dict(self) -> dict:
         """Serializes the StartUpdateResponse into a dictionary suitable for use as a JSON request body."""
@@ -5813,6 +5962,9 @@ class UpdateInfo:
     state: Optional[UpdateInfoState] = None
     """The update state."""
 
+    test_only: Optional[bool] = None
+    """If true, this update is a test-only update. Absent for other updates."""
+
     update_id: Optional[str] = None
     """The ID of this update."""
 
@@ -5849,6 +6001,8 @@ class UpdateInfo:
             body["refresh_selection_by_path"] = [v for v in self.refresh_selection_by_path]
         if self.state is not None:
             body["state"] = self.state.value
+        if self.test_only is not None:
+            body["test_only"] = self.test_only
         if self.update_id is not None:
             body["update_id"] = self.update_id
         if self.validate_only is not None:
@@ -5884,6 +6038,8 @@ class UpdateInfo:
             body["refresh_selection_by_path"] = self.refresh_selection_by_path
         if self.state is not None:
             body["state"] = self.state
+        if self.test_only is not None:
+            body["test_only"] = self.test_only
         if self.update_id is not None:
             body["update_id"] = self.update_id
         if self.validate_only is not None:
@@ -5907,6 +6063,7 @@ class UpdateInfo:
             refresh_selection=d.get("refresh_selection", None),
             refresh_selection_by_path=d.get("refresh_selection_by_path", None),
             state=_enum(d, "state", UpdateInfoState),
+            test_only=d.get("test_only", None),
             update_id=d.get("update_id", None),
             validate_only=d.get("validate_only", None),
         )
@@ -5948,10 +6105,13 @@ class UpdateMode(Enum):
 @dataclass
 class UpdateStateInfo:
     creation_time: Optional[str] = None
+    """The time when the update was created, in ISO 8601 format."""
 
     state: Optional[UpdateStateInfoState] = None
+    """The state of the update."""
 
     update_id: Optional[str] = None
+    """The ID of the update."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateStateInfo into a dictionary suitable for use as a JSON request body."""
@@ -6082,6 +6242,7 @@ class PipelinesAPI:
         used by subsequent dev-mode updates.
 
         :param pipeline_id: str
+          The ID of the pipeline to apply the environment to.
 
         :returns: :class:`ApplyEnvironmentRequestResponse`
         """
@@ -6132,6 +6293,7 @@ class PipelinesAPI:
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
+        testing: Optional[PipelineTesting] = None,
         trigger: Optional[PipelineTrigger] = None,
         usage_policy_id: Optional[str] = None,
     ) -> ClonePipelineResponse:
@@ -6144,14 +6306,16 @@ class PipelinesAPI:
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
         :param budget_policy_id: str (optional)
-          Budget policy of this pipeline.
+          ID (UUID) of the serverless budget policy applied to this pipeline. Only supported for serverless
+          pipelines.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
-          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
-          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
-          Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. Tables are published to the schema
+          set in ``schema`` (or the legacy ``target``) inside this catalog, for example
+          ``catalog``.``schema``.``table``; source code can also use fully qualified names to write to other
+          schemas and catalogs. If ``catalog`` is not specified, the pipeline uses the legacy Hive metastore.
         :param channel: str (optional)
-          SDP Release Channel that specifies which version to use.
+          Release channel that selects the pipeline runtime version: ``CURRENT`` (the default) or ``PREVIEW``,
+          which runs on the upcoming runtime release.
         :param clone_mode: :class:`CloneMode` (optional)
           The type of clone to perform. Currently, only deep copies are supported
         :param clusters: List[:class:`PipelineCluster`] (optional)
@@ -6172,7 +6336,8 @@ class PipelinesAPI:
 
           Deprecated: set development mode for each update instead.
         :param edition: str (optional)
-          Pipeline product edition.
+          Pipeline product edition: ``CORE``, ``PRO``, or ``ADVANCED``. Serverless pipelines require
+          ``ADVANCED``.
         :param environment: :class:`PipelinesEnvironment` (optional)
           Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
@@ -6225,6 +6390,8 @@ class PipelinesAPI:
           Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
           must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
           deprecated for pipeline creation in favor of the ``schema`` field.
+        :param testing: :class:`PipelineTesting` (optional)
+          Test configuration for this pipeline. Used only by test-only updates.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
@@ -6296,6 +6463,8 @@ class PipelinesAPI:
             body["tags"] = tags
         if target is not None:
             body["target"] = target
+        if testing is not None:
+            body["testing"] = testing.as_dict()
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
         if usage_policy_id is not None:
@@ -6347,6 +6516,7 @@ class PipelinesAPI:
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
+        testing: Optional[PipelineTesting] = None,
         trigger: Optional[PipelineTrigger] = None,
         usage_policy_id: Optional[str] = None,
     ) -> CreatePipelineResponse:
@@ -6356,14 +6526,16 @@ class PipelinesAPI:
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
         :param budget_policy_id: str (optional)
-          Budget policy of this pipeline.
+          ID (UUID) of the serverless budget policy applied to this pipeline. Only supported for serverless
+          pipelines.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
-          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
-          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
-          Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. Tables are published to the schema
+          set in ``schema`` (or the legacy ``target``) inside this catalog, for example
+          ``catalog``.``schema``.``table``; source code can also use fully qualified names to write to other
+          schemas and catalogs. If ``catalog`` is not specified, the pipeline uses the legacy Hive metastore.
         :param channel: str (optional)
-          SDP Release Channel that specifies which version to use.
+          Release channel that selects the pipeline runtime version: ``CURRENT`` (the default) or ``PREVIEW``,
+          which runs on the upcoming runtime release.
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment. Applies to classic (non-serverless) pipelines. Omit
           this field when ``serverless`` is ``true``.
@@ -6382,8 +6554,11 @@ class PipelinesAPI:
 
           Deprecated: set development mode for each update instead.
         :param dry_run: bool (optional)
+          If true, no pipeline is created. The response contains the settings that would be applied, with
+          server defaults filled in, instead of a pipeline ID.
         :param edition: str (optional)
-          Pipeline product edition.
+          Pipeline product edition: ``CORE``, ``PRO``, or ``ADVANCED``. Serverless pipelines require
+          ``ADVANCED``.
         :param environment: :class:`PipelinesEnvironment` (optional)
           Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
@@ -6419,6 +6594,8 @@ class PipelinesAPI:
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
           execution.
         :param run_as: :class:`RunAs` (optional)
+          The user or service principal that the pipeline runs as. If not specified, the pipeline runs as the
+          user who created the pipeline.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
@@ -6437,6 +6614,8 @@ class PipelinesAPI:
           Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
           must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
           deprecated for pipeline creation in favor of the ``schema`` field.
+        :param testing: :class:`PipelineTesting` (optional)
+          Test configuration for this pipeline. Used only by test-only updates.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
@@ -6510,6 +6689,8 @@ class PipelinesAPI:
             body["tags"] = tags
         if target is not None:
             body["target"] = target
+        if testing is not None:
+            body["testing"] = testing.as_dict()
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
         if usage_policy_id is not None:
@@ -6531,6 +6712,7 @@ class PipelinesAPI:
         pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
+          The ID of the pipeline to delete.
         :param cascade: bool (optional)
           If false, pipeline deletion will not cascade to its datasets (MVs, STs, Views). By default, this
           parameter will be true and all tables will be deleted with the pipeline.
@@ -6557,9 +6739,11 @@ class PipelinesAPI:
         self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", query=query, headers=headers)
 
     def get(self, pipeline_id: str) -> GetPipelineResponse:
-        """Get a pipeline.
+        """Returns the details of a pipeline, including its settings, current state, and the status of its most
+        recent updates.
 
         :param pipeline_id: str
+          The ID of the pipeline.
 
         :returns: :class:`GetPipelineResponse`
         """
@@ -6843,13 +7027,17 @@ class PipelinesAPI:
         replace_where_overrides: Optional[List[ReplaceWhereOverride]] = None,
         reset_checkpoint_selection: Optional[List[str]] = None,
         rewind_spec: Optional[RewindSpec] = None,
+        test_only: Optional[bool] = None,
+        test_options: Optional[PipelineTestOptions] = None,
         validate_only: Optional[bool] = None,
     ) -> StartUpdateResponse:
         """Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
 
         :param pipeline_id: str
+          The ID of the pipeline to start an update for.
         :param cause: :class:`StartUpdateCause` (optional)
+          What triggered this update, as recorded in the update's ``cause``. Defaults to ``API_CALL``.
         :param development: bool (optional)
           Whether the update is started in the development mode. This is recommended for interactive
           development and testing. Reuses compute for faster iteration and disables automatic retries. Not
@@ -6879,6 +7067,14 @@ class PipelinesAPI:
           and full_refresh_selection.
         :param rewind_spec: :class:`RewindSpec` (optional)
           The information about the requested rewind operation. If specified this is a rewind mode update.
+        :param test_only: bool (optional)
+          If true, this is a test-only update: it runs the pipeline's tests and does not update the pipeline's
+          datasets. A failing test does not stop the other tests. The update is ``COMPLETED`` if at least one
+          test runs and no test fails or errors. Otherwise the update is ``FAILED``, including when no tests
+          are found. Cannot be combined with ``validate_only``, ``explore_only``, or ``rewind_spec``.
+        :param test_options: :class:`PipelineTestOptions` (optional)
+          Options for selecting the tests that this test-only update runs. Requires ``test_only``. When
+          absent, every test in the pipeline's test sources runs.
         :param validate_only: bool (optional)
           If true, this update only validates the correctness of pipeline source code but does not materialize
           or publish any datasets.
@@ -6909,6 +7105,10 @@ class PipelinesAPI:
             body["reset_checkpoint_selection"] = [v for v in reset_checkpoint_selection]
         if rewind_spec is not None:
             body["rewind_spec"] = rewind_spec.as_dict()
+        if test_only is not None:
+            body["test_only"] = test_only
+        if test_options is not None:
+            body["test_options"] = test_options.as_dict()
         if validate_only is not None:
             body["validate_only"] = validate_only
         headers = {
@@ -6928,6 +7128,7 @@ class PipelinesAPI:
         request is a no-op.
 
         :param pipeline_id: str
+          The ID of the pipeline to stop.
 
         :returns:
           Long-running operation waiter for :class:`GetPipelineResponse`.
@@ -6984,6 +7185,7 @@ class PipelinesAPI:
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
+        testing: Optional[PipelineTesting] = None,
         trigger: Optional[PipelineTrigger] = None,
         usage_policy_id: Optional[str] = None,
     ):
@@ -6994,14 +7196,16 @@ class PipelinesAPI:
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name has changed and conflicts the name of another pipeline.
         :param budget_policy_id: str (optional)
-          Budget policy of this pipeline.
+          ID (UUID) of the serverless budget policy applied to this pipeline. Only supported for serverless
+          pipelines.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
-          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
-          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
-          Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. Tables are published to the schema
+          set in ``schema`` (or the legacy ``target``) inside this catalog, for example
+          ``catalog``.``schema``.``table``; source code can also use fully qualified names to write to other
+          schemas and catalogs. If ``catalog`` is not specified, the pipeline uses the legacy Hive metastore.
         :param channel: str (optional)
-          SDP Release Channel that specifies which version to use.
+          Release channel that selects the pipeline runtime version: ``CURRENT`` (the default) or ``PREVIEW``,
+          which runs on the upcoming runtime release.
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment. Applies to classic (non-serverless) pipelines. Omit
           this field when ``serverless`` is ``true``.
@@ -7020,7 +7224,8 @@ class PipelinesAPI:
 
           Deprecated: set development mode for each update instead.
         :param edition: str (optional)
-          Pipeline product edition.
+          Pipeline product edition: ``CORE``, ``PRO``, or ``ADVANCED``. Serverless pipelines require
+          ``ADVANCED``.
         :param environment: :class:`PipelinesEnvironment` (optional)
           Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
@@ -7059,6 +7264,7 @@ class PipelinesAPI:
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
           execution.
         :param run_as: :class:`RunAs` (optional)
+          The user or service principal that the pipeline runs as.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
@@ -7077,6 +7283,8 @@ class PipelinesAPI:
           Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
           must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
           deprecated for pipeline creation in favor of the ``schema`` field.
+        :param testing: :class:`PipelineTesting` (optional)
+          Test configuration for this pipeline. Used only by test-only updates.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
@@ -7150,6 +7358,8 @@ class PipelinesAPI:
             body["tags"] = tags
         if target is not None:
             body["target"] = target
+        if testing is not None:
+            body["testing"] = testing.as_dict()
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
         if usage_policy_id is not None:

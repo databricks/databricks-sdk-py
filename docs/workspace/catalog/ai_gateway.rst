@@ -90,7 +90,8 @@
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param model_service_id: str
-          Name for the model service, e.g. "my_model_service".
+          Name of the model service within the parent schema. The name must not contain periods, spaces,
+          forward slashes, percent signs, or control characters, and it is stored in lowercase.
 
         :returns: :class:`ModelService`
         
@@ -499,8 +500,9 @@
 
         :param name: str
           Resource name of the model service. Format: ``model-services/{catalog}.{schema}.{model_service}``.
-          Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
-          ``parent`` + ``model_service_id``; required and immutable on Update/Get/Delete.
+          Each ``{...}`` component is capped at 255 characters individually. The server derives the name on
+          Create from ``parent`` and ``model_service_id``; it is required and immutable on Update, Get, and
+          Delete.
         :param model_service: :class:`ModelService`
           The model service with the updated field values. ``name`` identifies the resource
           (``model-services/{catalog}.{schema}.{model_service}``); only fields listed in ``update_mask`` are

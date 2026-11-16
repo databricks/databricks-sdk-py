@@ -12,7 +12,9 @@
     .. py:method:: create_message(space_id: str, conversation_id: str, content: str [, enable_visualization: Optional[bool]]) -> Wait[GenieMessage]
 
         Sends a new message in a chat-mode [conversation](:method:genie/startconversation). The AI response
-        uses all previously created messages in the conversation to respond.
+        uses all previously created messages in the conversation to respond. The message is processed
+        asynchronously. Poll [Get a conversation message](:method:genie/getmessage) until its ``status`` is
+        ``COMPLETED``, ``FAILED``, or ``CANCELLED``.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is started.
@@ -52,25 +54,27 @@
         Creates a Genie space from a serialized payload.
 
         :param warehouse_id: str
-          Warehouse to associate with the new space
+          ID of the SQL warehouse that runs the queries Genie generates for the space, as a 16-character
+          hexadecimal string.
         :param serialized_space: str
-          The contents of the Genie Space in serialized string form. Use the [Get Genie
-          Space](:method:genie/getspace) API to retrieve an example response, which includes the
-          ``serialized_space`` field. This field provides the structure of the JSON string that represents the
-          space's layout and components.
+          Configuration of the new space as a JSON string. To copy an existing space, use the value that [Get
+          Genie Space](:method:genie/getspace) returns when ``include_serialized_space`` is true. For the JSON
+          format and its validation rules, see
+          https://docs.databricks.com/aws/en/genie-agents/conversation-api.
         :param description: str (optional)
-          Optional description
+          Description of the space, up to 16384 bytes.
         :param parent_path: str (optional)
-          Parent folder path where the space will be registered
+          Path of the workspace folder in which to create the space.
         :param title: str (optional)
-          Optional title override
+          Display name of the new space. A default name is assigned when omitted.
 
         :returns: :class:`GenieSpace`
         
 
     .. py:method:: delete_conversation(space_id: str, conversation_id: str)
 
-        Delete a conversation.
+        Deletes a conversation and all of its messages. Users can delete their own conversations. Deleting
+        another user's conversation requires at least CAN MANAGE permission on the space.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is located.
@@ -302,8 +306,8 @@
 
     .. py:method:: get_message_attachment_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
 
-        Get the result of SQL query if the message has a query attachment. This is only available if a message
-        has a query attachment and the message status is ``EXECUTING_QUERY`` OR ``COMPLETED``.
+        Gets the result of the SQL query in a message's query attachment. The result is available only while
+        the message status is ``EXECUTING_QUERY`` or ``COMPLETED``.
 
         :param space_id: str
           Genie space ID
@@ -356,8 +360,8 @@
         :param space_id: str
           The ID associated with the Genie space
         :param include_serialized_space: bool (optional)
-          Whether to include the serialized space export in the response. Requires at least CAN EDIT
-          permission on the space.
+          Whether to include the serialized space export in the response. When true, the response also carries
+          the configuration ``etag``. Requires at least CAN EDIT permission on the space.
 
         :returns: :class:`GenieSpace`
         
@@ -398,7 +402,9 @@
 
     .. py:method:: list_conversations(space_id: str [, include_all: Optional[bool], page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationsResponse
 
-        Get a list of conversations in a Genie Space.
+        Lists the conversations in a Genie space. By default the list contains only the caller's own
+        conversations, ordered by most recent activity. With ``include_all``, it contains every user's
+        conversations in the space, ordered by creation time with the newest first.
 
         :param space_id: str
           The ID of the Genie space to retrieve conversations from.
@@ -433,7 +439,7 @@
 
     .. py:method:: list_spaces( [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListSpacesResponse
 
-        Get list of Genie Spaces.
+        Lists the Genie spaces that the caller can access, most recently updated first.
 
         :param page_size: int (optional)
           Maximum number of spaces to return per page
@@ -463,7 +469,9 @@
 
     .. py:method:: start_conversation(space_id: str, content: str [, enable_visualization: Optional[bool]]) -> Wait[GenieMessage]
 
-        Starts a new chat-mode conversation and sends its first message.
+        Starts a new chat-mode conversation and sends its first message. The message is processed
+        asynchronously. Poll [Get a conversation message](:method:genie/getmessage) until its ``status`` is
+        ``COMPLETED``, ``FAILED``, or ``CANCELLED``.
 
         :param space_id: str
           The ID associated with the Genie space where you want to start a conversation.
@@ -492,26 +500,29 @@
 
     .. py:method:: update_space(space_id: str [, description: Optional[str], etag: Optional[str], parent_path: Optional[str], serialized_space: Optional[str], title: Optional[str], warehouse_id: Optional[str]]) -> GenieSpace
 
-        Updates a Genie space with a serialized payload.
+        Updates a Genie space. Replaces the whole configuration when ``serialized_space`` is set and changes
+        the title, description, warehouse or folder when those fields are set; omitted fields keep their
+        current values.
 
         :param space_id: str
           Genie space ID
         :param description: str (optional)
-          Optional description
+          New description for the space, up to 16384 bytes.
         :param etag: str (optional)
           ETag returned by a previous GET or UPDATE. When set, the update will fail if the space has been
           modified since. Omit to apply the update unconditionally.
         :param parent_path: str (optional)
           Parent workspace folder path to move this Genie space under.
         :param serialized_space: str (optional)
-          The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
-          Space](:method:genie/getspace) API to retrieve an example response, which includes the
-          ``serialized_space`` field. This field provides the structure of the JSON string that represents the
-          space's layout and components.
+          New configuration of the space as a JSON string. It replaces the whole configuration; when omitted,
+          the current configuration is kept. Start from the value that [Get Genie
+          Space](:method:genie/getspace) returns when ``include_serialized_space`` is true. For the JSON
+          format and its validation rules, see
+          https://docs.databricks.com/aws/en/genie-agents/conversation-api.
         :param title: str (optional)
-          Optional title override
+          New display name for the space. Cannot be empty or contain a slash.
         :param warehouse_id: str (optional)
-          Optional warehouse override
+          ID of the SQL warehouse that runs the queries Genie generates for the space.
 
         :returns: :class:`GenieSpace`
         
