@@ -80,6 +80,7 @@ class _BaseClient:
         debug_headers: Optional[bool] = False,
         clock: Optional[Clock] = None,
         streaming_buffer_size: int = 1024 * 1024,
+        http_adapter: Optional[requests.adapters.BaseAdapter] = None,
     ):  # 1MB
         """
         :param debug_truncate_bytes:
@@ -99,6 +100,7 @@ class _BaseClient:
         :param debug_headers: Whether to include debug headers in the request log.
         :param clock: Clock object to use for time-related operations.
         :param streaming_buffer_size: The size of the buffer to use for streaming responses.
+        :param http_adapter: Caller-owned requests transport shared by HTTP and HTTPS requests.
         """
 
         self._debug_truncate_bytes = debug_truncate_bytes or 96
@@ -114,11 +116,14 @@ class _BaseClient:
         # We don't use `max_retries` from HTTPAdapter to align with a more production-ready
         # retry strategy established in the Databricks SDK for Go. See _is_retryable and
         # @retried for more details.
-        http_adapter = requests.adapters.HTTPAdapter(
-            pool_connections=max_connections_per_pool or 20,
-            pool_maxsize=max_connection_pools or 20,
-            pool_block=pool_block,
-        )
+        if http_adapter is None:
+            http_adapter = requests.adapters.HTTPAdapter(
+                pool_connections=max_connections_per_pool or 20,
+                pool_maxsize=max_connection_pools or 20,
+                pool_block=pool_block,
+            )
+        else:
+            self._session.mount("http://", http_adapter)
         self._session.mount("https://", http_adapter)
 
         # Default to 60 seconds

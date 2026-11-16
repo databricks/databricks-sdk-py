@@ -39,6 +39,10 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class App:
+    """An app that runs on Databricks Apps. The app runs on managed compute in the workspace and is
+    deployed from a workspace folder or a Git repository. Each app acts as its own dedicated service
+    principal."""
+
     name: str
     """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
     It must be unique within the workspace."""
@@ -48,8 +52,12 @@ class App:
     the app compute."""
 
     app_status: Optional[ApplicationStatus] = None
+    """Status of the application process on the app compute, as reported by the app runtime."""
 
     budget_policy_id: Optional[str] = None
+    """ID of the serverless budget policy that the app's compute usage is attributed to. Budget
+    policies and usage policies are alternatives: set at most one of ``budget_policy_id`` and
+    ``usage_policy_id``."""
 
     compute_max_instances: Optional[int] = None
     """Maximum number of app instances the app is configured to run. Must be set together with
@@ -60,11 +68,15 @@ class App:
     ``compute_max_instances``."""
 
     compute_size: Optional[ComputeSize] = None
+    """Size of the compute instances the app runs on. Defaults to MEDIUM. Larger sizes provide more CPU
+    and memory at a higher hourly cost. See
+    https://docs.databricks.com/aws/en/dev-tools/databricks-apps/compute-size."""
 
     compute_status: Optional[ComputeStatus] = None
+    """Status of the compute that runs the app."""
 
     create_time: Optional[str] = None
-    """The creation time of the app. Formatted timestamp in ISO 6801."""
+    """The creation time of the app. Formatted timestamp in ISO 8601."""
 
     creator: Optional[str] = None
     """The email of the user that created the app."""
@@ -82,12 +94,14 @@ class App:
     """The description of the app."""
 
     effective_budget_policy_id: Optional[str] = None
+    """ID of the budget policy in effect for the app, after Databricks applies any defaults."""
 
     effective_resources: Optional[List[AppResource]] = None
     """Resources added to the app, plus the resources it inherits from its space. Empty for apps that
     are not in a space."""
 
     effective_usage_policy_id: Optional[str] = None
+    """ID of the usage policy in effect for the app, after Databricks applies any defaults."""
 
     effective_user_api_scopes: Optional[List[str]] = None
     """The effective api scopes granted to the user access token."""
@@ -108,34 +122,48 @@ class App:
     """The unique identifier of the app."""
 
     oauth2_app_client_id: Optional[str] = None
+    """OAuth client ID of the app integration that signs in the app's users."""
 
     oauth2_app_integration_id: Optional[str] = None
+    """ID of the OAuth app integration that Databricks creates for the app to sign in its users."""
 
     pending_deployment: Optional[AppDeployment] = None
     """The pending deployment of the app. A deployment is considered pending when it is being prepared
     for deployment to the app compute."""
 
     resources: Optional[List[AppResource]] = None
-    """Resources for the app."""
+    """Databricks resources the app depends on. Each entry grants the app's service principal the
+    listed permission on one resource and makes that resource available to the app under the entry's
+    name."""
 
     service_principal_client_id: Optional[str] = None
+    """OAuth client ID of the app's service principal. The app runtime exposes it to the app as the
+    DATABRICKS_CLIENT_ID environment variable."""
 
     service_principal_id: Optional[int] = None
+    """Numeric ID of the service principal the app runs as. Databricks creates a dedicated service
+    principal for each app and deletes it with the app. Apps in some older spaces run as the space's
+    shared service principal instead."""
 
     service_principal_name: Optional[str] = None
+    """Display name of the app's service principal."""
 
     source_code_path: Optional[str] = None
+    """Workspace file system path of the app source code. On create, the app is deployed from this
+    path. Alternative to ``git_source``."""
 
     space: Optional[str] = None
     """Name of the space this app belongs to."""
 
     telemetry_export_destinations: Optional[List[TelemetryExportDestination]] = None
+    """Destinations that receive the app's OpenTelemetry logs, metrics and traces. Changes take effect
+    when the app is next deployed."""
 
     thumbnail_url: Optional[str] = None
     """The URL of the thumbnail image for the app."""
 
     update_time: Optional[str] = None
-    """The update time of the app. Formatted timestamp in ISO 6801."""
+    """The update time of the app. Formatted timestamp in ISO 8601."""
 
     updater: Optional[str] = None
     """The email of the user that last updated the app."""
@@ -144,8 +172,15 @@ class App:
     """The URL of the app once it is deployed."""
 
     usage_policy_id: Optional[str] = None
+    """ID of the usage policy that the app's compute usage is attributed to. Alternative to
+    ``budget_policy_id``."""
 
     user_api_scopes: Optional[List[str]] = None
+    """API scopes the app requests for user authorization. The user access token that Databricks
+    forwards to the app is limited to these scopes plus the default identity scopes, so the app can
+    act on the user's behalf only within them. Workspace admins can restrict which scopes apps in
+    the workspace may request. See
+    https://docs.databricks.com/aws/en/dev-tools/databricks-apps/auth."""
 
     def as_dict(self) -> dict:
         """Serializes the App into a dictionary suitable for use as a JSON request body."""
@@ -492,6 +527,19 @@ class AppDeployment:
     mode: Optional[AppDeploymentMode] = None
     """The mode of which the deployment will manage the source code."""
 
+    scan_omitted_count_is_lower_bound: Optional[bool] = None
+    """Whether ``scan_omitted_findings_count`` is a lower bound rather than an exact count, because the
+    scanner itself stopped counting."""
+
+    scan_omitted_findings_count: Optional[int] = None
+    """The number of findings the scan reported but did not store, because the deployment hit the
+    per-deployment findings cap. Non-zero means the listed findings are incomplete."""
+
+    scan_status: Optional[AppDeploymentScanStatus] = None
+    """The security scan outcome for this deployment. UNSPECIFIED means no scan result has been
+    recorded: the scan may still be in flight, or it ended without recording one, so don't wait
+    indefinitely for it to change. The other values are terminal."""
+
     source_code_path: Optional[str] = None
     """The workspace file system path of the source code used to create the app deployment. This is
     different from ``deployment_artifacts.source_code_path``, which is the path used by the deployed
@@ -526,6 +574,12 @@ class AppDeployment:
             body["health_check"] = self.health_check.as_dict()
         if self.mode is not None:
             body["mode"] = self.mode.value
+        if self.scan_omitted_count_is_lower_bound is not None:
+            body["scan_omitted_count_is_lower_bound"] = self.scan_omitted_count_is_lower_bound
+        if self.scan_omitted_findings_count is not None:
+            body["scan_omitted_findings_count"] = self.scan_omitted_findings_count
+        if self.scan_status is not None:
+            body["scan_status"] = self.scan_status.value
         if self.source_code_path is not None:
             body["source_code_path"] = self.source_code_path
         if self.status:
@@ -555,6 +609,12 @@ class AppDeployment:
             body["health_check"] = self.health_check
         if self.mode is not None:
             body["mode"] = self.mode
+        if self.scan_omitted_count_is_lower_bound is not None:
+            body["scan_omitted_count_is_lower_bound"] = self.scan_omitted_count_is_lower_bound
+        if self.scan_omitted_findings_count is not None:
+            body["scan_omitted_findings_count"] = self.scan_omitted_findings_count
+        if self.scan_status is not None:
+            body["scan_status"] = self.scan_status
         if self.source_code_path is not None:
             body["source_code_path"] = self.source_code_path
         if self.status:
@@ -576,6 +636,9 @@ class AppDeployment:
             git_source=_from_dict(d, "git_source", GitSource),
             health_check=_from_dict(d, "health_check", AppHealthCheck),
             mode=_enum(d, "mode", AppDeploymentMode),
+            scan_omitted_count_is_lower_bound=d.get("scan_omitted_count_is_lower_bound", None),
+            scan_omitted_findings_count=d.get("scan_omitted_findings_count", None),
+            scan_status=_enum(d, "scan_status", AppDeploymentScanStatus),
             source_code_path=d.get("source_code_path", None),
             status=_from_dict(d, "status", AppDeploymentStatus),
             update_time=d.get("update_time", None),
@@ -610,6 +673,114 @@ class AppDeploymentArtifacts:
 class AppDeploymentMode(Enum):
     AUTO_SYNC = "AUTO_SYNC"
     SNAPSHOT = "SNAPSHOT"
+
+
+@dataclass
+class AppDeploymentScanFinding:
+    """A single security scan finding for an app deployment. Findings are produced when a deployment's
+    source code is scanned, and their triage ``status`` is preserved across re-scans of the same
+    deployment."""
+
+    name: str
+    """The resource name of the finding, in the form
+    ``apps/{app}/deployments/{deployment}/scanFindings/{finding_id}``."""
+
+    file_path: Optional[str] = None
+    """The app-relative path of the file the finding was reported in."""
+
+    finding_id: Optional[str] = None
+    """The stable id of the finding (the last segment of ``name``), derived from the rule, file, and
+    line so the same issue keeps its triage status across re-scans."""
+
+    line: Optional[int] = None
+    """The line number the finding was reported at."""
+
+    message: Optional[str] = None
+    """A human-readable description of the finding."""
+
+    rule_id: Optional[str] = None
+    """The scanner rule that produced the finding."""
+
+    scanner_type: Optional[ScanFindingScannerType] = None
+    """The scanner that produced the finding."""
+
+    severity: Optional[ScanFindingSeverity] = None
+    """The severity reported by the scanner."""
+
+    status: Optional[ScanFindingStatus] = None
+    """The triage status of the finding. This is the only client-writable field; set it to resolve or
+    ignore a finding."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppDeploymentScanFinding into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.file_path is not None:
+            body["file_path"] = self.file_path
+        if self.finding_id is not None:
+            body["finding_id"] = self.finding_id
+        if self.line is not None:
+            body["line"] = self.line
+        if self.message is not None:
+            body["message"] = self.message
+        if self.name is not None:
+            body["name"] = self.name
+        if self.rule_id is not None:
+            body["rule_id"] = self.rule_id
+        if self.scanner_type is not None:
+            body["scanner_type"] = self.scanner_type.value
+        if self.severity is not None:
+            body["severity"] = self.severity.value
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppDeploymentScanFinding into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file_path is not None:
+            body["file_path"] = self.file_path
+        if self.finding_id is not None:
+            body["finding_id"] = self.finding_id
+        if self.line is not None:
+            body["line"] = self.line
+        if self.message is not None:
+            body["message"] = self.message
+        if self.name is not None:
+            body["name"] = self.name
+        if self.rule_id is not None:
+            body["rule_id"] = self.rule_id
+        if self.scanner_type is not None:
+            body["scanner_type"] = self.scanner_type
+        if self.severity is not None:
+            body["severity"] = self.severity
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppDeploymentScanFinding:
+        """Deserializes the AppDeploymentScanFinding from a dictionary."""
+        return cls(
+            file_path=d.get("file_path", None),
+            finding_id=d.get("finding_id", None),
+            line=d.get("line", None),
+            message=d.get("message", None),
+            name=d.get("name", None),
+            rule_id=d.get("rule_id", None),
+            scanner_type=_enum(d, "scanner_type", ScanFindingScannerType),
+            severity=_enum(d, "severity", ScanFindingSeverity),
+            status=_enum(d, "status", ScanFindingStatus),
+        )
+
+
+class AppDeploymentScanStatus(Enum):
+    """The security scan outcome for an app deployment, mirrored from the durable scan record."""
+
+    APP_DEPLOYMENT_SCAN_STATUS_CLEAN = "APP_DEPLOYMENT_SCAN_STATUS_CLEAN"
+    APP_DEPLOYMENT_SCAN_STATUS_FINDINGS = "APP_DEPLOYMENT_SCAN_STATUS_FINDINGS"
+    APP_DEPLOYMENT_SCAN_STATUS_NOT_SCANNED = "APP_DEPLOYMENT_SCAN_STATUS_NOT_SCANNED"
+    APP_DEPLOYMENT_SCAN_STATUS_PARTIAL = "APP_DEPLOYMENT_SCAN_STATUS_PARTIAL"
+    APP_DEPLOYMENT_SCAN_STATUS_UNAVAILABLE = "APP_DEPLOYMENT_SCAN_STATUS_UNAVAILABLE"
 
 
 class AppDeploymentState(Enum):
@@ -1153,30 +1324,42 @@ class AppPermissionsDescription:
 @dataclass
 class AppResource:
     name: str
-    """Name of the App Resource."""
+    """Key that identifies the resource within the app. The app configuration (app.yaml) references the
+    resource by this key."""
 
     app: Optional[AppResourceApp] = None
+    """Another app in the workspace that this app is granted access to."""
 
     database: Optional[AppResourceDatabase] = None
+    """Lakebase Provisioned database the app is granted access to."""
 
     description: Optional[str] = None
     """Description of the App Resource."""
 
     experiment: Optional[AppResourceExperiment] = None
+    """MLflow experiment the app is granted access to."""
 
     genie_space: Optional[AppResourceGenieSpace] = None
+    """Genie space the app is granted access to."""
 
     job: Optional[AppResourceJob] = None
+    """Lakeflow job the app is granted access to."""
 
     postgres: Optional[AppResourcePostgres] = None
+    """Lakebase Autoscaling Postgres database the app is granted access to."""
 
     secret: Optional[AppResourceSecret] = None
+    """Secret the app is granted access to."""
 
     serving_endpoint: Optional[AppResourceServingEndpoint] = None
+    """Model serving endpoint the app is granted access to."""
 
     sql_warehouse: Optional[AppResourceSqlWarehouse] = None
+    """SQL warehouse the app is granted access to."""
 
     uc_securable: Optional[AppResourceUcSecurable] = None
+    """Unity Catalog securable (volume, table, function, connection or model service) the app is
+    granted a privilege on."""
 
     def as_dict(self) -> dict:
         """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
@@ -1258,8 +1441,10 @@ class AppResource:
 @dataclass
 class AppResourceApp:
     name: Optional[str] = None
+    """Name of the app to grant access to."""
 
     permission: Optional[AppResourceAppAppPermission] = None
+    """Permission to grant on that app."""
 
     def as_dict(self) -> dict:
         """Serializes the AppResourceApp into a dictionary suitable for use as a JSON request body."""
@@ -1292,10 +1477,13 @@ class AppResourceAppAppPermission(Enum):
 @dataclass
 class AppResourceDatabase:
     instance_name: str
+    """Name of the Lakebase database instance."""
 
     database_name: str
+    """Name of the database within the instance."""
 
     permission: AppResourceDatabaseDatabasePermission
+    """Permission to grant the app on the database."""
 
     def as_dict(self) -> dict:
         """Serializes the AppResourceDatabase into a dictionary suitable for use as a JSON request body."""
@@ -1336,8 +1524,10 @@ class AppResourceDatabaseDatabasePermission(Enum):
 @dataclass
 class AppResourceExperiment:
     experiment_id: str
+    """ID of the MLflow experiment."""
 
     permission: AppResourceExperimentExperimentPermission
+    """Permission to grant the app on the experiment."""
 
     def as_dict(self) -> dict:
         """Serializes the AppResourceExperiment into a dictionary suitable for use as a JSON request body."""
@@ -1377,8 +1567,10 @@ class AppResourceGenieSpace:
     name: str
 
     space_id: str
+    """ID of the Genie space."""
 
     permission: AppResourceGenieSpaceGenieSpacePermission
+    """Permission to grant the app on the Genie space."""
 
     def as_dict(self) -> dict:
         """Serializes the AppResourceGenieSpace into a dictionary suitable for use as a JSON request body."""
@@ -1462,10 +1654,15 @@ class AppResourceJobJobPermission(Enum):
 @dataclass
 class AppResourcePostgres:
     branch: Optional[str] = None
+    """Resource name of the Lakebase Autoscaling branch, in the form
+    ``projects/{project}/branches/{branch}``."""
 
     database: Optional[str] = None
+    """Resource name of the database within the branch, in the form
+    ``projects/{project}/branches/{branch}/databases/{database}``."""
 
     permission: Optional[AppResourcePostgresPostgresPermission] = None
+    """Permission to grant the app on the database."""
 
     def as_dict(self) -> dict:
         """Serializes the AppResourcePostgres into a dictionary suitable for use as a JSON request body."""
@@ -1641,10 +1838,15 @@ class AppResourceSqlWarehouseSqlWarehousePermission(Enum):
 @dataclass
 class AppResourceUcSecurable:
     securable_full_name: str
+    """Full name of the Unity Catalog securable. For volumes, tables and functions this is the
+    three-level catalog.schema.object name."""
 
     securable_type: AppResourceUcSecurableUcSecurableType
+    """Kind of Unity Catalog securable that ``securable_full_name`` refers to."""
 
     permission: AppResourceUcSecurableUcSecurablePermission
+    """Privilege to grant the app on the securable. The privilege must be valid for the securable type,
+    such as READ_VOLUME for a volume or SELECT for a table."""
 
     securable_kind: Optional[str] = None
     """The securable kind from Unity Catalog. See
@@ -1733,7 +1935,11 @@ class AppThumbnail:
 
 @dataclass
 class AppUpdate:
+    """Progress of an app update started by AsyncUpdateApp, together with the values the update
+    requested."""
+
     budget_policy_id: Optional[str] = None
+    """Budget policy ID requested by the update."""
 
     compute_max_instances: Optional[int] = None
     """Maximum number of app instances the app is configured to run. Must be set together with
@@ -1744,24 +1950,32 @@ class AppUpdate:
     ``compute_max_instances``."""
 
     compute_size: Optional[ComputeSize] = None
+    """Compute size requested by the update."""
 
     description: Optional[str] = None
+    """Description requested by the update."""
 
     forward_user_access_token: Optional[bool] = None
     """Forward the user's access token to the app. Requires stopping and starting app compute to take
     effect."""
 
     git_repository: Optional[GitRepository] = None
+    """Git repository configuration requested by the update."""
 
     resources: Optional[List[AppResource]] = None
+    """Resources requested by the update."""
 
     status: Optional[AppUpdateUpdateStatus] = None
+    """Progress of the update."""
 
     telemetry_export_destinations: Optional[List[TelemetryExportDestination]] = None
+    """Telemetry export destinations requested by the update."""
 
     usage_policy_id: Optional[str] = None
+    """Usage policy ID requested by the update."""
 
     user_api_scopes: Optional[List[str]] = None
+    """User API scopes requested by the update."""
 
     def as_dict(self) -> dict:
         """Serializes the AppUpdate into a dictionary suitable for use as a JSON request body."""
@@ -1845,8 +2059,10 @@ class AppUpdate:
 @dataclass
 class AppUpdateUpdateStatus:
     message: Optional[str] = None
+    """Human-readable detail about the update state."""
 
     state: Optional[AppUpdateUpdateStatusUpdateState] = None
+    """State of the update."""
 
     def as_dict(self) -> dict:
         """Serializes the AppUpdateUpdateStatus into a dictionary suitable for use as a JSON request body."""
@@ -1889,7 +2105,7 @@ class ApplicationState(Enum):
 @dataclass
 class ApplicationStatus:
     message: Optional[str] = None
-    """Application status message"""
+    """Human-readable detail about the application state."""
 
     running_instances: Optional[int] = None
     """The number of app instances whose application process is running."""
@@ -1951,7 +2167,7 @@ class ComputeStatus:
     """The number of active compute instances currently used and billed for this application."""
 
     message: Optional[str] = None
-    """Compute status message"""
+    """Human-readable detail about the compute state."""
 
     state: Optional[ComputeState] = None
     """State of the app compute."""
@@ -2393,6 +2609,43 @@ class GitSource:
 
 
 @dataclass
+class ListAppDeploymentScanFindingsResponse:
+    """Response message for ListAppDeploymentScanFindings."""
+
+    app_deployment_scan_findings: Optional[List[AppDeploymentScanFinding]] = None
+    """The scan findings for the deployment."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of findings."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAppDeploymentScanFindingsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.app_deployment_scan_findings:
+            body["app_deployment_scan_findings"] = [v.as_dict() for v in self.app_deployment_scan_findings]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAppDeploymentScanFindingsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.app_deployment_scan_findings:
+            body["app_deployment_scan_findings"] = self.app_deployment_scan_findings
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListAppDeploymentScanFindingsResponse:
+        """Deserializes the ListAppDeploymentScanFindingsResponse from a dictionary."""
+        return cls(
+            app_deployment_scan_findings=_repeated_dict(d, "app_deployment_scan_findings", AppDeploymentScanFinding),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListAppDeploymentsResponse:
     app_deployments: Optional[List[AppDeployment]] = None
     """Deployment history of the app."""
@@ -2586,6 +2839,28 @@ class Operation:
             name=d.get("name", None),
             response=d.get("response", None),
         )
+
+
+class ScanFindingScannerType(Enum):
+    """The scanner that produced a finding."""
+
+    SCAN_FINDING_SCANNER_TYPE_SEMGREP = "SCAN_FINDING_SCANNER_TYPE_SEMGREP"
+
+
+class ScanFindingSeverity(Enum):
+    """Severity of a scan finding, as reported by the scanner."""
+
+    SCAN_FINDING_SEVERITY_ERROR = "SCAN_FINDING_SEVERITY_ERROR"
+    SCAN_FINDING_SEVERITY_INFO = "SCAN_FINDING_SEVERITY_INFO"
+    SCAN_FINDING_SEVERITY_WARNING = "SCAN_FINDING_SEVERITY_WARNING"
+
+
+class ScanFindingStatus(Enum):
+    """User triage state for a single scan finding."""
+
+    SCAN_FINDING_STATUS_IGNORED = "SCAN_FINDING_STATUS_IGNORED"
+    SCAN_FINDING_STATUS_IN_PROGRESS = "SCAN_FINDING_STATUS_IN_PROGRESS"
+    SCAN_FINDING_STATUS_RESOLVED = "SCAN_FINDING_STATUS_RESOLVED"
 
 
 @dataclass
@@ -2888,6 +3163,7 @@ class TelemetryExportDestination:
     """A single telemetry export destination with its configuration and status."""
 
     unity_catalog: Optional[UnityCatalog] = None
+    """Unity Catalog tables that receive the telemetry."""
 
     def as_dict(self) -> dict:
         """Serializes the TelemetryExportDestination into a dictionary suitable for use as a JSON request body."""
@@ -2914,13 +3190,16 @@ class UnityCatalog:
     """Unity Catalog Destinations for OTEL telemetry export."""
 
     logs_table: str
-    """Unity Catalog table for OTEL logs."""
+    """Three-level name of the Unity Catalog table that receives OpenTelemetry logs. The table is
+    created if it does not exist."""
 
     metrics_table: str
-    """Unity Catalog table for OTEL metrics."""
+    """Three-level name of the Unity Catalog table that receives OpenTelemetry metrics. The table is
+    created if it does not exist."""
 
     traces_table: str
-    """Unity Catalog table for OTEL traces (spans)."""
+    """Three-level name of the Unity Catalog table that receives OpenTelemetry traces (spans). The
+    table is created if it does not exist."""
 
     def as_dict(self) -> dict:
         """Serializes the UnityCatalog into a dictionary suitable for use as a JSON request body."""
@@ -3151,7 +3430,12 @@ class AppsAPI:
         of the update can be checked with the GetAppUpdate method.
 
         :param app_name: str
+          The name of the app to update.
         :param update_mask: str
+          Comma-separated names of the ``app`` fields to update, such as ``description`` or ``resources``. A
+          field named in the mask but absent from ``app`` is cleared, except ``compute_size``, which resets to
+          ``MEDIUM``.
+
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
           ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
@@ -3162,6 +3446,8 @@ class AppsAPI:
           fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
           API changes in the future.
         :param app: :class:`App` (optional)
+          The new values for the app. Only the fields named in ``update_mask`` are applied; the others must
+          still be valid.
 
         :returns:
           Long-running operation waiter for :class:`AppUpdate`.
@@ -3191,7 +3477,7 @@ class AppsAPI:
         return self.create_update(app=app, app_name=app_name, update_mask=update_mask).result(timeout=timeout)
 
     def delete(self, name: str) -> App:
-        """Deletes an app.
+        """Deletes an app and the dedicated service principal created for it.
 
         :param name: str
           The name of the app.
@@ -3306,6 +3592,27 @@ class AppsAPI:
 
         res = self._api.do("GET", f"/api/2.0/apps/{name}", headers=headers)
         return App.from_dict(res)
+
+    def get_app_deployment_scan_finding(self, name: str) -> AppDeploymentScanFinding:
+        """Retrieves a single security scan finding for an app deployment.
+
+        :param name: str
+          The resource name of the finding, in the form
+          ``apps/{app}/deployments/{deployment}/scanFindings/{finding_id}``.
+
+        :returns: :class:`AppDeploymentScanFinding`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/{name}", headers=headers)
+        return AppDeploymentScanFinding.from_dict(res)
 
     def get_deployment(self, app_name: str, deployment_id: str) -> AppDeployment:
         """Retrieves information for the app deployment with the supplied name and deployment id.
@@ -3464,6 +3771,43 @@ class AppsAPI:
             if "apps" in json:
                 for v in json["apps"]:
                     yield App.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_app_deployment_scan_findings(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[AppDeploymentScanFinding]:
+        """Lists the security scan findings for an app deployment.
+
+        :param parent: str
+          The parent deployment whose findings to list, in the form ``apps/{app}/deployments/{deployment}``.
+        :param page_size: int (optional)
+          Upper bound for the number of findings returned.
+        :param page_token: str (optional)
+          Pagination token to request the next page. Requests the first page if absent.
+
+        :returns: Iterator over :class:`AppDeploymentScanFinding`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/{parent}/scanFindings", query=query, headers=headers)
+            if "app_deployment_scan_findings" in json:
+                for v in json["app_deployment_scan_findings"]:
+                    yield AppDeploymentScanFinding.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -3645,6 +3989,38 @@ class AppsAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/apps/{name}", body=body, headers=headers)
         return App.from_dict(res)
+
+    def update_app_deployment_scan_finding(
+        self, name: str, app_deployment_scan_finding: AppDeploymentScanFinding, update_mask: FieldMask
+    ) -> AppDeploymentScanFinding:
+        """Updates the triage status (resolved / ignored / in-progress) of a single scan finding.
+
+        :param name: str
+          The resource name of the finding, in the form
+          ``apps/{app}/deployments/{deployment}/scanFindings/{finding_id}``.
+        :param app_deployment_scan_finding: :class:`AppDeploymentScanFinding`
+          The finding to update. ``name`` identifies the finding and ``status`` is the new triage status.
+        :param update_mask: FieldMask
+          The fields to update. Must be exactly ``status``, the only updatable field on a scan finding.
+
+        :returns: :class:`AppDeploymentScanFinding`
+        """
+
+        body = app_deployment_scan_finding.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/{name}", query=query, body=body, headers=headers)
+        return AppDeploymentScanFinding.from_dict(res)
 
     def update_app_thumbnail(self, name: str, *, app_thumbnail: Optional[AppThumbnail] = None) -> AppThumbnail:
         """Updates the thumbnail for an app.

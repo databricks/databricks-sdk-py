@@ -320,6 +320,9 @@ class _Failure:
     """Raised as is at the public API."""
     decision: str
     """"walk" or "raise". Retries already happened inside the client."""
+    retryable: bool = False
+    """The failure was one to retry, and walks only because the retries or the budget ran out: the endpoint may be
+    fine, so it does not count against it (see _EndpointHealth)."""
 
 
 @dataclass(frozen=True)
@@ -367,11 +370,14 @@ class _RequestFailed(Exception):
         error: BaseException,
         status_code_opt: Optional[int] = None,
         decision_opt: Optional[str] = None,
+        retryable: bool = False,
     ):
         super().__init__(str(error))
         self.error = error
         self.status_code_opt = status_code_opt
         self.decision_opt = decision_opt
+        # Carries _Failure.retryable when a client re-raises a failure from an inner retry.
+        self.retryable = retryable
 
 
 class _UrlExpired(Exception):
@@ -459,13 +465,13 @@ def _retry(
             last = e
         decision = decide(last)
         if decision != "retry":
-            return _Failure(_unwrap(last), decision)
+            return _Failure(_unwrap(last), decision, retryable=isinstance(last, _RequestFailed) and last.retryable)
         if (
             status.cancelled
             or (not (status.committed or status.is_last_endpoint) and attempt > status.retries_before_commit)
             or (can_retry_opt is not None and not can_retry_opt())
         ):
-            return _Failure(_unwrap(last), "walk")
+            return _Failure(_unwrap(last), "walk", retryable=True)
         if budget.max_attempts_opt is not None and attempt >= budget.max_attempts_opt:
             attempt += 1
             break
@@ -476,9 +482,9 @@ def _retry(
             before_retry_opt()
         _sleep(clock, wait + random.random(), status)
         if status.cancelled:
-            return _Failure(_unwrap(last), "walk")
+            return _Failure(_unwrap(last), "walk", retryable=True)
         attempt += 1
-    return _Failure(_exhausted_error(budget, attempt, _unwrap(last) if last else None), "walk")
+    return _Failure(_exhausted_error(budget, attempt, _unwrap(last) if last else None), "walk", retryable=True)
 
 
 def _may_walk(
@@ -491,6 +497,15 @@ def _may_walk(
 _AttemptOnEndpoint = Callable[[Any, _TransferStatus], Optional[_Failure]]
 """One attempt of a transfer on one endpoint client, with that attempt's status."""
 
+_OnTransferDone = Callable[[list, list], None]
+"""Called once a transfer succeeded, with the clients it walked past on a failure that counts against their endpoint
+(see _counts_against_endpoint), then every client it tried, in order, ending with the one that took it."""
+
+
+def _counts_against_endpoint(failure: _Failure) -> bool:
+    """Whether a failure the walk moved on from says something about the endpoint, rather than a passing fault."""
+    return not failure.retryable and not isinstance(failure.error, _Cancelled)
+
 
 def _walk_endpoints(
     clients: list,
@@ -498,24 +513,130 @@ def _walk_endpoints(
     can_send_again: Callable[[], bool] = lambda: True,
     before_next_endpoint: Callable[[], None] = lambda: None,
     retries_before_commit: int = 0,
+    on_done: _OnTransferDone = lambda walked_past, tried: None,
 ) -> None:
     """Runs the transfer on each client in order with a new _TransferStatus.
 
     Returns once one succeeds. Moves on only if the failure is walk, the transfer is not committed, and the data can
     be sent again. Otherwise raises the failure's error.
     """
+    walked_past = []
     for index, client in enumerate(clients):
         status = _TransferStatus(
             is_last_endpoint=index + 1 == len(clients), retries_before_commit=retries_before_commit
         )
         failure_opt = attempt(client, status)
         if failure_opt is None:
+            on_done(walked_past, clients[: index + 1])
             return
         if not _may_walk(failure_opt, status, index + 1 < len(clients), can_send_again):
             raise failure_opt.error
         _LOG.info(f"{client.name} failed before commit, trying the next endpoint: {failure_opt.error}")
+        if _counts_against_endpoint(failure_opt):
+            walked_past.append(client)
         before_next_endpoint()
     raise ValueError("No endpoint can take this transfer")
+
+
+@dataclass
+class _EndpointState:
+    failures: int = 0
+    """Transfers in a row the endpoint failed and a later endpoint completed."""
+    cool_off_seconds: float = 0.0
+    skip_until_opt: Optional[float] = None
+    """While set, the endpoint is skipped until then, in the clock's time."""
+    probe_id_opt: Optional[int] = None
+    """The probe one transfer was let through with to try the endpoint again after its cool-off. A probe is re-issued
+    with a new id if it hasn't reported within a cool-off, so a transfer that outlives it can't end the newer one."""
+
+
+@dataclass(frozen=True)
+class _EndpointOrder:
+    """The endpoints one transfer walks, in order, and the ids of the probes it was given, by endpoint."""
+
+    endpoints: list
+    probes: dict
+
+
+class _EndpointHealth:
+    """Which endpoints of one client keep failing, so that its transfers stop paying a failed attempt on them.
+
+    Only a failure that a later endpoint then made up for counts: if every endpoint fails, as for a missing file, the
+    request is at fault, not the endpoint. After `skip_after` such transfers in a row, the endpoint is skipped for a
+    cool-off: transfers leave it out, so that they stop paying a failed attempt on it. Then one transfer probes it. A
+    success clears the endpoint, and a failed probe doubles its cool-off, up to `max_cool_off_seconds`. Shared by every
+    transfer of the client, so it takes a lock.
+    """
+
+    def __init__(self, clock, skip_after: int, initial_cool_off_seconds: float, max_cool_off_seconds: float):
+        self._clock = clock
+        self._skip_after = skip_after
+        self._initial_cool_off_seconds = initial_cool_off_seconds
+        self._max_cool_off_seconds = max_cool_off_seconds
+        self._states: dict[Any, _EndpointState] = {}
+        self._next_probe_id = 0
+        self._lock = threading.Lock()
+
+    def order(self, endpoints: list) -> "_EndpointOrder":
+        """The endpoints a new transfer should walk: all but the skipped ones. The last one is never skipped, so that a
+        transfer always has an endpoint, and keeps the retries the last endpoint gets. The transfer must report the
+        probes it was given, through record_failure, record_success or return_probe."""
+        now = self._clock.time()
+        result, probes = [], {}
+        with self._lock:
+            for index, endpoint in enumerate(endpoints):
+                state = self._states.get(endpoint)
+                if index + 1 < len(endpoints) and state is not None and state.skip_until_opt is not None:
+                    if now < state.skip_until_opt:
+                        continue
+                    # The cool-off is over: this transfer probes the endpoint, and others keep skipping it until the
+                    # probe is in. A probe that never reports is re-issued after another cool-off.
+                    self._next_probe_id += 1
+                    state.probe_id_opt = self._next_probe_id
+                    state.skip_until_opt = now + state.cool_off_seconds
+                    probes[endpoint] = state.probe_id_opt
+                result.append(endpoint)
+        return _EndpointOrder(result, probes)
+
+    def return_probe(self, endpoint, probe_id: int) -> None:
+        """Hands back a probe the transfer never tried the endpoint with, for example because an earlier endpoint took
+        it, so that the next transfer probes it instead of waiting another cool-off."""
+        with self._lock:
+            state = self._states.get(endpoint)
+            if state is not None and state.probe_id_opt == probe_id:
+                state.probe_id_opt = None
+                state.skip_until_opt = self._clock.time()
+
+    def record_success(self, endpoint) -> None:
+        with self._lock:
+            if self._states.pop(endpoint, None) is not None:
+                _LOG.debug(f"{endpoint} completed a transfer, so it is no longer skipped")
+
+    def record_failure(self, endpoint, probe_id_opt: Optional[int] = None) -> None:
+        """`probe_id_opt` is the probe the failed transfer was given for the endpoint, if any."""
+        if self._skip_after <= 0:
+            return
+        now = self._clock.time()
+        with self._lock:
+            state = self._states.setdefault(endpoint, _EndpointState())
+            if probe_id_opt is not None and state.probe_id_opt == probe_id_opt:
+                state.probe_id_opt = None
+                state.cool_off_seconds = min(2 * state.cool_off_seconds, self._max_cool_off_seconds)
+                state.skip_until_opt = now + state.cool_off_seconds
+                _LOG.info(f"{endpoint} still fails, skipping it for {state.cool_off_seconds:.0f}s")
+                return
+            if state.skip_until_opt is not None:
+                # Tried while skipped: by a transfer that started before the skip or holds a probe since re-issued,
+                # while another transfer held the probe, or by an upload that needed it (see FilesExt._upload).
+                return
+            state.failures += 1
+            if state.failures >= self._skip_after:
+                state.cool_off_seconds = self._initial_cool_off_seconds
+                state.skip_until_opt = now + state.cool_off_seconds
+                _LOG.warning(
+                    f"{endpoint} failed {state.failures} transfers in a row that another endpoint then completed, "
+                    f"skipping it for {state.cool_off_seconds:.0f}s"
+                )
 
 
 def _run_in_parallel(
@@ -717,20 +838,21 @@ class _ResilientDownload:
 
     def _resume_after(self, error: BaseException) -> Optional[_Failure]:
         """Reopens at the current offset after a break. A failed reopen surfaces the break, as the caller saw it."""
+        # A break is a passing fault, so its failure is retryable: it does not count against the endpoint.
         if not self._may_resume():
             _LOG.debug("Download resume budget exceeded")
-            return _Failure(error, "walk")
+            return _Failure(error, "walk", retryable=True)
         if self._if_unmodified_since_opt is None:
             # Without it, a file changed in between would be spliced from two versions.
             _LOG.debug("Not resuming the download: no Last-Modified to guard it with")
-            return _Failure(error, "walk")
+            return _Failure(error, "walk", retryable=True)
         self._recovers += 1
         self._recovers_without_progress += 1
         self.close()
         _LOG.debug(f"Resuming the download from offset {self._offset}")
         result = self._open_at(self._offset)
         if isinstance(result, _Failure):
-            return _Failure(error, result.decision)
+            return _Failure(error, result.decision, retryable=True)
         return None
 
     def close(self) -> None:
@@ -744,9 +866,12 @@ class _WalkingDownloadStream(Iterator[bytes]):
     Opens the first endpoint in __init__, so the headers are known when download() returns.
     """
 
-    def __init__(self, clients: list, path: str):
+    def __init__(self, clients: list, path: str, on_done: _OnTransferDone = lambda walked_past, tried: None):
         self._clients = clients
         self._path = path
+        self._on_done = on_done
+        self._walked_past: list = []
+        self._done_reported = False
         self._index = -1
         self._status = _TransferStatus()
         self._download_opt: Optional[_ResilientDownload] = None
@@ -771,6 +896,8 @@ class _WalkingDownloadStream(Iterator[bytes]):
             if not _may_walk(download, self._status, self._index + 1 < len(self._clients), lambda: True):
                 raise download.error
             _LOG.info(f"{client.name} failed before any data was received, trying the next endpoint: {download.error}")
+            if _counts_against_endpoint(download):
+                self._walked_past.append(client)
 
     def __next__(self) -> bytes:
         if self._closed:
@@ -779,8 +906,11 @@ class _WalkingDownloadStream(Iterator[bytes]):
             chunk = self._download_opt.read_chunk()
             if isinstance(chunk, bytes):
                 self._status.commit()
+                self._report_done()
                 return chunk
             if chunk is None:
+                # An empty file is done without a byte to commit.
+                self._report_done()
                 raise StopIteration
             if not _may_walk(chunk, self._status, self._index + 1 < len(self._clients), lambda: True):
                 raise chunk.error
@@ -788,8 +918,15 @@ class _WalkingDownloadStream(Iterator[bytes]):
                 f"{self._clients[self._index].name} failed before any data was received, trying the next endpoint: "
                 f"{chunk.error}"
             )
+            if _counts_against_endpoint(chunk):
+                self._walked_past.append(self._clients[self._index])
             self._download_opt.close()
             self._open_next_endpoint()
+
+    def _report_done(self) -> None:
+        if not self._done_reported:
+            self._done_reported = True
+            self._on_done(self._walked_past, self._clients[: self._index + 1])
 
     # Follows the _RawResponse interface, so that _StreamingResponse can read from it.
     def iter_content(self, chunk_size: Optional[int] = None, decode_unicode: bool = False) -> Iterator[bytes]:

@@ -52,7 +52,8 @@
         :param name: str
           Name of the external location.
         :param url: str
-          Path URL of the external location.
+          URL of the cloud storage path that the external location points to, including the scheme (for
+          example ``s3://``, ``abfss://``, or ``gs://``).
         :param credential_name: str
           Name of the storage credential used with this location.
         :param comment: str (optional)
@@ -64,17 +65,18 @@
           when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
           Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
+          Whether to enable file events on this external location. Defaults to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
           ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
+          Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
-          exactly one of the documented properties.
+          File event queue settings. When ``enable_file_events`` is ``true``, exactly one of the queue options
+          must be set. Must be omitted when ``enable_file_events`` is ``false``.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -135,7 +137,7 @@
           Name of the external location.
         :param include_browse: bool (optional)
           Whether to include external locations in the response for which the principal can only access
-          selective metadata for
+          selective metadata.
 
         :returns: :class:`ExternalLocationInfo`
         
@@ -166,7 +168,7 @@
 
         :param include_browse: bool (optional)
           Whether to include external locations in the response for which the principal can only access
-          selective metadata for
+          selective metadata.
         :param include_unbound: bool (optional)
           Whether to include external locations not bound to the workspace. Effective only if the user has
           permission to update the location–workspace binding.
@@ -237,20 +239,23 @@
           when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
           Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
+          Whether to enable file events on this external location. Defaults to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
           ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
+          Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
-          exactly one of the documented properties.
+          File event queue settings. When ``enable_file_events`` is ``true``, exactly one of the queue options
+          must be set. Must be omitted when ``enable_file_events`` is ``false``.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
+          Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+          Cannot be set when creating an external location.
         :param new_name: str (optional)
           New name for the external location.
         :param owner: str (optional)
@@ -260,7 +265,8 @@
         :param skip_validation: bool (optional)
           Skips validation of the storage credential associated with the external location.
         :param url: str (optional)
-          Path URL of the external location.
+          URL of the cloud storage path that the external location points to, including the scheme (for
+          example ``s3://``, ``abfss://``, or ``gs://``).
 
         :returns: :class:`ExternalLocationInfo`
         

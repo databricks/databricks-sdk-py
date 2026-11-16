@@ -19,6 +19,7 @@ from databricks.sdk.mixins.files_utils import (
     _ConcatenatedInputStream,
     _download_ranges_to_file,
     _DownloadDestination,
+    _EndpointHealth,
     _Failure,
     _MultipartUploadSession,
     _plan_upload,
@@ -486,7 +487,7 @@ def test_retry_stops_retrying(stop):
 
     result = _retry(send, _always("retry"), budget, status, _Clock(), can_retry_opt=can_retry_opt)
 
-    assert result == _Failure(error, "walk")
+    assert result == _Failure(error, "walk", retryable=True)
     assert len(send.calls) == 1
 
 
@@ -510,7 +511,7 @@ def test_retry_stops_when_cancelled_during_the_wait():
 
     result = _retry(send, _always("retry"), _RetryBudget(None, _FOREVER), status, clock)
 
-    assert result == _Failure(error, "walk")
+    assert result == _Failure(error, "walk", retryable=True)
     assert len(send.calls) == 1
     assert clock.sleeps == [1.0]
 
@@ -667,7 +668,7 @@ def test_resilient_download_stops_resuming_without_progress():
     )
     download.open()
 
-    assert _read_all(download) == _Failure(cut, "walk")
+    assert _read_all(download) == _Failure(cut, "walk", retryable=True)
     assert len(get_file_range.requests) == 2
 
 
@@ -679,7 +680,7 @@ def test_resilient_download_surfaces_the_break_when_the_reopen_fails():
     )
     download.open()
 
-    assert _read_all(download) == _Failure(cut, "raise")
+    assert _read_all(download) == _Failure(cut, "raise", retryable=True)
 
 
 def test_run_in_parallel_cancels_the_other_threads_on_the_first_failure():
@@ -796,7 +797,7 @@ def test_resilient_download_stops_at_the_total_resume_budget():
     download.open()
 
     # The second break made progress, but the one resume allowed is spent.
-    assert _read_all(download) == _Failure(cut, "walk")
+    assert _read_all(download) == _Failure(cut, "walk", retryable=True)
     assert len(get_file_range.requests) == 2
 
 
@@ -850,7 +851,7 @@ def test_resilient_download_does_not_resume_before_commit_unless_no_endpoint_is_
     )
     download.open()
 
-    assert _read_all(download) == _Failure(cut, "walk")
+    assert _read_all(download) == _Failure(cut, "walk", retryable=True)
     assert len(get_file_range.requests) == 1
 
 
@@ -1531,5 +1532,196 @@ def test_resilient_download_does_not_resume_without_last_modified():
     )
     download.open()
 
-    assert _read_all(download) == _Failure(cut, "walk")
+    assert _read_all(download) == _Failure(cut, "walk", retryable=True)
     assert len(get_file_range.requests) == 1
+
+
+# ======================== Endpoint health ========================
+
+
+def _health(clock: _Clock, skip_after: int = 2) -> _EndpointHealth:
+    return _EndpointHealth(clock, skip_after, initial_cool_off_seconds=10, max_cool_off_seconds=25)
+
+
+def test_endpoint_health_skips_after_failures_in_a_row_then_probes():
+    clock = _Clock()
+    health = _health(clock)
+    health.record_failure("a")
+    assert health.order(["a", "b"]).endpoints == ["a", "b"]
+    health.record_failure("a")
+    assert health.order(["a", "b"]).endpoints == ["b"]
+
+    clock.now = 10
+    assert health.order(["a", "b"]).endpoints == ["a", "b"]
+    # Only one transfer probes; the others keep skipping until it reports.
+    assert health.order(["a", "b"]).endpoints == ["b"]
+    health.record_success("a")
+    assert health.order(["a", "b"]).endpoints == ["a", "b"]
+
+
+def test_endpoint_health_doubles_the_cool_off_after_a_failed_probe_up_to_the_maximum():
+    clock = _Clock()
+    health = _health(clock, skip_after=1)
+    health.record_failure("a")
+    skipped_for = []
+    for _ in range(3):
+        start = clock.now
+        while (order := health.order(["a", "b"])).endpoints == ["b"]:
+            clock.now += 1
+        skipped_for.append(clock.now - start)
+        health.record_failure("a", order.probes["a"])
+
+    assert skipped_for == [10, 20, 25]
+
+
+def test_endpoint_health_never_skips_the_last_endpoint():
+    health = _health(_Clock(), skip_after=1)
+    health.record_failure("a")
+    health.record_failure("b")
+
+    assert health.order(["a", "b"]).endpoints == ["b"]
+    assert health.order(["a"]).endpoints == ["a"]
+
+
+def test_endpoint_health_hands_a_returned_probe_to_the_next_transfer():
+    clock = _Clock()
+    health = _health(clock, skip_after=1)
+    health.record_failure("a")
+    clock.now = 10
+
+    first = health.order(["a", "b"])
+    assert (first.endpoints, list(first.probes)) == (["a", "b"], ["a"])
+    # The transfer never tried "a", for example because it planned no request there.
+    health.return_probe("a", first.probes["a"])
+    second = health.order(["a", "b"])
+
+    assert (second.endpoints, list(second.probes)) == (["a", "b"], ["a"])
+    # Without the probe back, a third transfer keeps skipping "a" until the second reports.
+    assert health.order(["a", "b"]).endpoints == ["b"]
+
+
+def test_endpoint_health_ignores_a_failed_probe_reported_after_it_was_reissued():
+    clock = _Clock()
+    health = _health(clock, skip_after=1)
+    health.record_failure("a")
+    clock.now = 10
+    slow = health.order(["a", "b"])
+    # The slow transfer hasn't reported within a cool-off, so the probe goes to another transfer.
+    clock.now = 20
+    fresh = health.order(["a", "b"])
+    assert list(fresh.probes) == ["a"]
+
+    health.record_failure("a", slow.probes["a"])
+
+    # The late failure ended neither the fresh probe nor the cool-off it runs in.
+    assert health.order(["a", "b"]).endpoints == ["b"]
+    clock.now = 30
+    assert health.order(["a", "b"]).endpoints == ["a", "b"]
+
+
+def test_endpoint_health_ignores_a_probe_returned_after_it_was_reissued():
+    clock = _Clock()
+    health = _health(clock, skip_after=1)
+    health.record_failure("a")
+    clock.now = 10
+    slow = health.order(["a", "b"])
+    clock.now = 20
+    health.order(["a", "b"])
+
+    health.return_probe("a", slow.probes["a"])
+
+    # The fresh probe is still out, so no third transfer probes at once.
+    assert health.order(["a", "b"]).endpoints == ["b"]
+
+
+def test_endpoint_health_ignores_failures_of_transfers_that_started_before_the_skip_or_hold_no_probe():
+    clock = _Clock()
+    health = _health(clock, skip_after=1)
+    health.record_failure("a")
+    # A transfer that started before the skip: it doesn't re-arm the cool-off.
+    clock.now = 5
+    health.record_failure("a")
+    clock.now = 10
+    assert list(health.order(["a", "b"]).probes) == ["a"]
+    # A transfer that holds no probe: it doesn't end the probe or double the cool-off.
+    health.record_failure("a")
+    clock.now = 20
+    assert health.order(["a", "b"]).endpoints == ["a", "b"]
+
+
+def test_endpoint_health_with_skipping_off_never_skips():
+    health = _health(_Clock(), skip_after=0)
+    for _ in range(5):
+        health.record_failure("a")
+
+    assert health.order(["a", "b"]).endpoints == ["a", "b"]
+
+
+def test_endpoint_health_is_thread_safe(caplog):
+    clock = _Clock()
+    health = _health(clock, skip_after=50)
+    start = threading.Barrier(8)
+
+    def fail_often():
+        start.wait()
+        for _ in range(100):
+            health.record_failure("a")
+
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk.mixins.files_utils"):
+        threads = [threading.Thread(target=fail_often) for _ in range(8)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+    # The skip started once, and was logged once.
+    assert len([r for r in caplog.records if "skipping it" in r.message]) == 1
+
+    clock.now = 10
+    probes = []
+
+    def transfer():
+        start.wait()
+        probes.append(health.order(["a", "b"]).endpoints[0] == "a")
+
+    threads = [threading.Thread(target=transfer) for _ in range(8)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    assert sorted(probes) == [False] * 7 + [True]
+
+
+def test_walk_reports_only_failures_a_later_endpoint_made_up_for():
+    done = []
+    failures = {
+        "a": _Failure(ValueError("a"), "walk"),
+        "b": _Failure(ValueError("b"), "walk", retryable=True),
+        "c": _Failure(_Cancelled(), "walk"),
+    }
+    clients = [_Named(name) for name in ("a", "b", "c", "d")]
+
+    _walk_endpoints(
+        clients,
+        lambda client, status: failures.get(client.name),
+        on_done=lambda walked_past, tried: done.append(([c.name for c in walked_past], [c.name for c in tried])),
+    )
+
+    assert done == [(["a"], ["a", "b", "c", "d"])]
+
+
+def test_walk_reports_nothing_when_every_endpoint_fails():
+    done = []
+
+    with pytest.raises(ValueError):
+        _walk_endpoints(
+            [_Named("a"), _Named("b")],
+            lambda client, status: _Failure(ValueError(client.name), "walk"),
+            on_done=lambda walked_past, tried: done.append(tried),
+        )
+
+    assert done == []
+
+
+class _Named:
+    def __init__(self, name: str):
+        self.name = name

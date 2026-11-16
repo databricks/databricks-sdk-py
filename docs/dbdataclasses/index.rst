@@ -45,6 +45,7 @@ Dataclasses
    sharing
    softwareartifacts
    sql
+   statementexecutionv2
    supervisoragents
    tags
    vectorsearch

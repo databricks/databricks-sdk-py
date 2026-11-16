@@ -55,8 +55,12 @@
 
     .. py:method:: create_database_table(table: DatabaseTable) -> DatabaseTable
 
-        Create a Database Table. Useful for registering pre-existing PG tables in UC. See
-        CreateSyncedDatabaseTable for creating synced tables in PG from a source table in UC.
+        Create a Database Table. This registers a table that already exists in a Postgres database of a
+        database instance as a table in Unity Catalog. The Postgres database, schema and table must already
+        exist; the request does not create them. Repeating the request for the same table succeeds, and a
+        request for a name that is already registered from a different database or instance fails. To create a
+        Postgres table from a Unity Catalog source table instead, use `Create a Synced Database Table
+        <https://docs.databricks.com/api/workspace/database/createsynceddatabasetable>`__.
 
         :param table: :class:`DatabaseTable`
 
@@ -66,6 +70,10 @@
     .. py:method:: create_synced_database_table(synced_table: SyncedDatabaseTable) -> SyncedDatabaseTable
 
         Create a Synced Database Table.
+
+        The table and its data synchronization pipeline are provisioned asynchronously. The response reflects
+        the initial state; use Get a Synced Database Table to follow the data synchronization status until the
+        table is online.
 
         For new workloads, Databricks recommends the Postgres API equivalent: `Create a synced table
         <https://docs.databricks.com/api/postgres/v1/create-synced-table>`__.
@@ -77,12 +85,14 @@
 
     .. py:method:: delete_database_catalog(name: str)
 
-        Delete a Database Catalog.
+        Delete a Database Catalog. This removes the catalog from Unity Catalog, while the Postgres database
+        and its tables remain in the instance.
 
         For new workloads, Databricks recommends the Postgres API equivalent: `Delete a catalog
         <https://docs.databricks.com/api/postgres/v1/delete-catalog>`__.
 
         :param name: str
+          The Unity Catalog name of the catalog to delete.
 
 
         
@@ -97,11 +107,11 @@
         :param name: str
           Name of the instance to delete.
         :param force: bool (optional)
-          By default, an instance cannot be deleted if it has descendant instances created via PITR. If this
-          flag is specified as true, all descendent instances will be deleted as well.
+          By default, an instance cannot be deleted if it has descendant instances created via PITR. Setting
+          this flag to true is not supported and the request is rejected; delete the child instances first.
         :param purge: bool (optional)
-          Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.
-          Setting a value of false will throw a bad request.
+          Deprecated: omitting the field or setting it to true hard deletes the instance. Setting it to false
+          returns a bad request.
 
 
         
@@ -124,9 +134,13 @@
 
     .. py:method:: delete_database_table(name: str)
 
-        Delete a Database Table.
+        Delete a Database Table. This removes the table from Unity Catalog only; the Postgres table and its
+        data are kept. Tables in a database catalog cannot be deleted with this method, and synced tables must
+        be deleted with `Delete a Synced Database Table
+        <https://docs.databricks.com/api/workspace/database/deletesynceddatabasetable>`__.
 
         :param name: str
+          Specifies the database table by its full three-part (catalog, schema, table) name.
 
 
         
@@ -139,38 +153,47 @@
         <https://docs.databricks.com/api/postgres/v1/delete-synced-table>`__.
 
         :param name: str
+          Specifies the synced table by its full three-part (catalog, schema, table) name.
         :param purge_data: bool (optional)
-          Optional. When set to true, the actual PostgreSQL table will be dropped from the database.
+          When true, the Postgres table is also dropped from the database. When false, the synced table is
+          unregistered from Unity Catalog and its pipeline stops syncing it, but the Postgres table and its
+          data are kept.
 
 
         
 
     .. py:method:: find_database_instance_by_uid( [, uid: Optional[str]]) -> DatabaseInstance
 
-        Find a Database Instance by uid.
+        Find a Database Instance by its uid rather than by name.
 
         :param uid: str (optional)
-          UID of the cluster to get.
+          UID of the instance to get, as returned in the uid field of the instance.
 
         :returns: :class:`DatabaseInstance`
         
 
     .. py:method:: generate_database_credential( [, claims: Optional[List[RequestedClaims]], instance_names: Optional[List[str]], request_id: Optional[str]]) -> DatabaseCredential
 
-        Generates a credential that can be used to access database instances.
+        Generates a short-lived OAuth token for connecting to database instances. Connect with the caller's
+        Databricks identity as the Postgres user and the returned token as the password. For details about
+        OAuth token authentication, see `About authentication
+        <https://docs.databricks.com/aws/en/oltp/projects/authentication>`__.
 
         For new workloads, Databricks recommends the Postgres API equivalent: `Generate a database credential
         <https://docs.databricks.com/api/postgres/v1/generate-database-credential>`__.
 
         :param claims: List[:class:`RequestedClaims`] (optional)
-          A set of UC permissions to add to the credential. We verify that the caller has the necessary
-          permissions in UC and include a reference in the token. Postgres uses that token to give the
-          connecting user additional grants to the Postgres resources that correspond to the UC resources. The
-          UC resources need to be something that have a Postgres counterpart. For example, a synced table or a
-          table in a UC database catalog.
+          Unity Catalog permissions to embed in the credential. Databricks verifies that the caller holds each
+          permission in Unity Catalog and records a reference to it in the token. When the user connects,
+          Postgres grants them the matching privileges on the Postgres objects that back those Unity Catalog
+          resources. Each resource must have a Postgres counterpart, such as a synced table or a table in a
+          database catalog.
         :param instance_names: List[str] (optional)
-          Instances to request a credential for. At least one of instance_names or claims must be specified.
+          Names of the database instances to connect to with the credential. Every named instance must exist
+          in the workspace, or the request fails. At least one of instance_names or claims must be specified.
         :param request_id: str (optional)
+          A client-generated identifier for this request, such as a UUID. The request fails when it is
+          omitted.
 
         :returns: :class:`DatabaseCredential`
         
@@ -183,6 +206,7 @@
         <https://docs.databricks.com/api/postgres/v1/get-catalog>`__.
 
         :param name: str
+          The Unity Catalog name of the catalog to retrieve.
 
         :returns: :class:`DatabaseCatalog`
         
@@ -195,7 +219,7 @@
         <https://docs.databricks.com/api/postgres/v1/get-project>`__.
 
         :param name: str
-          Name of the cluster to get.
+          Name of the instance to get.
 
         :returns: :class:`DatabaseInstance`
         
@@ -215,9 +239,12 @@
 
     .. py:method:: get_database_table(name: str) -> DatabaseTable
 
-        Get a Database Table.
+        Get a Database Table. The request fails if the name refers to a synced table or to a table that is not
+        a database table; for synced tables, use `Get a Synced Database Table
+        <https://docs.databricks.com/api/workspace/database/getsynceddatabasetable>`__.
 
         :param name: str
+          Specifies the database table by its full three-part (catalog, schema, table) name.
 
         :returns: :class:`DatabaseTable`
         
@@ -230,6 +257,7 @@
         <https://docs.databricks.com/api/postgres/v1/get-synced-table>`__.
 
         :param name: str
+          Specifies the synced table by its full three-part (catalog, schema, table) name.
 
         :returns: :class:`SyncedDatabaseTable`
         
@@ -272,7 +300,7 @@
         <https://docs.databricks.com/api/postgres/v1/list-projects>`__.
 
         :param page_size: int (optional)
-          Upper bound for items returned. The maximum value is 100.
+          Upper bound for items returned. Defaults to 100, which is also the maximum value.
         :param page_token: str (optional)
           Pagination token to go to the next page of Database Instances. Requests first page if absent.
 
@@ -298,7 +326,7 @@
         This API is currently unimplemented, but exposed for Terraform support.
 
         :param name: str
-          The name of the catalog in UC.
+          The name of the catalog in Unity Catalog.
         :param database_catalog: :class:`DatabaseCatalog`
           Note that updating a database catalog is not yet supported.
         :param update_mask: str
@@ -316,11 +344,15 @@
         <https://docs.databricks.com/api/postgres/v1/update-endpoint>`__.
 
         :param name: str
-          The name of the instance. This is the unique identifier for the instance.
+          The name of the instance. This is the unique identifier for the instance. Must be 1 to 63 characters
+          long, contain only letters, digits and hyphens, start with a letter, and not contain consecutive
+          hyphens.
         :param database_instance: :class:`DatabaseInstance`
+          Specifies the instance to update, identified by its name.
         :param update_mask: str
-          The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out
-          custom_tags, specify custom_tags in the update_mask with an empty custom_tags map.
+          The list of fields to update. If unspecified, all fields will be updated when possible. Use "*" to
+          update every field. To wipe out custom_tags, specify custom_tags in the update_mask with an empty
+          custom_tags list.
 
         :returns: :class:`DatabaseInstance`
         

@@ -64,14 +64,14 @@
         created in the specified external location, while a managed volume will be located in the default
         location which is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For the volume creation to succeed, the user must satisfy following conditions:
+        For the volume creation to succeed, the user must satisfy the following conditions:
 
         - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
           **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
           schema.
         - The caller must have **CREATE VOLUME** privilege on the parent schema.
 
-        For an external volume, following conditions also need to satisfy
+        For an external volume, the following conditions must also be satisfied:
 
         - The caller must have **CREATE EXTERNAL VOLUME** privilege on the external location.
         - There are no other tables, nor volumes existing in the specified storage location.
@@ -92,7 +92,10 @@
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)
-          The storage location on the cloud
+          The cloud storage URL where the files of the volume are stored. For an external volume, it must be
+          set on creation to a path within an existing external location. For a managed volume, it must be
+          omitted on creation; the volume is placed under the managed storage location of the parent schema,
+          catalog, or metastore, and the assigned path is returned in this field.
 
         :returns: :class:`VolumeInfo`
         
@@ -149,12 +152,12 @@
         which is the only indication that the end of results has been reached.
 
         :param catalog_name: str
-          The identifier of the catalog
+          The name of the catalog that contains the schema.
         :param schema_name: str
-          The identifier of the schema
+          The name of the schema whose volumes are listed.
         :param include_browse: bool (optional)
-          Whether to include volumes in the response for which the principal can only access selective
-          metadata for
+          Whether to include volumes for which the principal can only access selective metadata through the
+          BROWSE privilege.
         :param max_results: int (optional)
           Maximum number of volumes to return (page length).
 
@@ -234,8 +237,8 @@
         :param name: str
           The fully qualified name of the volume.
         :param include_browse: bool (optional)
-          Whether to include volumes in the response for which the principal can only access selective
-          metadata for
+          Whether to include volumes for which the principal can only access selective metadata through the
+          BROWSE privilege.
 
         :returns: :class:`VolumeInfo`
         
@@ -297,16 +300,17 @@
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
 
-        Currently only the name, the owner or the comment of the volume could be updated.
+        Currently only the name, the owner, or the comment of the volume can be updated.
 
         :param name: str
           The three-level (fully qualified) name of the volume
         :param comment: str (optional)
           The comment attached to the volume
         :param new_name: str (optional)
-          New name for the volume.
+          The new name for the volume. Set it to rename the volume.
         :param owner: str (optional)
-          The identifier of the user who owns the volume
+          The user or group that owns the volume. The user who creates a volume becomes its owner; the owner
+          can be changed afterwards with an update.
 
         :returns: :class:`VolumeInfo`
         

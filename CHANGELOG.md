@@ -1,5 +1,26 @@
 # Version changelog
 
+## Release v0.167.0 (2026-11-16)
+
+### New Features and Improvements
+* Add `http_adapter` configuration for custom HTTP transports, including mutual TLS, on API requests and the initial request to the host's `/.well-known/databricks-config` endpoint to discover settings.
+
+### API Changes
+* Add `databricks.sdk.service.statementexecutionv2` package.
+* Add [w.statement_execution_v2](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/statementexecutionv2/statement_execution_v2.html) workspace-level service.
+* Add `get_app_deployment_scan_finding()`, `list_app_deployment_scan_findings()` and `update_app_deployment_scan_finding()` methods for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps/apps.html) workspace-level service.
+* Add `scan_omitted_count_is_lower_bound`, `scan_omitted_findings_count` and `scan_status` fields for `databricks.sdk.service.apps.AppDeployment`.
+* Add `image_uri` field for `databricks.sdk.service.compute.Environment`.
+* Add `iceberg_table_source` field for `databricks.sdk.service.ml.DataSource`.
+* Add `testing` field for `databricks.sdk.service.pipelines.ClonePipelineRequest`.
+* Add `testing` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+* Add `testing` field for `databricks.sdk.service.pipelines.EditPipeline`.
+* Add `testing` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+* Add `test_only` and `test_options` fields for `databricks.sdk.service.pipelines.StartUpdate`.
+* Add `test_only` field for `databricks.sdk.service.pipelines.UpdateInfo`.
+* Add `overwrite` field for `databricks.sdk.service.sandbox.UploadFileRequest`.
+* Add `day` enum value for `databricks.sdk.service.billing.AlertConfigurationTimePeriod`.
+
 ## Release v0.166.0 (2026-11-12)
 
 ### API Changes

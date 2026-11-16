@@ -180,6 +180,7 @@ class AlertConfigurationScopeType(Enum):
 
 
 class AlertConfigurationTimePeriod(Enum):
+    DAY = "DAY"
     MONTH = "MONTH"
 
 

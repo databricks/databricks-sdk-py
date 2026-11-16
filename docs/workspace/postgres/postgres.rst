@@ -59,12 +59,16 @@
 
     .. py:method:: create_catalog(catalog: Catalog, catalog_id: str) -> CreateCatalogOperation
 
-        Register a Postgres database in the Unity Catalog.
+        Registers a Postgres database from a Lakebase project branch as a catalog in Unity Catalog, so that
+        its schemas, tables and views are governed and discoverable through Unity Catalog. The catalog is
+        read-only; the data stays managed through Postgres. Returns a long-running operation. Poll it until
+        done is true; its response holds the new catalog. For an overview, see
+        https://docs.databricks.com/aws/en/oltp/projects/register-uc.
 
         :param catalog: :class:`Catalog`
         :param catalog_id: str
-          The ID in the Unity Catalog. It becomes the full resource name, for example "my_catalog" becomes
-          "catalogs/my_catalog".
+          The ID of the catalog to create, which is also its name in Unity Catalog. It becomes the last
+          segment of the catalog's resource name, catalogs/{catalog_id}.
 
         :returns: :class:`Operation`
         
@@ -126,19 +130,24 @@
 
     .. py:method:: create_endpoint(parent: str, endpoint: Endpoint, endpoint_id: str [, replace_existing: Optional[bool]]) -> CreateEndpointOperation
 
-        Creates a new compute endpoint in the branch.
+        Creates a compute endpoint in the branch. Each branch gets its read-write endpoint when the branch is
+        created, so use this method to add read-only endpoints (read replicas) or, with ``replace_existing``,
+        to reconfigure the existing read-write endpoint.
 
         :param parent: str
           The Branch where this Endpoint will be created. Format: projects/{project_id}/branches/{branch_id}
         :param endpoint: :class:`Endpoint`
-          The Endpoint to create.
+          The endpoint to create. Only ``spec`` is read from this message; the system sets the other fields.
         :param endpoint_id: str
-          The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
-          The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, ``primary`` becomes
-          ``projects/my-app/branches/development/endpoints/primary``.
+          The ID to use for the endpoint. It becomes the final segment of the endpoint's resource name,
+          ``projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}``. The ID must be 3 to 63
+          characters long, start with a lowercase letter, end with a lowercase letter or digit, and contain
+          only lowercase letters, digits, and hyphens.
         :param replace_existing: bool (optional)
-          If true, update the endpoint if it already exists instead of returning an error.
+          If true, update the endpoint if it already exists instead of returning an error. The request's
+          ``spec.endpoint_type`` must match the existing endpoint's type, and the other ``spec`` fields are
+          applied as an update. Use this to configure the read-write endpoint that was created together with
+          the branch.
 
         :returns: :class:`Operation`
         
@@ -160,14 +169,16 @@
     .. py:method:: create_project(project: Project, project_id: str) -> CreateProjectOperation
 
         Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute
-        endpoints.
+        endpoints. The new project starts with a single branch, a read-write compute endpoint on that branch,
+        a Postgres database named ``databricks_postgres``, and a Postgres role for the calling identity.
 
         :param project: :class:`Project`
           The Project to create.
         :param project_id: str
-          The ID to use for the Project. This becomes the final component of the project's resource name. The
-          ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, ``my-app`` becomes ``projects/my-app``.
+          The ID to use for the project. It becomes the final segment of the project's resource name,
+          ``projects/{project_id}``. The ID must be 3 to 63 characters long, start with a lowercase letter,
+          end with a lowercase letter or digit, and contain only lowercase letters, digits, and hyphens. The
+          ID of a soft-deleted project stays reserved until that project is permanently deleted.
 
         :returns: :class:`Operation`
         
@@ -254,7 +265,9 @@
 
     .. py:method:: delete_catalog(name: str) -> DeleteCatalogOperation
 
-        Delete a Database Catalog.
+        Deletes the catalog from Unity Catalog. The Postgres database and its tables remain in the branch, and
+        the database can be registered again afterwards. Returns a long-running operation. Poll it until done
+        is true.
 
         :param name: str
           The full resource path of the catalog to delete.
@@ -303,14 +316,13 @@
 
     .. py:method:: delete_endpoint(name: str) -> DeleteEndpointOperation
 
-        Deletes the specified compute endpoint.
+        Deletes the specified compute endpoint. Deletion is permanent. Only read-only endpoints can be deleted
+        this way, because a branch's read-write endpoint is deleted together with the branch. To stop the
+        compute costs of a read-write endpoint without deleting the branch, set ``spec.disabled`` to true.
 
         :param name: str
           The full resource path of the endpoint to delete. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
-
-          Read-write endpoints currently cannot be deleted directly. Their deletion is managed by the parent
-          branch. To avoid compute costs, set ``disabled`` to ``true`` on the endpoint.
 
         :returns: :class:`Operation`
         
@@ -327,12 +339,17 @@
 
     .. py:method:: delete_project(name: str [, purge: Optional[bool]]) -> DeleteProjectOperation
 
-        Deletes the specified database project.
+        Deletes the specified database project. By default the project is soft-deleted and can be restored
+        with Undelete during its retention period; set ``purge`` to delete it permanently.
 
         :param name: str
           The full resource path of the project to delete. Format: projects/{project_id}
         :param purge: bool (optional)
-          If true, permanently deletes the project (hard delete). If false or unset, performs a soft delete.
+          If true, permanently deletes the project and all of its data immediately. If false or unset, the
+          project is soft-deleted: it stops accepting connections and is retained for 7 days, during which it
+          can be restored with Undelete, and is then permanently deleted. Deleting an already soft-deleted
+          project with ``purge`` set to true removes it immediately. See
+          https://docs.databricks.com/aws/en/oltp/projects/manage-projects for details.
 
         :returns: :class:`Operation`
         
@@ -420,7 +437,8 @@
 
     .. py:method:: get_catalog(name: str) -> Catalog
 
-        Get a Database Catalog.
+        Gets the catalog with the given name. The status reports the Postgres database, project and branch
+        that the catalog registers.
 
         :param name: str
           The full resource path of the catalog to retrieve.
@@ -643,13 +661,14 @@
 
     .. py:method:: list_endpoints(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Endpoint]
 
-        Returns a paginated list of compute endpoints in the branch.
+        Lists the compute endpoints in the branch, including its read-write endpoint and any read-only
+        endpoints.
 
         :param parent: str
           The Branch that owns this collection of endpoints. Format:
           projects/{project_id}/branches/{branch_id}
         :param page_size: int (optional)
-          Upper bound for items returned. Cannot be negative.
+          Upper bound for the number of endpoints returned. If set, the value must be at least 10.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -677,7 +696,8 @@
         Returns a paginated list of database projects in the workspace that the user has permission to access.
 
         :param page_size: int (optional)
-          Upper bound for items returned. Cannot be negative. The maximum value is 100.
+          Upper bound for the number of projects returned. Cannot be negative. Values above the maximum page
+          size are reduced to that maximum.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
         :param show_deleted: bool (optional)
@@ -760,7 +780,9 @@
 
     .. py:method:: undelete_project(name: str) -> UndeleteProjectOperation
 
-        Undeletes a soft-deleted project.
+        Restores a soft-deleted project together with its branches and their data, compute endpoints, Postgres
+        databases and roles, project settings, and permissions. A project can be restored until its
+        ``purge_time``; after that it is permanently deleted and cannot be recovered.
 
         :param name: str
           The full resource path of the project to undelete. Format: projects/{project_id}
@@ -821,8 +843,9 @@
 
     .. py:method:: update_endpoint(name: str, endpoint: Endpoint, update_mask: FieldMask) -> UpdateEndpointOperation
 
-        Updates the specified compute endpoint. You can update autoscaling limits, suspend timeout, or
-        enable/disable the compute endpoint.
+        Updates the configuration of the specified compute endpoint. Only the ``spec`` fields named in
+        ``update_mask`` change, and ``spec.endpoint_type`` cannot be changed. The endpoint keeps its hostnames
+        across updates, so existing connection strings stay valid.
 
         :param name: str
           Output only. The full resource path of the endpoint. Format:
@@ -833,7 +856,10 @@
           The endpoint's ``name`` field is used to identify the endpoint to update. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param update_mask: FieldMask
-          The list of fields to update.
+          The fields to update, as paths relative to the endpoint, for example
+          ``spec.autoscaling_limit_max_cu``. Pass ``spec`` to update every field that is set in ``spec``. Only
+          fields under ``spec`` can be updated. To change the suspension setting, include ``spec.suspension``
+          or the specific suspension field.
 
         :returns: :class:`Operation`
         
@@ -854,7 +880,8 @@
 
     .. py:method:: update_project(name: str, project: Project, update_mask: FieldMask) -> UpdateProjectOperation
 
-        Updates the specified database project.
+        Updates the configuration of the specified database project. Only the fields named in ``update_mask``
+        change.
 
         :param name: str
           Output only. The full resource path of the project. Format: projects/{project_id}
@@ -864,7 +891,8 @@
           The project's ``name`` field is used to identify the project to update. Format:
           projects/{project_id}
         :param update_mask: FieldMask
-          The list of fields to update.
+          The fields to update, as paths relative to the project, for example ``spec.display_name``. Pass
+          ``*`` to update every field that is set in the request. Only fields under ``spec`` can be updated.
 
         :returns: :class:`Operation`
         

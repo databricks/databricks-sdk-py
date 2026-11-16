@@ -648,6 +648,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UNHEALTHY
       :value: "UNHEALTHY"
 
+.. autoclass:: PipelineTestEnvironment
+   :members:
+   :undoc-members:
+
+.. autoclass:: PipelineTestOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: PipelineTestSource
+   :members:
+   :undoc-members:
+
+.. autoclass:: PipelineTesting
+   :members:
+   :undoc-members:
+
 .. autoclass:: PipelineTrigger
    :members:
    :undoc-members:

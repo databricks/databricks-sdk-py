@@ -2556,10 +2556,19 @@ class CommandStatus(Enum):
 @dataclass
 class CommandStatusResponse:
     id: Optional[str] = None
+    """ID of the command."""
 
     results: Optional[Results] = None
+    """Output of the command. It is populated only once the command has reached a terminal status, and
+    its ``resultType`` tells which of its other fields are set."""
 
     status: Optional[CommandStatus] = None
+    """Current status of the command. ``Queued`` and ``Running`` mean the command has not completed
+    yet, and ``Cancelling`` means a cancellation is in progress. ``Finished``, ``Error`` and
+    ``Cancelled`` are terminal: ``Finished`` means the command ran to completion, including when the
+    code itself raised an error (reported in ``results`` with the ``error`` result type), while
+    ``Error`` means the execution environment failed, for example because the driver or the context
+    stopped."""
 
     def as_dict(self) -> dict:
         """Serializes the CommandStatusResponse into a dictionary suitable for use as a JSON request body."""
@@ -2700,8 +2709,12 @@ class ContextStatus(Enum):
 @dataclass
 class ContextStatusResponse:
     id: Optional[str] = None
+    """ID of the execution context."""
 
     status: Optional[ContextStatus] = None
+    """Current status of the execution context. ``Pending`` means the context is still initializing and
+    does not accept commands yet, ``Running`` means it is ready, and ``Error`` means it failed:
+    running commands may not complete and new commands may be rejected, so create a new context."""
 
     def as_dict(self) -> dict:
         """Serializes the ContextStatusResponse into a dictionary suitable for use as a JSON request body."""
@@ -2829,6 +2842,9 @@ class CreateResponse:
 @dataclass
 class Created:
     id: Optional[str] = None
+    """ID of the new execution context when returned by **Create**, or of the submitted command when
+    returned by **execute**. Pass it to the other methods of this API as ``contextId`` or
+    ``commandId``."""
 
     def as_dict(self) -> dict:
         """Serializes the Created into a dictionary suitable for use as a JSON request body."""
@@ -3839,6 +3855,12 @@ class Environment:
     ``base_environment`` must be provided. Each version comes with a specific Python version and a
     set of Python packages. The version is a string, consisting of an integer."""
 
+    image_uri: Optional[str] = None
+    """Customer-provided container image to use as the whole environment for this workload, stored in
+    Databricks Artifact Registry and named by its Unity Catalog name and tag, as
+    ``catalog.schema.artifact:tag``. Cannot be combined with ``environment_version`` or
+    ``base_environment``."""
+
     java_dependencies: Optional[List[str]] = None
     """List of Java dependencies. Each dependency is a string representing a Java library path. For
     example: ``/Volumes/path/to/test.jar``."""
@@ -3860,6 +3882,8 @@ class Environment:
             body["dependencies"] = [v for v in self.dependencies]
         if self.environment_version is not None:
             body["environment_version"] = self.environment_version
+        if self.image_uri is not None:
+            body["image_uri"] = self.image_uri
         if self.java_dependencies:
             body["java_dependencies"] = [v for v in self.java_dependencies]
         if self.project_environment is not None:
@@ -3877,6 +3901,8 @@ class Environment:
             body["dependencies"] = self.dependencies
         if self.environment_version is not None:
             body["environment_version"] = self.environment_version
+        if self.image_uri is not None:
+            body["image_uri"] = self.image_uri
         if self.java_dependencies:
             body["java_dependencies"] = self.java_dependencies
         if self.project_environment is not None:
@@ -3891,6 +3917,7 @@ class Environment:
             client=d.get("client", None),
             dependencies=d.get("dependencies", None),
             environment_version=d.get("environment_version", None),
+            image_uri=d.get("image_uri", None),
             java_dependencies=d.get("java_dependencies", None),
             project_environment=d.get("project_environment", None),
         )
@@ -7720,9 +7747,11 @@ class ResultType(Enum):
 @dataclass
 class Results:
     cause: Optional[str] = None
-    """The cause of the error"""
+    """Details of an ``error`` result, usually the exception message or stack trace."""
 
     data: Optional[Any] = None
+    """Output of a ``text`` result as a string, or the rows of a ``table`` result as an array of rows,
+    each an array of column values in the order of ``schema``."""
 
     file_name: Optional[str] = None
     """The image data in one of the following formats:
@@ -7742,15 +7771,22 @@ class Results:
     """internal field used by SDK"""
 
     result_type: Optional[ResultType] = None
+    """Type of the result, which determines which other fields are set: ``text`` puts the output in
+    ``data``, ``table`` fills ``data``, ``schema``, ``truncated`` and ``isJsonSchema``, ``image``
+    and ``images`` fill ``fileName`` and ``fileNames`` respectively, and ``error`` fills ``cause``
+    and ``summary``."""
 
     schema: Optional[List[Dict[str, Any]]] = None
-    """The table schema"""
+    """Columns of a ``table`` result, in the order of the values within each row of ``data``. Each
+    entry has a ``name``, a ``type`` and a ``metadata`` key."""
 
     summary: Optional[str] = None
-    """The summary of the error"""
+    """Short description of an ``error`` result, such as the exception type and message, when
+    available."""
 
     truncated: Optional[bool] = None
-    """true if partial results are returned."""
+    """Whether a ``table`` result was cut off because the command output exceeded the row or byte
+    limit."""
 
     def as_dict(self) -> dict:
         """Serializes the Results into a dictionary suitable for use as a JSON request body."""
@@ -8417,7 +8453,7 @@ class TerminationReasonType(Enum):
 
 
 class TshirtSize(Enum):
-    """T-shirt size for per-workload Spark executor limits."""
+    """T-shirt size for Spark executor limits."""
 
     T_SHIRT_SIZE_2X_LARGE = "T_SHIRT_SIZE_2X_LARGE"
     T_SHIRT_SIZE_3X_LARGE = "T_SHIRT_SIZE_3X_LARGE"
@@ -10858,11 +10894,17 @@ class CommandExecutionAPI:
     ) -> Wait[CommandStatusResponse]:
         """Cancels a currently running command within an execution context.
 
-        The command ID is obtained from a prior successful call to **execute**.
+        The command ID is obtained from a prior successful call to **execute**. Cancellation is asynchronous:
+        this method returns once the request is accepted, and the command moves through the ``Cancelling``
+        status before reaching a terminal one. Poll **commandStatus** to observe the outcome; a cancelled
+        command ends in the ``Finished`` status with an ``error`` result that describes the cancellation.
 
         :param cluster_id: str (optional)
+          ID of the cluster that hosts the execution context.
         :param command_id: str (optional)
+          ID of the command to cancel, as returned by **execute**.
         :param context_id: str (optional)
+          ID of the execution context the command runs in.
 
         :returns:
           Long-running operation waiter for :class:`CommandStatusResponse`.
@@ -10906,11 +10948,16 @@ class CommandExecutionAPI:
     def command_status(self, cluster_id: str, context_id: str, command_id: str) -> CommandStatusResponse:
         """Gets the status of and, if available, the results from a currently executing command.
 
-        The command ID is obtained from a prior successful call to **execute**.
+        The command ID is obtained from a prior successful call to **execute**. Poll this method until the
+        status is one of the terminal values ``Finished``, ``Error`` or ``Cancelled``; the ``results`` field
+        is populated only once the command has reached a terminal status.
 
         :param cluster_id: str
+          ID of the cluster that hosts the execution context.
         :param context_id: str
+          ID of the execution context the command runs in.
         :param command_id: str
+          ID of the command, as returned by **execute**.
 
         :returns: :class:`CommandStatusResponse`
         """
@@ -10936,8 +10983,13 @@ class CommandExecutionAPI:
     def context_status(self, cluster_id: str, context_id: str) -> ContextStatusResponse:
         """Gets the status for an execution context.
 
+        After **Create**, poll this method until the status is ``Running`` or ``Error``. Requests for a
+        context that has been deleted fail with an error instead of returning a status.
+
         :param cluster_id: str
+          ID of the cluster that hosts the execution context.
         :param context_id: str
+          ID of the execution context, as returned by **Create**.
 
         :returns: :class:`ContextStatusResponse`
         """
@@ -10963,11 +11015,15 @@ class CommandExecutionAPI:
     ) -> Wait[ContextStatusResponse]:
         """Creates an execution context for running cluster commands.
 
-        If successful, this method returns the ID of the new execution context.
+        If successful, this method returns the ID of the new execution context. The context may still be
+        initializing when this method returns, so poll **contextStatus** until the status is ``Running``
+        before running commands in it. This method and the other methods of this API require the CAN ATTACH TO
+        permission on the cluster.
 
         :param cluster_id: str (optional)
-          Running cluster id
+          ID of the cluster to create the execution context on. The cluster must be running.
         :param language: :class:`Language` (optional)
+          Programming language of the execution context.
 
         :returns:
           Long-running operation waiter for :class:`ContextStatusResponse`.
@@ -11004,8 +11060,13 @@ class CommandExecutionAPI:
     def destroy(self, cluster_id: str, context_id: str):
         """Deletes an execution context.
 
+        Delete contexts you no longer need, because a cluster can host only a limited number of execution
+        contexts at a time. Deleting a context that no longer exists succeeds, so the call is safe to retry.
+
         :param cluster_id: str
+          ID of the cluster that hosts the execution context.
         :param context_id: str
+          ID of the execution context to delete, as returned by **Create**.
 
 
         """
@@ -11036,15 +11097,18 @@ class CommandExecutionAPI:
     ) -> Wait[CommandStatusResponse]:
         """Runs a cluster command in the given execution context, using the provided language.
 
-        If successful, it returns an ID for tracking the status of the command's execution.
+        If successful, it returns an ID for tracking the status of the command's execution. This method
+        returns as soon as the command is accepted, so poll **commandStatus** with the returned ID to wait for
+        the command to finish and to read its results.
 
         :param cluster_id: str (optional)
-          Running cluster id
+          ID of the cluster that hosts the execution context.
         :param command: str (optional)
-          Executable code
+          Code to run, written in the specified language.
         :param context_id: str (optional)
-          Running context id
+          ID of the execution context to run the command in, as returned by **Create**.
         :param language: :class:`Language` (optional)
+          Language the command is written in.
 
         :returns:
           Long-running operation waiter for :class:`CommandStatusResponse`.

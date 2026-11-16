@@ -24,9 +24,9 @@
         :param path: str
           The absolute path of the notebook or directory.
         :param recursive: bool (optional)
-          The flag that specifies whether to delete the object recursively. It is ``false`` by default. Please
-          note this deleting directory is not atomic. If it fails in the middle, some of objects under this
-          directory may be deleted and cannot be undone.
+          The flag that specifies whether to delete the object recursively. It is ``false`` by default.
+          Deleting a directory recursively is not atomic. If the call fails part way, some objects under the
+          directory may already be deleted and cannot be restored.
 
 
         
@@ -207,10 +207,9 @@
           The absolute path of the object or directory. Importing a directory is only supported for the
           ``DBC`` and ``SOURCE`` formats.
         :param content: str (optional)
-          The base64-encoded content. This has a limit of 10 MB.
-
-          If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
-          This parameter might be absent, and instead a posted file is used.
+          The base64-encoded content to import. The content is limited to 10 MB. If the limit is exceeded, the
+          call fails with error code ``MAX_NOTEBOOK_SIZE_EXCEEDED``. This parameter might be absent, and
+          instead a posted file is used.
         :param format: :class:`ImportFormat` (optional)
           This specifies the format of the file to be imported.
 
@@ -225,10 +224,12 @@
           - ``DBC``: The notebook is imported in Databricks archive format. Required for directories.
           - ``R_MARKDOWN``: The notebook is imported from R Markdown format.
         :param language: :class:`Language` (optional)
-          The language of the object. This value is set only if the object type is ``NOTEBOOK``.
+          The language of the notebook. It applies only to the ``SOURCE`` format: set it to import a single
+          notebook, or leave it unset to import a directory.
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing object. It is ``false`` by default. For
-          ``DBC`` format, ``overwrite`` is not supported since it may contain a directory.
+          ``DBC`` format, ``overwrite`` is not supported since it may contain a directory. Importing a
+          directory in ``SOURCE`` format does not support ``overwrite`` either.
 
 
         

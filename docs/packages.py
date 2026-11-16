@@ -210,6 +210,11 @@ AUTO_PACKAGES = [
         "softwareartifacts", "Software Artifacts", "Manage software artifacts and their versions in Unity Catalog."
     ),
     Package("sql", "", ""),
+    Package(
+        "statementexecutionv2",
+        "Statement Execution (Lakehouse//RT) V2",
+        "The Statement Execution API v2 can be used to execute SQL statements on a SQL warehouse and fetch the\nresult. It works the same as the Statement Execution API (v1), except that `warehouse_id` is a path parameter\non every call, including polling, fetching result chunks, and canceling. Routing on the warehouse ID gives\nlower latency and higher concurrency.\n\nVersion 2 currently supports [Lakehouse//RT](https://docs.databricks.com/compute/sql-warehouse/real-time.html) warehouses only. For other\nwarehouse types, use the Statement Execution API (v1). You can also run statements on Lakehouse//RT warehouses\nwith version 1, but version 2 is optimized for them.",
+    ),
     Package("supervisoragents", "Supervisor Agents (legacy)", "Manage legacy Supervisor Agents and related resources."),
     Package("tags", "", ""),
     Package("vectorsearch", "", ""),

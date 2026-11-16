@@ -305,7 +305,10 @@ class Branch:
     branching from another branch, see ``status.source_branch``."""
 
     spec: Optional[BranchSpec] = None
-    """The spec contains the branch configuration."""
+    """The spec contains the branch configuration.
+    
+    Read the resource's current values from ``status``, rather than ``spec``. ``spec`` tracks field
+    ownership for infrastructure-as-code tools and may omit unmanaged fields."""
 
     status: Optional[BranchStatus] = None
     """The current status of a Branch."""
@@ -632,7 +635,8 @@ class BranchStatusState(Enum):
 @dataclass
 class Catalog:
     catalog_id: Optional[str] = None
-    """The part of the name, chosen by the user when the resource was created."""
+    """The ID chosen when the catalog was created, which is also its name in Unity Catalog. It is the
+    last segment of the name field."""
 
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the catalog was created."""
@@ -643,13 +647,14 @@ class Catalog:
     Format: "catalogs/{catalog_id}"."""
 
     spec: Optional[CatalogCatalogSpec] = None
-    """The desired state of the Catalog."""
+    """The desired state of the Catalog. The catalog has no update method, so the spec is fixed when
+    the catalog is created."""
 
     status: Optional[CatalogCatalogStatus] = None
     """The observed state of the Catalog."""
 
     uid: Optional[str] = None
-    """System-generated unique identifier for the catalog."""
+    """The immutable UUID that identifies the catalog, assigned when the catalog is created."""
 
     update_time: Optional[Timestamp] = None
     """A timestamp indicating when the catalog was last updated."""
@@ -713,7 +718,8 @@ class CatalogCatalogSpec:
     postgres_database: str
     """The name of the Postgres database inside the specified Lakebase project and branch to be
     associated with the UC catalog. This database must already exist, unless
-    create_database_if_missing is set to true on creation.
+    create_database_if_missing is set to true on creation. The system databases postgres,
+    databricks_system, template0 and template1 cannot be registered.
     
     A database can only be registered with one UC catalog at a time. To re-register a database with
     a different catalog, the existing catalog must be deleted first.
@@ -727,7 +733,8 @@ class CatalogCatalogSpec:
     the Catalog drops the fact of registration of the database. So the user should avoid doing so."""
 
     branch: Optional[str] = None
-    """The resource path of the branch associated with the catalog.
+    """The resource path of the branch that holds the Postgres database. The branch must have a
+    read-write compute endpoint.
     
     Format: projects/{project_id}/branches/{branch_id}."""
 
@@ -1381,7 +1388,10 @@ class Database:
     """The branch containing this database. Format: projects/{project_id}/branches/{branch_id}"""
 
     spec: Optional[DatabaseDatabaseSpec] = None
-    """The desired state of the Database."""
+    """The desired state of the Database.
+    
+    Read the resource's current values from ``status``, rather than ``spec``. ``spec`` tracks field
+    ownership for infrastructure-as-code tools and may omit unmanaged fields."""
 
     status: Optional[DatabaseDatabaseStatus] = None
     """The observed state of the Database."""
@@ -1750,11 +1760,16 @@ class DeltaTableSyncInfo:
 
 @dataclass
 class Endpoint:
+    """A compute endpoint of a Lakebase Postgres branch. An endpoint provides the compute that runs
+    Postgres for the branch's data and the hostnames that clients connect to. Each branch has one
+    read-write endpoint, created together with the branch, and can have additional read-only
+    endpoints (read replicas)."""
+
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the compute endpoint was created."""
 
     endpoint_id: Optional[str] = None
-    """The part of the name, chosen by the user when the resource was created."""
+    """The endpoint ID chosen when the endpoint was created. It is the final segment of ``name``."""
 
     name: Optional[str] = None
     """Output only. The full resource path of the endpoint. Format:
@@ -1765,14 +1780,19 @@ class Endpoint:
     projects/{project_id}/branches/{branch_id}"""
 
     spec: Optional[EndpointSpec] = None
-    """The spec contains the compute endpoint configuration, including autoscaling limits, suspend
-    timeout, and disabled state."""
+    """The desired configuration of the endpoint. Every field under ``spec`` except ``endpoint_type``
+    can be changed after creation. See ``status`` for the configuration that is currently in effect.
+    
+    Read the resource's current values from ``status``, rather than ``spec``. ``spec`` tracks field
+    ownership for infrastructure-as-code tools and may omit unmanaged fields."""
 
     status: Optional[EndpointStatus] = None
-    """Current operational status of the compute endpoint."""
+    """The configuration and state of the endpoint that are currently in effect, as reported by the
+    system, including the hostnames to connect to."""
 
     uid: Optional[str] = None
-    """System-generated unique ID for the endpoint."""
+    """A system-generated ID that identifies the endpoint. Unlike ``name``, it is not derived from the
+    user-chosen endpoint ID. The endpoint's connection hostnames are based on this ID."""
 
     update_time: Optional[Timestamp] = None
     """A timestamp indicating when the compute endpoint was last updated."""
@@ -1847,7 +1867,8 @@ class EndpointGroupSpec:
 
     enable_readable_secondaries: Optional[bool] = None
     """Whether to allow read-only connections to read-write endpoints. Only relevant for read-write
-    endpoints where size.max > 1."""
+    endpoints where ``max`` is greater than 1. When enabled, the endpoint also reports a read-only
+    host in ``status.hosts``."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointGroupSpec into a dictionary suitable for use as a JSON request body."""
@@ -1893,8 +1914,8 @@ class EndpointGroupStatus:
     endpoint group, set disabled to true on the EndpointSpec."""
 
     enable_readable_secondaries: Optional[bool] = None
-    """Whether read-only connections to read-write endpoints are allowed. Only relevant if read
-    replicas are configured by specifying size.max > 1."""
+    """Whether read-only connections to read-write endpoints are allowed. Only relevant if the endpoint
+    has more than one compute (``max`` greater than 1)."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointGroupStatus into a dictionary suitable for use as a JSON request body."""
@@ -2012,7 +2033,8 @@ class EndpointSettings:
     """A collection of settings for a compute endpoint."""
 
     pg_settings: Optional[Dict[str, str]] = None
-    """A raw representation of Postgres settings."""
+    """Postgres server parameters to set on the compute endpoint, keyed by parameter name. Each value
+    is given as a string."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointSettings into a dictionary suitable for use as a JSON request body."""
@@ -2041,31 +2063,40 @@ class EndpointSpec:
 
     autoscaling_limit_max_cu: Optional[float] = None
     """The maximum number of Compute Units. The maximum value is 64. The difference between the minimum
-    and maximum Compute Units (max - min) must not exceed 16."""
+    and maximum Compute Units (max - min) must not exceed 16. Set it equal to
+    ``autoscaling_limit_min_cu`` for a fixed-size compute. When omitted at creation, the project's
+    default endpoint settings apply."""
 
     autoscaling_limit_min_cu: Optional[float] = None
-    """The minimum number of Compute Units. Minimum value is 0.5."""
+    """The minimum number of Compute Units. Minimum value is 0.5, and it must not exceed
+    ``autoscaling_limit_max_cu``. When omitted at creation, the project's default endpoint settings
+    apply."""
 
     disabled: Optional[bool] = None
     """Whether to restrict connections to the compute endpoint. Enabling this option schedules a
     suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
-    console action."""
+    console action. To accept connections again, set this field back to false."""
 
     group: Optional[EndpointGroupSpec] = None
     """Settings for optional HA configuration of the endpoint. If unspecified, the endpoint defaults to
     non HA settings, with a single compute backing the endpoint (and no readable secondaries for
-    Read/Write endpoints)."""
+    Read/Write endpoints). Automatic suspension is not available for an endpoint with more than one
+    compute, so set ``no_suspension`` to true when configuring one."""
 
     no_suspension: Optional[bool] = None
-    """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
+    """When set to true, explicitly disables automatic suspension (never suspend). The value must be
     true when provided. Mutually exclusive with ``suspend_timeout_duration``."""
 
     settings: Optional[EndpointSettings] = None
+    """Postgres server parameters for the compute endpoint. On update, an empty ``pg_settings`` map
+    leaves the current parameters unchanged."""
 
     suspend_timeout_duration: Optional[Duration] = None
-    """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
-    should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with
-    ``no_suspension``."""
+    """Duration of inactivity after which the compute endpoint is automatically suspended. If
+    specified, the value must be between 60s and 604800s (1 minute to 1 week). A suspended endpoint
+    keeps its hostnames and configuration, and the next connection attempt restarts it. When neither
+    this field nor ``no_suspension`` is set at creation, the project's default endpoint settings
+    apply. Mutually exclusive with ``no_suspension``."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointSpec into a dictionary suitable for use as a JSON request body."""
@@ -2134,6 +2165,7 @@ class EndpointStatus:
     """The minimum number of Compute Units."""
 
     current_state: Optional[EndpointStatusState] = None
+    """The state the compute endpoint is in now."""
 
     disabled: Optional[bool] = None
     """Whether to restrict connections to the compute endpoint. Enabling this option schedules a
@@ -2141,7 +2173,7 @@ class EndpointStatus:
     console action."""
 
     endpoint_id: Optional[str] = None
-    """Part of the resource name."""
+    """The endpoint ID, which is the final segment of the endpoint's resource name."""
 
     endpoint_type: Optional[EndpointType] = None
     """The endpoint type. A branch can only have one READ_WRITE endpoint."""
@@ -2156,11 +2188,14 @@ class EndpointStatus:
     """A timestamp indicating when the compute endpoint was last active."""
 
     pending_state: Optional[EndpointStatusState] = None
+    """The state the compute endpoint is transitioning to, if a transition is in progress."""
 
     settings: Optional[EndpointSettings] = None
+    """The Postgres server parameters currently set on the compute endpoint."""
 
     suspend_timeout_duration: Optional[Duration] = None
-    """Duration of inactivity after which the compute endpoint is automatically suspended."""
+    """Duration of inactivity after which the compute endpoint is automatically suspended. Absent when
+    automatic suspension is disabled."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointStatus into a dictionary suitable for use as a JSON request body."""
@@ -2373,10 +2408,11 @@ class InitialEndpointSpec:
     """Configuration for the initial Read/Write endpoint created during project creation."""
 
     autoscaling_limit_max_cu: Optional[float] = None
-    """The maximum number of Compute Units for the initial endpoint."""
+    """The maximum number of Compute Units for the initial endpoint. Minimum value is 0.5."""
 
     autoscaling_limit_min_cu: Optional[float] = None
-    """The minimum number of Compute Units for the initial endpoint."""
+    """The minimum number of Compute Units for the initial endpoint. Minimum value is 0.5, and it must
+    not exceed autoscaling_limit_max_cu."""
 
     group: Optional[EndpointGroupSpec] = None
     """Settings for HA configuration of the endpoint."""
@@ -3183,21 +3219,27 @@ class Project:
     """Output only. The full resource path of the project. Format: projects/{project_id}"""
 
     project_id: Optional[str] = None
-    """The part of the name, chosen by the user when the resource was created."""
+    """The project ID chosen when the project was created. It is the final segment of ``name``."""
 
     purge_time: Optional[Timestamp] = None
     """A timestamp indicating when the project is scheduled for permanent deletion. Empty if the
     project is not deleted, otherwise set to a timestamp in the future."""
 
     spec: Optional[ProjectSpec] = None
-    """The spec contains the project configuration, including display_name, pg_version (Postgres
-    version), history_retention_duration, and default_endpoint_settings."""
+    """The desired configuration of the project. The fields under ``spec`` are the ones that can be
+    changed after creation, except ``pg_version``, which is fixed when the project is created. See
+    ``status`` for the configuration that is currently in effect.
+    
+    Read the resource's current values from ``status``, rather than ``spec``. ``spec`` tracks field
+    ownership for infrastructure-as-code tools and may omit unmanaged fields."""
 
     status: Optional[ProjectStatus] = None
-    """The current status of a Project."""
+    """The configuration and state of the project that are currently in effect, as reported by the
+    system."""
 
     uid: Optional[str] = None
-    """System-generated unique ID for the project."""
+    """A system-generated UUID that identifies the project. Unlike ``name``, it is not derived from the
+    user-chosen project ID."""
 
     update_time: Optional[Timestamp] = None
     """A timestamp indicating when the project was last updated."""
@@ -3395,17 +3437,20 @@ class ProjectSpec:
     policy that is actually applied to the project."""
 
     custom_tags: Optional[List[ProjectCustomTag]] = None
-    """Custom tags to associate with the project. Forwarded to LBM for billing and cost tracking. To
-    update tags, provide the new tag list and include "spec.custom_tags" in the update_mask. To
-    clear all tags, provide an empty list and include "spec.custom_tags" in the update_mask. To
-    preserve existing tags, omit this field from the update_mask (or use wildcard "*" which
-    auto-excludes empty tags)."""
+    """Custom tags to associate with the project, used for billing and cost tracking. To update tags,
+    provide the new tag list and include "spec.custom_tags" in the update_mask. To clear all tags,
+    provide an empty list and include "spec.custom_tags" in the update_mask. To preserve existing
+    tags, omit this field from the update_mask (or use wildcard "*" which auto-excludes empty tags)."""
 
     default_branch: Optional[str] = None
-    """The full resource path for the default branch of the project Format:
-    projects/{project_id}/branches/{branch_id}"""
+    """The full resource path of the default branch of the project. Format:
+    projects/{project_id}/branches/{branch_id} At creation time, the branch ID in this path names
+    the initial branch, which is called ``production`` when the field is omitted. On update, the
+    path must name an existing branch of this project, which then becomes the default branch."""
 
     default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
+    """Settings applied by default to compute endpoints created in this project. The initial endpoint
+    also takes these values for any setting that initial_endpoint_spec does not provide."""
 
     display_name: Optional[str] = None
     """Human-readable project name. Length should be between 1 and 256 characters."""
@@ -3415,11 +3460,12 @@ class ProjectSpec:
 
     history_retention_duration: Optional[Duration] = None
     """The number of seconds to retain the shared history for point in time recovery for all branches
-    in this project. Value should be between 172800s (2 days) and 3024000s (35 days)."""
+    in this project. Value should be between 172800s (2 days) and 3024000s (35 days). Defaults to
+    604800s (7 days) when omitted."""
 
     pg_version: Optional[int] = None
-    """The major Postgres version number. The set of supported versions may vary; consult the API
-    documentation for currently accepted values."""
+    """The major Postgres version number. Defaults to 17 when omitted. The set of versions that new
+    projects can use may change over time."""
 
     def as_dict(self) -> dict:
         """Serializes the ProjectSpec into a dictionary suitable for use as a JSON request body."""
@@ -3493,7 +3539,7 @@ class ProjectStatus:
     """The effective custom tags associated with the project."""
 
     default_branch: Optional[str] = None
-    """The full resource path of the default branch of the project"""
+    """The full resource path of the default branch of the project."""
 
     default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
     """The effective default endpoint settings."""
@@ -3514,7 +3560,7 @@ class ProjectStatus:
     """The effective major Postgres version number."""
 
     project_id: Optional[str] = None
-    """Part of the resource name."""
+    """The project ID, which is the final segment of the project's resource name."""
 
     synthetic_storage_size_bytes: Optional[int] = None
     """The current space occupied by the project in storage."""
@@ -3725,7 +3771,10 @@ class Role:
 
     spec: Optional[RoleRoleSpec] = None
     """The spec contains the role configuration, including identity type, authentication method, and
-    role attributes."""
+    role attributes.
+    
+    Read the resource's current values from ``status``, rather than ``spec``. ``spec`` tracks field
+    ownership for infrastructure-as-code tools and may omit unmanaged fields."""
 
     status: Optional[RoleRoleStatus] = None
     """Current status of the role, including its identity type, authentication method, and role
@@ -5145,12 +5194,16 @@ class PostgresAPI:
         return CreateBranchOperation(self, operation)
 
     def create_catalog(self, catalog: Catalog, catalog_id: str) -> CreateCatalogOperation:
-        """Register a Postgres database in the Unity Catalog.
+        """Registers a Postgres database from a Lakebase project branch as a catalog in Unity Catalog, so that
+        its schemas, tables and views are governed and discoverable through Unity Catalog. The catalog is
+        read-only; the data stays managed through Postgres. Returns a long-running operation. Poll it until
+        done is true; its response holds the new catalog. For an overview, see
+        https://docs.databricks.com/aws/en/oltp/projects/register-uc.
 
         :param catalog: :class:`Catalog`
         :param catalog_id: str
-          The ID in the Unity Catalog. It becomes the full resource name, for example "my_catalog" becomes
-          "catalogs/my_catalog".
+          The ID of the catalog to create, which is also its name in Unity Catalog. It becomes the last
+          segment of the catalog's resource name, catalogs/{catalog_id}.
 
         :returns: :class:`Operation`
         """
@@ -5287,19 +5340,24 @@ class PostgresAPI:
     def create_endpoint(
         self, parent: str, endpoint: Endpoint, endpoint_id: str, *, replace_existing: Optional[bool] = None
     ) -> CreateEndpointOperation:
-        """Creates a new compute endpoint in the branch.
+        """Creates a compute endpoint in the branch. Each branch gets its read-write endpoint when the branch is
+        created, so use this method to add read-only endpoints (read replicas) or, with ``replace_existing``,
+        to reconfigure the existing read-write endpoint.
 
         :param parent: str
           The Branch where this Endpoint will be created. Format: projects/{project_id}/branches/{branch_id}
         :param endpoint: :class:`Endpoint`
-          The Endpoint to create.
+          The endpoint to create. Only ``spec`` is read from this message; the system sets the other fields.
         :param endpoint_id: str
-          The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
-          The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, ``primary`` becomes
-          ``projects/my-app/branches/development/endpoints/primary``.
+          The ID to use for the endpoint. It becomes the final segment of the endpoint's resource name,
+          ``projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}``. The ID must be 3 to 63
+          characters long, start with a lowercase letter, end with a lowercase letter or digit, and contain
+          only lowercase letters, digits, and hyphens.
         :param replace_existing: bool (optional)
-          If true, update the endpoint if it already exists instead of returning an error.
+          If true, update the endpoint if it already exists instead of returning an error. The request's
+          ``spec.endpoint_type`` must match the existing endpoint's type, and the other ``spec`` fields are
+          applied as an update. Use this to configure the read-write endpoint that was created together with
+          the branch.
 
         :returns: :class:`Operation`
         """
@@ -5355,14 +5413,16 @@ class PostgresAPI:
 
     def create_project(self, project: Project, project_id: str) -> CreateProjectOperation:
         """Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute
-        endpoints.
+        endpoints. The new project starts with a single branch, a read-write compute endpoint on that branch,
+        a Postgres database named ``databricks_postgres``, and a Postgres role for the calling identity.
 
         :param project: :class:`Project`
           The Project to create.
         :param project_id: str
-          The ID to use for the Project. This becomes the final component of the project's resource name. The
-          ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, ``my-app`` becomes ``projects/my-app``.
+          The ID to use for the project. It becomes the final segment of the project's resource name,
+          ``projects/{project_id}``. The ID must be 3 to 63 characters long, start with a lowercase letter,
+          end with a lowercase letter or digit, and contain only lowercase letters, digits, and hyphens. The
+          ID of a soft-deleted project stays reserved until that project is permanently deleted.
 
         :returns: :class:`Operation`
         """
@@ -5531,7 +5591,9 @@ class PostgresAPI:
         return DeleteBranchOperation(self, operation)
 
     def delete_catalog(self, name: str) -> DeleteCatalogOperation:
-        """Delete a Database Catalog.
+        """Deletes the catalog from Unity Catalog. The Postgres database and its tables remain in the branch, and
+        the database can be registered again afterwards. Returns a long-running operation. Poll it until done
+        is true.
 
         :param name: str
           The full resource path of the catalog to delete.
@@ -5627,14 +5689,13 @@ class PostgresAPI:
         return DeleteDatabaseOperation(self, operation)
 
     def delete_endpoint(self, name: str) -> DeleteEndpointOperation:
-        """Deletes the specified compute endpoint.
+        """Deletes the specified compute endpoint. Deletion is permanent. Only read-only endpoints can be deleted
+        this way, because a branch's read-write endpoint is deleted together with the branch. To stop the
+        compute costs of a read-write endpoint without deleting the branch, set ``spec.disabled`` to true.
 
         :param name: str
           The full resource path of the endpoint to delete. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
-
-          Read-write endpoints currently cannot be deleted directly. Their deletion is managed by the parent
-          branch. To avoid compute costs, set ``disabled`` to ``true`` on the endpoint.
 
         :returns: :class:`Operation`
         """
@@ -5673,12 +5734,17 @@ class PostgresAPI:
         return DeleteMigrationOperation(self, operation)
 
     def delete_project(self, name: str, *, purge: Optional[bool] = None) -> DeleteProjectOperation:
-        """Deletes the specified database project.
+        """Deletes the specified database project. By default the project is soft-deleted and can be restored
+        with Undelete during its retention period; set ``purge`` to delete it permanently.
 
         :param name: str
           The full resource path of the project to delete. Format: projects/{project_id}
         :param purge: bool (optional)
-          If true, permanently deletes the project (hard delete). If false or unset, performs a soft delete.
+          If true, permanently deletes the project and all of its data immediately. If false or unset, the
+          project is soft-deleted: it stops accepting connections and is retained for 7 days, during which it
+          can be restored with Undelete, and is then permanently deleted. Deleting an already soft-deleted
+          project with ``purge`` set to true removes it immediately. See
+          https://docs.databricks.com/aws/en/oltp/projects/manage-projects for details.
 
         :returns: :class:`Operation`
         """
@@ -5866,7 +5932,8 @@ class PostgresAPI:
         return Branch.from_dict(res)
 
     def get_catalog(self, name: str) -> Catalog:
-        """Get a Database Catalog.
+        """Gets the catalog with the given name. The status reports the Postgres database, project and branch
+        that the catalog registers.
 
         :param name: str
           The full resource path of the catalog to retrieve.
@@ -6343,13 +6410,14 @@ class PostgresAPI:
     def list_endpoints(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Endpoint]:
-        """Returns a paginated list of compute endpoints in the branch.
+        """Lists the compute endpoints in the branch, including its read-write endpoint and any read-only
+        endpoints.
 
         :param parent: str
           The Branch that owns this collection of endpoints. Format:
           projects/{project_id}/branches/{branch_id}
         :param page_size: int (optional)
-          Upper bound for items returned. Cannot be negative.
+          Upper bound for the number of endpoints returned. If set, the value must be at least 10.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -6425,7 +6493,8 @@ class PostgresAPI:
         """Returns a paginated list of database projects in the workspace that the user has permission to access.
 
         :param page_size: int (optional)
-          Upper bound for items returned. Cannot be negative. The maximum value is 100.
+          Upper bound for the number of projects returned. Cannot be negative. Values above the maximum page
+          size are reduced to that maximum.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
         :param show_deleted: bool (optional)
@@ -6628,7 +6697,9 @@ class PostgresAPI:
         return UndeleteMigrationOperation(self, operation)
 
     def undelete_project(self, name: str) -> UndeleteProjectOperation:
-        """Undeletes a soft-deleted project.
+        """Restores a soft-deleted project together with its branches and their data, compute endpoints, Postgres
+        databases and roles, project settings, and permissions. A project can be restored until its
+        ``purge_time``; after that it is permanently deleted and cannot be recovered.
 
         :param name: str
           The full resource path of the project to undelete. Format: projects/{project_id}
@@ -6750,8 +6821,9 @@ class PostgresAPI:
         return UpdateDatabaseOperation(self, operation)
 
     def update_endpoint(self, name: str, endpoint: Endpoint, update_mask: FieldMask) -> UpdateEndpointOperation:
-        """Updates the specified compute endpoint. You can update autoscaling limits, suspend timeout, or
-        enable/disable the compute endpoint.
+        """Updates the configuration of the specified compute endpoint. Only the ``spec`` fields named in
+        ``update_mask`` change, and ``spec.endpoint_type`` cannot be changed. The endpoint keeps its hostnames
+        across updates, so existing connection strings stay valid.
 
         :param name: str
           Output only. The full resource path of the endpoint. Format:
@@ -6762,7 +6834,10 @@ class PostgresAPI:
           The endpoint's ``name`` field is used to identify the endpoint to update. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param update_mask: FieldMask
-          The list of fields to update.
+          The fields to update, as paths relative to the endpoint, for example
+          ``spec.autoscaling_limit_max_cu``. Pass ``spec`` to update every field that is set in ``spec``. Only
+          fields under ``spec`` can be updated. To change the suspension setting, include ``spec.suspension``
+          or the specific suspension field.
 
         :returns: :class:`Operation`
         """
@@ -6815,7 +6890,8 @@ class PostgresAPI:
         return UpdateMigrationOperation(self, operation)
 
     def update_project(self, name: str, project: Project, update_mask: FieldMask) -> UpdateProjectOperation:
-        """Updates the specified database project.
+        """Updates the configuration of the specified database project. Only the fields named in ``update_mask``
+        change.
 
         :param name: str
           Output only. The full resource path of the project. Format: projects/{project_id}
@@ -6825,7 +6901,8 @@ class PostgresAPI:
           The project's ``name`` field is used to identify the project to update. Format:
           projects/{project_id}
         :param update_mask: FieldMask
-          The list of fields to update.
+          The fields to update, as paths relative to the project, for example ``spec.display_name``. Pass
+          ``*`` to update every field that is set in the request. Only fields under ``spec`` can be updated.
 
         :returns: :class:`Operation`
         """

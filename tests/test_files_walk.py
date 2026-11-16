@@ -16,6 +16,7 @@ import collections
 import io
 import itertools
 import json
+import logging
 import os
 import platform
 from dataclasses import dataclass
@@ -31,7 +32,7 @@ from urllib3.exceptions import ProtocolError
 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
-from databricks.sdk.errors.platform import AlreadyExists, InternalError, PermissionDenied
+from databricks.sdk.errors.platform import AlreadyExists, InternalError, NotFound, PermissionDenied
 from databricks.sdk.mixins import files as files_mixin
 
 from .test_files_utils import NonSeekableBuffer
@@ -674,7 +675,7 @@ def test_upload_over_the_workspace_limit_without_multipart_endpoints_fails_befor
     server = FakeFilesServer()
     w = _client(config, storage_proxy=False)
     workspace_only = [e for e in w.files._default_endpoints() if not e.multipart_upload_supported]
-    monkeypatch.setattr(w.files, "_upload_endpoints", lambda: workspace_only)
+    monkeypatch.setattr(w.files, "_resolve_endpoints", lambda: list(workspace_only))
 
     with pytest.raises(ValueError, match="at most 5 GiB"):
         _run(server, lambda: _upload(w, "file", LARGE, False, tmp_path))
@@ -1249,6 +1250,242 @@ def test_transfers_keep_the_expired_list_while_another_thread_asks_again(config,
     # The transfer that ran during the ask used the expired list; the asking one used the new list.
     assert server.counts["dp.get"] == 2
     assert server.counts["rig.get"] == 1
+
+
+# ======================== Skipping an endpoint that keeps failing (white box) ========================
+
+
+def _download_n(w: WorkspaceClient, n: int) -> None:
+    for _ in range(n):
+        assert _download(w) == LARGE
+
+
+@pytest.mark.parametrize("download", ["stream", "to-file", "parallel"])
+def test_an_endpoint_that_keeps_failing_is_skipped_then_probed(config, download, caplog):
+    server = _download_server({"dp.get": always(500)}, DATA_PLANE)
+    w = _client(config, endpoints_api=True)
+    skip_after = files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES
+    cool_off = files_mixin.FilesExt._ENDPOINT_SKIP_INITIAL_SECONDS
+
+    def tries_the_storage_proxy() -> bool:
+        """Runs one download, which must complete, and tells whether it tried the storage proxy."""
+        before = server.counts["dp.get"]
+        result = {}
+        if download == "stream":
+            _run(server, lambda: result.update(data=_download(w)))
+        else:
+            _run(server, lambda: result.update(data=_download_to(w, download == "parallel", parallelism=2)))
+        assert result["data"] == LARGE
+        return server.counts["dp.get"] > before
+
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk.mixins.files_utils"):
+        tried = [tries_the_storage_proxy() for _ in range(skip_after + 2)]
+    assert tried == [True] * skip_after + [False] * 2
+    assert [r.levelname for r in caplog.records if "skipping it" in r.message] == ["WARNING"]
+
+    # After the cool-off, one transfer probes the storage proxy. It still fails, so the next transfer skips it.
+    config.clock.sleep(cool_off)
+    assert [tries_the_storage_proxy() for _ in range(2)] == [True, False]
+
+    # The failed probe doubled the cool-off.
+    config.clock.sleep(cool_off)
+    assert not tries_the_storage_proxy()
+    config.clock.sleep(cool_off)
+    server.faults.pop("dp.get")
+    # The probe succeeds, so every later transfer uses the storage proxy and nothing else.
+    offload_before = server.counts["offload.get"]
+    assert [tries_the_storage_proxy() for _ in range(3)] == [True] * 3
+    assert server.counts["offload.get"] == offload_before
+
+
+def test_an_endpoint_is_not_skipped_when_every_endpoint_fails(config):
+    # A missing file fails everywhere: the request is at fault, not the endpoints.
+    server = _download_server({"dp.get": always(404), "offload.download-url": always(404), "floor.get": always(404)})
+    server.plan = DATA_PLANE
+    w = _client(config, endpoints_api=True)
+    n = files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES + 2
+
+    for _ in range(n):
+        with pytest.raises(NotFound):
+            _run(server, lambda: _download(w))
+
+    assert server.counts["dp.get"] == n
+    assert server.counts["offload.download-url"] == n
+
+
+def test_an_endpoint_is_not_skipped_for_failures_that_are_retried(config):
+    # A throttled or unavailable endpoint may recover on its own, so it keeps getting the first attempt.
+    server = _download_server({"dp.get": always(503)}, DATA_PLANE)
+    w = _client(config, endpoints_api=True)
+    n = files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES + 2
+
+    _run(server, lambda: _download_n(w, n))
+
+    assert server.counts["dp.get"] >= n
+    assert server.counts["offload.get"] == n
+
+
+def test_a_success_clears_the_failure_count(config):
+    skip_after = files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES
+    # Fails every transfer but one in the middle, so the failures in a row never reach the threshold.
+    failing = [*range(1, skip_after), *range(skip_after + 1, 2 * skip_after)]
+    server = _download_server({"dp.get": on_calls(500, *failing)}, DATA_PLANE)
+    w = _client(config, endpoints_api=True)
+
+    _run(server, lambda: _download_n(w, 2 * skip_after))
+
+    assert server.counts["dp.get"] == 2 * skip_after
+
+
+def test_skipping_can_be_turned_off(config, monkeypatch):
+    server = _download_server({"dp.get": always(500)}, DATA_PLANE)
+    monkeypatch.setattr(files_mixin.FilesExt, "_ENDPOINT_SKIP_AFTER_FAILURES", 0)
+    w = _client(config, endpoints_api=True)
+    n = 5
+
+    _run(server, lambda: _download_n(w, n))
+
+    assert server.counts["dp.get"] == n
+
+
+@pytest.mark.parametrize("source", ["file", "non-seekable"])
+def test_an_upload_only_a_skipped_endpoint_can_take_still_uses_it(config, tmp_path, monkeypatch, source):
+    server = FakeFilesServer({"dp.initiate": always(500), "offload.initiate": always(500)}, DATA_PLANE)
+    w = _client(config, endpoints_api=True)
+    skip_after = files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES
+
+    # Uploads fail on the storage proxy and on presigned URLs and complete on the workspace, so both are skipped.
+    _run(server, lambda: [_upload(w, "file", LARGE, False, tmp_path) for _ in range(skip_after)])
+    assert [e.kind for e in w.files._upload_health.order(w.files._upload_endpoints()).endpoints] == [
+        files_mixin._ResolvedEndpoint.FILES_API_V2
+    ]
+    # Now over the workspace's single-shot limit (a file), or of unknown size (a stream), so only the skipped multipart
+    # endpoints can take it.
+    monkeypatch.setattr(files_mixin, "_WORKSPACE_MAX_SINGLE_SHOT_SIZE", len(LARGE) - 1)
+    server.faults.clear()
+    server.stored.clear()
+
+    _run(server, lambda: _upload(w, source, LARGE, False, tmp_path))
+
+    assert server.stored == {"dp": LARGE}
+
+
+def test_download_failures_do_not_change_how_uploads_send_data(config, tmp_path):
+    # Built-in order: presigned URLs, then the workspace. Presigned downloads keep failing; presigned uploads work.
+    server = _download_server({"offload.download-url": always(500)})
+    w = _client(config, endpoints_api=True)
+    _run(server, lambda: _download_n(w, files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES))
+    assert w.files._transfer_endpoints().endpoints[0].kind == files_mixin._ResolvedEndpoint.FILES_API_V2
+
+    _run(server, lambda: _upload(w, "file", LARGE, True, tmp_path))
+
+    # Still a parallel multipart upload to presigned URLs, not a single shot to the workspace.
+    assert server.stored == {"offload": LARGE}
+
+
+def test_a_probe_a_transfer_never_tries_goes_to_the_next_transfer(config, tmp_path):
+    # Built-in order: presigned URLs, then the workspace.
+    server = FakeFilesServer({"offload.part-urls": always(500)})
+    w = _client(config, endpoints_api=True)
+    skip_after = files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES
+
+    def upload(data: bytes) -> None:
+        server.stored.clear()
+        _upload(w, "file", data, False, tmp_path)
+
+    _run(server, lambda: [upload(LARGE) for _ in range(skip_after)])
+    assert server.stored == {"floor": LARGE}
+    server.faults.clear()
+    config.clock.sleep(files_mixin.FilesExt._ENDPOINT_SKIP_INITIAL_SECONDS)
+    # A small upload is ordered while presigned URLs are due a probe, but takes no presigned request.
+    _run(server, lambda: upload(SMALL))
+    assert server.stored == {"floor": SMALL}
+
+    _run(server, lambda: upload(LARGE))
+
+    # The probe went to this upload, which tried presigned URLs first.
+    assert server.stored == {"offload": LARGE}
+
+
+def test_a_skipped_endpoint_is_not_tried_even_when_the_others_fail(config):
+    server = _download_server({"dp.get": always(500)}, DATA_PLANE)
+    w = _client(config, endpoints_api=True)
+    _run(server, lambda: _download_n(w, files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES))
+    # The storage proxy is skipped, then every other endpoint fails too.
+    server.faults = {"offload.download-url": always(500), "floor.get": always(500)}
+    dp_before = server.counts["dp.get"]
+
+    with pytest.raises(InternalError):
+        _run(server, lambda: _download(w))
+
+    assert server.counts["dp.get"] == dp_before
+
+
+@pytest.mark.parametrize("download", ["stream", "to-file"])
+def test_the_last_endpoint_keeps_its_retries_when_an_endpoint_is_skipped(config, download):
+    # Built-in order: presigned URLs, then the workspace. Presigned downloads keep failing, as behind a storage firewall.
+    server = _download_server({"offload.get": always(403)})
+    w = _client(config, endpoints_api=True)
+
+    def transfer():
+        return _download(w) if download == "stream" else _download_to(w, False)
+
+    _run(server, lambda: [transfer() for _ in range(files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES)])
+    offload_before = server.counts["offload.get"]
+    # The workspace throttles the next request once.
+    server.faults["floor.get"] = on_calls(503, server.counts["floor.get"] + 1)
+    result = {}
+
+    _run(server, lambda: result.update(data=transfer()))
+
+    # The workspace is still the last endpoint, so it retried the 503 rather than handing the transfer to presigned URLs.
+    assert result["data"] == LARGE
+    assert server.counts["offload.get"] == offload_before
+
+
+@pytest.mark.parametrize(
+    "fault_op, transfer",
+    [("offload.download-url", "download"), ("offload.part-urls", "upload")],
+    ids=["download-url", "upload-part-urls"],
+)
+def test_presigned_url_throttling_does_not_count_against_presigned_urls(config, tmp_path, fault_op, transfer):
+    # Minting the URL keeps getting 429 until the retries before commit run out: a passing fault, not the endpoint's.
+    server = _download_server({fault_op: always(429)}, [OFFLOAD_ENTRY, FLOOR_ENTRY])
+    w = _client(config, endpoints_api=True)
+    n = files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES + 2
+    tried = []
+
+    def transfers():
+        for _ in range(n):
+            before = server.counts[fault_op]
+            if transfer == "download":
+                assert _download(w) == LARGE
+            else:
+                server.stored.clear()
+                _upload(w, "file", LARGE, False, tmp_path)
+                assert server.stored == {"floor": LARGE}
+            tried.append(server.counts[fault_op] > before)
+
+    _run(server, transfers)
+
+    assert tried == [True] * n
+
+
+@pytest.mark.parametrize("source", ["file", "seekable"])
+def test_an_upload_endpoint_that_keeps_failing_is_skipped(config, tmp_path, source):
+    server = FakeFilesServer({"dp.single": always(500)}, DATA_PLANE)
+    w = _client(config, endpoints_api=True)
+    skip_after = files_mixin.FilesExt._ENDPOINT_SKIP_AFTER_FAILURES
+
+    def uploads():
+        for _ in range(skip_after + 2):
+            server.stored.clear()
+            _upload(w, source, SMALL, False, tmp_path)
+            assert server.stored == {"floor": SMALL}
+
+    _run(server, uploads)
+
+    assert server.counts["dp.single"] == skip_after
 
 
 @pytest.mark.parametrize(

@@ -41,6 +41,8 @@ from .files_utils import (
     _common_decision,
     _download_ranges_to_file,
     _DownloadDestination,
+    _EndpointHealth,
+    _EndpointOrder,
     _Failure,
     _MultipartUploadSession,
     _plan_upload,
@@ -814,6 +816,9 @@ class _Endpoint:
     """Scheme and hostname as returned by the server, e.g. https://example.cloud.databricks.com."""
     multipart_upload_supported: bool
 
+    def __str__(self) -> str:
+        return f"{self.kind.value} at {self.base_url}"
+
 
 @dataclass(frozen=True)
 class _CachedEndpoints:
@@ -988,6 +993,14 @@ class FilesExt(files.FilesAPI):
     # a discovery that keeps failing, for example with a 5xx, moves the client to the built-in order.
     _ENDPOINTS_MAX_STALE_SECONDS: float = 2 * 60 * 60
 
+    # After this many transfers in a row that failed on an endpoint and then completed on a later one, the client leaves
+    # that endpoint out of new transfers for the initial cool-off (uploads only it can take still use it), then lets one
+    # transfer probe it. Each failed probe doubles the cool-off, up to the maximum; a success clears it. 0 disables
+    # skipping.
+    _ENDPOINT_SKIP_AFTER_FAILURES: int = 3
+    _ENDPOINT_SKIP_INITIAL_SECONDS: float = 2 * 60
+    _ENDPOINT_SKIP_MAX_SECONDS: float = 30 * 60
+
     def __init__(self, api_client, config: Config):
         super().__init__(api_client)
         self._config = config.copy()
@@ -1003,6 +1016,10 @@ class FilesExt(files.FilesAPI):
         self._endpoints_lock = Lock()
         # Held by the one thread that asks the server, so that concurrent transfers do not each ask.
         self._endpoints_refresh_lock = Lock()
+        # One per direction: an endpoint can fail downloads and still take uploads, and the order decides how an upload
+        # sends its data (multipart or a single shot), not only where.
+        self._download_health = self._new_endpoint_health()
+        self._upload_health = self._new_endpoint_health()
 
     def _resolve_endpoints(self) -> list[_Endpoint]:
         """Returns the ordered endpoints to try for a file transfer, best first.
@@ -1071,9 +1088,31 @@ class FilesExt(files.FilesAPI):
             _Endpoint(_ResolvedEndpoint.FILES_API_V2, host, multipart_upload_supported=False),
         ]
 
-    def _transfer_endpoints(self) -> list[_Endpoint]:
-        """The endpoints a transfer walks, best first."""
-        return self._resolve_endpoints()
+    def _new_endpoint_health(self) -> _EndpointHealth:
+        return _EndpointHealth(
+            self._config.clock,
+            self._ENDPOINT_SKIP_AFTER_FAILURES,
+            self._ENDPOINT_SKIP_INITIAL_SECONDS,
+            self._ENDPOINT_SKIP_MAX_SECONDS,
+        )
+
+    def _transfer_endpoints(self) -> _EndpointOrder:
+        """The endpoints a download walks, best first, without those that keep failing downloads."""
+        return self._download_health.order(self._resolve_endpoints())
+
+    def _on_done(self, health: _EndpointHealth, order: _EndpointOrder):
+        """The callback that feeds a finished transfer back to the endpoint health it was ordered by."""
+
+        def on_done(walked_past: list, tried: list) -> None:
+            for failed in walked_past:
+                health.record_failure(failed._endpoint, order.probes.get(failed._endpoint))
+            health.record_success(tried[-1]._endpoint)
+            tried_endpoints = {client._endpoint for client in tried}
+            for endpoint, probe_id in order.probes.items():
+                if endpoint not in tried_endpoints:
+                    health.return_probe(endpoint, probe_id)
+
+        return on_done
 
     def _fetch_endpoints(self) -> Optional[list[_Endpoint]]:
         """Fetches the endpoint list from the server, keeping only entries this SDK can speak.
@@ -1263,7 +1302,7 @@ class FilesExt(files.FilesAPI):
         A list with only IO_OFFLOAD gets the Files API on the workspace host, which every workspace serves: small and
         empty files need a single-shot upload, which presigned URLs can't take.
         """
-        endpoints = self._transfer_endpoints()
+        endpoints = self._resolve_endpoints()
         if all(e.kind == _ResolvedEndpoint.IO_OFFLOAD for e in endpoints):
             endpoints.append(
                 _Endpoint(_ResolvedEndpoint.FILES_API_V2, self._config.host, multipart_upload_supported=False)
@@ -1291,7 +1330,10 @@ class FilesExt(files.FilesAPI):
             _LOG.info("Disable experimental files API client, will use the original download method.")
             return super().download(file_path)
 
-        stream = _WalkingDownloadStream(self._clients_for(self._transfer_endpoints()), file_path)
+        order = self._transfer_endpoints()
+        stream = _WalkingDownloadStream(
+            self._clients_for(order.endpoints), file_path, on_done=self._on_done(self._download_health, order)
+        )
         return DownloadResponse(
             content_length=stream.content_length_opt,
             content_type=stream.content_type_opt,
@@ -1368,9 +1410,10 @@ class FilesExt(files.FilesAPI):
                     size_opt = file_info.content_length
                     ranges = _split_into_ranges(file_info.content_length, part_size)
         target = _DownloadDestination.create(destination, size_opt)
+        order = self._transfer_endpoints()
         try:
             _walk_endpoints(
-                self._clients_for(self._transfer_endpoints()),
+                self._clients_for(order.endpoints),
                 functools.partial(
                     _download_ranges_to_file,
                     path=file_path,
@@ -1379,6 +1422,7 @@ class FilesExt(files.FilesAPI):
                     destination=target,
                     parallelism=parallelism if size_opt is not None else 1,
                 ),
+                on_done=self._on_done(self._download_health, order),
             )
             target.finish()
         except BaseException:
@@ -1544,23 +1588,34 @@ class FilesExt(files.FilesAPI):
         use_parallel: bool,
         parallelism: Optional[int],
     ) -> None:
-        clients = self._clients_for(self._upload_endpoints())
-        plans = {}
-        too_large = []
-        for client in clients:
-            plan_opt = _plan_upload(
-                data,
-                client,
-                use_parallel,
-                parallelism,
-                part_size,
-                batch_size,
-                self._config.files_ext_multipart_upload_min_stream_size,
-            )
-            if plan_opt is not None:
-                plans[client] = plan_opt
-            elif client.max_single_shot_size_opt is not None:
-                too_large.append(client.name)
+        def plan(endpoints: list[_Endpoint]) -> tuple[dict, list]:
+            plans = {}
+            too_large = []
+            for client in self._clients_for(endpoints):
+                plan_opt = _plan_upload(
+                    data,
+                    client,
+                    use_parallel,
+                    parallelism,
+                    part_size,
+                    batch_size,
+                    self._config.files_ext_multipart_upload_min_stream_size,
+                )
+                if plan_opt is not None:
+                    plans[client] = plan_opt
+                elif client.max_single_shot_size_opt is not None:
+                    too_large.append(client.name)
+            return plans, too_large
+
+        every_endpoint = self._upload_endpoints()
+        order = self._upload_health.order(every_endpoint)
+        plans, too_large = plan(order.endpoints)
+        # Skipping saves a failed attempt, so it must not fail an upload that only a skipped endpoint can take: one of
+        # known size over every single-shot limit left, or one of unknown size, which a single shot can't replay.
+        cannot_take = not plans if data.size_opt is not None else not any(p.multipart for p in plans.values())
+        if cannot_take and len(order.endpoints) < len(every_endpoint):
+            order = _EndpointOrder(every_endpoint, order.probes)
+            plans, too_large = plan(every_endpoint)
         if not plans and too_large:
             data.close()
             raise ValueError(
@@ -1574,6 +1629,7 @@ class FilesExt(files.FilesAPI):
                 can_send_again=data.can_send_again,
                 before_next_endpoint=data.restart,
                 retries_before_commit=_UPLOAD_RETRIES_BEFORE_COMMIT,
+                on_done=self._on_done(self._upload_health, order),
             )
         finally:
             data.close()
@@ -1870,7 +1926,7 @@ class _PresignedDownloadUrls:
         def get_new_url() -> CreateDownloadUrlResponse:
             result = mint()
             if isinstance(result, _Failure):
-                raise _RequestFailed(result.error, decision_opt=result.decision)
+                raise _RequestFailed(result.error, decision_opt=result.decision, retryable=result.retryable)
             return result
 
         self._distributor = _PresignedUrlDistributor(get_new_url)
@@ -2070,7 +2126,7 @@ class _PresignedMultipartSession(_MultipartUploadSession):
     def _put_once(self, number: int, data: bytes, status: _TransferStatus) -> str:
         url = self._part_url(number, status)
         if isinstance(url, _Failure):
-            raise _RequestFailed(url.error, decision_opt=url.decision)
+            raise _RequestFailed(url.error, decision_opt=url.decision, retryable=url.retryable)
         _LOG.debug(f"Uploading part {number}")
         response = self._ext._cloud_provider_session().request(
             "PUT",

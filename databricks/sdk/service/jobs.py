@@ -504,9 +504,9 @@ class AiRuntimeTask:
     generates a default name."""
 
     priority_class: Optional[AiRuntimeTaskPriorityClass] = None
-    """Scheduling priority class for the workload. May only be set together with a pre-provisioned
-    capacity reservation (a deployment's ``compute.provisioned_capacity_id``); it is rejected on a
-    workload that runs on on-demand capacity."""
+    """Scheduling priority class for the workload. May only be set together with a GPU Pool (a
+    deployment's ``compute.accelerator_pool_id`` or legacy ``compute.provisioned_capacity_id``); it
+    is rejected on a workload that runs on on-demand capacity."""
 
     unity_catalog_image_path: Optional[str] = None
     """Optional Unity Catalog path for a custom container image. When set, the task runs on the
@@ -1671,9 +1671,8 @@ class ComputeSpec:
     ``accelerator_count: 16`` allocates 2 nodes (8 GPUs per node)."""
 
     provisioned_capacity_id: Optional[str] = None
-    """Optional ID of a pre-provisioned accelerator capacity reservation to run this AI Runtime
-    workload on. When set, the workload is scheduled onto the referenced reserved capacity instead
-    of the on-demand capacity shared among all Databricks customers."""
+    """Legacy alias for ``accelerator_pool_id``. Use ``accelerator_pool_id`` for new configurations. If
+    both fields are set, they must contain the same ID."""
 
     def as_dict(self) -> dict:
         """Serializes the ComputeSpec into a dictionary suitable for use as a JSON request body."""

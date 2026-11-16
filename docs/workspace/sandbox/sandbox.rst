@@ -35,12 +35,18 @@
 
     .. py:method:: create_sandbox(sandbox: Sandbox, sandbox_id: str) -> Sandbox
 
-        Creates a new Sandbox.
+        Creates a sandbox with the given ``sandbox_id`` and starts provisioning it. Provisioning is
+        asynchronous: the response usually shows the sandbox in ``SANDBOX_STATE_PENDING``, so poll GetSandbox
+        until the state is ``SANDBOX_STATE_RUNNING`` before running commands in it. A sandbox that fails to
+        provision ends in ``SANDBOX_STATE_STOPPED``. Returns ALREADY_EXISTS if a sandbox with the same ID
+        already exists in the workspace.
 
         :param sandbox: :class:`Sandbox`
-          The sandbox to create.
+          The sandbox to create. An empty body creates a sandbox with the default configuration.
         :param sandbox_id: str
-          Client-supplied ID that becomes the final path segment of the resource name.
+          Client-supplied ID that becomes the final path segment of the resource name. It must start with a
+          lowercase letter, contain only lowercase letters, digits and hyphens, end with a letter or digit,
+          and be at most 63 characters long. Values shaped like a UUID are rejected.
 
         :returns: :class:`Sandbox`
         
@@ -61,9 +67,12 @@
 
     .. py:method:: delete_sandbox(name: str)
 
-        Deletes a Sandbox.
+        Deletes a sandbox, including the data in its home directory. A pending or running sandbox is stopped
+        first and is removed once the teardown completes, after which GetSandbox returns NOT_FOUND. Deleting a
+        sandbox that is already being deleted succeeds.
 
         :param name: str
+          Resource name of the sandbox to delete, in the form ``sandboxes/{sandbox_id}``.
 
 
         
@@ -186,6 +195,7 @@
         Retrieves a Sandbox by name.
 
         :param name: str
+          Resource name of the sandbox to retrieve, in the form ``sandboxes/{sandbox_id}``.
 
         :returns: :class:`Sandbox`
         
@@ -223,10 +233,15 @@
 
     .. py:method:: list_sandboxes( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Sandbox]
 
-        Lists all Sandboxes.
+        Lists the sandboxes in the workspace that are visible to the caller, including stopped sandboxes.
+        Sandboxes that are being deleted are not returned.
 
         :param page_size: int (optional)
+          Maximum number of sandboxes to return in one page. When unset or 0 the server returns up to 1000
+          sandboxes; values above 5000 are reduced to 5000.
         :param page_token: str (optional)
+          Page token from the ``next_page_token`` of a previous ListSandboxes response. Omit it to retrieve
+          the first page.
 
         :returns: Iterator over :class:`Sandbox`
         
@@ -247,8 +262,10 @@
 
     .. py:method:: start_sandbox(name: str) -> Sandbox
 
-        Starts a previously stopped Sandbox under the same sandbox name. Returns NOT_FOUND if there is no
-        stopped sandbox to start for the given name.
+        Starts a previously stopped sandbox under the same sandbox name, with the data in its home directory
+        intact. Starting is asynchronous: the response usually shows the sandbox in ``SANDBOX_STATE_PENDING``,
+        so poll GetSandbox until the state is ``SANDBOX_STATE_RUNNING``. Returns NOT_FOUND if the sandbox does
+        not exist, FAILED_PRECONDITION if it is pending or running, and ABORTED while it is still stopping.
 
         :param name: str
           Resource name of the sandbox to start, in the form ``sandboxes/{sandbox_id}``.
@@ -258,7 +275,11 @@
 
     .. py:method:: stop_sandbox(name: str) -> Sandbox
 
-        Stops a running Sandbox, preserving it so it can later be restarted with a Start request.
+        Stops a running sandbox, preserving it so it can later be restarted with a Start request. Stopping is
+        asynchronous: the response usually shows the sandbox in ``SANDBOX_STATE_STOPPING``, and it settles to
+        ``SANDBOX_STATE_STOPPED`` once the shutdown completes. The data in the home directory is kept; other
+        local changes are discarded. Stopping a sandbox that is already stopped or stopping succeeds without
+        changes.
 
         :param name: str
           Resource name of the sandbox to stop, in the form ``sandboxes/{sandbox_id}``.
@@ -286,7 +307,7 @@
         :returns: :class:`Sandbox`
         
 
-    .. py:method:: upload_file(parent: str, contents: BinaryIO, path: str)
+    .. py:method:: upload_file(parent: str, contents: BinaryIO, path: str [, overwrite: Optional[bool]])
 
         Uploads an application/octet-stream body to a sandbox. The sandbox starts automatically if it is
         stopped. Filesystem access uses the sandbox user's permissions. Replacements follow symbolic links.
@@ -308,6 +329,10 @@
           The complete file contents. An empty body creates an empty file.
         :param path: str
           The absolute UTF-8 destination path inside the sandbox.
+        :param overwrite: bool (optional)
+          Whether to replace an existing file. Defaults to true when omitted. If false, the upload atomically
+          creates the file only if the destination does not exist, equivalent to If-None-Match: *. An existing
+          entry returns 412 Precondition Failed. Explicit true conflicts with If-None-Match: *.
 
 
         

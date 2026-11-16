@@ -27,7 +27,8 @@
 
     .. py:method:: create_index(parent: str, index: Index [, index_id: Optional[str]]) -> Index
 
-        Create a new AI Search index.
+        Create a new AI Search index. The index is provisioned asynchronously; ``status.ready`` on GetIndex
+        reports when it can serve queries.
 
         :param parent: str
           The Endpoint where this Index will be created. Format:
@@ -36,10 +37,9 @@
           The Index resource to create. Fields other than ``index.name`` carry the desired configuration;
           ``index.name`` is server-assigned from ``parent`` and ``index_id``.
         :param index_id: str (optional)
-          The user-supplied Unity Catalog table name for the Index, per AIP-133. The server composes the full
-          ``Index.name`` as ``{parent}/indexes/{index_id}``. AIP-133 does not list ``index_id`` as a
-          fields-may-be-required entry, so we annotate it OPTIONAL on the wire; the server still rejects empty
-          values with INVALID_PARAMETER_VALUE.
+          Three-level Unity Catalog table name for the new index, in the form ``catalog.schema.name``. The
+          server composes the full ``Index.name`` as ``{parent}/indexes/{index_id}`` and rejects an empty
+          value.
 
         :returns: :class:`Index`
         
@@ -111,9 +111,7 @@
           The Endpoint that owns this collection of indexes. Format:
           ``workspaces/{workspace_id}/endpoints/{endpoint_id}``
         :param page_size: int (optional)
-          Best-effort upper bound on the number of results to return. Honored as an upper bound by the shim:
-          ``page_size`` only narrows the legacy backend's response, never widens it, so the practical cap is
-          ``min(page_size, legacy_fixed_page_size)``.
+          Maximum number of indexes to return. When unset, every index on the endpoint is returned.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -128,28 +126,35 @@
           Full resource name of the index to query. Format:
           ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
         :param columns: List[str]
-          Column names to include in each result row.
+          Columns to include in each result row. Only columns that are part of the index can be returned.
         :param columns_to_rerank: List[str] (optional)
           Columns whose values are sent to the reranker.
         :param facets: List[str] (optional)
           Facets to compute over the matched results (e.g. ``"category TOP 5"``).
         :param filters_json: str (optional)
-          JSON string describing query filters (e.g. ``{"id >": 5}``).
+          JSON object of filters to apply, serialized as a string. Each key is a column name with an optional
+          operator suffix such as ``<``, ``>=``, ``NOT``, or ``OR``, and each value is the value to compare
+          against. Only columns that are part of the index can be filtered. See
+          https://docs.databricks.com/aws/en/ai-search/query-ai-search#filters for the supported operators.
         :param max_results: int (optional)
-          Maximum number of results to return (the legacy ``num_results``). Defaults to 10. Prefer
-          ``page_size``; when both are set, ``page_size`` takes precedence.
+          Maximum number of results to return. Defaults to 10. It corresponds to ``num_results`` in the Vector
+          Search API.
         :param query_columns: List[str] (optional)
           Text columns to search for ``query_text``. When empty, all text columns are searched.
         :param query_text: str (optional)
-          Query text. Required for Delta Sync indexes that compute embeddings from a model endpoint.
+          Query text. Required for Delta Sync indexes that compute embeddings from a model endpoint, and for
+          ``HYBRID`` and ``FULL_TEXT`` queries.
         :param query_type: str (optional)
-          Query type: ``ANN``, ``HYBRID``, or ``FULL_TEXT``. Defaults to ``ANN``.
+          Query type: ``ANN`` for vector similarity search, ``HYBRID`` for combined vector and keyword search,
+          or ``FULL_TEXT`` for keyword search without embeddings. Defaults to ``ANN``.
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Access indexes and Delta Sync indexes with self-managed vectors.
         :param reranker: :class:`RerankerConfig` (optional)
-          If set, results are reranked before being returned.
+          If set, results are reranked before being returned. See
+          https://docs.databricks.com/aws/en/ai-search/query-ai-search#rerank for details.
         :param score_threshold: float (optional)
-          Score threshold for the approximate nearest-neighbor search. Defaults to 0.0.
+          Score threshold for the approximate nearest-neighbor search; results that score below it are not
+          returned. Defaults to 0.0.
         :param sort_columns: List[str] (optional)
           Sort clauses, e.g. ``["rating DESC", "price ASC"]``. Overrides relevance ordering.
 
@@ -177,7 +182,7 @@
           Full resource name of the index to scan. Format:
           ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
         :param page_size: int (optional)
-          Maximum number of rows to return in this page.
+          Maximum number of rows to return in this page. Defaults to 10.
         :param page_token: str (optional)
           Page token from a previous response; if unset, scanning starts from the beginning.
 
@@ -186,8 +191,9 @@
 
     .. py:method:: sync_index(name: str) -> SyncIndexResponse
 
-        Synchronize a Delta Sync AI Search index with its source Delta table. Applies only to Delta Sync
-        indexes; Direct Access indexes are written via the data-plane upsert path.
+        Start a sync of a Delta Sync AI Search index with its source Delta table. Use it with ``TRIGGERED``
+        pipelines; ``CONTINUOUS`` pipelines sync automatically. Direct Access indexes are written through
+        UpsertData instead.
 
         :param name: str
           Full resource name of the index to synchronize. Must be a Delta Sync index. Format:
@@ -224,7 +230,10 @@
           Full resource name of the index. Must be a Direct Access index. Format:
           ``workspaces/{workspace_id}/endpoints/{endpoint_id}/indexes/{index_id}``
         :param inputs_json: str
-          JSON document describing the rows to upsert.
+          JSON array of the rows to insert or update, serialized as a string. Each element is an object that
+          maps column names to values and must include the primary key column; vector columns are given as
+          arrays of numbers. A row whose primary key already exists is overwritten. The array must not be
+          empty.
 
         :returns: :class:`UpsertDataResponse`
         

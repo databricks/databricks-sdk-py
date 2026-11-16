@@ -190,12 +190,14 @@ class CreateRepoResponse:
     """Path of the Git folder (repo) in the workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the linked Git repository, e.g. ``gitHub``, ``azureDevOpsServices``,
+    """Git provider of the linked Git repository. Supported providers are ``gitHub``,
+    ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices``, ``gitHubEnterprise``,
     ``bitbucketServer`` (Bitbucket Data Center), ``gitLabEnterpriseEdition`` (GitLab Self-Managed),
-    or ``awsCodeCommit``."""
+    and ``awsCodeCommit``."""
 
     sparse_checkout: Optional[SparseCheckout] = None
-    """Sparse checkout settings for the Git folder (repo)."""
+    """Sparse checkout settings for the Git folder (repo). Only present when sparse checkout is enabled
+    for the Git folder."""
 
     url: Optional[str] = None
     """URL of the linked Git repository."""
@@ -454,11 +456,13 @@ class ExportResponse:
     returned by this endpoint."""
 
     content: Optional[str] = None
-    """The base64-encoded content. If the limit (10MB) is exceeded, exception with error code
-    **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown."""
+    """The base64-encoded content of the exported object. If the content exceeds the size limit (10
+    MB), the call fails with error code ``MAX_NOTEBOOK_SIZE_EXCEEDED``."""
 
     file_type: Optional[str] = None
-    """The file type of the exported file."""
+    """The file extension that matches the exported content, for example ``py`` for a Python notebook
+    exported as ``SOURCE``, ``ipynb`` for ``JUPYTER``, ``html`` for ``HTML``, ``dbc`` for ``DBC``,
+    and ``zip`` for a directory exported as ``SOURCE`` or ``AUTO``. It is empty for workspace files."""
 
     def as_dict(self) -> dict:
         """Serializes the ExportResponse into a dictionary suitable for use as a JSON request body."""
@@ -585,7 +589,8 @@ class GetRepoPermissionLevelsResponse:
 @dataclass
 class GetRepoResponse:
     branch: Optional[str] = None
-    """Branch that the local version of the repo is checked out to."""
+    """Branch that the local version of the repo is checked out to. Omitted when the Git folder (repo)
+    is in a detached HEAD state, for example after checking out a tag."""
 
     git_cli_enabled: Optional[bool] = None
     """Whether the Git CLI is enabled for this Git folder (repo). When true, Git commands can be run
@@ -601,12 +606,14 @@ class GetRepoResponse:
     """Path of the Git folder (repo) in the workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the linked Git repository, e.g. ``gitHub``, ``azureDevOpsServices``,
+    """Git provider of the linked Git repository. Supported providers are ``gitHub``,
+    ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices``, ``gitHubEnterprise``,
     ``bitbucketServer`` (Bitbucket Data Center), ``gitLabEnterpriseEdition`` (GitLab Self-Managed),
-    or ``awsCodeCommit``."""
+    and ``awsCodeCommit``."""
 
     sparse_checkout: Optional[SparseCheckout] = None
-    """Sparse checkout settings for the Git folder (repo)."""
+    """Sparse checkout settings for the Git folder (repo). Only present when sparse checkout is enabled
+    for the Git folder."""
 
     url: Optional[str] = None
     """URL of the linked Git repository."""
@@ -945,7 +952,8 @@ class ObjectInfo:
     """The information of the object in workspace. It will be returned by ``list`` and ``get-status``."""
 
     created_at: Optional[int] = None
-    """Only applicable to files. The creation UTC timestamp."""
+    """The time the object was created, as a UTC timestamp in milliseconds since the epoch. It is
+    returned for notebooks and files."""
 
     directory_info: Optional[DirectoryInfo] = None
     """Additional metadata about the directory. Only set for objects of type ``DIRECTORY``."""
@@ -955,7 +963,8 @@ class ObjectInfo:
     Jupyter (.ipynb) notebooks, this is always ``PYTHON``."""
 
     modified_at: Optional[int] = None
-    """Only applicable to files, the last modified UTC timestamp."""
+    """The time the object was last modified, as a UTC timestamp in milliseconds since the epoch. It is
+    returned for notebooks and files."""
 
     object_id: Optional[int] = None
     """Unique identifier for the object."""
@@ -977,7 +986,7 @@ class ObjectInfo:
     """A unique identifier for the object that is consistent across all Databricks APIs."""
 
     size: Optional[int] = None
-    """Only applicable to files. The file size in bytes can be returned."""
+    """The size of the file in bytes. It is returned only for objects of type ``FILE``."""
 
     def as_dict(self) -> dict:
         """Serializes the ObjectInfo into a dictionary suitable for use as a JSON request body."""
@@ -1163,30 +1172,34 @@ class RepoAccessControlResponse:
 
 @dataclass
 class RepoInfo:
-    """Git folder (repo) information."""
+    """Git folder (repo) information. A Git folder is a workspace folder that is linked to a remote Git
+    repository and tracks the branch or commit that is checked out."""
 
     branch: Optional[str] = None
-    """Name of the current git branch of the git folder (repo)."""
+    """Name of the branch that the Git folder (repo) is checked out to. Omitted when the Git folder is
+    in a detached HEAD state, for example after checking out a tag."""
 
     head_commit_id: Optional[str] = None
-    """Current git commit id of the git folder (repo)."""
+    """SHA-1 hash of the commit that the Git folder (repo) is currently checked out to."""
 
     id: Optional[int] = None
-    """Id of the git folder (repo) in the Workspace."""
+    """ID of the Git folder (repo) object in the workspace."""
 
     path: Optional[str] = None
     """Root path of the git folder (repo) in the Workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the remote git repository, e.g. ``gitHub``, ``azureDevOpsServices``,
+    """Git provider of the remote Git repository. Supported providers are ``gitHub``,
+    ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices``, ``gitHubEnterprise``,
     ``bitbucketServer`` (Bitbucket Data Center), ``gitLabEnterpriseEdition`` (GitLab Self-Managed),
-    or ``awsCodeCommit``."""
+    and ``awsCodeCommit``."""
 
     sparse_checkout: Optional[SparseCheckout] = None
-    """Sparse checkout config for the git folder (repo)."""
+    """Sparse checkout configuration of the Git folder (repo). Only present when sparse checkout is
+    enabled for the Git folder."""
 
     url: Optional[str] = None
-    """URL of the remote git repository."""
+    """HTTPS URL of the remote Git repository."""
 
     def as_dict(self) -> dict:
         """Serializes the RepoInfo into a dictionary suitable for use as a JSON request body."""
@@ -2029,7 +2042,7 @@ class ReposAPI:
         programmatically must be linked to a remote Git repo, unlike repos created in the browser.
 
         :param url: str
-          URL of the Git repository to be linked.
+          HTTPS URL of the Git repository to be linked. SSH URLs are not supported.
         :param provider: str
           Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
           ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
@@ -2040,7 +2053,10 @@ class ReposAPI:
           current user.
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
-          is created in ``/Repos``, path must be in the format ``/Repos/{folder}/{repo-name}``.
+          is created in ``/Repos``, path must be in the format ``/Repos/{folder}/{repo-name}``. If omitted,
+          the repo is created in the calling user's home folder (``/Users/{user}``, or ``/Repos/{user}`` in
+          workspaces without workspace files). The repo name is the last path segment of ``url``, for example
+          ``cli.git``.
         :param sparse_checkout: :class:`SparseCheckout` (optional)
           If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
           sparse checkout after the repo is created.
@@ -2072,10 +2088,11 @@ class ReposAPI:
         return CreateRepoResponse.from_dict(res)
 
     def delete(self, repo_id: int):
-        """Deletes the specified repo.
+        """Deletes the Git folder (repo) and its contents from the workspace. The remote Git repository is not
+        affected.
 
         :param repo_id: int
-          The ID for the corresponding repo to delete.
+          ID of the Git folder (repo) to delete.
 
 
         """
@@ -2230,12 +2247,13 @@ class ReposAPI:
         tag: Optional[str] = None,
     ):
         """Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
-        branch.
+        branch. Exactly one of ``branch`` or ``tag`` must be specified.
 
         :param repo_id: int
           ID of the Git folder (repo) object in the workspace.
         :param branch: str (optional)
-          Branch that the local version of the repo is checked out to.
+          Branch to check out. The Git folder (repo) is then updated to the latest commit of the branch.
+          Mutually exclusive with ``tag``.
         :param dangerously_force_discard_all: bool (optional)
           WARNING: DESTRUCTIVE AND IRREVERSIBLE. If true, permanently deletes ALL uncommitted changes in the
           Git folder — staged, unstaged, and untracked files — before updating. Lost data CANNOT be
@@ -2252,11 +2270,11 @@ class ReposAPI:
           current user.
         :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
           If specified, update the sparse checkout settings. The update will fail if sparse checkout is not
-          enabled for the repo.
+          enabled for the repo. Must be sent together with ``branch`` or ``tag``.
         :param tag: str (optional)
           Tag that the local version of the repo is checked out to. Updating the repo to a tag puts the repo
           in a detached HEAD state. Before committing new changes, you must update the repo to a branch
-          instead of the detached HEAD.
+          instead of the detached HEAD. Mutually exclusive with ``branch``.
 
 
         """
@@ -2838,9 +2856,9 @@ class WorkspaceAPI:
         :param path: str
           The absolute path of the notebook or directory.
         :param recursive: bool (optional)
-          The flag that specifies whether to delete the object recursively. It is ``false`` by default. Please
-          note this deleting directory is not atomic. If it fails in the middle, some of objects under this
-          directory may be deleted and cannot be undone.
+          The flag that specifies whether to delete the object recursively. It is ``false`` by default.
+          Deleting a directory recursively is not atomic. If the call fails part way, some objects under the
+          directory may already be deleted and cannot be restored.
 
 
         """
@@ -3006,10 +3024,9 @@ class WorkspaceAPI:
           The absolute path of the object or directory. Importing a directory is only supported for the
           ``DBC`` and ``SOURCE`` formats.
         :param content: str (optional)
-          The base64-encoded content. This has a limit of 10 MB.
-
-          If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
-          This parameter might be absent, and instead a posted file is used.
+          The base64-encoded content to import. The content is limited to 10 MB. If the limit is exceeded, the
+          call fails with error code ``MAX_NOTEBOOK_SIZE_EXCEEDED``. This parameter might be absent, and
+          instead a posted file is used.
         :param format: :class:`ImportFormat` (optional)
           This specifies the format of the file to be imported.
 
@@ -3024,10 +3041,12 @@ class WorkspaceAPI:
           - ``DBC``: The notebook is imported in Databricks archive format. Required for directories.
           - ``R_MARKDOWN``: The notebook is imported from R Markdown format.
         :param language: :class:`Language` (optional)
-          The language of the object. This value is set only if the object type is ``NOTEBOOK``.
+          The language of the notebook. It applies only to the ``SOURCE`` format: set it to import a single
+          notebook, or leave it unset to import a directory.
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing object. It is ``false`` by default. For
-          ``DBC`` format, ``overwrite`` is not supported since it may contain a directory.
+          ``DBC`` format, ``overwrite`` is not supported since it may contain a directory. Importing a
+          directory in ``SOURCE`` format does not support ``overwrite`` either.
 
 
         """
@@ -3061,7 +3080,9 @@ class WorkspaceAPI:
         :param path: str
           The absolute path of the notebook or directory.
         :param notebooks_modified_after: int (optional)
-          UTC timestamp in milliseconds
+          A UTC timestamp in milliseconds since the epoch. When it is set and ``path`` is a directory, the
+          response includes only the notebooks that were modified after this time. Objects that are not
+          notebooks are always included.
 
         :returns: Iterator over :class:`ObjectInfo`
         """

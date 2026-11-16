@@ -12,6 +12,13 @@
     We suggest beginning with the `Databricks SQL Statement Execution API tutorial
     <https://docs.databricks.com/sql/api/sql-execution-tutorial.html>`__.
 
+    **Lakehouse//RT warehouses**
+
+    You can run statements on `Lakehouse//RT
+    <https://docs.databricks.com/compute/sql-warehouse/real-time.html>`__ warehouses with this API. For lower
+    latency and higher concurrency, use version 2 of this API, Statement Execution (Lakehouse//RT), instead.
+    It works the same way, except that ``warehouse_id`` is a path parameter.
+
     **Overview of statement execution and result fetching**
 
     Statement execution begins by issuing a :method:statementexecution/executeStatement request with a valid

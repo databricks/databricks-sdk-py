@@ -818,6 +818,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IcebergTableSource
+   :members:
+   :undoc-members:
+
 .. autoclass:: IngestionConfig
    :members:
    :undoc-members:

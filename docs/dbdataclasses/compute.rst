@@ -1731,7 +1731,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TshirtSize
 
-   T-shirt size for per-workload Spark executor limits.
+   T-shirt size for Spark executor limits.
 
    .. py:attribute:: T_SHIRT_SIZE_2X_LARGE
       :value: "T_SHIRT_SIZE_2X_LARGE"

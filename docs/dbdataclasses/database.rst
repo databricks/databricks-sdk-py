@@ -138,7 +138,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RequestedClaimsPermissionSet
 
-   Might add WRITE in the future
+   The level of access that a claim grants on its resources.
 
    .. py:attribute:: READ_ONLY
       :value: "READ_ONLY"

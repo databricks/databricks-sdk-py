@@ -27,6 +27,9 @@
         external metadata object.
 
         :param external_lineage_relationship: :class:`DeleteRequestExternalLineage`
+          The relationship to delete, identified by its ``source`` and ``target`` objects. Since this field is
+          a query parameter, flatten the nested fields, for example
+          ``external_lineage_relationship.source.table.name=main.sales.orders``.
 
 
         
@@ -41,7 +44,9 @@
           please flatten the nested fields. For example, if the object is a table, the query parameter should
           look like: ``object_info.table.name=main.sales.customers``
         :param lineage_direction: :class:`LineageDirection`
-          The lineage direction to filter on.
+          Direction of the relationships to return, relative to ``object_info``. ``UPSTREAM`` returns the
+          relationships in which the object is the target, so each result describes a source; ``DOWNSTREAM``
+          returns the relationships in which the object is the source, so each result describes a target.
         :param page_size: int (optional)
           Specifies the maximum number of external lineage relationships to return in a single response. The
           value must be less than or equal to 1000.
@@ -58,15 +63,9 @@
 
         :param external_lineage_relationship: :class:`UpdateRequestExternalLineage`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          The fields of the relationship to update. The field mask must be a single string, with multiple
+          fields separated by commas (no spaces), for example ``columns,properties``. The ``source`` and
+          ``target`` identify the relationship and cannot be changed.
 
         :returns: :class:`ExternalLineageRelationship`
         

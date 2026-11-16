@@ -716,19 +716,29 @@ class ComplianceStandard(Enum):
 
 @dataclass
 class Config:
+    """Holds the destination-specific configuration. Exactly one of the nested configs is set."""
+
     databricks_app_slack: Optional[DatabricksAppSlackConfig] = None
+    """Configures a Slack channel reached through the Databricks Genie app for Slack."""
 
     databricks_app_teams: Optional[DatabricksAppTeamsConfig] = None
+    """Configures a Microsoft Teams channel reached through the Databricks Genie app for Microsoft
+    Teams."""
 
     email: Optional[EmailConfig] = None
+    """Configures an email destination."""
 
     generic_webhook: Optional[GenericWebhookConfig] = None
+    """Configures a generic HTTPS webhook destination."""
 
     microsoft_teams: Optional[MicrosoftTeamsConfig] = None
+    """Configures a Microsoft Teams incoming webhook destination."""
 
     pagerduty: Optional[PagerdutyConfig] = None
+    """Configures a PagerDuty destination."""
 
     slack: Optional[SlackConfig] = None
+    """Configures a Slack incoming webhook destination."""
 
     def as_dict(self) -> dict:
         """Serializes the Config into a dictionary suitable for use as a JSON request body."""
@@ -2941,6 +2951,8 @@ class DeleteSqlResultsDownloadResponse:
 
 
 class DestinationType(Enum):
+    """The kind of destination that notifications are sent to."""
+
     DATABRICKS_APP_SLACK = "DATABRICKS_APP_SLACK"
     DATABRICKS_APP_TEAMS = "DATABRICKS_APP_TEAMS"
     EMAIL = "EMAIL"
@@ -3692,8 +3704,10 @@ class EgressResourceType(Enum):
 
 @dataclass
 class EmailConfig:
+    """Configures an email destination."""
+
     addresses: Optional[List[str]] = None
-    """Email addresses to notify."""
+    """Email addresses to notify. At least one address is required."""
 
     def as_dict(self) -> dict:
         """Serializes the EmailConfig into a dictionary suitable for use as a JSON request body."""
@@ -4158,20 +4172,23 @@ class GcpEndpoint:
 
 @dataclass
 class GenericWebhookConfig:
+    """Configures a generic webhook destination. Notifications are delivered as HTTPS POST requests to
+    url, optionally authenticated with HTTP Basic authentication."""
+
     password: Optional[str] = None
-    """[Input-Only][Optional] Password for webhook."""
+    """[Input-Only][Optional] Password for HTTP Basic authentication. Set it together with username."""
 
     password_set: Optional[bool] = None
     """[Output-Only] Whether password is set."""
 
     url: Optional[str] = None
-    """[Input-Only] URL for webhook."""
+    """[Input-Only] HTTPS URL that notifications are posted to."""
 
     url_set: Optional[bool] = None
     """[Output-Only] Whether URL is set."""
 
     username: Optional[str] = None
-    """[Input-Only][Optional] Username for webhook."""
+    """[Input-Only][Optional] Username for HTTP Basic authentication. Set it together with password."""
 
     username_set: Optional[bool] = None
     """[Output-Only] Whether username is set."""
@@ -4553,9 +4570,11 @@ class ListNetworkPoliciesResponse:
 @dataclass
 class ListNotificationDestinationsResponse:
     next_page_token: Optional[str] = None
-    """Page token for next of results."""
+    """Token to pass as page_token to fetch the next page of results. Absent when there are no more
+    results."""
 
     results: Optional[List[ListNotificationDestinationsResult]] = None
+    """Notification destinations in the current page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListNotificationDestinationsResponse into a dictionary suitable for use as a JSON request body."""
@@ -4586,14 +4605,22 @@ class ListNotificationDestinationsResponse:
 
 @dataclass
 class ListNotificationDestinationsResult:
+    """A reusable definition of where a workspace sends notifications, such as a Slack channel, a set
+    of email addresses, a PagerDuty service, a Microsoft Teams channel or a generic webhook. Job
+    notifications, SQL alerts and other workspace features reference a destination by its id. Only
+    workspace admins can create, update and delete destinations; once created, a destination is
+    available to all users in the workspace. Secret values such as webhook URLs and tokens are
+    write-only: responses report whether each one is set, never its value."""
+
     destination_type: Optional[DestinationType] = None
-    """[Output-only] The type of the notification destination. The type can not be changed once set."""
+    """[Output-only] The type of the notification destination, determined by which nested config was
+    provided on creation. The type can not be changed once set."""
 
     display_name: Optional[str] = None
     """The display name for the notification destination."""
 
     id: Optional[str] = None
-    """UUID identifying notification destination."""
+    """A UUID identifying the notification destination."""
 
     def as_dict(self) -> dict:
         """Serializes the ListNotificationDestinationsResult into a dictionary suitable for use as a JSON request body."""
@@ -4878,32 +4905,41 @@ class LlmProxyPartnerPoweredWorkspace:
 
 @dataclass
 class MicrosoftTeamsConfig:
+    """Configures a Microsoft Teams destination. Notifications are posted to the incoming webhook url,
+    which is required. The app_id, auth_secret, channel_url and tenant_id fields can optionally be
+    set together to post through a Microsoft Teams app."""
+
     app_id: Optional[str] = None
-    """[Input-Only] App ID for Microsoft Teams App."""
+    """[Input-Only] Application (client) ID of the Microsoft Teams app, as a UUID. Optional; set it
+    together with auth_secret, channel_url and tenant_id."""
 
     app_id_set: Optional[bool] = None
     """[Output-Only] Whether App ID is set."""
 
     auth_secret: Optional[str] = None
-    """[Input-Only] Secret for Microsoft Teams App authentication."""
+    """[Input-Only] Client secret of the Microsoft Teams app. Optional; set it together with app_id,
+    channel_url and tenant_id."""
 
     auth_secret_set: Optional[bool] = None
     """[Output-Only] Whether secret is set."""
 
     channel_url: Optional[str] = None
-    """[Input-Only] Channel URL for Microsoft Teams App."""
+    """[Input-Only] URL of the Microsoft Teams channel that the app posts to. Optional; set it together
+    with app_id, auth_secret and tenant_id."""
 
     channel_url_set: Optional[bool] = None
     """[Output-Only] Whether Channel URL is set."""
 
     tenant_id: Optional[str] = None
-    """[Input-Only] Tenant ID for Microsoft Teams App."""
+    """[Input-Only] Microsoft Entra tenant ID of the Microsoft Teams app, as a UUID. Optional; set it
+    together with app_id, auth_secret and channel_url."""
 
     tenant_id_set: Optional[bool] = None
     """[Output-Only] Whether Tenant ID is set."""
 
     url: Optional[str] = None
-    """[Input-Only] URL for Microsoft Teams webhook."""
+    """[Input-Only] Microsoft Teams incoming webhook URL that notifications are posted to. Must be an
+    HTTPS URL. The URL is required even when the app fields are set."""
 
     url_set: Optional[bool] = None
     """[Output-Only] Whether URL is set."""
@@ -5628,18 +5664,26 @@ class NetworkPolicyEgress:
 
 @dataclass
 class NotificationDestination:
+    """A reusable definition of where a workspace sends notifications, such as a Slack channel, a set
+    of email addresses, a PagerDuty service, a Microsoft Teams channel or a generic webhook. Job
+    notifications, SQL alerts and other workspace features reference a destination by its id. Only
+    workspace admins can create, update and delete destinations; once created, a destination is
+    available to all users in the workspace. Secret values such as webhook URLs and tokens are
+    write-only: responses report whether each one is set, never its value."""
+
     config: Optional[Config] = None
     """The configuration for the notification destination. Will be exactly one of the nested configs.
-    Only returns for users with workspace admin permissions."""
+    Only returned to users with workspace admin permissions."""
 
     destination_type: Optional[DestinationType] = None
-    """[Output-only] The type of the notification destination. The type can not be changed once set."""
+    """[Output-only] The type of the notification destination, determined by which nested config was
+    provided on creation. The type can not be changed once set."""
 
     display_name: Optional[str] = None
     """The display name for the notification destination."""
 
     id: Optional[str] = None
-    """UUID identifying notification destination."""
+    """A UUID identifying the notification destination."""
 
     def as_dict(self) -> dict:
         """Serializes the NotificationDestination into a dictionary suitable for use as a JSON request body."""
@@ -5680,8 +5724,12 @@ class NotificationDestination:
 
 @dataclass
 class PagerdutyConfig:
+    """Configures a PagerDuty destination. Notifications are sent as events to the PagerDuty Events API
+    v2."""
+
     integration_key: Optional[str] = None
-    """[Input-Only] Integration key for PagerDuty."""
+    """[Input-Only] Integration key from an Events API v2 integration on the PagerDuty service that
+    receives the notifications."""
 
     integration_key_set: Optional[bool] = None
     """[Output-Only] Whether integration key is set."""
@@ -6017,20 +6065,27 @@ class RevokeTokenResponse:
 
 @dataclass
 class SlackConfig:
+    """Configures a Slack destination. Notifications are posted to the incoming webhook url, which is
+    required. A bot oauth_token and channel_id can optionally be set together to post to the channel
+    through the Slack API."""
+
     channel_id: Optional[str] = None
-    """[Input-Only] Slack channel ID for notifications."""
+    """[Input-Only] ID of the Slack channel that notifications are posted to through the Slack API.
+    Optional; set it together with oauth_token."""
 
     channel_id_set: Optional[bool] = None
     """[Output-Only] Whether channel ID is set."""
 
     oauth_token: Optional[str] = None
-    """[Input-Only] OAuth token for Slack authentication."""
+    """[Input-Only] Slack bot OAuth token (xoxb-...). Optional; when set together with channel_id,
+    notifications are posted to that channel through the Slack API."""
 
     oauth_token_set: Optional[bool] = None
     """[Output-Only] Whether OAuth token is set."""
 
     url: Optional[str] = None
-    """[Input-Only] URL for Slack destination."""
+    """[Input-Only] Slack incoming webhook URL that notifications are posted to. Must be an HTTPS URL.
+    The URL is required even when oauth_token and channel_id are set."""
 
     url_set: Optional[bool] = None
     """[Output-Only] Whether URL is set."""
@@ -9591,6 +9646,7 @@ class NotificationDestinationsAPI:
         """Deletes a notification destination. Requires workspace admin permissions.
 
         :param id: str
+          A UUID identifying the notification destination.
 
 
         """
@@ -9606,9 +9662,10 @@ class NotificationDestinationsAPI:
         self._api.do("DELETE", f"/api/2.0/notification-destinations/{id}", headers=headers)
 
     def get(self, id: str) -> NotificationDestination:
-        """Gets a notification destination.
+        """Gets a notification destination by ID. Workspace admins also receive its config.
 
         :param id: str
+          A UUID identifying the notification destination.
 
         :returns: :class:`NotificationDestination`
         """
@@ -9627,10 +9684,13 @@ class NotificationDestinationsAPI:
     def list(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListNotificationDestinationsResult]:
-        """Lists notification destinations.
+        """Lists the notification destinations in the workspace. Results never include a destination's config;
+        workspace admins can retrieve it with Get.
 
         :param page_size: int (optional)
+          Maximum number of notification destinations to return per page. Defaults to 20.
         :param page_token: str (optional)
+          Opaque token returned as next_page_token by a previous call. Omit it to request the first page.
 
         :returns: Iterator over :class:`ListNotificationDestinationsResult`
         """
@@ -9661,10 +9721,10 @@ class NotificationDestinationsAPI:
         self, id: str, *, config: Optional[Config] = None, display_name: Optional[str] = None
     ) -> NotificationDestination:
         """Updates a notification destination. Requires workspace admin permissions. At least one field is
-        required in the request body.
+        required in the request body. A config provided in the request replaces the existing one.
 
         :param id: str
-          UUID identifying notification destination.
+          A UUID identifying the notification destination.
         :param config: :class:`Config` (optional)
           The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
         :param display_name: str (optional)

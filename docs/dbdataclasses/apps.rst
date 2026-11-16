@@ -32,6 +32,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SNAPSHOT
       :value: "SNAPSHOT"
 
+.. autoclass:: AppDeploymentScanFinding
+   :members:
+   :undoc-members:
+
+.. py:class:: AppDeploymentScanStatus
+
+   The security scan outcome for an app deployment, mirrored from the durable scan record.
+
+   .. py:attribute:: APP_DEPLOYMENT_SCAN_STATUS_CLEAN
+      :value: "APP_DEPLOYMENT_SCAN_STATUS_CLEAN"
+
+   .. py:attribute:: APP_DEPLOYMENT_SCAN_STATUS_FINDINGS
+      :value: "APP_DEPLOYMENT_SCAN_STATUS_FINDINGS"
+
+   .. py:attribute:: APP_DEPLOYMENT_SCAN_STATUS_NOT_SCANNED
+      :value: "APP_DEPLOYMENT_SCAN_STATUS_NOT_SCANNED"
+
+   .. py:attribute:: APP_DEPLOYMENT_SCAN_STATUS_PARTIAL
+      :value: "APP_DEPLOYMENT_SCAN_STATUS_PARTIAL"
+
+   .. py:attribute:: APP_DEPLOYMENT_SCAN_STATUS_UNAVAILABLE
+      :value: "APP_DEPLOYMENT_SCAN_STATUS_UNAVAILABLE"
+
 .. py:class:: AppDeploymentState
 
    .. py:attribute:: CANCELLED
@@ -728,6 +751,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListAppDeploymentScanFindingsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListAppDeploymentsResponse
    :members:
    :undoc-members:
@@ -747,6 +774,39 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: Operation
    :members:
    :undoc-members:
+
+.. py:class:: ScanFindingScannerType
+
+   The scanner that produced a finding.
+
+   .. py:attribute:: SCAN_FINDING_SCANNER_TYPE_SEMGREP
+      :value: "SCAN_FINDING_SCANNER_TYPE_SEMGREP"
+
+.. py:class:: ScanFindingSeverity
+
+   Severity of a scan finding, as reported by the scanner.
+
+   .. py:attribute:: SCAN_FINDING_SEVERITY_ERROR
+      :value: "SCAN_FINDING_SEVERITY_ERROR"
+
+   .. py:attribute:: SCAN_FINDING_SEVERITY_INFO
+      :value: "SCAN_FINDING_SEVERITY_INFO"
+
+   .. py:attribute:: SCAN_FINDING_SEVERITY_WARNING
+      :value: "SCAN_FINDING_SEVERITY_WARNING"
+
+.. py:class:: ScanFindingStatus
+
+   User triage state for a single scan finding.
+
+   .. py:attribute:: SCAN_FINDING_STATUS_IGNORED
+      :value: "SCAN_FINDING_STATUS_IGNORED"
+
+   .. py:attribute:: SCAN_FINDING_STATUS_IN_PROGRESS
+      :value: "SCAN_FINDING_STATUS_IN_PROGRESS"
+
+   .. py:attribute:: SCAN_FINDING_STATUS_RESOLVED
+      :value: "SCAN_FINDING_STATUS_RESOLVED"
 
 .. autoclass:: Space
    :members:

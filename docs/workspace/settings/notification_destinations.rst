@@ -26,25 +26,30 @@
         Deletes a notification destination. Requires workspace admin permissions.
 
         :param id: str
+          A UUID identifying the notification destination.
 
 
         
 
     .. py:method:: get(id: str) -> NotificationDestination
 
-        Gets a notification destination.
+        Gets a notification destination by ID. Workspace admins also receive its config.
 
         :param id: str
+          A UUID identifying the notification destination.
 
         :returns: :class:`NotificationDestination`
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListNotificationDestinationsResult]
 
-        Lists notification destinations.
+        Lists the notification destinations in the workspace. Results never include a destination's config;
+        workspace admins can retrieve it with Get.
 
         :param page_size: int (optional)
+          Maximum number of notification destinations to return per page. Defaults to 20.
         :param page_token: str (optional)
+          Opaque token returned as next_page_token by a previous call. Omit it to request the first page.
 
         :returns: Iterator over :class:`ListNotificationDestinationsResult`
         
@@ -52,10 +57,10 @@
     .. py:method:: update(id: str [, config: Optional[Config], display_name: Optional[str]]) -> NotificationDestination
 
         Updates a notification destination. Requires workspace admin permissions. At least one field is
-        required in the request body.
+        required in the request body. A config provided in the request replaces the existing one.
 
         :param id: str
-          UUID identifying notification destination.
+          A UUID identifying the notification destination.
         :param config: :class:`Config` (optional)
           The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
         :param display_name: str (optional)

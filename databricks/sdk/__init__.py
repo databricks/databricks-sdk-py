@@ -4,6 +4,7 @@
 import json
 import logging
 from functools import cached_property
+from requests.adapters import BaseAdapter
 
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
@@ -49,6 +50,7 @@ from databricks.sdk.service import settingsv2 as pkg_settingsv2
 from databricks.sdk.service import sharing as pkg_sharing
 from databricks.sdk.service import softwareartifacts as pkg_softwareartifacts
 from databricks.sdk.service import sql as pkg_sql
+from databricks.sdk.service import statementexecutionv2 as pkg_statementexecutionv2
 from databricks.sdk.service import supervisoragents as pkg_supervisoragents
 from databricks.sdk.service import tags as pkg_tags
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
@@ -231,6 +233,7 @@ from databricks.sdk.service.sharing import SharesAPI
 from databricks.sdk.service.softwareartifacts import SoftwareArtifactsAPI
 from databricks.sdk.service.settings import SqlResultsDownloadAPI
 from databricks.sdk.service.sql import StatementExecutionAPI
+from databricks.sdk.service.statementexecutionv2 import StatementExecutionV2API
 from databricks.sdk.service.provisioning import StorageAPI
 from databricks.sdk.service.catalog import StorageCredentialsAPI
 from databricks.sdk.service.catalog import AccountStorageCredentialsAPI
@@ -335,6 +338,7 @@ class WorkspaceClient:
         scopes: Optional[List[str]] = None,
         authorization_details: Optional[List[AuthorizationDetail]] = None,
         custom_headers: Optional[dict] = None,
+        http_adapter: Optional[BaseAdapter] = None,
     ):
         if not config:
             config = client.Config(
@@ -372,6 +376,7 @@ class WorkspaceClient:
                     else None
                 ),
                 custom_headers=custom_headers,
+                http_adapter=http_adapter,
             )
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)
@@ -502,6 +507,7 @@ class WorkspaceClient:
         self._shares = pkg_sharing.SharesAPI(self._api_client)
         self._software_artifacts = pkg_softwareartifacts.SoftwareArtifactsAPI(self._api_client)
         self._statement_execution = pkg_sql.StatementExecutionAPI(self._api_client)
+        self._statement_execution_v2 = pkg_statementexecutionv2.StatementExecutionV2API(self._api_client)
         self._storage_credentials = pkg_catalog.StorageCredentialsAPI(self._api_client)
         self._supervisor_agents = pkg_supervisoragents.SupervisorAgentsAPI(self._api_client)
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
@@ -1134,6 +1140,11 @@ class WorkspaceClient:
         return self._statement_execution
 
     @property
+    def statement_execution_v2(self) -> pkg_statementexecutionv2.StatementExecutionV2API:
+        """The Statement Execution API v2 can be used to execute SQL statements on a SQL warehouse and fetch the result."""
+        return self._statement_execution_v2
+
+    @property
     def storage_credentials(self) -> pkg_catalog.StorageCredentialsAPI:
         """A storage credential represents an authentication and authorization mechanism for accessing data stored on your cloud tenant."""
         return self._storage_credentials
@@ -1317,6 +1328,7 @@ class AccountClient:
         token_audience: Optional[str] = None,
         config: Optional[client.Config] = None,
         custom_headers: Optional[dict] = None,
+        http_adapter: Optional[BaseAdapter] = None,
     ):
         if not config:
             config = client.Config(
@@ -1347,6 +1359,7 @@ class AccountClient:
                 product_version=product_version,
                 token_audience=token_audience,
                 custom_headers=custom_headers,
+                http_adapter=http_adapter,
             )
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)

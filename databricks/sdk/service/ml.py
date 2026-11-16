@@ -1285,6 +1285,9 @@ class DataSource:
     feature_view_source: Optional[FeatureViewSource] = None
     """A data source composed from registered upstream Features."""
 
+    iceberg_table_source: Optional[IcebergTableSource] = None
+    """A Unity Catalog managed or foreign Iceberg table source."""
+
     kafka_source: Optional[KafkaSource] = None
     """A Kafka stream data source."""
 
@@ -1308,6 +1311,8 @@ class DataSource:
             body["delta_table_source"] = self.delta_table_source.as_dict()
         if self.feature_view_source:
             body["feature_view_source"] = self.feature_view_source.as_dict()
+        if self.iceberg_table_source:
+            body["iceberg_table_source"] = self.iceberg_table_source.as_dict()
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source.as_dict()
         if self.lateness:
@@ -1327,6 +1332,8 @@ class DataSource:
             body["delta_table_source"] = self.delta_table_source
         if self.feature_view_source:
             body["feature_view_source"] = self.feature_view_source
+        if self.iceberg_table_source:
+            body["iceberg_table_source"] = self.iceberg_table_source
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source
         if self.lateness:
@@ -1345,6 +1352,7 @@ class DataSource:
         return cls(
             delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
             feature_view_source=_from_dict(d, "feature_view_source", FeatureViewSource),
+            iceberg_table_source=_from_dict(d, "iceberg_table_source", IcebergTableSource),
             kafka_source=_from_dict(d, "kafka_source", KafkaSource),
             lateness=_from_dict(d, "lateness", SourceLateness),
             request_source=_from_dict(d, "request_source", RequestSource),
@@ -3900,6 +3908,65 @@ class HttpUrlSpecWithoutSecret:
 
 
 @dataclass
+class IcebergTableSource:
+    """A Unity Catalog managed or foreign Iceberg table, in Iceberg v2 or v3 format. Table identity,
+    format, schema, and permissions are resolved through Unity Catalog."""
+
+    full_name: str
+    """Full three-part name of the source table. May be omitted on reads when inaccessible."""
+
+    dataframe_schema: Optional[str] = None
+    """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
+    df.schema.json()). Required if transformation_sql is specified. Example:
+    {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}"""
+
+    filter_condition: Optional[str] = None
+    """A single WHERE clause to filter the Iceberg table before applying transformations. The predicate
+    is evaluated for each row."""
+
+    transformation_sql: Optional[str] = None
+    """A single SQL SELECT expression applied after filter_condition. The expression must contain all
+    required columns (e.g., "*, col_a + col_b AS col_c"). If transformation_sql is not provided, all
+    columns of the Iceberg table are present in the DataSource dataframe."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IcebergTableSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IcebergTableSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IcebergTableSource:
+        """Deserializes the IcebergTableSource from a dictionary."""
+        return cls(
+            dataframe_schema=d.get("dataframe_schema", None),
+            filter_condition=d.get("filter_condition", None),
+            full_name=d.get("full_name", None),
+            transformation_sql=d.get("transformation_sql", None),
+        )
+
+
+@dataclass
 class IngestionConfig:
     """Configuration for the Databricks-managed ingestion pipeline. Groups the ingestion destination
     (required) and optional backfill source."""
@@ -4145,7 +4212,10 @@ class Issue:
     missing keys. At most 20 entries, with keys of at most 64 UTF-8 bytes."""
 
     name: Optional[str] = None
-    """experiments/{experiment}/issues/{issue}"""
+    """The Issue's resource name, as ``experiments/{experiment}/issues/{issue}``, where
+    ``{experiment}`` is the experiment ID and ``{issue}`` is the Issue ID: ``iss-`` followed by 32
+    lowercase hex digits. For example,
+    ``experiments/1234567890/issues/iss-0123456789abcdef0123456789abcdef``."""
 
     source_id: Optional[str] = None
     """Set once at create. For ADHOC_RUN and SCHEDULED_RUN, the ID of the issue detection run in the
@@ -10894,7 +10964,8 @@ class ExperimentsAPI:
         """Creates an issue in an experiment.
 
         :param parent: str
-          experiments/{experiment}
+          The experiment to create the Issue in, as ``experiments/{experiment}``, where ``{experiment}`` is
+          the experiment ID. For example, ``experiments/1234567890``.
         :param issue: :class:`Issue`
           Output-only fields are ignored.
         :param issue_id: str (optional)
@@ -11315,7 +11386,9 @@ class ExperimentsAPI:
         """Gets an issue.
 
         :param name: str
-          experiments/{experiment}/issues/{issue}
+          The Issue to get, as ``experiments/{experiment}/issues/{issue}``, where ``{experiment}`` is the
+          experiment ID and ``{issue}`` is the Issue ID: ``iss-`` followed by 32 lowercase hex digits. For
+          example, ``experiments/1234567890/issues/iss-0123456789abcdef0123456789abcdef``.
 
         :returns: :class:`Issue`
         """
@@ -11994,7 +12067,8 @@ class ExperimentsAPI:
         """Searches the issues in an experiment, filtered and sorted.
 
         :param parent: str
-          experiments/{experiment}
+          The experiment to search, as ``experiments/{experiment}``, where ``{experiment}`` is the experiment
+          ID. For example, ``experiments/1234567890``.
         :param categories: List[str] (optional)
           Matches Issues with any of these categories, case-insensitively.
         :param page_size: int (optional)
@@ -12345,7 +12419,9 @@ class ExperimentsAPI:
         """Updates the fields of an issue named in ``update_mask``.
 
         :param name: str
-          experiments/{experiment}/issues/{issue}
+          The Issue's resource name, as ``experiments/{experiment}/issues/{issue}``, where ``{experiment}`` is
+          the experiment ID and ``{issue}`` is the Issue ID: ``iss-`` followed by 32 lowercase hex digits. For
+          example, ``experiments/1234567890/issues/iss-0123456789abcdef0123456789abcdef``.
         :param issue: :class:`Issue`
           ``issue.name`` identifies the target.
         :param update_mask: FieldMask

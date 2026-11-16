@@ -43,6 +43,7 @@ These APIs are available from WorkspaceClient
    sharing/index
    softwareartifacts/index
    sql/index
+   statementexecutionv2/index
    supervisoragents/index
    tags/index
    vectorsearch/index
