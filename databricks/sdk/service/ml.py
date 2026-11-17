@@ -1070,7 +1070,7 @@ class CreateModelResponse:
 @dataclass
 class CreateModelVersionResponse:
     model_version: Optional[ModelVersion] = None
-    """Return new version number generated for this model in registry."""
+    """The new model version, including the version number that the registry assigned."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateModelVersionResponse into a dictionary suitable for use as a JSON request body."""
@@ -2094,26 +2094,31 @@ class Experiment:
     """An experiment and its metadata."""
 
     artifact_location: Optional[str] = None
-    """Location where artifacts for the experiment are stored."""
+    """URI of the location where the artifacts of the experiment's runs are stored. Experiments created
+    without an explicit location use MLflow-managed storage under
+    ``dbfs:/databricks/mlflow-tracking/<experiment_id>``."""
 
     creation_time: Optional[int] = None
-    """Creation time"""
+    """Time when the experiment was created, as a Unix timestamp in milliseconds."""
 
     experiment_id: Optional[str] = None
     """Unique identifier for the experiment."""
 
     last_update_time: Optional[int] = None
-    """Last update time"""
+    """Time when the experiment metadata was last updated, as a Unix timestamp in milliseconds."""
 
     lifecycle_stage: Optional[str] = None
-    """Current life cycle stage of the experiment: "active" or "deleted". Deleted experiments are not
-    returned by APIs."""
+    """Current life cycle stage of the experiment: ``active`` or ``deleted``. Deleted experiments are
+    excluded from list and search results unless ``view_type`` requests them, and can be restored
+    until they are permanently deleted."""
 
     name: Optional[str] = None
-    """Human readable name that identifies the experiment."""
+    """Name of the experiment. A workspace experiment is named by its absolute path in the workspace; a
+    notebook experiment has the path of its notebook."""
 
     tags: Optional[List[ExperimentTag]] = None
-    """Tags: Additional metadata key-value pairs."""
+    """Tags set on the experiment, as key-value pairs, including system tags such as ``mlflow.ownerId``
+    that MLflow maintains."""
 
     trace_location: Optional[ExperimentTraceLocation] = None
     """The location where the experiment's traces are stored. Unset when traces are stored in the
@@ -2411,10 +2416,10 @@ class ExperimentTag:
     """A tag for an experiment."""
 
     key: Optional[str] = None
-    """The tag key."""
+    """The tag key. Keys are at most 255 characters long."""
 
     value: Optional[str] = None
-    """The tag value."""
+    """The tag value. Values are at most 65535 characters long."""
 
     def as_dict(self) -> dict:
         """Serializes the ExperimentTag into a dictionary suitable for use as a JSON request body."""
@@ -6271,6 +6276,9 @@ class MaterializedFeature:
     """Destination for writing feature values to an online Lakebase table. The resulting table is
     returned as ``table_name``."""
 
+    operations: Optional[MaterializedFeatureOperations] = None
+    """Operations associated with this materialized feature."""
+
     pipeline_id: Optional[str] = None
     """The ID of the pipeline that materializes this feature. This is only present for streaming
     features."""
@@ -6330,6 +6338,8 @@ class MaterializedFeature:
             body["offline_store_config"] = self.offline_store_config.as_dict()
         if self.online_store_config:
             body["online_store_config"] = self.online_store_config.as_dict()
+        if self.operations:
+            body["operations"] = self.operations.as_dict()
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.pipeline_schedule_state is not None:
@@ -6375,6 +6385,8 @@ class MaterializedFeature:
             body["offline_store_config"] = self.offline_store_config
         if self.online_store_config:
             body["online_store_config"] = self.online_store_config
+        if self.operations:
+            body["operations"] = self.operations
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.pipeline_schedule_state is not None:
@@ -6407,6 +6419,7 @@ class MaterializedFeature:
             notifications=_from_dict(d, "notifications", MaterializationNotifications),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
             online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
+            operations=_from_dict(d, "operations", MaterializedFeatureOperations),
             pipeline_id=d.get("pipeline_id", None),
             pipeline_schedule_state=_enum(d, "pipeline_schedule_state", MaterializedFeaturePipelineScheduleState),
             streaming_mode=_from_dict(d, "streaming_mode", StreamingMode),
@@ -6459,6 +6472,33 @@ class MaterializedFeatureChangeFailure:
             materialized_feature_id=d.get("materialized_feature_id", None),
             message=d.get("message", None),
         )
+
+
+@dataclass
+class MaterializedFeatureOperations:
+    """References to operations on a materialized feature."""
+
+    latest_entity_purge_operation: Optional[str] = None
+    """Name of the latest entity purge operation. Format: operations/{operation_id}."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializedFeatureOperations into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.latest_entity_purge_operation is not None:
+            body["latest_entity_purge_operation"] = self.latest_entity_purge_operation
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializedFeatureOperations into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.latest_entity_purge_operation is not None:
+            body["latest_entity_purge_operation"] = self.latest_entity_purge_operation
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeatureOperations:
+        """Deserializes the MaterializedFeatureOperations from a dictionary."""
+        return cls(latest_entity_purge_operation=d.get("latest_entity_purge_operation", None))
 
 
 class MaterializedFeaturePipelineScheduleState(Enum):
@@ -6873,45 +6913,54 @@ class ModelTag:
 
 @dataclass
 class ModelVersion:
+    """A version of a registered model in the Workspace Model Registry. Each version points to the
+    model artifacts it was registered from and moves through the stages ``None``, ``Staging``,
+    ``Production`` and ``Archived``."""
+
     creation_timestamp: Optional[int] = None
-    """Timestamp recorded when this ``model_version`` was created."""
+    """Time when the model version was created, as a Unix timestamp in milliseconds."""
 
     current_stage: Optional[str] = None
-    """Current stage for this ``model_version``."""
+    """Current stage of the model version. Valid values are ``None``, ``Staging``, ``Production`` and
+    ``Archived``. A new model version starts in ``None``."""
 
     description: Optional[str] = None
-    """Description of this ``model_version``."""
+    """User-provided description of the model version."""
 
     last_updated_timestamp: Optional[int] = None
-    """Timestamp recorded when metadata for this ``model_version`` was last updated."""
+    """Time when the metadata of the model version was last updated, as a Unix timestamp in
+    milliseconds."""
 
     name: Optional[str] = None
-    """Unique name of the model"""
+    """Name of the registered model that the version belongs to."""
 
     run_id: Optional[str] = None
-    """MLflow run ID used when creating ``model_version``, if ``source`` was generated by an experiment
-    run stored in MLflow tracking server."""
+    """ID of the MLflow run that produced the model artifacts, if ``source`` comes from a run in the
+    MLflow tracking server."""
 
     run_link: Optional[str] = None
-    """Run Link: Direct link to the run that generated this version"""
+    """URL of the MLflow run that generated the model version, as given in the create request. It is
+    typically set when the run is hosted on a different tracking server than the registry."""
 
     source: Optional[str] = None
-    """URI indicating the location of the source model artifacts, used when creating ``model_version``"""
+    """URI of the model artifacts that the model version was registered from, as given in the create
+    request."""
 
     status: Optional[ModelVersionStatus] = None
-    """Current status of ``model_version``"""
+    """Registration status of the model version. The version can be used once the status is ``READY``."""
 
     status_message: Optional[str] = None
-    """Details on current ``status``, if it is pending or failed."""
+    """Details on the current ``status``, such as the reason why registration failed."""
 
     tags: Optional[List[ModelVersionTag]] = None
-    """Tags: Additional metadata key-value pairs for this ``model_version``."""
+    """Key-value tags attached to the model version."""
 
     user_id: Optional[str] = None
     """User that created this ``model_version``."""
 
     version: Optional[str] = None
-    """Model's version number."""
+    """Version number of the model version, as a string. Version numbers start at 1 for each registered
+    model."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelVersion into a dictionary suitable for use as a JSON request body."""
@@ -7001,6 +7050,8 @@ class ModelVersionDatabricks:
     """Creation time of the object, as a Unix timestamp in milliseconds."""
 
     current_stage: Optional[str] = None
+    """Current stage of the model version. Valid values are ``None``, ``Staging``, ``Production`` and
+    ``Archived``."""
 
     description: Optional[str] = None
     """User-specified description for the object."""
@@ -7019,10 +7070,10 @@ class ModelVersionDatabricks:
     """Name of the model."""
 
     open_requests: Optional[List[Activity]] = None
-    """Open requests for this ``model_versions``. Gap in sequence number is intentional and is done in
-    order to match field sequence numbers of ``ModelVersion`` proto message"""
+    """Open stage transition requests for the model version."""
 
     permission_level: Optional[PermissionLevel] = None
+    """Permission level of the requesting user on the registered model that the version belongs to."""
 
     run_id: Optional[str] = None
     """Unique identifier for the MLflow tracking run associated with the source model artifacts."""
@@ -7037,6 +7088,7 @@ class ModelVersionDatabricks:
     model version."""
 
     status: Optional[Status] = None
+    """Registration status of the model version. The version can be used once the status is ``READY``."""
 
     status_message: Optional[str] = None
     """Details on the current status, for example why registration failed."""
@@ -9384,7 +9436,7 @@ class SearchLoggedModelsResponse:
 @dataclass
 class SearchModelVersionsResponse:
     model_versions: Optional[List[ModelVersion]] = None
-    """Models that match the search criteria"""
+    """Model versions that match the search filter."""
 
     next_page_token: Optional[str] = None
     """Pagination token to request next page of models for the same search query."""
@@ -10751,7 +10803,7 @@ class UpdateModelResponse:
 @dataclass
 class UpdateModelVersionResponse:
     model_version: Optional[ModelVersion] = None
-    """Return new version number generated for this model in registry."""
+    """The updated model version."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateModelVersionResponse into a dictionary suitable for use as a JSON request body."""
@@ -10922,15 +10974,16 @@ class ExperimentsAPI:
         error codes.
 
         :param name: str
-          Experiment name.
+          Name of the experiment, as an absolute path in the workspace. Experiments cannot be created under
+          ``/Repos``.
         :param artifact_location: str (optional)
-          Location where all artifacts for the experiment are stored. If not provided, the remote server will
-          select an appropriate default.
+          URI of the location where the artifacts of the experiment's runs are stored, such as a Unity Catalog
+          volume path of the form ``dbfs:/Volumes/<catalog>/<schema>/<volume>/<path>``. The URI must have a
+          scheme other than ``file`` and must not point under the MLflow-managed prefix
+          ``dbfs:/databricks/mlflow-tracking``. If omitted, artifacts are stored in MLflow-managed storage.
+          See https://docs.databricks.com/aws/en/mlflow/experiments for the supported locations.
         :param tags: List[:class:`ExperimentTag`] (optional)
-          A collection of tags to set on the experiment. Maximum tag size and number of tags per request
-          depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250
-          bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to
-          support up to 20 tags per request.
+          Tags to set on the new experiment, as key-value pairs. A request can include at most 100 tags.
         :param trace_location: :class:`ExperimentTraceLocation` (optional)
           The location where the experiment's traces are stored. When set, the underlying storage is
           provisioned and the experiment's traces are routed to it. When unset, traces are stored in the
@@ -11097,7 +11150,8 @@ class ExperimentsAPI:
 
     def delete_experiment(self, experiment_id: str):
         """Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
-        experiment uses FileStore, artifacts associated with the experiment are also deleted.
+        experiment uses FileStore, artifacts associated with the experiment are also deleted. Only workspace
+        experiments can be deleted through this method.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -11559,14 +11613,14 @@ class ExperimentsAPI:
         page_token: Optional[str] = None,
         view_type: Optional[ViewType] = None,
     ) -> Iterator[Experiment]:
-        """Gets a list of all experiments.
+        """Gets a list of all experiments, ordered by creation time with the newest first.
 
         :param max_results: int (optional)
           Maximum number of experiments desired. If ``max_results`` is unspecified, return all experiments. If
           ``max_results`` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
           encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.
         :param page_token: str (optional)
-          Token indicating the page of experiments to fetch
+          Page token returned as ``next_page_token`` by a previous call. Omit it to fetch the first page.
         :param view_type: :class:`ViewType` (optional)
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
 
@@ -11908,6 +11962,8 @@ class ExperimentsAPI:
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
 
+        Only workspace experiments can be restored through this method.
+
         Throws ``RESOURCE_DOES_NOT_EXIST`` if experiment was never created or was permanently deleted.
 
         :param experiment_id: str
@@ -12005,15 +12061,20 @@ class ExperimentsAPI:
         """Searches for experiments that satisfy specified search criteria.
 
         :param filter: str (optional)
-          String representing a SQL filter condition (e.g. "name ILIKE 'my-experiment%'")
+          Filter condition on the experiment name and tags. The ``name`` attribute and ``tags.<key>`` support
+          the operators ``=``, ``!=``, ``LIKE`` and ``ILIKE`` (case-insensitive ``LIKE``), string values are
+          wrapped in single quotes, and several conditions can be combined with ``AND``. No wildcard is added
+          automatically, so include ``%`` in a ``LIKE`` pattern where you need one.
         :param max_results: int (optional)
-          Maximum number of experiments desired. Max threshold is 3000.
+          Maximum number of experiments to return per page. Larger values are capped by the server, so use
+          ``page_token`` to retrieve further pages.
         :param order_by: List[str] (optional)
-          List of columns for ordering search results, which can include experiment name and last updated
-          timestamp with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are
-          done by experiment id DESC.
+          Columns to order the results by, each given as ``name``, ``basename`` (the last segment of the
+          name), ``experiment_id``, ``creation_time`` or ``last_update_time`` with an optional ``ASC`` or
+          ``DESC`` suffix, where ``ASC`` is the default. If omitted, results are ordered by last update time
+          with the most recently updated experiment first. Tiebreaks are done by experiment id DESC.
         :param page_token: str (optional)
-          Token indicating the page of experiments to fetch
+          Page token returned as ``next_page_token`` by a previous call. Omit it to fetch the first page.
         :param view_type: :class:`ViewType` (optional)
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
 
@@ -12274,9 +12335,11 @@ class ExperimentsAPI:
         :param experiment_id: str
           ID of the experiment under which to log the tag. Must be provided.
         :param key: str
-          Name of the tag. Keys up to 250 bytes in size are supported.
+          Key of the tag. Keys are at most 255 characters long. Setting a key that already exists replaces its
+          value. System tags such as ``mlflow.ownerId``, ``mlflow.ownerEmail`` and ``mlflow.experimentType``
+          cannot be set.
         :param value: str
-          String value of the tag being logged. Values up to 64KB in size are supported.
+          Value of the tag. Values are at most 65535 characters long.
 
 
         """
@@ -12389,12 +12452,13 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/set-tag", body=body, headers=headers)
 
     def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None):
-        """Updates experiment metadata.
+        """Updates experiment metadata. Only workspace experiments can be updated; a notebook experiment takes
+        its name from its notebook.
 
         :param experiment_id: str
           ID of the associated experiment.
         :param new_name: str (optional)
-          If provided, the experiment's name is changed to the new name. The new name must be unique.
+          New name for the experiment, as an absolute path in the workspace. The new name must be unique.
 
 
         """
@@ -14817,19 +14881,21 @@ class ModelRegistryAPI:
         """Creates a model version.
 
         :param name: str
-          Register model under this name
+          Name of the existing registered model to create the version under.
         :param source: str
-          URI indicating the location of the model artifacts.
+          URI of the model artifacts to register, such as the artifact path of an MLflow run or a
+          ``models:/<model_name>/<version>`` URI of an existing ``READY`` model version. The registry copies
+          the artifacts asynchronously, so the new version starts in ``PENDING_REGISTRATION`` status.
         :param description: str (optional)
-          Optional description for model version.
+          Description of the model version.
         :param run_id: str (optional)
-          MLflow run ID for correlation, if ``source`` was generated by an experiment run in MLflow tracking
-          server
+          ID of the MLflow run that produced the model artifacts, if ``source`` comes from a run in the MLflow
+          tracking server. The ID is at most 32 characters long.
         :param run_link: str (optional)
           MLflow run link - this is the exact link of the run that generated this model version, potentially
           hosted at another instance of MLflow.
         :param tags: List[:class:`ModelVersionTag`] (optional)
-          Additional metadata for model version.
+          Tags to set on the new model version.
 
         :returns: :class:`CreateModelVersionResponse`
         """
@@ -15539,14 +15605,17 @@ class ModelRegistryAPI:
         """Searches for specific model versions based on the supplied **filter**.
 
         :param filter: str (optional)
-          String filter condition, like "name='my-model-name'". Must be a single boolean condition, with
-          string values wrapped in single quotes.
+          Filter condition on ``name``, ``run_id``, ``source`` or ``tags.<key>``. The filter must constrain at
+          least one of ``name``, ``run_id`` or ``source``. Conditions use ``=``, ``!=``, ``LIKE`` or
+          ``ILIKE``, and ``run_id`` also supports ``IN``. String values are wrapped in single quotes, and
+          several conditions can be combined with ``AND``.
         :param max_results: int (optional)
           Maximum number of models desired. Max threshold is 10K.
         :param order_by: List[str] (optional)
-          List of columns to be ordered by including model name, version, stage with an optional "DESC" or
-          "ASC" annotation, where "ASC" is the default. Tiebreaks are done by latest stage transition
-          timestamp, followed by name ASC, followed by version DESC.
+          Columns to order the results by, each given as ``name``, ``version``, ``current_stage`` or
+          ``last_updated_timestamp`` with an optional ``ASC`` or ``DESC`` suffix, where ``ASC`` is the
+          default. Tiebreaks are done by latest stage transition timestamp, followed by name ASC, followed by
+          version DESC.
         :param page_token: str (optional)
           Pagination token to go to next page based on previous search query.
 
@@ -15877,14 +15946,14 @@ class ModelRegistryAPI:
     def update_model_version(
         self, name: str, version: str, *, description: Optional[str] = None
     ) -> UpdateModelVersionResponse:
-        """Updates the model version.
+        """Updates the description of a model version.
 
         :param name: str
           Name of the registered model
         :param version: str
           Model version number
         :param description: str (optional)
-          If provided, updates the description for this ``registered_model``.
+          New description for the model version.
 
         :returns: :class:`UpdateModelVersionResponse`
         """

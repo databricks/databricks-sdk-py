@@ -8,7 +8,7 @@
 
     .. py:method:: get_software_artifact(name: str) -> SoftwareArtifact
 
-        Gets a software artifact.
+        Gets a software artifact by its resource name. Returns ``NOT_FOUND`` if the artifact does not exist.
 
         :param name: str
           Resource name of the artifact, of the form ``software-artifacts/{catalog}.{schema}.{artifact}``.
@@ -18,11 +18,13 @@
 
     .. py:method:: get_software_artifact_version(name: str) -> SoftwareArtifactVersion
 
-        Gets a software artifact version.
+        Gets a software artifact version by its resource name. Returns ``NOT_FOUND`` if the version does not
+        exist.
 
         :param name: str
           Resource name of the version, of the form
-          ``software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}``.
+          ``software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}``, where ``{version}`` is the
+          version's content digest.
 
         :returns: :class:`SoftwareArtifactVersion`
         
@@ -60,12 +62,16 @@
 
     .. py:method:: resolve_software_artifact_version(parent: str, alias: str) -> ResolveSoftwareArtifactVersionResponse
 
-        Resolves a software artifact version from its tag alias.
+        Resolves a software artifact version from its tag alias. Returns ``NOT_FOUND`` if the artifact or the
+        alias does not exist.
 
         :param parent: str
-          Resource name of the software artifact containing the alias.
+          Resource name of the software artifact containing the alias, of the form
+          ``software-artifacts/{catalog}.{schema}.{artifact}``.
         :param alias: str
-          Image tag alias selecting the version.
+          Image tag alias selecting the version. The alias must be a valid OCI image tag of at most 128
+          characters, made of letters, digits, underscores, periods, and hyphens, and must not start with a
+          period or hyphen.
 
         :returns: :class:`ResolveSoftwareArtifactVersionResponse`
         

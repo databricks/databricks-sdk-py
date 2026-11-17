@@ -328,8 +328,10 @@ class QueryTag:
     representation."""
 
     key: str
+    """The key of the tag."""
 
     value: Optional[str] = None
+    """The value of the tag. Key-only tags have no value."""
 
     def as_dict(self) -> dict:
         """Serializes the QueryTag into a dictionary suitable for use as a JSON request body."""

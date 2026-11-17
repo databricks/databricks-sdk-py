@@ -499,7 +499,9 @@ class BudgetConfigurationFilterWorkspaceIdClause:
 
 @dataclass
 class BudgetPolicy:
-    """Contains the BudgetPolicy details."""
+    """A serverless usage policy is a set of tags that are applied to the serverless usage of the
+    workloads that use the policy. Each usage record in the billable usage system table carries the
+    policy ID and these tags, so that serverless usage can be attributed to the policy."""
 
     binding_workspace_ids: Optional[List[int]] = None
     """List of workspaces that this budget policy will be exclusively bound to. An empty binding
@@ -1043,7 +1045,7 @@ class Filter:
     will be applied in conjunction."""
 
     creator_user_id: Optional[int] = None
-    """The policy creator user id to be filtered on. If unspecified, all policies will be returned."""
+    """Deprecated: This field is ignored. Creator filtering will be removed in a future version."""
 
     creator_user_name: Optional[str] = None
     """Deprecated: Do not use this field in new integrations. Creator filtering will be removed in a
@@ -1051,7 +1053,8 @@ class Filter:
     will be returned."""
 
     policy_name: Optional[str] = None
-    """The partial name of policies to be filtered on. If unspecified, all policies will be returned."""
+    """Only policies whose name contains this string are returned. Matching is case-insensitive. If
+    unspecified, all policies are returned."""
 
     def as_dict(self) -> dict:
         """Serializes the Filter into a dictionary suitable for use as a JSON request body."""
@@ -1620,7 +1623,7 @@ class SortSpec:
     """Whether to sort in descending order."""
 
     field: Optional[SortSpecField] = None
-    """The filed to sort by"""
+    """The field to sort by. If unspecified, policies are sorted by name."""
 
     def as_dict(self) -> dict:
         """Serializes the SortSpec into a dictionary suitable for use as a JSON request body."""
@@ -1889,12 +1892,12 @@ class BudgetPolicyAPI:
         self._api = api_client
 
     def create(self, *, policy: Optional[BudgetPolicy] = None, request_id: Optional[str] = None) -> BudgetPolicy:
-        """Creates a new policy.
+        """Creates a new usage policy. The creator is granted the manager role on the new policy.
 
         :param policy: :class:`BudgetPolicy` (optional)
-          The policy to create. ``policy_id`` needs to be empty as it will be generated ``policy_name`` must
-          be provided, custom_tags may need to be provided depending on the cloud provider. All other fields
-          are optional.
+          The policy to create. ``policy_name`` must be provided, and ``custom_tags`` may be required
+          depending on the cloud provider. Leave ``policy_id`` empty because Databricks generates it. All
+          other fields are optional.
         :param request_id: str (optional)
           A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is
           recommended. This request is only idempotent if a ``request_id`` is provided.
@@ -1920,7 +1923,7 @@ class BudgetPolicyAPI:
         return BudgetPolicy.from_dict(res)
 
     def delete(self, policy_id: str):
-        """Deletes a policy
+        """Deletes a usage policy.
 
         :param policy_id: str
           The Id of the policy.
@@ -1935,7 +1938,7 @@ class BudgetPolicyAPI:
         self._api.do("DELETE", f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}", headers=headers)
 
     def get(self, policy_id: str) -> BudgetPolicy:
-        """Retrieves a policy by it's ID.
+        """Retrieves a usage policy by its ID.
 
         :param policy_id: str
           The Id of the policy.
@@ -1960,7 +1963,8 @@ class BudgetPolicyAPI:
         page_token: Optional[str] = None,
         sort_spec: Optional[SortSpec] = None,
     ) -> Iterator[BudgetPolicy]:
-        """Lists all policies. Policies are returned in the alphabetically ascending order of their names.
+        """Lists the usage policies that the caller has permission to view. Policies are sorted by name in
+        ascending order unless ``sort_spec`` requests a different order.
 
         :param filter_by: :class:`Filter` (optional)
           A filter to apply to the list of policies.
@@ -1968,13 +1972,13 @@ class BudgetPolicyAPI:
           The maximum number of budget policies to return. If unspecified, at most 100 budget policies will be
           returned. The maximum value is 1000; values above 1000 will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous ``ListServerlessPolicies`` call. Provide this to retrieve the
+          A page token, received from a previous ``ListBudgetPolicies`` call. Provide this to retrieve the
           subsequent page. If unspecified, the first page will be returned.
 
-          When paginating, all other parameters provided to ``ListServerlessPoliciesRequest`` must match the
-          call that provided the page token.
+          When paginating, all other parameters provided to ``ListBudgetPolicies`` must match the call that
+          provided the page token.
         :param sort_spec: :class:`SortSpec` (optional)
-          The sort specification.
+          How to sort the returned policies. If unspecified, policies are sorted by name in ascending order.
 
         :returns: Iterator over :class:`BudgetPolicy`
         """
@@ -2006,7 +2010,8 @@ class BudgetPolicyAPI:
     def update(
         self, policy_id: str, policy: BudgetPolicy, *, limit_config: Optional[LimitConfig] = None
     ) -> BudgetPolicy:
-        """Updates a policy
+        """Updates a usage policy. Changes apply only to serverless usage that starts after the update, not to
+        workloads that are already running.
 
         :param policy_id: str
           The Id of the policy. This field is generated by Databricks and globally unique.
@@ -2014,7 +2019,7 @@ class BudgetPolicyAPI:
           The policy to update. ``creator_user_id`` cannot be specified in the request. All other fields must
           be specified even if not changed. The ``policy_id`` is used to identify the policy to update.
         :param limit_config: :class:`LimitConfig` (optional)
-          DEPRECATED. This is redundant field as LimitConfig is part of the BudgetPolicy
+          Deprecated: This field is ignored.
 
         :returns: :class:`BudgetPolicy`
         """

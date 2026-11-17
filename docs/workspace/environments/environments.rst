@@ -14,7 +14,8 @@
 
         Creates a new WorkspaceBaseEnvironment. This is a long-running operation. The operation will
         asynchronously generate a materialized environment to optimize dependency resolution and is only
-        marked as done when the materialized environment has been successfully generated or has failed.
+        marked as done when the materialized environment has been successfully generated or has failed. Poll
+        the returned operation with GetOperation.
 
         :param workspace_base_environment: :class:`WorkspaceBaseEnvironment`
           Required. The workspace base environment to create.
@@ -32,7 +33,7 @@
 
         Deletes a WorkspaceBaseEnvironment. Deleting a base environment may impact linked notebooks and jobs.
         This operation is irreversible and should be performed only when you are certain the environment is no
-        longer needed.
+        longer needed. Databricks-provided base environments cannot be deleted.
 
         :param name: str
           Required. The resource name of the workspace base environment to delete. Format:
@@ -56,6 +57,11 @@
     .. py:method:: get_operation(name: str) -> Operation
 
         Gets the status of a long-running operation. Clients can use this method to poll the operation result.
+        Create, update and refresh return an operation named ``operations/{workspace_base_environment_id}``.
+        The operation is done when the materialized environment build finishes. On success, ``response``
+        contains the WorkspaceBaseEnvironment with status ``CREATED``. When the status is ``FAILED``,
+        ``EXPIRED`` or ``INVALID``, ``error`` is set instead, and ``error.message`` carries the environment's
+        status message when one is available.
 
         :param name: str
           The name of the operation resource.
@@ -102,10 +108,11 @@
         Refreshes the materialized environment for a WorkspaceBaseEnvironment. This is a long-running
         operation. The operation will asynchronously regenerate the materialized environment and is only
         marked as done when the materialized environment has been successfully generated or has failed. The
-        existing materialized environment remains available until it expires.
+        existing materialized environment remains available until it expires. Poll the returned operation with
+        GetOperation. Databricks-provided base environments cannot be refreshed.
 
         :param name: str
-          Required. The resource name of the workspace base environment to delete. Format:
+          Required. The resource name of the workspace base environment to refresh. Format:
           workspace-base-environments/{workspace_base_environment}
 
         :returns: :class:`Operation`
@@ -137,12 +144,17 @@
         Updates an existing WorkspaceBaseEnvironment. This is a long-running operation. The operation will
         asynchronously regenerate the materialized environment and is only marked as done when the
         materialized environment has been successfully generated or has failed. The existing materialized
-        environment remains available until it expires.
+        environment remains available until it expires. Poll the returned operation with GetOperation.
+        Databricks-provided base environments cannot be updated.
 
         :param name: str
+          The resource name of the workspace base environment to update. Format:
+          workspace-base-environments/{workspace_base_environment}
         :param workspace_base_environment: :class:`WorkspaceBaseEnvironment`
-          Required. The workspace base environment with updated fields. The name field is used to identify the
-          environment to update.
+          The workspace base environment with its new configuration. The ``name`` path parameter identifies
+          the environment to update. Set ``display_name`` and ``filepath`` on every update, even when they do
+          not change. An update keeps the stored ``base_environment_type``, but the YAML file is validated
+          against the type in the request, which defaults to ``CPU``, so also set it for a GPU environment.
 
         :returns: :class:`Operation`
         

@@ -20,8 +20,10 @@
 
     .. py:method:: all_cluster_statuses() -> Iterator[ClusterLibraryStatuses]
 
-        Get the status of all libraries on all clusters. A status is returned for all libraries installed on
-        this cluster via the API or the libraries UI.
+        Get the status of all libraries on all clusters in the workspace. A status is returned for all
+        libraries installed on each cluster via the API or the libraries UI. If the workspace has more library
+        statuses than the response limit allows, the request fails; call the per-cluster status method for
+        each cluster instead.
 
 
         :returns: Iterator over :class:`ClusterLibraryStatuses`
@@ -34,7 +36,7 @@
 
         1. Libraries set to be installed on this cluster, in the order that the libraries were added to the
            cluster, are returned first.
-        2. Libraries that were previously requested to be installed on this cluster or, but are now marked for
+        2. Libraries that were previously requested to be installed on this cluster but are now marked for
            removal, in no particular order, are returned last.
 
         :param cluster_id: str

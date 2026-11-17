@@ -164,10 +164,14 @@ class ResolveSoftwareArtifactVersionResponse:
 
 @dataclass
 class SoftwareArtifact:
-    """A software artifact in a Unity Catalog schema."""
+    """A software artifact is a named container image stored in a Unity Catalog schema and governed by
+    Unity Catalog privileges. Images are pushed through Databricks Artifact Registry; each pushed
+    image digest becomes an immutable version of the artifact, exposed as a SoftwareArtifactVersion.
+    See https://docs.databricks.com/aws/en/artifact-registry/ for concepts, naming rules, and the
+    privileges each operation requires."""
 
     create_time: Optional[Timestamp] = None
-    """Time at which this software artifact was created."""
+    """Time at which the artifact was created, formatted as an RFC 3339 timestamp in JSON."""
 
     created_by: Optional[str] = None
     """Principal name of the software artifact creator."""
@@ -176,10 +180,11 @@ class SoftwareArtifact:
     """Resource name of the artifact, of the form ``software-artifacts/{catalog}.{schema}.{artifact}``."""
 
     owner: Optional[str] = None
-    """Principal name (a user, service principal, or group) that owns this artifact."""
+    """Principal that owns the artifact, given as a user's email address, a service principal's
+    application ID, or a group name."""
 
     update_time: Optional[Timestamp] = None
-    """Time at which this software artifact was last updated."""
+    """Time at which the artifact was last updated, formatted as an RFC 3339 timestamp in JSON."""
 
     updated_by: Optional[str] = None
     """Principal name that last updated this software artifact."""
@@ -236,27 +241,30 @@ class SoftwareArtifactVersion:
     """An immutable version of a software artifact, identified by its content digest."""
 
     create_time: Optional[Timestamp] = None
-    """Time at which this software artifact version was created."""
+    """Time at which this software artifact version was created, formatted as an RFC 3339 timestamp in
+    JSON."""
 
     created_by: Optional[str] = None
     """Principal name of the software artifact version creator."""
 
     digest: Optional[str] = None
-    """Content digest of the version, for example ``sha256:...``."""
+    """Content digest of the version's image manifest, of the form ``{algorithm}:{hex}``."""
 
     image_acceleration_details: Optional[ImageAccelerationDetail] = None
     """Image acceleration information for this version."""
 
     name: Optional[str] = None
     """Resource name of the version, of the form
-    ``software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}``."""
+    ``software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}``, where ``{version}`` is
+    the version's content digest."""
 
     tags: Optional[List[str]] = None
     """Tags (aliases) that currently point at this version, for example ``latest`` or ``v1.2.3``.
     Bounded at 10 per version; a version pointed at by more tags returns an arbitrary 10 of them."""
 
     update_time: Optional[Timestamp] = None
-    """Time at which this software artifact version was last updated."""
+    """Time at which this software artifact version was last updated, formatted as an RFC 3339
+    timestamp in JSON."""
 
     updated_by: Optional[str] = None
     """Principal name that last updated this software artifact version."""
@@ -325,7 +333,7 @@ class SoftwareArtifactsAPI:
         self._api = api_client
 
     def get_software_artifact(self, name: str) -> SoftwareArtifact:
-        """Gets a software artifact.
+        """Gets a software artifact by its resource name. Returns ``NOT_FOUND`` if the artifact does not exist.
 
         :param name: str
           Resource name of the artifact, of the form ``software-artifacts/{catalog}.{schema}.{artifact}``.
@@ -345,11 +353,13 @@ class SoftwareArtifactsAPI:
         return SoftwareArtifact.from_dict(res)
 
     def get_software_artifact_version(self, name: str) -> SoftwareArtifactVersion:
-        """Gets a software artifact version.
+        """Gets a software artifact version by its resource name. Returns ``NOT_FOUND`` if the version does not
+        exist.
 
         :param name: str
           Resource name of the version, of the form
-          ``software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}``.
+          ``software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}``, where ``{version}`` is the
+          version's content digest.
 
         :returns: :class:`SoftwareArtifactVersion`
         """
@@ -445,12 +455,16 @@ class SoftwareArtifactsAPI:
             query["page_token"] = json["next_page_token"]
 
     def resolve_software_artifact_version(self, parent: str, alias: str) -> ResolveSoftwareArtifactVersionResponse:
-        """Resolves a software artifact version from its tag alias.
+        """Resolves a software artifact version from its tag alias. Returns ``NOT_FOUND`` if the artifact or the
+        alias does not exist.
 
         :param parent: str
-          Resource name of the software artifact containing the alias.
+          Resource name of the software artifact containing the alias, of the form
+          ``software-artifacts/{catalog}.{schema}.{artifact}``.
         :param alias: str
-          Image tag alias selecting the version.
+          Image tag alias selecting the version. The alias must be a valid OCI image tag of at most 128
+          characters, made of letters, digits, underscores, periods, and hyphens, and must not start with a
+          period or hyphen.
 
         :returns: :class:`ResolveSoftwareArtifactVersionResponse`
         """

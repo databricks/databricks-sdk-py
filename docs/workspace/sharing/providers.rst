@@ -133,7 +133,7 @@
         :returns: Iterator over :class:`ProviderInfo`
         
 
-    .. py:method:: list_provider_share_assets(provider_name: str, share_name: str [, function_max_results: Optional[int], notebook_max_results: Optional[int], table_max_results: Optional[int], volume_max_results: Optional[int]]) -> ListProviderShareAssetsResponse
+    .. py:method:: list_provider_share_assets(provider_name: str, share_name: str [, function_max_results: Optional[int], notebook_max_results: Optional[int], skill_max_results: Optional[int], table_max_results: Optional[int], volume_max_results: Optional[int]]) -> ListProviderShareAssetsResponse
 
         Get arrays of assets associated with a specified provider's share. The caller is the recipient of the
         share.
@@ -146,6 +146,8 @@
           Maximum number of functions to return.
         :param notebook_max_results: int (optional)
           Maximum number of notebooks to return.
+        :param skill_max_results: int (optional)
+          Maximum number of skills to return.
         :param table_max_results: int (optional)
           Maximum number of tables to return.
         :param volume_max_results: int (optional)

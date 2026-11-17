@@ -107,15 +107,17 @@
         :param name: str
           AI Search endpoint name
         :param end_time: str (optional)
-          End time for metrics query
+          End of the time range. Defaults to the current time.
         :param granularity_in_seconds: int (optional)
-          Granularity in seconds
+          Requested interval between data points, in seconds. The minimum is 60. The server may return a finer
+          or coarser interval: 60 seconds only for time ranges of 1 hour or less, otherwise 300 seconds or
+          more. Read the interval from the returned timestamps.
         :param metrics: List[:class:`Metric`] (optional)
-          List of metrics to retrieve
+          Metrics to retrieve. An unknown metric name fails the whole request.
         :param page_token: str (optional)
-          Token for pagination
+          Not used. The response returns all data points in one page.
         :param start_time: str (optional)
-          Start time for metrics query
+          Start of the time range. Required. Must be within the last 169 hours.
 
         :returns: :class:`RetrieveUserVisibleMetricsResponse`
         

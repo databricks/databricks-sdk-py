@@ -299,6 +299,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
 
+   .. py:attribute:: GOOGLE_ADS
+      :value: "GOOGLE_ADS"
+
    .. py:attribute:: GOOGLE_DRIVE
       :value: "GOOGLE_DRIVE"
 

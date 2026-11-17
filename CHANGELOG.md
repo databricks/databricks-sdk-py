@@ -1,5 +1,19 @@
 # Version changelog
 
+## Release v0.168.0 (2026-11-17)
+
+### API Changes
+* Add `create_parser()`, `create_parser_version()`, `delete_parser()`, `delete_parser_version()`, `get_builtin_parser()`, `get_builtin_parser_version()`, `get_parser()`, `get_parser_version()`, `list_builtin_parser_versions()`, `list_builtin_parsers()`, `list_parser_versions()` and `list_parsers()` methods for [w.lakewatch](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakewatch/lakewatch.html) workspace-level service.
+* Add `detailed_state` field for `databricks.sdk.service.aisearch.IndexStatus`.
+* Add `operations` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `skill_max_results` field for `databricks.sdk.service.sharing.ListProviderShareAssetsRequest`.
+* Add `skills` field for `databricks.sdk.service.sharing.ListProviderShareAssetsResponse`.
+* Add `detailed_state` and `failed_status` fields for `databricks.sdk.service.vectorsearch.VectorIndexStatus`.
+* Add `google_ads` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Add `skill` enum value for `databricks.sdk.service.sharing.SharedDataObjectDataObjectType`.
+* [Breaking] Change `sql_query_id` field for `databricks.sdk.service.jobs.SqlConditionConfiguration` to no longer be required.
+* Change `sql_query_id` field for `databricks.sdk.service.jobs.SqlConditionConfiguration` to no longer be required.
+
 ## Release v0.167.0 (2026-11-16)
 
 ### New Features and Improvements

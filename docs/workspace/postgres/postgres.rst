@@ -118,12 +118,14 @@
           The ID used to identify and manage the Database resource through the API. The Postgres database name
           is specified in ``spec.postgres_database``.
 
-          This value should be 4-63 characters, and only use characters available in DNS names, as defined by
-          RFC-1123
+          This value should be 3-63 characters, start with a lowercase letter, end with a lowercase letter or
+          digit, and contain only lowercase letters, digits, and hyphens.
 
           If database_id is not specified in the request, it is generated automatically.
         :param replace_existing: bool (optional)
-          If true, update the database if it already exists instead of returning an error.
+          If true, update the database if it already exists instead of returning an error. This requires
+          ``database_id`` to be set. Without ``database_id``, the request follows the normal create path and
+          fails if the database name already exists.
 
         :returns: :class:`Operation`
         
@@ -218,15 +220,18 @@
 
     .. py:method:: create_snapshot(parent: str, snapshot: Snapshot, snapshot_id: str) -> CreateSnapshotOperation
 
-        Creates a snapshot, an immutable point-in-time copy of a branch's data, within the project.
+        Creates a snapshot, an immutable point-in-time copy of a branch's data, within the project. Returns a
+        long-running operation. Poll it until done is true; its response holds the new snapshot.
 
         :param parent: str
           The project in which to create the snapshot. Format: projects/{project_id}
         :param snapshot: :class:`Snapshot`
-          The snapshot to create.
+          The snapshot to create. Only ``spec`` is read from this message; the system sets the other fields.
         :param snapshot_id: str
           Client-chosen ID for the snapshot. It becomes the final segment of the snapshot resource name and
-          cannot be changed after creation.
+          cannot be changed after creation. The ID must be 3 to 63 characters long, start with a lowercase
+          letter, end with a lowercase letter or digit, and contain only lowercase letters, digits, and
+          hyphens.
 
         :returns: :class:`Operation`
         
@@ -305,7 +310,7 @@
 
     .. py:method:: delete_database(name: str) -> DeleteDatabaseOperation
 
-        Delete a Database.
+        Deletes the specified Postgres database.
 
         :param name: str
           The resource name of the postgres database. Format:
@@ -372,7 +377,8 @@
 
     .. py:method:: delete_snapshot(name: str) -> DeleteSnapshotOperation
 
-        Deletes the specified snapshot.
+        Deletes the specified snapshot. A deleted snapshot cannot be recovered. Returns a long-running
+        operation. Poll it until done is true.
 
         :param name: str
           The resource name of the snapshot to delete. Format: projects/{project_id}/snapshots/{snapshot_id}
@@ -484,7 +490,7 @@
 
     .. py:method:: get_database(name: str) -> Database
 
-        Get a Database.
+        Retrieves information about the specified Postgres database.
 
         :param name: str
           The name of the Database to retrieve. Format:
@@ -646,7 +652,7 @@
 
     .. py:method:: list_databases(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Database]
 
-        List Databases.
+        Returns a list of Postgres databases in the branch.
 
         :param parent: str
           The Branch that owns this collection of databases. Format:
@@ -825,7 +831,7 @@
 
     .. py:method:: update_database(name: str, database: Database, update_mask: FieldMask) -> UpdateDatabaseOperation
 
-        Update a Database.
+        Updates the specified Postgres database. Only the fields named in ``update_mask`` change.
 
         :param name: str
           The resource name of the database. Format:
@@ -836,7 +842,7 @@
           The database's ``name`` field is used to identify the database to update. Format:
           projects/{project_id}/branches/{branch_id}/databases/{database_id}
         :param update_mask: FieldMask
-          The list of fields to update.
+          The list of fields to update. The updatable fields are ``spec.role`` and ``spec.postgres_database``.
 
         :returns: :class:`Operation`
         

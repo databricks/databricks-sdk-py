@@ -40,11 +40,17 @@
         :param comment: str (optional)
           User-provided free-form text description.
         :param custom_max_retention_hours: int (optional)
-          Custom maximum retention period in hours for the schema.
+          Dropped objects in the schema remain recoverable for this number of hours before they are
+          permanently purged. The value must be 0 or within the range allowed for the metastore. Schemas that
+          do not set their own value inherit the parent catalog's value.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param storage_root: str (optional)
-          Storage root URL for managed tables within schema.
+          Managed tables and volumes in the schema are stored under this storage root URL. The path must be
+          inside an external location on which the caller has the CREATE MANAGED STORAGE privilege. If
+          omitted, managed data is stored under the parent catalog's storage root, or under the metastore's
+          root storage location when the catalog has none. Schemas in Delta Sharing catalogs cannot have a
+          storage root, and schemas in a federated Hive metastore catalog must set one.
 
         :returns: :class:`SchemaInfo`
         
@@ -55,7 +61,7 @@
         owner of the parent catalog.
 
         :param full_name: str
-          Full name of the schema.
+          Full name of the schema, in the form catalog_name.schema_name.
         :param force: bool (optional)
           Force deletion even if the schema is not empty.
 
@@ -89,10 +95,10 @@
         schema, or a user that has the **USE_SCHEMA** privilege on the schema.
 
         :param full_name: str
-          Full name of the schema.
+          Full name of the schema, in the form catalog_name.schema_name.
         :param include_browse: bool (optional)
-          Whether to include schemas in the response for which the principal can only access selective
-          metadata for
+          Whether to return the schema when the principal can only access selective metadata for it through
+          the BROWSE privilege. The response then has browse_only set to true.
 
         :returns: :class:`SchemaInfo`
         
@@ -132,8 +138,8 @@
         :param catalog_name: str
           Parent catalog for schemas of interest.
         :param include_browse: bool (optional)
-          Whether to include schemas in the response for which the principal can only access selective
-          metadata for
+          Whether to include schemas for which the principal can only access selective metadata through the
+          BROWSE privilege. Such schemas are returned with browse_only set to true.
         :param max_results: int (optional)
           Maximum number of schemas to return. If not set, all the schemas are returned (not recommended).
 
@@ -176,17 +182,22 @@
         privilege on the parent catalog.
 
         :param full_name: str
-          Full name of the schema.
+          Full name of the schema, in the form catalog_name.schema_name.
         :param comment: str (optional)
           User-provided free-form text description.
         :param custom_max_retention_hours: int (optional)
-          Custom maximum retention period in hours for the schema.
+          Dropped objects in the schema remain recoverable for this number of hours before they are
+          permanently purged. The value must be 0 or within the range allowed for the metastore. Schemas that
+          do not set their own value inherit the parent catalog's value.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
-          Whether predictive optimization should be enabled for this object and objects under it.
+          Whether predictive optimization is enabled for this schema and the objects under it. Valid values
+          are ENABLE, DISABLE, and INHERIT, where INHERIT applies the parent catalog's setting. New schemas
+          start as INHERIT. It cannot be set when creating a schema; use the update method instead.
         :param new_name: str (optional)
           New name for the schema.
         :param owner: str (optional)
-          Username of current owner of schema.
+          The user or group that owns the schema. The creator becomes the owner, and the owner can be changed
+          only through the update method.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
 

@@ -64,6 +64,7 @@
         ``owner_username``.
 
         :param cluster_id: str
+          The ID of the cluster whose owner is changed.
         :param owner_username: str
           New owner of the cluster_id after this RPC.
 
@@ -152,10 +153,40 @@
           - Currently, Databricks allows at most 45 custom tags
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
+          Data security mode decides what data governance model to use when accessing data from a cluster.
+
+          - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending on
+            your compute configuration.
+          - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users. Cluster
+            users are fully isolated so that they cannot see each other's data and credentials. Most data
+            governance features are supported in this mode. But programming languages and cluster features
+            might be limited.
+          - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a single
+            user specified in ``single_user_name``. Most programming languages, cluster features and data
+            governance features are available in this mode.
+          - ``NONE``: No security isolation for multiple users sharing the cluster. Data governance features
+            are not available in this mode.
+
+          The following modes are legacy aliases for the above modes:
+
+          - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+          - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
+
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+
+          - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+          - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+            concurrency clusters.
+          - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+            clusters.
+          - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn't have UC or passthrough
+            enabled.
         :param dependency_mode: :class:`DependencyMode` (optional)
           Controls dependency configuration for the cluster.
         :param docker_image: :class:`DockerImage` (optional)
-          Custom docker image BYOC
+          Custom Docker image for the cluster's nodes, used with `Databricks Container Services
+          <https://docs.databricks.com/compute/custom-containers.html>`__.
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
@@ -184,6 +215,18 @@
           When set to true, Databricks will automatically set single node related ``custom_tags``,
           ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
+          The kind of compute described by this compute specification.
+
+          Depending on ``kind``, different validations and default values will be applied.
+
+          Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+          specified ``kind`` do not.
+
+          - `is_single_node <https://docs.databricks.com/api/workspace/clusters/create#is_single_node>`__
+          - `use_ml_runtime <https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime>`__
+
+          By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your clusters
+          are automatically using ``kind = CLASSIC_PREVIEW``.
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -244,6 +287,8 @@
         :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
+          Types of workloads that can use the cluster, such as notebooks or jobs. If omitted, the cluster can
+          be used for both notebooks and jobs.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -388,10 +433,40 @@
           - Currently, Databricks allows at most 45 custom tags
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
+          Data security mode decides what data governance model to use when accessing data from a cluster.
+
+          - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending on
+            your compute configuration.
+          - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users. Cluster
+            users are fully isolated so that they cannot see each other's data and credentials. Most data
+            governance features are supported in this mode. But programming languages and cluster features
+            might be limited.
+          - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a single
+            user specified in ``single_user_name``. Most programming languages, cluster features and data
+            governance features are available in this mode.
+          - ``NONE``: No security isolation for multiple users sharing the cluster. Data governance features
+            are not available in this mode.
+
+          The following modes are legacy aliases for the above modes:
+
+          - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+          - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
+
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+
+          - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+          - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+            concurrency clusters.
+          - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+            clusters.
+          - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn't have UC or passthrough
+            enabled.
         :param dependency_mode: :class:`DependencyMode` (optional)
           Controls dependency configuration for the cluster.
         :param docker_image: :class:`DockerImage` (optional)
-          Custom docker image BYOC
+          Custom Docker image for the cluster's nodes, used with `Databricks Container Services
+          <https://docs.databricks.com/compute/custom-containers.html>`__.
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
@@ -420,6 +495,18 @@
           When set to true, Databricks will automatically set single node related ``custom_tags``,
           ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
+          The kind of compute described by this compute specification.
+
+          Depending on ``kind``, different validations and default values will be applied.
+
+          Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+          specified ``kind`` do not.
+
+          - `is_single_node <https://docs.databricks.com/api/workspace/clusters/create#is_single_node>`__
+          - `use_ml_runtime <https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime>`__
+
+          By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your clusters
+          are automatically using ``kind = CLASSIC_PREVIEW``.
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -480,6 +567,8 @@
         :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
+          Types of workloads that can use the cluster, such as notebooks or jobs. If omitted, the cluster can
+          be used for both notebooks and jobs.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -846,6 +935,8 @@
         :param cluster_id: str
           The cluster to be started.
         :param restart_user: str (optional)
+          User name recorded in the ``RESTARTING`` cluster event as the user who restarted the cluster. If
+          omitted, the name of the user making the request is recorded.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.

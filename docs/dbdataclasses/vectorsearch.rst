@@ -142,9 +142,62 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FailedStatus
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetVectorSearchEndpointPermissionLevelsResponse
    :members:
    :undoc-members:
+
+.. py:class:: IndexStatus
+
+   Lifecycle and ingestion state of an index.
+
+   .. py:attribute:: DOWNLOADING
+      :value: "DOWNLOADING"
+
+   .. py:attribute:: OFFLINE
+      :value: "OFFLINE"
+
+   .. py:attribute:: OFFLINE_FAILED
+      :value: "OFFLINE_FAILED"
+
+   .. py:attribute:: ONLINE
+      :value: "ONLINE"
+
+   .. py:attribute:: ONLINE_CONTINUOUS_UPDATE
+      :value: "ONLINE_CONTINUOUS_UPDATE"
+
+   .. py:attribute:: ONLINE_DIRECT_ACCESS
+      :value: "ONLINE_DIRECT_ACCESS"
+
+   .. py:attribute:: ONLINE_NO_PENDING_UPDATE
+      :value: "ONLINE_NO_PENDING_UPDATE"
+
+   .. py:attribute:: ONLINE_PIPELINE_FAILED
+      :value: "ONLINE_PIPELINE_FAILED"
+
+   .. py:attribute:: ONLINE_TRIGGERED_UPDATE
+      :value: "ONLINE_TRIGGERED_UPDATE"
+
+   .. py:attribute:: ONLINE_UPDATING_PIPELINE_RESOURCES
+      :value: "ONLINE_UPDATING_PIPELINE_RESOURCES"
+
+   .. py:attribute:: PROVISIONING
+      :value: "PROVISIONING"
+
+   .. py:attribute:: PROVISIONING_ENDPOINT
+      :value: "PROVISIONING_ENDPOINT"
+
+   .. py:attribute:: PROVISIONING_INDEX
+      :value: "PROVISIONING_INDEX"
+
+   .. py:attribute:: PROVISIONING_INITIAL_SNAPSHOT
+      :value: "PROVISIONING_INITIAL_SNAPSHOT"
+
+   .. py:attribute:: PROVISIONING_PIPELINE_RESOURCES
+      :value: "PROVISIONING_PIPELINE_RESOURCES"
 
 .. py:class:: IndexSubtype
 

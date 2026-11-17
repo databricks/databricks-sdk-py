@@ -8767,11 +8767,12 @@ class SqlAlertState(Enum):
 
 @dataclass
 class SqlConditionConfiguration:
-    sql_query_id: str
-    """The ID of the SQL query to evaluate as the trigger condition."""
-
     warehouse_id: str
     """The canonical identifier of the SQL warehouse to run the condition query against."""
+
+    sql_query_id: Optional[str] = None
+    """The ID of the SQL query to evaluate as the trigger condition. Exactly one of ``sql_query_id`` or
+    ``file`` must be set."""
 
     trigger_mode: Optional[SqlConditionTriggerMode] = None
     """Determines how the SQL query result is interpreted to decide whether the condition fires. Must

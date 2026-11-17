@@ -123,10 +123,11 @@ class CreateCredentialsResponse:
     Required for AWS CodeCommit."""
 
     is_default_for_provider: Optional[bool] = None
-    """if the credential is the default for the given provider"""
+    """Whether this credential is the default for its Git provider. The default credential is the
+    fallback that is used when no specific credential is selected."""
 
     name: Optional[str] = None
-    """the name of the git credential, used for identification and ease of lookup"""
+    """The name of the Git credential, used for identification and ease of lookup."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -256,6 +257,10 @@ class CreateRepoResponse:
 
 @dataclass
 class CredentialInfo:
+    """A Git credential that Databricks uses to authenticate to a Git provider on behalf of a user or
+    service principal. Each user has one default credential per Git provider, which is used when no
+    specific credential is selected."""
+
     credential_id: int
     """ID of the credential object in the workspace."""
 
@@ -278,10 +283,12 @@ class CredentialInfo:
     Required for AWS CodeCommit."""
 
     is_default_for_provider: Optional[bool] = None
-    """if the credential is the default for the given provider"""
+    """Whether this credential is the default for its Git provider. The default credential is the
+    fallback that is used when no specific credential is selected. See
+    https://docs.databricks.com/aws/en/repos/repos-setup#how-default-credentials-work."""
 
     name: Optional[str] = None
-    """the name of the git credential, used for identification and ease of lookup"""
+    """The name of the Git credential, used for identification and ease of lookup."""
 
     def as_dict(self) -> dict:
         """Serializes the CredentialInfo into a dictionary suitable for use as a JSON request body."""
@@ -509,10 +516,11 @@ class GetCredentialsResponse:
     Required for AWS CodeCommit."""
 
     is_default_for_provider: Optional[bool] = None
-    """if the credential is the default for the given provider"""
+    """Whether this credential is the default for its Git provider. The default credential is the
+    fallback that is used when no specific credential is selected."""
 
     name: Optional[str] = None
-    """the name of the git credential, used for identification and ease of lookup"""
+    """The name of the Git credential, used for identification and ease of lookup."""
 
     def as_dict(self) -> dict:
         """Serializes the GetCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -681,7 +689,8 @@ class GetSecretResponse:
     """A unique name to identify the secret."""
 
     value: Optional[str] = None
-    """The value of the secret in its byte representation."""
+    """The secret value, base64-encoded. A secret written with ``string_value`` is returned as the
+    base64 encoding of its UTF-8 bytes."""
 
     def as_dict(self) -> dict:
         """Serializes the GetSecretResponse into a dictionary suitable for use as a JSON request body."""
@@ -1391,7 +1400,7 @@ class SecretMetadata:
     """A unique name to identify the secret."""
 
     last_updated_timestamp: Optional[int] = None
-    """The last updated timestamp (in milliseconds) for the secret."""
+    """The time the secret was last written, in milliseconds since the Unix epoch."""
 
     def as_dict(self) -> dict:
         """Serializes the SecretMetadata into a dictionary suitable for use as a JSON request body."""
@@ -1825,16 +1834,18 @@ class GitCredentialsAPI:
           required for authentication depending on your Git provider / token requirements. Required for AWS
           CodeCommit.
         :param is_default_for_provider: bool (optional)
-          if the credential is the default for the given provider
+          Set to true to make the new credential the default for its Git provider, replacing the current
+          default. The first credential created for a provider becomes the default regardless of this value.
         :param name: str (optional)
-          the name of the git credential, used for identification and ease of lookup
+          The name of the Git credential, used for identification and ease of lookup. It must not exceed 100
+          characters.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
           providers, support may exist for other types of scoped access tokens. `Learn more
           <https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html>`__.
         :param principal_id: int (optional)
-          The ID of the service principal whose credentials will be modified. Only service principal managers
-          can perform this action.
+          The ID of the service principal for which the credential will be created. Only service principal
+          managers can perform this action.
 
         :returns: :class:`CreateCredentialsResponse`
         """
@@ -1872,7 +1883,7 @@ class GitCredentialsAPI:
         :param credential_id: int
           The ID for the corresponding credential to access.
         :param principal_id: int (optional)
-          The ID of the service principal whose credentials will be modified. Only service principal managers
+          The ID of the service principal whose credential will be deleted. Only service principal managers
           can perform this action.
 
 
@@ -1897,7 +1908,7 @@ class GitCredentialsAPI:
         :param credential_id: int
           The ID for the corresponding credential to access.
         :param principal_id: int (optional)
-          The ID of the service principal whose credentials will be modified. Only service principal managers
+          The ID of the service principal whose credential will be returned. Only service principal managers
           can perform this action.
 
         :returns: :class:`GetCredentialsResponse`
@@ -1954,7 +1965,7 @@ class GitCredentialsAPI:
         personal_access_token: Optional[str] = None,
         principal_id: Optional[int] = None,
     ):
-        """Updates the specified Git credential.
+        """Updates the specified Git credential. Fields that are omitted keep their current values.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
@@ -1962,7 +1973,8 @@ class GitCredentialsAPI:
           Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
           ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
           Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
-          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit``.
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit``. Must match the Git
+          provider of the existing credential; the provider cannot be changed.
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -1974,9 +1986,11 @@ class GitCredentialsAPI:
           required for authentication depending on your Git provider / token requirements. Required for AWS
           CodeCommit.
         :param is_default_for_provider: bool (optional)
-          if the credential is the default for the given provider
+          Set to true to make this credential the default for its Git provider, replacing the current default.
+          Cannot be set to false; make another credential the default instead.
         :param name: str (optional)
-          the name of the git credential, used for identification and ease of lookup
+          The name of the Git credential, used for identification and ease of lookup. It must not exceed 100
+          characters.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
           providers, support may exist for other types of scoped access tokens. `Learn more
@@ -2492,12 +2506,6 @@ class SecretsAPI:
         """Deletes the secret stored in this secret scope. You must have ``WRITE`` or ``MANAGE`` permission on
         the Secret Scope.
 
-        Example request:
-
-        .. code::
-
-        { "scope": "my-secret-scope", "key": "my-secret-key" }
-
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists. Throws
         ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
         ``BAD_REQUEST`` if system user attempts to delete an internal secret, or request is made against Azure
@@ -2567,30 +2575,18 @@ class SecretsAPI:
         return AclItem.from_dict(res)
 
     def get_secret(self, scope: str, key: str) -> GetSecretResponse:
-        """Gets a secret for a given key and scope. This API can only be called from the DBUtils interface. Users
-        need the READ permission to make this call.
+        """Gets the bytes representation of a secret value for the specified scope and key. Users need the READ
+        permission to make this call.
 
-        Example response:
-
-        .. code::
-
-        { "key": "my-string-key", "value": <bytes of the secret value> }
-
-        Note that the secret value returned is in bytes. The interpretation of the bytes is determined by the
-        caller in DBUtils and the type the data is decoded into.
+        The secret value is returned as bytes regardless of whether it was written with ``string_value`` or
+        ``bytes_value``, so the caller decides how to decode it. Values returned by this API are not redacted.
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret or secret scope exists. Throws
-        ``PERMISSION_DENIED`` if the user does not have permission to make this API call.
-
-        Note: This is explicitly an undocumented API. It also doesn't need to be supported for the /preview
-        prefix, because it's not a customer-facing API (i.e. only used for DBUtils SecretUtils to fetch
-        secrets).
-
-        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists. Throws ``BAD_REQUEST`` if
-        normal user calls get secret outside of a notebook. AKV specific errors: Throws
-        ``INVALID_PARAMETER_VALUE`` if secret name is not alphanumeric or too long. Throws
-        ``PERMISSION_DENIED`` if secret manager cannot access AKV with 403 error Throws ``MALFORMED_REQUEST``
-        if secret manager cannot access AKV with any other 4xx error
+        ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Azure Key
+        Vault-backed scopes can also return the following errors: Throws ``INVALID_PARAMETER_VALUE`` if the
+        secret name is not alphanumeric or is too long. Throws ``PERMISSION_DENIED`` if Databricks cannot
+        access the key vault (HTTP 403). Throws ``MALFORMED_REQUEST`` if Databricks cannot access the key
+        vault with any other 4xx error.
 
         :param scope: str
           The name of the scope that contains the secret.
@@ -2683,15 +2679,6 @@ class SecretsAPI:
     def list_secrets(self, scope: str) -> Iterator[SecretMetadata]:
         """Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
         cannot be retrieved using this API. Users need the READ permission to make this call.
-
-        Example response:
-
-        .. code::
-
-        { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp": "1520467595000" }, { "key":
-        "my-byte-key", "last_updated_timestamp": "1520467595000" }, ] }
-
-        The lastUpdatedTimestamp returned is in milliseconds since epoch.
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the
         user does not have permission to make this API call.
@@ -2786,14 +2773,8 @@ class SecretsAPI:
         exceed 128 characters. The maximum allowed secret value size is 128 KB. The maximum number of secrets
         in a given scope is 1000.
 
-        Example request:
-
-        .. code::
-
-        { "scope": "my-databricks-scope", "key": "my-string-key", "string_value": "foobar" }
-
-        The input fields "string_value" or "bytes_value" specify the type of the secret, which will determine
-        the value returned when the secret value is requested. Exactly one must be specified.
+        Exactly one of ``string_value`` or ``bytes_value`` must be specified. The server stores both kinds of
+        value as bytes and does not record which one was used.
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``RESOURCE_LIMIT_EXCEEDED``
         if maximum number of secrets in scope is exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the request
@@ -2802,13 +2783,13 @@ class SecretsAPI:
         ``BAD_REQUEST`` if request is made against Azure KeyVault backed scope.
 
         :param scope: str
-          The name of the scope to which the secret will be associated with.
+          The name of the scope to store the secret in.
         :param key: str
           A unique name to identify the secret.
         :param bytes_value: str (optional)
-          If specified, value will be stored as bytes.
+          The secret value as raw bytes. The bytes must be base64-encoded in the JSON request body.
         :param string_value: str (optional)
-          If specified, note that the value will be stored in UTF-8 (MB4) form.
+          The secret value as text. The server stores it as the UTF-8 encoding of the string.
 
 
         """

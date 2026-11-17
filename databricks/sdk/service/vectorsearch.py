@@ -9,6 +9,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Dict, List, Any, Iterator, Callable, Optional
 
+from google.protobuf.timestamp_pb2 import Timestamp
 
 import time
 import random
@@ -20,6 +21,7 @@ from databricks.sdk.service._internal import (
     _from_dict,
     _int64,
     _repeated_dict,
+    _timestamp,
     Wait,
 )
 
@@ -824,6 +826,61 @@ class FacetResultData:
 
 
 @dataclass
+class FailedStatus:
+    """Failure details for an index or its latest ingestion update."""
+
+    error_code: Optional[str] = None
+    """Error code associated with the error message, when available."""
+
+    error_message: Optional[str] = None
+    """Error message, when available."""
+
+    last_processed_commit_timestamp: Optional[Timestamp] = None
+    """[Standard endpoint] timestamp when the last processed commit was committed to the source table.
+    [Storage Optimized endpoint] timestamp when the last processed commit was processed by the
+    pipeline."""
+
+    last_processed_commit_version: Optional[int] = None
+    """Last source Delta table version fully processed while the index is still queryable."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FailedStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error_code is not None:
+            body["error_code"] = self.error_code
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.last_processed_commit_timestamp is not None:
+            body["last_processed_commit_timestamp"] = self.last_processed_commit_timestamp.ToJsonString()
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FailedStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error_code is not None:
+            body["error_code"] = self.error_code
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.last_processed_commit_timestamp is not None:
+            body["last_processed_commit_timestamp"] = self.last_processed_commit_timestamp
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FailedStatus:
+        """Deserializes the FailedStatus from a dictionary."""
+        return cls(
+            error_code=d.get("error_code", None),
+            error_message=d.get("error_message", None),
+            last_processed_commit_timestamp=_timestamp(d, "last_processed_commit_timestamp"),
+            last_processed_commit_version=_int64(d, "last_processed_commit_version"),
+        )
+
+
+@dataclass
 class GetVectorSearchEndpointPermissionLevelsResponse:
     permission_levels: Optional[List[VectorSearchEndpointPermissionsDescription]] = None
     """Specific permission levels"""
@@ -846,6 +903,26 @@ class GetVectorSearchEndpointPermissionLevelsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetVectorSearchEndpointPermissionLevelsResponse:
         """Deserializes the GetVectorSearchEndpointPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", VectorSearchEndpointPermissionsDescription))
+
+
+class IndexStatus(Enum):
+    """Lifecycle and ingestion state of an index."""
+
+    DOWNLOADING = "DOWNLOADING"
+    OFFLINE = "OFFLINE"
+    OFFLINE_FAILED = "OFFLINE_FAILED"
+    ONLINE = "ONLINE"
+    ONLINE_CONTINUOUS_UPDATE = "ONLINE_CONTINUOUS_UPDATE"
+    ONLINE_DIRECT_ACCESS = "ONLINE_DIRECT_ACCESS"
+    ONLINE_NO_PENDING_UPDATE = "ONLINE_NO_PENDING_UPDATE"
+    ONLINE_PIPELINE_FAILED = "ONLINE_PIPELINE_FAILED"
+    ONLINE_TRIGGERED_UPDATE = "ONLINE_TRIGGERED_UPDATE"
+    ONLINE_UPDATING_PIPELINE_RESOURCES = "ONLINE_UPDATING_PIPELINE_RESOURCES"
+    PROVISIONING = "PROVISIONING"
+    PROVISIONING_ENDPOINT = "PROVISIONING_ENDPOINT"
+    PROVISIONING_INDEX = "PROVISIONING_INDEX"
+    PROVISIONING_INITIAL_SNAPSHOT = "PROVISIONING_INITIAL_SNAPSHOT"
+    PROVISIONING_PIPELINE_RESOURCES = "PROVISIONING_PIPELINE_RESOURCES"
 
 
 class IndexSubtype(Enum):
@@ -997,10 +1074,14 @@ class Metric:
     """Metric labels"""
 
     name: Optional[str] = None
-    """Metric name"""
+    """Metric name. Supported metrics include: ``EndpointHealthStatus``, ``EndpointConcurrency``,
+    ``IndexRequestCount``, ``IndexRequestLatency``, ``IndexRequestErrorSourceCount``,
+    ``IndexRequestGuidanceCount``, ``IndexRequestGuidancePeakRate``, ``IndexIngestedRows``, and
+    ``IndexEmbeddedRows``."""
 
     percentile: Optional[float] = None
-    """Percentile for the metric"""
+    """Percentile for latency metrics, such as ``IndexRequestLatency``, which require it. One of 0.5,
+    0.75, 0.9, 0.95, or 0.99."""
 
     def as_dict(self) -> dict:
         """Serializes the Metric into a dictionary suitable for use as a JSON request body."""
@@ -1039,10 +1120,13 @@ class MetricLabel:
     """Label for a metric"""
 
     name: Optional[str] = None
-    """Label name"""
+    """Label name, such as ``error_source``, ``failure_cause``, ``operation``, ``request_path``,
+    ``query_type``, ``response_code``, or ``index_name``. Supported labels depend on the metric."""
 
     value: Optional[str] = None
-    """Label value"""
+    """Label value, as an RE2 regular expression. The label also splits the result by its values, so
+    ``.+`` returns one series per value. Some labels, such as ``operation``, accept only ``.+``,
+    ``.*``, or listed values joined by ``|``."""
 
     def as_dict(self) -> dict:
         """Serializes the MetricLabel into a dictionary suitable for use as a JSON request body."""
@@ -1073,7 +1157,7 @@ class MetricValue:
     """Single metric value at a specific timestamp"""
 
     timestamp: Optional[int] = None
-    """Timestamp of the metric value (milliseconds since epoch)"""
+    """Timestamp of the metric value, in seconds since the Unix epoch."""
 
     value: Optional[float] = None
     """Metric value"""
@@ -1465,8 +1549,7 @@ class RetrieveUserVisibleMetricsResponse:
     """Collection of metric values"""
 
     next_page_token: Optional[str] = None
-    """A token that can be used to get the next page of results. If not present, there are no more
-    results to show."""
+    """Not set. The response returns all data points in one page."""
 
     def as_dict(self) -> dict:
         """Serializes the RetrieveUserVisibleMetricsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1833,6 +1916,12 @@ class VectorIndex:
 
 @dataclass
 class VectorIndexStatus:
+    detailed_state: Optional[IndexStatus] = None
+    """Lifecycle and ingestion state. An online index can still have a failed update."""
+
+    failed_status: Optional[FailedStatus] = None
+    """Failure details, when available, for OFFLINE_FAILED or ONLINE_PIPELINE_FAILED."""
+
     index_url: Optional[str] = None
     """Index API Url to be used to perform operations on the index"""
 
@@ -1843,11 +1932,16 @@ class VectorIndexStatus:
     """Message associated with the index status"""
 
     ready: Optional[bool] = None
-    """Whether the index is ready for search"""
+    """Whether the index can serve queries. This does not mean the latest update succeeded or that all
+    source-table changes have been indexed; check detailed_state for update failures."""
 
     def as_dict(self) -> dict:
         """Serializes the VectorIndexStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.detailed_state is not None:
+            body["detailed_state"] = self.detailed_state.value
+        if self.failed_status:
+            body["failed_status"] = self.failed_status.as_dict()
         if self.index_url is not None:
             body["index_url"] = self.index_url
         if self.indexed_row_count is not None:
@@ -1861,6 +1955,10 @@ class VectorIndexStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the VectorIndexStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.detailed_state is not None:
+            body["detailed_state"] = self.detailed_state
+        if self.failed_status:
+            body["failed_status"] = self.failed_status
         if self.index_url is not None:
             body["index_url"] = self.index_url
         if self.indexed_row_count is not None:
@@ -1875,6 +1973,8 @@ class VectorIndexStatus:
     def from_dict(cls, d: Dict[str, Any]) -> VectorIndexStatus:
         """Deserializes the VectorIndexStatus from a dictionary."""
         return cls(
+            detailed_state=_enum(d, "detailed_state", IndexStatus),
+            failed_status=_from_dict(d, "failed_status", FailedStatus),
             index_url=d.get("index_url", None),
             indexed_row_count=_int64(d, "indexed_row_count"),
             message=d.get("message", None),
@@ -2396,15 +2496,17 @@ class VectorSearchEndpointsAPI:
         :param name: str
           AI Search endpoint name
         :param end_time: str (optional)
-          End time for metrics query
+          End of the time range. Defaults to the current time.
         :param granularity_in_seconds: int (optional)
-          Granularity in seconds
+          Requested interval between data points, in seconds. The minimum is 60. The server may return a finer
+          or coarser interval: 60 seconds only for time ranges of 1 hour or less, otherwise 300 seconds or
+          more. Read the interval from the returned timestamps.
         :param metrics: List[:class:`Metric`] (optional)
-          List of metrics to retrieve
+          Metrics to retrieve. An unknown metric name fails the whole request.
         :param page_token: str (optional)
-          Token for pagination
+          Not used. The response returns all data points in one page.
         :param start_time: str (optional)
-          Start time for metrics query
+          Start of the time range. Required. Must be within the last 169 hours.
 
         :returns: :class:`RetrieveUserVisibleMetricsResponse`
         """

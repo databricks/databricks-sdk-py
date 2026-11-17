@@ -1489,7 +1489,8 @@ class DatabaseDatabaseSpec:
     """The name of the role that owns the database. Format:
     projects/{project_id}/branches/{branch_id}/roles/{role_id}
     
-    To change the owner, pass valid existing Role name when updating the Database
+    The role must be in the same branch as the database. To change the owner, pass valid existing
+    Role name when updating the Database
     
     Required when creating the Database."""
 
@@ -4143,7 +4144,9 @@ class ScheduleCadence:
 @dataclass
 class Snapshot:
     """An immutable, point-in-time copy of a branch's data within a project. It remains available after
-    the source branch is deleted."""
+    the source branch is deleted. To restore a snapshot, create a new branch with
+    ``spec.source_snapshot`` set to the snapshot's resource name. For an overview, see
+    https://docs.databricks.com/aws/en/oltp/projects/snapshots."""
 
     create_time: Optional[Timestamp] = None
     """When the snapshot was created."""
@@ -4155,7 +4158,8 @@ class Snapshot:
     """The user-chosen ID; the final segment of ``name``."""
 
     spec: Optional[SnapshotSpec] = None
-    """Client-provided configuration of the snapshot."""
+    """Client-provided configuration of the snapshot. When you create a snapshot, set exactly one of
+    ``expire_time``, ``ttl``, or ``no_expiry``."""
 
     status: Optional[SnapshotStatus] = None
     """Server-observed state of the snapshot."""
@@ -4295,24 +4299,30 @@ class SnapshotSpec:
     """Client-provided configuration of the snapshot."""
 
     source_branch: str
-    """The source branch to snapshot. Format: projects/{project_id}/branches/{branch_id}"""
+    """The source branch to snapshot. The branch must belong to the same project as the snapshot.
+    Format: projects/{project_id}/branches/{branch_id}"""
 
     expire_time: Optional[Timestamp] = None
-    """Absolute time at which the snapshot is deleted. Mutually exclusive with ``ttl`` and
-    ``no_expiry``."""
+    """Absolute time at which the snapshot is deleted. It must not be in the past. Mutually exclusive
+    with ``ttl`` and ``no_expiry``."""
 
     no_expiry: Optional[bool] = None
-    """If true, the snapshot never expires. Mutually exclusive with ``ttl`` and ``expire_time``."""
+    """If true, the snapshot never expires. The value ``false`` is rejected; set ``expire_time`` or
+    ``ttl`` instead. Mutually exclusive with ``ttl`` and ``expire_time``."""
 
     source_branch_lsn: Optional[str] = None
-    """LSN to snapshot from, e.g. ``16/B374D848``. Mutually exclusive with ``source_branch_time``."""
+    """Postgres log sequence number (LSN) to snapshot from. It must fall within the project's history
+    retention window. If neither this field nor ``source_branch_time`` is set, the snapshot captures
+    the current head of the source branch. Mutually exclusive with ``source_branch_time``."""
 
     source_branch_time: Optional[Timestamp] = None
-    """Timestamp to snapshot from. Mutually exclusive with ``source_branch_lsn``."""
+    """Timestamp to snapshot from. It must fall within the project's history retention window. Mutually
+    exclusive with ``source_branch_lsn``."""
 
     ttl: Optional[Duration] = None
-    """Time-to-live. The snapshot expires this long after it is created. Mutually exclusive with
-    ``expire_time`` and ``no_expiry``. Reads report the resolved absolute ``expire_time`` instead."""
+    """Time-to-live, as a positive duration in seconds with an ``s`` suffix. The snapshot expires this
+    long after it is created. Mutually exclusive with ``expire_time`` and ``no_expiry``. Reads
+    report the resolved absolute ``expire_time`` instead."""
 
     def as_dict(self) -> dict:
         """Serializes the SnapshotSpec into a dictionary suitable for use as a JSON request body."""
@@ -5308,12 +5318,14 @@ class PostgresAPI:
           The ID used to identify and manage the Database resource through the API. The Postgres database name
           is specified in ``spec.postgres_database``.
 
-          This value should be 4-63 characters, and only use characters available in DNS names, as defined by
-          RFC-1123
+          This value should be 3-63 characters, start with a lowercase letter, end with a lowercase letter or
+          digit, and contain only lowercase letters, digits, and hyphens.
 
           If database_id is not specified in the request, it is generated automatically.
         :param replace_existing: bool (optional)
-          If true, update the database if it already exists instead of returning an error.
+          If true, update the database if it already exists instead of returning an error. This requires
+          ``database_id`` to be set. Without ``database_id``, the request follows the normal create path and
+          fails if the database name already exists.
 
         :returns: :class:`Operation`
         """
@@ -5498,15 +5510,18 @@ class PostgresAPI:
         return CreateRoleOperation(self, operation)
 
     def create_snapshot(self, parent: str, snapshot: Snapshot, snapshot_id: str) -> CreateSnapshotOperation:
-        """Creates a snapshot, an immutable point-in-time copy of a branch's data, within the project.
+        """Creates a snapshot, an immutable point-in-time copy of a branch's data, within the project. Returns a
+        long-running operation. Poll it until done is true; its response holds the new snapshot.
 
         :param parent: str
           The project in which to create the snapshot. Format: projects/{project_id}
         :param snapshot: :class:`Snapshot`
-          The snapshot to create.
+          The snapshot to create. Only ``spec`` is read from this message; the system sets the other fields.
         :param snapshot_id: str
           Client-chosen ID for the snapshot. It becomes the final segment of the snapshot resource name and
-          cannot be changed after creation.
+          cannot be changed after creation. The ID must be 3 to 63 characters long, start with a lowercase
+          letter, end with a lowercase letter or digit, and contain only lowercase letters, digits, and
+          hyphens.
 
         :returns: :class:`Operation`
         """
@@ -5667,7 +5682,7 @@ class PostgresAPI:
         return DeleteDataApiOperation(self, operation)
 
     def delete_database(self, name: str) -> DeleteDatabaseOperation:
-        """Delete a Database.
+        """Deletes the specified Postgres database.
 
         :param name: str
           The resource name of the postgres database. Format:
@@ -5795,7 +5810,8 @@ class PostgresAPI:
         return DeleteRoleOperation(self, operation)
 
     def delete_snapshot(self, name: str) -> DeleteSnapshotOperation:
-        """Deletes the specified snapshot.
+        """Deletes the specified snapshot. A deleted snapshot cannot be recovered. Returns a long-running
+        operation. Poll it until done is true.
 
         :param name: str
           The resource name of the snapshot to delete. Format: projects/{project_id}/snapshots/{snapshot_id}
@@ -6019,7 +6035,7 @@ class PostgresAPI:
         return DataApi.from_dict(res)
 
     def get_database(self, name: str) -> Database:
-        """Get a Database.
+        """Retrieves information about the specified Postgres database.
 
         :param name: str
           The name of the Database to retrieve. Format:
@@ -6372,7 +6388,7 @@ class PostgresAPI:
     def list_databases(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Database]:
-        """List Databases.
+        """Returns a list of Postgres databases in the branch.
 
         :param parent: str
           The Branch that owns this collection of databases. Format:
@@ -6787,7 +6803,7 @@ class PostgresAPI:
         return UpdateDataApiOperation(self, operation)
 
     def update_database(self, name: str, database: Database, update_mask: FieldMask) -> UpdateDatabaseOperation:
-        """Update a Database.
+        """Updates the specified Postgres database. Only the fields named in ``update_mask`` change.
 
         :param name: str
           The resource name of the database. Format:
@@ -6798,7 +6814,7 @@ class PostgresAPI:
           The database's ``name`` field is used to identify the database to update. Format:
           projects/{project_id}/branches/{branch_id}/databases/{database_id}
         :param update_mask: FieldMask
-          The list of fields to update.
+          The list of fields to update. The updatable fields are ``spec.role`` and ``spec.postgres_database``.
 
         :returns: :class:`Operation`
         """
