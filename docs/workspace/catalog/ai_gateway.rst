@@ -26,7 +26,8 @@
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param mcp_service_id: str
-          Name for the MCP service, e.g. "my_mcp_service".
+          Name of the MCP service within the parent schema. The name must not contain periods, spaces, forward
+          slashes, percent signs, or control characters, and it is stored in lowercase.
 
         :returns: :class:`McpService`
         
@@ -65,7 +66,9 @@
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param model_provider_service_id: str
-          Name for the model provider service, e.g. "openai_prod".
+          Name of the model provider service within the parent schema. The name must not contain periods,
+          spaces, forward slashes, percent signs, or control characters, must not end in ``_DO_NOT_MODIFY``,
+          and must not exceed 241 characters. It is stored in lowercase.
 
         :returns: :class:`ModelProviderService`
         
@@ -424,8 +427,8 @@
 
         :param name: str
           Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
-          ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
-          ``parent`` + ``mcp_service_id``; required and immutable on Update/Get/Delete.
+          ``{...}`` component is capped at 255 characters individually. The server derives the name on Create
+          from ``parent`` and ``mcp_service_id``; it is required and immutable on Update, Get, and Delete.
         :param mcp_service: :class:`McpService`
           The MCP service with the updated field values. ``name`` identifies the resource
           (``mcp-services/{catalog}.{schema}.{mcp_service}``); only fields listed in ``update_mask`` are
@@ -458,8 +461,8 @@
         :param name: str
           Resource name of the provider service. Format:
           ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
-          capped at 255 characters individually. Server-derived on Create from ``parent`` +
-          ``model_provider_service_id``; required and immutable on Update/Get/Delete.
+          capped at 255 characters individually. The server derives the name on Create from ``parent`` and
+          ``model_provider_service_id``; it is required and immutable on Update, Get, and Delete.
         :param model_provider_service: :class:`ModelProviderService`
           The model provider service with the updated field values. ``name`` identifies the resource
           (``model-provider-services/{catalog}.{schema}.{model_provider_service}``); only fields listed in

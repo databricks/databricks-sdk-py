@@ -15,6 +15,29 @@
         :returns: :class:`Datasource`
         
 
+    .. py:method:: create_parser(parser: Parser) -> Parser
+
+        Creates a parser and its first version in one call.
+
+        :param parser: :class:`Parser`
+          The parser to create. ``spec`` and ``description`` become version 1.
+
+        :returns: :class:`Parser`
+        
+
+    .. py:method:: create_parser_version(parent: str, parser_version: ParserVersion) -> ParserVersion
+
+        Appends a new immutable version, advancing the parser's latest-version pointer. This is how a parser
+        is edited; versions are never changed in place.
+
+        :param parent: str
+          Resource name of the parser to append a version to. Format: ``parsers/{parser_id}``.
+        :param parser_version: :class:`ParserVersion`
+          The version to append.
+
+        :returns: :class:`ParserVersion`
+        
+
     .. py:method:: create_rule(rule: Rule) -> Rule
 
         Creates a new rule.
@@ -31,6 +54,31 @@
         Deletes a datasource by its resource name.
 
         :param name: str
+
+
+        
+
+    .. py:method:: delete_parser(name: str)
+
+        Deletes a parser and all of its versions. Refused while any data source references it.
+
+        :param name: str
+          Resource name of the parser. Format: ``parsers/{parser_id}``.
+
+
+        
+
+    .. py:method:: delete_parser_version(name: str)
+
+        Deletes one version of a parser. Returns NOT_FOUND when the parser or the version does not exist, and
+        a conflict (HTTP 409) only while a data source references the version. Deleting the last version
+        leaves the parser in place with no versions.
+
+        :param name: str
+          Resource name of the version. Format: ``parsers/{parser_id}/versions/{version}``, where
+          ``{version}`` is a version number written without sign or leading zeros, such as ``3``. Unlike
+          GetParserVersion, the alias ``latest`` and forms such as ``007`` or ``+3`` are rejected, so a delete
+          always names one fixed version.
 
 
         
@@ -52,6 +100,27 @@
         :param name: str
 
         :returns: :class:`AlertConfig`
+        
+
+    .. py:method:: get_builtin_parser(name: str) -> BuiltinParser
+
+        Returns a built-in parser's identity and latest-version pointer. Does not return the spec.
+
+        :param name: str
+          Resource name. Format: ``builtin-parsers/{parser_id}``.
+
+        :returns: :class:`BuiltinParser`
+        
+
+    .. py:method:: get_builtin_parser_version(name: str) -> BuiltinParserVersion
+
+        Returns one version of a built-in parser, including its spec.
+
+        :param name: str
+          Resource name of the version. Format: ``builtin-parsers/{parser_id}/versions/{version}``, where
+          ``{version}`` is either a version number or the alias ``latest``.
+
+        :returns: :class:`BuiltinParserVersion`
         
 
     .. py:method:: get_common_config(name: str) -> CommonConfig
@@ -81,6 +150,29 @@
         :returns: :class:`DatasourceConfig`
         
 
+    .. py:method:: get_parser(name: str) -> Parser
+
+        Returns a parser's identity and latest-version pointer. Does not return the spec; read a spec with
+        GetParserVersion.
+
+        :param name: str
+          Resource name of the parser. Format: ``parsers/{parser_id}``.
+
+        :returns: :class:`Parser`
+        
+
+    .. py:method:: get_parser_version(name: str) -> ParserVersion
+
+        Returns one version of a parser, including its spec.
+
+        :param name: str
+          Resource name of the version. Format: ``parsers/{parser_id}/versions/{version}``, where
+          ``{version}`` is either a version number or the alias ``latest``. ``latest`` is NOT_FOUND when every
+          version of the parser has been deleted.
+
+        :returns: :class:`ParserVersion`
+        
+
     .. py:method:: get_rule(name: str) -> Rule
 
         Returns a single rule by its resource name.
@@ -98,6 +190,41 @@
         :param name: str
 
         :returns: :class:`RuleConfig`
+        
+
+    .. py:method:: list_builtin_parser_versions(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[BuiltinParserVersion]
+
+        Lists a built-in parser's published versions, oldest first (ascending 1..resource_revision), without
+        their specs.
+
+        :param parent: str
+          Resource name of the built-in parser whose versions are listed. Format:
+          ``builtin-parsers/{parser_id}``.
+        :param page_size: int (optional)
+          Maximum number of results to return in one page. If unset or 0, at most 100 versions are returned.
+          The maximum allowed value is 1000.
+        :param page_token: str (optional)
+          Page token from a previous ``ListBuiltinParserVersions`` response, used to fetch the next page of
+          results.
+
+        :returns: Iterator over :class:`BuiltinParserVersion`
+        
+
+    .. py:method:: list_builtin_parsers( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[BuiltinParser]
+
+        Lists the built-in parsers Databricks publishes, without their specs.
+
+        :param filter: str (optional)
+          AIP-160 filter expression. Built-ins are filterable by their ``tags``; the exact tag-filter grammar
+          is defined by the server.
+        :param page_size: int (optional)
+          Maximum number of results to return in one page. This is a best-effort upper bound, not a guarantee:
+          the server may return fewer items than requested (even zero) while more results still exist. If
+          unset or 0, the server picks a default.
+        :param page_token: str (optional)
+          Page token from a previous ``ListBuiltinParsers`` response, used to fetch the next page of results.
+
+        :returns: Iterator over :class:`BuiltinParser`
         
 
     .. py:method:: list_datasources(catalog_name: str [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str], schema_name: Optional[str], view: Optional[DatasourceView]]) -> Iterator[Datasource]
@@ -126,6 +253,49 @@
           ``DATASOURCE_VIEW_BASIC`` returns only the identity and Unity Catalog location fields.
 
         :returns: Iterator over :class:`Datasource`
+        
+
+    .. py:method:: list_parser_versions(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ParserVersion]
+
+        Lists a parser's versions, oldest first, without their specs.
+
+        :param parent: str
+          Resource name of the parser whose versions are listed. Format: ``parsers/{parser_id}``.
+        :param page_size: int (optional)
+          Maximum number of results to return in one page. This is a best-effort upper bound, not a guarantee:
+          the server may return fewer items than requested (even zero) while more results still exist. If
+          unset or 0, the server picks a default.
+        :param page_token: str (optional)
+          Page token from a previous ``ListParserVersions`` response, used to fetch the next page of results.
+          Send the same ``parent`` when requesting later pages; a token from a request for a different parser
+          is rejected.
+
+        :returns: Iterator over :class:`ParserVersion`
+        
+
+    .. py:method:: list_parsers(catalog_name: str [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str], schema_name: Optional[str]]) -> Iterator[Parser]
+
+        Lists parsers in a catalog, without their specs.
+
+        :param catalog_name: str
+          Name of the parent UC catalog to list parsers from. Required: List is scoped to a single catalog,
+          mirroring the Unity Catalog tables/functions APIs, which take catalog_name as a request field (bound
+          to a query parameter) rather than a catalog path segment.
+        :param filter: str (optional)
+          AIP-160 filter expression. Parsers are filterable by ``parser_name``.
+        :param page_size: int (optional)
+          Maximum number of results to return in one page. This is a best-effort upper bound, not a guarantee:
+          the server may return fewer items than requested (even zero) while more results still exist. If
+          unset or 0, the server picks a default.
+        :param page_token: str (optional)
+          Page token from a previous ``ListParsers`` response, used to fetch the next page of results. Send
+          the other request fields unchanged when requesting later pages; a token from a request with
+          different fields is rejected.
+        :param schema_name: str (optional)
+          Name of the parent UC schema. Optional: when set, results are narrowed to this schema; when omitted,
+          parsers across all schemas in ``catalog_name`` are returned.
+
+        :returns: Iterator over :class:`Parser`
         
 
     .. py:method:: list_rules(catalog_name: str [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str], schema_name: Optional[str], view: Optional[RuleView]]) -> Iterator[Rule]

@@ -462,9 +462,8 @@ class ManagedMemoryEntry:
     applies across the actor's sessions."""
 
     source_type: Optional[ManagedMemoryEntrySourceType] = None
-    """Which writer created this entry. Caller sets this on Create; immutable after creation. While the
-    workspace's default-source-type rollout flag is on, omitted or UNSPECIFIED is stored as AGENT.
-    While it is off, omitted is stored unset and UNSPECIFIED as UNSPECIFIED."""
+    """Which writer created this entry. Caller sets this on Create; immutable after creation. The
+    server may store an omitted or UNSPECIFIED value as AGENT."""
 
     update_time: Optional[Timestamp] = None
     """Time when the entry was last updated."""
@@ -583,7 +582,10 @@ class ManagedMemoryEntryView(Enum):
 
 @dataclass
 class ManagedMemoryStore:
-    """A workspace-scoped memory store backed by service-managed storage."""
+    """A workspace-scoped memory store backed by service-managed storage. A store is the container for
+    an agent's memory entries and the boundary at which access is granted; creating one provisions
+    its Lakebase storage automatically. See
+    https://docs.databricks.com/aws/en/agents/agent-memory/managed-memory for an overview."""
 
     create_time: Optional[Timestamp] = None
     """Time when the store was created."""
@@ -1100,7 +1102,9 @@ class StorageBackend:
     """Service-managed storage backing a memory store."""
 
     backend_id: Optional[str] = None
-    """Backend-specific identifier. For Lakebase, this is the project ID."""
+    """Backend-specific identifier. For Lakebase, this is the resource name of the database that holds
+    the store's entries, in the form
+    ``projects/{project_id}/branches/{branch_id}/databases/{database_id}``."""
 
     backend_type: Optional[StorageBackendType] = None
     """Type of the storage backend."""
@@ -1141,9 +1145,12 @@ class StorePrincipal:
     user's email or a service principal's application (client) id."""
 
     name: str
+    """Identifier of the principal: the email address of a user, or the application (client) ID of a
+    service principal. Groups are not supported."""
 
     principal_type: Optional[PrincipalType] = None
-    """The kind of principal. Required unless the deprecated type alias is supplied."""
+    """The kind of principal, which determines how ``name`` is interpreted. A principal without a type
+    is rejected."""
 
     def as_dict(self) -> dict:
         """Serializes the StorePrincipal into a dictionary suitable for use as a JSON request body."""
@@ -1265,14 +1272,15 @@ class AgentKitAPI:
     def create_memory_store(
         self, managed_memory_store: ManagedMemoryStore, managed_memory_store_id: str
     ) -> ManagedMemoryStore:
-        """Creates a memory store in the caller's workspace.
+        """Creates a memory store in the caller's workspace. Returns ``ALREADY_EXISTS`` when a store with the
+        requested ID already exists.
 
         :param managed_memory_store: :class:`ManagedMemoryStore`
           The memory store to create.
         :param managed_memory_store_id: str
           Caller-provided, workspace-unique memory store ID. It must be 3-56 characters, begin with a
           lowercase letter, contain only lowercase letters, digits, and hyphens, and end with a letter or
-          digit.
+          digit. It becomes the last segment of the store's ``name`` and cannot be changed after creation.
 
         :returns: :class:`ManagedMemoryStore`
         """
@@ -1374,7 +1382,8 @@ class AgentKitAPI:
         self._api.do("DELETE", f"/api/2.0/agents/{name}", headers=headers)
 
     def delete_memory_store(self, name: str):
-        """Deletes a memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist in the
+        """Deletes a memory store by resource name. Deleting a store also deletes all of its memory entries, and
+        its ID becomes available for reuse. Returns ``NOT_FOUND`` when the store does not exist in the
         caller's workspace.
 
         :param name: str
@@ -1675,7 +1684,9 @@ class AgentKitAPI:
         :param principal: :class:`StorePrincipal`
           Principal to grant the permission to.
         :param permission: :class:`PermissionLevel`
-          Permission level to grant.
+          Permission level to grant. ``WRITE`` includes ``READ``. Grants are additive: granting ``READ`` to a
+          principal that already holds ``WRITE`` does not lower its access. To downgrade a principal, revoke
+          its grants and grant again.
 
         :returns: :class:`GrantMemoryStorePermissionResponse`
         """
@@ -1841,7 +1852,7 @@ class AgentKitAPI:
           Maximum number of stores to return. The service may return fewer stores than requested. Defaults to
           10; must be between 1 and 100.
         :param page_token: str (optional)
-          Opaque pagination token from a previous ListManagedMemoryStores response.
+          Opaque pagination token, taken from the ``next_page_token`` of a previous response.
 
         :returns: Iterator over :class:`ManagedMemoryStore`
         """
@@ -2245,8 +2256,8 @@ class AgentKitAPI:
         :param managed_memory_store: :class:`ManagedMemoryStore`
           The memory store to update. ``name`` is taken from the URL.
         :param update_mask: FieldMask
-          Only ``description`` and ``metadata`` may be updated. Selecting ``metadata`` replaces the entire
-          map.
+          Only ``description`` and ``metadata`` may be updated. Selecting ``description`` while leaving it
+          unset clears it. Selecting ``metadata`` replaces the entire map.
 
         :returns: :class:`ManagedMemoryStore`
         """

@@ -1435,6 +1435,9 @@ class ColumnInfo:
     """User-provided free-form text description."""
 
     mask: Optional[ColumnMask] = None
+    """The column mask function applied to this column, if any. A column mask is a SQL user-defined
+    function that transforms the values a query returns for the column. See
+    https://docs.databricks.com/aws/en/tables/row-and-column-filters for details."""
 
     name: Optional[str] = None
     """Name of Column."""
@@ -1455,6 +1458,9 @@ class ColumnInfo:
     """Full data type specification, JSON-serialized."""
 
     type_name: Optional[ColumnTypeName] = None
+    """The name of the column's data type, for example STRING, DECIMAL or STRUCT. The complete type,
+    including parameters such as the precision of a decimal or the element type of an array, is in
+    type_text."""
 
     type_precision: Optional[int] = None
     """Digits of precision; required for DecimalTypes."""
@@ -4424,17 +4430,31 @@ class ExternalLocationInfo:
 
 @dataclass
 class ExternalMetadata:
+    """Metadata about an object that lives outside of Databricks, such as a Kafka topic, a Tableau
+    dashboard, or a Salesforce table. An external metadata object is a Unity Catalog securable that
+    can be the source or the target of external lineage relationships, so that data flows into and
+    out of Databricks appear in the Unity Catalog lineage graph. See `External lineage
+    <https://docs.databricks.com/aws/en/data-governance/unity-catalog/external-lineage>`__."""
+
     name: str
-    """Name of the external metadata object."""
+    """Name of the external metadata object. The name is unique within the metastore, must follow the
+    `Unity Catalog naming requirements
+    <https://docs.databricks.com/aws/en/data-governance/unity-catalog/requirements#naming-requirements>`__,
+    and is stored in lowercase. It cannot be changed after creation, and external lineage
+    relationships refer to the object by this name."""
 
     system_type: SystemType
-    """Type of external system."""
+    """Type of the external system that holds the object. Use ``OTHER`` for a system that is not in the
+    list."""
 
     entity_type: str
-    """Type of entity within the external system."""
+    """Type of the object within the external system, such as a table, a report, or a dashboard. The
+    value is free-form text of at most 255 characters."""
 
     columns: Optional[List[str]] = None
-    """List of columns associated with the external metadata object."""
+    """Names of the columns of the object, used for column-level mappings in external lineage
+    relationships. Column names must be unique within the list, and the combined size of all column
+    names is limited."""
 
     create_time: Optional[str] = None
     """Time at which this external metadata object was created."""
@@ -4443,19 +4463,23 @@ class ExternalMetadata:
     """Username of external metadata object creator."""
 
     description: Optional[str] = None
-    """User-provided free-form text description."""
+    """User-provided free-form text description of the object. The description must not exceed 5000
+    characters."""
 
     id: Optional[str] = None
-    """Unique identifier of the external metadata object."""
+    """Unique identifier of the external metadata object. The ID is a UUID that the system assigns on
+    creation."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
 
     owner: Optional[str] = None
-    """Owner of the external metadata object."""
+    """Owner of the external metadata object. Defaults to the creator. To change the owner, send an
+    update whose update mask includes ``owner``."""
 
     properties: Optional[Dict[str, str]] = None
-    """A map of key-value properties attached to the external metadata object."""
+    """Key-value properties attached to the object. Keys and values must be non-empty, and the combined
+    length of all keys and values must not exceed 5000 characters."""
 
     update_time: Optional[str] = None
     """Time at which this external metadata object was last modified."""
@@ -4464,7 +4488,8 @@ class ExternalMetadata:
     """Username of user who last modified external metadata object."""
 
     url: Optional[str] = None
-    """URL associated with the external metadata object."""
+    """URL of the object in the external system. When set, lineage graph viewers can follow it to the
+    external asset. The URL must not exceed 2048 characters."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalMetadata into a dictionary suitable for use as a JSON request body."""
@@ -7046,10 +7071,10 @@ class McpService:
     """Time the MCP service was created."""
 
     created_by: Optional[str] = None
-    """Creator identity."""
+    """Username or service principal application ID of the principal that created the MCP service."""
 
     effective_owner: Optional[str] = None
-    """Owner of the MCP service."""
+    """Username, group name, or service principal application ID of the MCP service owner."""
 
     etag: Optional[str] = None
     """Optimistic concurrency token returned on every read. To make an Update or Delete conditional,
@@ -7057,18 +7082,19 @@ class McpService:
     base64 string; URL-encode it when setting the ``etag`` query parameter."""
 
     metastore_id: Optional[str] = None
-    """Metastore hosting the MCP service."""
+    """Unique identifier of the metastore that contains the MCP service."""
 
     name: Optional[str] = None
     """Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``.
-    Each ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
-    ``parent`` + ``mcp_service_id``; required and immutable on Update/Get/Delete."""
+    Each ``{...}`` component is capped at 255 characters individually. The server derives the name
+    on Create from ``parent`` and ``mcp_service_id``; it is required and immutable on Update, Get,
+    and Delete."""
 
     update_time: Optional[Timestamp] = None
     """Time the MCP service was last modified."""
 
     updated_by: Optional[str] = None
-    """Identity of the last updater."""
+    """Username or service principal application ID of the principal that last updated the MCP service."""
 
     def as_dict(self) -> dict:
         """Serializes the McpService into a dictionary suitable for use as a JSON request body."""
@@ -7547,10 +7573,10 @@ class ModelProviderService:
     """Time the provider service was created."""
 
     created_by: Optional[str] = None
-    """Creator identity."""
+    """Username of the user who created the model provider service."""
 
     effective_owner: Optional[str] = None
-    """Owner of the model provider service."""
+    """Username or group name of the model provider service owner."""
 
     etag: Optional[str] = None
     """Optimistic concurrency token returned on every read. To make an Update or Delete conditional,
@@ -7558,19 +7584,20 @@ class ModelProviderService:
     base64 string; URL-encode it when setting the ``etag`` query parameter."""
 
     metastore_id: Optional[str] = None
-    """Metastore hosting the provider service."""
+    """Unique identifier of the metastore that contains the model provider service."""
 
     name: Optional[str] = None
     """Resource name of the provider service. Format:
     ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}``
-    component is capped at 255 characters individually. Server-derived on Create from ``parent`` +
-    ``model_provider_service_id``; required and immutable on Update/Get/Delete."""
+    component is capped at 255 characters individually. The server derives the name on Create from
+    ``parent`` and ``model_provider_service_id``; it is required and immutable on Update, Get, and
+    Delete."""
 
     update_time: Optional[Timestamp] = None
     """Time the provider service was last modified."""
 
     updated_by: Optional[str] = None
-    """Identity of the last updater."""
+    """Username of the user who last updated the model provider service."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderService into a dictionary suitable for use as a JSON request body."""
@@ -7653,14 +7680,24 @@ class ModelProviderServiceConfig:
     in ``targets``."""
 
     amazon_bedrock: Optional[ModelProviderServiceConfigAmazonBedrockProviderConfig] = None
+    """Configuration for Amazon Bedrock. Set this field when ``provider_type`` is
+    ``EXTERNAL_MODEL_PROVIDER_TYPE_AMAZON_BEDROCK``."""
 
     anthropic: Optional[ModelProviderServiceConfigAnthropicProviderConfig] = None
+    """Configuration for Anthropic. Set this field when ``provider_type`` is
+    ``EXTERNAL_MODEL_PROVIDER_TYPE_ANTHROPIC``."""
 
     azure_openai: Optional[ModelProviderServiceConfigAzureOpenAiProviderConfig] = None
+    """Configuration for Azure OpenAI. Set this field when ``provider_type`` is
+    ``EXTERNAL_MODEL_PROVIDER_TYPE_AZURE_OPENAI``."""
 
     bedrock_mantle: Optional[ModelProviderServiceConfigAmazonBedrockProviderConfig] = None
+    """Configuration for Amazon Bedrock Mantle, with the same fields as ``amazon_bedrock``. Set this
+    field when ``provider_type`` is ``EXTERNAL_MODEL_PROVIDER_TYPE_BEDROCK_MANTLE``."""
 
     custom: Optional[ModelProviderServiceConfigCustomProviderConfig] = None
+    """Configuration for a custom OpenAI-compatible provider. Set this field when ``provider_type`` is
+    ``EXTERNAL_MODEL_PROVIDER_TYPE_CUSTOM``."""
 
     forward_headers: Optional[bool] = None
     """Whether to forward incoming HTTP headers to the upstream provider. Defaults to false and is
@@ -7680,14 +7717,20 @@ class ModelProviderServiceConfig:
     attached to this securable."""
 
     gemini_enterprise: Optional[ModelProviderServiceConfigGeminiEnterpriseProviderConfig] = None
+    """Configuration for Google Gemini Enterprise. Set this field when ``provider_type`` is
+    ``EXTERNAL_MODEL_PROVIDER_TYPE_GEMINI_ENTERPRISE``."""
 
     inference_table: Optional[InferenceTableConfig] = None
     """Payload logging configuration for requests sent directly to this provider service. Requests
     routed through a model service are captured by that model service's inference table instead."""
 
     microsoft_foundry: Optional[ModelProviderServiceConfigMicrosoftFoundryProviderConfig] = None
+    """Configuration for Microsoft Foundry. Set this field when ``provider_type`` is
+    ``EXTERNAL_MODEL_PROVIDER_TYPE_MICROSOFT_FOUNDRY``."""
 
     openai: Optional[ModelProviderServiceConfigOpenAiProviderConfig] = None
+    """Configuration for OpenAI. Set this field when ``provider_type`` is
+    ``EXTERNAL_MODEL_PROVIDER_TYPE_OPENAI``."""
 
     pricing: Optional[ModelProviderServiceConfigProviderPricingConfig] = None
     """Pricing configuration for this provider service. An explicitly empty configuration is retained
@@ -8137,8 +8180,8 @@ class ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth:
     ``api_key_value``."""
 
     api_key_value: Optional[ModelProviderServiceConfigProviderSecret] = None
-    """Secret value forwarded under the ``api_key_name`` header on outbound requests. Supplied as
-    inline plaintext via ``ProviderSecret.plaintext``."""
+    """Secret value forwarded under the ``api_key_name`` header on outbound requests. Supply the value
+    in ``api_key_value.plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the ModelProviderServiceConfigCustomProviderApiKeyHeaderAuth into a dictionary suitable for use as a JSON request body."""
@@ -8654,9 +8697,9 @@ class ModelProviderServiceConfigProviderSecret:
     ``INPUT_ONLY`` and never round-trips on reads."""
 
     plaintext: Optional[str] = None
-    """Inline plaintext credential. INPUT_ONLY: the value never round-trips on reads. Get and List
-    responses omit ``plaintext``; the enclosing secret object remains present to indicate that a
-    secret is configured."""
+    """Inline plaintext credential. The value is write-only and never round-trips on reads. Get and
+    List responses omit ``plaintext``; the enclosing secret object remains present to indicate that
+    a secret is configured."""
 
     secret_reference: Optional[ModelProviderServiceConfigSecretReference] = None
     """Reference to a customer-owned UC Secret that carries this secret value. The value is read at
@@ -11585,6 +11628,11 @@ class RowFilterOptions:
 
 @dataclass
 class SchemaInfo:
+    """A schema (also called a database) is the second layer of Unity Catalog's three-level namespace
+    and groups the tables, views, volumes, models, and functions under its parent catalog. Managed
+    tables and volumes in the schema are stored under the schema's storage root when it has one, and
+    otherwise under the storage of the parent catalog or the metastore."""
+
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -11593,7 +11641,7 @@ class SchemaInfo:
     """Name of parent catalog."""
 
     catalog_type: Optional[CatalogType] = None
-    """The type of the parent catalog."""
+    """The type of the parent catalog, which the server copies from the catalog."""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -11605,12 +11653,19 @@ class SchemaInfo:
     """Username of schema creator."""
 
     custom_max_retention_hours: Optional[int] = None
-    """Custom maximum retention period in hours for the schema."""
+    """Dropped objects in the schema remain recoverable for this number of hours before they are
+    permanently purged. The value must be 0 or within the range allowed for the metastore. Schemas
+    that do not set their own value inherit the parent catalog's value."""
 
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
+    """Indicates the predictive optimization setting that is in effect for the schema once inherited
+    values are resolved."""
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
-    """Whether predictive optimization should be enabled for this object and objects under it."""
+    """Whether predictive optimization is enabled for this schema and the objects under it. Valid
+    values are ENABLE, DISABLE, and INHERIT, where INHERIT applies the parent catalog's setting. New
+    schemas start as INHERIT. It cannot be set when creating a schema; use the update method
+    instead."""
 
     full_name: Optional[str] = None
     """Full name of schema, in form of **catalog_name**.**schema_name**."""
@@ -11622,22 +11677,29 @@ class SchemaInfo:
     """Name of schema, relative to parent catalog."""
 
     owner: Optional[str] = None
-    """Username of current owner of schema."""
+    """The user or group that owns the schema. The creator becomes the owner, and the owner can be
+    changed only through the update method."""
 
     properties: Optional[Dict[str, str]] = None
     """A map of key-value properties attached to the securable."""
 
     schema_id: Optional[str] = None
-    """The unique identifier of the schema."""
+    """The unique identifier (UUID) that the server assigns to the schema when it is created."""
 
     storage_location: Optional[str] = None
-    """Storage location for managed tables within schema."""
+    """The server derives this full storage location URL for managed tables and volumes within the
+    schema from storage_root and the schema ID. It is absent when the schema has no storage root of
+    its own."""
 
     storage_root: Optional[str] = None
-    """Storage root URL for managed tables within schema."""
+    """Managed tables and volumes in the schema are stored under this storage root URL. The path must
+    be inside an external location on which the caller has the CREATE MANAGED STORAGE privilege. If
+    omitted, managed data is stored under the parent catalog's storage root, or under the
+    metastore's root storage location when the catalog has none. Schemas in Delta Sharing catalogs
+    cannot have a storage root, and schemas in a federated Hive metastore catalog must set one."""
 
     updated_at: Optional[int] = None
-    """Time at which this schema was created, in epoch milliseconds."""
+    """Time at which this schema was last modified, in epoch milliseconds."""
 
     updated_by: Optional[str] = None
     """Username of user who last modified schema."""
@@ -12512,13 +12574,20 @@ class StorageCredentialInfo:
 
 @dataclass
 class SystemSchemaInfo:
+    """A system schema of a metastore, with its current enablement state. System schemas hold
+    Databricks-provided system tables, such as audit logs and billing usage. They live in the
+    ``system`` catalog unless they are enabled in another supported catalog. See
+    https://docs.databricks.com/aws/en/admin/system-tables/."""
+
     schema: str
-    """Name of the system schema."""
+    """Name of the system schema, without the catalog prefix."""
 
     state: str
-    """The current state of enablement for the system schema. An empty string means the system schema
-    is available and ready for opt-in. Possible values: AVAILABLE | ENABLE_INITIALIZED |
-    ENABLE_COMPLETED | DISABLE_INITIALIZED | UNAVAILABLE | MANAGED"""
+    """The current enablement state of the system schema. Possible values are ``AVAILABLE`` (the schema
+    can be enabled), ``ENABLE_INITIALIZED`` (enablement is in progress), ``ENABLE_COMPLETED`` (the
+    schema is enabled), ``DISABLE_INITIALIZED`` (disablement is in progress), ``UNAVAILABLE`` (the
+    schema cannot be enabled at the moment) and ``MANAGED`` (Databricks enables the schema
+    automatically)."""
 
     def as_dict(self) -> dict:
         """Serializes the SystemSchemaInfo into a dictionary suitable for use as a JSON request body."""
@@ -12668,8 +12737,13 @@ class TableExistsResponse:
 
 @dataclass
 class TableInfo:
+    """A table resides in the third layer of Unity Catalog's three-level namespace and holds rows of
+    data organized in columns. Besides managed and external tables, it covers views, materialized
+    views, streaming tables, metric views, foreign tables and shallow clones, which table_type
+    distinguishes."""
+
     access_point: Optional[str] = None
-    """The AWS access point to use when accesing s3 for this external location."""
+    """The AWS access point to use when accessing S3 for the storage location of this table."""
 
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
@@ -12694,6 +12768,8 @@ class TableInfo:
     """Unique ID of the Data Access Configuration to use with the table data."""
 
     data_source_format: Optional[DataSourceFormat] = None
+    """The format of the data that backs the table, such as DELTA, PARQUET, CSV or JSON. Foreign tables
+    report the external system that holds them, for example SNOWFLAKE_FORMAT or MYSQL_FORMAT."""
 
     deleted_at: Optional[int] = None
     """Time at which this table was deleted, in epoch milliseconds. Field is omitted if table is not
@@ -12703,8 +12779,13 @@ class TableInfo:
     """Information pertaining to current state of the delta table."""
 
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
+    """The predictive optimization setting that is in effect for the table once inherited values are
+    resolved."""
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
+    """Whether predictive optimization is enabled for this table. Valid values are ENABLE, DISABLE and
+    INHERIT, where INHERIT applies the setting of the parent schema. It is ignored when creating a
+    table. See https://docs.databricks.com/aws/en/optimizations/predictive-optimization for details."""
 
     encryption_details: Optional[EncryptionDetails] = None
 
@@ -12718,7 +12799,7 @@ class TableInfo:
     """Name of table, relative to parent schema."""
 
     owner: Optional[str] = None
-    """Username of current owner of table."""
+    """The user or group that owns the table. The principal that creates the table becomes its owner."""
 
     pipeline_id: Optional[str] = None
     """The pipeline ID of the table. Applicable for tables created by pipelines (Materialized View,
@@ -12728,6 +12809,9 @@ class TableInfo:
     """A map of key-value properties attached to the securable."""
 
     row_filter: Optional[TableRowFilter] = None
+    """The row filter function applied to the table, if any. A row filter is a SQL user-defined
+    function that decides which rows a query returns. See
+    https://docs.databricks.com/aws/en/tables/row-and-column-filters for details."""
 
     schema_name: Optional[str] = None
     """Name of parent schema relative to its parent catalog."""
@@ -12742,7 +12826,10 @@ class TableInfo:
     """Name of the storage credential, when a storage credential is configured for use with this table."""
 
     storage_location: Optional[str] = None
-    """Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)."""
+    """The cloud storage URL under which the data files of the table are stored. For an EXTERNAL table,
+    it must be set on creation to a path within an existing external location. For a MANAGED table,
+    the server assigns a path under the managed storage location of the parent schema, catalog or
+    metastore and returns it in this field. Views have no storage location."""
 
     table_constraints: Optional[List[TableConstraint]] = None
     """List of table constraints. Note: this field is not set in the output of the **listTables** API."""
@@ -12751,6 +12838,11 @@ class TableInfo:
     """The unique identifier of the table."""
 
     table_type: Optional[TableType] = None
+    """The type of the table. MANAGED tables store their data in storage that Unity Catalog manages,
+    EXTERNAL tables store it in a registered external location, FOREIGN tables mirror objects of an
+    external database through a connection, and the shallow clone types reference the data files of
+    a base table. VIEW, MATERIALIZED_VIEW, STREAMING_TABLE and METRIC_VIEW are defined by a view
+    definition. See https://docs.databricks.com/aws/en/tables/ for an overview of the table types."""
 
     updated_at: Optional[int] = None
     """Time at which this table was last modified, in epoch milliseconds."""
@@ -13016,6 +13108,7 @@ class TableSummary:
     """SecurableKindManifest of table, including capabilities the table has."""
 
     table_type: Optional[TableType] = None
+    """The type of the table, with the same meaning as table_type on TableInfo."""
 
     def as_dict(self) -> dict:
         """Serializes the TableSummary into a dictionary suitable for use as a JSON request body."""
@@ -14471,7 +14564,8 @@ class AiGatewayAPI:
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param mcp_service_id: str
-          Name for the MCP service, e.g. "my_mcp_service".
+          Name of the MCP service within the parent schema. The name must not contain periods, spaces, forward
+          slashes, percent signs, or control characters, and it is stored in lowercase.
 
         :returns: :class:`McpService`
         """
@@ -14544,7 +14638,9 @@ class AiGatewayAPI:
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param model_provider_service_id: str
-          Name for the model provider service, e.g. "openai_prod".
+          Name of the model provider service within the parent schema. The name must not contain periods,
+          spaces, forward slashes, percent signs, or control characters, must not end in ``_DO_NOT_MODIFY``,
+          and must not exceed 241 characters. It is stored in lowercase.
 
         :returns: :class:`ModelProviderService`
         """
@@ -15197,8 +15293,8 @@ class AiGatewayAPI:
 
         :param name: str
           Resource name of the MCP service. Format: ``mcp-services/{catalog}.{schema}.{mcp_service}``. Each
-          ``{...}`` component is capped at 255 characters individually. Server-derived on Create from
-          ``parent`` + ``mcp_service_id``; required and immutable on Update/Get/Delete.
+          ``{...}`` component is capped at 255 characters individually. The server derives the name on Create
+          from ``parent`` and ``mcp_service_id``; it is required and immutable on Update, Get, and Delete.
         :param mcp_service: :class:`McpService`
           The MCP service with the updated field values. ``name`` identifies the resource
           (``mcp-services/{catalog}.{schema}.{mcp_service}``); only fields listed in ``update_mask`` are
@@ -15255,8 +15351,8 @@ class AiGatewayAPI:
         :param name: str
           Resource name of the provider service. Format:
           ``model-provider-services/{catalog}.{schema}.{model_provider_service}``. Each ``{...}`` component is
-          capped at 255 characters individually. Server-derived on Create from ``parent`` +
-          ``model_provider_service_id``; required and immutable on Update/Get/Delete.
+          capped at 255 characters individually. The server derives the name on Create from ``parent`` and
+          ``model_provider_service_id``; it is required and immutable on Update, Get, and Delete.
         :param model_provider_service: :class:`ModelProviderService`
           The model provider service with the updated field values. ``name`` identifies the resource
           (``model-provider-services/{catalog}.{schema}.{model_provider_service}``); only fields listed in
@@ -17149,10 +17245,13 @@ class ExternalMetadataAPI:
         return ExternalMetadata.from_dict(res)
 
     def delete_external_metadata(self, name: str):
-        """Deletes the external metadata object that matches the supplied name. The caller must be a metastore
-        admin, the owner of the external metadata object, or a user that has the **MANAGE** privilege.
+        """Deletes the external metadata object that matches the supplied name. Every external lineage
+        relationship in which the object is the source or the target is deleted with it. The caller must be a
+        metastore admin, the owner of the external metadata object, or a user that has the **MANAGE**
+        privilege.
 
         :param name: str
+          Name of the external metadata object to delete.
 
 
         """
@@ -17172,6 +17271,7 @@ class ExternalMetadataAPI:
         owner of the external metadata object, or a user that has the **BROWSE** privilege.
 
         :param name: str
+          Name of the external metadata object to get.
 
         :returns: :class:`ExternalMetadata`
         """
@@ -17197,7 +17297,7 @@ class ExternalMetadataAPI:
 
         :param page_size: int (optional)
           Specifies the maximum number of external metadata objects to return in a single response. The value
-          must be less than or equal to 1000.
+          must be less than or equal to 1000. Defaults to 1000 when omitted.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -17235,18 +17335,15 @@ class ExternalMetadataAPI:
         the owner, they must also have the **MANAGE** privilege.
 
         :param name: str
-          Name of the external metadata object.
+          Name of the external metadata object. The name is unique within the metastore, must follow the
+          `Unity Catalog naming requirements
+          <https://docs.databricks.com/aws/en/data-governance/unity-catalog/requirements#naming-requirements>`__,
+          and is stored in lowercase. It cannot be changed after creation, and external lineage relationships
+          refer to the object by this name.
         :param external_metadata: :class:`ExternalMetadata`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          Comma-separated list of the fields to update, for example ``description,properties``. Only the
+          listed fields change. The other fields keep their current values. The mask must not be empty.
 
         :returns: :class:`ExternalMetadata`
         """
@@ -19981,11 +20078,17 @@ class SchemasAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param custom_max_retention_hours: int (optional)
-          Custom maximum retention period in hours for the schema.
+          Dropped objects in the schema remain recoverable for this number of hours before they are
+          permanently purged. The value must be 0 or within the range allowed for the metastore. Schemas that
+          do not set their own value inherit the parent catalog's value.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param storage_root: str (optional)
-          Storage root URL for managed tables within schema.
+          Managed tables and volumes in the schema are stored under this storage root URL. The path must be
+          inside an external location on which the caller has the CREATE MANAGED STORAGE privilege. If
+          omitted, managed data is stored under the parent catalog's storage root, or under the metastore's
+          root storage location when the catalog has none. Schemas in Delta Sharing catalogs cannot have a
+          storage root, and schemas in a federated Hive metastore catalog must set one.
 
         :returns: :class:`SchemaInfo`
         """
@@ -20020,7 +20123,7 @@ class SchemasAPI:
         owner of the parent catalog.
 
         :param full_name: str
-          Full name of the schema.
+          Full name of the schema, in the form catalog_name.schema_name.
         :param force: bool (optional)
           Force deletion even if the schema is not empty.
 
@@ -20045,10 +20148,10 @@ class SchemasAPI:
         schema, or a user that has the **USE_SCHEMA** privilege on the schema.
 
         :param full_name: str
-          Full name of the schema.
+          Full name of the schema, in the form catalog_name.schema_name.
         :param include_browse: bool (optional)
-          Whether to include schemas in the response for which the principal can only access selective
-          metadata for
+          Whether to return the schema when the principal can only access selective metadata for it through
+          the BROWSE privilege. The response then has browse_only set to true.
 
         :returns: :class:`SchemaInfo`
         """
@@ -20090,8 +20193,8 @@ class SchemasAPI:
         :param catalog_name: str
           Parent catalog for schemas of interest.
         :param include_browse: bool (optional)
-          Whether to include schemas in the response for which the principal can only access selective
-          metadata for
+          Whether to include schemas for which the principal can only access selective metadata through the
+          BROWSE privilege. Such schemas are returned with browse_only set to true.
         :param max_results: int (optional)
           Maximum number of schemas to return. If not set, all the schemas are returned (not recommended).
 
@@ -20150,17 +20253,22 @@ class SchemasAPI:
         privilege on the parent catalog.
 
         :param full_name: str
-          Full name of the schema.
+          Full name of the schema, in the form catalog_name.schema_name.
         :param comment: str (optional)
           User-provided free-form text description.
         :param custom_max_retention_hours: int (optional)
-          Custom maximum retention period in hours for the schema.
+          Dropped objects in the schema remain recoverable for this number of hours before they are
+          permanently purged. The value must be 0 or within the range allowed for the metastore. Schemas that
+          do not set their own value inherit the parent catalog's value.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
-          Whether predictive optimization should be enabled for this object and objects under it.
+          Whether predictive optimization is enabled for this schema and the objects under it. Valid values
+          are ENABLE, DISABLE, and INHERIT, where INHERIT applies the parent catalog's setting. New schemas
+          start as INHERIT. It cannot be set when creating a schema; use the update method instead.
         :param new_name: str (optional)
           New name for the schema.
         :param owner: str (optional)
-          Username of current owner of schema.
+          The user or group that owns the schema. The creator becomes the owner, and the owner can be changed
+          only through the update method.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
 
@@ -20776,7 +20884,7 @@ class SystemSchemasAPI:
         :param metastore_id: str
           The metastore ID under which the system schema lives.
         :param schema_name: str
-          Full name of the system schema.
+          Name of the system schema, without the catalog prefix.
 
 
         """
@@ -20800,9 +20908,10 @@ class SystemSchemasAPI:
         :param metastore_id: str
           The metastore ID under which the system schema lives.
         :param schema_name: str
-          Full name of the system schema.
+          Name of the system schema, without the catalog prefix.
         :param catalog_name: str (optional)
-          the catalog for which the system schema is to enabled in
+          Name of the catalog in which to enable the system schema. The supported values are ``system`` and
+          ``samples``. If not set, the system schema is enabled in the ``system`` catalog.
 
 
         """
@@ -21021,9 +21130,19 @@ class TablesAPI:
         :param schema_name: str
           Name of parent schema relative to its parent catalog.
         :param table_type: :class:`TableType`
+          The type of the table. MANAGED tables store their data in storage that Unity Catalog manages,
+          EXTERNAL tables store it in a registered external location, FOREIGN tables mirror objects of an
+          external database through a connection, and the shallow clone types reference the data files of a
+          base table. VIEW, MATERIALIZED_VIEW, STREAMING_TABLE and METRIC_VIEW are defined by a view
+          definition. See https://docs.databricks.com/aws/en/tables/ for an overview of the table types.
         :param data_source_format: :class:`DataSourceFormat`
+          The format of the data that backs the table, such as DELTA, PARQUET, CSV or JSON. Foreign tables
+          report the external system that holds them, for example SNOWFLAKE_FORMAT or MYSQL_FORMAT.
         :param storage_location: str
-          Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
+          The cloud storage URL under which the data files of the table are stored. For an EXTERNAL table, it
+          must be set on creation to a path within an existing external location. For a MANAGED table, the
+          server assigns a path under the managed storage location of the parent schema, catalog or metastore
+          and returns it in this field. Views have no storage location.
         :param columns: List[:class:`ColumnInfo`] (optional)
           The array of **ColumnInfo** definitions of the table's columns.
         :param properties: Dict[str,str] (optional)
@@ -21343,7 +21462,7 @@ class TablesAPI:
         :param full_name: str
           Full name of the table.
         :param owner: str (optional)
-          Username of current owner of table.
+          The user or group that owns the table. The principal that creates the table becomes its owner.
 
 
         """

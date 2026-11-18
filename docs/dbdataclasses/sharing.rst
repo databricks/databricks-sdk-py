@@ -421,6 +421,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SCHEMA
       :value: "SCHEMA"
 
+   .. py:attribute:: SKILL
+      :value: "SKILL"
+
    .. py:attribute:: STREAMING_TABLE
       :value: "STREAMING_TABLE"
 
@@ -476,6 +479,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: FUNCTION_STANDARD
       :value: "FUNCTION_STANDARD"
+
+.. autoclass:: Skill
+   :members:
+   :undoc-members:
 
 .. autoclass:: Table
    :members:

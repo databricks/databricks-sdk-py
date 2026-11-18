@@ -15,23 +15,28 @@
         Creates a new service principal in the Databricks account.
 
         :param active: bool (optional)
-          If this user is active
+          Indicates whether the service principal is active. A deactivated service principal cannot
+          authenticate or access Databricks APIs, but it keeps its permissions.
         :param application_id: str (optional)
-          UUID relating to the service principal
+          Sets the application ID of a Microsoft Entra ID service principal. Only Azure accepts this field. On
+          AWS and GCP, Databricks generates the application ID and rejects requests that set it.
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names.
+          Sets the human-readable name of the service principal. The name is required unless the request sets
+          ``applicationId``.
         :param external_id: str (optional)
+          Sets the identifier of the service principal in an external identity provider.
         :param id: str (optional)
-          Databricks service principal ID.
+          Identifies the service principal within Databricks.
         :param roles: List[:class:`ComplexValue`] (optional)
-          Indicates if the group has the admin role.
+          Lists the account roles that are assigned to the service principal. The only supported role value is
+          ``account_admin``.
 
         :returns: :class:`AccountServicePrincipal`
         
 
     .. py:method:: delete(id: str)
 
-        Delete a single service principal in the Databricks account.
+        Deletes a single service principal from the Databricks account.
 
         :param id: str
           Unique ID for a service principal in the Databricks account.
@@ -41,7 +46,7 @@
 
     .. py:method:: get(id: str) -> AccountServicePrincipal
 
-        Gets the details for a single service principal define in the Databricks account.
+        Gets the details for a single service principal in the Databricks account.
 
         :param id: str
           Unique ID for a service principal in the Databricks account.
@@ -80,8 +85,9 @@
         Partially updates the details of a single service principal in the Databricks account.
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID for a service principal in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+          Lists the patch operations to apply to the service principal.
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 
@@ -92,19 +98,24 @@
 
         Updates the details of a single service principal.
 
-        This action replaces the existing service principal with the same name.
+        This action replaces the existing service principal that has the given ID.
 
         :param id: str
-          Databricks service principal ID.
+          Identifies the service principal within Databricks.
         :param active: bool (optional)
-          If this user is active
+          Indicates whether the service principal is active. A deactivated service principal cannot
+          authenticate or access Databricks APIs, but it keeps its permissions.
         :param application_id: str (optional)
-          UUID relating to the service principal
+          Sets the application ID of a Microsoft Entra ID service principal. Only Azure accepts this field. On
+          AWS and GCP, Databricks generates the application ID and rejects requests that set it.
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names.
+          Sets the human-readable name of the service principal. The name is required unless the request sets
+          ``applicationId``.
         :param external_id: str (optional)
+          Sets the identifier of the service principal in an external identity provider.
         :param roles: List[:class:`ComplexValue`] (optional)
-          Indicates if the group has the admin role.
+          Lists the account roles that are assigned to the service principal. The only supported role value is
+          ``account_admin``.
 
 
         

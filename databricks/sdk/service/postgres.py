@@ -1489,7 +1489,8 @@ class DatabaseDatabaseSpec:
     """The name of the role that owns the database. Format:
     projects/{project_id}/branches/{branch_id}/roles/{role_id}
     
-    To change the owner, pass valid existing Role name when updating the Database
+    The role must be in the same branch as the database. To change the owner, pass valid existing
+    Role name when updating the Database
     
     Required when creating the Database."""
 
@@ -3017,7 +3018,6 @@ class MigrationType(Enum):
     """The intended data transfer mode of a migration."""
 
     MIGRATION_TYPE_ONE_TIME_COPY = "MIGRATION_TYPE_ONE_TIME_COPY"
-    MIGRATION_TYPE_ONLINE = "MIGRATION_TYPE_ONLINE"
 
 
 @dataclass
@@ -4143,7 +4143,9 @@ class ScheduleCadence:
 @dataclass
 class Snapshot:
     """An immutable, point-in-time copy of a branch's data within a project. It remains available after
-    the source branch is deleted."""
+    the source branch is deleted. To restore a snapshot, create a new branch with
+    ``spec.source_snapshot`` set to the snapshot's resource name. For an overview, see
+    https://docs.databricks.com/aws/en/oltp/projects/snapshots."""
 
     create_time: Optional[Timestamp] = None
     """When the snapshot was created."""
@@ -4155,7 +4157,8 @@ class Snapshot:
     """The user-chosen ID; the final segment of ``name``."""
 
     spec: Optional[SnapshotSpec] = None
-    """Client-provided configuration of the snapshot."""
+    """Client-provided configuration of the snapshot. When you create a snapshot, set exactly one of
+    ``expire_time``, ``ttl``, or ``no_expiry``."""
 
     status: Optional[SnapshotStatus] = None
     """Server-observed state of the snapshot."""
@@ -4295,24 +4298,30 @@ class SnapshotSpec:
     """Client-provided configuration of the snapshot."""
 
     source_branch: str
-    """The source branch to snapshot. Format: projects/{project_id}/branches/{branch_id}"""
+    """The source branch to snapshot. The branch must belong to the same project as the snapshot.
+    Format: projects/{project_id}/branches/{branch_id}"""
 
     expire_time: Optional[Timestamp] = None
-    """Absolute time at which the snapshot is deleted. Mutually exclusive with ``ttl`` and
-    ``no_expiry``."""
+    """Absolute time at which the snapshot is deleted. It must not be in the past. Mutually exclusive
+    with ``ttl`` and ``no_expiry``."""
 
     no_expiry: Optional[bool] = None
-    """If true, the snapshot never expires. Mutually exclusive with ``ttl`` and ``expire_time``."""
+    """If true, the snapshot never expires. The value ``false`` is rejected; set ``expire_time`` or
+    ``ttl`` instead. Mutually exclusive with ``ttl`` and ``expire_time``."""
 
     source_branch_lsn: Optional[str] = None
-    """LSN to snapshot from, e.g. ``16/B374D848``. Mutually exclusive with ``source_branch_time``."""
+    """Postgres log sequence number (LSN) to snapshot from. It must fall within the project's history
+    retention window. If neither this field nor ``source_branch_time`` is set, the snapshot captures
+    the current head of the source branch. Mutually exclusive with ``source_branch_time``."""
 
     source_branch_time: Optional[Timestamp] = None
-    """Timestamp to snapshot from. Mutually exclusive with ``source_branch_lsn``."""
+    """Timestamp to snapshot from. It must fall within the project's history retention window. Mutually
+    exclusive with ``source_branch_lsn``."""
 
     ttl: Optional[Duration] = None
-    """Time-to-live. The snapshot expires this long after it is created. Mutually exclusive with
-    ``expire_time`` and ``no_expiry``. Reads report the resolved absolute ``expire_time`` instead."""
+    """Time-to-live, as a positive duration in seconds with an ``s`` suffix. The snapshot expires this
+    long after it is created. Mutually exclusive with ``expire_time`` and ``no_expiry``. Reads
+    report the resolved absolute ``expire_time`` instead."""
 
     def as_dict(self) -> dict:
         """Serializes the SnapshotSpec into a dictionary suitable for use as a JSON request body."""
@@ -4453,15 +4462,20 @@ class StartMigrationResponse:
 
 @dataclass
 class SyncedTable:
+    """A synced table is a read-only Postgres table that Databricks keeps up to date from a Unity
+    Catalog source table through a managed pipeline. It is also registered in Unity Catalog under
+    its three-part name. See https://docs.databricks.com/aws/en/oltp/projects/sync-tables."""
+
     create_time: Optional[Timestamp] = None
+    """The time when the synced table was created."""
 
     name: Optional[str] = None
-    """Output only. The Full resource name of the synced table in Postgres where (catalog, schema,
-    table) are the UC entity names.
+    """The full resource name of the synced table, where (catalog, schema, table) are the Unity Catalog
+    names of the synced table.
     
-    Format "synced_tables/{catalog}.{schema}.{table}"
+    Format: "synced_tables/{catalog}.{schema}.{table}".
     
-    For the corresponding source table in the Unity catalog look for the "source_table_full_name"
+    For the corresponding source table in Unity Catalog, look for the "source_table_full_name"
     attribute."""
 
     spec: Optional[SyncedTableSyncedTableSpec] = None
@@ -4471,7 +4485,9 @@ class SyncedTable:
     """Synced Table data synchronization status."""
 
     synced_table_id: Optional[str] = None
-    """The part of the name, chosen by the user when the resource was created."""
+    """The three-part Unity Catalog name of the synced table, in the format
+    "{catalog}.{schema}.{table}". It is the synced_table_id that was used to create the synced table
+    and the last component of name."""
 
     uid: Optional[str] = None
     """The Unity Catalog table ID for this synced table."""
@@ -4608,6 +4624,7 @@ class SyncedTablePipelineProgress:
 @dataclass
 class SyncedTablePosition:
     delta_table_sync_info: Optional[DeltaTableSyncInfo] = None
+    """The source Delta table version that the last successful sync read."""
 
     sync_end_time: Optional[Timestamp] = None
     """The end timestamp of the most recent successful synchronization. This is the time when the data
@@ -4674,9 +4691,12 @@ class SyncedTableSyncedTableSpec:
     Sync preview."""
 
     branch: Optional[str] = None
-    """The full resource name the branch associated with the table.
+    """The full resource name of the branch that contains the synced table.
     
-    Format: "projects/{project_id}/branches/{branch_id}"."""
+    Format: "projects/{project_id}/branches/{branch_id}".
+    
+    A value must be specified when creating a synced table inside a standard catalog. Inside a
+    Lakebase catalog it can be omitted, and if specified it must match the branch of that catalog."""
 
     create_database_objects_if_missing: Optional[bool] = None
     """If true, the synced table's logical database and schema resources in PG will be created if they
@@ -4686,10 +4706,11 @@ class SyncedTableSyncedTableSpec:
     Defaults to true if omitted."""
 
     existing_pipeline_id: Optional[str] = None
-    """ID of an existing pipeline to bin-pack this synced table into. At most one of
-    existing_pipeline_id and new_pipeline_spec should be defined.
+    """ID of an existing pipeline to bin-pack this synced table into. The pipeline must be a synced
+    table pipeline that runs continuously if and only if scheduling_policy is CONTINUOUS. At most
+    one of existing_pipeline_id and new_pipeline_spec should be defined.
     
-    The pipeline used for the synced table is returned via the top level pipeline_id attribute."""
+    The pipeline used for the synced table is returned in status.pipeline_id."""
 
     extra_columns: Optional[List[SyncedTableSyncedTableSpecExtraColumn]] = None
     """Extra PostgreSQL-only columns to add to the synced table."""
@@ -4698,22 +4719,20 @@ class SyncedTableSyncedTableSpec:
     """Specification for creating a new pipeline. At most one of existing_pipeline_id and
     new_pipeline_spec should be defined.
     
-    The pipeline used for the synced table is returned via the top level pipeline_id attribute."""
+    The pipeline used for the synced table is returned in status.pipeline_id."""
 
     postgres_database: Optional[str] = None
-    """The Postgres database name where the synced table will be created in.
-    
-    If this synced table is created inside a Lakebase Catalog, this attribute can be omitted on
-    creation and is inferred from the postgres_database associated with the Lakebase Catalog. If
-    specified when inside a Lakebase Catalog, the value must match.
-    
-    A value must be specified when creating a synced table inside a Standard Catalog."""
+    """The name of the Postgres database where the synced table is created. A value must be specified
+    on creation. If the synced table is created inside a Lakebase catalog, the value must match the
+    Postgres database of that catalog."""
 
     primary_key_columns: Optional[List[str]] = None
-    """Primary Key columns to be used for data insert/update in the destination."""
+    """Primary Key columns to be used for data insert/update in the destination. At least one column
+    must be specified."""
 
     scheduling_policy: Optional[SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy] = None
-    """Scheduling policy of the underlying pipeline."""
+    """Scheduling policy of the underlying pipeline. A value must be specified on creation. See
+    https://docs.databricks.com/aws/en/oltp/projects/sync-tables for how to choose a sync mode."""
 
     source_table_full_name: Optional[str] = None
     """Three-part (catalog, schema, table) name of the source Delta table.
@@ -4947,6 +4966,8 @@ class SyncedTableSyncedTableStatus:
     """A text description of the current state of the synced table."""
 
     ongoing_sync_progress: Optional[SyncedTablePipelineProgress] = None
+    """Progress of the sync that is currently running, either the initial data load or an update of a
+    triggered or snapshot synced table."""
 
     pipeline_id: Optional[str] = None
     """ID of the associated pipeline."""
@@ -5308,12 +5329,14 @@ class PostgresAPI:
           The ID used to identify and manage the Database resource through the API. The Postgres database name
           is specified in ``spec.postgres_database``.
 
-          This value should be 4-63 characters, and only use characters available in DNS names, as defined by
-          RFC-1123
+          This value should be 3-63 characters, start with a lowercase letter, end with a lowercase letter or
+          digit, and contain only lowercase letters, digits, and hyphens.
 
           If database_id is not specified in the request, it is generated automatically.
         :param replace_existing: bool (optional)
-          If true, update the database if it already exists instead of returning an error.
+          If true, update the database if it already exists instead of returning an error. This requires
+          ``database_id`` to be set. Without ``database_id``, the request follows the normal create path and
+          fails if the database name already exists.
 
         :returns: :class:`Operation`
         """
@@ -5498,15 +5521,18 @@ class PostgresAPI:
         return CreateRoleOperation(self, operation)
 
     def create_snapshot(self, parent: str, snapshot: Snapshot, snapshot_id: str) -> CreateSnapshotOperation:
-        """Creates a snapshot, an immutable point-in-time copy of a branch's data, within the project.
+        """Creates a snapshot, an immutable point-in-time copy of a branch's data, within the project. Returns a
+        long-running operation. Poll it until done is true; its response holds the new snapshot.
 
         :param parent: str
           The project in which to create the snapshot. Format: projects/{project_id}
         :param snapshot: :class:`Snapshot`
-          The snapshot to create.
+          The snapshot to create. Only ``spec`` is read from this message; the system sets the other fields.
         :param snapshot_id: str
           Client-chosen ID for the snapshot. It becomes the final segment of the snapshot resource name and
-          cannot be changed after creation.
+          cannot be changed after creation. The ID must be 3 to 63 characters long, start with a lowercase
+          letter, end with a lowercase letter or digit, and contain only lowercase letters, digits, and
+          hyphens.
 
         :returns: :class:`Operation`
         """
@@ -5529,9 +5555,12 @@ class PostgresAPI:
         return CreateSnapshotOperation(self, operation)
 
     def create_synced_table(self, synced_table: SyncedTable, synced_table_id: str) -> CreateSyncedTableOperation:
-        """Create a Synced Table.
+        """Create a Synced Table. Creates the synced table in Unity Catalog and the Postgres table on the branch,
+        and starts the pipeline that loads the initial data from the source table.
 
         :param synced_table: :class:`SyncedTable`
+          The synced table to create. Its configuration is read from spec, and its name comes from
+          synced_table_id.
         :param synced_table_id: str
           The ID to use for the Synced Table. This becomes the final component of the SyncedTable's resource
           name. ID is required and is the synced table name, containing (catalog, schema, table) tuple.
@@ -5667,7 +5696,7 @@ class PostgresAPI:
         return DeleteDataApiOperation(self, operation)
 
     def delete_database(self, name: str) -> DeleteDatabaseOperation:
-        """Delete a Database.
+        """Deletes the specified Postgres database.
 
         :param name: str
           The resource name of the postgres database. Format:
@@ -5795,7 +5824,8 @@ class PostgresAPI:
         return DeleteRoleOperation(self, operation)
 
     def delete_snapshot(self, name: str) -> DeleteSnapshotOperation:
-        """Deletes the specified snapshot.
+        """Deletes the specified snapshot. A deleted snapshot cannot be recovered. Returns a long-running
+        operation. Poll it until done is true.
 
         :param name: str
           The resource name of the snapshot to delete. Format: projects/{project_id}/snapshots/{snapshot_id}
@@ -5816,7 +5846,8 @@ class PostgresAPI:
         return DeleteSnapshotOperation(self, operation)
 
     def delete_synced_table(self, name: str) -> DeleteSyncedTableOperation:
-        """Delete a Synced Table.
+        """Delete a Synced Table. Drops the Postgres table, removes the synced table from its pipeline, and
+        deletes it from Unity Catalog. The pipeline itself is deleted when no other synced table uses it.
 
         :param name: str
           The Full resource name of the synced table, of the format
@@ -6019,7 +6050,7 @@ class PostgresAPI:
         return DataApi.from_dict(res)
 
     def get_database(self, name: str) -> Database:
-        """Get a Database.
+        """Retrieves information about the specified Postgres database.
 
         :param name: str
           The name of the Database to retrieve. Format:
@@ -6372,7 +6403,7 @@ class PostgresAPI:
     def list_databases(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Database]:
-        """List Databases.
+        """Returns a list of Postgres databases in the branch.
 
         :param parent: str
           The Branch that owns this collection of databases. Format:
@@ -6787,7 +6818,7 @@ class PostgresAPI:
         return UpdateDataApiOperation(self, operation)
 
     def update_database(self, name: str, database: Database, update_mask: FieldMask) -> UpdateDatabaseOperation:
-        """Update a Database.
+        """Updates the specified Postgres database. Only the fields named in ``update_mask`` change.
 
         :param name: str
           The resource name of the database. Format:
@@ -6798,7 +6829,7 @@ class PostgresAPI:
           The database's ``name`` field is used to identify the database to update. Format:
           projects/{project_id}/branches/{branch_id}/databases/{database_id}
         :param update_mask: FieldMask
-          The list of fields to update.
+          The list of fields to update. The updatable fields are ``spec.role`` and ``spec.postgres_database``.
 
         :returns: :class:`Operation`
         """

@@ -1875,10 +1875,14 @@ class ContinuousTriggerConfiguration:
 @dataclass
 class ContinuousTriggerState:
     consecutive_failures: Optional[int] = None
+    """The number of consecutive unsuccessful runs. Resets to ``0`` after a healthy run and determines
+    the exponential backoff before the next run."""
 
     is_backing_off: Optional[bool] = None
+    """Whether the trigger is delaying the next run with exponential backoff after repeated failures."""
 
     next_attempt_ms: Optional[int] = None
+    """The time at which the trigger next attempts to start a run, in epoch milliseconds."""
 
     def as_dict(self) -> dict:
         """Serializes the ContinuousTriggerState into a dictionary suitable for use as a JSON request body."""
@@ -3329,6 +3333,8 @@ class GitSource:
     with git_branch or git_tag."""
 
     git_snapshot: Optional[GitSnapshot] = None
+    """Read-only state of the remote repository at the time the job was run. This field is only
+    included on job runs."""
 
     git_tag: Optional[str] = None
     """Name of the tag to be checked out and used by this job. This field cannot be specified in
@@ -3338,6 +3344,8 @@ class GitSource:
     """The source of the job specification in the remote repository when the job is source controlled."""
 
     sparse_checkout: Optional[SparseCheckout] = None
+    """Sparse checkout settings for the repository. When set, only the directories listed in
+    ``patterns`` are checked out."""
 
     def as_dict(self) -> dict:
         """Serializes the GitSource into a dictionary suitable for use as a JSON request body."""
@@ -3770,7 +3778,7 @@ class JobCompletionTriggerConfigurationMonitoredJob:
     workspace_id: str
     """The ID of the workspace containing the upstream job. This can differ from the caller's workspace
     and downstream services enforce correct entitlements and CAN_VIEW permissions for the user + job
-    combination. SDR: https://databricks.atlassian.net/browse/SDR-5267"""
+    combination."""
 
     job_id: str
     """The ID of the upstream job."""
@@ -4167,6 +4175,8 @@ class JobEnvironment:
     """The key of an environment. It has to be unique within a job."""
 
     spec: Optional[compute.Environment] = None
+    """The environment specification, including the environment version and the dependencies to install
+    before a task runs."""
 
     def as_dict(self) -> dict:
         """Serializes the JobEnvironment into a dictionary suitable for use as a JSON request body."""
@@ -4637,6 +4647,7 @@ class JobSettings:
     are used, ``git_source`` must be defined on the job."""
 
     health: Optional[JobsHealthRules] = None
+    """An optional set of health rules that can be defined for this job."""
 
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
@@ -4984,8 +4995,20 @@ class JobsHealthOperator(Enum):
 @dataclass
 class JobsHealthRule:
     metric: JobsHealthMetric
+    """Specifies the health metric that is being evaluated for a particular health rule.
+    
+    - ``RUN_DURATION_SECONDS``: Expected total time for a run in seconds.
+    - ``STREAMING_BACKLOG_BYTES``: An estimate of the maximum bytes of data waiting to be consumed
+      across all streams. This metric is in Public Preview.
+    - ``STREAMING_BACKLOG_RECORDS``: An estimate of the maximum offset lag across all streams. This
+      metric is in Public Preview.
+    - ``STREAMING_BACKLOG_SECONDS``: An estimate of the maximum consumer delay across all streams.
+      This metric is in Public Preview.
+    - ``STREAMING_BACKLOG_FILES``: An estimate of the maximum number of outstanding files across all
+      streams. This metric is in Public Preview."""
 
     op: JobsHealthOperator
+    """Specifies the operator used to compare the health metric value with the specified threshold."""
 
     value: int
     """Specifies the threshold value that the health metric should obey to satisfy the health rule."""
@@ -5025,6 +5048,7 @@ class JobsHealthRules:
     """An optional set of health rules that can be defined for this job."""
 
     rules: Optional[List[JobsHealthRule]] = None
+    """The health rules to evaluate for each run."""
 
     def as_dict(self) -> dict:
         """Serializes the JobsHealthRules into a dictionary suitable for use as a JSON request body."""
@@ -5508,24 +5532,31 @@ class PerTriggerState:
     empty messages."""
 
     continuous: Optional[ContinuousTriggerState] = None
+    """State of the continuous trigger."""
 
     file_arrival: Optional[FileArrivalTriggerState] = None
+    """State of the file arrival trigger."""
 
     job_completion: Optional[JobCompletionTriggerState] = None
+    """State of the job completion trigger."""
 
     model: Optional[ModelTriggerState] = None
+    """State of the model trigger."""
 
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not. Mirrors the configured pause_status."""
 
     periodic: Optional[PeriodicTriggerState] = None
+    """State of the periodic trigger."""
 
     schedule: Optional[ScheduleTriggerState] = None
+    """State of the cron schedule trigger."""
 
     sql_condition: Optional[SqlConditionState] = None
     """State for SQL condition evaluation, can coexist with other trigger states."""
 
     table_update: Optional[TableTriggerState] = None
+    """State of the table update trigger."""
 
     def as_dict(self) -> dict:
         """Serializes the PerTriggerState into a dictionary suitable for use as a JSON request body."""
@@ -5640,6 +5671,8 @@ class PeriodicTriggerConfigurationTimeUnit(Enum):
 @dataclass
 class PeriodicTriggerState:
     next_run_time: Optional[int] = None
+    """The time of the next scheduled run, in epoch milliseconds. Only set while the trigger is not
+    paused."""
 
     def as_dict(self) -> dict:
         """Serializes the PeriodicTriggerState into a dictionary suitable for use as a JSON request body."""
@@ -8672,7 +8705,8 @@ class SparkSubmitTask:
 @dataclass
 class SparseCheckout:
     patterns: Optional[List[str]] = None
-    """List of patterns to include for sparse checkout."""
+    """List of patterns to include for sparse checkout. Each pattern is the path of a directory
+    relative to the repository root."""
 
     def as_dict(self) -> dict:
         """Serializes the SparseCheckout into a dictionary suitable for use as a JSON request body."""
@@ -8767,11 +8801,12 @@ class SqlAlertState(Enum):
 
 @dataclass
 class SqlConditionConfiguration:
-    sql_query_id: str
-    """The ID of the SQL query to evaluate as the trigger condition."""
-
     warehouse_id: str
     """The canonical identifier of the SQL warehouse to run the condition query against."""
+
+    sql_query_id: Optional[str] = None
+    """The ID of the SQL query to evaluate as the trigger condition. Exactly one of ``sql_query_id`` or
+    ``file`` must be set."""
 
     trigger_mode: Optional[SqlConditionTriggerMode] = None
     """Determines how the SQL query result is interpreted to decide whether the condition fires. Must
@@ -10356,6 +10391,7 @@ class TableState:
 @dataclass
 class TableTriggerState:
     last_seen_table_states: Optional[List[TableState]] = None
+    """The last observed state of each monitored table."""
 
     using_scalable_monitoring: Optional[bool] = None
     """Indicates whether the trigger is using scalable monitoring."""
@@ -10526,6 +10562,7 @@ class Task:
     gen_ai_compute_task: Optional[GenAiComputeTask] = None
 
     health: Optional[JobsHealthRules] = None
+    """An optional set of health rules that can be defined for this task."""
 
     job_cluster_key: Optional[str] = None
     """If job_cluster_key, this task is executed reusing the cluster specified in
@@ -11456,6 +11493,7 @@ class TriggerSettings:
     other trigger types and runs *after* other trigger types conditions are evaluated."""
 
     table_update: Optional[TableUpdateTriggerConfiguration] = None
+    """Table update trigger settings."""
 
     def as_dict(self) -> dict:
         """Serializes the TriggerSettings into a dictionary suitable for use as a JSON request body."""
@@ -11512,8 +11550,10 @@ class TriggerSettings:
 @dataclass
 class TriggerStateProto:
     file_arrival: Optional[FileArrivalTriggerState] = None
+    """State of the file arrival trigger."""
 
     job_completion: Optional[JobCompletionTriggerState] = None
+    """State of the job completion trigger."""
 
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not. For continuous schedules, it can differ from the
@@ -11524,6 +11564,7 @@ class TriggerStateProto:
     """State for SQL condition evaluation, can coexist with other trigger states."""
 
     table: Optional[TableTriggerState] = None
+    """State of the table update trigger."""
 
     def as_dict(self) -> dict:
         """Serializes the TriggerStateProto into a dictionary suitable for use as a JSON request body."""
@@ -11684,6 +11725,7 @@ class VolumeSource:
 @dataclass
 class Webhook:
     id: str
+    """The ID of the notification destination to call. Must be a UUID."""
 
     def as_dict(self) -> dict:
         """Serializes the Webhook into a dictionary suitable for use as a JSON request body."""
@@ -12024,6 +12066,7 @@ class JobsAPI:
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, ``git_source`` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
+          An optional set of health rules that can be defined for this job.
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
@@ -12850,7 +12893,7 @@ class JobsAPI:
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
         :param job_parameters: Dict[str,str] (optional)
-          Job-level parameters used in the run. for example ``"param": "overriding_val"``
+          Job-level parameters used in the run, for example ``"param": "overriding_val"``.
         :param notebook_params: Dict[str,str] (optional)
           A map from keys to values for jobs with notebook task, for example ``"notebook_params": {"name":
           "john doe", "age": "35"}``. The map is passed to the notebook and is accessible through the

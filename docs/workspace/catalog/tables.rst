@@ -41,9 +41,19 @@
         :param schema_name: str
           Name of parent schema relative to its parent catalog.
         :param table_type: :class:`TableType`
+          The type of the table. MANAGED tables store their data in storage that Unity Catalog manages,
+          EXTERNAL tables store it in a registered external location, FOREIGN tables mirror objects of an
+          external database through a connection, and the shallow clone types reference the data files of a
+          base table. VIEW, MATERIALIZED_VIEW, STREAMING_TABLE and METRIC_VIEW are defined by a view
+          definition. See https://docs.databricks.com/aws/en/tables/ for an overview of the table types.
         :param data_source_format: :class:`DataSourceFormat`
+          The format of the data that backs the table, such as DELTA, PARQUET, CSV or JSON. Foreign tables
+          report the external system that holds them, for example SNOWFLAKE_FORMAT or MYSQL_FORMAT.
         :param storage_location: str
-          Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
+          The cloud storage URL under which the data files of the table are stored. For an EXTERNAL table, it
+          must be set on creation to a path within an existing external location. For a MANAGED table, the
+          server assigns a path under the managed storage location of the parent schema, catalog or metastore
+          and returns it in this field. Views have no storage location.
         :param columns: List[:class:`ColumnInfo`] (optional)
           The array of **ColumnInfo** definitions of the table's columns.
         :param properties: Dict[str,str] (optional)
@@ -285,7 +295,7 @@
         :param full_name: str
           Full name of the table.
         :param owner: str (optional)
-          Username of current owner of table.
+          The user or group that owns the table. The principal that creates the table becomes its owner.
 
 
         

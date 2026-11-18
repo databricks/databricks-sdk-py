@@ -16,15 +16,20 @@
         Creates a group in the Databricks account with a unique name, using the supplied group details.
 
         :param display_name: str (optional)
-          String that represents a human-readable group name
+          Sets the human-readable name of the group. The name must be unique within the account and must not
+          exceed 255 characters.
         :param external_id: str (optional)
+          Sets the identifier of the group in an external identity provider.
         :param id: str (optional)
-          Databricks group ID
+          Identifies the group within Databricks.
         :param members: List[:class:`ComplexValue`] (optional)
+          Lists the members of the group. Each entry identifies a user, service principal or group in the
+          account by its ID in the value sub-attribute.
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
-          Indicates if the group has the admin role.
+          Lists the account roles that are assigned to the group. The only supported role value is
+          ``account_admin``.
 
         :returns: :class:`AccountGroup`
         
@@ -59,7 +64,7 @@
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
-          Desired number of results per page. Default is 10000.
+          Specifies the number of results per page. When omitted, the server uses its default page size.
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
@@ -83,8 +88,9 @@
         Partially updates the details of a group.
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID for a group in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+          Lists the patch operations to apply to the group.
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 
@@ -96,15 +102,20 @@
         Updates the details of a group by replacing the entire group entity.
 
         :param id: str
-          Databricks group ID
+          Identifies the group within Databricks.
         :param display_name: str (optional)
-          String that represents a human-readable group name
+          Sets the human-readable name of the group. The name must be unique within the account and must not
+          exceed 255 characters.
         :param external_id: str (optional)
+          Sets the identifier of the group in an external identity provider.
         :param members: List[:class:`ComplexValue`] (optional)
+          Lists the members of the group. Each entry identifies a user, service principal or group in the
+          account by its ID in the value sub-attribute.
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
-          Indicates if the group has the admin role.
+          Lists the account roles that are assigned to the group. The only supported role value is
+          ``account_admin``.
 
 
         

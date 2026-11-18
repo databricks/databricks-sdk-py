@@ -16,15 +16,20 @@
 
     .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec], index_subtype: Optional[IndexSubtype]]) -> VectorIndex
 
-        Create a new index.
+        Create a new index on an endpoint. Creating a Delta Sync index also creates the pipeline that
+        populates it from the source table; a Direct Vector Access index starts empty and is populated through
+        Upsert data into an index.
 
         :param name: str
-          Name of the index
+          Three-level Unity Catalog name of the index to create.
         :param endpoint_name: str
           Name of the endpoint to be used for serving the index
         :param primary_key: str
-          Primary key of the index
+          Name of the column that uniquely identifies each row. For a Delta Sync index it is a column of the
+          source table; for a Direct Vector Access index it must be declared in ``schema_json``. It cannot be
+          the embedding source or embedding vector column.
         :param index_type: :class:`VectorIndexType`
+          Type of index to create, which determines which spec field is required.
         :param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)
           Specification for Delta Sync Index. Required if ``index_type`` is ``DELTA_SYNC``.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
@@ -37,22 +42,23 @@
 
     .. py:method:: delete_data_vector_index(index_name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse
 
-        Handles the deletion of data from a specified vector index.
+        Delete rows from a Direct Vector Access index by primary key. The response reports how many rows were
+        deleted and the primary keys of the rows that failed.
 
         :param index_name: str
           Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index.
         :param primary_keys: List[str]
-          List of primary keys for the data to be deleted.
+          Primary keys of the rows to delete. At least one key is required.
 
         :returns: :class:`DeleteDataVectorIndexResponse`
         
 
     .. py:method:: delete_index(index_name: str)
 
-        Delete an index.
+        Delete an index and the data it holds. The source table of a Delta Sync index is not affected.
 
         :param index_name: str
-          Name of the index
+          Three-level Unity Catalog name of the index.
 
 
         
@@ -62,7 +68,7 @@
         Get an index.
 
         :param index_name: str
-          Name of the index
+          Three-level Unity Catalog name of the index.
         :param ensure_reranker_compatible: bool (optional)
           If true, the URL returned for the index is guaranteed to be compatible with the reranker. Currently
           this means we return the CP URL regardless of how the index is being accessed. If not set or set to
@@ -76,21 +82,23 @@
         List all indexes in the given endpoint.
 
         :param endpoint_name: str
-          Name of the endpoint
+          Name of the endpoint whose indexes to list.
         :param page_token: str (optional)
-          Token for pagination
+          Page token returned by a previous call, used to get the next page of results.
 
         :returns: Iterator over :class:`MiniVectorIndex`
         
 
     .. py:method:: query_index(index_name: str, columns: List[str] [, columns_to_rerank: Optional[List[str]], facets: Optional[List[str]], filters_json: Optional[str], num_results: Optional[int], query_columns: Optional[List[str]], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], reranker: Optional[RerankerConfig], score_threshold: Optional[float], sort_columns: Optional[List[str]]]) -> QueryVectorIndexResponse
 
-        Query the specified vector index.
+        Query an index with a vector, text, or both, and return the requested columns of the best-matching
+        rows.
 
         :param index_name: str
           Name of the vector index to query.
         :param columns: List[str]
-          List of column names to include in the response.
+          Names of the columns to return for each result. At least one column is required, and only columns
+          that are part of the index can be returned.
         :param columns_to_rerank: List[str] (optional)
           Column names used to retrieve data to send to the reranker.
         :param facets: List[str] (optional)
@@ -99,26 +107,29 @@
           BUCKETS [[from,to],...]"`` - inclusive numeric ranges ``TOP`` and ``BUCKETS`` are case-insensitive.
           A column may appear at most once.
         :param filters_json: str (optional)
-          JSON string representing query filters.
-
-          Example filters:
-
-          - ``{"id <": 5}``: Filter for id less than 5.
-          - ``{"id >": 5}``: Filter for id greater than 5.
-          - ``{"id <=": 5}``: Filter for id less than equal to 5.
-          - ``{"id >=": 5}``: Filter for id greater than equal to 5.
-          - ``{"id": 5}``: Filter for id equal to 5.
+          Filters to apply to the results, as a JSON object serialized to a string. Each key is a column name,
+          optionally followed by a space and an operator, and each value is the value or list of values to
+          compare the column against. A key without an operator matches the value exactly, or any of the
+          listed values. Supported operators are ``NOT``, ``<``, ``<=``, ``>``, ``>=``, ``OR`` and ``LIKE``;
+          see https://docs.databricks.com/aws/en/ai-search/query-ai-search for their semantics. This field is
+          not supported on storage-optimized endpoints.
         :param num_results: int (optional)
-          Number of results to return. Defaults to 10.
+          Maximum number of results to return. It must be greater than 0 and defaults to 10. By default, a
+          ``HYBRID`` query can return at most 200 results.
         :param query_columns: List[str] (optional)
           Text columns to search for ``query_text``. When empty, all text columns are searched.
         :param query_text: str (optional)
-          Query text. Required for Delta Sync Index using model endpoint.
+          Text to search for. Use it for an index with Databricks-managed embeddings, which embeds the text
+          with the index's embedding model endpoint, and for ``FULL_TEXT`` queries on any index. A ``HYBRID``
+          query on an index with managed embeddings requires only ``query_text``.
         :param query_type: str (optional)
           The query type to use. Choices are ``ANN`` and ``HYBRID`` and ``FULL_TEXT``. Defaults to ``ANN``.
         :param query_vector: List[float] (optional)
-          Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
-          vectors.
+          Embedding vector to search for. Use it for an index whose embeddings you compute yourself: a Direct
+          Vector Access index or a Delta Sync index with ``embedding_vector_columns``. A ``HYBRID`` query on a
+          Delta Sync index with ``embedding_vector_columns``, or on a Direct Vector Access index without
+          ``embedding_source_columns``, requires both ``query_vector`` and ``query_text``. A Direct Vector
+          Access index with ``embedding_source_columns`` can be queried with ``query_text`` alone.
         :param reranker: :class:`RerankerConfig` (optional)
           If set, the top 50 results are reranked with the Databricks Reranker model before returning the
           ``num_results`` results to the user. The setting ``columns_to_rerank`` selects which columns are
@@ -142,7 +153,7 @@
         :param index_name: str
           Name of the vector index to query.
         :param endpoint_name: str (optional)
-          Name of the endpoint.
+          Name of the endpoint that serves the index.
         :param page_token: str (optional)
           Page token returned from previous ``QueryVectorIndex`` or ``QueryVectorIndexNextPage`` API.
 
@@ -151,8 +162,8 @@
 
     .. py:method:: scan_index(index_name: str [, last_primary_key: Optional[str], num_results: Optional[int]]) -> ScanVectorIndexResponse
 
-        Scan the specified vector index and return the first ``num_results`` entries after the exclusive
-        ``primary_key``.
+        Scan an index and return the first ``num_results`` rows after the exclusive ``last_primary_key``.
+        Repeat the call with the returned ``last_primary_key`` to read the whole index.
 
         :param index_name: str
           Name of the vector index to scan.
@@ -166,7 +177,8 @@
 
     .. py:method:: sync_index(index_name: str)
 
-        Triggers a synchronization process for a specified vector index.
+        Start a sync of a Delta Sync index with a ``TRIGGERED`` pipeline from its source table. An index with
+        a ``CONTINUOUS`` pipeline syncs automatically and rejects manual syncs.
 
         :param index_name: str
           Name of the vector index to synchronize. Must be a Delta Sync Index.
@@ -176,12 +188,15 @@
 
     .. py:method:: upsert_data_vector_index(index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse
 
-        Handles the upserting of data into a specified vector index.
+        Insert rows into a Direct Vector Access index, replacing existing rows that have the same primary key.
+        The response reports how many rows succeeded and the primary keys of the rows that failed.
 
         :param index_name: str
           Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.
         :param inputs_json: str
-          JSON string representing the data to be upserted.
+          Rows to upsert, as a JSON array of objects serialized to a string. Each object maps column names
+          from ``schema_json`` to values and must include the primary key. A row whose primary key already
+          exists in the index is replaced.
 
         :returns: :class:`UpsertDataVectorIndexResponse`
         

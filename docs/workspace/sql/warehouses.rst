@@ -42,7 +42,8 @@
 
           Supported values:
 
-          - Must be == 0 or >= 10 mins
+          - Must be == 0 or >= 1 min for serverless warehouses.
+          - Must be == 0 or >= 10 mins for classic and pro warehouses.
           - 0 indicates no autostop.
 
           Defaults to 120 mins
@@ -223,7 +224,8 @@
 
           Supported values:
 
-          - Must be == 0 or >= 10 mins
+          - Must be == 0 or >= 1 min for serverless warehouses.
+          - Must be == 0 or >= 10 mins for classic and pro warehouses.
           - 0 indicates no autostop.
 
           Defaults to 120 mins

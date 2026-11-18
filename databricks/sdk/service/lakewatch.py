@@ -309,6 +309,151 @@ class AutoLoaderFormat(Enum):
 
 
 @dataclass
+class BuiltinParser:
+    """A Databricks-authored parser, shared by every customer.
+
+    Same container-plus-versions shape as the custom ``Parser``, and addressed the same way, by
+    UUID. Built-ins are global rather than catalog-scoped, so they carry no owning catalog or
+    schema."""
+
+    latest_version: Optional[int] = None
+    """Newest published version number."""
+
+    name: Optional[str] = None
+    """Resource name. Format: ``builtin-parsers/{parser_id}``."""
+
+    parser_id: Optional[str] = None
+    """The parser's UUID, authored into the built-in's published definition rather than minted per
+    customer, so every workspace addresses the same built-in by the same id. It is the leaf of
+    ``name``."""
+
+    parser_name: Optional[str] = None
+    """The built-in's own leaf name, as published in content-marketplace. Stable and human-readable,
+    which is what a UI shows; ``name`` addresses the resource by id."""
+
+    tags: Optional[List[ParserTag]] = None
+    """Key/value tags describing this parser, e.g. ``cloud_provider=aws`` or ``log_source=cloudtrail``.
+    A parser may carry up to 32. Filterable on list."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BuiltinParser into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.latest_version is not None:
+            body["latest_version"] = self.latest_version
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parser_id is not None:
+            body["parser_id"] = self.parser_id
+        if self.parser_name is not None:
+            body["parser_name"] = self.parser_name
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BuiltinParser into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.latest_version is not None:
+            body["latest_version"] = self.latest_version
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parser_id is not None:
+            body["parser_id"] = self.parser_id
+        if self.parser_name is not None:
+            body["parser_name"] = self.parser_name
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BuiltinParser:
+        """Deserializes the BuiltinParser from a dictionary."""
+        return cls(
+            latest_version=_int64(d, "latest_version"),
+            name=d.get("name", None),
+            parser_id=d.get("parser_id", None),
+            parser_name=d.get("parser_name", None),
+            tags=_repeated_dict(d, "tags", ParserTag),
+        )
+
+
+@dataclass
+class BuiltinParserVersion:
+    """One published version of a built-in parser, carrying the spec.
+
+    The content pipeline owns versioning, so unlike the custom version there is no authoring
+    principal and no append timestamp here."""
+
+    description: Optional[str] = None
+    """Free-form description of this parser, authored by Databricks."""
+
+    name: Optional[str] = None
+    """Resource name. Format: ``builtin-parsers/{parser_id}/versions/{version}``."""
+
+    parser_name: Optional[str] = None
+    """The parent built-in's published leaf name, copied from the container on read. Denormalized so a
+    caller that needs identity alongside the spec reads the version alone rather than the container
+    as well. Populated by ``GetBuiltinParserVersion``; List omits it, as List omits ``spec``."""
+
+    spec: Optional[str] = None
+    """The parser spec: the field definitions for this log source, as a YAML document. Read-only;
+    built-in specs are authored by Databricks, so no client-facing size cap is enforced here."""
+
+    tags: Optional[List[ParserTag]] = None
+    """The parent built-in's tags, copied from the container on read. Rendering reads these for
+    connector-specific details, such as the source table a Lakeflow Connect parser reads."""
+
+    version: Optional[int] = None
+    """Version number."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BuiltinParserVersion into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parser_name is not None:
+            body["parser_name"] = self.parser_name
+        if self.spec is not None:
+            body["spec"] = self.spec
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BuiltinParserVersion into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parser_name is not None:
+            body["parser_name"] = self.parser_name
+        if self.spec is not None:
+            body["spec"] = self.spec
+        if self.tags:
+            body["tags"] = self.tags
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BuiltinParserVersion:
+        """Deserializes the BuiltinParserVersion from a dictionary."""
+        return cls(
+            description=d.get("description", None),
+            name=d.get("name", None),
+            parser_name=d.get("parser_name", None),
+            spec=d.get("spec", None),
+            tags=_repeated_dict(d, "tags", ParserTag),
+            version=_int64(d, "version"),
+        )
+
+
+@dataclass
 class CloudWatchLogsEnvelope:
     """Unwraps an AWS CloudWatch Logs delivery envelope: each element of ``logEvents`` becomes its own
     row, with the element's ``message`` parsed as the event body."""
@@ -1162,6 +1307,85 @@ class JsonArrayEnvelope:
 
 
 @dataclass
+class ListBuiltinParserVersionsResponse:
+    """A page of built-in version metadata, without the specs."""
+
+    builtin_parser_versions: Optional[List[BuiltinParserVersion]] = None
+    """Version metadata only, oldest first, without the spec."""
+
+    next_page_token: Optional[str] = None
+    """Opaque token for fetching the next page; pass it as ``page_token`` on the next call. It is empty
+    when there are no more results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListBuiltinParserVersionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.builtin_parser_versions:
+            body["builtin_parser_versions"] = [v.as_dict() for v in self.builtin_parser_versions]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListBuiltinParserVersionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.builtin_parser_versions:
+            body["builtin_parser_versions"] = self.builtin_parser_versions
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListBuiltinParserVersionsResponse:
+        """Deserializes the ListBuiltinParserVersionsResponse from a dictionary."""
+        return cls(
+            builtin_parser_versions=_repeated_dict(d, "builtin_parser_versions", BuiltinParserVersion),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
+class ListBuiltinParsersResponse:
+    """A page of built-in parsers, without their specs."""
+
+    builtin_parsers: Optional[List[BuiltinParser]] = None
+    """Summary rows: the container fields only, without the spec. Read a spec with
+    ``GetBuiltinParserVersion``."""
+
+    next_page_token: Optional[str] = None
+    """Opaque token for fetching the next page; pass it as ``page_token`` on the next call. It is empty
+    only when there are no more results. Page size is best-effort, so a short or even empty page
+    does not mean the end; keep paging until this token is empty, which is the only reliable
+    end-of-results signal."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListBuiltinParsersResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.builtin_parsers:
+            body["builtin_parsers"] = [v.as_dict() for v in self.builtin_parsers]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListBuiltinParsersResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.builtin_parsers:
+            body["builtin_parsers"] = self.builtin_parsers
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListBuiltinParsersResponse:
+        """Deserializes the ListBuiltinParsersResponse from a dictionary."""
+        return cls(
+            builtin_parsers=_repeated_dict(d, "builtin_parsers", BuiltinParser),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListDatasourcesResponse:
     datasources: Optional[List[Datasource]] = None
 
@@ -1198,6 +1422,85 @@ class ListDatasourcesResponse:
 
 
 @dataclass
+class ListParserVersionsResponse:
+    """A page of version metadata, without the specs."""
+
+    next_page_token: Optional[str] = None
+    """Opaque token for fetching the next page; pass it as ``page_token`` on the next call. It is empty
+    only when there are no more results. Page size is best-effort, so a short or even empty page
+    does not mean the end; keep paging until this token is empty, which is the only reliable
+    end-of-results signal."""
+
+    parser_versions: Optional[List[ParserVersion]] = None
+    """Version metadata only, oldest first, without the spec. Each row's ``create_time`` and
+    ``created_by`` are that version's own."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListParserVersionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.parser_versions:
+            body["parser_versions"] = [v.as_dict() for v in self.parser_versions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListParserVersionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.parser_versions:
+            body["parser_versions"] = self.parser_versions
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListParserVersionsResponse:
+        """Deserializes the ListParserVersionsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            parser_versions=_repeated_dict(d, "parser_versions", ParserVersion),
+        )
+
+
+@dataclass
+class ListParsersResponse:
+    """A page of parsers, without their specs."""
+
+    next_page_token: Optional[str] = None
+    """Opaque token for fetching the next page; pass it as ``page_token`` on the next call. It is empty
+    only when there are no more results. Page size is best-effort, so a short or even empty page
+    does not mean the end; keep paging until this token is empty, which is the only reliable
+    end-of-results signal."""
+
+    parsers: Optional[List[Parser]] = None
+    """Summary rows: the container fields only, without the spec. Read a spec with
+    ``GetParserVersion``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListParsersResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.parsers:
+            body["parsers"] = [v.as_dict() for v in self.parsers]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListParsersResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.parsers:
+            body["parsers"] = self.parsers
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListParsersResponse:
+        """Deserializes the ListParsersResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), parsers=_repeated_dict(d, "parsers", Parser))
+
+
+@dataclass
 class ListRulesResponse:
     next_page_token: Optional[str] = None
     """Token to pass as ``page_token`` in a subsequent ``ListRules`` call to fetch the next page, or
@@ -1228,6 +1531,147 @@ class ListRulesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListRulesResponse:
         """Deserializes the ListRulesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), rules=_repeated_dict(d, "rules", Rule))
+
+
+@dataclass
+class Parser:
+    """A customer-authored, versioned contract describing the fields of an ingested log source.
+
+    The parser is a container: it carries the identity and a pointer to the newest version. Specs
+    live on the immutable ``ParserVersion`` children, so one parser can be attached to many data
+    sources and each attachment pins a version."""
+
+    catalog_name: str
+    """Name of the parent UC catalog, set on create. Reads return the value as supplied; the current UC
+    catalog name is reported in ``effective_catalog_name``."""
+
+    schema_name: str
+    """Name of the parent UC schema, set on create. Reads return the value as supplied; the current UC
+    schema name is reported in ``effective_schema_name``."""
+
+    parser_name: str
+    """Client-supplied parser name, stored as supplied and fixed at create time. Must be a valid UC
+    identifier. A custom parser is not currently a UC securable and this field has no rename path."""
+
+    spec: str
+    """Spec of version 1, as a YAML document. Accepted only by ``CreateParser``; read a version's spec
+    with ``GetParserVersion``."""
+
+    create_time: Optional[Timestamp] = None
+    """When the parser was created."""
+
+    created_by: Optional[Principal] = None
+    """The principal that created this parser. Each version records its own ``created_by``."""
+
+    description: Optional[str] = None
+    """Description of version 1. Accepted only by ``CreateParser``; read a version's description with
+    ``GetParserVersion``."""
+
+    effective_catalog_name: Optional[str] = None
+    """The current name of the parser's UC catalog. Tracks UC renames; when the current name cannot be
+    looked up, the name as of the parser's last write."""
+
+    effective_schema_name: Optional[str] = None
+    """The current name of the parser's UC schema. Tracks UC renames; when the current name cannot be
+    looked up, the name as of the parser's last write."""
+
+    latest_version: Optional[int] = None
+    """Newest version of this parser. Read its spec by passing this to ``GetParserVersion``, or by
+    using the ``latest`` alias. Absent when every version has been deleted."""
+
+    name: Optional[str] = None
+    """Resource name. Format: ``parsers/{parser_id}``, where the leaf is the immutable server-assigned
+    UUID. Create-time placement names are stored separately and do not affect the resource name."""
+
+    owner: Optional[Principal] = None
+    """The principal that owns this parser. Server-set from the authenticated creator, never supplied
+    by the client. Beta reads by UUID perform no authorization. Owner-gated write RPCs are outside
+    this API's current implementation scope."""
+
+    parser_id: Optional[str] = None
+    """The parser's server-assigned UUID. It is not currently a UC securable ID, is immutable for the
+    life of the resource, is the leaf of ``name``, and is returned by CreateParser."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Parser into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by:
+            body["created_by"] = self.created_by.as_dict()
+        if self.description is not None:
+            body["description"] = self.description
+        if self.effective_catalog_name is not None:
+            body["effective_catalog_name"] = self.effective_catalog_name
+        if self.effective_schema_name is not None:
+            body["effective_schema_name"] = self.effective_schema_name
+        if self.latest_version is not None:
+            body["latest_version"] = self.latest_version
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner:
+            body["owner"] = self.owner.as_dict()
+        if self.parser_id is not None:
+            body["parser_id"] = self.parser_id
+        if self.parser_name is not None:
+            body["parser_name"] = self.parser_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.spec is not None:
+            body["spec"] = self.spec
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Parser into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.effective_catalog_name is not None:
+            body["effective_catalog_name"] = self.effective_catalog_name
+        if self.effective_schema_name is not None:
+            body["effective_schema_name"] = self.effective_schema_name
+        if self.latest_version is not None:
+            body["latest_version"] = self.latest_version
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner:
+            body["owner"] = self.owner
+        if self.parser_id is not None:
+            body["parser_id"] = self.parser_id
+        if self.parser_name is not None:
+            body["parser_name"] = self.parser_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.spec is not None:
+            body["spec"] = self.spec
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Parser:
+        """Deserializes the Parser from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            create_time=_timestamp(d, "create_time"),
+            created_by=_from_dict(d, "created_by", Principal),
+            description=d.get("description", None),
+            effective_catalog_name=d.get("effective_catalog_name", None),
+            effective_schema_name=d.get("effective_schema_name", None),
+            latest_version=_int64(d, "latest_version"),
+            name=d.get("name", None),
+            owner=_from_dict(d, "owner", Principal),
+            parser_id=d.get("parser_id", None),
+            parser_name=d.get("parser_name", None),
+            schema_name=d.get("schema_name", None),
+            spec=d.get("spec", None),
+        )
 
 
 @dataclass
@@ -1286,6 +1730,127 @@ class ParserRef:
             id=d.get("id", None),
             target_table=_from_dict(d, "target_table", TableName),
             version=d.get("version", None),
+        )
+
+
+@dataclass
+class ParserTag:
+    """A key/value tag on a built-in parser, e.g. ``key = "cloud_provider"``, ``value = "aws"``.
+    Key/value pairs match the tag shape used across Databricks (MLflow, model-serving endpoints,
+    clusters) rather than a bare string list."""
+
+    key: str
+    """The tag key, e.g. ``cloud_provider``. Required: a keyless tag cannot be filtered on and is
+    meaningless."""
+
+    value: Optional[str] = None
+    """The tag value, e.g. ``aws``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ParserTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ParserTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ParserTag:
+        """Deserializes the ParserTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class ParserVersion:
+    """One immutable version of a parser, carrying the spec.
+
+    Immutable: an edit creates a new version rather than mutating an existing one, so a data source
+    that pins a version is never affected. Version numbers are never reused, including after a
+    delete."""
+
+    spec: str
+    """The field definitions for this log source, as a YAML document. Validated on write, so an invalid
+    spec is never stored."""
+
+    create_time: Optional[Timestamp] = None
+    """When this version was appended."""
+
+    created_by: Optional[Principal] = None
+    """The principal that appended this version."""
+
+    description: Optional[str] = None
+    """Free-form description of this version, set when the version is created."""
+
+    name: Optional[str] = None
+    """Resource name. Format: ``parsers/{parser_id}/versions/{version}``."""
+
+    parser_name: Optional[str] = None
+    """The parent parser's name, copied from the container on read. Denormalized so a caller that needs
+    identity alongside the spec reads the version alone rather than the container as well. Populated
+    by ``GetParserVersion``; List omits it, as List omits ``spec``."""
+
+    version: Optional[int] = None
+    """Version number, assigned by the server when the version is appended."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ParserVersion into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by:
+            body["created_by"] = self.created_by.as_dict()
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parser_name is not None:
+            body["parser_name"] = self.parser_name
+        if self.spec is not None:
+            body["spec"] = self.spec
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ParserVersion into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parser_name is not None:
+            body["parser_name"] = self.parser_name
+        if self.spec is not None:
+            body["spec"] = self.spec
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ParserVersion:
+        """Deserializes the ParserVersion from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            created_by=_from_dict(d, "created_by", Principal),
+            description=d.get("description", None),
+            name=d.get("name", None),
+            parser_name=d.get("parser_name", None),
+            spec=d.get("spec", None),
+            version=_int64(d, "version"),
         )
 
 
@@ -2699,6 +3264,55 @@ class LakewatchAPI:
         res = self._api.do("POST", "/api/2.0/lakewatch/datasources", body=body, headers=headers)
         return Datasource.from_dict(res)
 
+    def create_parser(self, parser: Parser) -> Parser:
+        """Creates a parser and its first version in one call.
+
+        :param parser: :class:`Parser`
+          The parser to create. ``spec`` and ``description`` become version 1.
+
+        :returns: :class:`Parser`
+        """
+
+        body = parser.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/lakewatch/parsers", body=body, headers=headers)
+        return Parser.from_dict(res)
+
+    def create_parser_version(self, parent: str, parser_version: ParserVersion) -> ParserVersion:
+        """Appends a new immutable version, advancing the parser's latest-version pointer. This is how a parser
+        is edited; versions are never changed in place.
+
+        :param parent: str
+          Resource name of the parser to append a version to. Format: ``parsers/{parser_id}``.
+        :param parser_version: :class:`ParserVersion`
+          The version to append.
+
+        :returns: :class:`ParserVersion`
+        """
+
+        body = parser_version.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/lakewatch/{parent}/versions", body=body, headers=headers)
+        return ParserVersion.from_dict(res)
+
     def create_rule(self, rule: Rule) -> Rule:
         """Creates a new rule.
 
@@ -2727,6 +3341,49 @@ class LakewatchAPI:
         """Deletes a datasource by its resource name.
 
         :param name: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/lakewatch/{name}", headers=headers)
+
+    def delete_parser(self, name: str):
+        """Deletes a parser and all of its versions. Refused while any data source references it.
+
+        :param name: str
+          Resource name of the parser. Format: ``parsers/{parser_id}``.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/lakewatch/{name}", headers=headers)
+
+    def delete_parser_version(self, name: str):
+        """Deletes one version of a parser. Returns NOT_FOUND when the parser or the version does not exist, and
+        a conflict (HTTP 409) only while a data source references the version. Deleting the last version
+        leaves the parser in place with no versions.
+
+        :param name: str
+          Resource name of the version. Format: ``parsers/{parser_id}/versions/{version}``, where
+          ``{version}`` is a version number written without sign or leading zeros, such as ``3``. Unlike
+          GetParserVersion, the alias ``latest`` and forms such as ``007`` or ``+3`` are rejected, so a delete
+          always names one fixed version.
 
 
         """
@@ -2778,6 +3435,47 @@ class LakewatchAPI:
 
         res = self._api.do("GET", f"/api/2.0/lakewatch/{name}", headers=headers)
         return AlertConfig.from_dict(res)
+
+    def get_builtin_parser(self, name: str) -> BuiltinParser:
+        """Returns a built-in parser's identity and latest-version pointer. Does not return the spec.
+
+        :param name: str
+          Resource name. Format: ``builtin-parsers/{parser_id}``.
+
+        :returns: :class:`BuiltinParser`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/lakewatch/{name}", headers=headers)
+        return BuiltinParser.from_dict(res)
+
+    def get_builtin_parser_version(self, name: str) -> BuiltinParserVersion:
+        """Returns one version of a built-in parser, including its spec.
+
+        :param name: str
+          Resource name of the version. Format: ``builtin-parsers/{parser_id}/versions/{version}``, where
+          ``{version}`` is either a version number or the alias ``latest``.
+
+        :returns: :class:`BuiltinParserVersion`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/lakewatch/{name}", headers=headers)
+        return BuiltinParserVersion.from_dict(res)
 
     def get_common_config(self, name: str) -> CommonConfig:
         """Returns the common Lakewatch configuration for a catalog.
@@ -2836,6 +3534,49 @@ class LakewatchAPI:
         res = self._api.do("GET", f"/api/2.0/lakewatch/{name}", headers=headers)
         return DatasourceConfig.from_dict(res)
 
+    def get_parser(self, name: str) -> Parser:
+        """Returns a parser's identity and latest-version pointer. Does not return the spec; read a spec with
+        GetParserVersion.
+
+        :param name: str
+          Resource name of the parser. Format: ``parsers/{parser_id}``.
+
+        :returns: :class:`Parser`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/lakewatch/{name}", headers=headers)
+        return Parser.from_dict(res)
+
+    def get_parser_version(self, name: str) -> ParserVersion:
+        """Returns one version of a parser, including its spec.
+
+        :param name: str
+          Resource name of the version. Format: ``parsers/{parser_id}/versions/{version}``, where
+          ``{version}`` is either a version number or the alias ``latest``. ``latest`` is NOT_FOUND when every
+          version of the parser has been deleted.
+
+        :returns: :class:`ParserVersion`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/lakewatch/{name}", headers=headers)
+        return ParserVersion.from_dict(res)
+
     def get_rule(self, name: str) -> Rule:
         """Returns a single rule by its resource name.
 
@@ -2874,6 +3615,89 @@ class LakewatchAPI:
 
         res = self._api.do("GET", f"/api/2.0/lakewatch/{name}", headers=headers)
         return RuleConfig.from_dict(res)
+
+    def list_builtin_parser_versions(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[BuiltinParserVersion]:
+        """Lists a built-in parser's published versions, oldest first (ascending 1..resource_revision), without
+        their specs.
+
+        :param parent: str
+          Resource name of the built-in parser whose versions are listed. Format:
+          ``builtin-parsers/{parser_id}``.
+        :param page_size: int (optional)
+          Maximum number of results to return in one page. If unset or 0, at most 100 versions are returned.
+          The maximum allowed value is 1000.
+        :param page_token: str (optional)
+          Page token from a previous ``ListBuiltinParserVersions`` response, used to fetch the next page of
+          results.
+
+        :returns: Iterator over :class:`BuiltinParserVersion`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/lakewatch/{parent}/versions", query=query, headers=headers)
+            if "builtin_parser_versions" in json:
+                for v in json["builtin_parser_versions"]:
+                    yield BuiltinParserVersion.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_builtin_parsers(
+        self, *, filter: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[BuiltinParser]:
+        """Lists the built-in parsers Databricks publishes, without their specs.
+
+        :param filter: str (optional)
+          AIP-160 filter expression. Built-ins are filterable by their ``tags``; the exact tag-filter grammar
+          is defined by the server.
+        :param page_size: int (optional)
+          Maximum number of results to return in one page. This is a best-effort upper bound, not a guarantee:
+          the server may return fewer items than requested (even zero) while more results still exist. If
+          unset or 0, the server picks a default.
+        :param page_token: str (optional)
+          Page token from a previous ``ListBuiltinParsers`` response, used to fetch the next page of results.
+
+        :returns: Iterator over :class:`BuiltinParser`
+        """
+
+        query = {}
+        if filter is not None:
+            query["filter"] = filter
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/lakewatch/builtin-parsers", query=query, headers=headers)
+            if "builtin_parsers" in json:
+                for v in json["builtin_parsers"]:
+                    yield BuiltinParser.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def list_datasources(
         self,
@@ -2937,6 +3761,107 @@ class LakewatchAPI:
             if "datasources" in json:
                 for v in json["datasources"]:
                     yield Datasource.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_parser_versions(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[ParserVersion]:
+        """Lists a parser's versions, oldest first, without their specs.
+
+        :param parent: str
+          Resource name of the parser whose versions are listed. Format: ``parsers/{parser_id}``.
+        :param page_size: int (optional)
+          Maximum number of results to return in one page. This is a best-effort upper bound, not a guarantee:
+          the server may return fewer items than requested (even zero) while more results still exist. If
+          unset or 0, the server picks a default.
+        :param page_token: str (optional)
+          Page token from a previous ``ListParserVersions`` response, used to fetch the next page of results.
+          Send the same ``parent`` when requesting later pages; a token from a request for a different parser
+          is rejected.
+
+        :returns: Iterator over :class:`ParserVersion`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/lakewatch/{parent}/versions", query=query, headers=headers)
+            if "parser_versions" in json:
+                for v in json["parser_versions"]:
+                    yield ParserVersion.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_parsers(
+        self,
+        catalog_name: str,
+        *,
+        filter: Optional[str] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        schema_name: Optional[str] = None,
+    ) -> Iterator[Parser]:
+        """Lists parsers in a catalog, without their specs.
+
+        :param catalog_name: str
+          Name of the parent UC catalog to list parsers from. Required: List is scoped to a single catalog,
+          mirroring the Unity Catalog tables/functions APIs, which take catalog_name as a request field (bound
+          to a query parameter) rather than a catalog path segment.
+        :param filter: str (optional)
+          AIP-160 filter expression. Parsers are filterable by ``parser_name``.
+        :param page_size: int (optional)
+          Maximum number of results to return in one page. This is a best-effort upper bound, not a guarantee:
+          the server may return fewer items than requested (even zero) while more results still exist. If
+          unset or 0, the server picks a default.
+        :param page_token: str (optional)
+          Page token from a previous ``ListParsers`` response, used to fetch the next page of results. Send
+          the other request fields unchanged when requesting later pages; a token from a request with
+          different fields is rejected.
+        :param schema_name: str (optional)
+          Name of the parent UC schema. Optional: when set, results are narrowed to this schema; when omitted,
+          parsers across all schemas in ``catalog_name`` are returned.
+
+        :returns: Iterator over :class:`Parser`
+        """
+
+        query = {}
+        if catalog_name is not None:
+            query["catalog_name"] = catalog_name
+        if filter is not None:
+            query["filter"] = filter
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if schema_name is not None:
+            query["schema_name"] = schema_name
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/lakewatch/parsers", query=query, headers=headers)
+            if "parsers" in json:
+                for v in json["parsers"]:
+                    yield Parser.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]

@@ -137,25 +137,33 @@ class AccessControlResponse:
 
 @dataclass
 class AccountGroup:
+    """Represents a group of users, service principals and other groups in the Databricks account.
+    Members inherit the permissions that are granted to the group."""
+
     account_id: Optional[str] = None
-    """Databricks account ID"""
+    """Identifies the Databricks account that the group belongs to."""
 
     display_name: Optional[str] = None
-    """String that represents a human-readable group name"""
+    """Identifies the group by a human-readable name. The name must be unique within the account and
+    must not exceed 255 characters."""
 
     external_id: Optional[str] = None
-    """external_id should be unique for identifying groups"""
+    """Identifies the group in an external identity provider. Identity providers use it to match the
+    groups they manage to Databricks groups, so it should be unique among the groups in the account."""
 
     id: Optional[str] = None
-    """Databricks group ID"""
+    """Identifies the group within Databricks. Databricks generates the ID when the group is created."""
 
     members: Optional[List[ComplexValue]] = None
+    """Lists the members of the group. Each entry identifies a user, service principal or group in the
+    account by its ID in the value sub-attribute."""
 
     meta: Optional[ResourceMeta] = None
     """Container for the group identifier. Workspace local versus account."""
 
     roles: Optional[List[ComplexValue]] = None
-    """Indicates if the group has the admin role."""
+    """Lists the account roles that are assigned to the group. The only supported role value is
+    ``account_admin``."""
 
     def as_dict(self) -> dict:
         """Serializes the AccountGroup into a dictionary suitable for use as a JSON request body."""
@@ -211,25 +219,35 @@ class AccountGroup:
 
 @dataclass
 class AccountServicePrincipal:
+    """Represents a service principal in the Databricks account. Service principals are identities for
+    jobs, automated tools and systems such as scripts, apps and CI/CD platforms."""
+
     account_id: Optional[str] = None
-    """Databricks account ID"""
+    """Identifies the Databricks account that the service principal belongs to."""
 
     active: Optional[bool] = None
-    """If this user is active"""
+    """Indicates whether the service principal is active. A deactivated service principal cannot
+    authenticate or access Databricks APIs, but it keeps its permissions."""
 
     application_id: Optional[str] = None
-    """UUID relating to the service principal"""
+    """Identifies the service principal when it authenticates to Databricks. Databricks generates the
+    application ID, except on Azure, where it can be the application ID of a Microsoft Entra ID
+    service principal."""
 
     display_name: Optional[str] = None
-    """String that represents a concatenation of given and family names."""
+    """Identifies the service principal by a human-readable name."""
 
     external_id: Optional[str] = None
+    """Identifies the service principal in an external identity provider. Identity providers use it to
+    match the service principals they manage to Databricks service principals."""
 
     id: Optional[str] = None
-    """Databricks service principal ID."""
+    """Identifies the service principal within Databricks. Databricks generates the ID when the service
+    principal is created."""
 
     roles: Optional[List[ComplexValue]] = None
-    """Indicates if the group has the admin role."""
+    """Lists the account roles that are assigned to the service principal. The only supported role
+    value is ``account_admin``."""
 
     def as_dict(self) -> dict:
         """Serializes the AccountServicePrincipal into a dictionary suitable for use as a JSON request body."""
@@ -764,7 +782,7 @@ class ListAccountGroupsResponse:
     """Total results returned in the response."""
 
     resources: Optional[List[AccountGroup]] = None
-    """User objects returned in the response."""
+    """Group objects returned in the response."""
 
     start_index: Optional[int] = None
     """Starting index of all the results that matched the request filters. First item is number 1."""
@@ -815,7 +833,7 @@ class ListAccountServicePrincipalsResponse:
     """Total results returned in the response."""
 
     resources: Optional[List[AccountServicePrincipal]] = None
-    """User objects returned in the response."""
+    """Lists the service principals that are returned in the response."""
 
     start_index: Optional[int] = None
     """Starting index of all the results that matched the request filters. First item is number 1."""
@@ -1793,7 +1811,8 @@ class ResourceInfo:
     """The legacy acl path of the current resource."""
 
     parent_resource_info: Optional[ResourceInfo] = None
-    """Parent resource info for the current resource. The parent may have another parent."""
+    """Deprecated: use ``contributing_resources``. Parent resource info for the current resource. The
+    parent may have another parent."""
 
     def as_dict(self) -> dict:
         """Serializes the ResourceInfo into a dictionary suitable for use as a JSON request body."""
@@ -2574,15 +2593,20 @@ class AccountGroupsV2API:
         """Creates a group in the Databricks account with a unique name, using the supplied group details.
 
         :param display_name: str (optional)
-          String that represents a human-readable group name
+          Sets the human-readable name of the group. The name must be unique within the account and must not
+          exceed 255 characters.
         :param external_id: str (optional)
+          Sets the identifier of the group in an external identity provider.
         :param id: str (optional)
-          Databricks group ID
+          Identifies the group within Databricks.
         :param members: List[:class:`ComplexValue`] (optional)
+          Lists the members of the group. Each entry identifies a user, service principal or group in the
+          account by its ID in the value sub-attribute.
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
-          Indicates if the group has the admin role.
+          Lists the account roles that are assigned to the group. The only supported role value is
+          ``account_admin``.
 
         :returns: :class:`AccountGroup`
         """
@@ -2658,7 +2682,7 @@ class AccountGroupsV2API:
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
-          Desired number of results per page. Default is 10000.
+          Specifies the number of results per page. When omitted, the server uses its default page size.
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
@@ -2714,8 +2738,9 @@ class AccountGroupsV2API:
         """Partially updates the details of a group.
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID for a group in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+          Lists the patch operations to apply to the group.
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 
@@ -2748,15 +2773,20 @@ class AccountGroupsV2API:
         """Updates the details of a group by replacing the entire group entity.
 
         :param id: str
-          Databricks group ID
+          Identifies the group within Databricks.
         :param display_name: str (optional)
-          String that represents a human-readable group name
+          Sets the human-readable name of the group. The name must be unique within the account and must not
+          exceed 255 characters.
         :param external_id: str (optional)
+          Sets the identifier of the group in an external identity provider.
         :param members: List[:class:`ComplexValue`] (optional)
+          Lists the members of the group. Each entry identifies a user, service principal or group in the
+          account by its ID in the value sub-attribute.
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
-          Indicates if the group has the admin role.
+          Lists the account roles that are assigned to the group. The only supported role value is
+          ``account_admin``.
 
 
         """
@@ -2803,16 +2833,21 @@ class AccountServicePrincipalsV2API:
         """Creates a new service principal in the Databricks account.
 
         :param active: bool (optional)
-          If this user is active
+          Indicates whether the service principal is active. A deactivated service principal cannot
+          authenticate or access Databricks APIs, but it keeps its permissions.
         :param application_id: str (optional)
-          UUID relating to the service principal
+          Sets the application ID of a Microsoft Entra ID service principal. Only Azure accepts this field. On
+          AWS and GCP, Databricks generates the application ID and rejects requests that set it.
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names.
+          Sets the human-readable name of the service principal. The name is required unless the request sets
+          ``applicationId``.
         :param external_id: str (optional)
+          Sets the identifier of the service principal in an external identity provider.
         :param id: str (optional)
-          Databricks service principal ID.
+          Identifies the service principal within Databricks.
         :param roles: List[:class:`ComplexValue`] (optional)
-          Indicates if the group has the admin role.
+          Lists the account roles that are assigned to the service principal. The only supported role value is
+          ``account_admin``.
 
         :returns: :class:`AccountServicePrincipal`
         """
@@ -2841,7 +2876,7 @@ class AccountServicePrincipalsV2API:
         return AccountServicePrincipal.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a single service principal in the Databricks account.
+        """Deletes a single service principal from the Databricks account.
 
         :param id: str
           Unique ID for a service principal in the Databricks account.
@@ -2856,7 +2891,7 @@ class AccountServicePrincipalsV2API:
         )
 
     def get(self, id: str) -> AccountServicePrincipal:
-        """Gets the details for a single service principal define in the Databricks account.
+        """Gets the details for a single service principal in the Databricks account.
 
         :param id: str
           Unique ID for a service principal in the Databricks account.
@@ -2948,8 +2983,9 @@ class AccountServicePrincipalsV2API:
         """Partially updates the details of a single service principal in the Databricks account.
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID for a service principal in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+          Lists the patch operations to apply to the service principal.
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 
@@ -2985,19 +3021,24 @@ class AccountServicePrincipalsV2API:
     ):
         """Updates the details of a single service principal.
 
-        This action replaces the existing service principal with the same name.
+        This action replaces the existing service principal that has the given ID.
 
         :param id: str
-          Databricks service principal ID.
+          Identifies the service principal within Databricks.
         :param active: bool (optional)
-          If this user is active
+          Indicates whether the service principal is active. A deactivated service principal cannot
+          authenticate or access Databricks APIs, but it keeps its permissions.
         :param application_id: str (optional)
-          UUID relating to the service principal
+          Sets the application ID of a Microsoft Entra ID service principal. Only Azure accepts this field. On
+          AWS and GCP, Databricks generates the application ID and rejects requests that set it.
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names.
+          Sets the human-readable name of the service principal. The name is required unless the request sets
+          ``applicationId``.
         :param external_id: str (optional)
+          Sets the identifier of the service principal in an external identity provider.
         :param roles: List[:class:`ComplexValue`] (optional)
-          Indicates if the group has the admin role.
+          Lists the account roles that are assigned to the service principal. The only supported role value is
+          ``account_admin``.
 
 
         """

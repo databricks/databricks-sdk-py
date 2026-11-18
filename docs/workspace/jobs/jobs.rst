@@ -221,6 +221,7 @@
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, ``git_source`` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
+          An optional set of health rules that can be defined for this job.
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
@@ -953,7 +954,7 @@
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
         :param job_parameters: Dict[str,str] (optional)
-          Job-level parameters used in the run. for example ``"param": "overriding_val"``
+          Job-level parameters used in the run, for example ``"param": "overriding_val"``.
         :param notebook_params: Dict[str,str] (optional)
           A map from keys to values for jobs with notebook task, for example ``"notebook_params": {"name":
           "john doe", "age": "35"}``. The map is passed to the notebook and is accessible through the

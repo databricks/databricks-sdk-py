@@ -1646,9 +1646,7 @@ class CustomerFacingIngressNetworkPolicyPrivateIngressRule:
 
     authentication: Optional[CustomerFacingIngressNetworkPolicyAuthentication] = None
     """The authenticated identity the request must match. When unset, the rule matches all users and
-    service principals. On the account-level network policy, scoping to specific identities is not
-    currently supported, so this field must be unset (the rule matches all users and service
-    principals)."""
+    service principals."""
 
     destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
     """The destination the request must match — the resource being accessed, for example the

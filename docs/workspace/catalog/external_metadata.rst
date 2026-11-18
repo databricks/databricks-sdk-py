@@ -24,10 +24,13 @@
 
     .. py:method:: delete_external_metadata(name: str)
 
-        Deletes the external metadata object that matches the supplied name. The caller must be a metastore
-        admin, the owner of the external metadata object, or a user that has the **MANAGE** privilege.
+        Deletes the external metadata object that matches the supplied name. Every external lineage
+        relationship in which the object is the source or the target is deleted with it. The caller must be a
+        metastore admin, the owner of the external metadata object, or a user that has the **MANAGE**
+        privilege.
 
         :param name: str
+          Name of the external metadata object to delete.
 
 
         
@@ -38,6 +41,7 @@
         owner of the external metadata object, or a user that has the **BROWSE** privilege.
 
         :param name: str
+          Name of the external metadata object to get.
 
         :returns: :class:`ExternalMetadata`
         
@@ -51,7 +55,7 @@
 
         :param page_size: int (optional)
           Specifies the maximum number of external metadata objects to return in a single response. The value
-          must be less than or equal to 1000.
+          must be less than or equal to 1000. Defaults to 1000 when omitted.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -66,18 +70,15 @@
         the owner, they must also have the **MANAGE** privilege.
 
         :param name: str
-          Name of the external metadata object.
+          Name of the external metadata object. The name is unique within the metastore, must follow the
+          `Unity Catalog naming requirements
+          <https://docs.databricks.com/aws/en/data-governance/unity-catalog/requirements#naming-requirements>`__,
+          and is stored in lowercase. It cannot be changed after creation, and external lineage relationships
+          refer to the object by this name.
         :param external_metadata: :class:`ExternalMetadata`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          Comma-separated list of the fields to update, for example ``description,properties``. Only the
+          listed fields change. The other fields keep their current values. The mask must not be empty.
 
         :returns: :class:`ExternalMetadata`
         

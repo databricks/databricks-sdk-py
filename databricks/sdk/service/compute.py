@@ -183,6 +183,10 @@ class AwsAttributes:
     """Attributes set during cluster creation which are related to Amazon Web Services."""
 
     availability: Optional[AwsAvailability] = None
+    """Availability type used for all subsequent nodes past the ``first_on_demand`` ones.
+    
+    Note: If ``first_on_demand`` is zero, this availability type will be used for the entire
+    cluster."""
 
     ebs_volume_count: Optional[int] = None
     """The number of volumes launched for each instance. Users can choose up to 10 volumes. This
@@ -367,7 +371,8 @@ class AzureAttributes:
     currently be mutated over the lifetime of a cluster."""
 
     log_analytics_info: Optional[LogAnalyticsInfo] = None
-    """Defines values necessary to configure and run Azure Log Analytics agent"""
+    """Defines values necessary to configure and run Azure Log Analytics agent. Both
+    ``log_analytics_workspace_id`` and ``log_analytics_primary_key`` must be set, or neither."""
 
     spot_bid_max_price: Optional[float] = None
     """The max bid price to be used for Azure spot instances. The Max price for the bid cannot be
@@ -692,8 +697,8 @@ class ClusterAttributes:
     autotermination_minutes: Optional[int] = None
     """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
     this cluster will not be automatically terminated. If specified, the threshold must be between
-    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
-    termination."""
+    10 and 43200 minutes (30 days). Users can also set this value to 0 to explicitly disable
+    automatic termination."""
 
     aws_attributes: Optional[AwsAttributes] = None
     """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
@@ -724,12 +729,42 @@ class ClusterAttributes:
       tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
+    """Data security mode decides what data governance model to use when accessing data from a cluster.
+    
+    - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending
+      on your compute configuration.
+    - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users.
+      Cluster users are fully isolated so that they cannot see each other's data and credentials.
+      Most data governance features are supported in this mode. But programming languages and
+      cluster features might be limited.
+    - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a
+      single user specified in ``single_user_name``. Most programming languages, cluster features
+      and data governance features are available in this mode.
+    - ``NONE``: No security isolation for multiple users sharing the cluster. Data governance
+      features are not available in this mode.
+    
+    The following modes are legacy aliases for the above modes:
+    
+    - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+    - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+    - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+      concurrency clusters.
+    - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+      clusters.
+    - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn't have UC or passthrough
+      enabled."""
 
     dependency_mode: Optional[DependencyMode] = None
     """Controls dependency configuration for the cluster."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
+    """Custom Docker image for the cluster's nodes, used with `Databricks Container Services
+    <https://docs.databricks.com/compute/custom-containers.html>`__."""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -768,6 +803,18 @@ class ClusterAttributes:
     ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on ``kind``, different validations and default values will be applied.
+    
+    Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+    specified ``kind`` do not.
+    
+    - `is_single_node <https://docs.databricks.com/api/workspace/clusters/create#is_single_node>`__
+    - `use_ml_runtime <https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime>`__
+    
+    By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your
+    clusters are automatically using ``kind = CLASSIC_PREVIEW``."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -832,6 +879,8 @@ class ClusterAttributes:
     """Flexible node type configuration for worker nodes."""
 
     workload_type: Optional[WorkloadType] = None
+    """Types of workloads that can use the cluster, such as notebooks or jobs. If omitted, the cluster
+    can be used for both notebooks and jobs."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAttributes into a dictionary suitable for use as a JSON request body."""
@@ -1075,8 +1124,8 @@ class ClusterDetails:
     autotermination_minutes: Optional[int] = None
     """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
     this cluster will not be automatically terminated. If specified, the threshold must be between
-    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
-    termination."""
+    10 and 43200 minutes (30 days). Users can also set this value to 0 to explicitly disable
+    automatic termination."""
 
     aws_attributes: Optional[AwsAttributes] = None
     """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
@@ -1130,6 +1179,35 @@ class ClusterDetails:
       tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
+    """Data security mode decides what data governance model to use when accessing data from a cluster.
+    
+    - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending
+      on your compute configuration.
+    - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users.
+      Cluster users are fully isolated so that they cannot see each other's data and credentials.
+      Most data governance features are supported in this mode. But programming languages and
+      cluster features might be limited.
+    - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a
+      single user specified in ``single_user_name``. Most programming languages, cluster features
+      and data governance features are available in this mode.
+    - ``NONE``: No security isolation for multiple users sharing the cluster. Data governance
+      features are not available in this mode.
+    
+    The following modes are legacy aliases for the above modes:
+    
+    - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+    - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+    - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+      concurrency clusters.
+    - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+      clusters.
+    - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn't have UC or passthrough
+      enabled."""
 
     default_tags: Optional[Dict[str, str]] = None
     """Tags that are added by Databricks regardless of any ``custom_tags``, including:
@@ -1144,7 +1222,8 @@ class ClusterDetails:
     """Controls dependency configuration for the cluster."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
+    """Custom Docker image for the cluster's nodes, used with `Databricks Container Services
+    <https://docs.databricks.com/compute/custom-containers.html>`__."""
 
     driver: Optional[SparkNode] = None
     """Node on which the Spark driver resides. The driver node contains the Spark master and the
@@ -1190,13 +1269,25 @@ class ClusterDetails:
     ``spark_conf``, and ``num_workers``"""
 
     jdbc_port: Optional[int] = None
-    """Port on which Spark JDBC server is listening, in the driver nod. No service will be listeningon
-    on this port in executor nodes."""
+    """Port on which Spark JDBC server is listening in the driver node. No service will be listening on
+    this port in executor nodes."""
 
     kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on ``kind``, different validations and default values will be applied.
+    
+    Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+    specified ``kind`` do not.
+    
+    - `is_single_node <https://docs.databricks.com/api/workspace/clusters/create#is_single_node>`__
+    - `use_ml_runtime <https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime>`__
+    
+    By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your
+    clusters are automatically using ``kind = CLASSIC_PREVIEW``."""
 
     last_restarted_time: Optional[int] = None
-    """the timestamp that the cluster was started/restarted"""
+    """Time (in epoch milliseconds) when the cluster was last started or restarted."""
 
     last_state_loss_time: Optional[int] = None
     """Time when the cluster driver last lost its state (due to a restart or driver failure)."""
@@ -1306,6 +1397,8 @@ class ClusterDetails:
     """Flexible node type configuration for worker nodes."""
 
     workload_type: Optional[WorkloadType] = None
+    """Types of workloads that can use the cluster, such as notebooks or jobs. If omitted, the cluster
+    can be used for both notebooks and jobs."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterDetails into a dictionary suitable for use as a JSON request body."""
@@ -1592,16 +1685,19 @@ class ClusterDetails:
 @dataclass
 class ClusterEvent:
     cluster_id: str
+    """The ID of the cluster the event belongs to."""
 
     data_plane_event_details: Optional[DataPlaneEventDetails] = None
 
     details: Optional[EventDetails] = None
+    """Details about the event. Which fields are populated depends on the event ``type``."""
 
     timestamp: Optional[int] = None
     """The timestamp when the event occurred, stored as the number of milliseconds since the Unix
     epoch. If not provided, this will be assigned by the Timeline service."""
 
     type: Optional[EventType] = None
+    """The type of event, which determines which ``details`` fields are populated."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterEvent into a dictionary suitable for use as a JSON request body."""
@@ -2196,8 +2292,8 @@ class ClusterSpec:
     autotermination_minutes: Optional[int] = None
     """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
     this cluster will not be automatically terminated. If specified, the threshold must be between
-    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
-    termination."""
+    10 and 43200 minutes (30 days). Users can also set this value to 0 to explicitly disable
+    automatic termination."""
 
     aws_attributes: Optional[AwsAttributes] = None
     """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
@@ -2228,12 +2324,42 @@ class ClusterSpec:
       tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
+    """Data security mode decides what data governance model to use when accessing data from a cluster.
+    
+    - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending
+      on your compute configuration.
+    - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users.
+      Cluster users are fully isolated so that they cannot see each other's data and credentials.
+      Most data governance features are supported in this mode. But programming languages and
+      cluster features might be limited.
+    - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a
+      single user specified in ``single_user_name``. Most programming languages, cluster features
+      and data governance features are available in this mode.
+    - ``NONE``: No security isolation for multiple users sharing the cluster. Data governance
+      features are not available in this mode.
+    
+    The following modes are legacy aliases for the above modes:
+    
+    - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+    - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+    - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+      concurrency clusters.
+    - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+      clusters.
+    - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn't have UC or passthrough
+      enabled."""
 
     dependency_mode: Optional[DependencyMode] = None
     """Controls dependency configuration for the cluster."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
+    """Custom Docker image for the cluster's nodes, used with `Databricks Container Services
+    <https://docs.databricks.com/compute/custom-containers.html>`__."""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -2272,6 +2398,18 @@ class ClusterSpec:
     ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on ``kind``, different validations and default values will be applied.
+    
+    Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+    specified ``kind`` do not.
+    
+    - `is_single_node <https://docs.databricks.com/api/workspace/clusters/create#is_single_node>`__
+    - `use_ml_runtime <https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime>`__
+    
+    By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your
+    clusters are automatically using ``kind = CLASSIC_PREVIEW``."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2351,6 +2489,8 @@ class ClusterSpec:
     """Flexible node type configuration for worker nodes."""
 
     workload_type: Optional[WorkloadType] = None
+    """Types of workloads that can use the cluster, such as notebooks or jobs. If omitted, the cluster
+    can be used for both notebooks and jobs."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterSpec into a dictionary suitable for use as a JSON request body."""
@@ -3271,10 +3411,10 @@ class DiskTypeEbsVolumeType(Enum):
 @dataclass
 class DockerBasicAuth:
     password: Optional[str] = None
-    """Password of the user"""
+    """Password for authenticating to the Docker registry that hosts the image."""
 
     username: Optional[str] = None
-    """Name of the user"""
+    """User name for authenticating to the Docker registry that hosts the image."""
 
     def as_dict(self) -> dict:
         """Serializes the DockerBasicAuth into a dictionary suitable for use as a JSON request body."""
@@ -3471,8 +3611,8 @@ class EnforcePolicyComplianceForClusterResponseClusterSettings:
     autotermination_minutes: Optional[int] = None
     """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
     this cluster will not be automatically terminated. If specified, the threshold must be between
-    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
-    termination."""
+    10 and 43200 minutes (30 days). Users can also set this value to 0 to explicitly disable
+    automatic termination."""
 
     aws_attributes: Optional[AwsAttributes] = None
     """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
@@ -3503,12 +3643,42 @@ class EnforcePolicyComplianceForClusterResponseClusterSettings:
       tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
+    """Data security mode decides what data governance model to use when accessing data from a cluster.
+    
+    - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending
+      on your compute configuration.
+    - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users.
+      Cluster users are fully isolated so that they cannot see each other's data and credentials.
+      Most data governance features are supported in this mode. But programming languages and
+      cluster features might be limited.
+    - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a
+      single user specified in ``single_user_name``. Most programming languages, cluster features
+      and data governance features are available in this mode.
+    - ``NONE``: No security isolation for multiple users sharing the cluster. Data governance
+      features are not available in this mode.
+    
+    The following modes are legacy aliases for the above modes:
+    
+    - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+    - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+    - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+      concurrency clusters.
+    - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+      clusters.
+    - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn't have UC or passthrough
+      enabled."""
 
     dependency_mode: Optional[DependencyMode] = None
     """Controls dependency configuration for the cluster."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
+    """Custom Docker image for the cluster's nodes, used with `Databricks Container Services
+    <https://docs.databricks.com/compute/custom-containers.html>`__."""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -3547,6 +3717,18 @@ class EnforcePolicyComplianceForClusterResponseClusterSettings:
     ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on ``kind``, different validations and default values will be applied.
+    
+    Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+    specified ``kind`` do not.
+    
+    - `is_single_node <https://docs.databricks.com/api/workspace/clusters/create#is_single_node>`__
+    - `use_ml_runtime <https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime>`__
+    
+    By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your
+    clusters are automatically using ``kind = CLASSIC_PREVIEW``."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -3626,6 +3808,8 @@ class EnforcePolicyComplianceForClusterResponseClusterSettings:
     """Flexible node type configuration for worker nodes."""
 
     workload_type: Optional[WorkloadType] = None
+    """Types of workloads that can use the cluster, such as notebooks or jobs. If omitted, the cluster
+    can be used for both notebooks and jobs."""
 
     def as_dict(self) -> dict:
         """Serializes the EnforcePolicyComplianceForClusterResponseClusterSettings into a dictionary suitable for use as a JSON request body."""
@@ -3942,6 +4126,8 @@ class EventDetails:
     """The current number of nodes in the cluster."""
 
     did_not_expand_reason: Optional[str] = None
+    """The reason the disk was not expanded. Included in ``DID_NOT_EXPAND_DISK`` and
+    ``FAILED_TO_EXPAND_DISK`` events."""
 
     disk_size: Optional[int] = None
     """Current disk size in bytes"""
@@ -3953,6 +4139,8 @@ class EventDetails:
     """Whether or not a blocklisted node should be terminated. For ClusterEventType NODE_BLACKLISTED."""
 
     free_space: Optional[int] = None
+    """Free disk space in bytes. Included in disk expansion events such as ``EXPANDED_DISK`` and
+    ``DID_NOT_EXPAND_DISK``."""
 
     init_scripts: Optional[InitScriptEventDetails] = None
     """List of global and cluster init scripts associated with this cluster event."""
@@ -4505,6 +4693,7 @@ class GetEventsOrder(Enum):
 @dataclass
 class GetEventsResponse:
     events: Optional[List[ClusterEvent]] = None
+    """The events matching the request, in the requested ``order``."""
 
     next_page: Optional[GetEvents] = None
     """Deprecated: use next_page_token or prev_page_token instead.
@@ -4591,9 +4780,8 @@ class GetInstancePool:
     """Tags that are added by Databricks regardless of any ``custom_tags``, including:
     
     - Vendor: Databricks
-    - InstancePoolCreator: <user_id_of_creator>
-    - InstancePoolName: <name_of_pool>
-    - InstancePoolId: <id_of_pool>"""
+    - DatabricksInstancePoolCreatorId: <user_id_of_creator>
+    - DatabricksInstancePoolId: <id_of_pool>"""
 
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
@@ -5433,9 +5621,8 @@ class InstancePoolAndStats:
     """Tags that are added by Databricks regardless of any ``custom_tags``, including:
     
     - Vendor: Databricks
-    - InstancePoolCreator: <user_id_of_creator>
-    - InstancePoolName: <name_of_pool>
-    - InstancePoolId: <id_of_pool>"""
+    - DatabricksInstancePoolCreatorId: <user_id_of_creator>
+    - DatabricksInstancePoolId: <id_of_pool>"""
 
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
@@ -6200,12 +6387,15 @@ class Language(Enum):
 
 @dataclass
 class Library:
+    """A library to install on a cluster. Exactly one of the library-type fields must be set."""
+
     cran: Optional[RCranLibrary] = None
-    """Specification of a CRAN library to be installed as part of the library"""
+    """Specification of a CRAN library to be installed."""
 
     egg: Optional[str] = None
-    """Deprecated. URI of the egg library to install. Installing Python egg files is deprecated and is
-    not supported in Databricks Runtime 14.0 and above."""
+    """Deprecated: Installing Python egg files is not supported in Databricks Runtime 14.0 and above.
+    Use a wheel (``whl``) or a PyPI package (``pypi``) instead. The value is the URI of the egg file
+    to install."""
 
     jar: Optional[str] = None
     """URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
@@ -6219,12 +6409,13 @@ class Library:
     "org.jsoup:jsoup:1.7.2" }``"""
 
     pypi: Optional[PythonPyPiLibrary] = None
-    """Specification of a PyPi library to be installed. For example: ``{ "package": "simplejson" }``"""
+    """Specification of a PyPI library to be installed. For example: ``{ "package": "simplejson" }``"""
 
     requirements: Optional[str] = None
     """URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes
     paths are supported. For example: ``{ "requirements": "/Workspace/path/to/requirements.txt" }``
-    or ``{ "requirements" : "/Volumes/path/to/requirements.txt" }``"""
+    or ``{ "requirements" : "/Volumes/path/to/requirements.txt" }``. Installing a requirements file
+    requires Databricks Runtime 15.0 or above."""
 
     whl: Optional[str] = None
     """URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog
@@ -6293,13 +6484,16 @@ class LibraryFullStatus:
     """Whether the library was set to be installed on all clusters via the libraries UI."""
 
     library: Optional[Library] = None
-    """Unique identifier for the library."""
+    """The library whose status is reported."""
 
     messages: Optional[List[str]] = None
     """All the info and warning messages that have occurred so far for this library."""
 
     status: Optional[LibraryInstallStatus] = None
-    """Status of installing the library on the cluster."""
+    """Status of installing the library on the cluster. The status starts at PENDING and ends at
+    INSTALLED, FAILED or SKIPPED. Intermediate states are not always reported. A library stays
+    UNINSTALL_ON_RESTART after an uninstall request until the cluster restarts. While the cluster is
+    not running, libraries are reported as PENDING, and libraries marked for uninstall are omitted."""
 
     def as_dict(self) -> dict:
         """Serializes the LibraryFullStatus into a dictionary suitable for use as a JSON request body."""
@@ -6865,8 +7059,12 @@ class LocalFileInfo:
 @dataclass
 class LogAnalyticsInfo:
     log_analytics_primary_key: Optional[str] = None
+    """Primary key of the Azure Log Analytics workspace. The agent uses it to authenticate when
+    reporting to the workspace."""
 
     log_analytics_workspace_id: Optional[str] = None
+    """ID of the Azure Log Analytics workspace that the Log Analytics agent on the cluster's nodes
+    reports to."""
 
     def as_dict(self) -> dict:
         """Serializes the LogAnalyticsInfo into a dictionary suitable for use as a JSON request body."""
@@ -6940,7 +7138,7 @@ class MavenLibrary:
     """Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2"."""
 
     exclusions: Optional[List[str]] = None
-    """List of dependences to exclude. For example: ``["slf4j:slf4j", "*:hadoop-client"]``.
+    """List of dependencies to exclude. For example: ``["slf4j:slf4j", "*:hadoop-client"]``.
     
     Maven dependency exclusions:
     https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html."""
@@ -7583,7 +7781,7 @@ class PolicyFamily:
 @dataclass
 class PythonPyPiLibrary:
     package: str
-    """The name of the pypi package to install. An optional exact version specification is also
+    """The name of the PyPI package to install. An optional exact version specification is also
     supported. Examples: "simplejson" and "simplejson==3.8.0"."""
 
     repo: Optional[str] = None
@@ -8510,8 +8708,8 @@ class UpdateClusterResource:
     autotermination_minutes: Optional[int] = None
     """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
     this cluster will not be automatically terminated. If specified, the threshold must be between
-    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
-    termination."""
+    10 and 43200 minutes (30 days). Users can also set this value to 0 to explicitly disable
+    automatic termination."""
 
     aws_attributes: Optional[AwsAttributes] = None
     """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
@@ -8542,12 +8740,42 @@ class UpdateClusterResource:
       tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
+    """Data security mode decides what data governance model to use when accessing data from a cluster.
+    
+    - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending
+      on your compute configuration.
+    - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users.
+      Cluster users are fully isolated so that they cannot see each other's data and credentials.
+      Most data governance features are supported in this mode. But programming languages and
+      cluster features might be limited.
+    - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a
+      single user specified in ``single_user_name``. Most programming languages, cluster features
+      and data governance features are available in this mode.
+    - ``NONE``: No security isolation for multiple users sharing the cluster. Data governance
+      features are not available in this mode.
+    
+    The following modes are legacy aliases for the above modes:
+    
+    - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+    - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+    - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+      concurrency clusters.
+    - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+      clusters.
+    - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn't have UC or passthrough
+      enabled."""
 
     dependency_mode: Optional[DependencyMode] = None
     """Controls dependency configuration for the cluster."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
+    """Custom Docker image for the cluster's nodes, used with `Databricks Container Services
+    <https://docs.databricks.com/compute/custom-containers.html>`__."""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -8586,6 +8814,18 @@ class UpdateClusterResource:
     ``spark_conf``, and ``num_workers``"""
 
     kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on ``kind``, different validations and default values will be applied.
+    
+    Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+    specified ``kind`` do not.
+    
+    - `is_single_node <https://docs.databricks.com/api/workspace/clusters/create#is_single_node>`__
+    - `use_ml_runtime <https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime>`__
+    
+    By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your
+    clusters are automatically using ``kind = CLASSIC_PREVIEW``."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -8665,6 +8905,8 @@ class UpdateClusterResource:
     """Flexible node type configuration for worker nodes."""
 
     workload_type: Optional[WorkloadType] = None
+    """Types of workloads that can use the cluster, such as notebooks or jobs. If omitted, the cluster
+    can be used for both notebooks and jobs."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateClusterResource into a dictionary suitable for use as a JSON request body."""
@@ -9430,6 +9672,7 @@ class ClustersAPI:
         ``owner_username``.
 
         :param cluster_id: str
+          The ID of the cluster whose owner is changed.
         :param owner_username: str
           New owner of the cluster_id after this RPC.
 
@@ -9519,7 +9762,8 @@ class ClustersAPI:
         :param autotermination_minutes: int (optional)
           Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this
           cluster will not be automatically terminated. If specified, the threshold must be between 10 and
-          10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination.
+          43200 minutes (30 days). Users can also set this value to 0 to explicitly disable automatic
+          termination.
         :param aws_attributes: :class:`AwsAttributes` (optional)
           Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation,
           a set of default values will be used.
@@ -9545,10 +9789,40 @@ class ClustersAPI:
           - Currently, Databricks allows at most 45 custom tags
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
+          Data security mode decides what data governance model to use when accessing data from a cluster.
+
+          - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending on
+            your compute configuration.
+          - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users. Cluster
+            users are fully isolated so that they cannot see each other's data and credentials. Most data
+            governance features are supported in this mode. But programming languages and cluster features
+            might be limited.
+          - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a single
+            user specified in ``single_user_name``. Most programming languages, cluster features and data
+            governance features are available in this mode.
+          - ``NONE``: No security isolation for multiple users sharing the cluster. Data governance features
+            are not available in this mode.
+
+          The following modes are legacy aliases for the above modes:
+
+          - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+          - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
+
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+
+          - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+          - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+            concurrency clusters.
+          - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+            clusters.
+          - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn't have UC or passthrough
+            enabled.
         :param dependency_mode: :class:`DependencyMode` (optional)
           Controls dependency configuration for the cluster.
         :param docker_image: :class:`DockerImage` (optional)
-          Custom docker image BYOC
+          Custom Docker image for the cluster's nodes, used with `Databricks Container Services
+          <https://docs.databricks.com/compute/custom-containers.html>`__.
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
@@ -9577,6 +9851,18 @@ class ClustersAPI:
           When set to true, Databricks will automatically set single node related ``custom_tags``,
           ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
+          The kind of compute described by this compute specification.
+
+          Depending on ``kind``, different validations and default values will be applied.
+
+          Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+          specified ``kind`` do not.
+
+          - `is_single_node <https://docs.databricks.com/api/workspace/clusters/create#is_single_node>`__
+          - `use_ml_runtime <https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime>`__
+
+          By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your clusters
+          are automatically using ``kind = CLASSIC_PREVIEW``.
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -9637,6 +9923,8 @@ class ClustersAPI:
         :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
+          Types of workloads that can use the cluster, such as notebooks or jobs. If omitted, the cluster can
+          be used for both notebooks and jobs.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -9910,7 +10198,8 @@ class ClustersAPI:
         :param autotermination_minutes: int (optional)
           Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this
           cluster will not be automatically terminated. If specified, the threshold must be between 10 and
-          10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination.
+          43200 minutes (30 days). Users can also set this value to 0 to explicitly disable automatic
+          termination.
         :param aws_attributes: :class:`AwsAttributes` (optional)
           Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation,
           a set of default values will be used.
@@ -9934,10 +10223,40 @@ class ClustersAPI:
           - Currently, Databricks allows at most 45 custom tags
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
+          Data security mode decides what data governance model to use when accessing data from a cluster.
+
+          - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending on
+            your compute configuration.
+          - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users. Cluster
+            users are fully isolated so that they cannot see each other's data and credentials. Most data
+            governance features are supported in this mode. But programming languages and cluster features
+            might be limited.
+          - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a single
+            user specified in ``single_user_name``. Most programming languages, cluster features and data
+            governance features are available in this mode.
+          - ``NONE``: No security isolation for multiple users sharing the cluster. Data governance features
+            are not available in this mode.
+
+          The following modes are legacy aliases for the above modes:
+
+          - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``.
+          - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
+
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+
+          - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters.
+          - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high
+            concurrency clusters.
+          - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard
+            clusters.
+          - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn't have UC or passthrough
+            enabled.
         :param dependency_mode: :class:`DependencyMode` (optional)
           Controls dependency configuration for the cluster.
         :param docker_image: :class:`DockerImage` (optional)
-          Custom docker image BYOC
+          Custom Docker image for the cluster's nodes, used with `Databricks Container Services
+          <https://docs.databricks.com/compute/custom-containers.html>`__.
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
@@ -9966,6 +10285,18 @@ class ClustersAPI:
           When set to true, Databricks will automatically set single node related ``custom_tags``,
           ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
+          The kind of compute described by this compute specification.
+
+          Depending on ``kind``, different validations and default values will be applied.
+
+          Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no
+          specified ``kind`` do not.
+
+          - `is_single_node <https://docs.databricks.com/api/workspace/clusters/create#is_single_node>`__
+          - `use_ml_runtime <https://docs.databricks.com/api/workspace/clusters/create#use_ml_runtime>`__
+
+          By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your clusters
+          are automatically using ``kind = CLASSIC_PREVIEW``.
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -10026,6 +10357,8 @@ class ClustersAPI:
         :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
+          Types of workloads that can use the cluster, such as notebooks or jobs. If omitted, the cluster can
+          be used for both notebooks and jobs.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -10546,6 +10879,8 @@ class ClustersAPI:
         :param cluster_id: str
           The cluster to be started.
         :param restart_user: str (optional)
+          User name recorded in the ``RESTARTING`` cluster event as the user who restarted the cluster. If
+          omitted, the name of the user making the request is recorded.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -11907,8 +12242,10 @@ class LibrariesAPI:
         self._api = api_client
 
     def all_cluster_statuses(self) -> Iterator[ClusterLibraryStatuses]:
-        """Get the status of all libraries on all clusters. A status is returned for all libraries installed on
-        this cluster via the API or the libraries UI.
+        """Get the status of all libraries on all clusters in the workspace. A status is returned for all
+        libraries installed on each cluster via the API or the libraries UI. If the workspace has more library
+        statuses than the response limit allows, the request fails; call the per-cluster status method for
+        each cluster instead.
 
 
         :returns: Iterator over :class:`ClusterLibraryStatuses`
@@ -11932,7 +12269,7 @@ class LibrariesAPI:
 
         1. Libraries set to be installed on this cluster, in the order that the libraries were added to the
            cluster, are returned first.
-        2. Libraries that were previously requested to be installed on this cluster or, but are now marked for
+        2. Libraries that were previously requested to be installed on this cluster but are now marked for
            removal, in no particular order, are returned last.
 
         :param cluster_id: str

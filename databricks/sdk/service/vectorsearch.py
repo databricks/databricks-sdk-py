@@ -9,6 +9,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Dict, List, Any, Iterator, Callable, Optional
 
+from google.protobuf.timestamp_pb2 import Timestamp
 
 import time
 import random
@@ -20,6 +21,7 @@ from databricks.sdk.service._internal import (
     _from_dict,
     _int64,
     _repeated_dict,
+    _timestamp,
     Wait,
 )
 
@@ -216,10 +218,14 @@ class DeltaSyncVectorIndexSpecRequest:
     source column or embedding vector column are always synced."""
 
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
-    """The columns that contain the embedding source."""
+    """The source table column whose text Databricks embeds, together with the embedding model endpoint
+    to use. Set this for an index with Databricks-managed embeddings. Exactly one of
+    ``embedding_source_columns`` or ``embedding_vector_columns`` must be specified unless the index
+    subtype is ``FULL_TEXT``, and only one column is supported."""
 
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
-    """The columns that contain the embedding vectors."""
+    """The source table column that contains precomputed embedding vectors. Set this instead of
+    ``embedding_source_columns`` for an index with self-managed embeddings."""
 
     embedding_writeback_table: Optional[str] = None
     """[Optional] Name of the Delta table to sync the vector index contents and computed embeddings to."""
@@ -234,7 +240,7 @@ class DeltaSyncVectorIndexSpecRequest:
       it arrives in the source table to keep vector index fresh."""
 
     source_table: Optional[str] = None
-    """The name of the source table."""
+    """Three-level Unity Catalog name of the source table that the index is synced from."""
 
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecRequest into a dictionary suitable for use as a JSON request body."""
@@ -302,10 +308,14 @@ class DeltaSyncVectorIndexSpecResponse:
     source column or embedding vector column are always synced."""
 
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
-    """The columns that contain the embedding source."""
+    """The source table column whose text Databricks embeds, together with the embedding model endpoint
+    to use. Set this for an index with Databricks-managed embeddings. Exactly one of
+    ``embedding_source_columns`` or ``embedding_vector_columns`` must be specified unless the index
+    subtype is ``FULL_TEXT``, and only one column is supported."""
 
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
-    """The columns that contain the embedding vectors."""
+    """The source table column that contains precomputed embedding vectors. Set this instead of
+    ``embedding_source_columns`` for an index with self-managed embeddings."""
 
     embedding_writeback_table: Optional[str] = None
     """[Optional] Name of the Delta table to sync the vector index contents and computed embeddings to."""
@@ -323,7 +333,7 @@ class DeltaSyncVectorIndexSpecResponse:
       it arrives in the source table to keep vector index fresh."""
 
     source_table: Optional[str] = None
-    """The name of the source table."""
+    """Three-level Unity Catalog name of the source table that the index is synced from."""
 
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a dictionary suitable for use as a JSON request body."""
@@ -385,15 +395,19 @@ class DeltaSyncVectorIndexSpecResponse:
 @dataclass
 class DirectAccessVectorIndexSpec:
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
-    """The columns that contain the embedding source. The format should be array[double]."""
+    """Embedding source configuration used to embed ``query_text`` when the index is queried with text,
+    naming the embedding model endpoint to use. The index stores the vectors you supply through
+    upsert; this setting never computes embeddings for them."""
 
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
-    """The columns that contain the embedding vectors. The format should be array[double]."""
+    """The column that holds the embedding vectors you write to the index. Exactly one column must be
+    specified, and ``schema_json`` must declare it as ``array<float>`` or ``array<double>``."""
 
     schema_json: Optional[str] = None
-    """The schema of the index in JSON format. Supported types are ``integer``, ``long``, ``float``,
-    ``double``, ``boolean``, ``string``, ``date``, ``timestamp``. Supported types for vector column:
-    ``array<float>``, ``array<double>``,`."""
+    """JSON object that maps each column name of the index to its type, serialized to a string. The
+    primary key and the embedding vector column must be present. Supported types are ``integer``,
+    ``long``, ``float``, ``double``, ``boolean``, ``string``, ``date``, ``timestamp``. Supported
+    types for vector column: ``array<float>``, ``array<double>``."""
 
     def as_dict(self) -> dict:
         """Serializes the DirectAccessVectorIndexSpec into a dictionary suitable for use as a JSON request body."""
@@ -436,7 +450,7 @@ class EmbeddingSourceColumn:
     """Name of the embedding model endpoint which, if specified, is used for querying (not ingestion)."""
 
     name: Optional[str] = None
-    """Name of the column"""
+    """Name of the column that contains the text to embed."""
 
     def as_dict(self) -> dict:
         """Serializes the EmbeddingSourceColumn into a dictionary suitable for use as a JSON request body."""
@@ -476,7 +490,7 @@ class EmbeddingVectorColumn:
     """Dimension of the embedding vector"""
 
     name: Optional[str] = None
-    """Name of the column"""
+    """Name of the column that contains the embedding vectors."""
 
     def as_dict(self) -> dict:
         """Serializes the EmbeddingVectorColumn into a dictionary suitable for use as a JSON request body."""
@@ -824,6 +838,61 @@ class FacetResultData:
 
 
 @dataclass
+class FailedStatus:
+    """Failure details for an index or its latest ingestion update."""
+
+    error_code: Optional[str] = None
+    """Error code associated with the error message, when available."""
+
+    error_message: Optional[str] = None
+    """Error message, when available."""
+
+    last_processed_commit_timestamp: Optional[Timestamp] = None
+    """[Standard endpoint] timestamp when the last processed commit was committed to the source table.
+    [Storage Optimized endpoint] timestamp when the last processed commit was processed by the
+    pipeline."""
+
+    last_processed_commit_version: Optional[int] = None
+    """Last source Delta table version fully processed while the index is still queryable."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FailedStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error_code is not None:
+            body["error_code"] = self.error_code
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.last_processed_commit_timestamp is not None:
+            body["last_processed_commit_timestamp"] = self.last_processed_commit_timestamp.ToJsonString()
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FailedStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error_code is not None:
+            body["error_code"] = self.error_code
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.last_processed_commit_timestamp is not None:
+            body["last_processed_commit_timestamp"] = self.last_processed_commit_timestamp
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FailedStatus:
+        """Deserializes the FailedStatus from a dictionary."""
+        return cls(
+            error_code=d.get("error_code", None),
+            error_message=d.get("error_message", None),
+            last_processed_commit_timestamp=_timestamp(d, "last_processed_commit_timestamp"),
+            last_processed_commit_version=_int64(d, "last_processed_commit_version"),
+        )
+
+
+@dataclass
 class GetVectorSearchEndpointPermissionLevelsResponse:
     permission_levels: Optional[List[VectorSearchEndpointPermissionsDescription]] = None
     """Specific permission levels"""
@@ -846,6 +915,26 @@ class GetVectorSearchEndpointPermissionLevelsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetVectorSearchEndpointPermissionLevelsResponse:
         """Deserializes the GetVectorSearchEndpointPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", VectorSearchEndpointPermissionsDescription))
+
+
+class IndexStatus(Enum):
+    """Lifecycle and ingestion state of an index."""
+
+    DOWNLOADING = "DOWNLOADING"
+    OFFLINE = "OFFLINE"
+    OFFLINE_FAILED = "OFFLINE_FAILED"
+    ONLINE = "ONLINE"
+    ONLINE_CONTINUOUS_UPDATE = "ONLINE_CONTINUOUS_UPDATE"
+    ONLINE_DIRECT_ACCESS = "ONLINE_DIRECT_ACCESS"
+    ONLINE_NO_PENDING_UPDATE = "ONLINE_NO_PENDING_UPDATE"
+    ONLINE_PIPELINE_FAILED = "ONLINE_PIPELINE_FAILED"
+    ONLINE_TRIGGERED_UPDATE = "ONLINE_TRIGGERED_UPDATE"
+    ONLINE_UPDATING_PIPELINE_RESOURCES = "ONLINE_UPDATING_PIPELINE_RESOURCES"
+    PROVISIONING = "PROVISIONING"
+    PROVISIONING_ENDPOINT = "PROVISIONING_ENDPOINT"
+    PROVISIONING_INDEX = "PROVISIONING_INDEX"
+    PROVISIONING_INITIAL_SNAPSHOT = "PROVISIONING_INITIAL_SNAPSHOT"
+    PROVISIONING_PIPELINE_RESOURCES = "PROVISIONING_PIPELINE_RESOURCES"
 
 
 class IndexSubtype(Enum):
@@ -927,6 +1016,8 @@ class ListVectorIndexesResponse:
     results to show."""
 
     vector_indexes: Optional[List[MiniVectorIndex]] = None
+    """Indexes served by the endpoint. Each entry is a summary without the index specification and
+    status; use Get an index to retrieve them."""
 
     def as_dict(self) -> dict:
         """Serializes the ListVectorIndexesResponse into a dictionary suitable for use as a JSON request body."""
@@ -994,13 +1085,19 @@ class Metric:
     """Metric specification"""
 
     labels: Optional[List[MetricLabel]] = None
-    """Metric labels"""
+    """Labels that restrict the metric to matching series, for example to a single index.
+    Endpoint-level metrics do not accept labels."""
 
     name: Optional[str] = None
-    """Metric name"""
+    """Metric name. Supported metrics include: ``EndpointHealthStatus``, ``EndpointConcurrency``,
+    ``IndexRequestCount``, ``IndexRequestLatency``, ``IndexRequestErrorSourceCount``,
+    ``IndexRequestGuidanceCount``, ``IndexRequestGuidancePeakRate``, ``IndexIngestedRows``, and
+    ``IndexEmbeddedRows``. An unknown name is rejected with an error that lists the available metric
+    names."""
 
     percentile: Optional[float] = None
-    """Percentile for the metric"""
+    """Percentile for latency metrics, such as ``IndexRequestLatency``, which require it. One of 0.5,
+    0.75, 0.9, 0.95, or 0.99."""
 
     def as_dict(self) -> dict:
         """Serializes the Metric into a dictionary suitable for use as a JSON request body."""
@@ -1039,10 +1136,13 @@ class MetricLabel:
     """Label for a metric"""
 
     name: Optional[str] = None
-    """Label name"""
+    """Label name, such as ``error_source``, ``failure_cause``, ``operation``, ``request_path``,
+    ``query_type``, ``response_code``, or ``index_name``. Supported labels depend on the metric."""
 
     value: Optional[str] = None
-    """Label value"""
+    """Label value, as an RE2 regular expression. The label also splits the result by its values, so
+    ``.+`` returns one series per value. Some labels, such as ``operation``, accept only ``.+``,
+    ``.*``, or listed values joined by ``|``."""
 
     def as_dict(self) -> dict:
         """Serializes the MetricLabel into a dictionary suitable for use as a JSON request body."""
@@ -1073,10 +1173,10 @@ class MetricValue:
     """Single metric value at a specific timestamp"""
 
     timestamp: Optional[int] = None
-    """Timestamp of the metric value (milliseconds since epoch)"""
+    """Timestamp of the metric value, in seconds since the Unix epoch."""
 
     value: Optional[float] = None
-    """Metric value"""
+    """Value of the metric at ``timestamp``."""
 
     def as_dict(self) -> dict:
         """Serializes the MetricValue into a dictionary suitable for use as a JSON request body."""
@@ -1107,10 +1207,10 @@ class MetricValues:
     """Collection of metric values for a specific metric"""
 
     metric: Optional[Metric] = None
-    """Metric specification"""
+    """The metric this time series was computed for, including the labels that identify the series."""
 
     values: Optional[List[MetricValue]] = None
-    """Time series of metric values"""
+    """Each entry is one data point of the time series."""
 
     def as_dict(self) -> dict:
         """Serializes the MetricValues into a dictionary suitable for use as a JSON request body."""
@@ -1138,6 +1238,13 @@ class MetricValues:
 
 @dataclass
 class MiniVectorIndex:
+    """An AI Search index stores vectors and metadata on an endpoint and serves vector similarity,
+    full-text and hybrid search queries over them. A Delta Sync index is kept in sync with a source
+    table, with embeddings either computed by Databricks from a text column or supplied by you in a
+    vector column; a Direct Vector Access index holds rows that you write through the upsert and
+    delete data APIs. See https://docs.databricks.com/aws/en/ai-search/create-ai-search for how to
+    choose between them."""
+
     creator: Optional[str] = None
     """The user who created the index."""
 
@@ -1145,18 +1252,21 @@ class MiniVectorIndex:
     """ID of the endpoint associated with the index."""
 
     endpoint_name: Optional[str] = None
-    """Name of the endpoint associated with the index"""
+    """Name of the endpoint that serves the index."""
 
     index_subtype: Optional[IndexSubtype] = None
-    """The subtype of the index."""
+    """Subtype of the index. A ``HYBRID`` index supports vector similarity, full-text and hybrid
+    queries; a ``FULL_TEXT`` index has no embeddings and supports only full-text queries."""
 
     index_type: Optional[VectorIndexType] = None
+    """Type of the index, which determines whether ``delta_sync_index_spec`` or
+    ``direct_access_index_spec`` describes it."""
 
     name: Optional[str] = None
-    """Name of the index"""
+    """Three-level Unity Catalog name of the index."""
 
     primary_key: Optional[str] = None
-    """Primary key of the index"""
+    """Name of the column that uniquely identifies each row of the index."""
 
     def as_dict(self) -> dict:
         """Serializes the MiniVectorIndex into a dictionary suitable for use as a JSON request body."""
@@ -1349,6 +1459,8 @@ class RerankerConfig:
 @dataclass
 class RerankerConfigRerankerParameters:
     columns_to_rerank: Optional[List[str]] = None
+    """Names of the columns whose values are sent to the reranker. List the most relevant column first,
+    since the order affects the ranking."""
 
     def as_dict(self) -> dict:
         """Serializes the RerankerConfigRerankerParameters into a dictionary suitable for use as a JSON request body."""
@@ -1462,11 +1574,11 @@ class RetrieveUserVisibleMetricsResponse:
     """Response containing user-visible metrics"""
 
     metric_values: Optional[List[MetricValues]] = None
-    """Collection of metric values"""
+    """One time series for each requested metric and each combination of label values it was broken
+    down by."""
 
     next_page_token: Optional[str] = None
-    """A token that can be used to get the next page of results. If not present, there are no more
-    results to show."""
+    """Not set. The response returns all data points in one page."""
 
     def as_dict(self) -> dict:
         """Serializes the RetrieveUserVisibleMetricsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1738,31 +1850,46 @@ class Value:
 
 @dataclass
 class VectorIndex:
+    """An AI Search index stores vectors and metadata on an endpoint and serves vector similarity,
+    full-text and hybrid search queries over them. A Delta Sync index is kept in sync with a source
+    table, with embeddings either computed by Databricks from a text column or supplied by you in a
+    vector column; a Direct Vector Access index holds rows that you write through the upsert and
+    delete data APIs. See https://docs.databricks.com/aws/en/ai-search/create-ai-search for how to
+    choose between them."""
+
     creator: Optional[str] = None
     """The user who created the index."""
 
     delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecResponse] = None
+    """Specification of a Delta Sync index. Present only when ``index_type`` is ``DELTA_SYNC``."""
 
     direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None
+    """Specification of a Direct Vector Access index. Present only when ``index_type`` is
+    ``DIRECT_ACCESS``."""
 
     endpoint_id: Optional[str] = None
     """ID of the endpoint associated with the index."""
 
     endpoint_name: Optional[str] = None
-    """Name of the endpoint associated with the index"""
+    """Name of the endpoint that serves the index."""
 
     index_subtype: Optional[IndexSubtype] = None
-    """The subtype of the index."""
+    """Subtype of the index. A ``HYBRID`` index supports vector similarity, full-text and hybrid
+    queries; a ``FULL_TEXT`` index has no embeddings and supports only full-text queries."""
 
     index_type: Optional[VectorIndexType] = None
+    """Type of the index, which determines whether ``delta_sync_index_spec`` or
+    ``direct_access_index_spec`` describes it."""
 
     name: Optional[str] = None
-    """Name of the index"""
+    """Three-level Unity Catalog name of the index."""
 
     primary_key: Optional[str] = None
-    """Primary key of the index"""
+    """Name of the column that uniquely identifies each row of the index."""
 
     status: Optional[VectorIndexStatus] = None
+    """Current status of the index, including whether it is ready to serve queries and how many rows it
+    holds."""
 
     def as_dict(self) -> dict:
         """Serializes the VectorIndex into a dictionary suitable for use as a JSON request body."""
@@ -1833,6 +1960,12 @@ class VectorIndex:
 
 @dataclass
 class VectorIndexStatus:
+    detailed_state: Optional[IndexStatus] = None
+    """Lifecycle and ingestion state. An online index can still have a failed update."""
+
+    failed_status: Optional[FailedStatus] = None
+    """Failure details, when available, for OFFLINE_FAILED or ONLINE_PIPELINE_FAILED."""
+
     index_url: Optional[str] = None
     """Index API Url to be used to perform operations on the index"""
 
@@ -1840,14 +1973,19 @@ class VectorIndexStatus:
     """Number of rows indexed"""
 
     message: Optional[str] = None
-    """Message associated with the index status"""
+    """Human-readable description of the current status."""
 
     ready: Optional[bool] = None
-    """Whether the index is ready for search"""
+    """Whether the index can serve queries. This does not mean the latest update succeeded or that all
+    source-table changes have been indexed; check detailed_state for update failures."""
 
     def as_dict(self) -> dict:
         """Serializes the VectorIndexStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.detailed_state is not None:
+            body["detailed_state"] = self.detailed_state.value
+        if self.failed_status:
+            body["failed_status"] = self.failed_status.as_dict()
         if self.index_url is not None:
             body["index_url"] = self.index_url
         if self.indexed_row_count is not None:
@@ -1861,6 +1999,10 @@ class VectorIndexStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the VectorIndexStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.detailed_state is not None:
+            body["detailed_state"] = self.detailed_state
+        if self.failed_status:
+            body["failed_status"] = self.failed_status
         if self.index_url is not None:
             body["index_url"] = self.index_url
         if self.indexed_row_count is not None:
@@ -1875,6 +2017,8 @@ class VectorIndexStatus:
     def from_dict(cls, d: Dict[str, Any]) -> VectorIndexStatus:
         """Deserializes the VectorIndexStatus from a dictionary."""
         return cls(
+            detailed_state=_enum(d, "detailed_state", IndexStatus),
+            failed_status=_from_dict(d, "failed_status", FailedStatus),
             index_url=d.get("index_url", None),
             indexed_row_count=_int64(d, "indexed_row_count"),
             message=d.get("message", None),
@@ -2391,20 +2535,24 @@ class VectorSearchEndpointsAPI:
         page_token: Optional[str] = None,
         start_time: Optional[str] = None,
     ) -> RetrieveUserVisibleMetricsResponse:
-        """Retrieve user-visible metrics for an endpoint
+        """Retrieve time series of usage and health metrics for an endpoint and its indexes, such as request
+        counts, request latency percentiles and endpoint utilization.
 
         :param name: str
-          AI Search endpoint name
+          Name of the endpoint whose metrics to retrieve.
         :param end_time: str (optional)
-          End time for metrics query
+          End of the time range. Defaults to the current time. Must be later than ``start_time``.
         :param granularity_in_seconds: int (optional)
-          Granularity in seconds
+          Requested interval between data points, in seconds. Defaults to 60, which is also the minimum. The
+          server may return a finer or coarser interval: 60 seconds only for time ranges of 1 hour or less,
+          otherwise 300 seconds or more. Read the interval from the returned timestamps.
         :param metrics: List[:class:`Metric`] (optional)
-          List of metrics to retrieve
+          Metrics to retrieve. Each entry names a metric and optionally narrows it with labels or a
+          percentile. An unknown metric name fails the whole request, and an empty list returns no series.
         :param page_token: str (optional)
-          Token for pagination
+          Not used. The response returns all data points in one page.
         :param start_time: str (optional)
-          Start time for metrics query
+          Start of the time range. Required. Must be within the last 169 hours.
 
         :returns: :class:`RetrieveUserVisibleMetricsResponse`
         """
@@ -2625,15 +2773,20 @@ class VectorSearchIndexesAPI:
         direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None,
         index_subtype: Optional[IndexSubtype] = None,
     ) -> VectorIndex:
-        """Create a new index.
+        """Create a new index on an endpoint. Creating a Delta Sync index also creates the pipeline that
+        populates it from the source table; a Direct Vector Access index starts empty and is populated through
+        Upsert data into an index.
 
         :param name: str
-          Name of the index
+          Three-level Unity Catalog name of the index to create.
         :param endpoint_name: str
           Name of the endpoint to be used for serving the index
         :param primary_key: str
-          Primary key of the index
+          Name of the column that uniquely identifies each row. For a Delta Sync index it is a column of the
+          source table; for a Direct Vector Access index it must be declared in ``schema_json``. It cannot be
+          the embedding source or embedding vector column.
         :param index_type: :class:`VectorIndexType`
+          Type of index to create, which determines which spec field is required.
         :param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)
           Specification for Delta Sync Index. Required if ``index_type`` is ``DELTA_SYNC``.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
@@ -2672,12 +2825,13 @@ class VectorSearchIndexesAPI:
         return VectorIndex.from_dict(res)
 
     def delete_data_vector_index(self, index_name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse:
-        """Handles the deletion of data from a specified vector index.
+        """Delete rows from a Direct Vector Access index by primary key. The response reports how many rows were
+        deleted and the primary keys of the rows that failed.
 
         :param index_name: str
           Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index.
         :param primary_keys: List[str]
-          List of primary keys for the data to be deleted.
+          Primary keys of the rows to delete. At least one key is required.
 
         :returns: :class:`DeleteDataVectorIndexResponse`
         """
@@ -2699,10 +2853,10 @@ class VectorSearchIndexesAPI:
         return DeleteDataVectorIndexResponse.from_dict(res)
 
     def delete_index(self, index_name: str):
-        """Delete an index.
+        """Delete an index and the data it holds. The source table of a Delta Sync index is not affected.
 
         :param index_name: str
-          Name of the index
+          Three-level Unity Catalog name of the index.
 
 
         """
@@ -2721,7 +2875,7 @@ class VectorSearchIndexesAPI:
         """Get an index.
 
         :param index_name: str
-          Name of the index
+          Three-level Unity Catalog name of the index.
         :param ensure_reranker_compatible: bool (optional)
           If true, the URL returned for the index is guaranteed to be compatible with the reranker. Currently
           this means we return the CP URL regardless of how the index is being accessed. If not set or set to
@@ -2748,9 +2902,9 @@ class VectorSearchIndexesAPI:
         """List all indexes in the given endpoint.
 
         :param endpoint_name: str
-          Name of the endpoint
+          Name of the endpoint whose indexes to list.
         :param page_token: str (optional)
-          Token for pagination
+          Page token returned by a previous call, used to get the next page of results.
 
         :returns: Iterator over :class:`MiniVectorIndex`
         """
@@ -2794,12 +2948,14 @@ class VectorSearchIndexesAPI:
         score_threshold: Optional[float] = None,
         sort_columns: Optional[List[str]] = None,
     ) -> QueryVectorIndexResponse:
-        """Query the specified vector index.
+        """Query an index with a vector, text, or both, and return the requested columns of the best-matching
+        rows.
 
         :param index_name: str
           Name of the vector index to query.
         :param columns: List[str]
-          List of column names to include in the response.
+          Names of the columns to return for each result. At least one column is required, and only columns
+          that are part of the index can be returned.
         :param columns_to_rerank: List[str] (optional)
           Column names used to retrieve data to send to the reranker.
         :param facets: List[str] (optional)
@@ -2808,26 +2964,29 @@ class VectorSearchIndexesAPI:
           BUCKETS [[from,to],...]"`` - inclusive numeric ranges ``TOP`` and ``BUCKETS`` are case-insensitive.
           A column may appear at most once.
         :param filters_json: str (optional)
-          JSON string representing query filters.
-
-          Example filters:
-
-          - ``{"id <": 5}``: Filter for id less than 5.
-          - ``{"id >": 5}``: Filter for id greater than 5.
-          - ``{"id <=": 5}``: Filter for id less than equal to 5.
-          - ``{"id >=": 5}``: Filter for id greater than equal to 5.
-          - ``{"id": 5}``: Filter for id equal to 5.
+          Filters to apply to the results, as a JSON object serialized to a string. Each key is a column name,
+          optionally followed by a space and an operator, and each value is the value or list of values to
+          compare the column against. A key without an operator matches the value exactly, or any of the
+          listed values. Supported operators are ``NOT``, ``<``, ``<=``, ``>``, ``>=``, ``OR`` and ``LIKE``;
+          see https://docs.databricks.com/aws/en/ai-search/query-ai-search for their semantics. This field is
+          not supported on storage-optimized endpoints.
         :param num_results: int (optional)
-          Number of results to return. Defaults to 10.
+          Maximum number of results to return. It must be greater than 0 and defaults to 10. By default, a
+          ``HYBRID`` query can return at most 200 results.
         :param query_columns: List[str] (optional)
           Text columns to search for ``query_text``. When empty, all text columns are searched.
         :param query_text: str (optional)
-          Query text. Required for Delta Sync Index using model endpoint.
+          Text to search for. Use it for an index with Databricks-managed embeddings, which embeds the text
+          with the index's embedding model endpoint, and for ``FULL_TEXT`` queries on any index. A ``HYBRID``
+          query on an index with managed embeddings requires only ``query_text``.
         :param query_type: str (optional)
           The query type to use. Choices are ``ANN`` and ``HYBRID`` and ``FULL_TEXT``. Defaults to ``ANN``.
         :param query_vector: List[float] (optional)
-          Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
-          vectors.
+          Embedding vector to search for. Use it for an index whose embeddings you compute yourself: a Direct
+          Vector Access index or a Delta Sync index with ``embedding_vector_columns``. A ``HYBRID`` query on a
+          Delta Sync index with ``embedding_vector_columns``, or on a Direct Vector Access index without
+          ``embedding_source_columns``, requires both ``query_vector`` and ``query_text``. A Direct Vector
+          Access index with ``embedding_source_columns`` can be queried with ``query_text`` alone.
         :param reranker: :class:`RerankerConfig` (optional)
           If set, the top 50 results are reranked with the Databricks Reranker model before returning the
           ``num_results`` results to the user. The setting ``columns_to_rerank`` selects which columns are
@@ -2889,7 +3048,7 @@ class VectorSearchIndexesAPI:
         :param index_name: str
           Name of the vector index to query.
         :param endpoint_name: str (optional)
-          Name of the endpoint.
+          Name of the endpoint that serves the index.
         :param page_token: str (optional)
           Page token returned from previous ``QueryVectorIndex`` or ``QueryVectorIndexNextPage`` API.
 
@@ -2918,8 +3077,8 @@ class VectorSearchIndexesAPI:
     def scan_index(
         self, index_name: str, *, last_primary_key: Optional[str] = None, num_results: Optional[int] = None
     ) -> ScanVectorIndexResponse:
-        """Scan the specified vector index and return the first ``num_results`` entries after the exclusive
-        ``primary_key``.
+        """Scan an index and return the first ``num_results`` rows after the exclusive ``last_primary_key``.
+        Repeat the call with the returned ``last_primary_key`` to read the whole index.
 
         :param index_name: str
           Name of the vector index to scan.
@@ -2949,7 +3108,8 @@ class VectorSearchIndexesAPI:
         return ScanVectorIndexResponse.from_dict(res)
 
     def sync_index(self, index_name: str):
-        """Triggers a synchronization process for a specified vector index.
+        """Start a sync of a Delta Sync index with a ``TRIGGERED`` pipeline from its source table. An index with
+        a ``CONTINUOUS`` pipeline syncs automatically and rejects manual syncs.
 
         :param index_name: str
           Name of the vector index to synchronize. Must be a Delta Sync Index.
@@ -2970,12 +3130,15 @@ class VectorSearchIndexesAPI:
         self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", body=body, headers=headers)
 
     def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
-        """Handles the upserting of data into a specified vector index.
+        """Insert rows into a Direct Vector Access index, replacing existing rows that have the same primary key.
+        The response reports how many rows succeeded and the primary keys of the rows that failed.
 
         :param index_name: str
           Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.
         :param inputs_json: str
-          JSON string representing the data to be upserted.
+          Rows to upsert, as a JSON array of objects serialized to a string. Each object maps column names
+          from ``schema_json`` to values and must include the primary key. A row whose primary key already
+          exists in the index is replaced.
 
         :returns: :class:`UpsertDataVectorIndexResponse`
         """

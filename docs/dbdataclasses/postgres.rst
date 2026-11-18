@@ -635,9 +635,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MIGRATION_TYPE_ONE_TIME_COPY
       :value: "MIGRATION_TYPE_ONE_TIME_COPY"
 
-   .. py:attribute:: MIGRATION_TYPE_ONLINE
-      :value: "MIGRATION_TYPE_ONLINE"
-
 .. autoclass:: MonthlySchedule
    :members:
    :undoc-members:

@@ -443,10 +443,13 @@ class Group:
     """The ID of the group in your identity provider (IdP)."""
 
     group_id: Optional[str] = None
-    """The Databricks ID of the group."""
+    """The Databricks ID of the group. It is a numeric string that Databricks assigns when the group is
+    created, and it is the ``{group_id}`` segment of ``name``."""
 
     group_name: Optional[str] = None
-    """The name of the group."""
+    """The display name of the group. It must be unique in the account, must not be blank, and must be
+    shorter than 255 characters. Databricks trims surrounding whitespace. You can't use the name of
+    a group that Databricks manages, such as ``admins`` or ``users``."""
 
     name: Optional[str] = None
     """The resource name of the group, in one of these formats:

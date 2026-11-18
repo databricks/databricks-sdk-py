@@ -15,7 +15,7 @@
         :param metastore_id: str
           The metastore ID under which the system schema lives.
         :param schema_name: str
-          Full name of the system schema.
+          Name of the system schema, without the catalog prefix.
 
 
         
@@ -28,9 +28,10 @@
         :param metastore_id: str
           The metastore ID under which the system schema lives.
         :param schema_name: str
-          Full name of the system schema.
+          Name of the system schema, without the catalog prefix.
         :param catalog_name: str (optional)
-          the catalog for which the system schema is to enabled in
+          Name of the catalog in which to enable the system schema. The supported values are ``system`` and
+          ``samples``. If not set, the system schema is enabled in the ``system`` catalog.
 
 
         

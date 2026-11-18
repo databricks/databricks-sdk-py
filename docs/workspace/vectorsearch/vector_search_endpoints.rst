@@ -102,20 +102,24 @@
 
     .. py:method:: retrieve_user_visible_metrics(name: str [, end_time: Optional[str], granularity_in_seconds: Optional[int], metrics: Optional[List[Metric]], page_token: Optional[str], start_time: Optional[str]]) -> RetrieveUserVisibleMetricsResponse
 
-        Retrieve user-visible metrics for an endpoint
+        Retrieve time series of usage and health metrics for an endpoint and its indexes, such as request
+        counts, request latency percentiles and endpoint utilization.
 
         :param name: str
-          AI Search endpoint name
+          Name of the endpoint whose metrics to retrieve.
         :param end_time: str (optional)
-          End time for metrics query
+          End of the time range. Defaults to the current time. Must be later than ``start_time``.
         :param granularity_in_seconds: int (optional)
-          Granularity in seconds
+          Requested interval between data points, in seconds. Defaults to 60, which is also the minimum. The
+          server may return a finer or coarser interval: 60 seconds only for time ranges of 1 hour or less,
+          otherwise 300 seconds or more. Read the interval from the returned timestamps.
         :param metrics: List[:class:`Metric`] (optional)
-          List of metrics to retrieve
+          Metrics to retrieve. Each entry names a metric and optionally narrows it with labels or a
+          percentile. An unknown metric name fails the whole request, and an empty list returns no series.
         :param page_token: str (optional)
-          Token for pagination
+          Not used. The response returns all data points in one page.
         :param start_time: str (optional)
-          Start time for metrics query
+          Start of the time range. Required. Must be within the last 169 hours.
 
         :returns: :class:`RetrieveUserVisibleMetricsResponse`
         
