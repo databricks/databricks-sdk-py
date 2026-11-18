@@ -134,12 +134,6 @@
         Deletes the secret stored in this secret scope. You must have ``WRITE`` or ``MANAGE`` permission on
         the Secret Scope.
 
-        Example request:
-
-        .. code::
-
-        { "scope": "my-secret-scope", "key": "my-secret-key" }
-
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists. Throws
         ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
         ``BAD_REQUEST`` if system user attempts to delete an internal secret, or request is made against Azure
@@ -179,30 +173,18 @@
 
     .. py:method:: get_secret(scope: str, key: str) -> GetSecretResponse
 
-        Gets a secret for a given key and scope. This API can only be called from the DBUtils interface. Users
-        need the READ permission to make this call.
+        Gets the bytes representation of a secret value for the specified scope and key. Users need the READ
+        permission to make this call.
 
-        Example response:
-
-        .. code::
-
-        { "key": "my-string-key", "value": <bytes of the secret value> }
-
-        Note that the secret value returned is in bytes. The interpretation of the bytes is determined by the
-        caller in DBUtils and the type the data is decoded into.
+        The secret value is returned as bytes regardless of whether it was written with ``string_value`` or
+        ``bytes_value``, so the caller decides how to decode it. Values returned by this API are not redacted.
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret or secret scope exists. Throws
-        ``PERMISSION_DENIED`` if the user does not have permission to make this API call.
-
-        Note: This is explicitly an undocumented API. It also doesn't need to be supported for the /preview
-        prefix, because it's not a customer-facing API (i.e. only used for DBUtils SecretUtils to fetch
-        secrets).
-
-        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists. Throws ``BAD_REQUEST`` if
-        normal user calls get secret outside of a notebook. AKV specific errors: Throws
-        ``INVALID_PARAMETER_VALUE`` if secret name is not alphanumeric or too long. Throws
-        ``PERMISSION_DENIED`` if secret manager cannot access AKV with 403 error Throws ``MALFORMED_REQUEST``
-        if secret manager cannot access AKV with any other 4xx error
+        ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Azure Key
+        Vault-backed scopes can also return the following errors: Throws ``INVALID_PARAMETER_VALUE`` if the
+        secret name is not alphanumeric or is too long. Throws ``PERMISSION_DENIED`` if Databricks cannot
+        access the key vault (HTTP 403). Throws ``MALFORMED_REQUEST`` if Databricks cannot access the key
+        vault with any other 4xx error.
 
         :param scope: str
           The name of the scope that contains the secret.
@@ -312,15 +294,6 @@
 
         Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
         cannot be retrieved using this API. Users need the READ permission to make this call.
-
-        Example response:
-
-        .. code::
-
-        { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp": "1520467595000" }, { "key":
-        "my-byte-key", "last_updated_timestamp": "1520467595000" }, ] }
-
-        The lastUpdatedTimestamp returned is in milliseconds since epoch.
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the
         user does not have permission to make this API call.
@@ -437,14 +410,8 @@
         exceed 128 characters. The maximum allowed secret value size is 128 KB. The maximum number of secrets
         in a given scope is 1000.
 
-        Example request:
-
-        .. code::
-
-        { "scope": "my-databricks-scope", "key": "my-string-key", "string_value": "foobar" }
-
-        The input fields "string_value" or "bytes_value" specify the type of the secret, which will determine
-        the value returned when the secret value is requested. Exactly one must be specified.
+        Exactly one of ``string_value`` or ``bytes_value`` must be specified. The server stores both kinds of
+        value as bytes and does not record which one was used.
 
         Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``RESOURCE_LIMIT_EXCEEDED``
         if maximum number of secrets in scope is exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the request
@@ -453,13 +420,13 @@
         ``BAD_REQUEST`` if request is made against Azure KeyVault backed scope.
 
         :param scope: str
-          The name of the scope to which the secret will be associated with.
+          The name of the scope to store the secret in.
         :param key: str
           A unique name to identify the secret.
         :param bytes_value: str (optional)
-          If specified, value will be stored as bytes.
+          The secret value as raw bytes. The bytes must be base64-encoded in the JSON request body.
         :param string_value: str (optional)
-          If specified, note that the value will be stored in UTF-8 (MB4) form.
+          The secret value as text. The server stores it as the UTF-8 encoding of the string.
 
 
         

@@ -284,7 +284,8 @@
         :param budget_id: str
           The Databricks budget configuration ID.
         :param budget: :class:`UpdateBudgetConfigurationBudget`
-          The updated budget. This will overwrite the budget specified by the budget ID.
+          The updated budget. This will overwrite the budget specified by the budget ID. Alerts and actions
+          are matched by ID: those omitted from the request are removed, and those without an ID are created.
 
         :returns: :class:`UpdateBudgetConfigurationResponse`
         

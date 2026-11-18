@@ -366,37 +366,40 @@ class Endpoint:
     """Type of endpoint. Required on create and immutable thereafter."""
 
     budget_policy_id: Optional[str] = None
-    """The user-selected budget policy id for the endpoint."""
+    """ID of the serverless budget policy to apply to the endpoint. The caller must have permission to
+    use the policy. Set either this field or ``usage_policy_id``, not both. Responses do not echo
+    this field; they report the applied policy in ``effective_budget_policy_id``."""
 
     create_time: Optional[Timestamp] = None
     """Time the endpoint was created."""
 
     creator: Optional[str] = None
-    """Creator of the endpoint"""
+    """User name of the principal that created the endpoint. For a user, it is the user's email
+    address; for any other principal, it is the principal's unique name."""
 
     custom_tags: Optional[List[CustomTag]] = None
-    """The custom tags assigned to the endpoint"""
+    """Custom tags assigned to the endpoint. On update, the list replaces all of the endpoint's
+    existing tags."""
 
     effective_budget_policy_id: Optional[str] = None
-    """The budget policy id applied to the endpoint"""
+    """ID of the budget policy that is currently applied to the endpoint."""
 
     endpoint_status: Optional[EndpointStatus] = None
-    """Current status of the endpoint"""
+    """Current lifecycle state of the endpoint, with an optional message that explains it."""
 
     id: Optional[str] = None
-    """Unique identifier of the endpoint"""
+    """System-generated UUID that uniquely identifies the endpoint."""
 
     index_count: Optional[int] = None
     """Number of indexes on the endpoint"""
 
     last_updated_user: Optional[str] = None
-    """User who last updated the endpoint"""
+    """User name of the principal that last updated the endpoint, in the same format as ``creator``."""
 
     name: Optional[str] = None
-    """Name of the AI Search endpoint. Server-assigned full resource path
-    (``workspaces/{workspace}/endpoints/{endpoint}``) on output. On create, the user-supplied short
-    name is conveyed via ``CreateEndpointRequest.endpoint_id``; the server composes the full
-    ``name`` and returns it on the response."""
+    """Full resource name of the endpoint, in the form
+    ``workspaces/{workspace_id}/endpoints/{endpoint_id}``. On create, the server composes it from
+    ``parent`` and ``endpoint_id`` and ignores any value supplied in the request body."""
 
     replica_count: Optional[int] = None
     """The client-supplied desired number of replicas for the endpoint, applied at create/update time.
@@ -407,7 +410,8 @@ class Endpoint:
 
     target_qps: Optional[int] = None
     """Target QPS for the endpoint. Mutually exclusive with ``replica_count``. Best-effort; the system
-    does not guarantee this QPS will be achieved."""
+    does not guarantee this QPS will be achieved. Responses report the requested value in
+    ``scaling_info.requested_target_qps``."""
 
     throughput_info: Optional[EndpointThroughputInfo] = None
     """Throughput information for the endpoint"""
@@ -416,7 +420,8 @@ class Endpoint:
     """Time the endpoint was last updated."""
 
     usage_policy_id: Optional[str] = None
-    """The usage policy id applied to the endpoint."""
+    """ID of the usage policy to apply to the endpoint. The server treats it as the same setting as
+    ``budget_policy_id``, so set only one of the two."""
 
     def as_dict(self) -> dict:
         """Serializes the Endpoint into a dictionary suitable for use as a JSON request body."""
@@ -917,6 +922,9 @@ class IndexStatus:
     """Lifecycle and health state of an AI Search index, along with human-readable detail about that
     state and basic indexing progress."""
 
+    detailed_state: Optional[IndexStatusState] = None
+    """Lifecycle and ingestion state. An online index can still have a failed update."""
+
     index_url: Optional[str] = None
     """Index API URL used to perform operations on the index."""
 
@@ -927,12 +935,15 @@ class IndexStatus:
     """Human-readable detail about the index's current state."""
 
     ready: Optional[bool] = None
-    """Whether the index is ready to serve queries. After CreateIndex, poll GetIndex until this is
-    true; ``message`` describes the current state in the meantime."""
+    """Whether the index can serve queries. After CreateIndex, poll GetIndex until true; message
+    describes progress. This does not guarantee freshness or update success; check detailed_state
+    for update failures."""
 
     def as_dict(self) -> dict:
         """Serializes the IndexStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.detailed_state is not None:
+            body["detailed_state"] = self.detailed_state.value
         if self.index_url is not None:
             body["index_url"] = self.index_url
         if self.indexed_row_count is not None:
@@ -946,6 +957,8 @@ class IndexStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the IndexStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.detailed_state is not None:
+            body["detailed_state"] = self.detailed_state
         if self.index_url is not None:
             body["index_url"] = self.index_url
         if self.indexed_row_count is not None:
@@ -960,11 +973,32 @@ class IndexStatus:
     def from_dict(cls, d: Dict[str, Any]) -> IndexStatus:
         """Deserializes the IndexStatus from a dictionary."""
         return cls(
+            detailed_state=_enum(d, "detailed_state", IndexStatusState),
             index_url=d.get("index_url", None),
             indexed_row_count=_int64(d, "indexed_row_count"),
             message=d.get("message", None),
             ready=d.get("ready", None),
         )
+
+
+class IndexStatusState(Enum):
+    """Detailed lifecycle state of the index."""
+
+    DOWNLOADING = "DOWNLOADING"
+    OFFLINE = "OFFLINE"
+    OFFLINE_FAILED = "OFFLINE_FAILED"
+    ONLINE = "ONLINE"
+    ONLINE_CONTINUOUS_UPDATE = "ONLINE_CONTINUOUS_UPDATE"
+    ONLINE_DIRECT_ACCESS = "ONLINE_DIRECT_ACCESS"
+    ONLINE_NO_PENDING_UPDATE = "ONLINE_NO_PENDING_UPDATE"
+    ONLINE_PIPELINE_FAILED = "ONLINE_PIPELINE_FAILED"
+    ONLINE_TRIGGERED_UPDATE = "ONLINE_TRIGGERED_UPDATE"
+    ONLINE_UPDATING_PIPELINE_RESOURCES = "ONLINE_UPDATING_PIPELINE_RESOURCES"
+    PROVISIONING = "PROVISIONING"
+    PROVISIONING_ENDPOINT = "PROVISIONING_ENDPOINT"
+    PROVISIONING_INDEX = "PROVISIONING_INDEX"
+    PROVISIONING_INITIAL_SNAPSHOT = "PROVISIONING_INITIAL_SNAPSHOT"
+    PROVISIONING_PIPELINE_RESOURCES = "PROVISIONING_PIPELINE_RESOURCES"
 
 
 class IndexSubtype(Enum):
@@ -1455,10 +1489,9 @@ class AiSearchAPI:
           The Endpoint resource to create. Fields other than ``endpoint.name`` carry the desired
           configuration; ``endpoint.name`` is server-assigned from ``parent`` and ``endpoint_id``.
         :param endpoint_id: str (optional)
-          The user-supplied short name for the Endpoint, per AIP-133. The server composes the full
-          ``Endpoint.name`` as ``{parent}/endpoints/{endpoint_id}``. AIP-133 does not list ``endpoint_id`` as
-          a fields-may-be-required entry, so we annotate it OPTIONAL on the wire; the server still rejects
-          empty values with INVALID_PARAMETER_VALUE.
+          Short name of the endpoint, which becomes the last segment of ``name``. The server rejects a request
+          without it. The name can have at most 50 characters, can contain only lowercase letters, digits,
+          hyphens, periods, and underscores, and must start and end with a letter or digit.
 
         :returns: :class:`Endpoint`
         """
@@ -1602,9 +1635,8 @@ class AiSearchAPI:
         :param parent: str
           The Workspace that owns this collection of endpoints. Format: ``workspaces/{workspace_id}``
         :param page_size: int (optional)
-          Best-effort upper bound on the number of results to return. Honored as an upper bound by the shim:
-          ``page_size`` only narrows the legacy backend's response, never widens it, so the practical cap is
-          ``min(page_size, legacy_fixed_page_size)``.
+          Maximum number of endpoints to return in one page. The server applies its own page size limit, so a
+          page can hold fewer endpoints than ``page_size`` even when more remain.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -1852,20 +1884,20 @@ class AiSearchAPI:
         return SyncIndexResponse.from_dict(res)
 
     def update_endpoint(self, name: str, endpoint: Endpoint, update_mask: FieldMask) -> Endpoint:
-        """Update an existing AI Search endpoint. Multi-bucket masks are supported and dispatched in
-        deterministic bucket order: budget policy, custom tags, throughput, scaling/replicas, then metrics
-        export. Per-bucket dispatch is not atomic across buckets — if a later bucket fails, earlier buckets
-        may already have been applied.
+        """Update an existing AI Search endpoint. Only the fields named in ``update_mask`` change. The server
+        applies a mask that spans several settings, such as ``budget_policy_id`` and ``custom_tags``, one
+        setting at a time, so if a later setting fails, the earlier ones may already have been applied.
 
         :param name: str
-          Name of the AI Search endpoint. Server-assigned full resource path
-          (``workspaces/{workspace}/endpoints/{endpoint}``) on output. On create, the user-supplied short name
-          is conveyed via ``CreateEndpointRequest.endpoint_id``; the server composes the full ``name`` and
-          returns it on the response.
+          Full resource name of the endpoint, in the form
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}``. On create, the server composes it from
+          ``parent`` and ``endpoint_id`` and ignores any value supplied in the request body.
         :param endpoint: :class:`Endpoint`
           The Endpoint resource to update. ``endpoint.name`` carries the full resource path.
         :param update_mask: FieldMask
-          The list of fields to update.
+          Comma-separated list of ``Endpoint`` fields to update. The updatable fields are
+          ``budget_policy_id``, ``usage_policy_id``, ``custom_tags``, ``replica_count``, and ``target_qps``.
+          The server rejects nested paths and unknown fields.
 
         :returns: :class:`Endpoint`
         """

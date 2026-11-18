@@ -52,14 +52,15 @@
 
     .. py:method:: create_memory_store(managed_memory_store: ManagedMemoryStore, managed_memory_store_id: str) -> ManagedMemoryStore
 
-        Creates a memory store in the caller's workspace.
+        Creates a memory store in the caller's workspace. Returns ``ALREADY_EXISTS`` when a store with the
+        requested ID already exists.
 
         :param managed_memory_store: :class:`ManagedMemoryStore`
           The memory store to create.
         :param managed_memory_store_id: str
           Caller-provided, workspace-unique memory store ID. It must be 3-56 characters, begin with a
           lowercase letter, contain only lowercase letters, digits, and hyphens, and end with a letter or
-          digit.
+          digit. It becomes the last segment of the store's ``name`` and cannot be changed after creation.
 
         :returns: :class:`ManagedMemoryStore`
         
@@ -107,7 +108,8 @@
 
     .. py:method:: delete_memory_store(name: str)
 
-        Deletes a memory store by resource name. Returns ``NOT_FOUND`` when the store does not exist in the
+        Deletes a memory store by resource name. Deleting a store also deletes all of its memory entries, and
+        its ID becomes available for reuse. Returns ``NOT_FOUND`` when the store does not exist in the
         caller's workspace.
 
         :param name: str
@@ -257,7 +259,9 @@
         :param principal: :class:`StorePrincipal`
           Principal to grant the permission to.
         :param permission: :class:`PermissionLevel`
-          Permission level to grant.
+          Permission level to grant. ``WRITE`` includes ``READ``. Grants are additive: granting ``READ`` to a
+          principal that already holds ``WRITE`` does not lower its access. To downgrade a principal, revoke
+          its grants and grant again.
 
         :returns: :class:`GrantMemoryStorePermissionResponse`
         
@@ -325,7 +329,7 @@
           Maximum number of stores to return. The service may return fewer stores than requested. Defaults to
           10; must be between 1 and 100.
         :param page_token: str (optional)
-          Opaque pagination token from a previous ListManagedMemoryStores response.
+          Opaque pagination token, taken from the ``next_page_token`` of a previous response.
 
         :returns: Iterator over :class:`ManagedMemoryStore`
         
@@ -490,8 +494,8 @@
         :param managed_memory_store: :class:`ManagedMemoryStore`
           The memory store to update. ``name`` is taken from the URL.
         :param update_mask: FieldMask
-          Only ``description`` and ``metadata`` may be updated. Selecting ``metadata`` replaces the entire
-          map.
+          Only ``description`` and ``metadata`` may be updated. Selecting ``description`` while leaving it
+          unset clears it. Selecting ``metadata`` replaces the entire map.
 
         :returns: :class:`ManagedMemoryStore`
         

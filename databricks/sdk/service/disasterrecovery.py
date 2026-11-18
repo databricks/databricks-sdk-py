@@ -35,18 +35,24 @@ class FailoverFailoverGroupRequestFailoverType(Enum):
 
 @dataclass
 class FailoverGroup:
-    """A failover group manages disaster recovery across workspace sets, coordinating Unity Catalog and
-    workspace assets replication."""
+    """A failover group manages Databricks Managed Disaster Recovery for a pair of workspaces in two
+    regions. It continuously replicates the selected Unity Catalog catalogs and workspace assets
+    from the primary region to the secondary region and lets you fail over to the secondary region;
+    at least one of the two replication types must be enabled. See
+    https://docs.databricks.com/aws/en/admin/managed-disaster-recovery for the product
+    documentation."""
 
     regions: List[str]
-    """List of all regions participating in this failover group."""
+    """The two cloud regions that participate in this failover group, the primary and the secondary.
+    Each workspace set contains one workspace in each region."""
 
     workspace_sets: List[WorkspaceSet]
-    """Workspace sets, each containing workspaces that replicate to each other."""
+    """Workspace sets, each containing workspaces that replicate to each other. A failover group
+    currently supports exactly one workspace set."""
 
     initial_primary_region: str
-    """Initial primary region. Used only in Create requests to set the starting primary region. Not
-    returned in responses."""
+    """Initial primary region. Used only in Create requests to set the starting primary region, and
+    must be one of the regions in ``regions``. Not returned in responses."""
 
     create_time: Optional[Timestamp] = None
     """Time at which this failover group was created."""
@@ -59,7 +65,9 @@ class FailoverGroup:
     """Opaque version string for optimistic locking. Server-generated and returned in responses."""
 
     has_replication_point_blocking_errors: Optional[bool] = None
-    """True if errors currently block the replication point."""
+    """True when replication errors are preventing the replication point from advancing. Populated only
+    while the failover group is INITIAL_REPLICATION or ACTIVE; the blocking errors are listed in the
+    system.replication.states system table."""
 
     initial_replication_progress: Optional[InitialReplicationProgress] = None
     """Initial replication progress of all in-scope assets. Set only when the FailoverGroup is in
@@ -70,13 +78,22 @@ class FailoverGroup:
     accounts/{account_id}/failover-groups/{failover_group_id}."""
 
     replication_point: Optional[Timestamp] = None
-    """The latest point in time to which data has been replicated."""
+    """The most recent point in time up to which all in-scope assets have been replicated to the
+    secondary region. Data written after this point might not exist in the secondary yet and can be
+    lost in an unplanned failover. When both Unity Catalog and workspace assets are replicated, this
+    is the older of the two replication points. Not populated until the first replication point
+    exists, and not populated in ListFailoverGroups responses."""
 
     state: Optional[FailoverGroupState] = None
-    """Aggregate state of the failover group."""
+    """Aggregate state of the failover group across Unity Catalog and workspace asset replication. The
+    group is INITIAL_REPLICATION until it has a replication point, ACTIVE while replication is in
+    steady state and failover is available, and FAILING_OVER while a failover is in progress; the
+    ``*_FAILED`` values mean that the last operation did not complete. Not populated in
+    ListFailoverGroups responses."""
 
     unity_catalog_assets: Optional[UcReplicationConfig] = None
-    """Unity Catalog replication configuration."""
+    """Unity Catalog replication configuration: the catalogs to replicate and the storage location
+    mappings for their data. Omit it to replicate workspace assets only."""
 
     update_time: Optional[Timestamp] = None
     """Time at which this failover group was last modified."""
@@ -182,7 +199,8 @@ class InitialReplicationProgress:
     of a FailoverGroup. Populated only while the FailoverGroup is in INITIAL_REPLICATION."""
 
     completed: Optional[int] = None
-    """Percent complete, 0-100."""
+    """Percentage of in-scope assets replicated so far, from 0 to 100. Stays below 100 while errors
+    block the first replication point."""
 
     def as_dict(self) -> dict:
         """Serializes the InitialReplicationProgress into a dictionary suitable for use as a JSON request body."""
@@ -285,10 +303,11 @@ class LocationMapping:
     direction from effective_primary_region."""
 
     name: str
-    """Resource name for this location."""
+    """Identifier of this location mapping, unique within the failover group."""
 
     uri_by_region: List[LocationMappingEntry]
-    """URI for each region. Each entry maps a region name to a storage URI."""
+    """The storage URI of this location in each region, with exactly one entry per region of the
+    failover group."""
 
     def as_dict(self) -> dict:
         """Serializes the LocationMapping into a dictionary suitable for use as a JSON request body."""
@@ -320,10 +339,11 @@ class LocationMappingEntry:
     map<string, string> for proto2 compatibility."""
 
     region: str
-    """The region name."""
+    """Cloud region this URI applies to. Must be one of the failover group's regions."""
 
     uri: str
-    """The storage URI for this region."""
+    """Cloud storage URI of the location in this region. End the URI with ``/*`` to map every path
+    under it as a prefix; within one mapping, either all URIs or none carry the ``/*`` suffix."""
 
     def as_dict(self) -> dict:
         """Serializes the LocationMappingEntry into a dictionary suitable for use as a JSON request body."""
@@ -435,7 +455,7 @@ class UcCatalog:
     """A Unity Catalog catalog to replicate."""
 
     name: str
-    """The name of the UC catalog to replicate."""
+    """Name of the Unity Catalog catalog to replicate."""
 
     def as_dict(self) -> dict:
         """Serializes the UcCatalog into a dictionary suitable for use as a JSON request body."""
@@ -462,14 +482,18 @@ class UcReplicationConfig:
     """Unity Catalog replication configuration (top-level, not per-set)."""
 
     catalogs: List[UcCatalog]
-    """UC catalogs to replicate."""
+    """Unity Catalog catalogs to replicate, including their metadata and managed table data. Adding a
+    catalog to an existing failover group returns the group to INITIAL_REPLICATION until the catalog
+    has been replicated."""
 
     data_replication_workspace_set: str
-    """The workspace set whose workspaces will be used for data replication of all UC catalogs'
-    underlying storage."""
+    """Name of the workspace set whose workspaces run the data replication for the catalogs' underlying
+    storage. Must match the name of a workspace set in this failover group."""
 
     location_mappings: Optional[List[LocationMapping]] = None
-    """Location mappings - storage URI per region for each location."""
+    """Storage location mappings. Each mapping pairs a storage path used by the replicated catalogs in
+    one region with the corresponding path in the other region, so that replicated data is written
+    to the matching storage in the secondary region."""
 
     def as_dict(self) -> dict:
         """Serializes the UcReplicationConfig into a dictionary suitable for use as a JSON request body."""
@@ -508,20 +532,24 @@ class WorkspaceSet:
     """A set of workspaces that replicate to each other across regions."""
 
     name: str
-    """Resource name for this workspace set."""
+    """Identifier of the workspace set, unique within the failover group and referenced by
+    unity_catalog_assets.data_replication_workspace_set. Cannot be changed after creation."""
 
     workspace_ids: List[str]
-    """Workspace IDs in this set. The system derives and validates regions. All workspaces must be in
-    the Mission Critical tier."""
+    """IDs of the two workspaces in this set, one in each of the failover group's regions. The system
+    derives and validates each workspace's region. Both workspaces must belong to the account and
+    have the Mission Critical add-on enabled, and they cannot be changed after creation."""
 
     replicate_workspace_assets: Optional[bool] = None
-    """Whether to enable control plane DR (notebooks, jobs, clusters, etc.) for this set. Defaults to
-    false."""
+    """Whether to replicate workspace assets (notebooks, jobs, clusters, SQL warehouses and so on) and
+    their ACLs for this set. Defaults to false. Can be turned on or off with UpdateFailoverGroup."""
 
     stable_url_names: Optional[List[str]] = None
     """Resource names of stable URLs associated with this workspace set. Format:
     accounts/{account_id}/stable-urls/{stable_url_id}. The referenced stable URLs must already exist
-    (via CreateStableUrl)."""
+    (via CreateStableUrl), and the list can only be set when replicate_workspace_assets is true.
+    While workspace asset replication stays enabled, an update can attach or detach one stable URL
+    at a time."""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceSet into a dictionary suitable for use as a JSON request body."""
@@ -574,7 +602,9 @@ class DisasterRecoveryAPI:
         *,
         validate_only: Optional[bool] = None,
     ) -> FailoverGroup:
-        """Create a new failover group.
+        """Create a failover group. The group starts in the CREATING state and moves to INITIAL_REPLICATION while
+        the first replication cycle copies all in-scope data to the secondary region; failover becomes
+        available once the group is ACTIVE. Set validate_only to check the request without creating anything.
 
         :param parent: str
           The parent resource. Format: accounts/{account_id}.
@@ -640,7 +670,8 @@ class DisasterRecoveryAPI:
         return StableUrl.from_dict(res)
 
     def delete_failover_group(self, name: str, *, etag: Optional[str] = None):
-        """Delete a failover group.
+        """Delete a failover group. Deleting stops replication for the group; stable URLs linked to it are
+        detached but not deleted.
 
         :param name: str
           The fully qualified resource name of the failover group to delete. Format:
@@ -684,7 +715,13 @@ class DisasterRecoveryAPI:
         *,
         etag: Optional[str] = None,
     ) -> FailoverGroup:
-        """Initiate a failover to a new primary region.
+        """Initiate a failover that makes target_primary_region the primary region. Stable URLs linked to the
+        group are pointed at the new primary workspace, replication is reversed so that the former primary
+        becomes the secondary, and the group moves through FAILING_OVER to INITIAL_REPLICATION until it has a
+        replication point in the new direction. The group must be ACTIVE; repeating the request while it is
+        FAILING_OVER is accepted. To fail back, repeat the request with the former primary region as the
+        target once the group is ACTIVE again. In an unplanned failover, data written after the replication
+        point can be lost.
 
         :param name: str
           The fully qualified resource name of the failover group to failover. Format:
@@ -693,7 +730,7 @@ class DisasterRecoveryAPI:
           The target primary region. Must be one of the participating regions and different from the current
           effective_primary_region. Serves as an idempotency check.
         :param failover_type: :class:`FailoverFailoverGroupRequestFailoverType`
-          The type of failover to perform.
+          The type of failover to perform. FORCED is the only supported type.
         :param etag: str (optional)
           Opaque version string for optimistic locking. If provided, must match the current etag. If omitted,
           the failover proceeds regardless of current state.
@@ -717,7 +754,7 @@ class DisasterRecoveryAPI:
         return FailoverGroup.from_dict(res)
 
     def get_failover_group(self, name: str) -> FailoverGroup:
-        """Get a failover group.
+        """Get a failover group, including its current state and replication point.
 
         :param name: str
           The fully qualified resource name of the failover group. Format:
@@ -752,10 +789,11 @@ class DisasterRecoveryAPI:
     def list_failover_groups(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[FailoverGroup]:
-        """List failover groups.
+        """List the failover groups in an account.
 
-        List entries are abbreviated: ``state`` and ``replication_point`` are not populated. Call
-        GetFailoverGroup to retrieve the full resource.
+        List entries are abbreviated: ``state``, ``replication_point`` and
+        ``unity_catalog_assets.location_mappings`` are not populated. Call GetFailoverGroup to retrieve the
+        full resource.
 
         :param parent: str
           The parent resource. Format: accounts/{account_id}.
@@ -835,7 +873,11 @@ class DisasterRecoveryAPI:
     def update_failover_group(
         self, name: str, failover_group: FailoverGroup, update_mask: FieldMask, *, etag: Optional[str] = None
     ) -> FailoverGroup:
-        """Update a failover group.
+        """Update a failover group. Only the fields named in update_mask change. You can turn workspace asset
+        replication on or off, attach or detach a stable URL, and change the Unity Catalog catalogs and
+        location mappings; the regions, the workspace set name and the workspace IDs cannot be changed.
+        Updates are rejected while a create, failover or delete is in progress, and after a create or delete
+        has failed.
 
         :param name: str
           Fully qualified resource name in the format
@@ -844,7 +886,9 @@ class DisasterRecoveryAPI:
           The failover group with updated fields. The name field identifies the resource and is populated from
           the URL path.
         :param update_mask: FieldMask
-          Comma-separated list of fields to update.
+          Comma-separated list of the fields to update. The supported paths are ``workspace_sets``,
+          ``unity_catalog_assets``, ``unity_catalog_assets.catalogs`` and
+          ``unity_catalog_assets.location_mappings``; any other path is rejected.
         :param etag: str (optional)
           Optional opaque version string for optimistic locking, obtained from a prior read of the failover
           group. If provided, the update is rejected unless it matches the failover group's current etag. If

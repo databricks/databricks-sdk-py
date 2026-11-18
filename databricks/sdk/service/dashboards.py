@@ -40,19 +40,19 @@ _LOG = logging.getLogger("databricks.sdk")
 class AuthorizationDetails:
     grant_rules: Optional[List[AuthorizationDetailsGrantRule]] = None
     """Represents downscoped permission rules with specific access rights. This field is specific to
-    ``workspace_rule_set`` constraint."""
+    the ``workspace_rule_set`` constraint."""
 
     resource_legacy_acl_path: Optional[str] = None
-    """The acl path of the tree store resource resource."""
+    """The legacy ACL path of the workspace object that the rule applies to."""
 
     resource_name: Optional[str] = None
-    """The resource name to which the authorization rule applies. This field is specific to
-    ``workspace_rule_set`` constraint. Format:
-    ``workspaces/{workspace_id}/dashboards/{dashboard_id}``"""
+    """The resource name to which the authorization rule applies. This field is specific to the
+    ``workspace_rule_set`` constraint. Format: ``workspaces/{workspace_id}`` for a workspace-level
+    rule, or ``workspaces/{workspace_id}/dashboards/{dashboard_id}`` for a rule on a dashboard."""
 
     type: Optional[str] = None
-    """The type of authorization downscoping policy. Ex: ``workspace_rule_set`` defines access rules
-    for a specific workspace resource"""
+    """The type of authorization downscoping policy. A ``workspace_rule_set`` policy defines access
+    rules for a specific workspace resource."""
 
     def as_dict(self) -> dict:
         """Serializes the AuthorizationDetails into a dictionary suitable for use as a JSON request body."""
@@ -94,9 +94,7 @@ class AuthorizationDetails:
 @dataclass
 class AuthorizationDetailsGrantRule:
     permission_set: Optional[str] = None
-    """Permission sets for dashboard are defined in
-    iam-common/rbac-common/permission-sets/definitions/TreeStoreBasePermissionSets Ex:
-    ``permissionSets/dashboard.runner``"""
+    """The permission set that the rule grants on the resource."""
 
     def as_dict(self) -> dict:
         """Serializes the AuthorizationDetailsGrantRule into a dictionary suitable for use as a JSON request body."""
@@ -121,10 +119,10 @@ class AuthorizationDetailsGrantRule:
 @dataclass
 class CronSchedule:
     quartz_cron_expression: str
-    """A cron expression using quartz syntax. EX: ``0 0 8 * * ?`` represents everyday at 8am. See `Cron
-    Trigger
-    <http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html>`__ for
-    details."""
+    """A cron expression in Quartz syntax that defines when the schedule runs. See the `Quartz cron
+    trigger tutorial
+    <https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html>`__ for
+    the syntax."""
 
     timezone_id: str
     """A Java timezone id. The schedule will be resolved with respect to this timezone. See `Java
@@ -1779,16 +1777,16 @@ class GenieVizAttachment:
 @dataclass
 class GetPublishedDashboardTokenInfoResponse:
     authorization_details: Optional[List[AuthorizationDetails]] = None
-    """Authorization constraints for accessing the published dashboard. Currently includes
-    ``workspace_rule_set`` and could be enriched with ``unity_catalog_privileges`` before oAuth
-    token generation."""
+    """Authorization constraints that restrict the minted token to viewing the published dashboard.
+    Pass them to the OAuth token endpoint serialized as a JSON array."""
 
     custom_claim: Optional[str] = None
-    """Custom claim generated from external_value and external_viewer_id. Format:
+    """Custom claim that carries ``external_value`` and ``external_viewer_id`` into the minted token.
+    It is only present when at least one of those query parameters was provided. Format:
     ``urn:aibi:external_data:<external_value>:<external_viewer_id>:<dashboard_id>``"""
 
     scope: Optional[str] = None
-    """Scope defining access permissions."""
+    """The space-separated OAuth scopes to request when minting the token."""
 
     def as_dict(self) -> dict:
         """Serializes the GetPublishedDashboardTokenInfoResponse into a dictionary suitable for use as a JSON request body."""
@@ -2061,13 +2059,17 @@ class PublishedDashboard:
     """The display name of the published dashboard."""
 
     embed_credentials: Optional[bool] = None
-    """Indicates whether credentials are embedded in the published dashboard."""
+    """Whether the publisher's credentials are embedded in the published dashboard. When true, viewers
+    run the dashboard's queries with the publisher's data permissions (shared data permissions);
+    when false, each viewer runs them with their own data permissions."""
 
     revision_create_time: Optional[str] = None
-    """The timestamp of when the published dashboard was last revised."""
+    """The timestamp of when the current published version was created, that is, when the dashboard was
+    last published."""
 
     warehouse_id: Optional[str] = None
-    """The warehouse ID used to run the published dashboard."""
+    """The ID of the SQL warehouse that runs the published dashboard's queries. It is the warehouse
+    given when the dashboard was published, or the draft's warehouse if none was given."""
 
     def as_dict(self) -> dict:
         """Serializes the PublishedDashboard into a dictionary suitable for use as a JSON request body."""
@@ -2226,8 +2228,13 @@ class RevertDashboardResponse:
 
 @dataclass
 class Schedule:
+    """A schedule periodically runs a dashboard on a cron cadence. Each run executes the dashboard's
+    queries to refresh its cached data and sends a snapshot of the dashboard to the schedule's
+    subscribers. See `Manage scheduled dashboard updates and subscriptions
+    <https://docs.databricks.com/dashboards/share/schedule-subscribe>`__ for details."""
+
     cron_schedule: CronSchedule
-    """The cron expression describing the frequency of the periodic refresh for this schedule."""
+    """The cron expression and time zone that define when the schedule runs."""
 
     create_time: Optional[str] = None
     """A timestamp indicating when the schedule was created."""
@@ -2236,7 +2243,7 @@ class Schedule:
     """UUID identifying the dashboard to which the schedule belongs."""
 
     display_name: Optional[str] = None
-    """The display name for schedule."""
+    """The name of the schedule, as shown in the dashboard's list of schedules."""
 
     etag: Optional[str] = None
     """The etag for the schedule. Must be left empty on create, must be provided on updates to ensure
@@ -2244,7 +2251,8 @@ class Schedule:
     delete."""
 
     pause_status: Optional[SchedulePauseStatus] = None
-    """The status indicates whether this schedule is paused or not."""
+    """Whether the schedule is paused. A paused schedule keeps its configuration and subscribers, but
+    the dashboard is not refreshed and no notifications are sent until the schedule is unpaused."""
 
     schedule_id: Optional[str] = None
     """UUID identifying the schedule."""
@@ -2253,7 +2261,8 @@ class Schedule:
     """A timestamp indicating when the schedule was last updated."""
 
     warehouse_id: Optional[str] = None
-    """The warehouse id to run the dashboard with for the schedule."""
+    """The ID of the SQL warehouse that runs the dashboard's queries during scheduled refreshes. If
+    omitted, the warehouse of the published dashboard is used."""
 
     def as_dict(self) -> dict:
         """Serializes the Schedule into a dictionary suitable for use as a JSON request body."""
@@ -2355,12 +2364,11 @@ class ScoreReason(Enum):
 @dataclass
 class Subscriber:
     destination_subscriber: Optional[SubscriptionSubscriberDestination] = None
-    """The destination to receive the subscription email. This parameter is mutually exclusive with
-    ``user_subscriber``."""
+    """The notification destination that receives the subscription, such as an email list or a Slack or
+    Microsoft Teams channel. Workspace admins configure notification destinations."""
 
     user_subscriber: Optional[SubscriptionSubscriberUser] = None
-    """The user to receive the subscription email. This parameter is mutually exclusive with
-    ``destination_subscriber``."""
+    """The workspace user who receives the subscription."""
 
     def as_dict(self) -> dict:
         """Serializes the Subscriber into a dictionary suitable for use as a JSON request body."""
@@ -2391,8 +2399,14 @@ class Subscriber:
 
 @dataclass
 class Subscription:
+    """A subscription registers a workspace user or a notification destination as a subscriber of a
+    dashboard schedule. Each time the schedule runs, the subscriber receives a snapshot of the
+    published dashboard, unless the subscription is refresh-only. See `Manage scheduled dashboard
+    updates and subscriptions <https://docs.databricks.com/dashboards/share/schedule-subscribe>`__."""
+
     subscriber: Subscriber
-    """Subscriber details for users and destinations to be added as subscribers to the schedule."""
+    """The subscriber that receives the dashboard snapshot. Exactly one of ``user_subscriber`` and
+    ``destination_subscriber`` must be set."""
 
     create_time: Optional[str] = None
     """A timestamp indicating when the subscription was created."""
@@ -2405,15 +2419,16 @@ class Subscription:
     """UUID identifying the dashboard to which the subscription belongs."""
 
     etag: Optional[str] = None
-    """The etag for the subscription. Must be left empty on create, can be optionally provided on
-    delete to ensure that the subscription has not been deleted since the last read."""
+    """The etag of the subscription. It must be left empty on create. It can be passed as the ``etag``
+    parameter of the delete method to make sure the subscription has not changed since it was read."""
 
     schedule_id: Optional[str] = None
     """UUID identifying the schedule to which the subscription belongs."""
 
     skip_notify: Optional[bool] = None
-    """Controls whether notifications are sent to the subscriber for scheduled dashboard refreshes. If
-    not defined, defaults to false in the backend to match the current behavior (refresh and notify)"""
+    """Whether the subscription is refresh-only. When true, each scheduled run refreshes the dashboard
+    data for the subscriber without sending a notification. Defaults to false. Refresh-only
+    subscriptions are only allowed on dashboards published without embedded credentials."""
 
     subscription_id: Optional[str] = None
     """UUID identifying the subscription."""
@@ -2486,7 +2501,9 @@ class Subscription:
 @dataclass
 class SubscriptionSubscriberDestination:
     destination_id: str
-    """The canonical identifier of the destination to receive email notification."""
+    """The UUID of the notification destination that receives the subscription, as returned by the
+    `Notification Destinations API
+    <https://docs.databricks.com/api/workspace/notificationdestinations>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the SubscriptionSubscriberDestination into a dictionary suitable for use as a JSON request body."""
@@ -2511,7 +2528,8 @@ class SubscriptionSubscriberDestination:
 @dataclass
 class SubscriptionSubscriberUser:
     user_id: int
-    """UserId of the subscriber."""
+    """The ID of the workspace user who receives the subscription, as returned by the `Workspace Users
+    API <https://docs.databricks.com/api/workspace/users>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the SubscriptionSubscriberUser into a dictionary suitable for use as a JSON request body."""
@@ -3875,7 +3893,8 @@ class LakeviewAPI:
         return Dashboard.from_dict(res)
 
     def create_schedule(self, dashboard_id: str, schedule: Schedule) -> Schedule:
-        """Create dashboard schedule.
+        """Creates a schedule for a dashboard. The dashboard must be published before a schedule can be created
+        for it.
 
         Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
         entitlement. Grant Databricks SQL access in addition to Workspace access.
@@ -3903,7 +3922,12 @@ class LakeviewAPI:
         return Schedule.from_dict(res)
 
     def create_subscription(self, dashboard_id: str, schedule_id: str, subscription: Subscription) -> Subscription:
-        """Create schedule subscription.
+        """Create schedule subscription. Subscribes a workspace user or a notification destination to the
+        schedule, so that it receives a snapshot of the dashboard each time the schedule runs. Subscribing
+        yourself requires CAN VIEW permission on the dashboard; subscribing another user or a notification
+        destination requires CAN EDIT. On dashboards published without embedded credentials, you can only
+        subscribe yourself. If the subscriber is already subscribed to the schedule, the existing subscription
+        is returned.
 
         The caller must be a workspace user with one of the following `entitlements
         <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
@@ -3942,7 +3966,7 @@ class LakeviewAPI:
         return Subscription.from_dict(res)
 
     def delete_schedule(self, dashboard_id: str, schedule_id: str, *, etag: Optional[str] = None):
-        """Delete dashboard schedule.
+        """Deletes a schedule together with all of its subscriptions.
 
         Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
         entitlement. Grant Databricks SQL access in addition to Workspace access.
@@ -3979,7 +4003,9 @@ class LakeviewAPI:
     def delete_subscription(
         self, dashboard_id: str, schedule_id: str, subscription_id: str, *, etag: Optional[str] = None
     ):
-        """Delete schedule subscription.
+        """Delete schedule subscription. The subscriber receives no further snapshots from the schedule. Deleting
+        your own subscription requires CAN VIEW permission on the dashboard; deleting another user's or a
+        notification destination's subscription requires CAN EDIT.
 
         The caller must be a workspace user with one of the following `entitlements
         <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
@@ -3989,14 +4015,14 @@ class LakeviewAPI:
         dashboard has been shared with them.
 
         :param dashboard_id: str
-          UUID identifying the dashboard which the subscription belongs.
+          UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
-          UUID identifying the schedule which the subscription belongs.
+          UUID identifying the schedule to which the subscription belongs.
         :param subscription_id: str
           UUID identifying the subscription.
         :param etag: str (optional)
-          The etag for the subscription. Can be optionally provided to ensure that the subscription has not
-          been modified since the last read.
+          The etag of the subscription, as returned when it was read. If it is provided and no longer matches,
+          the request fails with ABORTED and the subscription is not deleted.
 
 
         """
@@ -4040,7 +4066,8 @@ class LakeviewAPI:
         return Dashboard.from_dict(res)
 
     def get_published(self, dashboard_id: str) -> PublishedDashboard:
-        """Get the current published dashboard.
+        """Get the current published dashboard. The request fails with NOT_FOUND if the dashboard has never been
+        published or has been unpublished.
 
         The caller must be a workspace user with one of the following entitlements: Workspace access,
         Databricks SQL access, or Consumer access.
@@ -4107,9 +4134,9 @@ class LakeviewAPI:
         dashboard has been shared with them.
 
         :param dashboard_id: str
-          UUID identifying the dashboard which the subscription belongs.
+          UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
-          UUID identifying the schedule which the subscription belongs.
+          UUID identifying the schedule to which the subscription belongs.
         :param subscription_id: str
           UUID identifying the subscription.
 
@@ -4195,7 +4222,7 @@ class LakeviewAPI:
         dashboard has been shared with them.
 
         :param dashboard_id: str
-          UUID identifying the dashboard to which the schedules belongs.
+          UUID identifying the dashboard to which the schedules belong.
         :param page_size: int (optional)
           The number of schedules to return per page.
         :param page_token: str (optional)
@@ -4242,9 +4269,9 @@ class LakeviewAPI:
         dashboard has been shared with them.
 
         :param dashboard_id: str
-          UUID identifying the dashboard which the subscriptions belongs.
+          UUID identifying the dashboard to which the subscriptions belong.
         :param schedule_id: str
-          UUID identifying the schedule which the subscriptions belongs.
+          UUID identifying the schedule to which the subscriptions belong.
         :param page_size: int (optional)
           The number of subscriptions to return per page.
         :param page_token: str (optional)
@@ -4360,13 +4387,16 @@ class LakeviewAPI:
         return PublishedDashboard.from_dict(res)
 
     def revert(self, dashboard_id: str, *, etag: Optional[str] = None) -> RevertDashboardResponse:
-        """Revert a dashboard's definition in draft mode to the last published version.
+        """Revert a dashboard's definition in draft mode to the last published version. The draft's datasets,
+        pages and widgets are replaced with those of the current published version, and the updated draft is
+        returned. The dashboard must have been published at least once; the published version itself is not
+        changed.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
         :param etag: str (optional)
-          The etag for the dashboard. Optionally, it can be provided to verify that the dashboard has not been
-          modified from its last retrieval.
+          The etag of the draft dashboard, as returned by the get dashboard API. When provided, the request
+          fails with ABORTED if the draft has been modified since that etag was read.
 
         :returns: :class:`RevertDashboardResponse`
         """
@@ -4406,7 +4436,9 @@ class LakeviewAPI:
         self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}", headers=headers)
 
     def unpublish(self, dashboard_id: str):
-        """Unpublish the dashboard.
+        """Unpublish the dashboard. This deletes the published version, so viewers can no longer open it, and
+        pauses the dashboard's schedules. The draft is not changed; publish it again to make the dashboard
+        available to viewers.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.
@@ -4470,7 +4502,8 @@ class LakeviewAPI:
         return Dashboard.from_dict(res)
 
     def update_schedule(self, dashboard_id: str, schedule_id: str, schedule: Schedule) -> Schedule:
-        """Update dashboard schedule.
+        """Updates a schedule. The request body replaces the stored schedule, so fields omitted from the body are
+        reset to their defaults.
 
         Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
         entitlement. Grant Databricks SQL access in addition to Workspace access.
@@ -4511,7 +4544,11 @@ class LakeviewEmbeddedAPI:
     def get_published_dashboard_token_info(
         self, dashboard_id: str, *, external_value: Optional[str] = None, external_viewer_id: Optional[str] = None
     ) -> GetPublishedDashboardTokenInfoResponse:
-        """Get a required authorization details and scopes of a published dashboard to mint an OAuth token.
+        """Get the OAuth scope and authorization details needed to mint a token that is scoped to viewing the
+        published dashboard, for example to embed it in an external application. Pass the response fields,
+        with ``authorization_details`` serialized as a JSON string, to the workspace OAuth token endpoint with
+        the ``client_credentials`` grant to mint the token. See `Embedding for external users
+        <https://docs.databricks.com/dashboards/share/embedding/external-embed>`__.
 
         The caller must be a workspace user with one of the following entitlements: Workspace access,
         Databricks SQL access, or Consumer access.
@@ -4522,9 +4559,12 @@ class LakeviewEmbeddedAPI:
         :param dashboard_id: str
           UUID identifying the published dashboard.
         :param external_value: str (optional)
-          Provided external value to be included in the custom claim.
+          Value to carry in the token for this viewer, such as a tenant or region key. Dashboard dataset
+          queries can reference it as ``__aibi_external_value`` to filter data per viewer. The combined size
+          of ``external_value`` and ``external_viewer_id`` must be less than 1 KB.
         :param external_viewer_id: str (optional)
-          Provided external viewer id to be included in the custom claim.
+          Identifier of the viewer in the external application. It is recorded in dashboard audit logs, so it
+          should be unique per viewer and must not contain personally identifiable information.
 
         :returns: :class:`GetPublishedDashboardTokenInfoResponse`
         """

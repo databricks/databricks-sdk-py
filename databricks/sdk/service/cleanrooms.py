@@ -38,11 +38,19 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class CleanRoom:
+    """A clean room is a secure, Databricks-managed environment where collaborators from one or more
+    Unity Catalog metastores share tables, views, volumes and notebooks and run approved analyses
+    without seeing each other's data. Each collaborator sees the clean room as a securable in their
+    own metastore, while the analyses run in a central clean room in the cloud and region chosen at
+    creation."""
+
     access_restricted: Optional[CleanRoomAccessRestricted] = None
     """Whether clean room access is restricted due to `CSP
     <https://docs.databricks.com/en/security/privacy/security-profile.html>`__"""
 
     comment: Optional[str] = None
+    """Free-form description of the clean room. Comments are local to the caller's metastore and are
+    not shared with the other collaborators."""
 
     created_at: Optional[int] = None
     """When the clean room was created, in epoch milliseconds."""
@@ -65,7 +73,7 @@ class CleanRoom:
 
     owner: Optional[str] = None
     """This is the Databricks username of the owner of the local clean room securable for permission
-    management."""
+    management. When creating a clean room, leave it empty or set it to the caller."""
 
     remote_detailed_info: Optional[CleanRoomRemoteDetail] = None
     """Central clean room details. During creation, users need to specify cloud_vendor, region, and
@@ -1103,6 +1111,7 @@ class CleanRoomOutputCatalog:
     The field will always exist if status is CREATED."""
 
     status: Optional[CleanRoomOutputCatalogOutputCatalogStatus] = None
+    """Status of the output catalog for the calling collaborator."""
 
     def as_dict(self) -> dict:
         """Serializes the CleanRoomOutputCatalog into a dictionary suitable for use as a JSON request body."""
@@ -1148,19 +1157,25 @@ class CleanRoomRemoteDetail:
     """Cloud vendor (aws,azure,gcp) of the central clean room."""
 
     collaborators: Optional[List[CleanRoomCollaborator]] = None
-    """Collaborators in the central clean room. There should one and only one collaborator in the list
-    that satisfies the owner condition:
+    """Collaborators in the central clean room. There should be one and only one collaborator in the
+    list that satisfies the owner condition:
     
     1. It has the creator's global_metastore_id (determined by caller of CreateCleanRoom).
     2. Its invite_recipient_email is empty."""
 
     compliance_security_profile: Optional[ComplianceSecurityProfile] = None
+    """Compliance security profile of the central clean room. It is taken from the creator's workspace
+    when the clean room is created; a collaborator whose workspace profile differs sees
+    access_restricted set to CSP_MISMATCH."""
 
     creator: Optional[CleanRoomCollaborator] = None
     """Collaborator who creates the clean room."""
 
     egress_network_policy: Optional[settings.EgressNetworkPolicy] = None
-    """Egress network policy to apply to the central clean room workspace."""
+    """Egress network policy to apply to the central clean room workspace. Only
+    internet_access.restriction_mode (FULL_ACCESS or RESTRICTED_ACCESS) and
+    internet_access.allowed_internet_destinations can be set. When omitted, internet access is
+    restricted with no allowed destinations."""
 
     enable_shared_output: Optional[bool] = None
     """Whether to enable shared output for the central clean room. When enabled, clean room task runs
@@ -1563,6 +1578,7 @@ class CreateCleanRoomAssetReviewResponse:
 @dataclass
 class CreateCleanRoomOutputCatalogResponse:
     output_catalog: CleanRoomOutputCatalog
+    """The output catalog that was created."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateCleanRoomOutputCatalogResponse into a dictionary suitable for use as a JSON request body."""
@@ -2475,11 +2491,11 @@ class CleanRoomsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create(self, clean_room: CleanRoom) -> Wait[CleanRoom]:
-        """Create a new clean room with the specified collaborators. This method is asynchronous; the returned
-        name field inside the clean_room field can be used to poll the clean room status, using the
-        `cleanrooms/get <https://docs.databricks.com/api/workspace/cleanrooms/get>`__ method. When this method
-        returns, the clean room will be in a PROVISIONING state, with only name, owner, comment, created_at
-        and status populated. The clean room will be usable once it enters an ACTIVE state.
+        """Create a new clean room with the specified collaborators. This method is asynchronous; the name field
+        of the returned clean room can be used to poll the clean room status, using the `cleanrooms/get
+        <https://docs.databricks.com/api/workspace/cleanrooms/get>`__ method. When this method returns, the
+        clean room will be in a PROVISIONING state, with only name, owner, comment, created_at and status
+        populated. The clean room will be usable once it enters an ACTIVE state.
 
         The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the metastore.
 
@@ -2512,7 +2528,9 @@ class CleanRoomsAPI:
     def create_output_catalog(
         self, clean_room_name: str, output_catalog: CleanRoomOutputCatalog
     ) -> CreateCleanRoomOutputCatalogResponse:
-        """Create the output catalog of the clean room.
+        """Create the output catalog of the clean room. The output catalog is a catalog in the caller's metastore
+        where the output tables of the clean room runs that the caller triggers are made available. Each
+        collaborator can create one output catalog per clean room, and the clean room must be ACTIVE.
 
         :param clean_room_name: str
           Name of the clean room.
@@ -2562,6 +2580,7 @@ class CleanRoomsAPI:
         """Get the details of a clean room given its name.
 
         :param name: str
+          Name of the clean room.
 
         :returns: :class:`CleanRoom`
         """
@@ -2620,6 +2639,8 @@ class CleanRoomsAPI:
         :param name: str
           Name of the clean room.
         :param clean_room: :class:`CleanRoom` (optional)
+          Clean room fields to update. Only mutable fields such as owner, comment and enable_shared_output can
+          be changed; remote_detailed_info, status, created_at and updated_at must be omitted.
 
         :returns: :class:`CleanRoom`
         """

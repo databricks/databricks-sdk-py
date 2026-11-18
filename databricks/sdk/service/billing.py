@@ -36,10 +36,13 @@ class ActionConfiguration:
     """Databricks action configuration ID."""
 
     action_type: Optional[ActionConfigurationType] = None
-    """The type of the action."""
+    """The action to take when the alert enters a triggered state. ``EMAIL_NOTIFICATION`` sends an
+    email and ``BLOCK_USAGE`` blocks further usage. ``BLOCK_USAGE`` is only supported on Unity AI
+    Gateway budgets, with ``resource_type`` set to ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``."""
 
     target: Optional[str] = None
-    """Target for the action. For example, an email address."""
+    """Target of the action. For ``EMAIL_NOTIFICATION``, the email address that receives the alert, up
+    to 256 characters. Must be omitted for ``BLOCK_USAGE``."""
 
     def as_dict(self) -> dict:
         """Serializes the ActionConfiguration into a dictionary suitable for use as a JSON request body."""
@@ -84,7 +87,7 @@ class ActionConfigurationType(Enum):
 class AlertConfiguration:
     action_configurations: Optional[List[ActionConfiguration]] = None
     """Configured actions for this alert. These define what happens when an alert enters a triggered
-    state."""
+    state. An alert can have up to 10 actions."""
 
     alert_configuration_id: Optional[str] = None
     """Databricks alert configuration ID."""
@@ -95,7 +98,8 @@ class AlertConfiguration:
 
     quantity_threshold: Optional[str] = None
     """The threshold for the budget alert to determine if it is in a triggered state. The number is
-    evaluated based on ``quantity_type``."""
+    evaluated based on ``quantity_type``. A decimal number passed as a string, from 0 to
+    1,000,000,000."""
 
     quantity_type: Optional[AlertConfigurationQuantityType] = None
     """The way to calculate cost for this budget alert. This is what ``quantity_threshold`` is measured
@@ -261,6 +265,10 @@ class AlertSpendStatus:
 
 @dataclass
 class BudgetConfiguration:
+    """A budget tracks the spend of your account, or of the workspaces and custom tags selected by its
+    filter, against one or more alert thresholds. Spend is measured in US dollars at list price. For
+    an overview, see https://docs.databricks.com/en/admin/account-settings/budgets.html."""
+
     account_id: Optional[str] = None
     """Databricks account ID."""
 
@@ -279,7 +287,7 @@ class BudgetConfiguration:
     """Databricks budget configuration ID."""
 
     create_time: Optional[int] = None
-    """Creation time of this budget configuration."""
+    """Creation time of this budget configuration, in milliseconds since the Unix epoch."""
 
     display_name: Optional[str] = None
     """Human-readable name of budget configuration. Max Length: 128"""
@@ -287,7 +295,8 @@ class BudgetConfiguration:
     filter: Optional[BudgetConfigurationFilter] = None
     """Configured filters for this budget. These are applied to your account's usage to limit the scope
     of what is considered for this budget. Leave empty to include all usage for this account. All
-    provided filters must be matched for usage to be included."""
+    provided filters must be matched for usage to be included. The filter cannot be changed after
+    the budget is created. To change it, delete the budget and create a new one."""
 
     include_external_spend: Optional[bool] = None
     """Whether this budget tracks external pass-through spend (third-party costs billed through a
@@ -300,7 +309,8 @@ class BudgetConfiguration:
     specific resource."""
 
     update_time: Optional[int] = None
-    """Update time of this budget configuration."""
+    """Time of the most recent update to this budget configuration, in milliseconds since the Unix
+    epoch."""
 
     def as_dict(self) -> dict:
         """Serializes the BudgetConfiguration into a dictionary suitable for use as a JSON request body."""
@@ -404,8 +414,10 @@ class BudgetConfigurationFilter:
 @dataclass
 class BudgetConfigurationFilterClause:
     operator: Optional[BudgetConfigurationFilterOperator] = None
+    """How usage is compared with ``values``. ``IN`` matches usage whose value is one of ``values``."""
 
     values: Optional[List[str]] = None
+    """Values to match. A clause can list up to 30 values."""
 
     def as_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilterClause into a dictionary suitable for use as a JSON request body."""
@@ -438,8 +450,12 @@ class BudgetConfigurationFilterOperator(Enum):
 @dataclass
 class BudgetConfigurationFilterTagClause:
     key: Optional[str] = None
+    """The custom tag key to match, exactly as it appears in your usage data. A key can appear in at
+    most one clause per operator."""
 
     value: Optional[BudgetConfigurationFilterClause] = None
+    """The tag values to match for ``key``. Usage is included when its value for ``key`` is one of the
+    listed values."""
 
     def as_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilterTagClause into a dictionary suitable for use as a JSON request body."""
@@ -468,8 +484,11 @@ class BudgetConfigurationFilterTagClause:
 @dataclass
 class BudgetConfigurationFilterWorkspaceIdClause:
     operator: Optional[BudgetConfigurationFilterOperator] = None
+    """How usage is compared with ``values``. ``IN`` matches usage from any of the listed workspaces."""
 
     values: Optional[List[int]] = None
+    """IDs of the workspaces whose usage is included. A clause can list up to 30 workspaces, all of
+    which must belong to this account."""
 
     def as_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilterWorkspaceIdClause into a dictionary suitable for use as a JSON request body."""
@@ -499,7 +518,9 @@ class BudgetConfigurationFilterWorkspaceIdClause:
 
 @dataclass
 class BudgetPolicy:
-    """Contains the BudgetPolicy details."""
+    """A serverless usage policy is a set of tags that are applied to the serverless usage of the
+    workloads that use the policy. Each usage record in the billable usage system table carries the
+    policy ID and these tags, so that serverless usage can be attributed to the policy."""
 
     binding_workspace_ids: Optional[List[int]] = None
     """List of workspaces that this budget policy will be exclusively bound to. An empty binding
@@ -629,6 +650,10 @@ class CreateBillingUsageDashboardResponse:
 
 @dataclass
 class CreateBudgetConfigurationBudget:
+    """A budget tracks the spend of your account, or of the workspaces and custom tags selected by its
+    filter, against one or more alert thresholds. Spend is measured in US dollars at list price. For
+    an overview, see https://docs.databricks.com/en/admin/account-settings/budgets.html."""
+
     account_id: Optional[str] = None
     """Databricks account ID."""
 
@@ -649,7 +674,8 @@ class CreateBudgetConfigurationBudget:
     filter: Optional[BudgetConfigurationFilter] = None
     """Configured filters for this budget. These are applied to your account's usage to limit the scope
     of what is considered for this budget. Leave empty to include all usage for this account. All
-    provided filters must be matched for usage to be included."""
+    provided filters must be matched for usage to be included. The filter cannot be changed after
+    the budget is created. To change it, delete the budget and create a new one."""
 
     include_external_spend: Optional[bool] = None
     """Whether this budget tracks external pass-through spend (third-party costs billed through a
@@ -713,10 +739,13 @@ class CreateBudgetConfigurationBudget:
 @dataclass
 class CreateBudgetConfigurationBudgetActionConfigurations:
     action_type: Optional[ActionConfigurationType] = None
-    """The type of the action."""
+    """The action to take when the alert enters a triggered state. ``EMAIL_NOTIFICATION`` sends an
+    email and ``BLOCK_USAGE`` blocks further usage. ``BLOCK_USAGE`` is only supported on Unity AI
+    Gateway budgets, with ``resource_type`` set to ``BUDGET_RESOURCE_TYPE_UNITY_AI_GATEWAY``."""
 
     target: Optional[str] = None
-    """Target for the action. For example, an email address."""
+    """Target of the action. For ``EMAIL_NOTIFICATION``, the email address that receives the alert, up
+    to 256 characters. Must be omitted for ``BLOCK_USAGE``."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationBudgetActionConfigurations into a dictionary suitable for use as a JSON request body."""
@@ -746,7 +775,7 @@ class CreateBudgetConfigurationBudgetActionConfigurations:
 class CreateBudgetConfigurationBudgetAlertConfigurations:
     action_configurations: Optional[List[CreateBudgetConfigurationBudgetActionConfigurations]] = None
     """Configured actions for this alert. These define what happens when an alert enters a triggered
-    state."""
+    state. An alert can have up to 10 actions."""
 
     principal_overrides: Optional[List[PrincipalOverride]] = None
     """Per-principal threshold overrides for this alert. Only applies to per-user alerts
@@ -754,7 +783,8 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
 
     quantity_threshold: Optional[str] = None
     """The threshold for the budget alert to determine if it is in a triggered state. The number is
-    evaluated based on ``quantity_type``."""
+    evaluated based on ``quantity_type``. A decimal number passed as a string, from 0 to
+    1,000,000,000."""
 
     quantity_type: Optional[AlertConfigurationQuantityType] = None
     """The way to calculate cost for this budget alert. This is what ``quantity_threshold`` is measured
@@ -1043,7 +1073,7 @@ class Filter:
     will be applied in conjunction."""
 
     creator_user_id: Optional[int] = None
-    """The policy creator user id to be filtered on. If unspecified, all policies will be returned."""
+    """Deprecated: This field is ignored. Creator filtering will be removed in a future version."""
 
     creator_user_name: Optional[str] = None
     """Deprecated: Do not use this field in new integrations. Creator filtering will be removed in a
@@ -1051,7 +1081,8 @@ class Filter:
     will be returned."""
 
     policy_name: Optional[str] = None
-    """The partial name of policies to be filtered on. If unspecified, all policies will be returned."""
+    """Only policies whose name contains this string are returned. Matching is case-insensitive. If
+    unspecified, all policies are returned."""
 
     def as_dict(self) -> dict:
         """Serializes the Filter into a dictionary suitable for use as a JSON request body."""
@@ -1120,6 +1151,7 @@ class GetBillingUsageDashboardResponse:
 @dataclass
 class GetBudgetConfigurationResponse:
     budget: Optional[BudgetConfiguration] = None
+    """The requested budget configuration."""
 
     def as_dict(self) -> dict:
         """Serializes the GetBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
@@ -1620,7 +1652,7 @@ class SortSpec:
     """Whether to sort in descending order."""
 
     field: Optional[SortSpecField] = None
-    """The filed to sort by"""
+    """The field to sort by. If unspecified, policies are sorted by name."""
 
     def as_dict(self) -> dict:
         """Serializes the SortSpec into a dictionary suitable for use as a JSON request body."""
@@ -1652,6 +1684,10 @@ class SortSpecField(Enum):
 
 @dataclass
 class UpdateBudgetConfigurationBudget:
+    """A budget tracks the spend of your account, or of the workspaces and custom tags selected by its
+    filter, against one or more alert thresholds. Spend is measured in US dollars at list price. For
+    an overview, see https://docs.databricks.com/en/admin/account-settings/budgets.html."""
+
     account_id: Optional[str] = None
     """Databricks account ID."""
 
@@ -1675,7 +1711,8 @@ class UpdateBudgetConfigurationBudget:
     filter: Optional[BudgetConfigurationFilter] = None
     """Configured filters for this budget. These are applied to your account's usage to limit the scope
     of what is considered for this budget. Leave empty to include all usage for this account. All
-    provided filters must be matched for usage to be included."""
+    provided filters must be matched for usage to be included. The filter cannot be changed after
+    the budget is created. To change it, delete the budget and create a new one."""
 
     include_external_spend: Optional[bool] = None
     """Whether this budget tracks external pass-through spend (third-party costs billed through a
@@ -1889,12 +1926,12 @@ class BudgetPolicyAPI:
         self._api = api_client
 
     def create(self, *, policy: Optional[BudgetPolicy] = None, request_id: Optional[str] = None) -> BudgetPolicy:
-        """Creates a new policy.
+        """Creates a new usage policy. The creator is granted the manager role on the new policy.
 
         :param policy: :class:`BudgetPolicy` (optional)
-          The policy to create. ``policy_id`` needs to be empty as it will be generated ``policy_name`` must
-          be provided, custom_tags may need to be provided depending on the cloud provider. All other fields
-          are optional.
+          The policy to create. ``policy_name`` must be provided, and ``custom_tags`` may be required
+          depending on the cloud provider. Leave ``policy_id`` empty because Databricks generates it. All
+          other fields are optional.
         :param request_id: str (optional)
           A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is
           recommended. This request is only idempotent if a ``request_id`` is provided.
@@ -1920,7 +1957,7 @@ class BudgetPolicyAPI:
         return BudgetPolicy.from_dict(res)
 
     def delete(self, policy_id: str):
-        """Deletes a policy
+        """Deletes a usage policy.
 
         :param policy_id: str
           The Id of the policy.
@@ -1935,7 +1972,7 @@ class BudgetPolicyAPI:
         self._api.do("DELETE", f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}", headers=headers)
 
     def get(self, policy_id: str) -> BudgetPolicy:
-        """Retrieves a policy by it's ID.
+        """Retrieves a usage policy by its ID.
 
         :param policy_id: str
           The Id of the policy.
@@ -1960,7 +1997,8 @@ class BudgetPolicyAPI:
         page_token: Optional[str] = None,
         sort_spec: Optional[SortSpec] = None,
     ) -> Iterator[BudgetPolicy]:
-        """Lists all policies. Policies are returned in the alphabetically ascending order of their names.
+        """Lists the usage policies that the caller has permission to view. Policies are sorted by name in
+        ascending order unless ``sort_spec`` requests a different order.
 
         :param filter_by: :class:`Filter` (optional)
           A filter to apply to the list of policies.
@@ -1968,13 +2006,13 @@ class BudgetPolicyAPI:
           The maximum number of budget policies to return. If unspecified, at most 100 budget policies will be
           returned. The maximum value is 1000; values above 1000 will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous ``ListServerlessPolicies`` call. Provide this to retrieve the
+          A page token, received from a previous ``ListBudgetPolicies`` call. Provide this to retrieve the
           subsequent page. If unspecified, the first page will be returned.
 
-          When paginating, all other parameters provided to ``ListServerlessPoliciesRequest`` must match the
-          call that provided the page token.
+          When paginating, all other parameters provided to ``ListBudgetPolicies`` must match the call that
+          provided the page token.
         :param sort_spec: :class:`SortSpec` (optional)
-          The sort specification.
+          How to sort the returned policies. If unspecified, policies are sorted by name in ascending order.
 
         :returns: Iterator over :class:`BudgetPolicy`
         """
@@ -2006,7 +2044,8 @@ class BudgetPolicyAPI:
     def update(
         self, policy_id: str, policy: BudgetPolicy, *, limit_config: Optional[LimitConfig] = None
     ) -> BudgetPolicy:
-        """Updates a policy
+        """Updates a usage policy. Changes apply only to serverless usage that starts after the update, not to
+        workloads that are already running.
 
         :param policy_id: str
           The Id of the policy. This field is generated by Databricks and globally unique.
@@ -2014,7 +2053,7 @@ class BudgetPolicyAPI:
           The policy to update. ``creator_user_id`` cannot be specified in the request. All other fields must
           be specified even if not changed. The ``policy_id`` is used to identify the policy to update.
         :param limit_config: :class:`LimitConfig` (optional)
-          DEPRECATED. This is redundant field as LimitConfig is part of the BudgetPolicy
+          Deprecated: This field is ignored.
 
         :returns: :class:`BudgetPolicy`
         """
@@ -2204,7 +2243,8 @@ class BudgetsAPI:
         :param budget_id: str
           The Databricks budget configuration ID.
         :param budget: :class:`UpdateBudgetConfigurationBudget`
-          The updated budget. This will overwrite the budget specified by the budget ID.
+          The updated budget. This will overwrite the budget specified by the budget ID. Alerts and actions
+          are matched by ID: those omitted from the request are removed, and those without an ID are created.
 
         :returns: :class:`UpdateBudgetConfigurationResponse`
         """

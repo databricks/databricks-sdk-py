@@ -2571,7 +2571,8 @@ class EndpointInfo:
     
     Supported values:
     
-    - Must be == 0 or >= 10 mins
+    - Must be == 0 or >= 1 min for serverless warehouses.
+    - Must be == 0 or >= 10 mins for classic and pro warehouses.
     - 0 indicates no autostop.
     
     Defaults to 120 mins"""
@@ -3068,6 +3069,8 @@ class ExternalQuerySource:
     """The canonical identifier for this Genie space"""
 
     job_info: Optional[ExternalQuerySourceJobInfo] = None
+    """Identifiers of the job, job run, and task run that executed this statement, when it ran as part
+    of a job."""
 
     legacy_dashboard_id: Optional[str] = None
     """The canonical identifier for this legacy dashboard"""
@@ -3254,7 +3257,8 @@ class GetWarehouseResponse:
     
     Supported values:
     
-    - Must be == 0 or >= 10 mins
+    - Must be == 0 or >= 1 min for serverless warehouses.
+    - Must be == 0 or >= 10 mins for classic and pro warehouses.
     - 0 indicates no autostop.
     
     Defaults to 120 mins"""
@@ -5163,7 +5167,8 @@ class QueryFilter:
 @dataclass
 class QueryInfo:
     cache_query_id: Optional[str] = None
-    """The ID of the cached query if this result retrieved from cache"""
+    """The ID of the query whose cached result was returned, if this result was retrieved from the
+    cache."""
 
     channel_used: Optional[ChannelInfo] = None
     """SQL Warehouse channel information at the time of query execution"""
@@ -5174,9 +5179,9 @@ class QueryInfo:
     are expected to remain static over time, this cannot be guaranteed."""
 
     duration: Optional[int] = None
-    """Total time of the statement execution. This value does not include the time taken to retrieve
-    the results, which can result in a discrepancy between this value and the start-to-finish
-    wall-clock time."""
+    """Total time of the statement execution, in milliseconds. This value does not include the time
+    taken to retrieve the results, which can result in a discrepancy between this value and the
+    start-to-finish wall-clock time."""
 
     endpoint_id: Optional[str] = None
     """Alias for ``warehouse_id``."""
@@ -5191,25 +5196,26 @@ class QueryInfo:
     """The email address or username of the user whose credentials were used to run the query."""
 
     execution_end_time_ms: Optional[int] = None
-    """The time execution of the query ended."""
+    """The time execution of the query ended, in milliseconds since the Unix epoch."""
 
     is_final: Optional[bool] = None
-    """Whether more updates for the query are expected."""
+    """Whether the query has reached a final state, so no further updates to this record are expected."""
 
     lookup_key: Optional[str] = None
     """A key that can be used to look up query details."""
 
     metrics: Optional[QueryMetrics] = None
-    """Metrics about query execution."""
+    """Metrics about query execution. Only returned when ``include_metrics`` is true in the request."""
 
     plans_state: Optional[PlansState] = None
     """Whether plans exist for the execution, or the reason why they are missing"""
 
     query_end_time_ms: Optional[int] = None
-    """The time the query ended."""
+    """The time the query ended, in milliseconds since the Unix epoch."""
 
     query_id: Optional[str] = None
-    """The query ID."""
+    """The UUID that uniquely identifies the query execution. It matches the statement ID shown in the
+    Query History UI and the values accepted by the ``statement_ids`` filter."""
 
     query_source: Optional[ExternalQuerySource] = None
     """A struct that contains key-value pairs representing Databricks entities that were involved in
@@ -5217,10 +5223,12 @@ class QueryInfo:
     Databricks entities."""
 
     query_start_time_ms: Optional[int] = None
-    """The time the query started."""
+    """The time the query started, in milliseconds since the Unix epoch."""
 
     query_tags: Optional[List[QueryTag]] = None
-    """A query execution can be optionally annotated with query tags"""
+    """Key-value tags attached to the query execution, for example with the ``SET QUERY_TAGS``
+    statement, for grouping and filtering. See
+    https://docs.databricks.com/aws/en/sql/user/queries/query-tags."""
 
     query_text: Optional[str] = None
     """The text of the query."""
@@ -5239,7 +5247,7 @@ class QueryInfo:
     """Type of statement for this query"""
 
     status: Optional[QueryStatus] = None
-    """Query status with one the following values:
+    """Query status with one of the following values:
     
     - ``QUEUED``: Query has been received and queued.
     - ``RUNNING``: Query has started.
@@ -5254,7 +5262,7 @@ class QueryInfo:
     """The email address or username of the user who ran the query."""
 
     warehouse_id: Optional[str] = None
-    """Warehouse ID."""
+    """ID of the warehouse that ran the query."""
 
     def as_dict(self) -> dict:
         """Serializes the QueryInfo into a dictionary suitable for use as a JSON request body."""
@@ -5474,8 +5482,9 @@ class QueryMetrics:
     """Total amount of data sent over the network between executor nodes during shuffle, in bytes."""
 
     overloading_queue_start_timestamp: Optional[int] = None
-    """Timestamp of when the query was enqueued waiting while the warehouse was at max load. This field
-    is optional and will not appear if the query skipped the overloading queue."""
+    """Timestamp of when the query was enqueued waiting while the warehouse was at max load, in
+    milliseconds since the Unix epoch. This field is optional and will not appear if the query
+    skipped the overloading queue."""
 
     photon_total_time_ms: Optional[int] = None
     """Total execution time for all individual Photon query engine tasks in the query, in milliseconds."""
@@ -5489,8 +5498,8 @@ class QueryMetrics:
 
     provisioning_queue_start_timestamp: Optional[int] = None
     """Timestamp of when the query was enqueued waiting for a cluster to be provisioned for the
-    warehouse. This field is optional and will not appear if the query skipped the provisioning
-    queue."""
+    warehouse, in milliseconds since the Unix epoch. This field is optional and will not appear if
+    the query skipped the provisioning queue."""
 
     pruned_bytes: Optional[int] = None
     """Total number of file bytes in all tables not read due to pruning"""
@@ -5499,7 +5508,8 @@ class QueryMetrics:
     """Total number of files from all tables not read due to pruning"""
 
     query_compilation_start_timestamp: Optional[int] = None
-    """Timestamp of when the underlying compute started compilation of the query."""
+    """Timestamp of when the underlying compute started compilation of the query, in milliseconds since
+    the Unix epoch."""
 
     read_bytes: Optional[int] = None
     """Total size of data read by the query, in bytes."""
@@ -5536,8 +5546,7 @@ class QueryMetrics:
     """Total number of rows read by the query."""
 
     runnable_tasks: Optional[int] = None
-    """number of remaining tasks to complete, calculated by autoscaler StatementAnalysis.scala
-    deprecated: use remaining_task_count instead"""
+    """Deprecated: use ``remaining_task_count`` instead. Number of remaining tasks to complete."""
 
     spill_to_disk_bytes: Optional[int] = None
     """Size of data temporarily written to disk while executing the query, in bytes."""
@@ -5553,12 +5562,11 @@ class QueryMetrics:
     """Total execution time of the query from the client’s point of view, in milliseconds."""
 
     work_to_be_done: Optional[int] = None
-    """remaining work to be done across all stages in the query, calculated by autoscaler
-    StatementAnalysis.scala, in milliseconds deprecated: using
-    projected_remaining_task_total_time_ms instead"""
+    """Deprecated: use ``projected_remaining_task_total_time_ms`` instead. Remaining work to be done
+    across all stages in the query, in milliseconds."""
 
     write_remote_bytes: Optional[int] = None
-    """Size pf persistent data written to cloud object storage in your cloud tenant, in bytes."""
+    """Size of persistent data written to cloud object storage in your cloud tenant, in bytes."""
 
     def as_dict(self) -> dict:
         """Serializes the QueryMetrics into a dictionary suitable for use as a JSON request body."""
@@ -5903,8 +5911,10 @@ class QueryTag:
     representation."""
 
     key: str
+    """The key of the tag."""
 
     value: Optional[str] = None
+    """The value of the tag. Key-only tags have no value."""
 
     def as_dict(self) -> dict:
         """Serializes the QueryTag into a dictionary suitable for use as a JSON request body."""
@@ -6572,6 +6582,8 @@ class SuccessMessage(Enum):
 @dataclass
 class TaskTimeOverRange:
     entries: Optional[List[TaskTimeOverRangeEntry]] = None
+    """Each entry covers one consecutive time bucket of length ``interval``, starting at
+    ``query_start_time_ms``."""
 
     interval: Optional[int] = None
     """interval length for all entries (difference in start time and end time of an entry range) the
@@ -6903,10 +6915,10 @@ class TextValue:
 @dataclass
 class TimeRange:
     end_time_ms: Optional[int] = None
-    """The end time in milliseconds."""
+    """End of the range, in milliseconds since the Unix epoch."""
 
     start_time_ms: Optional[int] = None
-    """The start time in milliseconds."""
+    """Start of the range, in milliseconds since the Unix epoch."""
 
     def as_dict(self) -> dict:
         """Serializes the TimeRange into a dictionary suitable for use as a JSON request body."""
@@ -9271,17 +9283,17 @@ class QueryHistoryAPI:
 
         :param filter_by: :class:`QueryFilter` (optional)
           An optional filter object to limit query history results. Accepts parameters such as user IDs,
-          endpoint IDs, and statuses to narrow the returned data. In a URL, the parameters of this filter are
+          warehouse IDs, and statuses to narrow the returned data. In a URL, the parameters of this filter are
           specified with dot notation. For example: ``filter_by.statement_ids``.
         :param include_metrics: bool (optional)
           Whether to include the query metrics with each query. Only use this for a small subset of queries
           (max_results). Defaults to false.
         :param max_results: int (optional)
-          Limit the number of results returned in one page. Must be less than 1000 and the default is 100.
+          Limit the number of results returned in one page. Must be no more than 1000; the default is 100.
         :param page_token: str (optional)
-          A token that can be used to get the next page of results. The token can contains characters that
-          need to be encoded before using it in a URL. For example, the character '+' needs to be replaced by
-          %2B. This field is optional.
+          A token that can be used to get the next page of results. The token can contain characters that need
+          to be encoded before using it in a URL. For example, the character '+' needs to be replaced by %2B.
+          This field is optional.
 
         :returns: :class:`ListQueriesResponse`
         """
@@ -10079,7 +10091,8 @@ class WarehousesAPI:
 
           Supported values:
 
-          - Must be == 0 or >= 10 mins
+          - Must be == 0 or >= 1 min for serverless warehouses.
+          - Must be == 0 or >= 10 mins for classic and pro warehouses.
           - 0 indicates no autostop.
 
           Defaults to 120 mins
@@ -10374,7 +10387,8 @@ class WarehousesAPI:
 
           Supported values:
 
-          - Must be == 0 or >= 10 mins
+          - Must be == 0 or >= 1 min for serverless warehouses.
+          - Must be == 0 or >= 10 mins for classic and pro warehouses.
           - 0 indicates no autostop.
 
           Defaults to 120 mins

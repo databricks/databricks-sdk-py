@@ -43,16 +43,18 @@
           required for authentication depending on your Git provider / token requirements. Required for AWS
           CodeCommit.
         :param is_default_for_provider: bool (optional)
-          if the credential is the default for the given provider
+          Set to true to make the new credential the default for its Git provider, replacing the current
+          default. The first credential created for a provider becomes the default regardless of this value.
         :param name: str (optional)
-          the name of the git credential, used for identification and ease of lookup
+          The name of the Git credential, used for identification and ease of lookup. It must not exceed 100
+          characters.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
           providers, support may exist for other types of scoped access tokens. `Learn more
           <https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html>`__.
         :param principal_id: int (optional)
-          The ID of the service principal whose credentials will be modified. Only service principal managers
-          can perform this action.
+          The ID of the service principal for which the credential will be created. Only service principal
+          managers can perform this action.
 
         :returns: :class:`CreateCredentialsResponse`
         
@@ -64,7 +66,7 @@
         :param credential_id: int
           The ID for the corresponding credential to access.
         :param principal_id: int (optional)
-          The ID of the service principal whose credentials will be modified. Only service principal managers
+          The ID of the service principal whose credential will be deleted. Only service principal managers
           can perform this action.
 
 
@@ -93,7 +95,7 @@
         :param credential_id: int
           The ID for the corresponding credential to access.
         :param principal_id: int (optional)
-          The ID of the service principal whose credentials will be modified. Only service principal managers
+          The ID of the service principal whose credential will be returned. Only service principal managers
           can perform this action.
 
         :returns: :class:`GetCredentialsResponse`
@@ -146,7 +148,7 @@
             # cleanup
             w.git_credentials.delete(credential_id=cr.credential_id)
 
-        Updates the specified Git credential.
+        Updates the specified Git credential. Fields that are omitted keep their current values.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
@@ -154,7 +156,8 @@
           Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
           ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
           Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
-          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit``.
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit``. Must match the Git
+          provider of the existing credential; the provider cannot be changed.
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -166,9 +169,11 @@
           required for authentication depending on your Git provider / token requirements. Required for AWS
           CodeCommit.
         :param is_default_for_provider: bool (optional)
-          if the credential is the default for the given provider
+          Set to true to make this credential the default for its Git provider, replacing the current default.
+          Cannot be set to false; make another credential the default instead.
         :param name: str (optional)
-          the name of the git credential, used for identification and ease of lookup
+          The name of the Git credential, used for identification and ease of lookup. It must not exceed 100
+          characters.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
           providers, support may exist for other types of scoped access tokens. `Learn more

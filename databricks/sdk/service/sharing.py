@@ -721,6 +721,9 @@ class ListProviderShareAssetsResponse:
     share: Optional[Share] = None
     """The metadata of the share."""
 
+    skills: Optional[List[Skill]] = None
+    """The list of skills in the share."""
+
     tables: Optional[List[Table]] = None
     """The list of tables in the share."""
 
@@ -736,6 +739,8 @@ class ListProviderShareAssetsResponse:
             body["notebooks"] = [v.as_dict() for v in self.notebooks]
         if self.share:
             body["share"] = self.share.as_dict()
+        if self.skills:
+            body["skills"] = [v.as_dict() for v in self.skills]
         if self.tables:
             body["tables"] = [v.as_dict() for v in self.tables]
         if self.volumes:
@@ -751,6 +756,8 @@ class ListProviderShareAssetsResponse:
             body["notebooks"] = self.notebooks
         if self.share:
             body["share"] = self.share
+        if self.skills:
+            body["skills"] = self.skills
         if self.tables:
             body["tables"] = self.tables
         if self.volumes:
@@ -764,6 +771,7 @@ class ListProviderShareAssetsResponse:
             functions=_repeated_dict(d, "functions", DeltaSharingFunction),
             notebooks=_repeated_dict(d, "notebooks", NotebookFile),
             share=_from_dict(d, "share", Share),
+            skills=_repeated_dict(d, "skills", Skill),
             tables=_repeated_dict(d, "tables", Table),
             volumes=_repeated_dict(d, "volumes", Volume),
         )
@@ -2201,6 +2209,7 @@ class SharedDataObjectDataObjectType(Enum):
     MODEL = "MODEL"
     NOTEBOOK_FILE = "NOTEBOOK_FILE"
     SCHEMA = "SCHEMA"
+    SKILL = "SKILL"
     STREAMING_TABLE = "STREAMING_TABLE"
     TABLE = "TABLE"
     VIEW = "VIEW"
@@ -2265,6 +2274,92 @@ class SharedSecurableKind(Enum):
     FUNCTION_FEATURE_SPEC = "FUNCTION_FEATURE_SPEC"
     FUNCTION_REGISTERED_MODEL = "FUNCTION_REGISTERED_MODEL"
     FUNCTION_STANDARD = "FUNCTION_STANDARD"
+
+
+@dataclass
+class Skill:
+    """An agent skill shared through a Delta Sharing share, as served to a recipient."""
+
+    bundle_name: Optional[str] = None
+    """The name from the skill bundle frontmatter, which may differ from the resource name."""
+
+    comment: Optional[str] = None
+    """The comment of the skill."""
+
+    description: Optional[str] = None
+    """The bundle description parsed from the skill bundle's SKILL.md frontmatter."""
+
+    id: Optional[str] = None
+    """The shared-object ID that recipients match replicas on. For a skill shared through its schema,
+    which has no shared-object row, this is derived from the shared schema and the skill."""
+
+    name: Optional[str] = None
+    """The name of the skill."""
+
+    schema: Optional[str] = None
+    """The name of the schema that the skill belongs to."""
+
+    share: Optional[str] = None
+    """The name of the share that the skill belongs to."""
+
+    share_id: Optional[str] = None
+    """The id of the share that the skill belongs to."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Skill into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bundle_name is not None:
+            body["bundle_name"] = self.bundle_name
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.description is not None:
+            body["description"] = self.description
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Skill into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bundle_name is not None:
+            body["bundle_name"] = self.bundle_name
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.description is not None:
+            body["description"] = self.description
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Skill:
+        """Deserializes the Skill from a dictionary."""
+        return cls(
+            bundle_name=d.get("bundle_name", None),
+            comment=d.get("comment", None),
+            description=d.get("description", None),
+            id=d.get("id", None),
+            name=d.get("name", None),
+            schema=d.get("schema", None),
+            share=d.get("share", None),
+            share_id=d.get("share_id", None),
+        )
 
 
 @dataclass
@@ -2614,6 +2709,7 @@ class ProvidersAPI:
         *,
         function_max_results: Optional[int] = None,
         notebook_max_results: Optional[int] = None,
+        skill_max_results: Optional[int] = None,
         table_max_results: Optional[int] = None,
         volume_max_results: Optional[int] = None,
     ) -> ListProviderShareAssetsResponse:
@@ -2628,6 +2724,8 @@ class ProvidersAPI:
           Maximum number of functions to return.
         :param notebook_max_results: int (optional)
           Maximum number of notebooks to return.
+        :param skill_max_results: int (optional)
+          Maximum number of skills to return.
         :param table_max_results: int (optional)
           Maximum number of tables to return.
         :param volume_max_results: int (optional)
@@ -2641,6 +2739,8 @@ class ProvidersAPI:
             query["function_max_results"] = function_max_results
         if notebook_max_results is not None:
             query["notebook_max_results"] = notebook_max_results
+        if skill_max_results is not None:
+            query["skill_max_results"] = skill_max_results
         if table_max_results is not None:
             query["table_max_results"] = table_max_results
         if volume_max_results is not None:

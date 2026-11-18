@@ -38,15 +38,16 @@
         error codes.
 
         :param name: str
-          Experiment name.
+          Name of the experiment, as an absolute path in the workspace. Experiments cannot be created under
+          ``/Repos``.
         :param artifact_location: str (optional)
-          Location where all artifacts for the experiment are stored. If not provided, the remote server will
-          select an appropriate default.
+          URI of the location where the artifacts of the experiment's runs are stored, such as a Unity Catalog
+          volume path of the form ``dbfs:/Volumes/<catalog>/<schema>/<volume>/<path>``. The URI must have a
+          scheme other than ``file`` and must not point under the MLflow-managed prefix
+          ``dbfs:/databricks/mlflow-tracking``. If omitted, artifacts are stored in MLflow-managed storage.
+          See https://docs.databricks.com/aws/en/mlflow/experiments for the supported locations.
         :param tags: List[:class:`ExperimentTag`] (optional)
-          A collection of tags to set on the experiment. Maximum tag size and number of tags per request
-          depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250
-          bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to
-          support up to 20 tags per request.
+          Tags to set on the new experiment, as key-value pairs. A request can include at most 100 tags.
         :param trace_location: :class:`ExperimentTraceLocation` (optional)
           The location where the experiment's traces are stored. When set, the underlying storage is
           provisioned and the experiment's traces are routed to it. When unset, traces are stored in the
@@ -138,7 +139,8 @@
     .. py:method:: delete_experiment(experiment_id: str)
 
         Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
-        experiment uses FileStore, artifacts associated with the experiment are also deleted.
+        experiment uses FileStore, artifacts associated with the experiment are also deleted. Only workspace
+        experiments can be deleted through this method.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -383,14 +385,14 @@
             
             all = w.experiments.list_experiments(ml.ListExperimentsRequest())
 
-        Gets a list of all experiments.
+        Gets a list of all experiments, ordered by creation time with the newest first.
 
         :param max_results: int (optional)
           Maximum number of experiments desired. If ``max_results`` is unspecified, return all experiments. If
           ``max_results`` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
           encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.
         :param page_token: str (optional)
-          Token indicating the page of experiments to fetch
+          Page token returned as ``next_page_token`` by a previous call. Omit it to fetch the first page.
         :param view_type: :class:`ViewType` (optional)
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
 
@@ -561,6 +563,8 @@
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
 
+        Only workspace experiments can be restored through this method.
+
         Throws ``RESOURCE_DOES_NOT_EXIST`` if experiment was never created or was permanently deleted.
 
         :param experiment_id: str
@@ -604,15 +608,20 @@
         Searches for experiments that satisfy specified search criteria.
 
         :param filter: str (optional)
-          String representing a SQL filter condition (e.g. "name ILIKE 'my-experiment%'")
+          Filter condition on the experiment name and tags. The ``name`` attribute and ``tags.<key>`` support
+          the operators ``=``, ``!=``, ``LIKE`` and ``ILIKE`` (case-insensitive ``LIKE``), string values are
+          wrapped in single quotes, and several conditions can be combined with ``AND``. No wildcard is added
+          automatically, so include ``%`` in a ``LIKE`` pattern where you need one.
         :param max_results: int (optional)
-          Maximum number of experiments desired. Max threshold is 3000.
+          Maximum number of experiments to return per page. Larger values are capped by the server, so use
+          ``page_token`` to retrieve further pages.
         :param order_by: List[str] (optional)
-          List of columns for ordering search results, which can include experiment name and last updated
-          timestamp with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are
-          done by experiment id DESC.
+          Columns to order the results by, each given as ``name``, ``basename`` (the last segment of the
+          name), ``experiment_id``, ``creation_time`` or ``last_update_time`` with an optional ``ASC`` or
+          ``DESC`` suffix, where ``ASC`` is the default. If omitted, results are ordered by last update time
+          with the most recently updated experiment first. Tiebreaks are done by experiment id DESC.
         :param page_token: str (optional)
-          Token indicating the page of experiments to fetch
+          Page token returned as ``next_page_token`` by a previous call. Omit it to fetch the first page.
         :param view_type: :class:`ViewType` (optional)
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
 
@@ -721,9 +730,11 @@
         :param experiment_id: str
           ID of the experiment under which to log the tag. Must be provided.
         :param key: str
-          Name of the tag. Keys up to 250 bytes in size are supported.
+          Key of the tag. Keys are at most 255 characters long. Setting a key that already exists replaces its
+          value. System tags such as ``mlflow.ownerId``, ``mlflow.ownerEmail`` and ``mlflow.experimentType``
+          cannot be set.
         :param value: str
-          String value of the tag being logged. Values up to 64KB in size are supported.
+          Value of the tag. Values are at most 65535 characters long.
 
 
         
@@ -789,12 +800,13 @@
             # cleanup
             w.experiments.delete_experiment(experiment_id=experiment.experiment_id)
 
-        Updates experiment metadata.
+        Updates experiment metadata. Only workspace experiments can be updated; a notebook experiment takes
+        its name from its notebook.
 
         :param experiment_id: str
           ID of the associated experiment.
         :param new_name: str (optional)
-          If provided, the experiment's name is changed to the new name. The new name must be unique.
+          New name for the experiment, as an absolute path in the workspace. The new name must be unique.
 
 
         

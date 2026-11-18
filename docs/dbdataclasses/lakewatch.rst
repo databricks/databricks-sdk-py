@@ -31,6 +31,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: AUTOLOADER_FORMAT_XML
       :value: "AUTOLOADER_FORMAT_XML"
 
+.. autoclass:: BuiltinParser
+   :members:
+   :undoc-members:
+
+.. autoclass:: BuiltinParserVersion
+   :members:
+   :undoc-members:
+
 .. autoclass:: CloudWatchLogsEnvelope
    :members:
    :undoc-members:
@@ -95,7 +103,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListBuiltinParserVersionsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListBuiltinParsersResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListDatasourcesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListParserVersionsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListParsersResponse
    :members:
    :undoc-members:
 
@@ -103,7 +127,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Parser
+   :members:
+   :undoc-members:
+
 .. autoclass:: ParserRef
+   :members:
+   :undoc-members:
+
+.. autoclass:: ParserTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: ParserVersion
    :members:
    :undoc-members:
 

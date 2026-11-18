@@ -26,7 +26,8 @@
 
     .. py:method:: create_schedule(dashboard_id: str, schedule: Schedule) -> Schedule
 
-        Create dashboard schedule.
+        Creates a schedule for a dashboard. The dashboard must be published before a schedule can be created
+        for it.
 
         Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
         entitlement. Grant Databricks SQL access in addition to Workspace access.
@@ -41,7 +42,12 @@
 
     .. py:method:: create_subscription(dashboard_id: str, schedule_id: str, subscription: Subscription) -> Subscription
 
-        Create schedule subscription.
+        Create schedule subscription. Subscribes a workspace user or a notification destination to the
+        schedule, so that it receives a snapshot of the dashboard each time the schedule runs. Subscribing
+        yourself requires CAN VIEW permission on the dashboard; subscribing another user or a notification
+        destination requires CAN EDIT. On dashboards published without embedded credentials, you can only
+        subscribe yourself. If the subscriber is already subscribed to the schedule, the existing subscription
+        is returned.
 
         The caller must be a workspace user with one of the following `entitlements
         <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
@@ -62,7 +68,7 @@
 
     .. py:method:: delete_schedule(dashboard_id: str, schedule_id: str [, etag: Optional[str]])
 
-        Delete dashboard schedule.
+        Deletes a schedule together with all of its subscriptions.
 
         Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
         entitlement. Grant Databricks SQL access in addition to Workspace access.
@@ -80,7 +86,9 @@
 
     .. py:method:: delete_subscription(dashboard_id: str, schedule_id: str, subscription_id: str [, etag: Optional[str]])
 
-        Delete schedule subscription.
+        Delete schedule subscription. The subscriber receives no further snapshots from the schedule. Deleting
+        your own subscription requires CAN VIEW permission on the dashboard; deleting another user's or a
+        notification destination's subscription requires CAN EDIT.
 
         The caller must be a workspace user with one of the following `entitlements
         <https://docs.databricks.com/security/auth/entitlements>`__: Workspace access, Databricks SQL access,
@@ -90,14 +98,14 @@
         dashboard has been shared with them.
 
         :param dashboard_id: str
-          UUID identifying the dashboard which the subscription belongs.
+          UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
-          UUID identifying the schedule which the subscription belongs.
+          UUID identifying the schedule to which the subscription belongs.
         :param subscription_id: str
           UUID identifying the subscription.
         :param etag: str (optional)
-          The etag for the subscription. Can be optionally provided to ensure that the subscription has not
-          been modified since the last read.
+          The etag of the subscription, as returned when it was read. If it is provided and no longer matches,
+          the request fails with ABORTED and the subscription is not deleted.
 
 
         
@@ -114,7 +122,8 @@
 
     .. py:method:: get_published(dashboard_id: str) -> PublishedDashboard
 
-        Get the current published dashboard.
+        Get the current published dashboard. The request fails with NOT_FOUND if the dashboard has never been
+        published or has been unpublished.
 
         The caller must be a workspace user with one of the following entitlements: Workspace access,
         Databricks SQL access, or Consumer access.
@@ -159,9 +168,9 @@
         dashboard has been shared with them.
 
         :param dashboard_id: str
-          UUID identifying the dashboard which the subscription belongs.
+          UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
-          UUID identifying the schedule which the subscription belongs.
+          UUID identifying the schedule to which the subscription belongs.
         :param subscription_id: str
           UUID identifying the subscription.
 
@@ -199,7 +208,7 @@
         dashboard has been shared with them.
 
         :param dashboard_id: str
-          UUID identifying the dashboard to which the schedules belongs.
+          UUID identifying the dashboard to which the schedules belong.
         :param page_size: int (optional)
           The number of schedules to return per page.
         :param page_token: str (optional)
@@ -221,9 +230,9 @@
         dashboard has been shared with them.
 
         :param dashboard_id: str
-          UUID identifying the dashboard which the subscriptions belongs.
+          UUID identifying the dashboard to which the subscriptions belong.
         :param schedule_id: str
-          UUID identifying the schedule which the subscriptions belongs.
+          UUID identifying the schedule to which the subscriptions belong.
         :param page_size: int (optional)
           The number of subscriptions to return per page.
         :param page_token: str (optional)
@@ -268,13 +277,16 @@
 
     .. py:method:: revert(dashboard_id: str [, etag: Optional[str]]) -> RevertDashboardResponse
 
-        Revert a dashboard's definition in draft mode to the last published version.
+        Revert a dashboard's definition in draft mode to the last published version. The draft's datasets,
+        pages and widgets are replaced with those of the current published version, and the updated draft is
+        returned. The dashboard must have been published at least once; the published version itself is not
+        changed.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
         :param etag: str (optional)
-          The etag for the dashboard. Optionally, it can be provided to verify that the dashboard has not been
-          modified from its last retrieval.
+          The etag of the draft dashboard, as returned by the get dashboard API. When provided, the request
+          fails with ABORTED if the draft has been modified since that etag was read.
 
         :returns: :class:`RevertDashboardResponse`
         
@@ -291,7 +303,9 @@
 
     .. py:method:: unpublish(dashboard_id: str)
 
-        Unpublish the dashboard.
+        Unpublish the dashboard. This deletes the published version, so viewers can no longer open it, and
+        pauses the dashboard's schedules. The draft is not changed; publish it again to make the dashboard
+        available to viewers.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.
@@ -320,7 +334,8 @@
 
     .. py:method:: update_schedule(dashboard_id: str, schedule_id: str, schedule: Schedule) -> Schedule
 
-        Update dashboard schedule.
+        Updates a schedule. The request body replaces the stored schedule, so fields omitted from the body are
+        reset to their defaults.
 
         Requires the `Databricks SQL access <https://docs.databricks.com/security/auth/entitlements>`__
         entitlement. Grant Databricks SQL access in addition to Workspace access.

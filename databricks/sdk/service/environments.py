@@ -373,7 +373,7 @@ class WorkspaceBaseEnvironment:
     """Human-readable display name for the workspace base environment."""
 
     base_environment_type: Optional[BaseEnvironmentType] = None
-    """The type of base environment (CPU or GPU)."""
+    """The type of base environment (CPU or GPU). The default is ``CPU``."""
 
     create_time: Optional[Timestamp] = None
     """Timestamp when the environment was created."""
@@ -382,7 +382,9 @@ class WorkspaceBaseEnvironment:
     """User ID of the creator."""
 
     filepath: Optional[str] = None
-    """The WSFS or UC Volumes path to the environment YAML file."""
+    """The workspace file or Unity Catalog volume path to the YAML file that defines the environment
+    version and dependencies. The file name must end in ``.yaml`` or ``.yml``. Create and update
+    requests must set this field."""
 
     is_default: Optional[bool] = None
     """Whether this is the default environment for the workspace."""
@@ -391,17 +393,22 @@ class WorkspaceBaseEnvironment:
     """User ID of the last user who updated the environment."""
 
     message: Optional[str] = None
-    """Status message providing additional details about the environment status."""
+    """Status message providing additional details about the environment status. When the status is
+    ``FAILED``, the message contains the build error."""
 
     name: Optional[str] = None
     """The resource name of the workspace base environment. Format:
-    workspace-base-environments/{workspace-base-environment}"""
+    workspace-base-environments/{workspace-base-environment} The server ignores this field on create
+    and builds the name from ``workspace_base_environment_id``, or from ``display_name`` plus a
+    random suffix when no ID is given."""
 
     spec: Optional[EnvironmentSpec] = None
-    """The environment specification containing version and dependencies."""
+    """The environment specification containing version and dependencies, read from the YAML file at
+    ``filepath``."""
 
     status: Optional[WorkspaceBaseEnvironmentCacheStatus] = None
-    """The status of the materialized workspace base environment."""
+    """The status of the materialized workspace base environment, which the server builds from the YAML
+    file. The status is ``CREATED`` once the build has succeeded."""
 
     update_time: Optional[Timestamp] = None
     """Timestamp when the environment was last updated."""
@@ -534,7 +541,8 @@ class EnvironmentsAPI:
     ) -> CreateWorkspaceBaseEnvironmentOperation:
         """Creates a new WorkspaceBaseEnvironment. This is a long-running operation. The operation will
         asynchronously generate a materialized environment to optimize dependency resolution and is only
-        marked as done when the materialized environment has been successfully generated or has failed.
+        marked as done when the materialized environment has been successfully generated or has failed. Poll
+        the returned operation with GetOperation.
 
         :param workspace_base_environment: :class:`WorkspaceBaseEnvironment`
           Required. The workspace base environment to create.
@@ -574,7 +582,7 @@ class EnvironmentsAPI:
     def delete_workspace_base_environment(self, name: str):
         """Deletes a WorkspaceBaseEnvironment. Deleting a base environment may impact linked notebooks and jobs.
         This operation is irreversible and should be performed only when you are certain the environment is no
-        longer needed.
+        longer needed. Databricks-provided base environments cannot be deleted.
 
         :param name: str
           Required. The resource name of the workspace base environment to delete. Format:
@@ -617,6 +625,11 @@ class EnvironmentsAPI:
 
     def get_operation(self, name: str) -> Operation:
         """Gets the status of a long-running operation. Clients can use this method to poll the operation result.
+        Create, update and refresh return an operation named ``operations/{workspace_base_environment_id}``.
+        The operation is done when the materialized environment build finishes. On success, ``response``
+        contains the WorkspaceBaseEnvironment with status ``CREATED``. When the status is ``FAILED``,
+        ``EXPIRED`` or ``INVALID``, ``error`` is set instead, and ``error.message`` carries the environment's
+        status message when one is available.
 
         :param name: str
           The name of the operation resource.
@@ -706,10 +719,11 @@ class EnvironmentsAPI:
         """Refreshes the materialized environment for a WorkspaceBaseEnvironment. This is a long-running
         operation. The operation will asynchronously regenerate the materialized environment and is only
         marked as done when the materialized environment has been successfully generated or has failed. The
-        existing materialized environment remains available until it expires.
+        existing materialized environment remains available until it expires. Poll the returned operation with
+        GetOperation. Databricks-provided base environments cannot be refreshed.
 
         :param name: str
-          Required. The resource name of the workspace base environment to delete. Format:
+          Required. The resource name of the workspace base environment to refresh. Format:
           workspace-base-environments/{workspace_base_environment}
 
         :returns: :class:`Operation`
@@ -773,12 +787,17 @@ class EnvironmentsAPI:
         """Updates an existing WorkspaceBaseEnvironment. This is a long-running operation. The operation will
         asynchronously regenerate the materialized environment and is only marked as done when the
         materialized environment has been successfully generated or has failed. The existing materialized
-        environment remains available until it expires.
+        environment remains available until it expires. Poll the returned operation with GetOperation.
+        Databricks-provided base environments cannot be updated.
 
         :param name: str
+          The resource name of the workspace base environment to update. Format:
+          workspace-base-environments/{workspace_base_environment}
         :param workspace_base_environment: :class:`WorkspaceBaseEnvironment`
-          Required. The workspace base environment with updated fields. The name field is used to identify the
-          environment to update.
+          The workspace base environment with its new configuration. The ``name`` path parameter identifies
+          the environment to update. Set ``display_name`` and ``filepath`` on every update, even when they do
+          not change. An update keeps the stored ``base_environment_type``, but the YAML file is validated
+          against the type in the request, which defaults to ``CPU``, so also set it for a GPU environment.
 
         :returns: :class:`Operation`
         """

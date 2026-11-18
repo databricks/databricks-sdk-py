@@ -17,10 +17,9 @@
           The Endpoint resource to create. Fields other than ``endpoint.name`` carry the desired
           configuration; ``endpoint.name`` is server-assigned from ``parent`` and ``endpoint_id``.
         :param endpoint_id: str (optional)
-          The user-supplied short name for the Endpoint, per AIP-133. The server composes the full
-          ``Endpoint.name`` as ``{parent}/endpoints/{endpoint_id}``. AIP-133 does not list ``endpoint_id`` as
-          a fields-may-be-required entry, so we annotate it OPTIONAL on the wire; the server still rejects
-          empty values with INVALID_PARAMETER_VALUE.
+          Short name of the endpoint, which becomes the last segment of ``name``. The server rejects a request
+          without it. The name can have at most 50 characters, can contain only lowercase letters, digits,
+          hyphens, periods, and underscores, and must start and end with a letter or digit.
 
         :returns: :class:`Endpoint`
         
@@ -94,9 +93,8 @@
         :param parent: str
           The Workspace that owns this collection of endpoints. Format: ``workspaces/{workspace_id}``
         :param page_size: int (optional)
-          Best-effort upper bound on the number of results to return. Honored as an upper bound by the shim:
-          ``page_size`` only narrows the legacy backend's response, never widens it, so the practical cap is
-          ``min(page_size, legacy_fixed_page_size)``.
+          Maximum number of endpoints to return in one page. The server applies its own page size limit, so a
+          page can hold fewer endpoints than ``page_size`` even when more remain.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -204,20 +202,20 @@
 
     .. py:method:: update_endpoint(name: str, endpoint: Endpoint, update_mask: FieldMask) -> Endpoint
 
-        Update an existing AI Search endpoint. Multi-bucket masks are supported and dispatched in
-        deterministic bucket order: budget policy, custom tags, throughput, scaling/replicas, then metrics
-        export. Per-bucket dispatch is not atomic across buckets — if a later bucket fails, earlier buckets
-        may already have been applied.
+        Update an existing AI Search endpoint. Only the fields named in ``update_mask`` change. The server
+        applies a mask that spans several settings, such as ``budget_policy_id`` and ``custom_tags``, one
+        setting at a time, so if a later setting fails, the earlier ones may already have been applied.
 
         :param name: str
-          Name of the AI Search endpoint. Server-assigned full resource path
-          (``workspaces/{workspace}/endpoints/{endpoint}``) on output. On create, the user-supplied short name
-          is conveyed via ``CreateEndpointRequest.endpoint_id``; the server composes the full ``name`` and
-          returns it on the response.
+          Full resource name of the endpoint, in the form
+          ``workspaces/{workspace_id}/endpoints/{endpoint_id}``. On create, the server composes it from
+          ``parent`` and ``endpoint_id`` and ignores any value supplied in the request body.
         :param endpoint: :class:`Endpoint`
           The Endpoint resource to update. ``endpoint.name`` carries the full resource path.
         :param update_mask: FieldMask
-          The list of fields to update.
+          Comma-separated list of ``Endpoint`` fields to update. The updatable fields are
+          ``budget_policy_id``, ``usage_policy_id``, ``custom_tags``, ``replica_count``, and ``target_qps``.
+          The server rejects nested paths and unknown fields.
 
         :returns: :class:`Endpoint`
         
