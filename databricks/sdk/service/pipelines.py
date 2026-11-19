@@ -3813,7 +3813,9 @@ class PipelineSpec:
     parent_path: Optional[str] = None
     """Path of the pipeline parent folder in workspace file tree.
     
-    If absent, the pipeline doesn't have a workspace object."""
+    If absent, the pipeline doesn't have a parent folder.
+    
+    Example: /Workspace/Projects/my_project"""
 
     photon: Optional[bool] = None
     """Whether Photon is enabled for this pipeline."""
@@ -6364,7 +6366,9 @@ class PipelinesAPI:
         :param parent_path: str (optional)
           Path of the pipeline parent folder in workspace file tree.
 
-          If absent, the pipeline doesn't have a workspace object.
+          If absent, the pipeline doesn't have a parent folder.
+
+          Example: /Workspace/Projects/my_project
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
@@ -6526,6 +6530,10 @@ class PipelinesAPI:
 
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
+
+          Ignored when ``parent_path`` is set. A pipeline in a workspace folder must have a name that is
+          unique within that folder, and creation fails if the folder already contains an object with the same
+          name.
         :param budget_policy_id: str (optional)
           ID (UUID) of the serverless budget policy applied to this pipeline. Only supported for serverless
           pipelines.
@@ -6585,7 +6593,9 @@ class PipelinesAPI:
         :param parent_path: str (optional)
           Path of the pipeline parent folder in workspace file tree.
 
-          If absent, the pipeline doesn't have a workspace object.
+          If absent, the pipeline doesn't have a parent folder.
+
+          Example: /Workspace/Projects/my_project
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
@@ -7195,7 +7205,10 @@ class PipelinesAPI:
         :param pipeline_id: str
           Unique identifier for this pipeline.
         :param allow_duplicate_names: bool (optional)
-          If false, deployment will fail if name has changed and conflicts the name of another pipeline.
+          If false, deployment will fail if name has changed and conflicts with the name of another pipeline.
+
+          Ignored when the pipeline is in a workspace folder or the request sets ``parent_path``. Renaming or
+          moving such a pipeline fails if the target folder already contains an object with the same name.
         :param budget_policy_id: str (optional)
           ID (UUID) of the serverless budget policy applied to this pipeline. Only supported for serverless
           pipelines.
@@ -7255,7 +7268,9 @@ class PipelinesAPI:
         :param parent_path: str (optional)
           Path of the pipeline parent folder in workspace file tree.
 
-          If absent, the pipeline doesn't have a workspace object.
+          If absent, the pipeline doesn't have a parent folder.
+
+          Example: /Workspace/Projects/my_project
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)

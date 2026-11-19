@@ -30,6 +30,7 @@
         <https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy>`__.
 
         :param tag_key: str
+          The key of the governed tag whose policy to delete.
 
 
         
@@ -43,6 +44,7 @@
         <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__.
 
         :param tag_key: str
+          The key of the governed tag whose policy to get.
 
         :returns: :class:`TagPolicy`
         
@@ -74,17 +76,11 @@
         <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__.
 
         :param tag_key: str
+          The tag key that this policy governs. Tag keys are case-sensitive.
         :param tag_policy: :class:`TagPolicy`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          The comma-separated list of tag policy fields to update. When the mask includes ``values``, the
+          values in the request replace all existing allowed values.
 
         :returns: :class:`TagPolicy`
         

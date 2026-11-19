@@ -27,6 +27,9 @@ _LOG = logging.getLogger("databricks.sdk")
 @dataclass
 class AibiDashboardEmbeddingAccessPolicy:
     access_policy_type: AibiDashboardEmbeddingAccessPolicyAccessPolicyType
+    """Where AI/BI dashboards can be embedded: in any domain (ALLOW_ALL_DOMAINS), only in the approved
+    domains configured for the workspace (ALLOW_APPROVED_DOMAINS), or nowhere (DENY_ALL_DOMAINS).
+    Defaults to ALLOW_APPROVED_DOMAINS."""
 
     def as_dict(self) -> dict:
         """Serializes the AibiDashboardEmbeddingAccessPolicy into a dictionary suitable for use as a JSON request body."""
@@ -59,6 +62,9 @@ class AibiDashboardEmbeddingAccessPolicyAccessPolicyType(Enum):
 @dataclass
 class AibiDashboardEmbeddingApprovedDomains:
     approved_domains: Optional[List[str]] = None
+    """Domains allowed to host embedded AI/BI dashboards. A leading wildcard allows every subdomain of
+    a domain. The list applies, and can only be changed, while the embedding access policy is
+    ALLOW_APPROVED_DOMAINS."""
 
     def as_dict(self) -> dict:
         """Serializes the AibiDashboardEmbeddingApprovedDomains into a dictionary suitable for use as a JSON request body."""
@@ -83,6 +89,9 @@ class AibiDashboardEmbeddingApprovedDomains:
 @dataclass
 class AllowedAppsUserApiScopesMessage:
     allowed_scopes: Optional[List[str]] = None
+    """OAuth scopes that app developers can request when an app acts on behalf of a user. A list with
+    the single entry * allows every supported scope and cannot be combined with other scopes. An
+    empty list disables user authorization for apps."""
 
     def as_dict(self) -> dict:
         """Serializes the AllowedAppsUserApiScopesMessage into a dictionary suitable for use as a JSON request body."""
@@ -131,14 +140,25 @@ class BooleanMessage:
 @dataclass
 class ClusterAutoRestartMessage:
     can_toggle: Optional[bool] = None
+    """Whether the workspace can change the enabled state. Databricks computes this value: it is false
+    when the compliance security profile forces the feature on or when the workspace lacks the
+    Enhanced Security and Compliance entitlement. A value sent in an update request has no effect."""
 
     enabled: Optional[bool] = None
+    """Whether automatic cluster update is enabled for the workspace. The effective value is always
+    true while the compliance security profile is enabled on the workspace."""
 
     enablement_details: Optional[ClusterAutoRestartMessageEnablementDetails] = None
+    """Why the feature is forced on or unavailable. Databricks sets these details for information only;
+    they do not determine whether the feature is enabled."""
 
     maintenance_window: Optional[ClusterAutoRestartMessageMaintenanceWindow] = None
+    """When the maintenance window runs. When unset, it defaults to the first Sunday of every month at
+    01:00 UTC."""
 
     restart_even_if_no_updates_available: Optional[bool] = None
+    """Whether compute resources restart during every maintenance window even when no update is
+    available. When false, they restart only when an update is available."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAutoRestartMessage into a dictionary suitable for use as a JSON request body."""
@@ -194,8 +214,8 @@ class ClusterAutoRestartMessageEnablementDetails:
     """The feature is force enabled if compliance mode is active"""
 
     unavailable_for_disabled_entitlement: Optional[bool] = None
-    """The feature is unavailable if the corresponding entitlement disabled (see
-    getShieldEntitlementEnable)"""
+    """The feature is unavailable because the workspace does not have the Enhanced Security and
+    Compliance entitlement."""
 
     unavailable_for_non_enterprise_tier: Optional[bool] = None
     """The feature is unavailable if the customer doesn't have enterprise tier"""
@@ -235,6 +255,7 @@ class ClusterAutoRestartMessageEnablementDetails:
 @dataclass
 class ClusterAutoRestartMessageMaintenanceWindow:
     week_day_based_schedule: Optional[ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule] = None
+    """Schedule anchored to a day of the week, either every week or on given weeks of the month."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAutoRestartMessageMaintenanceWindow into a dictionary suitable for use as a JSON request body."""
@@ -273,10 +294,14 @@ class ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(Enum):
 @dataclass
 class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
     day_of_week: Optional[ClusterAutoRestartMessageMaintenanceWindowDayOfWeek] = None
+    """Day of the week on which the maintenance window starts."""
 
     frequency: Optional[ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency] = None
+    """How often the maintenance window occurs: every week, or only on the listed occurrences of the
+    day of the week within each month."""
 
     window_start_time: Optional[ClusterAutoRestartMessageMaintenanceWindowWindowStartTime] = None
+    """Time of day, in UTC, at which the maintenance window starts."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule into a dictionary suitable for use as a JSON request body."""
@@ -325,8 +350,10 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(Enum):
 @dataclass
 class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
     hours: Optional[int] = None
+    """Hour of the day on a 24-hour clock."""
 
     minutes: Optional[int] = None
+    """Minute of the hour."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAutoRestartMessageMaintenanceWindowWindowStartTime into a dictionary suitable for use as a JSON request body."""
@@ -1298,6 +1325,9 @@ class ListWorkspaceSettingsMetadataResponse:
 @dataclass
 class OperationalEmailCustomRecipientMessage:
     email: Optional[str] = None
+    """Email address that receives this workspace's operational emails in addition to the workspace
+    admins. Use a distribution list address to reach several people. An empty string clears the
+    additional recipient."""
 
     def as_dict(self) -> dict:
         """Serializes the OperationalEmailCustomRecipientMessage into a dictionary suitable for use as a JSON request body."""
@@ -1322,6 +1352,9 @@ class OperationalEmailCustomRecipientMessage:
 @dataclass
 class PersonalComputeMessage:
     value: Optional[PersonalComputeMessagePersonalComputeMessageEnum] = None
+    """ON grants all users in all workspaces of the account access to the Personal Compute default
+    policy. DELEGATE moves control to each workspace, where users or groups must be added to the
+    policy's permissions before they can create compute with it."""
 
     def as_dict(self) -> dict:
         """Serializes the PersonalComputeMessage into a dictionary suitable for use as a JSON request body."""
@@ -1370,6 +1403,13 @@ class PreviewPhase(Enum):
 @dataclass
 class RestrictWorkspaceAdminsMessage:
     status: RestrictWorkspaceAdminsMessageStatus
+    """Controls what workspace admins can do with service principal tokens and job identities. With
+    ALLOW_ALL, workspace admins can create personal access tokens on behalf of any service principal
+    in the workspace, change a job owner to any workspace user, and set a job's run_as identity to
+    any workspace user or to a service principal they have the Service Principal User role on. With
+    RESTRICT_TOKENS_AND_JOB_RUN_AS, they can only create tokens for service principals they have the
+    Service Principal User role on, change a job owner to themselves, and set run_as to themselves
+    or to a service principal they have that role on."""
 
     disable_gov_tag_creation: Optional[bool] = None
     """When true, workspace admins cannot create governance tags. ALLOW_ALL status does not override
@@ -1409,6 +1449,14 @@ class RestrictWorkspaceAdminsMessageStatus(Enum):
 
 @dataclass
 class Setting:
+    """A setting and its value at the workspace or account scope. Each setting has one value type, so
+    one value field applies to it: a primitive wrapper (boolean_val, string_val or integer_val) or a
+    setting-specific message. The settings metadata endpoint reports the field each setting uses.
+    When updating a setting, set only the value field that matches its type. Responses return that
+    field with the value configured at this scope, if one is set, together with the matching
+    effective_* field, which holds the value in effect after Databricks applies account policies and
+    defaults."""
+
     aibi_dashboard_embedding_access_policy: Optional[AibiDashboardEmbeddingAccessPolicy] = None
     """Setting value for aibi_dashboard_embedding_access_policy setting. This is the setting value set
     by consumers, check effective_aibi_dashboard_embedding_access_policy for final setting value."""
@@ -1491,7 +1539,7 @@ class Setting:
     effective_integer_val for final setting value."""
 
     name: Optional[str] = None
-    """Name of the setting."""
+    """Name of the setting. The settings metadata endpoint lists the names available at each scope."""
 
     operational_email_custom_recipient: Optional[OperationalEmailCustomRecipientMessage] = None
     """Setting value for operational_email_custom_recipient setting. This is the setting value set by
@@ -1873,8 +1921,12 @@ class WorkspaceLabelMessage:
     """Workspace label and color for display (e.g. in account console)."""
 
     color: Optional[str] = None
+    """Color of the label badge. The supported colors are coral, lemon, lime, turquoise, indigo, purple
+    and pink. It is an empty string when no label is set."""
 
     label: Optional[str] = None
+    """Text of the label shown next to the workspace name in the top navigation bar. An empty string
+    means no label is set."""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceLabelMessage into a dictionary suitable for use as a JSON request body."""
@@ -2097,11 +2149,11 @@ class WorkspaceSettingsV2API:
         self._api = api_client
 
     def get_public_workspace_setting(self, name: str) -> Setting:
-        """Get a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for list
-        of setting available via public APIs.
+        """Get a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for the
+        list of settings available via public APIs.
 
         :param name: str
-          Name of the setting
+          Name of the setting to retrieve.
 
         :returns: :class:`Setting`
         """
@@ -2161,15 +2213,15 @@ class WorkspaceSettingsV2API:
             query["page_token"] = json["next_page_token"]
 
     def patch_public_workspace_setting(self, name: str, setting: Setting) -> Setting:
-        """Patch a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for
-        list of setting available via public APIs at workspace level. To determine the correct field to
+        """Patch a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for the
+        list of settings available via public APIs at workspace level. To determine the correct field to
         include in a patch request, refer to the type field of the setting returned in the
         :method:settingsv2/listworkspacesettingsmetadata response.
 
         Note: Page refresh is required for changes to take effect in UI.
 
         :param name: str
-          Name of the setting
+          Name of the setting to update.
         :param setting: :class:`Setting`
 
         :returns: :class:`Setting`

@@ -1775,7 +1775,8 @@ class ConnectionInfo:
     """Unique identifier of the Connection."""
 
     connection_type: Optional[ConnectionType] = None
-    """The type of connection."""
+    """The type of external data source or service that the connection reaches. The connection type
+    determines which keys are required in options and cannot be changed after creation."""
 
     created_at: Optional[int] = None
     """Time at which this connection was created, in epoch milliseconds."""
@@ -1784,10 +1785,12 @@ class ConnectionInfo:
     """Username of connection creator."""
 
     credential_type: Optional[CredentialType] = None
-    """The type of credential."""
+    """The type of credential that is used to authenticate to the external data source. The server
+    derives it from the connection type and the keys present in options."""
 
     environment_settings: Optional[EnvironmentSettings] = None
-    """[Create,Update:OPT] Connection environment settings as EnvironmentSettings object."""
+    """Environment settings for the connection, such as the Java libraries that it needs and the
+    environment version."""
 
     full_name: Optional[str] = None
     """Full name of connection."""
@@ -1802,21 +1805,25 @@ class ConnectionInfo:
     """A map of key-value properties attached to the securable."""
 
     owner: Optional[str] = None
-    """Username of current owner of the connection."""
+    """Username of the current owner of the connection. The creator becomes the owner at creation, and
+    ownership can be transferred on update."""
 
     properties: Optional[Dict[str, str]] = None
     """A map of key-value properties attached to the securable."""
 
     provisioning_info: Optional[ProvisioningInfo] = None
+    """Provisioning status of the connection."""
 
     read_only: Optional[bool] = None
-    """If the connection is read only."""
+    """Whether the connection is read only. All connections are currently read only, so a value set on
+    create or update is ignored."""
 
     secrets: Optional[Dict[str, str]] = None
     """A map of option names to UC Secret references. Keys are connection option names (same as in
     OptionsKVPairs) and values are UC Secret fully qualified names."""
 
     securable_type: Optional[SecurableType] = None
+    """The type of Unity Catalog securable. This is always CONNECTION."""
 
     updated_at: Optional[int] = None
     """Time at which this connection was updated, in epoch milliseconds."""
@@ -1825,7 +1832,7 @@ class ConnectionInfo:
     """Username of user who last modified connection."""
 
     url: Optional[str] = None
-    """URL of the remote data source, extracted from options."""
+    """URL of the remote data source. The server derives it from the host, port and path options."""
 
     def as_dict(self) -> dict:
         """Serializes the ConnectionInfo into a dictionary suitable for use as a JSON request body."""
@@ -2260,6 +2267,11 @@ class CreateAccountsStorageCredential:
 
 @dataclass
 class CreateFunction:
+    """A user-defined function (UDF) registered in Unity Catalog. A function belongs to a schema and is
+    referenced as catalog_name.schema_name.function_name. Its body is either a SQL expression or
+    query, or source code in an external language such as Python. See
+    https://docs.databricks.com/aws/en/udf/unity-catalog for an overview."""
+
     name: str
     """Name of function, relative to parent schema."""
 
@@ -2270,62 +2282,76 @@ class CreateFunction:
     """Name of parent Schema relative to its parent Catalog."""
 
     input_params: FunctionParameterInfos
-    """Function input parameters."""
+    """Input parameters of the function. When it is set, parameters must contain at least one entry. A
+    function that takes no arguments omits input_params, even though the Create request schema marks
+    it as required."""
 
     data_type: ColumnTypeName
-    """Scalar function return data type."""
+    """Data type of the value the function returns. A table function uses TABLE_TYPE and describes its
+    result columns in return_params, except for a polymorphic Python UDTF, which omits them."""
 
     full_data_type: str
-    """Pretty printed function data type."""
+    """Return data type of the function in SQL syntax, including any type parameters such as precision
+    and scale."""
 
     routine_body: CreateFunctionRoutineBody
-    """Function language. When **EXTERNAL** is used, the language of the routine function should be
-    specified in the **external_language** field, and the **return_params** of the function cannot
-    be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be
-    **NO_SQL**."""
+    """Language of the function body. SQL means that routine_definition holds a SQL expression or
+    query. EXTERNAL means that it holds source code in the language named by external_language, and
+    sql_data_access must then be NO_SQL."""
 
     routine_definition: str
-    """Function body."""
+    """Body of the function. For a SQL function it is the expression or query that computes the result;
+    for an EXTERNAL function it is the source code of the function. It is omitted when the caller
+    can only browse the function."""
 
     parameter_style: CreateFunctionParameterStyle
-    """Function parameter style. **S** is the value for SQL."""
+    """How arguments are passed to the function body. S means that each argument is passed as a single
+    scalar value."""
 
     is_deterministic: bool
-    """Whether the function is deterministic."""
+    """Whether the function returns the same result for the same arguments. It corresponds to the
+    DETERMINISTIC characteristic of CREATE FUNCTION."""
 
     sql_data_access: CreateFunctionSqlDataAccess
-    """Function SQL data access."""
+    """How the function body interacts with SQL data. CONTAINS_SQL means that the body contains SQL but
+    reads no table or view, READS_SQL_DATA means that it reads a table or view, and NO_SQL is
+    required for EXTERNAL functions."""
 
     is_null_call: bool
-    """Function null call."""
+    """Whether the function is a null-call function in the sense of the SQL standard, which returns
+    NULL whenever any argument is NULL."""
 
     security_type: CreateFunctionSecurityType
-    """Function security type."""
+    """Whose privileges the function body runs with. DEFINER runs it with the privileges of the
+    function owner."""
 
     specific_name: str
-    """Specific name of the function; Reserved for future use."""
+    """Specific name of the function. Set it to the same value as name."""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
 
     external_language: Optional[str] = None
-    """External function language."""
+    """Language of the function body for an EXTERNAL function. It is required when routine_body is
+    EXTERNAL."""
 
     external_name: Optional[str] = None
-    """External function name."""
+    """Name of the function in its external language. It is reserved for future use."""
 
     properties: Optional[str] = None
     """JSON-serialized key-value pair map, encoded (escaped) as a string."""
 
     return_params: Optional[FunctionParameterInfos] = None
-    """Table function return parameters."""
+    """Result columns of a table function. Set it when data_type is TABLE_TYPE, except for a
+    polymorphic Python UDTF (an EXTERNAL Python function with full_data_type "()"), which must not
+    set it."""
 
     routine_dependencies: Optional[DependencyList] = None
     """Function dependencies. For external UDFs, dependencies may contain only credential, secret, or
     volume objects."""
 
     sql_path: Optional[str] = None
-    """List of schemes whose objects can be referenced without qualification."""
+    """List of schemas whose objects can be referenced without qualification."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateFunction into a dictionary suitable for use as a JSON request body."""
@@ -4840,6 +4866,11 @@ class FunctionDependency:
 
 @dataclass
 class FunctionInfo:
+    """A user-defined function (UDF) registered in Unity Catalog. A function belongs to a schema and is
+    referenced as catalog_name.schema_name.function_name. Its body is either a SQL expression or
+    query, or source code in an external language such as Python. See
+    https://docs.databricks.com/aws/en/udf/unity-catalog for an overview."""
+
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -4857,16 +4888,19 @@ class FunctionInfo:
     """Username of function creator."""
 
     data_type: Optional[ColumnTypeName] = None
-    """Scalar function return data type."""
+    """Data type of the value the function returns. A table function uses TABLE_TYPE and describes its
+    result columns in return_params, except for a polymorphic Python UDTF, which omits them."""
 
     external_language: Optional[str] = None
-    """External function language."""
+    """Language of the function body for an EXTERNAL function. It is required when routine_body is
+    EXTERNAL."""
 
     external_name: Optional[str] = None
-    """External function name."""
+    """Name of the function in its external language. It is reserved for future use."""
 
     full_data_type: Optional[str] = None
-    """Pretty printed function data type."""
+    """Return data type of the function in SQL syntax, including any type parameters such as precision
+    and scale."""
 
     full_name: Optional[str] = None
     """Full name of Function, in form of **catalog_name**.**schema_name**.**function_name**"""
@@ -4875,13 +4909,17 @@ class FunctionInfo:
     """Id of Function, relative to parent schema."""
 
     input_params: Optional[FunctionParameterInfos] = None
-    """Function input parameters."""
+    """Input parameters of the function. When it is set, parameters must contain at least one entry. A
+    function that takes no arguments omits input_params, even though the Create request schema marks
+    it as required."""
 
     is_deterministic: Optional[bool] = None
-    """Whether the function is deterministic."""
+    """Whether the function returns the same result for the same arguments. It corresponds to the
+    DETERMINISTIC characteristic of CREATE FUNCTION."""
 
     is_null_call: Optional[bool] = None
-    """Function null call."""
+    """Whether the function is a null-call function in the sense of the SQL standard, which returns
+    NULL whenever any argument is NULL."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
@@ -4893,22 +4931,26 @@ class FunctionInfo:
     """Username of current owner of the function."""
 
     parameter_style: Optional[FunctionInfoParameterStyle] = None
-    """Function parameter style. **S** is the value for SQL."""
+    """How arguments are passed to the function body. S means that each argument is passed as a single
+    scalar value."""
 
     properties: Optional[str] = None
     """JSON-serialized key-value pair map, encoded (escaped) as a string."""
 
     return_params: Optional[FunctionParameterInfos] = None
-    """Table function return parameters."""
+    """Result columns of a table function. Set it when data_type is TABLE_TYPE, except for a
+    polymorphic Python UDTF (an EXTERNAL Python function with full_data_type "()"), which must not
+    set it."""
 
     routine_body: Optional[FunctionInfoRoutineBody] = None
-    """Function language. When **EXTERNAL** is used, the language of the routine function should be
-    specified in the **external_language** field, and the **return_params** of the function cannot
-    be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be
-    **NO_SQL**."""
+    """Language of the function body. SQL means that routine_definition holds a SQL expression or
+    query. EXTERNAL means that it holds source code in the language named by external_language, and
+    sql_data_access must then be NO_SQL."""
 
     routine_definition: Optional[str] = None
-    """Function body."""
+    """Body of the function. For a SQL function it is the expression or query that computes the result;
+    for an EXTERNAL function it is the source code of the function. It is omitted when the caller
+    can only browse the function."""
 
     routine_dependencies: Optional[DependencyList] = None
     """Function dependencies. For external UDFs, dependencies may contain only credential, secret, or
@@ -4918,16 +4960,19 @@ class FunctionInfo:
     """Name of parent Schema relative to its parent Catalog."""
 
     security_type: Optional[FunctionInfoSecurityType] = None
-    """Function security type."""
+    """Whose privileges the function body runs with. DEFINER runs it with the privileges of the
+    function owner."""
 
     specific_name: Optional[str] = None
-    """Specific name of the function; Reserved for future use."""
+    """Specific name of the function. Set it to the same value as name."""
 
     sql_data_access: Optional[FunctionInfoSqlDataAccess] = None
-    """Function SQL data access."""
+    """How the function body interacts with SQL data. CONTAINS_SQL means that the body contains SQL but
+    reads no table or view, READS_SQL_DATA means that it reads a table or view, and NO_SQL is
+    required for EXTERNAL functions."""
 
     sql_path: Optional[str] = None
-    """List of schemes whose objects can be referenced without qualification."""
+    """List of schemas whose objects can be referenced without qualification."""
 
     updated_at: Optional[int] = None
     """Time at which this function was last modified, in epoch milliseconds."""
@@ -5127,31 +5172,35 @@ class FunctionParameterInfo:
     """Name of Parameter."""
 
     type_text: str
-    """Full data type spec, SQL/catalogString text."""
+    """Data type of the parameter in SQL syntax, including any type parameters such as precision and
+    scale."""
 
     type_name: ColumnTypeName
     """Name of type (INT, STRUCT, MAP, etc.)"""
 
     position: int
-    """Ordinal position of column (starting at position 0)."""
+    """Zero-based position of the parameter in the parameter list. Positions must be unique and
+    consecutive."""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
 
     parameter_default: Optional[str] = None
-    """Default value of the parameter."""
+    """Default value of the parameter as a SQL expression, used when a call omits the argument."""
 
     parameter_mode: Optional[FunctionParameterMode] = None
-    """Function parameter mode."""
+    """Direction of the parameter. Only IN parameters, which pass a value into the function, are
+    supported."""
 
     parameter_type: Optional[FunctionParameterType] = None
-    """Function parameter type."""
+    """Whether the entry is an input parameter (PARAM) or a result column of a table function (COLUMN)."""
 
     type_interval_type: Optional[str] = None
-    """Format of IntervalType."""
+    """Unit range of the data type for INTERVAL parameters. It is unset for other types."""
 
     type_json: Optional[str] = None
-    """Full data type spec, JSON-serialized."""
+    """Data type of the parameter as the JSON representation of a Spark SQL struct field, with name,
+    type, nullable and metadata keys."""
 
     type_precision: Optional[int] = None
     """Digits of precision; required on Create for DecimalTypes."""
@@ -5239,6 +5288,7 @@ class FunctionParameterInfo:
 @dataclass
 class FunctionParameterInfos:
     parameters: Optional[List[FunctionParameterInfo]] = None
+    """The parameters that make up the list, ordered by position."""
 
     def as_dict(self) -> dict:
         """Serializes the FunctionParameterInfos into a dictionary suitable for use as a JSON request body."""
@@ -5275,6 +5325,7 @@ class GcpOauthToken:
     https://developers.google.com/identity/protocols/oauth2/service-account"""
 
     oauth_token: Optional[str] = None
+    """The OAuth 2.0 access token to pass as a bearer token to Google Cloud APIs."""
 
     def as_dict(self) -> dict:
         """Serializes the GcpOauthToken into a dictionary suitable for use as a JSON request body."""
@@ -5334,18 +5385,25 @@ class GcpPubsub:
 @dataclass
 class GenerateTemporaryPathCredentialResponse:
     aws_temp_credentials: Optional[AwsCredentials] = None
+    """Temporary AWS credentials that can be used to sign AWS API requests."""
 
     azure_aad: Optional[AzureActiveDirectoryToken] = None
+    """A Microsoft Entra ID (formerly Azure Active Directory) token that is issued for the credential's
+    identity."""
 
     azure_user_delegation_sas: Optional[AzureUserDelegationSas] = None
+    """An Azure user delegation shared access signature (SAS) that grants access to the requested
+    storage path."""
 
     expiration_time: Optional[int] = None
     """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
     cache the credential given this expiration time."""
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
+    """A GCP OAuth 2.0 access token that is issued for the credential's service account."""
 
     r2_temp_credentials: Optional[R2Credentials] = None
+    """Temporary Cloudflare R2 credentials that can be used with the R2 S3-compatible API."""
 
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
@@ -5409,7 +5467,8 @@ class GenerateTemporaryServiceCredentialAzureOptions:
     resources: Optional[List[str]] = None
     """The resources to which the temporary Azure credential should apply. These resources are the
     scopes that are passed to the token provider (see
-    https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)"""
+    https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python).
+    Exactly one resource is supported, and its URL must end with the ``.default`` scope."""
 
     def as_dict(self) -> dict:
         """Serializes the GenerateTemporaryServiceCredentialAzureOptions into a dictionary suitable for use as a JSON request body."""
@@ -5438,7 +5497,9 @@ class GenerateTemporaryServiceCredentialGcpOptions:
     scopes: Optional[List[str]] = None
     """The scopes to which the temporary GCP credential should apply. These resources are the scopes
     that are passed to the token provider (see
-    https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)"""
+    https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials).
+    Each scope must be a Google OAuth 2.0 scope URL on the ``googleapis.com`` or
+    ``www.googleapis.com`` host."""
 
     def as_dict(self) -> dict:
         """Serializes the GenerateTemporaryServiceCredentialGcpOptions into a dictionary suitable for use as a JSON request body."""
@@ -5463,18 +5524,25 @@ class GenerateTemporaryServiceCredentialGcpOptions:
 @dataclass
 class GenerateTemporaryTableCredentialResponse:
     aws_temp_credentials: Optional[AwsCredentials] = None
+    """Temporary AWS credentials that can be used to sign AWS API requests."""
 
     azure_aad: Optional[AzureActiveDirectoryToken] = None
+    """A Microsoft Entra ID (formerly Azure Active Directory) token that is issued for the credential's
+    identity."""
 
     azure_user_delegation_sas: Optional[AzureUserDelegationSas] = None
+    """An Azure user delegation shared access signature (SAS) that grants access to the requested
+    storage path."""
 
     expiration_time: Optional[int] = None
     """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
     cache the credential given this expiration time."""
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
+    """A GCP OAuth 2.0 access token that is issued for the credential's service account."""
 
     r2_temp_credentials: Optional[R2Credentials] = None
+    """Temporary Cloudflare R2 credentials that can be used with the R2 S3-compatible API."""
 
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
@@ -5534,18 +5602,25 @@ class GenerateTemporaryTableCredentialResponse:
 @dataclass
 class GenerateTemporaryVolumeCredentialResponse:
     aws_temp_credentials: Optional[AwsCredentials] = None
+    """Temporary AWS credentials that can be used to sign AWS API requests."""
 
     azure_aad: Optional[AzureActiveDirectoryToken] = None
+    """A Microsoft Entra ID (formerly Azure Active Directory) token that is issued for the credential's
+    identity."""
 
     azure_user_delegation_sas: Optional[AzureUserDelegationSas] = None
+    """An Azure user delegation shared access signature (SAS) that grants access to the requested
+    storage path."""
 
     expiration_time: Optional[int] = None
     """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
     cache the credential given this expiration time."""
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
+    """A GCP OAuth 2.0 access token that is issued for the credential's service account."""
 
     r2_temp_credentials: Optional[R2Credentials] = None
+    """Temporary Cloudflare R2 credentials that can be used with the R2 S3-compatible API."""
 
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
@@ -13259,16 +13334,21 @@ class TagValueExtraction:
 @dataclass
 class TemporaryCredentials:
     aws_temp_credentials: Optional[AwsCredentials] = None
+    """Temporary AWS credentials that can be used to sign AWS API requests."""
 
     azure_aad: Optional[AzureActiveDirectoryToken] = None
+    """A Microsoft Entra ID (formerly Azure Active Directory) token that is issued for the credential's
+    identity."""
 
     expiration_time: Optional[int] = None
     """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
     cache the credential given this expiration time."""
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
+    """A GCP OAuth 2.0 access token that is issued for the credential's service account."""
 
     r2_temp_credentials: Optional[R2Credentials] = None
+    """Temporary Cloudflare R2 credentials that can be used with the R2 S3-compatible API."""
 
     def as_dict(self) -> dict:
         """Serializes the TemporaryCredentials into a dictionary suitable for use as a JSON request body."""
@@ -15915,20 +15995,23 @@ class ConnectionsAPI:
         :param name: str
           Name of the connection.
         :param connection_type: :class:`ConnectionType`
-          The type of connection.
+          The type of external data source or service that the connection reaches. The connection type
+          determines which keys are required in options and cannot be changed after creation.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
         :param environment_settings: :class:`EnvironmentSettings` (optional)
-          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
+          Environment settings for the connection, such as the Java libraries that it needs and the
+          environment version.
         :param parent: str (optional)
           Parent schema for schema-level connections, in format "schemas/{catalog}.{schema}". Absent for
           metastore-level (L1) connections.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
-          If the connection is read only.
+          Whether the connection is read only. All connections are currently read only, so a value set on
+          create or update is ignored.
         :param secrets: Dict[str,str] (optional)
           A map of option names to UC Secret references. Keys are connection option names (same as in
           OptionsKVPairs) and values are UC Secret fully qualified names.
@@ -15987,7 +16070,7 @@ class ConnectionsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
 
     def get(self, name: str) -> ConnectionInfo:
-        """Gets a connection from it's name.
+        """Gets a connection from its name.
 
         :param name: str
           Name of the connection.
@@ -16071,18 +16154,21 @@ class ConnectionsAPI:
         owner: Optional[str] = None,
         secrets: Optional[Dict[str, str]] = None,
     ) -> ConnectionInfo:
-        """Updates the connection that matches the supplied name.
+        """Updates the connection that matches the supplied name. When options are provided, they replace the
+        existing options of the connection, so include every key that the connection type requires.
 
         :param name: str
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
         :param environment_settings: :class:`EnvironmentSettings` (optional)
-          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
+          Environment settings for the connection, such as the Java libraries that it needs and the
+          environment version.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
-          Username of current owner of the connection.
+          Username of the current owner of the connection. The creator becomes the owner at creation, and
+          ownership can be transferred on update.
         :param secrets: Dict[str,str] (optional)
           A map of option names to UC Secret references. Keys are connection option names (same as in
           OptionsKVPairs) and values are UC Secret fully qualified names.
@@ -16234,12 +16320,16 @@ class CredentialsAPI:
         gcp_options: Optional[GenerateTemporaryServiceCredentialGcpOptions] = None,
     ) -> TemporaryCredentials:
         """Returns a set of temporary credentials generated using the specified service credential. The caller
-        must be a metastore admin or have the metastore privilege **ACCESS** on the service credential.
+        must be a metastore admin or have the **ACCESS** privilege on the service credential.
 
         :param credential_name: str
           The name of the service credential used to generate a temporary credential
         :param azure_options: :class:`GenerateTemporaryServiceCredentialAzureOptions` (optional)
+          Options for an Azure service credential. They are required when the service credential uses an Azure
+          managed identity.
         :param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)
+          Options for a GCP service credential. They are required when the service credential uses a
+          Databricks-managed GCP service account.
 
         :returns: :class:`TemporaryCredentials`
         """
@@ -17420,9 +17510,9 @@ class FunctionsAPI:
 
         :param name: str
           The fully-qualified name of the function (of the form
-          **catalog_name**.**schema_name**.**function__name**) .
+          **catalog_name**.**schema_name**.**function_name**).
         :param force: bool (optional)
-          Force deletion even if the function is notempty.
+          Force deletion even if the function is not empty.
 
 
         """
@@ -17450,7 +17540,7 @@ class FunctionsAPI:
 
         :param name: str
           The fully-qualified name of the function (of the form
-          **catalog_name**.**schema_name**.**function__name**).
+          **catalog_name**.**schema_name**.**function_name**).
         :param include_browse: bool (optional)
           Whether to include functions in the response for which the principal can only access selective
           metadata for
@@ -17558,7 +17648,7 @@ class FunctionsAPI:
 
         :param name: str
           The fully-qualified name of the function (of the form
-          **catalog_name**.**schema_name**.**function__name**).
+          **catalog_name**.**schema_name**.**function_name**).
         :param owner: str (optional)
           Username of current owner of the function.
 

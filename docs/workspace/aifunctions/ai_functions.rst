@@ -18,7 +18,8 @@
         :param labels: any
           The label set to classify as. Either a JSON array of label strings (e.g. ["spam", "not_spam"]), or a
           JSON object mapping each label to a description (e.g. {"spam": "unsolicited bulk message",
-          "not_spam": "a legitimate message"}). Accepts 2 to 500 labels, each 1 to 100 characters.
+          "not_spam": "a legitimate message"}). Accepts 2 to 500 labels, each 1 to 100 characters. When
+          multilabel is true, a single label is also accepted.
         :param options: :class:`AiClassifyOptions` (optional)
           Function options. Omitted fields fall back to their documented defaults.
 
@@ -28,7 +29,9 @@
     .. py:method:: ai_decide(state: any, questions: any [, options: Optional[AiDecideOptions]]) -> AiDecideResponse
 
         Turn text and structured data into decisions your application can use. Define questions and criteria
-        to choose an option, estimate a probability, or assign a score given a provided state.
+        to choose an option, estimate a probability, or assign a score given a provided state. For REST API
+        requests, the default rate limit is 1,200 requests per minute per workspace. Contact your Databricks
+        account team to request a higher limit.
 
         :param state: any
           A string, JSON object, or array containing the content, related context, and examples needed to

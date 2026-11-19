@@ -29,7 +29,11 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class DirectGroupMember:
-    """A user, service principal, or group that's a direct member of a group."""
+    """A user, service principal, or group that's a direct member of a group. To address a membership,
+    put its resource name in the URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/groups/{group_id}/direct-members/{principal_id}`` in
+    account APIs, or ``GET /api/2.0/identity/groups/{group_id}/direct-members/{principal_id}`` in
+    workspace APIs."""
 
     principal_id: int
     """The Databricks ID of the member."""
@@ -161,7 +165,9 @@ class ExternalGroup:
     """A group from your identity provider (IdP), identified by its ID in your IdP. This resource is
     read-only. Getting an external group syncs its name and parent groups from your IdP, and adds it
     to your account if it isn't already there. If your account has group visibility filters, the
-    group must match them."""
+    group must match them. To address an external group, put its resource name in the URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/external-groups/{external_group_id}`` in account APIs,
+    or ``GET /api/2.0/identity/external-groups/{external_group_id}`` in workspace APIs."""
 
     account_id: Optional[str] = None
     """The ID of the account that contains the group."""
@@ -228,7 +234,12 @@ class ExternalServicePrincipal:
     """A service principal from your identity provider (IdP), identified by its ID in your IdP. This
     resource is read-only and requires Microsoft Entra ID as your IdP. Getting an external service
     principal syncs its details and group memberships from your IdP, and adds it to your account if
-    it isn't already there."""
+    it isn't already there. To address an external service principal, put its resource name in the
+    URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/external-service-principals/{external_service_principal_id}``
+    in account APIs, or ``GET
+    /api/2.0/identity/external-service-principals/{external_service_principal_id}`` in workspace
+    APIs."""
 
     account_id: Optional[str] = None
     """The ID of the account that contains the service principal."""
@@ -312,7 +323,10 @@ class ExternalServicePrincipal:
 class ExternalUser:
     """A user from your identity provider (IdP), identified by their ID in your IdP. This resource is
     read-only. Getting an external user syncs the user's details and group memberships from your
-    IdP, and adds the user to your account if they aren't already there."""
+    IdP, and adds the user to your account if they aren't already there. To address an external
+    user, put its resource name in the URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/external-users/{external_user_id}`` in account APIs, or
+    ``GET /api/2.0/identity/external-users/{external_user_id}`` in workspace APIs."""
 
     account_id: Optional[str] = None
     """The ID of the account that contains the user."""
@@ -434,7 +448,9 @@ class FullName:
 
 @dataclass
 class Group:
-    """A group in your Databricks account."""
+    """A group in your Databricks account. To address a group, put its resource name in the URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/groups/{group_id}`` in account APIs, or ``GET
+    /api/2.0/identity/groups/{group_id}`` in workspace APIs."""
 
     account_id: Optional[str] = None
     """The ID of the account that contains the group."""
@@ -526,7 +542,10 @@ class IdentityVisibilityFilter:
     parent groups is already in your account. Local Databricks groups are always visible.
 
     You can only create group filters. Filters don't affect provisioning or sign-in for users and
-    service principals. You can't change a filter: to change a rule, delete it and create a new one."""
+    service principals. You can't change a filter: to change a rule, delete it and create a new one.
+
+    To address a filter, put its resource name in the URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/identity-visibility-filters/{identity_visibility_filter_id}``."""
 
     principal_type: PrincipalType
     """The type of principal the filter applies to. Set it to ``GROUP``. Other types aren't supported."""
@@ -1024,7 +1043,10 @@ class ResolveUserResponse:
 
 @dataclass
 class ServicePrincipal:
-    """A service principal in your Databricks account."""
+    """A service principal in your Databricks account. To address a service principal, put its resource
+    name in the URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/service-principals/{service_principal_id}`` in account
+    APIs, or ``GET /api/2.0/identity/service-principals/{service_principal_id}`` in workspace APIs."""
 
     display_name: str
     """The service principal's display name."""
@@ -1121,7 +1143,11 @@ class State(Enum):
 
 @dataclass
 class TransitiveParentGroup:
-    """A group that a principal belongs to, either directly or through another group."""
+    """A group that a principal belongs to, either directly or through another group. To list a
+    principal's parent groups, put the principal's resource name in the URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/principals/{principal_id}/transitive-parent-groups`` in
+    account APIs, or ``GET /api/2.0/identity/principals/{principal_id}/transitive-parent-groups`` in
+    workspace APIs."""
 
     account_id: Optional[str] = None
     """The ID of the account that contains the group."""
@@ -1178,7 +1204,9 @@ class TransitiveParentGroup:
 
 @dataclass
 class User:
-    """A user in your Databricks account."""
+    """A user in your Databricks account. To address a user, put its resource name in the URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/users/{user_id}`` in account APIs, or ``GET
+    /api/2.0/identity/users/{user_id}`` in workspace APIs."""
 
     username: str
     """The user's username, which is their email address. It can't be changed after the user is
@@ -1416,7 +1444,12 @@ class WorkspaceAssignment:
 
     ``entitlements`` is the only field you set. ``effective_entitlements`` also includes the
     entitlements the principal gets through its groups. An assignment must grant at least one
-    entitlement. To remove a principal's direct access, delete the assignment."""
+    entitlement. To remove a principal's direct access, delete the assignment.
+
+    To address an assignment, put its resource name in the URL: ``GET
+    /api/2.0/identity/accounts/{account_id}/workspaces/{workspace_id}/workspace-assignments/{principal_id}``
+    in account APIs, or ``GET /api/2.0/identity/workspace-assignments/{principal_id}`` in workspace
+    APIs."""
 
     principal_id: int
     """The Databricks ID of the assigned user, service principal, or group. It can't be changed after
@@ -1602,7 +1635,8 @@ class WorkspaceAssignmentDetail:
 class WorkspaceIdentityDetail:
     """A user, service principal, or group's status in a workspace, and whether it has access to the
     workspace directly or through a group. Update it to activate or deactivate a user or service
-    principal in the workspace."""
+    principal in the workspace. To address it, put its resource name in the URL: ``GET
+    /api/2.0/identity/principals/{principal_id}/workspace-identity-detail``."""
 
     assignment_type: Optional[WorkspaceIdentityDetailAssignmentType] = None
     """Whether the principal is assigned to the workspace directly or has access through a group."""

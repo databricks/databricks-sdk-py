@@ -614,7 +614,9 @@ class Datasource:
     schedule: Schedule
     """Schedule on which the datasource's ingestion job runs. A datasource cannot be paused, so a
     request that sets ``schedule.enabled`` to ``false`` is rejected. Continuous schedules are not
-    supported for Unity Catalog connection datasources."""
+    supported for Unity Catalog connection datasources. For an existing-table datasource, runs must
+    be no further apart than the shorter of the source table's
+    ``delta.deletedFileRetentionDuration`` and ``delta.logRetentionDuration``."""
 
     annotations: Optional[Dict[str, str]] = None
     """Free-form key-value annotations on the datasource, managed by the client."""
@@ -2870,9 +2872,9 @@ class RuleView(Enum):
 class Schedule:
     """Defines when a recurring job executes.
 
-    Exactly one of the timing modes (``at_least_every``, ``cron_expression``, ``continuous``) must
-    be set; combining them or setting none is rejected by the server. ``compute_group`` and
-    ``enabled`` are orthogonal to the timing."""
+    Exactly one of the timing modes (``at_least_every``, ``cron_expression``, ``continuous``,
+    ``file_arrival``) must be set; combining them or setting none is rejected by the server.
+    ``compute_group`` and ``enabled`` are orthogonal to the timing."""
 
     at_least_every: Optional[str] = None
     """Duration string defining the minimum cadence. May contain components for days, hours, minutes,

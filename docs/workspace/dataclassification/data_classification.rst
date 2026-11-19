@@ -12,12 +12,12 @@
 
         Create Data Classification configuration for a catalog.
 
-        Creates a new config resource, which enables Data Classification for the specified catalog.
-
-        - The config must not already exist for the catalog.
+        Creates a new config resource, which enables Data Classification for the specified catalog. The
+        catalog must not already have a config. Creating the config starts a scan of the selected schemas and
+        schedules recurring scans.
 
         :param parent: str
-          Parent resource in the format: catalogs/{catalog_name}
+          Name of the catalog to enable, in the format catalogs/{catalog_name}.
         :param catalog_config: :class:`CatalogConfig`
           The configuration to create.
 
@@ -28,8 +28,12 @@
 
         Delete Data Classification configuration for a catalog.
 
+        Deleting the config disables Data Classification for the catalog and stops its scheduled scans. Tags
+        that auto-tagging already applied to columns are not removed. Deleting a config that does not exist
+        succeeds.
+
         :param name: str
-          Resource name in the format: catalogs/{catalog_name}/config
+          Resource name of the config, in the format catalogs/{catalog_name}/config.
 
 
         
@@ -39,7 +43,7 @@
         Get the Data Classification configuration for a catalog.
 
         :param name: str
-          Resource name in the format: catalogs/{catalog_name}/config
+          Resource name of the config, in the format catalogs/{catalog_name}/config.
 
         :returns: :class:`CatalogConfig`
         
@@ -48,9 +52,8 @@
 
         Update the Data Classification configuration for a catalog.
 
-        - The config must already exist for the catalog.
-        - Updates fields specified in the update_mask. Use update_mask field to perform partial updates of the
-          configuration.
+        The config must already exist for the catalog. Only the fields named in ``update_mask`` change; the
+        other fields keep their current values.
 
         :param name: str
           Resource name in the format: catalogs/{catalog_name}/config.
@@ -58,7 +61,8 @@
           The configuration to apply to the catalog. The name field in catalog_config identifies which
           resource to update.
         :param update_mask: FieldMask
-          Field mask specifying which fields to update.
+          Comma-separated list of the fields of catalog_config to update, for example ``included_schemas`` or
+          ``auto_tag_configs``.
 
         :returns: :class:`CatalogConfig`
         

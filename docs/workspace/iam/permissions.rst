@@ -64,7 +64,9 @@
           queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
-          The id of the request object.
+          The id of the object. It is the id that the object's own API uses, for example the cluster id for
+          clusters, the job id for jobs, and the workspace object id for notebooks and directories. For the
+          ``authorization`` object type, use ``tokens`` to manage token permissions.
 
         :returns: :class:`ObjectPermissions`
         
@@ -97,6 +99,9 @@
           queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
+          The id of the object. It is the id that the object's own API uses, for example the cluster id for
+          clusters, the job id for jobs, and the workspace object id for notebooks and directories. For the
+          ``authorization`` object type, use ``tokens`` to manage token permissions.
 
         :returns: :class:`GetPermissionLevelsResponse`
         
@@ -135,9 +140,10 @@
             # cleanup
             w.groups.delete(id=group.id)
 
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their parent objects or root
-        object.
+        Sets permissions on an object, replacing all direct permissions with the ones in the request.
+        Principals that are not in the request lose their direct permissions on the object, and all direct
+        permissions are deleted if none are specified. Objects can inherit permissions from their parent
+        objects or root object.
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
@@ -146,16 +152,22 @@
           queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
-          The id of the request object.
+          The id of the object. It is the id that the object's own API uses, for example the cluster id for
+          clusters, the job id for jobs, and the workspace object id for notebooks and directories. For the
+          ``authorization`` object type, use ``tokens`` to manage token permissions.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+          Permissions to apply to the object, with one entry per principal. Each entry names exactly one
+          principal through ``user_name``, ``group_name`` or ``service_principal_name`` and the
+          ``permission_level`` for that principal.
 
         :returns: :class:`ObjectPermissions`
         
 
     .. py:method:: update(request_object_type: str, request_object_id: str [, access_control_list: Optional[List[AccessControlRequest]]]) -> ObjectPermissions
 
-        Updates the permissions on an object. Objects can inherit permissions from their parent objects or
-        root object.
+        Updates the permissions on an object by adding or changing the permissions of the principals in the
+        request. Principals that are not in the request keep their existing permissions. Objects can inherit
+        permissions from their parent objects or root object.
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
@@ -164,8 +176,13 @@
           queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
-          The id of the request object.
+          The id of the object. It is the id that the object's own API uses, for example the cluster id for
+          clusters, the job id for jobs, and the workspace object id for notebooks and directories. For the
+          ``authorization`` object type, use ``tokens`` to manage token permissions.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+          Permissions to apply to the object, with one entry per principal. Each entry names exactly one
+          principal through ``user_name``, ``group_name`` or ``service_principal_name`` and the
+          ``permission_level`` for that principal.
 
         :returns: :class:`ObjectPermissions`
         

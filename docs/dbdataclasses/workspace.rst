@@ -247,7 +247,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ScopeBackendType
 
-   The types of secret scope backends in the Secret Manager. Azure KeyVault backed secret scopes will be supported in a later release.
+   The types of secret scope backends in the Secret Manager.
 
    .. py:attribute:: AZURE_KEYVAULT
       :value: "AZURE_KEYVAULT"

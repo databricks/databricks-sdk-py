@@ -163,12 +163,16 @@ class ContactInfo:
     """contact info for the consumer requesting data or performing a listing installation"""
 
     company: Optional[str] = None
+    """Company of the consumer contact."""
 
     email: Optional[str] = None
+    """Email address of the consumer contact."""
 
     first_name: Optional[str] = None
+    """First name of the consumer contact."""
 
     last_name: Optional[str] = None
+    """Last name of the consumer contact."""
 
     def as_dict(self) -> dict:
         """Serializes the ContactInfo into a dictionary suitable for use as a JSON request body."""
@@ -263,9 +267,10 @@ class CreateExchangeResponse:
 @dataclass
 class CreateFileResponse:
     file_info: Optional[FileInfo] = None
+    """Metadata of the created file."""
 
     upload_url: Optional[str] = None
-    """Pre-signed POST URL to blob storage"""
+    """Short-lived URL for uploading the file content with an HTTP PUT request."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateFileResponse into a dictionary suitable for use as a JSON request body."""
@@ -294,6 +299,7 @@ class CreateFileResponse:
 @dataclass
 class CreateListingResponse:
     listing_id: Optional[str] = None
+    """ID of the created listing."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateListingResponse into a dictionary suitable for use as a JSON request body."""
@@ -342,6 +348,7 @@ class CreatePersonalizationRequestResponse:
 @dataclass
 class CreateProviderResponse:
     id: Optional[str] = None
+    """ID of the created provider profile."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateProviderResponse into a dictionary suitable for use as a JSON request body."""
@@ -378,8 +385,10 @@ class DataRefresh(Enum):
 @dataclass
 class DataRefreshInfo:
     interval: int
+    """Number of time units. Must be greater than zero."""
 
     unit: DataRefresh
+    """Time unit that the interval is expressed in."""
 
     def as_dict(self) -> dict:
         """Serializes the DataRefreshInfo into a dictionary suitable for use as a JSON request body."""
@@ -757,26 +766,35 @@ class ExchangeListing:
 @dataclass
 class FileInfo:
     created_at: Optional[int] = None
+    """Time the file was created, in epoch milliseconds."""
 
     display_name: Optional[str] = None
     """Name displayed to users for applicable files, e.g. embedded notebooks"""
 
     download_link: Optional[str] = None
+    """Short-lived URL for downloading the file content."""
 
     file_parent: Optional[FileParent] = None
+    """Provider or listing that the file belongs to."""
 
     id: Optional[str] = None
+    """ID of the file."""
 
     marketplace_file_type: Optional[MarketplaceFileType] = None
+    """Purpose of the file, such as a provider icon or a notebook attached to a listing."""
 
     mime_type: Optional[str] = None
+    """MIME type of the file content, for example text/html for notebooks or image/png for icons."""
 
     status: Optional[FileStatus] = None
+    """Processing status of the file. New files start in FILE_STATUS_STAGING and become
+    FILE_STATUS_PUBLISHED after Databricks has sanitized them."""
 
     status_message: Optional[str] = None
     """Populated if status is in a failed state with more information on reason for the failure."""
 
     updated_at: Optional[int] = None
+    """Time the file was last updated, in epoch milliseconds."""
 
     def as_dict(self) -> dict:
         """Serializes the FileInfo into a dictionary suitable for use as a JSON request body."""
@@ -848,8 +866,10 @@ class FileInfo:
 @dataclass
 class FileParent:
     file_parent_type: Optional[FileParentType] = None
+    """Type of the parent: PROVIDER for provider icons, LISTING for notebooks attached to a listing."""
 
     parent_id: Optional[str] = None
+    """ID of the provider or listing that the file belongs to."""
 
     def as_dict(self) -> dict:
         """Serializes the FileParent into a dictionary suitable for use as a JSON request body."""
@@ -920,6 +940,7 @@ class GetExchangeResponse:
 @dataclass
 class GetFileResponse:
     file_info: Optional[FileInfo] = None
+    """Metadata of the file."""
 
     def as_dict(self) -> dict:
         """Serializes the GetFileResponse into a dictionary suitable for use as a JSON request body."""
@@ -944,7 +965,7 @@ class GetFileResponse:
 @dataclass
 class GetLatestVersionProviderAnalyticsDashboardResponse:
     version: Optional[int] = None
-    """version here is latest logical version of the dashboard template"""
+    """Latest available version of the dashboard template."""
 
     def as_dict(self) -> dict:
         """Serializes the GetLatestVersionProviderAnalyticsDashboardResponse into a dictionary suitable for use as a JSON request body."""
@@ -1002,6 +1023,7 @@ class GetListingContentMetadataResponse:
 @dataclass
 class GetListingResponse:
     listing: Optional[Listing] = None
+    """The requested listing."""
 
     def as_dict(self) -> dict:
         """Serializes the GetListingResponse into a dictionary suitable for use as a JSON request body."""
@@ -1026,8 +1048,10 @@ class GetListingResponse:
 @dataclass
 class GetListingsResponse:
     listings: Optional[List[Listing]] = None
+    """Listings on this page."""
 
     next_page_token: Optional[str] = None
+    """Token for the next page. Not set when there are no more results."""
 
     def as_dict(self) -> dict:
         """Serializes the GetListingsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1080,6 +1104,7 @@ class GetPersonalizationRequestResponse:
 @dataclass
 class GetProviderResponse:
     provider: Optional[ProviderInfo] = None
+    """The requested provider profile."""
 
     def as_dict(self) -> dict:
         """Serializes the GetProviderResponse into a dictionary suitable for use as a JSON request body."""
@@ -1276,8 +1301,10 @@ class ListAllInstallationsResponse:
 @dataclass
 class ListAllPersonalizationRequestsResponse:
     next_page_token: Optional[str] = None
+    """Token for the next page. Not set when there are no more results."""
 
     personalization_requests: Optional[List[PersonalizationRequest]] = None
+    """Personalization requests on this page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListAllPersonalizationRequestsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1402,8 +1429,10 @@ class ListExchangesResponse:
 @dataclass
 class ListFilesResponse:
     file_infos: Optional[List[FileInfo]] = None
+    """Files on this page."""
 
     next_page_token: Optional[str] = None
+    """Token for the next page. Not set when there are no more results."""
 
     def as_dict(self) -> dict:
         """Serializes the ListFilesResponse into a dictionary suitable for use as a JSON request body."""
@@ -1561,11 +1590,14 @@ class ListListingsResponse:
 @dataclass
 class ListProviderAnalyticsDashboardResponse:
     id: str
+    """Marketplace-specific ID of the dashboard record. Use it as the ``id`` when updating the
+    dashboard."""
 
     dashboard_id: str
-    """dashboard_id will be used to open Lakeview dashboard."""
+    """ID of the AI/BI dashboard in the workspace. Use it to open the dashboard."""
 
     version: Optional[int] = None
+    """Version of the dashboard template that the dashboard was created or last updated from."""
 
     def as_dict(self) -> dict:
         """Serializes the ListProviderAnalyticsDashboardResponse into a dictionary suitable for use as a JSON request body."""
@@ -1598,8 +1630,10 @@ class ListProviderAnalyticsDashboardResponse:
 @dataclass
 class ListProvidersResponse:
     next_page_token: Optional[str] = None
+    """Token for the next page. Not set when there are no more results."""
 
     providers: Optional[List[ProviderInfo]] = None
+    """Provider profiles on this page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListProvidersResponse into a dictionary suitable for use as a JSON request body."""
@@ -1629,11 +1663,19 @@ class ListProvidersResponse:
 
 @dataclass
 class Listing:
+    """A Marketplace listing: a data product that a provider offers to consumers. The summary holds the
+    listing's identity, status and sharing configuration, and the detail holds the descriptive
+    content that consumers see on the listing page."""
+
     summary: ListingSummary
+    """Identity, status and sharing configuration of the listing."""
 
     detail: Optional[ListingDetail] = None
+    """Descriptive content shown to consumers on the listing page, such as the description, links and
+    data attributes."""
 
     id: Optional[str] = None
+    """ID of the listing. Assigned by the server; not allowed in create requests."""
 
     def as_dict(self) -> dict:
         """Serializes the Listing into a dictionary suitable for use as a JSON request body."""
@@ -1670,7 +1712,8 @@ class Listing:
 @dataclass
 class ListingDetail:
     assets: Optional[List[AssetType]] = None
-    """Type of assets included in the listing. eg. GIT_REPO, DATA_TABLE, MODEL, NOTEBOOK"""
+    """Types of assets included in the listing. At least one is required unless the listing is a DRAFT.
+    Duplicate values are ignored."""
 
     collection_date_end: Optional[int] = None
     """The ending date timestamp for when the data spans"""
@@ -1688,10 +1731,15 @@ class ListingDetail:
     """Where/how the data is sourced"""
 
     description: Optional[str] = None
+    """Detailed description of the data product. Supports basic Markdown formatting such as bold,
+    italics and lists."""
 
     documentation_link: Optional[str] = None
+    """URL of documentation that helps consumers use the data product."""
 
     embedded_notebook_file_infos: Optional[List[FileInfo]] = None
+    """Sample notebooks attached to the listing. Create each notebook with createFile, using the
+    EMBEDDED_NOTEBOOK file type and the listing as the parent, and reference it here."""
 
     file_ids: Optional[List[str]] = None
 
@@ -1699,30 +1747,29 @@ class ListingDetail:
     """Which geo region the listing data is collected from"""
 
     license: Optional[str] = None
-    """ID 20, 21 removed don't use License of the data asset - Required for listings with model based
-    assets"""
+    """License of the data asset. Required for listings with model-based assets."""
 
     pricing_model: Optional[str] = None
     """What the pricing model is (e.g. paid, subscription, paid upfront); should only be present if
     cost is paid"""
 
     privacy_policy_link: Optional[str] = None
+    """URL of the privacy policy for the listing. Defaults to the provider profile's privacy policy
+    link when empty."""
 
     size: Optional[float] = None
     """size of the dataset in GB"""
 
     support_link: Optional[str] = None
+    """URL where consumers can get support for the listing."""
 
     tags: Optional[List[ListingTag]] = None
-    """Listing tags - Simple key value pair to annotate listings. When should I use tags vs dedicated
-    fields? Using tags avoids the need to add new columns in the database for new annotations.
-    However, this should be used sparingly since tags are stored as key value pair. Use tags only:
-    
-    1. If the field is optional and won't need to have NOT NULL integrity check
-    2. The value is fairly fixed, static and low cardinality (eg. enums).
-    3. The value won't be used in filters or joins with other tables."""
+    """Tags that annotate the listing with fixed, low-cardinality values, such as supported languages
+    or tasks."""
 
     terms_of_service: Optional[str] = None
+    """URL of the terms of service for the listing. Defaults to the provider profile's terms of service
+    link when empty."""
 
     update_frequency: Optional[DataRefreshInfo] = None
     """How often data is updated"""
@@ -1896,6 +1943,8 @@ class ListingFulfillment:
 @dataclass
 class ListingSetting:
     visibility: Optional[Visibility] = None
+    """PUBLIC listings are visible to all consumers in the Marketplace. PRIVATE listings are visible
+    only to members of the private exchanges that they are shared in."""
 
     def as_dict(self) -> dict:
         """Serializes the ListingSetting into a dictionary suitable for use as a JSON request body."""
@@ -1934,44 +1983,68 @@ class ListingStatus(Enum):
 @dataclass
 class ListingSummary:
     name: str
+    """Display name of the listing. Must start with a letter or digit and be at most 100 characters."""
 
     listing_type: ListingType
+    """How consumers get access to the listing. STANDARD listings are instantly available; PERSONALIZED
+    listings require the provider to approve each consumer request. Cannot be changed after the
+    listing is created."""
 
     categories: Optional[List[Category]] = None
+    """Categories that consumers can use to filter listings. They also appear as tags on the listing
+    tile and detail page."""
 
     created_at: Optional[int] = None
+    """Time the listing was created, in epoch milliseconds."""
 
     created_by: Optional[str] = None
+    """Name of the user who created the listing."""
 
     created_by_id: Optional[int] = None
+    """ID of the user who created the listing."""
 
     exchange_ids: Optional[List[str]] = None
+    """IDs of the private exchanges that the listing is shared in. A listing can be linked to at most
+    10 exchanges."""
 
     git_repo: Optional[RepoInfo] = None
-    """if a git repo is being created, a listing will be initialized with this field as opposed to a
-    share"""
+    """Git repository that holds the listing's assets, used instead of a share for notebook and Git
+    repo listings. A listing cannot have both a share and a Git repo."""
 
     provider_id: Optional[str] = None
+    """ID of the provider profile that owns the listing."""
 
     provider_region: Optional[RegionInfo] = None
+    """Cloud and region of the provider's Unity Catalog metastore. Not allowed in create requests."""
 
     published_at: Optional[int] = None
 
     published_by: Optional[str] = None
 
     setting: Optional[ListingSetting] = None
+    """Listing settings, such as whether the listing is visible in the public Marketplace or only in
+    private exchanges."""
 
     share: Optional[ShareInfo] = None
+    """Delta Sharing share that holds the listing's data assets. Required to publish a STANDARD
+    listing, except for app and MCP server listings; notebook and Git repo listings can use git_repo
+    instead. The caller must have access to the share."""
 
     status: Optional[ListingStatus] = None
+    """Publication status of the listing. Only PUBLISHED listings are visible to consumers; create a
+    listing as DRAFT and set the status to PUBLISHED when it is ready."""
 
     subtitle: Optional[str] = None
+    """One-line subtitle shown with the listing name."""
 
     updated_at: Optional[int] = None
+    """Time the listing was last updated, in epoch milliseconds."""
 
     updated_by: Optional[str] = None
+    """Name of the user who last updated the listing."""
 
     updated_by_id: Optional[int] = None
+    """ID of the user who last updated the listing."""
 
     def as_dict(self) -> dict:
         """Serializes the ListingSummary into a dictionary suitable for use as a JSON request body."""
@@ -2136,38 +2209,54 @@ class MarketplaceFileType(Enum):
 @dataclass
 class PersonalizationRequest:
     consumer_region: RegionInfo
+    """Cloud and region of the consumer's Unity Catalog metastore."""
 
     comment: Optional[str] = None
+    """Comment that the consumer entered with the request."""
 
     contact_info: Optional[ContactInfo] = None
+    """Contact details that the consumer entered with the request."""
 
     created_at: Optional[int] = None
+    """Time the request was created, in epoch milliseconds."""
 
     id: Optional[str] = None
+    """ID of the personalization request."""
 
     intended_use: Optional[str] = None
+    """How the consumer intends to use the data product, as entered with the request."""
 
     is_from_lighthouse: Optional[bool] = None
 
     listing_id: Optional[str] = None
+    """ID of the listing that the request was made for."""
 
     listing_name: Optional[str] = None
+    """Name of the listing that the request was made for."""
 
     metastore_id: Optional[str] = None
+    """ID of the consumer's Unity Catalog metastore."""
 
     provider_id: Optional[str] = None
+    """ID of the provider profile that owns the listing."""
 
     recipient_type: Optional[DeltaSharingRecipientType] = None
+    """How the consumer receives the shared data: DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS for a
+    consumer on a Databricks workspace, DELTA_SHARING_RECIPIENT_TYPE_OPEN for a consumer on another
+    platform who uses a credential file."""
 
     share: Optional[ShareInfo] = None
     """Share information is required for data listings but should be empty/ignored for non-data
     listings (MCP and App)."""
 
     status: Optional[PersonalizationRequestStatus] = None
+    """Current status of the request."""
 
     status_message: Optional[str] = None
+    """Reason that the provider gave in the most recent status update."""
 
     updated_at: Optional[int] = None
+    """Time the request was last updated, in epoch milliseconds."""
 
     def as_dict(self) -> dict:
         """Serializes the PersonalizationRequest into a dictionary suitable for use as a JSON request body."""
@@ -2276,6 +2365,7 @@ class PersonalizationRequestStatus(Enum):
 @dataclass
 class ProviderAnalyticsDashboard:
     id: str
+    """Marketplace-specific ID of the dashboard record, distinct from the AI/BI dashboard ID."""
 
     def as_dict(self) -> dict:
         """Serializes the ProviderAnalyticsDashboard into a dictionary suitable for use as a JSON request body."""
@@ -2300,34 +2390,53 @@ class ProviderAnalyticsDashboard:
 @dataclass
 class ProviderInfo:
     name: str
+    """Display name of the provider. Consumers can filter listings by provider name."""
 
     business_contact_email: str
+    """Email address that Databricks uses to contact the provider. Not shown to consumers."""
 
     term_of_service_link: str
+    """URL of the provider's terms of service. Shown on all of the provider's listings unless a listing
+    sets its own terms of service."""
 
     privacy_policy_link: str
+    """URL of the provider's privacy policy. Shown on all of the provider's listings unless a listing
+    sets its own privacy policy."""
 
     company_website_link: Optional[str] = None
+    """URL of the provider's website. Shown on all of the provider's listings."""
 
     dark_mode_icon_file_id: Optional[str] = None
+    """ID of the provider icon file used in dark mode, created with createFile using the PROVIDER_ICON
+    file type."""
 
     dark_mode_icon_file_path: Optional[str] = None
+    """URL for downloading the dark mode provider icon. Populated by the server from
+    dark_mode_icon_file_id."""
 
     description: Optional[str] = None
+    """Description of the provider organization, shown on the provider profile and on all of its
+    listings."""
 
     icon_file_id: Optional[str] = None
+    """ID of the provider icon file, created with createFile using the PROVIDER_ICON file type."""
 
     icon_file_path: Optional[str] = None
+    """URL for downloading the provider icon. Populated by the server from icon_file_id."""
 
     id: Optional[str] = None
+    """ID of the provider profile. Assigned by the server; not allowed in create or update requests."""
 
     is_featured: Optional[bool] = None
-    """is_featured is accessible by consumers only"""
+    """Whether Databricks features the provider in the Marketplace. Set by Databricks; not allowed in
+    create or update requests."""
 
     published_by: Optional[str] = None
     """published_by is only applicable to data aggregators (e.g. Crux)"""
 
     support_contact_email: Optional[str] = None
+    """Email address that consumers can use to request support. Shown on all of the provider's
+    listings."""
 
     def as_dict(self) -> dict:
         """Serializes the ProviderInfo into a dictionary suitable for use as a JSON request body."""
@@ -2419,8 +2528,10 @@ class ProviderInfo:
 @dataclass
 class RegionInfo:
     cloud: Optional[str] = None
+    """Cloud provider: aws, azure or gcp."""
 
     region: Optional[str] = None
+    """Cloud region, for example us-west-2."""
 
     def as_dict(self) -> dict:
         """Serializes the RegionInfo into a dictionary suitable for use as a JSON request body."""
@@ -2555,6 +2666,7 @@ class SearchListingsResponse:
 @dataclass
 class ShareInfo:
     name: str
+    """Name of the Delta Sharing share in the provider's Unity Catalog metastore."""
 
     type: ListingShareType
 
@@ -2814,6 +2926,7 @@ class UpdateInstallationResponse:
 @dataclass
 class UpdateListingResponse:
     listing: Optional[Listing] = None
+    """The updated listing."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateListingResponse into a dictionary suitable for use as a JSON request body."""
@@ -2838,6 +2951,7 @@ class UpdateListingResponse:
 @dataclass
 class UpdatePersonalizationRequestResponse:
     request: Optional[PersonalizationRequest] = None
+    """The updated personalization request."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdatePersonalizationRequestResponse into a dictionary suitable for use as a JSON request body."""
@@ -2862,12 +2976,13 @@ class UpdatePersonalizationRequestResponse:
 @dataclass
 class UpdateProviderAnalyticsDashboardResponse:
     id: str
-    """id & version should be the same as the request"""
+    """Marketplace-specific ID of the dashboard record, the same as in the request."""
 
     dashboard_id: str
-    """this is newly created Lakeview dashboard for the user"""
+    """ID of the AI/BI dashboard that now contains the updated template."""
 
     version: Optional[int] = None
+    """Version of the dashboard template that the dashboard now uses."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateProviderAnalyticsDashboardResponse into a dictionary suitable for use as a JSON request body."""
@@ -2900,6 +3015,7 @@ class UpdateProviderAnalyticsDashboardResponse:
 @dataclass
 class UpdateProviderResponse:
     provider: Optional[ProviderInfo] = None
+    """The updated provider profile."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateProviderResponse into a dictionary suitable for use as a JSON request body."""
@@ -3961,12 +4077,20 @@ class ProviderFilesAPI:
         *,
         display_name: Optional[str] = None,
     ) -> CreateFileResponse:
-        """Create a file. Currently, only provider icons and attached notebooks are supported.
+        """Creates a file and returns a short-lived URL for uploading its content with an HTTP PUT request. Only
+        provider icons (PROVIDER_ICON files on a PROVIDER parent) and sample notebooks (EMBEDDED_NOTEBOOK
+        files on a LISTING parent) are supported.
 
         :param file_parent: :class:`FileParent`
+          Provider profile or listing to attach the file to.
         :param marketplace_file_type: :class:`MarketplaceFileType`
+          Purpose of the file. PROVIDER_ICON requires a PROVIDER parent; EMBEDDED_NOTEBOOK requires a LISTING
+          parent.
         :param mime_type: str
+          MIME type of the file content: text/html for notebooks; image/png, image/jpeg or image/svg+xml for
+          icons.
         :param display_name: str (optional)
+          Name shown to consumers for the file, for example a notebook title. At most 255 characters.
 
         :returns: :class:`CreateFileResponse`
         """
@@ -3993,9 +4117,10 @@ class ProviderFilesAPI:
         return CreateFileResponse.from_dict(res)
 
     def delete(self, file_id: str):
-        """Delete a file
+        """Deletes a file. Fails if the file is still in use.
 
         :param file_id: str
+          ID of the file to delete.
 
 
         """
@@ -4011,9 +4136,10 @@ class ProviderFilesAPI:
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
 
     def get(self, file_id: str) -> GetFileResponse:
-        """Get a file
+        """Gets a file's metadata, including a short-lived download URL.
 
         :param file_id: str
+          ID of the file.
 
         :returns: :class:`GetFileResponse`
         """
@@ -4032,11 +4158,14 @@ class ProviderFilesAPI:
     def list(
         self, file_parent: FileParent, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[FileInfo]:
-        """List files attached to a parent entity.
+        """Lists the files attached to a provider profile or a listing.
 
         :param file_parent: :class:`FileParent`
+          Provider profile or listing whose files to list.
         :param page_size: int (optional)
+          Maximum number of results to return per page.
         :param page_token: str (optional)
+          Token from the next_page_token field of a previous response. Omit to get the first page.
 
         :returns: Iterator over :class:`FileInfo`
         """
@@ -4074,9 +4203,12 @@ class ProviderListingsAPI:
         self._api = api_client
 
     def create(self, listing: Listing) -> CreateListingResponse:
-        """Create a new listing
+        """Creates a listing under one of the caller's provider profiles. The listing name, provider ID and
+        visibility are required, and the caller must have access to any share that the listing references.
+        Returns the ID of the new listing.
 
         :param listing: :class:`Listing`
+          Listing to create.
 
         :returns: :class:`CreateListingResponse`
         """
@@ -4097,9 +4229,11 @@ class ProviderListingsAPI:
         return CreateListingResponse.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a listing
+        """Deletes a listing permanently. The underlying share is not deleted, and consumers who already have
+        access to the share keep that access until it is revoked in Delta Sharing.
 
         :param id: str
+          ID of the listing to delete.
 
 
         """
@@ -4115,7 +4249,7 @@ class ProviderListingsAPI:
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
 
     def get(self, id: str) -> GetListingResponse:
-        """Get a listing
+        """Gets a listing owned by one of the caller's provider profiles.
 
         :param id: str
 
@@ -4134,10 +4268,12 @@ class ProviderListingsAPI:
         return GetListingResponse.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Listing]:
-        """List listings owned by this provider
+        """Lists the listings owned by the provider profiles in the caller's account.
 
         :param page_size: int (optional)
+          Maximum number of results to return per page.
         :param page_token: str (optional)
+          Token from the next_page_token field of a previous response. Omit to get the first page.
 
         :returns: Iterator over :class:`Listing`
         """
@@ -4165,10 +4301,13 @@ class ProviderListingsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, listing: Listing) -> UpdateListingResponse:
-        """Update a listing
+        """Updates a listing. Send the full listing definition; the listing type cannot be changed after the
+        listing is created, and changing the share re-links the listing to the new share.
 
         :param id: str
+          ID of the listing to update.
         :param listing: :class:`Listing`
+          Full definition of the listing, including the fields that are not changing.
 
         :returns: :class:`UpdateListingResponse`
         """
@@ -4241,13 +4380,22 @@ class ProviderPersonalizationRequestsAPI:
         reason: Optional[str] = None,
         share: Optional[ShareInfo] = None,
     ) -> UpdatePersonalizationRequestResponse:
-        """Update personalization request. This method only permits updating the status of the request.
+        """Updates the status of a personalization request; other properties of the request cannot be changed.
+        Fulfilling a request grants the consumer access to the share, and denying a fulfilled request revokes
+        that access. The listing must be published.
 
         :param listing_id: str
+          ID of the listing that the request was made for.
         :param request_id: str
+          ID of the personalization request.
         :param status: :class:`PersonalizationRequestStatus`
+          New status of the request. Allowed transitions: NEW or REQUEST_PENDING to REQUEST_PENDING, FULFILLED
+          or DENIED; FULFILLED to DENIED; DENIED to REQUEST_PENDING.
         :param reason: str (optional)
+          Message for the consumer that explains the status change, at most 255 characters.
         :param share: :class:`ShareInfo` (optional)
+          Share to grant the consumer access to. Required when fulfilling a request for a listing with data
+          assets and not allowed with other statuses. Ignored for app and MCP server listings.
 
         :returns: :class:`UpdatePersonalizationRequestResponse`
         """
@@ -4284,8 +4432,9 @@ class ProviderProviderAnalyticsDashboardsAPI:
         self._api = api_client
 
     def create(self) -> ProviderAnalyticsDashboard:
-        """Create provider analytics dashboard. Returns Marketplace specific ``id``. Not to be confused with the
-        Lakeview dashboard id.
+        """Creates the Provider Analytics Dashboard in the caller's workspace from the latest template. Fails if
+        the dashboard already exists. Returns the Marketplace-specific ``id`` of the dashboard record, which
+        is distinct from the AI/BI dashboard ID.
 
 
         :returns: :class:`ProviderAnalyticsDashboard`
@@ -4305,7 +4454,8 @@ class ProviderProviderAnalyticsDashboardsAPI:
         return ProviderAnalyticsDashboard.from_dict(res)
 
     def get(self) -> ListProviderAnalyticsDashboardResponse:
-        """Get provider analytics dashboard.
+        """Gets the Provider Analytics Dashboard that was created for the caller's account. Returns an empty
+        response if the dashboard has not been created yet.
 
 
         :returns: :class:`ListProviderAnalyticsDashboardResponse`
@@ -4323,7 +4473,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         return ListProviderAnalyticsDashboardResponse.from_dict(res)
 
     def get_latest_version(self) -> GetLatestVersionProviderAnalyticsDashboardResponse:
-        """Get latest version of provider analytics dashboard.
+        """Gets the latest available version of the Provider Analytics Dashboard template.
 
 
         :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
@@ -4341,13 +4491,15 @@ class ProviderProviderAnalyticsDashboardsAPI:
         return GetLatestVersionProviderAnalyticsDashboardResponse.from_dict(res)
 
     def update(self, id: str, *, version: Optional[int] = None) -> UpdateProviderAnalyticsDashboardResponse:
-        """Update provider analytics dashboard.
+        """Updates the Provider Analytics Dashboard to a newer version of the template. The requested version
+        must be newer than the version that the dashboard currently uses.
 
         :param id: str
-          id is immutable property and can't be updated.
+          Marketplace-specific ID of the dashboard record, as returned when the dashboard was created or
+          retrieved.
         :param version: int (optional)
-          this is the version of the dashboard template we want to update our user to current expectation is
-          that it should be equal to latest version of the dashboard template
+          Version of the dashboard template to update to. Must be newer than the version that the dashboard
+          currently uses; use the version returned by getLatestVersionProviderAnalyticsDashboard.
 
         :returns: :class:`UpdateProviderAnalyticsDashboardResponse`
         """
@@ -4375,9 +4527,10 @@ class ProviderProvidersAPI:
         self._api = api_client
 
     def create(self, provider: ProviderInfo) -> CreateProviderResponse:
-        """Create a provider
+        """Creates a provider profile in the caller's account. Returns the ID of the new profile.
 
         :param provider: :class:`ProviderInfo`
+          Provider profile to create.
 
         :returns: :class:`CreateProviderResponse`
         """
@@ -4398,9 +4551,10 @@ class ProviderProvidersAPI:
         return CreateProviderResponse.from_dict(res)
 
     def delete(self, id: str):
-        """Delete provider
+        """Deletes a provider profile and all of the listings that it owns.
 
         :param id: str
+          ID of the provider profile to delete.
 
 
         """
@@ -4416,7 +4570,7 @@ class ProviderProvidersAPI:
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
 
     def get(self, id: str) -> GetProviderResponse:
-        """Get provider profile
+        """Gets a provider profile by ID.
 
         :param id: str
 
@@ -4435,10 +4589,12 @@ class ProviderProvidersAPI:
         return GetProviderResponse.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ProviderInfo]:
-        """List provider profiles for account.
+        """Lists the provider profiles in the caller's account.
 
         :param page_size: int (optional)
+          Maximum number of results to return per page.
         :param page_token: str (optional)
+          Token from the next_page_token field of a previous response. Omit to get the first page.
 
         :returns: Iterator over :class:`ProviderInfo`
         """
@@ -4466,10 +4622,12 @@ class ProviderProvidersAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, provider: ProviderInfo) -> UpdateProviderResponse:
-        """Update provider profile
+        """Updates a provider profile. Send the full profile definition.
 
         :param id: str
+          ID of the provider profile to update.
         :param provider: :class:`ProviderInfo`
+          Full definition of the provider profile, including the fields that are not changing.
 
         :returns: :class:`UpdateProviderResponse`
         """

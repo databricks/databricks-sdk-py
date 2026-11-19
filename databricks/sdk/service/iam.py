@@ -29,15 +29,16 @@ _LOG = logging.getLogger("databricks.sdk")
 @dataclass
 class AccessControlRequest:
     group_name: Optional[str] = None
-    """name of the group"""
+    """Display name of the group."""
 
     permission_level: Optional[PermissionLevel] = None
+    """Permission level to grant to the principal."""
 
     service_principal_name: Optional[str] = None
-    """application ID of a service principal"""
+    """Application ID of the service principal."""
 
     user_name: Optional[str] = None
-    """name of the user"""
+    """Username of the user, which is the user's email address."""
 
     def as_dict(self) -> dict:
         """Serializes the AccessControlRequest into a dictionary suitable for use as a JSON request body."""
@@ -79,19 +80,19 @@ class AccessControlRequest:
 @dataclass
 class AccessControlResponse:
     all_permissions: Optional[List[Permission]] = None
-    """All permissions."""
+    """Permission levels the principal holds on the object, both granted directly and inherited."""
 
     display_name: Optional[str] = None
     """Display name of the user or service principal."""
 
     group_name: Optional[str] = None
-    """name of the group"""
+    """Display name of the group."""
 
     service_principal_name: Optional[str] = None
-    """Name of the service principal."""
+    """Application ID of the service principal."""
 
     user_name: Optional[str] = None
-    """name of the user"""
+    """Username of the user, which is the user's email address."""
 
     def as_dict(self) -> dict:
         """Serializes the AccessControlResponse into a dictionary suitable for use as a JSON request body."""
@@ -616,7 +617,7 @@ class GetPasswordPermissionLevelsResponse:
 @dataclass
 class GetPermissionLevelsResponse:
     permission_levels: Optional[List[PermissionsDescription]] = None
-    """Specific permission levels"""
+    """Permission levels that can be granted on objects of the requested type."""
 
     def as_dict(self) -> dict:
         """Serializes the GetPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1212,11 +1213,20 @@ class Name:
 
 @dataclass
 class ObjectPermissions:
+    """The permissions set on an object, with one entry per principal that holds a permission on it."""
+
     access_control_list: Optional[List[AccessControlResponse]] = None
+    """Permissions on the object, with one entry per principal. Each entry lists the principal's direct
+    and inherited permission levels."""
 
     object_id: Optional[str] = None
+    """Path that identifies the object in the access control list, built from the object type and the
+    object id."""
 
     object_type: Optional[str] = None
+    """Type of the object, as recorded in the access control list. It can differ from the
+    ``request_object_type`` path segment, for example a request for ``clusters`` returns
+    ``cluster``."""
 
     def as_dict(self) -> dict:
         """Serializes the ObjectPermissions into a dictionary suitable for use as a JSON request body."""
@@ -1535,10 +1545,15 @@ class PatchSchema(Enum):
 @dataclass
 class Permission:
     inherited: Optional[bool] = None
+    """Whether the permission is inherited from a parent object or the root object instead of being
+    granted directly on the object."""
 
     inherited_from_object: Optional[List[str]] = None
+    """Paths of the objects the permission is inherited from. It is only set when ``inherited`` is
+    true."""
 
     permission_level: Optional[PermissionLevel] = None
+    """Permission level the principal holds on the object."""
 
     def as_dict(self) -> dict:
         """Serializes the Permission into a dictionary suitable for use as a JSON request body."""
@@ -1704,8 +1719,10 @@ class PermissionOutput:
 @dataclass
 class PermissionsDescription:
     description: Optional[str] = None
+    """Human-readable description of the permission level."""
 
     permission_level: Optional[PermissionLevel] = None
+    """Permission level that can be granted on the object."""
 
     def as_dict(self) -> dict:
         """Serializes the PermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -3905,7 +3922,9 @@ class PermissionsAPI:
           queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
-          The id of the request object.
+          The id of the object. It is the id that the object's own API uses, for example the cluster id for
+          clusters, the job id for jobs, and the workspace object id for notebooks and directories. For the
+          ``authorization`` object type, use ``tokens`` to manage token permissions.
 
         :returns: :class:`ObjectPermissions`
         """
@@ -3931,6 +3950,9 @@ class PermissionsAPI:
           queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
+          The id of the object. It is the id that the object's own API uses, for example the cluster id for
+          clusters, the job id for jobs, and the workspace object id for notebooks and directories. For the
+          ``authorization`` object type, use ``tokens`` to manage token permissions.
 
         :returns: :class:`GetPermissionLevelsResponse`
         """
@@ -3955,9 +3977,10 @@ class PermissionsAPI:
         *,
         access_control_list: Optional[List[AccessControlRequest]] = None,
     ) -> ObjectPermissions:
-        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
-        permissions if none are specified. Objects can inherit permissions from their parent objects or root
-        object.
+        """Sets permissions on an object, replacing all direct permissions with the ones in the request.
+        Principals that are not in the request lose their direct permissions on the object, and all direct
+        permissions are deleted if none are specified. Objects can inherit permissions from their parent
+        objects or root object.
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
@@ -3966,8 +3989,13 @@ class PermissionsAPI:
           queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
-          The id of the request object.
+          The id of the object. It is the id that the object's own API uses, for example the cluster id for
+          clusters, the job id for jobs, and the workspace object id for notebooks and directories. For the
+          ``authorization`` object type, use ``tokens`` to manage token permissions.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+          Permissions to apply to the object, with one entry per principal. Each entry names exactly one
+          principal through ``user_name``, ``group_name`` or ``service_principal_name`` and the
+          ``permission_level`` for that principal.
 
         :returns: :class:`ObjectPermissions`
         """
@@ -3996,8 +4024,9 @@ class PermissionsAPI:
         *,
         access_control_list: Optional[List[AccessControlRequest]] = None,
     ) -> ObjectPermissions:
-        """Updates the permissions on an object. Objects can inherit permissions from their parent objects or
-        root object.
+        """Updates the permissions on an object by adding or changing the permissions of the principals in the
+        request. Principals that are not in the request keep their existing permissions. Objects can inherit
+        permissions from their parent objects or root object.
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
@@ -4006,8 +4035,13 @@ class PermissionsAPI:
           queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
-          The id of the request object.
+          The id of the object. It is the id that the object's own API uses, for example the cluster id for
+          clusters, the job id for jobs, and the workspace object id for notebooks and directories. For the
+          ``authorization`` object type, use ``tokens`` to manage token permissions.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+          Permissions to apply to the object, with one entry per principal. Each entry names exactly one
+          principal through ``user_name``, ``group_name`` or ``service_principal_name`` and the
+          ``permission_level`` for that principal.
 
         :returns: :class:`ObjectPermissions`
         """

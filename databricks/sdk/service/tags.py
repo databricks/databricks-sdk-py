@@ -148,19 +148,29 @@ class TagAssignment:
 
 @dataclass
 class TagPolicy:
+    """A tag policy makes a tag key governed and defines the values that can be assigned to it.
+    Governed tags are enforced across all workspaces in the account, and only users with the ASSIGN
+    permission on the governed tag can assign it. See
+    https://docs.databricks.com/aws/en/admin/governed-tags/."""
+
     tag_key: str
+    """The tag key that this policy governs. Tag keys are case-sensitive."""
 
     create_time: Optional[str] = None
     """Timestamp when the tag policy was created"""
 
     description: Optional[str] = None
+    """A description of the governed tag, such as its purpose or the meaning of its values."""
 
     id: Optional[str] = None
+    """The unique identifier of the tag policy, generated when the policy is created."""
 
     update_time: Optional[str] = None
     """Timestamp when the tag policy was last updated"""
 
     values: Optional[List[Value]] = None
+    """The allowed values of the governed tag. Only these values can be assigned to the tag key, and
+    each value must be unique. A policy without values defines a key-only governed tag."""
 
     def as_dict(self) -> dict:
         """Serializes the TagPolicy into a dictionary suitable for use as a JSON request body."""
@@ -211,7 +221,10 @@ class TagPolicy:
 
 @dataclass
 class Value:
+    """An allowed value of a governed tag."""
+
     name: str
+    """The value that can be assigned to the tag key. Values are case-sensitive."""
 
     def as_dict(self) -> dict:
         """Serializes the Value into a dictionary suitable for use as a JSON request body."""
@@ -275,6 +288,7 @@ class TagPoliciesAPI:
         <https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy>`__.
 
         :param tag_key: str
+          The key of the governed tag whose policy to delete.
 
 
         """
@@ -297,6 +311,7 @@ class TagPoliciesAPI:
         <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__.
 
         :param tag_key: str
+          The key of the governed tag whose policy to get.
 
         :returns: :class:`TagPolicy`
         """
@@ -361,17 +376,11 @@ class TagPoliciesAPI:
         <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__.
 
         :param tag_key: str
+          The tag key that this policy governs. Tag keys are case-sensitive.
         :param tag_policy: :class:`TagPolicy`
         :param update_mask: str
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          The comma-separated list of tag policy fields to update. When the mask includes ``values``, the
+          values in the request replace all existing allowed values.
 
         :returns: :class:`TagPolicy`
         """

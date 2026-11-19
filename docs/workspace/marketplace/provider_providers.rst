@@ -8,25 +8,27 @@
 
     .. py:method:: create(provider: ProviderInfo) -> CreateProviderResponse
 
-        Create a provider
+        Creates a provider profile in the caller's account. Returns the ID of the new profile.
 
         :param provider: :class:`ProviderInfo`
+          Provider profile to create.
 
         :returns: :class:`CreateProviderResponse`
         
 
     .. py:method:: delete(id: str)
 
-        Delete provider
+        Deletes a provider profile and all of the listings that it owns.
 
         :param id: str
+          ID of the provider profile to delete.
 
 
         
 
     .. py:method:: get(id: str) -> GetProviderResponse
 
-        Get provider profile
+        Gets a provider profile by ID.
 
         :param id: str
 
@@ -35,20 +37,24 @@
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ProviderInfo]
 
-        List provider profiles for account.
+        Lists the provider profiles in the caller's account.
 
         :param page_size: int (optional)
+          Maximum number of results to return per page.
         :param page_token: str (optional)
+          Token from the next_page_token field of a previous response. Omit to get the first page.
 
         :returns: Iterator over :class:`ProviderInfo`
         
 
     .. py:method:: update(id: str, provider: ProviderInfo) -> UpdateProviderResponse
 
-        Update provider profile
+        Updates a provider profile. Send the full profile definition.
 
         :param id: str
+          ID of the provider profile to update.
         :param provider: :class:`ProviderInfo`
+          Full definition of the provider profile, including the fields that are not changing.
 
         :returns: :class:`UpdateProviderResponse`
         

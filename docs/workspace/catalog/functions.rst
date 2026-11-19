@@ -40,9 +40,9 @@
 
         :param name: str
           The fully-qualified name of the function (of the form
-          **catalog_name**.**schema_name**.**function__name**) .
+          **catalog_name**.**schema_name**.**function_name**).
         :param force: bool (optional)
-          Force deletion even if the function is notempty.
+          Force deletion even if the function is not empty.
 
 
         
@@ -60,7 +60,7 @@
 
         :param name: str
           The fully-qualified name of the function (of the form
-          **catalog_name**.**schema_name**.**function__name**).
+          **catalog_name**.**schema_name**.**function_name**).
         :param include_browse: bool (optional)
           Whether to include functions in the response for which the principal can only access selective
           metadata for
@@ -118,7 +118,7 @@
 
         :param name: str
           The fully-qualified name of the function (of the form
-          **catalog_name**.**schema_name**.**function__name**).
+          **catalog_name**.**schema_name**.**function_name**).
         :param owner: str (optional)
           Username of current owner of the function.
 
