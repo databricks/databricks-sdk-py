@@ -8,8 +8,9 @@
 
     .. py:method:: create() -> ProviderAnalyticsDashboard
 
-        Create provider analytics dashboard. Returns Marketplace specific ``id``. Not to be confused with the
-        Lakeview dashboard id.
+        Creates the Provider Analytics Dashboard in the caller's workspace from the latest template. Fails if
+        the dashboard already exists. Returns the Marketplace-specific ``id`` of the dashboard record, which
+        is distinct from the AI/BI dashboard ID.
 
 
         :returns: :class:`ProviderAnalyticsDashboard`
@@ -17,7 +18,8 @@
 
     .. py:method:: get() -> ListProviderAnalyticsDashboardResponse
 
-        Get provider analytics dashboard.
+        Gets the Provider Analytics Dashboard that was created for the caller's account. Returns an empty
+        response if the dashboard has not been created yet.
 
 
         :returns: :class:`ListProviderAnalyticsDashboardResponse`
@@ -25,7 +27,7 @@
 
     .. py:method:: get_latest_version() -> GetLatestVersionProviderAnalyticsDashboardResponse
 
-        Get latest version of provider analytics dashboard.
+        Gets the latest available version of the Provider Analytics Dashboard template.
 
 
         :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
@@ -33,13 +35,15 @@
 
     .. py:method:: update(id: str [, version: Optional[int]]) -> UpdateProviderAnalyticsDashboardResponse
 
-        Update provider analytics dashboard.
+        Updates the Provider Analytics Dashboard to a newer version of the template. The requested version
+        must be newer than the version that the dashboard currently uses.
 
         :param id: str
-          id is immutable property and can't be updated.
+          Marketplace-specific ID of the dashboard record, as returned when the dashboard was created or
+          retrieved.
         :param version: int (optional)
-          this is the version of the dashboard template we want to update our user to current expectation is
-          that it should be equal to latest version of the dashboard template
+          Version of the dashboard template to update to. Must be newer than the version that the dashboard
+          currently uses; use the version returned by getLatestVersionProviderAnalyticsDashboard.
 
         :returns: :class:`UpdateProviderAnalyticsDashboardResponse`
         

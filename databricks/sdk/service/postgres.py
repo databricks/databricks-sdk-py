@@ -3758,6 +3758,7 @@ class Role:
     """Role represents a Postgres role within a Branch."""
 
     create_time: Optional[Timestamp] = None
+    """A timestamp indicating when the role was created."""
 
     name: Optional[str] = None
     """Output only. The full resource path of the role. Format:
@@ -3781,6 +3782,7 @@ class Role:
     attributes."""
 
     update_time: Optional[Timestamp] = None
+    """A timestamp indicating when the role was last updated."""
 
     def as_dict(self) -> dict:
         """Serializes the Role into a dictionary suitable for use as a JSON request body."""
@@ -3842,10 +3844,13 @@ class RoleAttributes:
     underscores between words."""
 
     bypassrls: Optional[bool] = None
+    """Whether the role bypasses every row-level security policy (the Postgres BYPASSRLS attribute)."""
 
     createdb: Optional[bool] = None
+    """Whether the role can create databases (the Postgres CREATEDB attribute)."""
 
     createrole: Optional[bool] = None
+    """Whether the role can create, alter and drop other roles (the Postgres CREATEROLE attribute)."""
 
     def as_dict(self) -> dict:
         """Serializes the RoleAttributes into a dictionary suitable for use as a JSON request body."""
@@ -3921,7 +3926,7 @@ class RoleOperationMetadata:
 @dataclass
 class RoleRoleSpec:
     attributes: Optional[RoleAttributes] = None
-    """The desired API-exposed Postgres role attribute to associate with the role. Optional."""
+    """The Postgres role attributes to grant to the role."""
 
     auth_method: Optional[RoleAuthMethod] = None
     """Controls how the Postgres role authenticates when a client opens a database connection.
@@ -3947,7 +3952,9 @@ class RoleRoleSpec:
     This value cannot be changed after creation."""
 
     identity_type: Optional[RoleIdentityType] = None
-    """The type of role. When specifying a managed-identity, the chosen postgres_role must be a valid:
+    """The type of Databricks identity that backs the role. Leave unset to create a native Postgres
+    role that is not associated with a Databricks identity. When specifying a managed-identity, the
+    chosen postgres_role must be a valid:
     
     - application ID for SERVICE_PRINCIPAL
     - user email for USER
@@ -4022,15 +4029,16 @@ class RoleRoleSpec:
 @dataclass
 class RoleRoleStatus:
     attributes: Optional[RoleAttributes] = None
-    """The PG role attributes associated with the role."""
+    """The Postgres role attributes currently granted to the role."""
 
     auth_method: Optional[RoleAuthMethod] = None
+    """How the role authenticates when it connects to Postgres."""
 
     identity_type: Optional[RoleIdentityType] = None
-    """The type of the role."""
+    """The type of Databricks identity that backs the role, if any."""
 
     membership_roles: Optional[List[RoleMembershipRole]] = None
-    """An enum value for a standard role that this role is a member of."""
+    """The standard roles that the role is currently a member of."""
 
     postgres_role: Optional[str] = None
     """The name of the Postgres role."""
@@ -5493,8 +5501,8 @@ class PostgresAPI:
           The ID used to identify and manage the Role resource through the API. The Postgres role name is
           specified in ``spec.postgres_role``.
 
-          This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and
-          hyphens, as defined by RFC 1123.
+          This value should be 3-63 characters, start with a lowercase letter, end with a lowercase letter or
+          digit, and contain only lowercase letters, digits, and hyphens.
 
           If role_id is not specified in the request, it is generated automatically.
 
@@ -5801,7 +5809,8 @@ class PostgresAPI:
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param reassign_owned_to: str (optional)
           Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified
-          in this parameter.
+          in this parameter. The role must already exist. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
 
           NOTE: setting this requires spinning up a compute to succeed, since it involves running SQL queries.
 

@@ -61,8 +61,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    Scheduling priority class for a workload — its priority and preemptability when the scheduler ranks pending work.
 
-   .. py:attribute:: BEST_EFFORT
-      :value: "BEST_EFFORT"
+   .. py:attribute:: HIGH
+      :value: "HIGH"
 
    .. py:attribute:: NORMAL
       :value: "NORMAL"

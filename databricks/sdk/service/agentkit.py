@@ -440,8 +440,9 @@ class ManagedMemoryEntry:
     """Customer-provided identifier for the actor whose memory this entry represents."""
 
     path: str
-    """Absolute, case-sensitive path identifying the entry within its actor and optional session. Paths
-    must begin with ``/`` and must not contain empty, ``.`` or ``..`` segments."""
+    """Absolute, case-sensitive path identifying the entry within its actor and, until the deprecated
+    ``session_id`` is ignored, its optional session. Paths must begin with ``/`` and must not
+    contain empty, ``.`` or ``..`` segments."""
 
     content: Optional[str] = None
     """Optional free-form memory content."""
@@ -458,8 +459,9 @@ class ManagedMemoryEntry:
     updates; assigned by the service on creation."""
 
     session_id: Optional[str] = None
-    """Optional identifier for the session associated with this memory entry. When omitted, the entry
-    applies across the actor's sessions."""
+    """Deprecated: memory entries will be identified by ``(actor_id, path)``, and the service will
+    ignore this field on writes and omit it from responses. Until then, an omitted value means the
+    entry applies across the actor's sessions."""
 
     source_type: Optional[ManagedMemoryEntrySourceType] = None
     """Which writer created this entry. Caller sets this on Create; immutable after creation. The
@@ -1241,7 +1243,8 @@ class AgentKitAPI:
         generates one when it is omitted. Returns ``ALREADY_EXISTS`` when an entry with the same actor,
         session, and path already exists. Omitted ``session_id`` is its own uniqueness key: two
         omitted-session entries with the same actor and path conflict, but an omitted-session entry does not
-        conflict with a session-scoped entry at the same actor and path.
+        conflict with a session-scoped entry at the same actor and path. ``session_id`` is deprecated: once it
+        is ignored, the uniqueness key becomes actor and path.
 
         :param parent: str
           Memory store that will contain the entry, in the form ``memory-stores/{managed_memory_store_id}``.
@@ -1753,8 +1756,8 @@ class AgentKitAPI:
         view: Optional[ManagedMemoryEntryView] = None,
     ) -> Iterator[ManagedMemoryEntry]:
         """Lists memory entries for one actor. An exact ``path`` filters entries across sessions, ignoring
-        session metadata. Otherwise, ``session_id`` and ``path_prefix`` restrict the actor partition. ``view``
-        controls whether each returned entry includes memory content.
+        session metadata. Otherwise, ``path_prefix`` and the deprecated ``session_id`` restrict the actor
+        partition. ``view`` controls whether each returned entry includes memory content.
 
         :param parent: str
           Memory store whose entries are listed, in the form ``memory-stores/{managed_memory_store_id}``.
@@ -1768,8 +1771,9 @@ class AgentKitAPI:
         :param path_prefix: str (optional)
           Optional path prefix used to restrict entries within the actor partition.
         :param session_id: str (optional)
-          Optional session identifier. When set, only entries with this exact ``session_id`` are returned.
-          Omitted-session (cross-session) entries are not included. Ignored when path is set.
+          Deprecated: the service will ignore this filter. Until then, when set, only entries with this exact
+          ``session_id`` are returned, and omitted-session (cross-session) entries are not included. Ignored
+          when path is set.
         :param view: :class:`ManagedMemoryEntryView` (optional)
           Controls whether each returned entry includes memory content. Defaults to ``FULL``.
 
@@ -2169,8 +2173,8 @@ class AgentKitAPI:
           Optional absolute, case-sensitive path prefix used to restrict searched entries within the actor
           partition. The prefix must begin with ``/`` and must not contain empty, ``.`` or ``..`` segments.
         :param session_id: str (optional)
-          Optional session identifier. When set, only entries with this exact ``session_id`` are searched.
-          Omitted-session (cross-session) entries are not included.
+          Deprecated: the service will ignore this filter. Until then, when set, only entries with this exact
+          ``session_id`` are searched, and omitted-session (cross-session) entries are not included.
         :param view: :class:`ManagedMemoryEntryView` (optional)
           Controls whether each returned entry includes memory content. Search scores are always returned.
           Defaults to ``FULL``.

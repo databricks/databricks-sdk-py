@@ -332,6 +332,52 @@ class SoftwareArtifactsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def delete_software_artifact(self, name: str, *, force: Optional[bool] = None):
+        """Deletes a software artifact. Fails if the artifact still has versions unless ``force`` is set.
+
+        :param name: str
+          Resource name of the software artifact, of the form
+          ``software-artifacts/{catalog}.{schema}.{artifact}``.
+        :param force: bool (optional)
+          Force deletion even if the software artifact has versions, deleting them with it. Default is false.
+
+
+        """
+
+        query = {}
+        if force is not None:
+            query["force"] = force
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", query=query, headers=headers)
+
+    def delete_software_artifact_version(self, name: str):
+        """Deletes a software artifact version.
+
+        :param name: str
+          Resource name of the version, of the form
+          ``software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}``, where ``{version}`` is the
+          version's content digest, for example ``sha256:<hex>``.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/{name}", headers=headers)
+
     def get_software_artifact(self, name: str) -> SoftwareArtifact:
         """Gets a software artifact by its resource name. Returns ``NOT_FOUND`` if the artifact does not exist.
 

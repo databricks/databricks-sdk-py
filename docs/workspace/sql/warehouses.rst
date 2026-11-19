@@ -48,7 +48,7 @@
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
-          Channel Details
+          Channel that determines which Databricks SQL version the warehouse runs.
         :param cluster_size: str (optional)
           Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
@@ -67,7 +67,7 @@
           - 4X-Large
           - 5X-Large
         :param creator_name: str (optional)
-          warehouse creator name
+          Name of the user who created the warehouse. Set by the server and ignored in requests.
         :param customer_version_label: str (optional)
           Compute version label for a REALTIME warehouse. This field is output only.
         :param enable_photon: bool (optional)
@@ -103,12 +103,12 @@
 
           Defaults to 1
         :param name: str (optional)
-          Logical name for the cluster.
+          Logical name for the warehouse.
 
           Supported values:
 
           - Must be unique within an org.
-          - Must be less than 100 characters.
+          - Must be 1 to 100 characters.
         :param reyden_cluster_size_multiplier: float (optional)
           Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to the
           nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
@@ -120,9 +120,12 @@
           - Values above the configured maximum are capped at that maximum.
           - When absent, the warehouse is treated as having a multiplier of 1.0.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
-          Configurations whether the endpoint should use spot instances.
+          Configures whether the warehouse should use spot instances. COST_OPTIMIZED uses spot instances where
+          the cloud provider supports them, and RELIABILITY_OPTIMIZED uses on-demand instances only.
         :param statement_timeout: int (optional)
-          Warehouse statement timeout in seconds.
+          Maximum time in seconds that a statement can run on this warehouse before it is cancelled. Set to 0
+          to remove the warehouse-level timeout. Changing the value of a running warehouse restarts it. See
+          https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -230,7 +233,7 @@
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
-          Channel Details
+          Channel that determines which Databricks SQL version the warehouse runs.
         :param cluster_size: str (optional)
           Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
@@ -249,7 +252,7 @@
           - 4X-Large
           - 5X-Large
         :param creator_name: str (optional)
-          warehouse creator name
+          Name of the user who created the warehouse. Set by the server and ignored in requests.
         :param customer_version_label: str (optional)
           Compute version label for a REALTIME warehouse. This field is output only.
         :param enable_photon: bool (optional)
@@ -285,12 +288,12 @@
 
           Defaults to 1
         :param name: str (optional)
-          Logical name for the cluster.
+          Logical name for the warehouse.
 
           Supported values:
 
           - Must be unique within an org.
-          - Must be less than 100 characters.
+          - Must be 1 to 100 characters.
         :param reyden_cluster_size_multiplier: float (optional)
           Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to the
           nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
@@ -302,9 +305,12 @@
           - Values above the configured maximum are capped at that maximum.
           - When absent, the warehouse is treated as having a multiplier of 1.0.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
-          Configurations whether the endpoint should use spot instances.
+          Configures whether the warehouse should use spot instances. COST_OPTIMIZED uses spot instances where
+          the cloud provider supports them, and RELIABILITY_OPTIMIZED uses on-demand instances only.
         :param statement_timeout: int (optional)
-          Warehouse statement timeout in seconds.
+          Maximum time in seconds that a statement can run on this warehouse before it is cancelled. Set to 0
+          to remove the warehouse-level timeout. Changing the value of a running warehouse restarts it. See
+          https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -475,26 +481,30 @@
         :param config_param: :class:`RepeatedEndpointConfPairs` (optional)
           Deprecated: Use sql_configuration_parameters
         :param data_access_config: List[:class:`EndpointConfPair`] (optional)
-          Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
+          Spark configuration applied to every warehouse in the workspace, for example to connect to an
+          external Hive metastore or to configure access to cloud storage. Only allowlisted keys are accepted,
+          and the JSON-serialized size must be at most 512 KB. See
+          https://docs.databricks.com/aws/en/admin/sql/data-access-configuration.
         :param enable_serverless_compute: bool (optional)
           Deprecated: only setting this to true is allowed.
         :param enabled_warehouse_types: List[:class:`WarehouseTypePair`] (optional)
           List of Warehouse Types allowed in this workspace (limits allowed value of the type field in
           CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be
           specified in SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be
-          converted to another type. Used by frontend to save specific type availability in the warehouse
-          create and edit form UI.
+          converted to another type.
         :param global_param: :class:`RepeatedEndpointConfPairs` (optional)
           Deprecated: Use sql_configuration_parameters
         :param google_service_account: str (optional)
-          GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
+          GCP only: Google service account that the warehouse clusters use to access Google Cloud Storage.
         :param instance_profile_arn: str (optional)
           AWS Only: The instance profile used to pass an IAM role to the SQL warehouses. This configuration is
           also applied to the workspace's serverless compute for notebooks and jobs.
         :param security_policy: :class:`SetWorkspaceWarehouseConfigRequestSecurityPolicy` (optional)
           Security policy for warehouses
         :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)
-          SQL configuration parameters
+          SQL configuration parameters applied to every warehouse in the workspace. Only parameters that can
+          be set at the workspace scope are accepted. See
+          https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-parameters.
 
 
         

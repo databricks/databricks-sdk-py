@@ -8,11 +8,11 @@
 
     .. py:method:: get_public_workspace_setting(name: str) -> Setting
 
-        Get a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for list
-        of setting available via public APIs.
+        Get a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for the
+        list of settings available via public APIs.
 
         :param name: str
-          Name of the setting
+          Name of the setting to retrieve.
 
         :returns: :class:`Setting`
         
@@ -39,15 +39,15 @@
 
     .. py:method:: patch_public_workspace_setting(name: str, setting: Setting) -> Setting
 
-        Patch a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for
-        list of setting available via public APIs at workspace level. To determine the correct field to
+        Patch a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for the
+        list of settings available via public APIs at workspace level. To determine the correct field to
         include in a patch request, refer to the type field of the setting returned in the
         :method:settingsv2/listworkspacesettingsmetadata response.
 
         Note: Page refresh is required for changes to take effect in UI.
 
         :param name: str
-          Name of the setting
+          Name of the setting to update.
         :param setting: :class:`Setting`
 
         :returns: :class:`Setting`

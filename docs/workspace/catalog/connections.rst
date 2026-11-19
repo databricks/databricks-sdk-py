@@ -48,20 +48,23 @@
         :param name: str
           Name of the connection.
         :param connection_type: :class:`ConnectionType`
-          The type of connection.
+          The type of external data source or service that the connection reaches. The connection type
+          determines which keys are required in options and cannot be changed after creation.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
         :param environment_settings: :class:`EnvironmentSettings` (optional)
-          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
+          Environment settings for the connection, such as the Java libraries that it needs and the
+          environment version.
         :param parent: str (optional)
           Parent schema for schema-level connections, in format "schemas/{catalog}.{schema}". Absent for
           metastore-level (L1) connections.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
-          If the connection is read only.
+          Whether the connection is read only. All connections are currently read only, so a value set on
+          create or update is ignored.
         :param secrets: Dict[str,str] (optional)
           A map of option names to UC Secret references. Keys are connection option names (same as in
           OptionsKVPairs) and values are UC Secret fully qualified names.
@@ -118,7 +121,7 @@
             # cleanup
             w.connections.delete(name=conn_create.name)
 
-        Gets a connection from it's name.
+        Gets a connection from its name.
 
         :param name: str
           Name of the connection.
@@ -203,18 +206,21 @@
             # cleanup
             w.connections.delete(name=conn_create.name)
 
-        Updates the connection that matches the supplied name.
+        Updates the connection that matches the supplied name. When options are provided, they replace the
+        existing options of the connection, so include every key that the connection type requires.
 
         :param name: str
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
         :param environment_settings: :class:`EnvironmentSettings` (optional)
-          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
+          Environment settings for the connection, such as the Java libraries that it needs and the
+          environment version.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
-          Username of current owner of the connection.
+          Username of the current owner of the connection. The creator becomes the owner at creation, and
+          ownership can be transferred on update.
         :param secrets: Dict[str,str] (optional)
           A map of option names to UC Secret references. Keys are connection option names (same as in
           OptionsKVPairs) and values are UC Secret fully qualified names.

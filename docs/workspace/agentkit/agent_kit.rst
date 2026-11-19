@@ -38,7 +38,8 @@
         generates one when it is omitted. Returns ``ALREADY_EXISTS`` when an entry with the same actor,
         session, and path already exists. Omitted ``session_id`` is its own uniqueness key: two
         omitted-session entries with the same actor and path conflict, but an omitted-session entry does not
-        conflict with a session-scoped entry at the same actor and path.
+        conflict with a session-scoped entry at the same actor and path. ``session_id`` is deprecated: once it
+        is ignored, the uniqueness key becomes actor and path.
 
         :param parent: str
           Memory store that will contain the entry, in the form ``memory-stores/{managed_memory_store_id}``.
@@ -284,8 +285,8 @@
     .. py:method:: list_memories(parent: str, actor_id: str [, page_size: Optional[int], page_token: Optional[str], path_prefix: Optional[str], session_id: Optional[str], view: Optional[ManagedMemoryEntryView]]) -> Iterator[ManagedMemoryEntry]
 
         Lists memory entries for one actor. An exact ``path`` filters entries across sessions, ignoring
-        session metadata. Otherwise, ``session_id`` and ``path_prefix`` restrict the actor partition. ``view``
-        controls whether each returned entry includes memory content.
+        session metadata. Otherwise, ``path_prefix`` and the deprecated ``session_id`` restrict the actor
+        partition. ``view`` controls whether each returned entry includes memory content.
 
         :param parent: str
           Memory store whose entries are listed, in the form ``memory-stores/{managed_memory_store_id}``.
@@ -299,8 +300,9 @@
         :param path_prefix: str (optional)
           Optional path prefix used to restrict entries within the actor partition.
         :param session_id: str (optional)
-          Optional session identifier. When set, only entries with this exact ``session_id`` are returned.
-          Omitted-session (cross-session) entries are not included. Ignored when path is set.
+          Deprecated: the service will ignore this filter. Until then, when set, only entries with this exact
+          ``session_id`` are returned, and omitted-session (cross-session) entries are not included. Ignored
+          when path is set.
         :param view: :class:`ManagedMemoryEntryView` (optional)
           Controls whether each returned entry includes memory content. Defaults to ``FULL``.
 
@@ -460,8 +462,8 @@
           Optional absolute, case-sensitive path prefix used to restrict searched entries within the actor
           partition. The prefix must begin with ``/`` and must not contain empty, ``.`` or ``..`` segments.
         :param session_id: str (optional)
-          Optional session identifier. When set, only entries with this exact ``session_id`` are searched.
-          Omitted-session (cross-session) entries are not included.
+          Deprecated: the service will ignore this filter. Until then, when set, only entries with this exact
+          ``session_id`` are searched, and omitted-session (cross-session) entries are not included.
         :param view: :class:`ManagedMemoryEntryView` (optional)
           Controls whether each returned entry includes memory content. Search scores are always returned.
           Defaults to ``FULL``.

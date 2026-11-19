@@ -109,12 +109,15 @@
 
     .. py:method:: delete_monitor(object_type: str, object_id: str)
 
-        Delete a data quality monitor on Unity Catalog object.
+        Delete a data quality monitor on a Unity Catalog object.
 
         For the ``table`` ``object_type``, the caller must have either of the following sets of permissions:
-        **MANAGE** and **USE_CATALOG** on the table's parent catalog. **USE_CATALOG** on the table's parent
-        catalog, and **MANAGE** and **USE_SCHEMA** on the table's parent schema. **USE_CATALOG** on the
-        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and **MANAGE** on the table.
+
+        1. **MANAGE** and **USE_CATALOG** on the table's parent catalog.
+        2. **USE_CATALOG** on the table's parent catalog, and **MANAGE** and **USE_SCHEMA** on the table's
+           parent schema.
+        3. **USE_CATALOG** on the table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+           **MANAGE** on the table.
 
         Note that the metric tables and dashboard will not be deleted as part of this call; those assets must
         be manually cleaned up (if desired).
@@ -264,7 +267,9 @@
         (Unimplemented) List data quality monitors.
 
         :param page_size: int (optional)
+          The maximum number of monitors to return in one page.
         :param page_token: str (optional)
+          Pagination token from a previous response, used to fetch the next page.
 
         :returns: Iterator over :class:`Monitor`
         
@@ -313,7 +318,8 @@
 
     .. py:method:: update_monitor(object_type: str, object_id: str, monitor: Monitor, update_mask: str) -> Monitor
 
-        Update a data quality monitor on Unity Catalog object.
+        Update a data quality monitor on a Unity Catalog object. Only the fields named in ``update_mask`` are
+        changed.
 
         For the ``table`` ``object_type``, the caller must have either of the following sets of permissions:
 
@@ -347,7 +353,7 @@
           2. In `Catalog Explorer <https://docs.databricks.com/aws/en/catalog-explorer/>`__ > select the
              ``table`` > go to the ``Details`` tab > the ``Table ID`` field.
         :param monitor: :class:`Monitor`
-          The monitor to update.
+          The new values for the monitor. Only the fields named in ``update_mask`` are applied.
         :param update_mask: str
           The field mask to specify which fields to update as a comma-separated list. Example value:
           ``data_profiling_config.custom_metrics,data_profiling_config.schedule.quartz_cron_expression``

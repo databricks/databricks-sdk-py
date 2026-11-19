@@ -61,12 +61,16 @@
     .. py:method:: generate_temporary_service_credential(credential_name: str [, azure_options: Optional[GenerateTemporaryServiceCredentialAzureOptions], gcp_options: Optional[GenerateTemporaryServiceCredentialGcpOptions]]) -> TemporaryCredentials
 
         Returns a set of temporary credentials generated using the specified service credential. The caller
-        must be a metastore admin or have the metastore privilege **ACCESS** on the service credential.
+        must be a metastore admin or have the **ACCESS** privilege on the service credential.
 
         :param credential_name: str
           The name of the service credential used to generate a temporary credential
         :param azure_options: :class:`GenerateTemporaryServiceCredentialAzureOptions` (optional)
+          Options for an Azure service credential. They are required when the service credential uses an Azure
+          managed identity.
         :param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)
+          Options for a GCP service credential. They are required when the service credential uses a
+          Databricks-managed GCP service account.
 
         :returns: :class:`TemporaryCredentials`
         

@@ -145,6 +145,9 @@ class AccountNetworkPolicy:
 @dataclass
 class AibiDashboardEmbeddingAccessPolicy:
     access_policy_type: AibiDashboardEmbeddingAccessPolicyAccessPolicyType
+    """Where AI/BI dashboards can be embedded: in any domain (ALLOW_ALL_DOMAINS), only in the approved
+    domains configured for the workspace (ALLOW_APPROVED_DOMAINS), or nowhere (DENY_ALL_DOMAINS).
+    Defaults to ALLOW_APPROVED_DOMAINS."""
 
     def as_dict(self) -> dict:
         """Serializes the AibiDashboardEmbeddingAccessPolicy into a dictionary suitable for use as a JSON request body."""
@@ -229,6 +232,9 @@ class AibiDashboardEmbeddingAccessPolicySetting:
 @dataclass
 class AibiDashboardEmbeddingApprovedDomains:
     approved_domains: Optional[List[str]] = None
+    """Domains allowed to host embedded AI/BI dashboards. A leading wildcard allows every subdomain of
+    a domain. The list applies, and can only be changed, while the embedding access policy is
+    ALLOW_APPROVED_DOMAINS."""
 
     def as_dict(self) -> dict:
         """Serializes the AibiDashboardEmbeddingApprovedDomains into a dictionary suitable for use as a JSON request body."""
@@ -381,14 +387,25 @@ class BooleanMessage:
 @dataclass
 class ClusterAutoRestartMessage:
     can_toggle: Optional[bool] = None
+    """Whether the workspace can change the enabled state. Databricks computes this value: it is false
+    when the compliance security profile forces the feature on or when the workspace lacks the
+    Enhanced Security and Compliance entitlement. A value sent in an update request has no effect."""
 
     enabled: Optional[bool] = None
+    """Whether automatic cluster update is enabled for the workspace. The effective value is always
+    true while the compliance security profile is enabled on the workspace."""
 
     enablement_details: Optional[ClusterAutoRestartMessageEnablementDetails] = None
+    """Why the feature is forced on or unavailable. Databricks sets these details for information only;
+    they do not determine whether the feature is enabled."""
 
     maintenance_window: Optional[ClusterAutoRestartMessageMaintenanceWindow] = None
+    """When the maintenance window runs. When unset, it defaults to the first Sunday of every month at
+    01:00 UTC."""
 
     restart_even_if_no_updates_available: Optional[bool] = None
+    """Whether compute resources restart during every maintenance window even when no update is
+    available. When false, they restart only when an update is available."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAutoRestartMessage into a dictionary suitable for use as a JSON request body."""
@@ -444,8 +461,8 @@ class ClusterAutoRestartMessageEnablementDetails:
     """The feature is force enabled if compliance mode is active"""
 
     unavailable_for_disabled_entitlement: Optional[bool] = None
-    """The feature is unavailable if the corresponding entitlement disabled (see
-    getShieldEntitlementEnable)"""
+    """The feature is unavailable because the workspace does not have the Enhanced Security and
+    Compliance entitlement."""
 
     unavailable_for_non_enterprise_tier: Optional[bool] = None
     """The feature is unavailable if the customer doesn't have enterprise tier"""
@@ -485,6 +502,7 @@ class ClusterAutoRestartMessageEnablementDetails:
 @dataclass
 class ClusterAutoRestartMessageMaintenanceWindow:
     week_day_based_schedule: Optional[ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule] = None
+    """Schedule anchored to a day of the week, either every week or on given weeks of the month."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAutoRestartMessageMaintenanceWindow into a dictionary suitable for use as a JSON request body."""
@@ -523,10 +541,14 @@ class ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(Enum):
 @dataclass
 class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
     day_of_week: Optional[ClusterAutoRestartMessageMaintenanceWindowDayOfWeek] = None
+    """Day of the week on which the maintenance window starts."""
 
     frequency: Optional[ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency] = None
+    """How often the maintenance window occurs: every week, or only on the listed occurrences of the
+    day of the week within each month."""
 
     window_start_time: Optional[ClusterAutoRestartMessageMaintenanceWindowWindowStartTime] = None
+    """Time of day, in UTC, at which the maintenance window starts."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule into a dictionary suitable for use as a JSON request body."""
@@ -575,8 +597,10 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(Enum):
 @dataclass
 class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
     hours: Optional[int] = None
+    """Hour of the day on a 24-hour clock."""
 
     minutes: Optional[int] = None
+    """Minute of the hour."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAutoRestartMessageMaintenanceWindowWindowStartTime into a dictionary suitable for use as a JSON request body."""
@@ -5956,6 +5980,13 @@ class PublicTokenInfo:
 @dataclass
 class RestrictWorkspaceAdminsMessage:
     status: RestrictWorkspaceAdminsMessageStatus
+    """Controls what workspace admins can do with service principal tokens and job identities. With
+    ALLOW_ALL, workspace admins can create personal access tokens on behalf of any service principal
+    in the workspace, change a job owner to any workspace user, and set a job's run_as identity to
+    any workspace user or to a service principal they have the Service Principal User role on. With
+    RESTRICT_TOKENS_AND_JOB_RUN_AS, they can only create tokens for service principals they have the
+    Service Principal User role on, change a job owner to themselves, and set run_as to themselves
+    or to a service principal they have that role on."""
 
     disable_gov_tag_creation: Optional[bool] = None
     """When true, workspace admins cannot create governance tags. ALLOW_ALL status does not override

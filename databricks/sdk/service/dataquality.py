@@ -47,7 +47,8 @@ class AnomalyDetectionConfig:
     """Anomaly Detection Configurations."""
 
     excluded_table_full_names: Optional[List[str]] = None
-    """List of fully qualified table names to exclude from anomaly detection."""
+    """List of fully qualified table names to exclude from anomaly detection. Format:
+    ``catalog.schema.table_name``."""
 
     notification_settings: Optional[NotificationSettings] = None
     """Who to alert when anomaly detection finds unhealthy tables in this schema. Applicable to
@@ -125,9 +126,8 @@ class CronSchedule:
     <https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html>`__."""
 
     timezone_id: str
-    """A Java timezone id. The schedule for a job will be resolved with respect to this timezone. See
-    `Java TimeZone <http://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html>`_ for details.
-    The timezone id (e.g., ``America/Los_Angeles``) in which to evaluate the quartz expression."""
+    """The Java timezone ID in which the cron expression is evaluated. See `Java TimeZone
+    <https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html>`__ for the supported IDs."""
 
     pause_status: Optional[CronSchedulePauseStatus] = None
     """Read only field that indicates whether the schedule is paused or not."""
@@ -176,22 +176,25 @@ class DataProfilingConfig:
     """Data Profiling Configurations."""
 
     output_schema_id: str
-    """ID of the schema where output tables are created."""
+    """The UUID of the Unity Catalog schema where the profile and drift metrics tables are created."""
 
     assets_dir: Optional[str] = None
-    """Field for specifying the absolute path to a custom directory to store data-monitoring assets.
-    Normally prepopulated to a default user location via UI and Python APIs."""
+    """The absolute workspace path of the directory where the monitor's assets, such as the dashboard,
+    are stored. The UI and the Python APIs normally prepopulate a default user location."""
 
     baseline_table_name: Optional[str] = None
-    """Baseline table name. Baseline data is used to compute drift from the data in the monitored
-    ``table_name``. The baseline table and the monitored table shall have the same schema."""
+    """The fully qualified name of a baseline table. Format: ``catalog.schema.table_name``. Drift
+    metrics compare the monitored table against the baseline data, so the two tables must have the
+    same schema."""
 
     custom_metrics: Optional[List[DataProfilingCustomMetric]] = None
-    """Custom metrics."""
+    """Custom metrics to compute in addition to the built-in ones. See `custom metrics
+    <https://docs.databricks.com/aws/en/data-governance/unity-catalog/data-quality-monitoring/data-profiling/custom-metrics>`__."""
 
     dashboard_id: Optional[str] = None
-    """Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in
-    PENDING state."""
+    """The ID of the dashboard that visualizes the computed metrics. It is empty while the monitor is
+    pending, when the dashboard was skipped with ``skip_builtin_dashboard``, or when the caller is
+    in a different workspace from the one where the monitor was created."""
 
     drift_metrics_table_name: Optional[str] = None
     """Table that stores drift metrics data. Format: ``catalog.schema.table_name``."""
@@ -200,7 +203,8 @@ class DataProfilingConfig:
     """The warehouse for dashboard creation"""
 
     inference_log: Optional[InferenceLogConfig] = None
-    """``Analysis Configuration`` for monitoring inference log tables."""
+    """Profiles an inference log table, which stores the requests and predictions of a model. Metrics
+    are computed per time window and include model quality metrics."""
 
     latest_monitor_failure_message: Optional[str] = None
     """The latest error message for a monitor failure."""
@@ -211,16 +215,18 @@ class DataProfilingConfig:
     indicate corrupted monitor_version numbers."""
 
     monitored_table_name: Optional[str] = None
-    """Unity Catalog table to monitor. Format: ``catalog.schema.table_name``"""
+    """The fully qualified name of the monitored table. Format: ``catalog.schema.table_name``."""
 
     notification_settings: Optional[NotificationSettings] = None
-    """Field for specifying notification settings."""
+    """Who to notify about this monitor's refreshes. Only ``on_failure`` with ``email_addresses`` is
+    supported here."""
 
     profile_metrics_table_name: Optional[str] = None
     """Table that stores profile metrics data. Format: ``catalog.schema.table_name``."""
 
     schedule: Optional[CronSchedule] = None
-    """The cron schedule."""
+    """The schedule on which the monitor refreshes its metrics. Refreshes can also be triggered on
+    demand through the Refresh resource."""
 
     skip_builtin_dashboard: Optional[bool] = None
     """Whether to skip creating a default dashboard summarizing data quality metrics."""
@@ -228,23 +234,27 @@ class DataProfilingConfig:
     slicing_exprs: Optional[List[str]] = None
     """List of column expressions to slice data with for targeted analysis. The data is grouped by each
     expression independently, resulting in a separate slice for each predicate and its complements.
-    For example ``slicing_exprs=[“col_1”, “col_2 > 10”]`` will generate the following
-    slices: two slices for ``col_2 > 10`` (True and False), and one slice per unique value in
-    ``col1``. For high-cardinality columns, only the top 100 unique values by frequency will
-    generate slices."""
+    For example ``slicing_exprs=["col_1", "col_2 > 10"]`` will generate the following slices: two
+    slices for ``col_2 > 10`` (True and False), and one slice per unique value in ``col_1``. For
+    high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
 
     snapshot: Optional[SnapshotConfig] = None
-    """``Analysis Configuration`` for monitoring snapshot tables."""
+    """Profiles the full contents of the table. Metrics are computed over all rows at each refresh."""
 
     status: Optional[DataProfilingStatus] = None
-    """The data profiling monitor status."""
+    """The status of the monitor. ``DATA_PROFILING_STATUS_PENDING`` means the monitor's assets are
+    being created or updated. ``DATA_PROFILING_STATUS_ACTIVE`` means the monitor is ready and can be
+    refreshed. ``DATA_PROFILING_STATUS_FAILED`` and ``DATA_PROFILING_STATUS_ERROR`` mean the monitor
+    is not operational, and ``latest_monitor_failure_message`` describes the cause when one was
+    recorded. ``DATA_PROFILING_STATUS_DELETE_PENDING`` means the monitor is being deleted."""
 
     time_series: Optional[TimeSeriesConfig] = None
-    """``Analysis Configuration`` for monitoring time series tables."""
+    """Profiles a time series table. Metrics are computed per time window, as defined by
+    ``timestamp_column`` and ``granularities``."""
 
     warehouse_id: Optional[str] = None
-    """Optional argument to specify the warehouse for dashboard creation. If not specified, the first
-    running warehouse will be used."""
+    """The ID of the SQL warehouse used to create the dashboard. If not specified, the first running
+    warehouse the caller can access is used."""
 
     def as_dict(self) -> dict:
         """Serializes the DataProfilingConfig into a dictionary suitable for use as a JSON request body."""
@@ -380,10 +390,15 @@ class DataProfilingCustomMetric:
     ``":table"`` to indicate that the metric needs information from multiple columns."""
 
     output_data_type: str
-    """The output type of the custom metric."""
+    """Specifies the Spark SQL data type of the metric value, either as a plain type name or as a
+    JSON-encoded StructField."""
 
     type: DataProfilingCustomMetricType
-    """The type of the custom metric."""
+    """The type of the custom metric. ``DATA_PROFILING_CUSTOM_METRIC_TYPE_AGGREGATE`` metrics depend
+    only on the columns of the input table, ``DATA_PROFILING_CUSTOM_METRIC_TYPE_DERIVED`` metrics
+    depend only on previously computed aggregate metrics, and
+    ``DATA_PROFILING_CUSTOM_METRIC_TYPE_DRIFT`` metrics depend on previously computed aggregate or
+    derived metrics."""
 
     def as_dict(self) -> dict:
         """Serializes the DataProfilingCustomMetric into a dictionary suitable for use as a JSON request body."""
@@ -450,22 +465,24 @@ class InferenceLogConfig:
     """Inference log configuration."""
 
     problem_type: InferenceProblemType
-    """Problem type the model aims to solve."""
+    """The type of problem the model solves. It determines which model quality metrics are computed."""
 
     timestamp_column: str
-    """Column for the timestamp."""
+    """Column containing the timestamp of each inference request. Its type must be TIMESTAMP or
+    convertible to a timestamp."""
 
     granularities: List[AggregationGranularity]
     """List of granularities to use when aggregating data into time windows based on their timestamp."""
 
     prediction_column: str
-    """Column for the prediction."""
+    """Column containing the model's predicted values."""
 
     model_id_column: str
-    """Column for the model identifier."""
+    """Column containing the ID of the model that produced each prediction. A slice is created
+    automatically for each distinct model ID."""
 
     label_column: Optional[str] = None
-    """Column for the label."""
+    """Column containing the ground truth for the model's predictions."""
 
     def as_dict(self) -> dict:
         """Serializes the InferenceLogConfig into a dictionary suitable for use as a JSON request body."""
@@ -526,8 +543,10 @@ class ListMonitorResponse:
     """Response for listing Monitors."""
 
     monitors: Optional[List[Monitor]] = None
+    """The monitors on this page."""
 
     next_page_token: Optional[str] = None
+    """Pagination token to pass as ``page_token`` to fetch the next page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListMonitorResponse into a dictionary suitable for use as a JSON request body."""
@@ -587,7 +606,9 @@ class ListRefreshResponse:
 
 @dataclass
 class Monitor:
-    """Monitor for the data quality of unity catalog entities such as schema or table."""
+    """A data quality monitor on a Unity Catalog object. A ``schema`` monitor runs anomaly detection on
+    the tables in the schema and is configured through ``anomaly_detection_config``. A ``table``
+    monitor profiles a single table and is configured through ``data_profiling_config``."""
 
     object_type: str
     """The type of the monitored object. Can be one of the following: ``schema`` or ``table``."""
@@ -611,11 +632,12 @@ class Monitor:
        ``table`` > go to the ``Details`` tab > the ``Table ID`` field."""
 
     anomaly_detection_config: Optional[AnomalyDetectionConfig] = None
-    """Anomaly Detection Configuration, applicable to ``schema`` object types."""
+    """Anomaly detection settings. Required when ``object_type`` is ``schema``. When reading a
+    ``table`` monitor, this holds the settings of the parent schema's monitor if the schema has one."""
 
     data_profiling_config: Optional[DataProfilingConfig] = None
-    """Data Profiling Configuration, applicable to ``table`` object types. Exactly one ``Analysis
-    Configuration`` must be present."""
+    """Data profiling settings. Required when ``object_type`` is ``table``. Exactly one of
+    ``inference_log``, ``time_series`` or ``snapshot`` must be set."""
 
     def as_dict(self) -> dict:
         """Serializes the Monitor into a dictionary suitable for use as a JSON request body."""
@@ -670,7 +692,8 @@ class NotificationDestination:
 
     email_addresses: Optional[List[str]] = None
     """The list of email addresses to send the notification to. A maximum of 5 email addresses is
-    supported."""
+    supported. Only supported on table monitors, via ``data_profiling_config``; rejected on schema
+    monitors."""
 
     def as_dict(self) -> dict:
         """Serializes the NotificationDestination into a dictionary suitable for use as a JSON request body."""
@@ -709,7 +732,8 @@ class NotificationSettings:
     """Settings for sending notifications on the data quality monitoring."""
 
     on_failure: Optional[NotificationDestination] = None
-    """Destinations to send notifications on failure/timeout."""
+    """Recipients to notify when a refresh of the monitor fails or times out. Only supported on table
+    monitors, via ``data_profiling_config``, and only ``email_addresses`` is accepted there."""
 
     on_unhealthy_table: Optional[NotificationDestination] = None
     """Recipients to notify when anomaly detection finds unhealthy tables in the schema. Each recipient
@@ -889,7 +913,8 @@ class TimeSeriesConfig:
     """Time series analysis configuration."""
 
     timestamp_column: str
-    """Column for the timestamp."""
+    """Column containing the timestamp of each row. Its type must be TIMESTAMP or convertible to a
+    timestamp."""
 
     granularities: List[AggregationGranularity]
     """List of granularities to use when aggregating data into time windows based on their timestamp."""
@@ -1074,12 +1099,15 @@ class DataQualityAPI:
         return Refresh.from_dict(res)
 
     def delete_monitor(self, object_type: str, object_id: str):
-        """Delete a data quality monitor on Unity Catalog object.
+        """Delete a data quality monitor on a Unity Catalog object.
 
         For the ``table`` ``object_type``, the caller must have either of the following sets of permissions:
-        **MANAGE** and **USE_CATALOG** on the table's parent catalog. **USE_CATALOG** on the table's parent
-        catalog, and **MANAGE** and **USE_SCHEMA** on the table's parent schema. **USE_CATALOG** on the
-        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and **MANAGE** on the table.
+
+        1. **MANAGE** and **USE_CATALOG** on the table's parent catalog.
+        2. **USE_CATALOG** on the table's parent catalog, and **MANAGE** and **USE_SCHEMA** on the table's
+           parent schema.
+        3. **USE_CATALOG** on the table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+           **MANAGE** on the table.
 
         Note that the metric tables and dashboard will not be deleted as part of this call; those assets must
         be manually cleaned up (if desired).
@@ -1271,7 +1299,9 @@ class DataQualityAPI:
         """(Unimplemented) List data quality monitors.
 
         :param page_size: int (optional)
+          The maximum number of monitors to return in one page.
         :param page_token: str (optional)
+          Pagination token from a previous response, used to fetch the next page.
 
         :returns: Iterator over :class:`Monitor`
         """
@@ -1369,7 +1399,8 @@ class DataQualityAPI:
             query["page_token"] = json["next_page_token"]
 
     def update_monitor(self, object_type: str, object_id: str, monitor: Monitor, update_mask: str) -> Monitor:
-        """Update a data quality monitor on Unity Catalog object.
+        """Update a data quality monitor on a Unity Catalog object. Only the fields named in ``update_mask`` are
+        changed.
 
         For the ``table`` ``object_type``, the caller must have either of the following sets of permissions:
 
@@ -1403,7 +1434,7 @@ class DataQualityAPI:
           2. In `Catalog Explorer <https://docs.databricks.com/aws/en/catalog-explorer/>`__ > select the
              ``table`` > go to the ``Details`` tab > the ``Table ID`` field.
         :param monitor: :class:`Monitor`
-          The monitor to update.
+          The new values for the monitor. Only the fields named in ``update_mask`` are applied.
         :param update_mask: str
           The field mask to specify which fields to update as a comma-separated list. Example value:
           ``data_profiling_config.custom_metrics,data_profiling_config.schedule.quartz_cron_expression``

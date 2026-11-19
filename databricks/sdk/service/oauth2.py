@@ -70,7 +70,7 @@ class CreateCustomAppIntegrationOutput:
 @dataclass
 class CreatePublishedAppIntegrationOutput:
     integration_id: Optional[str] = None
-    """Unique integration id for the published OAuth app"""
+    """ID of the published OAuth app integration."""
 
     def as_dict(self) -> dict:
         """Serializes the CreatePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
@@ -449,21 +449,29 @@ class GetCustomAppIntegrationsOutput:
 
 @dataclass
 class GetPublishedAppIntegrationOutput:
+    """A published OAuth app integration enables an OAuth app published by Databricks, such as Power BI
+    or Tableau Desktop, for the account. Databricks manages the app's client ID, redirect URLs and
+    scopes; the integration only sets the lifetimes of the tokens issued to the app. To register
+    your own application, use a custom OAuth app integration instead. See
+    https://docs.databricks.com/aws/en/integrations/enable-disable-oauth."""
+
     app_id: Optional[str] = None
-    """App-id of the published app integration"""
+    """ID of the published OAuth app, as returned in app_id by the list of published OAuth apps."""
 
     create_time: Optional[str] = None
+    """Time the integration was created, as an ISO 8601 timestamp."""
 
     created_by: Optional[int] = None
+    """ID of the user who created the integration."""
 
     integration_id: Optional[str] = None
-    """Unique integration id for the published OAuth app"""
+    """ID of the published OAuth app integration in the account."""
 
     name: Optional[str] = None
-    """Display name of the published OAuth app"""
+    """Display name of the published OAuth app."""
 
     token_access_policy: Optional[TokenAccessPolicy] = None
-    """Token access policy"""
+    """Lifetimes of the access and refresh tokens issued to the app."""
 
     def as_dict(self) -> dict:
         """Serializes the GetPublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
@@ -518,6 +526,7 @@ class GetPublishedAppIntegrationsOutput:
     """List of Published OAuth App Integrations defined for the account."""
 
     next_page_token: Optional[str] = None
+    """Token for the next page of results. If not present, there are no more results to show."""
 
     def as_dict(self) -> dict:
         """Serializes the GetPublishedAppIntegrationsOutput into a dictionary suitable for use as a JSON request body."""
@@ -732,7 +741,7 @@ class PublishedAppOutput:
     """Unique ID of the published OAuth app."""
 
     client_id: Optional[str] = None
-    """Client ID of the published OAuth app. It is the client_id in the OAuth flow"""
+    """Client ID of the published OAuth app. The app sends it as client_id in the OAuth flow."""
 
     description: Optional[str] = None
     """Description of the published OAuth app."""
@@ -1432,9 +1441,12 @@ class PublishedAppIntegrationAPI:
         <https://docs.databricks.com/api/account/publishedappintegration/get>`__.
 
         :param app_id: str (optional)
-          App id of the OAuth published app integration. For example power-bi, tableau-deskop
+          ID of the published OAuth app to enable, as returned in app_id by the list of published OAuth apps.
+          The short legacy IDs of the original published apps, such as power-bi and tableau-desktop, are also
+          accepted. The request fails if the app is already enabled for the account.
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
-          Token access policy
+          Lifetimes of the tokens issued to the app. If omitted, the app's default token lifetimes apply. If
+          set, both TTL fields are required.
 
         :returns: :class:`CreatePublishedAppIntegrationOutput`
         """
@@ -1458,11 +1470,12 @@ class PublishedAppIntegrationAPI:
         return CreatePublishedAppIntegrationOutput.from_dict(res)
 
     def delete(self, integration_id: str):
-        """Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
-        integration via `PublishedAppIntegration/get
-        <https://docs.databricks.com/api/account/publishedappintegration/get>`__.
+        """Delete an existing Published OAuth App Integration. The app can no longer be used to sign in to the
+        account until it is enabled again with `PublishedAppIntegration/create
+        <https://docs.databricks.com/api/account/publishedappintegration/create>`__.
 
         :param integration_id: str
+          ID of the published OAuth app integration to delete.
 
 
         """
@@ -1481,6 +1494,7 @@ class PublishedAppIntegrationAPI:
         """Gets the Published OAuth App Integration for the given integration id.
 
         :param integration_id: str
+          ID of the published OAuth app integration.
 
         :returns: :class:`GetPublishedAppIntegrationOutput`
         """
@@ -1499,10 +1513,12 @@ class PublishedAppIntegrationAPI:
     def list(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[GetPublishedAppIntegrationOutput]:
-        """Get the list of published OAuth app integrations for the specified Databricks account
+        """Get the list of published OAuth app integrations for the specified Databricks account.
 
         :param page_size: int (optional)
+          Maximum number of integrations to return in one page, at most 1000.
         :param page_token: str (optional)
+          Token from the next_page_token field of a previous response. Omit it to request the first page.
 
         :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
         """
@@ -1536,8 +1552,11 @@ class PublishedAppIntegrationAPI:
         <https://docs.databricks.com/api/account/publishedappintegration/get>`__.
 
         :param integration_id: str
+          ID of the published OAuth app integration to update.
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
-          Token access policy to be updated in the published OAuth app integration
+          New token lifetimes for the app. Both TTL fields are required when the policy is set; the single-use
+          refresh token settings keep their current values when omitted. If the policy is omitted, the
+          integration is left unchanged.
 
 
         """
