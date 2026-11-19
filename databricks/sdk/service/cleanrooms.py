@@ -192,7 +192,7 @@ class CleanRoomAsset:
     **asset_type** is **FOREIGN_TABLE**"""
 
     foreign_table_local_details: Optional[CleanRoomAssetForeignTableLocalDetails] = None
-    """Local details for a foreign that are only available to its owner. Present if and only if
+    """Local details for a foreign table that are only available to its owner. Present if and only if
     **asset_type** is **FOREIGN_TABLE**"""
 
     jar_analysis: Optional[CleanRoomAssetJarAnalysis] = None
@@ -207,7 +207,9 @@ class CleanRoomAsset:
     """The alias of the collaborator who owns this asset"""
 
     status: Optional[CleanRoomAssetStatusEnum] = None
-    """Status of the asset"""
+    """The sharing status of the asset. ``PERMISSION_DENIED`` means the clean room owner no longer has
+    the privileges needed on the underlying Unity Catalog object, so the asset is not shared into
+    the clean room."""
 
     table: Optional[CleanRoomAssetTable] = None
     """Table details available to all collaborators of the clean room. Present if and only if
@@ -2130,7 +2132,8 @@ class CleanRoomAssetsAPI:
         return CleanRoomAsset.from_dict(res)
 
     def list(self, clean_room_name: str, *, page_token: Optional[str] = None) -> Iterator[CleanRoomAsset]:
-        """List assets.
+        """List the assets in a clean room. Listed assets do not include their asset-type specific details, such
+        as table columns or notebook content; use the get method to retrieve them.
 
         :param clean_room_name: str
           Name of the clean room.

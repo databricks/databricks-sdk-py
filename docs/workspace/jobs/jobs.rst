@@ -242,8 +242,10 @@
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
         :param parent_path: str (optional)
-          Path of the job parent folder in workspace file tree. If absent, the job doesn't have a workspace
-          object.
+          Path of the job parent folder in workspace file tree. If absent, the job doesn't have a parent
+          folder.
+
+          Example: /Workspace/Projects/my_project
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. This field determines the level of compute performance or
           cost-efficiency for the run. The performance target does not apply to tasks that run on Serverless

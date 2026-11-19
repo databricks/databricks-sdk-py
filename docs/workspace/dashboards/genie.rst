@@ -189,7 +189,10 @@
 
     .. py:method:: genie_create_eval_run(space_id: str [, benchmark_question_ids: Optional[List[str]]]) -> GenieEvalRunResponse
 
-        Creates and runs chat-mode evaluations for multiple benchmark questions in a Genie space.
+        Starts a benchmark evaluation run that asks Genie each selected benchmark question in a Genie space
+        and compares every response with the benchmark SQL. The run executes asynchronously: the response is
+        the new run with its current status. If it is still running, poll with the get method until the status
+        is terminal.
 
         :param space_id: str
           The ID associated with the Genie space where the evaluations will be executed.
@@ -202,7 +205,9 @@
 
     .. py:method:: genie_get_eval_result_details(space_id: str, eval_run_id: str, result_id: str) -> GenieEvalResultDetails
 
-        Get details for evaluation results.
+        Gets the full result for one benchmark question in an evaluation run: its assessment and the reasons
+        for it, Genie's response with the SQL execution result, and the expected response from the benchmark.
+        The result must belong to the given run.
 
         :param space_id: str
           The ID associated with the Genie space where the evaluation run is located.
@@ -216,18 +221,22 @@
 
     .. py:method:: genie_get_eval_run(space_id: str, eval_run_id: str) -> GenieEvalRunResponse
 
-        Get evaluation run details.
+        Gets the current status and summary counts of a benchmark evaluation run. Poll this method until
+        ``eval_run_status`` is terminal: DONE, EVALUATION_CANCELLED or EVALUATION_TIMEOUT.
 
         :param space_id: str
           The ID associated with the Genie space where the evaluation run is located.
         :param eval_run_id: str
+          The ID of the evaluation run, as returned when the run was created.
 
         :returns: :class:`GenieEvalRunResponse`
         
 
     .. py:method:: genie_list_eval_results(space_id: str, eval_run_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListEvalResultsResponse
 
-        List evaluation results for a specific evaluation run.
+        Lists the results of a benchmark evaluation run, one per benchmark question. Each entry carries the
+        result status and a snapshot of the question and benchmark answer; the assessment and Genie's response
+        are available through the result details method.
 
         :param space_id: str
           The ID associated with the Genie space where the evaluation run is located.
@@ -243,7 +252,8 @@
 
     .. py:method:: genie_list_eval_runs(space_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListEvalRunsResponse
 
-        Lists all evaluation runs in a space.
+        Lists the benchmark evaluation runs in a Genie space with the current status and summary counts of
+        each run.
 
         :param space_id: str
           The ID associated with the Genie space where the evaluation run is located.

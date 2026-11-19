@@ -6,6 +6,31 @@
 
     Manage software artifacts and their versions in Unity Catalog.
 
+    .. py:method:: delete_software_artifact(name: str [, force: Optional[bool]])
+
+        Deletes a software artifact. Fails if the artifact still has versions unless ``force`` is set.
+
+        :param name: str
+          Resource name of the software artifact, of the form
+          ``software-artifacts/{catalog}.{schema}.{artifact}``.
+        :param force: bool (optional)
+          Force deletion even if the software artifact has versions, deleting them with it. Default is false.
+
+
+        
+
+    .. py:method:: delete_software_artifact_version(name: str)
+
+        Deletes a software artifact version.
+
+        :param name: str
+          Resource name of the version, of the form
+          ``software-artifacts/{catalog}.{schema}.{artifact}/versions/{version}``, where ``{version}`` is the
+          version's content digest, for example ``sha256:<hex>``.
+
+
+        
+
     .. py:method:: get_software_artifact(name: str) -> SoftwareArtifact
 
         Gets a software artifact by its resource name. Returns ``NOT_FOUND`` if the artifact does not exist.

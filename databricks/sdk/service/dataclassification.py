@@ -32,7 +32,9 @@ class AutoTaggingConfig:
 
     classification_tag: str
     """The Classification Tag. For built-in classes this is a system tag (e.g., "class.name",
-    "class.location"); for custom classes it is a user-defined governance tag key."""
+    "class.location"); for custom classes it is a user-defined governance tag key. The built-in tags
+    are listed at
+    https://docs.databricks.com/aws/en/data-governance/unity-catalog/data-classification-tags."""
 
     auto_tagging_mode: AutoTaggingConfigAutoTaggingMode
     """Whether auto-tagging is enabled or disabled for this classification tag."""
@@ -80,20 +82,21 @@ class CatalogConfig:
     - It has no unique identifier of its own and uses its parent catalog's identifier (catalog_name)"""
 
     auto_tag_configs: Optional[List[AutoTaggingConfig]] = None
-    """List of auto-tagging configurations for this catalog. Empty list means no auto-tagging is
-    enabled."""
+    """Auto-tagging configurations that apply to this catalog. Each entry overrides the metastore-level
+    auto-tagging setting for its classification tag; tags without an entry inherit the
+    metastore-level setting."""
 
     excluded_schemas: Optional[CatalogConfigSchemaNames] = None
     """Schemas to exclude from the scan, each named relative to the parent catalog. If specified, all
-    schemas except the specified ones will be scanned. Mutually exclusive with ``included_schemas``:
-    only one may be set per request. If neither ``included_schemas`` nor ``excluded_schemas`` is
-    set, all schemas are scanned."""
+    schemas except the specified ones will be scanned, including schemas created later. Mutually
+    exclusive with ``included_schemas``: only one may be set per request. If neither
+    ``included_schemas`` nor ``excluded_schemas`` is set, all schemas are scanned."""
 
     included_schemas: Optional[CatalogConfigSchemaNames] = None
     """Schemas to include in the scan, each named relative to the parent catalog. If specified, only
-    listed schemas will be scanned. Mutually exclusive with ``excluded_schemas``: only one may be
-    set per request. If neither ``included_schemas`` nor ``excluded_schemas`` is set, all schemas
-    are scanned."""
+    listed schemas will be scanned. Schemas created later are not scanned until you add them to the
+    list. Mutually exclusive with ``excluded_schemas``: only one may be set per request. If neither
+    ``included_schemas`` nor ``excluded_schemas`` is set, all schemas are scanned."""
 
     name: Optional[str] = None
     """Resource name in the format: catalogs/{catalog_name}/config."""
@@ -173,12 +176,12 @@ class DataClassificationAPI:
     def create_catalog_config(self, parent: str, catalog_config: CatalogConfig) -> CatalogConfig:
         """Create Data Classification configuration for a catalog.
 
-        Creates a new config resource, which enables Data Classification for the specified catalog.
-
-        - The config must not already exist for the catalog.
+        Creates a new config resource, which enables Data Classification for the specified catalog. The
+        catalog must not already have a config. Creating the config starts a scan of the selected schemas and
+        schedules recurring scans.
 
         :param parent: str
-          Parent resource in the format: catalogs/{catalog_name}
+          Name of the catalog to enable, in the format catalogs/{catalog_name}.
         :param catalog_config: :class:`CatalogConfig`
           The configuration to create.
 
@@ -202,8 +205,12 @@ class DataClassificationAPI:
     def delete_catalog_config(self, name: str):
         """Delete Data Classification configuration for a catalog.
 
+        Deleting the config disables Data Classification for the catalog and stops its scheduled scans. Tags
+        that auto-tagging already applied to columns are not removed. Deleting a config that does not exist
+        succeeds.
+
         :param name: str
-          Resource name in the format: catalogs/{catalog_name}/config
+          Resource name of the config, in the format catalogs/{catalog_name}/config.
 
 
         """
@@ -222,7 +229,7 @@ class DataClassificationAPI:
         """Get the Data Classification configuration for a catalog.
 
         :param name: str
-          Resource name in the format: catalogs/{catalog_name}/config
+          Resource name of the config, in the format catalogs/{catalog_name}/config.
 
         :returns: :class:`CatalogConfig`
         """
@@ -241,9 +248,8 @@ class DataClassificationAPI:
     def update_catalog_config(self, name: str, catalog_config: CatalogConfig, update_mask: FieldMask) -> CatalogConfig:
         """Update the Data Classification configuration for a catalog.
 
-        - The config must already exist for the catalog.
-        - Updates fields specified in the update_mask. Use update_mask field to perform partial updates of the
-          configuration.
+        The config must already exist for the catalog. Only the fields named in ``update_mask`` change; the
+        other fields keep their current values.
 
         :param name: str
           Resource name in the format: catalogs/{catalog_name}/config.
@@ -251,7 +257,8 @@ class DataClassificationAPI:
           The configuration to apply to the catalog. The name field in catalog_config identifies which
           resource to update.
         :param update_mask: FieldMask
-          Field mask specifying which fields to update.
+          Comma-separated list of the fields of catalog_config to update, for example ``included_schemas`` or
+          ``auto_tag_configs``.
 
         :returns: :class:`CatalogConfig`
         """

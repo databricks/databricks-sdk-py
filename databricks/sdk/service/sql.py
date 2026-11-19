@@ -1260,8 +1260,11 @@ class Channel:
     chosen only when ``dbsql_version`` is specified."""
 
     dbsql_version: Optional[str] = None
+    """Databricks SQL version to pin to. Set it if and only if name is CHANNEL_NAME_CUSTOM."""
 
     name: Optional[ChannelName] = None
+    """Channel to follow. CHANNEL_NAME_CURRENT is the default, and CHANNEL_NAME_PREVIEW carries the
+    upcoming Databricks SQL release for testing."""
 
     def as_dict(self) -> dict:
         """Serializes the Channel into a dictionary suitable for use as a JSON request body."""
@@ -2476,8 +2479,10 @@ class Empty:
 @dataclass
 class EndpointConfPair:
     key: Optional[str] = None
+    """Name of the configuration parameter."""
 
     value: Optional[str] = None
+    """Value of the configuration parameter."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointConfPair into a dictionary suitable for use as a JSON request body."""
@@ -2578,7 +2583,7 @@ class EndpointInfo:
     Defaults to 120 mins"""
 
     channel: Optional[Channel] = None
-    """Channel Details"""
+    """Channel that determines which Databricks SQL version the warehouse runs."""
 
     cluster_size: Optional[str] = None
     """Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows
@@ -2599,7 +2604,7 @@ class EndpointInfo:
     - 5X-Large"""
 
     creator_name: Optional[str] = None
-    """warehouse creator name"""
+    """Name of the user who created the warehouse. Set by the server and ignored in requests."""
 
     customer_version_label: Optional[str] = None
     """Compute version label for a REALTIME warehouse. This field is output only."""
@@ -2616,13 +2621,13 @@ class EndpointInfo:
     """Optional health status. Assume the warehouse is healthy if this field is not set."""
 
     id: Optional[str] = None
-    """unique identifier for warehouse"""
+    """Unique identifier of the warehouse."""
 
     instance_profile_arn: Optional[str] = None
     """Deprecated. Instance profile used to pass IAM role to the cluster"""
 
     jdbc_url: Optional[str] = None
-    """the jdbc connection string for this warehouse"""
+    """JDBC connection string for the warehouse."""
 
     max_dbu: Optional[int] = None
     """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be at least the
@@ -2653,18 +2658,19 @@ class EndpointInfo:
     Defaults to 1"""
 
     name: Optional[str] = None
-    """Logical name for the cluster.
+    """Logical name for the warehouse.
     
     Supported values:
     
     - Must be unique within an org.
-    - Must be less than 100 characters."""
+    - Must be 1 to 100 characters."""
 
     num_active_sessions: Optional[int] = None
     """Deprecated. current number of active sessions for the warehouse"""
 
     num_clusters: Optional[int] = None
-    """current number of clusters running for the service"""
+    """Number of clusters currently allocated to the warehouse, including clusters that are still
+    starting."""
 
     odbc_params: Optional[OdbcParams] = None
     """ODBC parameters for the SQL warehouse"""
@@ -2681,13 +2687,16 @@ class EndpointInfo:
     - When absent, the warehouse is treated as having a multiplier of 1.0."""
 
     spot_instance_policy: Optional[SpotInstancePolicy] = None
-    """Configurations whether the endpoint should use spot instances."""
+    """Configures whether the warehouse should use spot instances. COST_OPTIMIZED uses spot instances
+    where the cloud provider supports them, and RELIABILITY_OPTIMIZED uses on-demand instances only."""
 
     state: Optional[State] = None
-    """state of the endpoint"""
+    """Current state of the warehouse."""
 
     statement_timeout: Optional[int] = None
-    """Warehouse statement timeout in seconds."""
+    """Maximum time in seconds that a statement can run on this warehouse before it is cancelled. Set
+    to 0 to remove the warehouse-level timeout. Changing the value of a running warehouse restarts
+    it. See https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout."""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -2848,8 +2857,11 @@ class EndpointInfoWarehouseType(Enum):
 @dataclass
 class EndpointTagPair:
     key: Optional[str] = None
+    """Tag key. Keys must be unique within the warehouse and cannot use the keys that Databricks
+    reserves for the tags it sets automatically."""
 
     value: Optional[str] = None
+    """Tag value. Keys and values must follow the tagging rules of the cloud provider."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointTagPair into a dictionary suitable for use as a JSON request body."""
@@ -2878,6 +2890,7 @@ class EndpointTagPair:
 @dataclass
 class EndpointTags:
     custom_tags: Optional[List[EndpointTagPair]] = None
+    """User-defined tags, applied in addition to the tags Databricks sets automatically."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointTags into a dictionary suitable for use as a JSON request body."""
@@ -2982,7 +2995,7 @@ class ExternalLink:
     next_chunk_index: Optional[int] = None
     """When fetching, provides the ``chunk_index`` for the *next* chunk. If absent, indicates there are
     no more chunks. The next chunk can be fetched with a
-    :method:statementexecution/getstatementresultchunkn request."""
+    :method:statementexecution/getStatementResultChunkN request."""
 
     next_chunk_internal_link: Optional[str] = None
     """When fetching, provides a link to fetch the *next* chunk. If absent, indicates there are no more
@@ -3264,7 +3277,7 @@ class GetWarehouseResponse:
     Defaults to 120 mins"""
 
     channel: Optional[Channel] = None
-    """Channel Details"""
+    """Channel that determines which Databricks SQL version the warehouse runs."""
 
     cluster_size: Optional[str] = None
     """Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows
@@ -3285,7 +3298,7 @@ class GetWarehouseResponse:
     - 5X-Large"""
 
     creator_name: Optional[str] = None
-    """warehouse creator name"""
+    """Name of the user who created the warehouse. Set by the server and ignored in requests."""
 
     customer_version_label: Optional[str] = None
     """Compute version label for a REALTIME warehouse. This field is output only."""
@@ -3302,13 +3315,13 @@ class GetWarehouseResponse:
     """Optional health status. Assume the warehouse is healthy if this field is not set."""
 
     id: Optional[str] = None
-    """unique identifier for warehouse"""
+    """Unique identifier of the warehouse."""
 
     instance_profile_arn: Optional[str] = None
     """Deprecated. Instance profile used to pass IAM role to the cluster"""
 
     jdbc_url: Optional[str] = None
-    """the jdbc connection string for this warehouse"""
+    """JDBC connection string for the warehouse."""
 
     max_dbu: Optional[int] = None
     """Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be at least the
@@ -3339,18 +3352,19 @@ class GetWarehouseResponse:
     Defaults to 1"""
 
     name: Optional[str] = None
-    """Logical name for the cluster.
+    """Logical name for the warehouse.
     
     Supported values:
     
     - Must be unique within an org.
-    - Must be less than 100 characters."""
+    - Must be 1 to 100 characters."""
 
     num_active_sessions: Optional[int] = None
     """Deprecated. current number of active sessions for the warehouse"""
 
     num_clusters: Optional[int] = None
-    """current number of clusters running for the service"""
+    """Number of clusters currently allocated to the warehouse, including clusters that are still
+    starting."""
 
     odbc_params: Optional[OdbcParams] = None
     """ODBC parameters for the SQL warehouse"""
@@ -3367,13 +3381,16 @@ class GetWarehouseResponse:
     - When absent, the warehouse is treated as having a multiplier of 1.0."""
 
     spot_instance_policy: Optional[SpotInstancePolicy] = None
-    """Configurations whether the endpoint should use spot instances."""
+    """Configures whether the warehouse should use spot instances. COST_OPTIMIZED uses spot instances
+    where the cloud provider supports them, and RELIABILITY_OPTIMIZED uses on-demand instances only."""
 
     state: Optional[State] = None
-    """state of the endpoint"""
+    """Current state of the warehouse."""
 
     statement_timeout: Optional[int] = None
-    """Warehouse statement timeout in seconds."""
+    """Maximum time in seconds that a statement can run on this warehouse before it is cancelled. Set
+    to 0 to remove the warehouse-level timeout. Changing the value of a running warehouse restarts
+    it. See https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout."""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -3540,8 +3557,10 @@ class GetWorkspaceWarehouseConfigResponse:
     """Deprecated: Use sql_configuration_parameters"""
 
     data_access_config: Optional[List[EndpointConfPair]] = None
-    """Spark confs for external hive metastore configuration JSON serialized size must be less than <=
-    512K"""
+    """Spark configuration applied to every warehouse in the workspace, for example to connect to an
+    external Hive metastore or to configure access to cloud storage. Only allowlisted keys are
+    accepted, and the JSON-serialized size must be at most 512 KB. See
+    https://docs.databricks.com/aws/en/admin/sql/data-access-configuration."""
 
     enable_serverless_compute: Optional[bool] = None
     """Deprecated: only setting this to true is allowed."""
@@ -3550,14 +3569,13 @@ class GetWorkspaceWarehouseConfigResponse:
     """List of Warehouse Types allowed in this workspace (limits allowed value of the type field in
     CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be
     specified in SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses
-    to be converted to another type. Used by frontend to save specific type availability in the
-    warehouse create and edit form UI."""
+    to be converted to another type."""
 
     global_param: Optional[RepeatedEndpointConfPairs] = None
     """Deprecated: Use sql_configuration_parameters"""
 
     google_service_account: Optional[str] = None
-    """GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage"""
+    """GCP only: Google service account that the warehouse clusters use to access Google Cloud Storage."""
 
     instance_profile_arn: Optional[str] = None
     """AWS Only: The instance profile used to pass an IAM role to the SQL warehouses. This
@@ -3567,7 +3585,9 @@ class GetWorkspaceWarehouseConfigResponse:
     """Security policy for warehouses"""
 
     sql_configuration_parameters: Optional[RepeatedEndpointConfPairs] = None
-    """SQL configuration parameters"""
+    """SQL configuration parameters applied to every warehouse in the workspace. Only parameters that
+    can be set at the workspace scope are accepted. See
+    https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-parameters."""
 
     def as_dict(self) -> dict:
         """Serializes the GetWorkspaceWarehouseConfigResponse into a dictionary suitable for use as a JSON request body."""
@@ -4740,12 +4760,16 @@ class ObjectTypePlural(Enum):
 @dataclass
 class OdbcParams:
     hostname: Optional[str] = None
+    """Hostname of the workspace to connect to."""
 
     path: Optional[str] = None
+    """HTTP path of the warehouse."""
 
     port: Optional[int] = None
+    """The connection port is always 443."""
 
     protocol: Optional[str] = None
+    """The transport protocol is always https."""
 
     def as_dict(self) -> dict:
         """Serializes the OdbcParams into a dictionary suitable for use as a JSON request body."""
@@ -5946,6 +5970,7 @@ class RepeatedEndpointConfPairs:
     """Deprecated: Use configuration_pairs"""
 
     configuration_pairs: Optional[List[EndpointConfPair]] = None
+    """Configuration parameters, each a key-value pair."""
 
     def as_dict(self) -> dict:
         """Serializes the RepeatedEndpointConfPairs into a dictionary suitable for use as a JSON request body."""
@@ -6012,11 +6037,13 @@ class ResultData:
     formatted as a string. Null values are encoded as JSON ``null``."""
 
     external_links: Optional[List[ExternalLink]] = None
+    """Short-lived cloud-storage links to the result data, used with the ``EXTERNAL_LINKS``
+    disposition."""
 
     next_chunk_index: Optional[int] = None
     """When fetching, provides the ``chunk_index`` for the *next* chunk. If absent, indicates there are
     no more chunks. The next chunk can be fetched with a
-    :method:statementexecution/getstatementresultchunkn request."""
+    :method:statementexecution/getStatementResultChunkN request."""
 
     next_chunk_internal_link: Optional[str] = None
     """When fetching, provides a link to fetch the *next* chunk. If absent, indicates there are no more
@@ -6094,8 +6121,10 @@ class ResultManifest:
     """Array of result set chunk metadata."""
 
     format: Optional[Format] = None
+    """The format of the result data, as requested with ``format``."""
 
     schema: Optional[ResultSchema] = None
+    """The schema of the result set: the ordered list of column descriptions."""
 
     total_byte_count: Optional[int] = None
     """The total number of bytes in the result set. This field is not available when using ``INLINE``
@@ -6167,8 +6196,10 @@ class ResultSchema:
     """The schema is an ordered list of column descriptions."""
 
     column_count: Optional[int] = None
+    """The number of columns in the result set."""
 
     columns: Optional[List[ColumnInfo]] = None
+    """The column descriptions, in result set order."""
 
     def as_dict(self) -> dict:
         """Serializes the ResultSchema into a dictionary suitable for use as a JSON request body."""
@@ -6212,6 +6243,7 @@ class SchedulePauseStatus(Enum):
 @dataclass
 class ServiceError:
     error_code: Optional[ServiceErrorCode] = None
+    """The error code that classifies the failure."""
 
     message: Optional[str] = None
     """A brief summary of the error condition."""
@@ -6419,14 +6451,21 @@ class StatementResponse:
     higher concurrency, and takes ``warehouse_id`` as a path parameter."""
 
     manifest: Optional[ResultManifest] = None
+    """The schema and metadata of the result set. Present when ``status.state`` is ``SUCCEEDED``."""
 
     result: Optional[ResultData] = None
+    """Contains the result data of a single chunk when using ``INLINE`` disposition. When using
+    ``EXTERNAL_LINKS`` disposition, the array ``external_links`` is used instead to provide
+    short-lived cloud-storage URLs to the result data in cloud storage. Exactly one of these
+    alternatives is used. Calls to ``getResultData`` return the link for the requested chunk;
+    ``executeStatement`` and ``getStatementResult`` responses can contain links for multiple chunks."""
 
     statement_id: Optional[str] = None
     """The statement ID is returned upon successfully submitting a SQL statement, and is a required
     reference for all subsequent calls."""
 
     status: Optional[StatementStatus] = None
+    """The execution state of the statement and, if it failed, the error details."""
 
     def as_dict(self) -> dict:
         """Serializes the StatementResponse into a dictionary suitable for use as a JSON request body."""
@@ -6479,6 +6518,7 @@ class StatementStatus:
     """The status response includes execution state and if relevant, error information."""
 
     error: Optional[ServiceError] = None
+    """The error that caused the statement to fail. Only populated when ``state`` is ``FAILED``."""
 
     sql_state: Optional[str] = None
     """SQLSTATE error code returned when the statement execution fails. Only populated when the
@@ -7603,6 +7643,7 @@ class WarehouseTypePair:
     CreateWarehouse and EditWarehouse"""
 
     warehouse_type: Optional[WarehouseTypePairWarehouseType] = None
+    """Warehouse type that this entry enables or disables."""
 
     def as_dict(self) -> dict:
         """Serializes the WarehouseTypePair into a dictionary suitable for use as a JSON request body."""
@@ -9856,9 +9897,16 @@ class StatementExecutionAPI:
 
           The parameters can be passed in the request body as follows:
 
-          ``{ ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
-          "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
-          "2020-01-01", "type": "DATE" } ] }``
+          .. code-block::
+
+             {
+             ...,
+             "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
+             "parameters": [
+             { "name": "my_name", "value": "the name" },
+             { "name": "my_date", "value": "2020-01-01", "type": "DATE" }
+             ]
+             }
 
           Currently, positional parameters denoted by a ``?`` marker are not supported by the Databricks SQL
           Statement Execution API.
@@ -9976,6 +10024,7 @@ class StatementExecutionAPI:
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
           reference for all subsequent calls.
         :param chunk_index: int
+          The zero-based index of the result chunk to fetch.
 
         :returns: :class:`ResultData`
         """
@@ -10097,7 +10146,7 @@ class WarehousesAPI:
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
-          Channel Details
+          Channel that determines which Databricks SQL version the warehouse runs.
         :param cluster_size: str (optional)
           Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
@@ -10116,7 +10165,7 @@ class WarehousesAPI:
           - 4X-Large
           - 5X-Large
         :param creator_name: str (optional)
-          warehouse creator name
+          Name of the user who created the warehouse. Set by the server and ignored in requests.
         :param customer_version_label: str (optional)
           Compute version label for a REALTIME warehouse. This field is output only.
         :param enable_photon: bool (optional)
@@ -10152,12 +10201,12 @@ class WarehousesAPI:
 
           Defaults to 1
         :param name: str (optional)
-          Logical name for the cluster.
+          Logical name for the warehouse.
 
           Supported values:
 
           - Must be unique within an org.
-          - Must be less than 100 characters.
+          - Must be 1 to 100 characters.
         :param reyden_cluster_size_multiplier: float (optional)
           Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to the
           nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
@@ -10169,9 +10218,12 @@ class WarehousesAPI:
           - Values above the configured maximum are capped at that maximum.
           - When absent, the warehouse is treated as having a multiplier of 1.0.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
-          Configurations whether the endpoint should use spot instances.
+          Configures whether the warehouse should use spot instances. COST_OPTIMIZED uses spot instances where
+          the cloud provider supports them, and RELIABILITY_OPTIMIZED uses on-demand instances only.
         :param statement_timeout: int (optional)
-          Warehouse statement timeout in seconds.
+          Maximum time in seconds that a statement can run on this warehouse before it is cancelled. Set to 0
+          to remove the warehouse-level timeout. Changing the value of a running warehouse restarts it. See
+          https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -10393,7 +10445,7 @@ class WarehousesAPI:
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
-          Channel Details
+          Channel that determines which Databricks SQL version the warehouse runs.
         :param cluster_size: str (optional)
           Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
@@ -10412,7 +10464,7 @@ class WarehousesAPI:
           - 4X-Large
           - 5X-Large
         :param creator_name: str (optional)
-          warehouse creator name
+          Name of the user who created the warehouse. Set by the server and ignored in requests.
         :param customer_version_label: str (optional)
           Compute version label for a REALTIME warehouse. This field is output only.
         :param enable_photon: bool (optional)
@@ -10448,12 +10500,12 @@ class WarehousesAPI:
 
           Defaults to 1
         :param name: str (optional)
-          Logical name for the cluster.
+          Logical name for the warehouse.
 
           Supported values:
 
           - Must be unique within an org.
-          - Must be less than 100 characters.
+          - Must be 1 to 100 characters.
         :param reyden_cluster_size_multiplier: float (optional)
           Cluster size multiplier for Reyden warehouses. Scales the effective compute capacity relative to the
           nominal virtual cluster size. Only meaningful when the warehouse is of Reyden type.
@@ -10465,9 +10517,12 @@ class WarehousesAPI:
           - Values above the configured maximum are capped at that maximum.
           - When absent, the warehouse is treated as having a multiplier of 1.0.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
-          Configurations whether the endpoint should use spot instances.
+          Configures whether the warehouse should use spot instances. COST_OPTIMIZED uses spot instances where
+          the cloud provider supports them, and RELIABILITY_OPTIMIZED uses on-demand instances only.
         :param statement_timeout: int (optional)
-          Warehouse statement timeout in seconds.
+          Maximum time in seconds that a statement can run on this warehouse before it is cancelled. Set to 0
+          to remove the warehouse-level timeout. Changing the value of a running warehouse restarts it. See
+          https://docs.databricks.com/aws/en/sql/language-manual/parameters/statement_timeout.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
@@ -10813,26 +10868,30 @@ class WarehousesAPI:
         :param config_param: :class:`RepeatedEndpointConfPairs` (optional)
           Deprecated: Use sql_configuration_parameters
         :param data_access_config: List[:class:`EndpointConfPair`] (optional)
-          Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
+          Spark configuration applied to every warehouse in the workspace, for example to connect to an
+          external Hive metastore or to configure access to cloud storage. Only allowlisted keys are accepted,
+          and the JSON-serialized size must be at most 512 KB. See
+          https://docs.databricks.com/aws/en/admin/sql/data-access-configuration.
         :param enable_serverless_compute: bool (optional)
           Deprecated: only setting this to true is allowed.
         :param enabled_warehouse_types: List[:class:`WarehouseTypePair`] (optional)
           List of Warehouse Types allowed in this workspace (limits allowed value of the type field in
           CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be
           specified in SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be
-          converted to another type. Used by frontend to save specific type availability in the warehouse
-          create and edit form UI.
+          converted to another type.
         :param global_param: :class:`RepeatedEndpointConfPairs` (optional)
           Deprecated: Use sql_configuration_parameters
         :param google_service_account: str (optional)
-          GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
+          GCP only: Google service account that the warehouse clusters use to access Google Cloud Storage.
         :param instance_profile_arn: str (optional)
           AWS Only: The instance profile used to pass an IAM role to the SQL warehouses. This configuration is
           also applied to the workspace's serverless compute for notebooks and jobs.
         :param security_policy: :class:`SetWorkspaceWarehouseConfigRequestSecurityPolicy` (optional)
           Security policy for warehouses
         :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)
-          SQL configuration parameters
+          SQL configuration parameters applied to every warehouse in the workspace. Only parameters that can
+          be set at the workspace scope are accepted. See
+          https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-parameters.
 
 
         """

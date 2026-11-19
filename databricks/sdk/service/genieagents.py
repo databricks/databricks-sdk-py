@@ -379,10 +379,10 @@ class GenieAgentDataSources:
     """Unity Catalog MCP connections, sorted by ``mcp_connection``."""
 
     tables: Optional[List[GenieAgentTable]] = None
-    """Unity Catalog tables, views, and metric views, in the order they were added."""
+    """Unity Catalog tables, views, and metric views, sorted by ``identifier``."""
 
     volumes: Optional[List[GenieAgentVolume]] = None
-    """Unity Catalog volumes, in the order they were added."""
+    """Unity Catalog volumes, sorted by ``path``."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieAgentDataSources into a dictionary suitable for use as a JSON request body."""

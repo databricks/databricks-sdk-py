@@ -258,9 +258,16 @@
 
           The parameters can be passed in the request body as follows:
 
-          ``{ ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
-          "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
-          "2020-01-01", "type": "DATE" } ] }``
+          .. code-block::
+
+             {
+             ...,
+             "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
+             "parameters": [
+             { "name": "my_name", "value": "the name" },
+             { "name": "my_date", "value": "2020-01-01", "type": "DATE" }
+             ]
+             }
 
           Currently, positional parameters denoted by a ``?`` marker are not supported by the Databricks SQL
           Statement Execution API.
@@ -332,6 +339,7 @@
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
           reference for all subsequent calls.
         :param chunk_index: int
+          The zero-based index of the result chunk to fetch.
 
         :returns: :class:`ResultData`
         

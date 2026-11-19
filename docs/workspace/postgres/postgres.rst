@@ -210,8 +210,8 @@
           The ID used to identify and manage the Role resource through the API. The Postgres role name is
           specified in ``spec.postgres_role``.
 
-          This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and
-          hyphens, as defined by RFC 1123.
+          This value should be 3-63 characters, start with a lowercase letter, end with a lowercase letter or
+          digit, and contain only lowercase letters, digits, and hyphens.
 
           If role_id is not specified in the request, it is generated automatically.
 
@@ -371,7 +371,8 @@
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param reassign_owned_to: str (optional)
           Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified
-          in this parameter.
+          in this parameter. The role must already exist. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
 
           NOTE: setting this requires spinning up a compute to succeed, since it involves running SQL queries.
 

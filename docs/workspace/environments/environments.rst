@@ -45,7 +45,8 @@
     .. py:method:: get_default_workspace_base_environment(name: str) -> DefaultWorkspaceBaseEnvironment
 
         Gets the default WorkspaceBaseEnvironment configuration for the workspace. Returns the current default
-        base environment settings for both CPU and GPU compute.
+        base environment settings for both CPU and GPU compute. An unset CPU or GPU field means that compute
+        type uses the Databricks Standard base environment.
 
         :param name: str
           A static resource name of the default workspace base environment. Format:
@@ -121,7 +122,9 @@
     .. py:method:: update_default_workspace_base_environment(name: str, default_workspace_base_environment: DefaultWorkspaceBaseEnvironment, update_mask: FieldMask) -> DefaultWorkspaceBaseEnvironment
 
         Updates the default WorkspaceBaseEnvironment configuration for the workspace. Sets the specified base
-        environments as the workspace defaults for CPU and/or GPU compute.
+        environments as the workspace defaults for CPU and/or GPU compute. Unsetting a default makes that
+        compute type use the Databricks Standard base environment. The Standard base environment has no
+        resource name, so unsetting the field is the only way to select it.
 
         :param name: str
           The resource name of this singleton resource. Format: default-workspace-base-environment
@@ -134,7 +137,9 @@
 
           To unset one or both defaults, include the field path(s) in the mask and omit them from the request
           body. To unset both, you must list both paths explicitly — the wildcard '*' cannot be used to
-          unset fields.
+          unset fields. Unsetting a default makes that compute type use the Databricks Standard base
+          environment. The Standard base environment has no resource name, so unsetting the field is the only
+          way to select it.
 
         :returns: :class:`DefaultWorkspaceBaseEnvironment`
         
