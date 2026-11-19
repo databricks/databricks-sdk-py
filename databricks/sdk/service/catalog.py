@@ -15894,6 +15894,7 @@ class CatalogsAPI:
         options: Optional[Dict[str, str]] = None,
         owner: Optional[str] = None,
         properties: Optional[Dict[str, str]] = None,
+        storage_root: Optional[str] = None,
     ) -> CatalogInfo:
         """Updates the catalog that matches the supplied name. The caller must be either the owner of the
         catalog, or a metastore admin (when changing the owner field of the catalog).
@@ -15926,6 +15927,11 @@ class CatalogsAPI:
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
+        :param storage_root: str (optional)
+          Managed tables and volumes in the catalog are stored under this storage root URL. The path must be
+          inside an external location on which the caller has the CREATE MANAGED STORAGE privilege. If
+          omitted, managed data is stored under the metastore's root storage location, which must then be
+          configured. Delta Sharing catalogs cannot have a storage root.
 
         :returns: :class:`CatalogInfo`
         """
@@ -15949,6 +15955,8 @@ class CatalogsAPI:
             body["owner"] = owner
         if properties is not None:
             body["properties"] = properties
+        if storage_root is not None:
+            body["storage_root"] = storage_root
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
