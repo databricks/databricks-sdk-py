@@ -1338,6 +1338,67 @@ def test_presigned_url_download(config: Config, test_case: PresignedUrlDownloadT
     test_case.run(config, monkeypatch)
 
 
+@pytest.mark.parametrize("prefix", ["", "dbfs:"])
+@pytest.mark.parametrize("download_mode", [DownloadMode.STREAM, DownloadMode.FILE])
+@pytest.mark.parametrize("api_version", ["2.0", "3.0"])
+def test_download_fallback_normalizes_dbfs_path(config, requests_mock, tmp_path, prefix, download_mode, api_version):
+    config = config.copy()
+    config.experimental_files_ext_enable_endpoints_api = True
+    path = "/Volumes/main/default/volume/report dbfs:?#%.bin"
+    fallback_host = "http://localhost" if api_version == "2.0" else "https://files.example.com"
+    file_url = f"{fallback_host}/api/{api_version}/fs/files/Volumes/main/default/volume/report%20dbfs%3A%3F%23%25.bin"
+    payload = b"downloaded contents\x00\xff"
+    requests_mock.get(
+        "http://localhost/api/2.0/fs/endpoints",
+        json={
+            "endpoints": [
+                {"api": "IO_OFFLOAD", "scheme": "http", "hostname": "localhost"},
+                {
+                    "api": "FILES_API",
+                    "api_version": api_version,
+                    "scheme": "http" if api_version == "2.0" else "https",
+                    "hostname": "localhost" if api_version == "2.0" else "files.example.com",
+                },
+            ]
+        },
+    )
+    create_url = requests_mock.post(
+        "http://localhost/api/2.0/fs/create-download-url",
+        json={"url": "https://storage.example.com/file", "headers": []},
+    )
+    cloud_download = requests_mock.get("https://storage.example.com/file", status_code=403)
+    fallback = requests_mock.get(file_url, content=payload, headers={"Content-Length": str(len(payload))})
+    client = WorkspaceClient(config=config)
+
+    if download_mode == DownloadMode.STREAM:
+        with client.files.download(prefix + path).contents as contents:
+            assert contents.read() == payload
+    else:
+        destination = tmp_path / "downloaded.bin"
+        destination.write_bytes(b"old contents that must be overwritten")
+        client.files.download_to(prefix + path, str(destination))
+        assert destination.read_bytes() == payload
+
+    assert create_url.call_count == 1
+    assert parse_qs(urlparse(create_url.last_request.url).query)["path"] == [path]
+    assert cloud_download.call_count == 1
+    assert fallback.call_count == 1
+    assert fallback.last_request.url == file_url
+
+
+@pytest.mark.parametrize("prefix", ["", "dbfs:"])
+def test_original_download_normalizes_dbfs_path(config, requests_mock, prefix):
+    config = config.copy()
+    config.disable_experimental_files_api_client = True
+    path = "/Volumes/main/default/volume/file.bin"
+    download = requests_mock.get("http://localhost/api/2.0/fs/files" + path, content=b"contents")
+
+    with WorkspaceClient(config=config).files.download(prefix + path).contents as contents:
+        assert contents.read() == b"contents"
+
+    assert download.call_count == 1
+
+
 _RANGED_CONTENT = os.urandom(3 * 1024)
 
 
@@ -1378,8 +1439,9 @@ def _parallel_download_from_files_api(
     return destination
 
 
-def test_parallel_download_from_files_api_escapes_the_path(config: Config, requests_mock, tmp_path):
-    file_path = "/Volumes/main/default/volume/report ?#%.bin"
+@pytest.mark.parametrize("prefix", ["", "dbfs:"])
+def test_parallel_download_from_files_api_escapes_the_path(config: Config, requests_mock, tmp_path, prefix):
+    file_path = prefix + "/Volumes/main/default/volume/report ?#%.bin"
     file_url = "http://localhost/api/2.0/fs/files/Volumes/main/default/volume/report%20%3F%23%25.bin"
 
     destination = _parallel_download_from_files_api(
