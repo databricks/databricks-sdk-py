@@ -10,7 +10,7 @@
     Endpoints expose the underlying models as scalable REST API endpoints using serverless compute. This means
     the endpoints and associated compute resources are fully managed by Databricks and will not appear in your
     cloud account. A serving endpoint can consist of one or more MLflow models from the Databricks Model
-    Registry, called served entities. A serving endpoint can have at most ten served entities. You can
+    Registry, called served entities. A serving endpoint can have at most 15 served entities. You can
     configure traffic settings to define how requests should be routed to your served entities behind an
     endpoint. Additionally, you can configure the scale of resources that should be applied to each served
     entity.
