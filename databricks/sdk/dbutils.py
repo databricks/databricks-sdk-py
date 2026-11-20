@@ -153,13 +153,21 @@ class _SecretsUtil:
         self._api = secrets_api  # nolint
 
     def getBytes(self, scope: str, key: str) -> bytes:
-        """Gets the bytes representation of a secret value for the specified scope and key."""
+        """Gets the bytes representation of a secret value for the specified scope and key.
+        
+        Note: DEBUG logging may expose secrets via py4j clientserver. See `get()` for details.
+        """
         query = {"scope": scope, "key": key}
         raw = self._api._api.do("GET", "/api/2.0/secrets/get", query=query)
         return base64.b64decode(raw["value"])
-
+    
     def get(self, scope: str, key: str) -> str:
-        """Gets the string representation of a secret value for the specified secrets scope and key."""
+        """Gets the string representation of a secret value for the specified secrets scope and key.
+        
+        Warning: When Python root logger is set to DEBUG, the underlying py4j 
+        clientserver may log raw RPC payloads containing unmasked secret values. 
+        Avoid DEBUG level in production environments.
+        """
         val = self.getBytes(scope, key)
         string_value = val.decode()
         return string_value
