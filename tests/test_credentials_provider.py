@@ -1046,6 +1046,48 @@ def test_resolve_cli_command_malformed_version_json_falls_back(mocker, caplog):
     assert not any("does not support --profile" in rec.message for rec in caplog.records)
 
 
+@pytest.mark.parametrize(
+    "args, expected",
+    [
+        # Regression test for #1643: cmd.exe treats "(" as a special character, so an
+        # unquoted path containing it is split and the CLI cannot be found.
+        (
+            ["c:\\path\\brack(\\databricks.exe", "auth", "token"],
+            '"c:\\path\\brack(\\databricks.exe" auth token',
+        ),
+        (["C:\\R&D\\databricks.exe", "version"], '"C:\\R&D\\databricks.exe" version'),
+        (["az", "--query", "a|b<c>d^e"], 'az --query "a|b<c>d^e"'),
+        # A trailing backslash must be doubled so that it does not escape the closing quote.
+        (["C:\\(x)\\", "version"], '"C:\\(x)\\\\" version'),
+        # Arguments without special characters keep the standard Windows quoting.
+        (
+            ["C:\\Program Files (x86)\\databricks.exe", "auth", "token"],
+            '"C:\\Program Files (x86)\\databricks.exe" auth token',
+        ),
+        (["az", "account", "show", "--output", "json"], "az account show --output json"),
+    ],
+)
+def test_run_subprocess_quotes_cmd_special_characters_on_windows(mocker, args, expected):
+    mocker.patch("databricks.sdk.credentials_provider.sys.platform", "win32")
+    run = mocker.patch("databricks.sdk.credentials_provider.subprocess.run")
+
+    credentials_provider._run_subprocess(args, capture_output=True, check=True)
+
+    assert run.call_args.args[0] == expected
+    assert run.call_args.kwargs["shell"] is True
+
+
+def test_run_subprocess_passes_args_unchanged_on_non_windows(mocker):
+    mocker.patch("databricks.sdk.credentials_provider.sys.platform", "darwin")
+    run = mocker.patch("databricks.sdk.credentials_provider.subprocess.run")
+    args = ["/opt/brack(/databricks", "auth", "token"]
+
+    credentials_provider._run_subprocess(args, capture_output=True, check=True)
+
+    assert run.call_args.args[0] == args
+    assert run.call_args.kwargs["shell"] is False
+
+
 # Tests for cloud-agnostic hosts and removed cloud checks
 class TestCloudAgnosticHosts:
     """Tests that credential providers work with cloud-agnostic hosts after removing is_azure/is_gcp checks."""
