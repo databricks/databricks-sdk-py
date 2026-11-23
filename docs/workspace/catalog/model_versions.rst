@@ -21,7 +21,8 @@
         **USE_SCHEMA** privilege on the parent schema.
 
         :param full_name: str
-          The three-level (fully qualified) name of the model version
+          The three-level (fully qualified) name of the parent registered model, in the form
+          ``catalog_name.schema_name.model_name``.
         :param version: int
           The integer version number of the model version
 
@@ -37,7 +38,8 @@
         privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 
         :param full_name: str
-          The three-level (fully qualified) name of the model version
+          The three-level (fully qualified) name of the parent registered model, in the form
+          ``catalog_name.schema_name.model_name``.
         :param version: int
           The integer version number of the model version
         :param include_aliases: bool (optional)
@@ -116,7 +118,8 @@
         Currently only the comment of the model version can be updated.
 
         :param full_name: str
-          The three-level (fully qualified) name of the model version
+          The three-level (fully qualified) name of the parent registered model, in the form
+          ``catalog_name.schema_name.model_name``.
         :param version: int
           The integer version number of the model version
         :param aliases: List[:class:`RegisteredModelAlias`] (optional)
@@ -126,6 +129,7 @@
         :param comment: str (optional)
           The comment attached to the model version
         :param created_at: int (optional)
+          Time at which the model version was created, in epoch milliseconds.
         :param created_by: str (optional)
           The identifier of the user who created the model version
         :param id: str (optional)
@@ -153,6 +157,7 @@
         :param storage_location: str (optional)
           The storage location on the cloud under which model version data files are stored
         :param updated_at: int (optional)
+          Time at which the model version was last updated, in epoch milliseconds.
         :param updated_by: str (optional)
           The identifier of the user who updated the model version last time
 

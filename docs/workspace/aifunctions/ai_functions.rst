@@ -18,7 +18,7 @@
         :param labels: any
           The label set to classify as. Either a JSON array of label strings (e.g. ["spam", "not_spam"]), or a
           JSON object mapping each label to a description (e.g. {"spam": "unsolicited bulk message",
-          "not_spam": "a legitimate message"}). Accepts 2 to 500 labels, each 1 to 100 characters. When
+          "not_spam": "a legitimate message"}). Accepts 2 to 5000 labels, each 1 to 100 characters. When
           multilabel is true, a single label is also accepted.
         :param options: :class:`AiClassifyOptions` (optional)
           Function options. Omitted fields fall back to their documented defaults.
@@ -160,11 +160,11 @@
 
     .. py:method:: cancel_batch(name: str) -> CancelBatchResponse
 
-        Starts the asynchronous cancellation of a batch. Requests in progress are drained first. Cancellation
-        is best effort, so the batch can still complete.
+        Starts the asynchronous cancellation of a batch. Requests in progress are stopped, and the results of
+        the requests that finished are kept. Cancellation is best effort, so the batch can still complete.
 
         :param name: str
-          Resource name of the batch. Format: ``batch_<id>``.
+          Unique identifier of the batch. Format: ``batch_<id>``.
 
         :returns: :class:`CancelBatchResponse`
         
@@ -185,7 +185,7 @@
         Gets the latest status and progress of a batch.
 
         :param name: str
-          Resource name of the batch. Format: ``batch_<id>``.
+          Unique identifier of the batch. Format: ``batch_<id>``.
 
         :returns: :class:`Batch`
         

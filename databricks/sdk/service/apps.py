@@ -497,35 +497,42 @@ class AppAccessControlResponse:
 
 @dataclass
 class AppDeployment:
+    """A deployment of an app's source code, taken from a workspace path or a Git reference. When a
+    deployment succeeds, it becomes the app's active deployment. See
+    https://docs.databricks.com/aws/en/dev-tools/databricks-apps/deploy."""
+
     command: Optional[List[str]] = None
     """The command with which to run the app. This will override the command specified in the app.yaml
     file."""
 
     create_time: Optional[str] = None
-    """The creation time of the deployment. Formatted timestamp in ISO 6801."""
+    """The creation time of the deployment. Formatted timestamp in ISO 8601."""
 
     creator: Optional[str] = None
-    """The email of the user creates the deployment."""
+    """The email of the user that created the deployment."""
 
     deployment_artifacts: Optional[AppDeploymentArtifacts] = None
     """The deployment artifacts for an app."""
 
     deployment_id: Optional[str] = None
-    """The unique id of the deployment."""
+    """The unique ID of the deployment. Databricks generates the ID when the deployment is created."""
 
     env_vars: Optional[List[EnvVar]] = None
     """The environment variables to set in the app runtime environment. This will override the
-    environment variables specified in the app.yaml file."""
+    environment variables specified in the app.yaml file. Responses return only the variable names,
+    not their values."""
 
     git_source: Optional[GitSource] = None
-    """Git repository to use as the source for the app deployment."""
+    """Git repository to use as the source for the app deployment. The repository itself is configured
+    on the app, so set only the branch, tag or commit here, and optionally ``source_code_path``."""
 
     health_check: Optional[AppHealthCheck] = None
     """Deploy-time health check for the app. Verifies the app is responding to HTTP requests before
     considering the deployment successful."""
 
     mode: Optional[AppDeploymentMode] = None
-    """The mode of which the deployment will manage the source code."""
+    """The mode in which the deployment manages the source code. The mode defaults to ``SNAPSHOT``,
+    which is the only supported mode."""
 
     scan_omitted_count_is_lower_bound: Optional[bool] = None
     """Whether ``scan_omitted_findings_count`` is a lower bound rather than an exact count, because the
@@ -545,13 +552,14 @@ class AppDeployment:
     different from ``deployment_artifacts.source_code_path``, which is the path used by the deployed
     app. The former refers to the original source code location of the app in the workspace during
     deployment creation, whereas the latter provides a system generated stable snapshotted source
-    code path used by the deployment."""
+    code path used by the deployment. Set either ``source_code_path`` or ``git_source``, not both.
+    If neither is set, the deployment reuses the source of the app's active deployment."""
 
     status: Optional[AppDeploymentStatus] = None
-    """Status and status message of the deployment"""
+    """The current state of the deployment and a message that describes its progress or failure."""
 
     update_time: Optional[str] = None
-    """The update time of the deployment. Formatted timestamp in ISO 6801."""
+    """The update time of the deployment. Formatted timestamp in ISO 8601."""
 
     def as_dict(self) -> dict:
         """Serializes the AppDeployment into a dictionary suitable for use as a JSON request body."""
@@ -796,7 +804,8 @@ class AppDeploymentStatus:
     """Message corresponding with the deployment state."""
 
     state: Optional[AppDeploymentState] = None
-    """State of the deployment."""
+    """State of the deployment. A deployment starts in ``IN_PROGRESS`` and ends in ``SUCCEEDED``,
+    ``FAILED`` or ``CANCELLED``."""
 
     def as_dict(self) -> dict:
         """Serializes the AppDeploymentStatus into a dictionary suitable for use as a JSON request body."""
@@ -2648,10 +2657,10 @@ class ListAppDeploymentScanFindingsResponse:
 @dataclass
 class ListAppDeploymentsResponse:
     app_deployments: Optional[List[AppDeployment]] = None
-    """Deployment history of the app."""
+    """Deployment history of the app, most recent deployment first."""
 
     next_page_token: Optional[str] = None
-    """Pagination token to request the next page of apps."""
+    """Pagination token to request the next page of deployments."""
 
     def as_dict(self) -> dict:
         """Serializes the ListAppDeploymentsResponse into a dictionary suitable for use as a JSON request body."""
@@ -2865,9 +2874,14 @@ class ScanFindingStatus(Enum):
 
 @dataclass
 class Space:
+    """An app space groups Databricks apps and shares configuration across them. Resources, user API
+    scopes and the usage policy configured on a space apply to every app in the space. See
+    https://docs.databricks.com/aws/en/dev-tools/databricks-apps/app-spaces."""
+
     name: str
     """The name of the app space. The name must contain only lowercase alphanumeric characters and
-    hyphens. It must be unique within the workspace."""
+    hyphens. It must be unique within the workspace. It can't start or end with a hyphen, and it
+    can't be changed after the space is created."""
 
     assume_group_id: Optional[str] = None
     """The group whose permissions users assume via Role Authorization for apps in this space. When
@@ -2875,7 +2889,7 @@ class Space:
     Set only at space creation."""
 
     create_time: Optional[Timestamp] = None
-    """The creation time of the app space. Formatted timestamp in ISO 6801."""
+    """The creation time of the app space. Formatted timestamp in ISO 8601."""
 
     creator: Optional[str] = None
     """The email of the user that created the app space."""
@@ -2897,19 +2911,19 @@ class Space:
     in the space."""
 
     service_principal_client_id: Optional[str] = None
-    """The service principal client ID for the app space."""
+    """OAuth client ID of the app space's service principal."""
 
     service_principal_id: Optional[int] = None
-    """The service principal ID for the app space."""
+    """Numeric ID of the app space's service principal."""
 
     service_principal_name: Optional[str] = None
-    """The service principal name for the app space."""
+    """Display name of the app space's service principal."""
 
     status: Optional[SpaceStatus] = None
     """The status of the app space."""
 
     update_time: Optional[Timestamp] = None
-    """The update time of the app space. Formatted timestamp in ISO 6801."""
+    """The update time of the app space. Formatted timestamp in ISO 8601."""
 
     updater: Optional[str] = None
     """The email of the user that last updated the app space."""
@@ -2918,7 +2932,8 @@ class Space:
     """The usage policy ID for managing cost at the space level."""
 
     user_api_scopes: Optional[List[str]] = None
-    """OAuth scopes for apps in the space."""
+    """API scopes that apps in the space can request for user authorization. See
+    https://docs.databricks.com/aws/en/dev-tools/databricks-apps/auth."""
 
     def as_dict(self) -> dict:
         """Serializes the Space into a dictionary suitable for use as a JSON request body."""
@@ -3537,7 +3552,9 @@ class AppsAPI:
         return DeleteSpaceOperation(self, operation)
 
     def deploy(self, app_name: str, app_deployment: AppDeployment) -> Wait[AppDeployment]:
-        """Creates an app deployment for the app with the supplied name.
+        """Creates an app deployment for the app with the supplied name. The call returns while the deployment is
+        still ``IN_PROGRESS``; poll the deployment until it reaches a terminal state. The request fails with
+        RESOURCE_CONFLICT if another deployment of the same app is still pending and has not timed out.
 
         :param app_name: str
           The name of the app.
@@ -3815,14 +3832,15 @@ class AppsAPI:
     def list_deployments(
         self, app_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[AppDeployment]:
-        """Lists all app deployments for the app with the supplied name.
+        """Lists all app deployments for the app with the supplied name. The history holds only the app's most
+        recent deployments.
 
         :param app_name: str
           The name of the app.
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. The default is 100 and the maximum is 1000.
         :param page_token: str (optional)
-          Pagination token to go to the next page of apps. Requests first page if absent.
+          Pagination token to go to the next page of deployments. Requests first page if absent.
 
         :returns: Iterator over :class:`AppDeployment`
         """
@@ -4081,18 +4099,12 @@ class AppsAPI:
 
         :param name: str
           The name of the app space. The name must contain only lowercase alphanumeric characters and hyphens.
-          It must be unique within the workspace.
+          It must be unique within the workspace. It can't start or end with a hyphen, and it can't be changed
+          after the space is created.
         :param space: :class:`Space`
         :param update_mask: FieldMask
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          Comma-separated names of the ``space`` fields to update, such as ``description`` or ``resources``. A
+          field named in the mask but absent from ``space`` is cleared.
 
         :returns: :class:`Operation`
         """

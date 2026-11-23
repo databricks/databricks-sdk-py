@@ -25,6 +25,7 @@ from databricks.sdk.service._internal import (
     _timestamp,
     Wait,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
 
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -7274,8 +7275,8 @@ class NodeType:
     """Whether the node type is deprecated. Non-deprecated node types offer greater performance."""
 
     is_encrypted_in_transit: Optional[bool] = None
-    """AWS specific, whether this instance supports encryption in transit, used for hipaa and pci
-    workloads."""
+    """Whether this node type supports encryption in transit, which matters for workloads that need it,
+    such as hipaa and pci. Always true on GCP; on AWS and Azure it depends on the node type."""
 
     is_graviton: Optional[bool] = None
     """Whether this is an Arm-based instance."""
@@ -12600,6 +12601,69 @@ class ServerlessComputeServiceAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def create_compute_policy(self, compute_policy: ComputePolicy) -> ComputePolicy:
+        """Creates a custom compute policy in the workspace.
+
+        :param compute_policy: :class:`ComputePolicy`
+          The compute policy to create.
+
+        :returns: :class:`ComputePolicy`
+        """
+
+        body = compute_policy.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/policies/compute", body=body, headers=headers)
+        return ComputePolicy.from_dict(res)
+
+    def delete_compute_policy(self, compute_policy_id: str):
+        """Deletes a custom compute policy in the workspace. Default (system-provisioned) policies cannot be
+        deleted.
+
+        :param compute_policy_id: str
+          The ID of the compute policy to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/policies/compute/{compute_policy_id}", headers=headers)
+
+    def get_compute_policy(self, compute_policy_id: str) -> ComputePolicy:
+        """Retrieves a compute policy by its ID.
+
+        :param compute_policy_id: str
+          The ID of the compute policy to retrieve.
+
+        :returns: :class:`ComputePolicy`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/policies/compute/{compute_policy_id}", headers=headers)
+        return ComputePolicy.from_dict(res)
+
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ServerlessCompute]:
         """Lists Interactive serverless computes that the caller can use or manage. Results are returned in an
         unspecified order.
@@ -12671,3 +12735,44 @@ class ServerlessComputeServiceAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def update_compute_policy(
+        self, compute_policy_id: str, compute_policy: ComputePolicy, update_mask: FieldMask
+    ) -> ComputePolicy:
+        """Updates a custom compute policy in the workspace. The display_name and allowed_compute_products are
+        mutable; use update_mask to control which fields change. Default (system-provisioned) policies cannot
+        be updated.
+
+        :param compute_policy_id: str
+          The unique identifier of the compute policy (UUID). Server-assigned on create.
+        :param compute_policy: :class:`ComputePolicy`
+          The compute policy to update. ``compute_policy.compute_policy_id`` identifies which policy to
+          update; only the fields named in ``update_mask`` are applied.
+        :param update_mask: FieldMask
+          Fields to update, relative to ``compute_policy``. Must contain at least one path; the supported
+          paths are ``display_name`` and ``allowed_compute_products``. Supplied product arms replace their
+          constraints and omitted products remain unchanged. An empty arm clears that product's limits; an
+          absent or empty products object is invalid. Removing a product requires its delete API. Nested masks
+          and wildcards are unsupported. ``display_name`` cannot be cleared: if it is in the mask it must be
+          non-empty.
+
+        :returns: :class:`ComputePolicy`
+        """
+
+        body = compute_policy.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/policies/compute/{compute_policy_id}", query=query, body=body, headers=headers
+        )
+        return ComputePolicy.from_dict(res)

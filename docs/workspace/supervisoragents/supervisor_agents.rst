@@ -20,7 +20,8 @@
 
     .. py:method:: create_supervisor_agent(supervisor_agent: SupervisorAgent) -> SupervisorAgent
 
-        Creates a new Supervisor Agent.
+        Creates a Supervisor Agent together with its serving endpoint and MLflow experiment. Tools and
+        subagents are added to the agent afterwards with the Tool methods.
 
         :param supervisor_agent: :class:`SupervisorAgent`
           The Supervisor Agent to create.
@@ -59,7 +60,8 @@
 
     .. py:method:: delete_supervisor_agent(name: str)
 
-        Deletes a Supervisor Agent.
+        Deletes a Supervisor Agent together with the resources created for it, including its tools, examples,
+        serving endpoint and MLflow experiment.
 
         :param name: str
           The resource name of the Supervisor Agent. Format: supervisor-agents/{supervisor_agent_id}
@@ -147,7 +149,7 @@
 
     .. py:method:: list_supervisor_agents( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[SupervisorAgent]
 
-        Lists Supervisor Agents.
+        Lists the Supervisor Agents in the workspace that the caller has permission to view.
 
         :param page_size: int (optional)
           The maximum number of supervisor agents to return. If unspecified, at most 100 supervisor agents
@@ -215,15 +217,18 @@
 
     .. py:method:: update_supervisor_agent(name: str, supervisor_agent: SupervisorAgent, update_mask: FieldMask) -> SupervisorAgent
 
-        Updates a Supervisor Agent. The fields that are required depend on the paths specified in
-        ``update_mask``. Only fields included in the mask will be updated.
+        Updates a Supervisor Agent. Only the fields listed in ``update_mask`` are changed. All other fields
+        keep their current values.
 
         :param name: str
-          The resource name of the SupervisorAgent. Format: supervisor-agents/{supervisor_agent_id}
+          The resource name of the Supervisor Agent. Format: supervisor-agents/{supervisor_agent_id} The
+          server assigns the name when the agent is created.
         :param supervisor_agent: :class:`SupervisorAgent`
-          The SupervisorAgent to update.
+          The Supervisor Agent to update. ``name`` identifies the agent. The other fields carry the new values
+          for the paths listed in ``update_mask``.
         :param update_mask: FieldMask
-          Field mask for fields to be updated.
+          Comma-separated list of the fields to update. Supported values are ``display_name``, ``description``
+          and ``instructions``. The request fails if the mask is empty or names any other field.
 
         :returns: :class:`SupervisorAgent`
         

@@ -634,6 +634,7 @@ class AiRuntimeTaskPriorityClass(Enum):
 
     HIGH = "HIGH"
     NORMAL = "NORMAL"
+    PREEMPTABLE = "PREEMPTABLE"
 
 
 class AlertEvaluationState(Enum):
@@ -6009,7 +6010,7 @@ class PythonOperatorTask:
     ``my_project.MyOperator``."""
 
     parameters: Optional[List[PythonOperatorTaskParameter]] = None
-    """An ordered list of task parameters. TODO(JOBS-30885): Add limits for parameters."""
+    """An ordered list of task parameters."""
 
     def as_dict(self) -> dict:
         """Serializes the PythonOperatorTask into a dictionary suitable for use as a JSON request body."""

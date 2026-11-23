@@ -1,5 +1,22 @@
 # Version changelog
 
+## Release v0.170.0 (2026-11-23)
+
+### API Changes
+* Add `create_compute_policy()`, `delete_compute_policy()`, `get_compute_policy()` and `update_compute_policy()` methods for [w.serverless_compute_service](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/compute/serverless_compute_service.html) workspace-level service.
+* Add `rescan_catalog()` method for [w.data_classification](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dataclassification/data_classification.html) workspace-level service.
+* Add `url_configuration` field for `databricks.sdk.service.catalog.AccessRequestDestinations`.
+* Add `streaming` field for `databricks.sdk.service.lakewatch.Rule`.
+* Add `lookup` and `secondary_keys` fields for `databricks.sdk.service.ml.Function`.
+* Add `compute_policy_id` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `network` field for `databricks.sdk.service.sandbox.SandboxSpec`.
+* Add `finalizing` enum value for `databricks.sdk.service.aisearch.EndpointScalingInfoPhase`.
+* Add `google_ads` enum value for `databricks.sdk.service.catalog.ConnectionType`.
+* Add `preemptable` enum value for `databricks.sdk.service.jobs.AiRuntimeTaskPriorityClass`.
+* Add `finalizing` enum value for `databricks.sdk.service.vectorsearch.EndpointScalingInfoScalingPhase`.
+* Change `schedule` field for `databricks.sdk.service.lakewatch.Rule` to no longer be required.
+* [Breaking] Change `schedule` field for `databricks.sdk.service.lakewatch.Rule` to no longer be required.
+
 ## Release v0.169.0 (2026-11-19)
 
 ### API Changes

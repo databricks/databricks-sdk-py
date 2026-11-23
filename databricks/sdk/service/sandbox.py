@@ -482,6 +482,34 @@ class ListSandboxesResponse:
 
 
 @dataclass
+class NetworkSpec:
+    """Network configuration for the sandbox."""
+
+    internet_access: Optional[bool] = None
+    """Whether the sandbox can reach the public internet. Defaults to true. Control-plane, PrivateLink,
+    and workspace/UC/Delta-shared storage stay reachable either way."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NetworkSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.internet_access is not None:
+            body["internet_access"] = self.internet_access
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.internet_access is not None:
+            body["internet_access"] = self.internet_access
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkSpec:
+        """Deserializes the NetworkSpec from a dictionary."""
+        return cls(internet_access=d.get("internet_access", None))
+
+
+@dataclass
 class RenamePathResponse:
     """Confirms that the sandbox path was renamed."""
 
@@ -720,6 +748,9 @@ class SandboxSpec:
     environment: Optional[EnvironmentSpec] = None
     """Software environment for the sandbox, such as the container image it runs."""
 
+    network: Optional[NetworkSpec] = None
+    """Network configuration requested for the sandbox."""
+
     def as_dict(self) -> dict:
         """Serializes the SandboxSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -727,6 +758,8 @@ class SandboxSpec:
             body["compute"] = self.compute.as_dict()
         if self.environment:
             body["environment"] = self.environment.as_dict()
+        if self.network:
+            body["network"] = self.network.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -736,13 +769,17 @@ class SandboxSpec:
             body["compute"] = self.compute
         if self.environment:
             body["environment"] = self.environment
+        if self.network:
+            body["network"] = self.network
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SandboxSpec:
         """Deserializes the SandboxSpec from a dictionary."""
         return cls(
-            compute=_from_dict(d, "compute", ComputeSpec), environment=_from_dict(d, "environment", EnvironmentSpec)
+            compute=_from_dict(d, "compute", ComputeSpec),
+            environment=_from_dict(d, "environment", EnvironmentSpec),
+            network=_from_dict(d, "network", NetworkSpec),
         )
 
 

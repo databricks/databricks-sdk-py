@@ -35,7 +35,8 @@
         :param comment: str (optional)
           User-provided free-form text description.
         :param storage_root: str (optional)
-          Storage root URL for the share.
+          Cloud storage path, within an external location, under which the share stores the notebook files
+          added to it. When unset, notebook files are stored under the metastore root storage location.
 
         :returns: :class:`ShareInfo`
         
@@ -76,7 +77,8 @@
         :param name: str
           The name of the share.
         :param include_shared_data: bool (optional)
-          Query for data to include in the share.
+          Whether to include the share's data objects in the response. When false or omitted, the response
+          omits ``objects``.
 
         :returns: :class:`ShareInfo`
         
@@ -217,9 +219,11 @@
         :param owner: str (optional)
           Username of current owner of share.
         :param storage_root: str (optional)
-          Storage root URL for the share.
+          Cloud storage path, within an external location, under which the share stores the notebook files
+          added to it. When unset, notebook files are stored under the metastore root storage location.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
-          Array of shared data object updates.
+          Array of shared data object updates. The server limits how many updates a single request can
+          contain.
 
         :returns: :class:`ShareInfo`
         

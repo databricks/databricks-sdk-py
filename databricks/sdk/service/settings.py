@@ -10243,7 +10243,8 @@ class TokenManagementAPI:
         :param application_id: str
           Application ID of the service principal.
         :param autoscope_enabled: bool (optional)
-          Whether to enable autoscoping for this token.
+          Whether to enable autoscoping for this token. ``disable_autoscoping`` supersedes this field and is
+          the one read when both are set.
         :param comment: str (optional)
           Comment that describes the purpose of the token.
         :param lifetime_seconds: int (optional)
@@ -10491,7 +10492,8 @@ class TokensAPI:
 
         :param autoscope_enabled: bool (optional)
           Whether to enable autoscoping for this token. When true, the token will automatically collect
-          inferred API path scopes as it is used.
+          inferred API path scopes as it is used. ``disable_autoscoping`` supersedes this field and is the one
+          read when both are set.
         :param comment: str (optional)
           Optional description to attach to the token.
         :param lifetime_seconds: int (optional)

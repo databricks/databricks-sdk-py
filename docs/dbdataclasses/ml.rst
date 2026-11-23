@@ -309,6 +309,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EntityBinding
+   :members:
+   :undoc-members:
+
 .. autoclass:: EntityColumn
    :members:
    :undoc-members:
@@ -834,6 +838,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: InputReference
+   :members:
+   :undoc-members:
+
 .. autoclass:: InputTag
    :members:
    :undoc-members:
@@ -1068,6 +1076,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "LOGGED_MODEL_UPLOAD_FAILED"
 
 .. autoclass:: LoggedModelTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: Lookup
    :members:
    :undoc-members:
 
@@ -1674,6 +1686,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SearchRunsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: SecondaryKeys
    :members:
    :undoc-members:
 

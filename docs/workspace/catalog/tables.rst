@@ -37,9 +37,10 @@
         :param name: str
           Name of table, relative to parent schema.
         :param catalog_name: str
-          Name of parent catalog.
+          Name of parent catalog. Required for creation using catalog and schema names.
         :param schema_name: str
-          Name of parent schema relative to its parent catalog.
+          Name of parent schema relative to its parent catalog. Required for creation using catalog and schema
+          names.
         :param table_type: :class:`TableType`
           The type of the table. MANAGED tables store their data in storage that Unity Catalog manages,
           EXTERNAL tables store it in a registered external location, FOREIGN tables mirror objects of an

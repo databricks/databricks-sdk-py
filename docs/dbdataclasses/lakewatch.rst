@@ -245,6 +245,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RuleInputStreaming
+   :members:
+   :undoc-members:
+
 .. autoclass:: RuleMitreMapping
    :members:
    :undoc-members:
@@ -280,6 +284,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SlackExportConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamingPredicate
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamingSource
    :members:
    :undoc-members:
 

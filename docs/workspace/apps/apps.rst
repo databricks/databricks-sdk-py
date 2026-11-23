@@ -97,7 +97,9 @@
 
     .. py:method:: deploy(app_name: str, app_deployment: AppDeployment) -> Wait[AppDeployment]
 
-        Creates an app deployment for the app with the supplied name.
+        Creates an app deployment for the app with the supplied name. The call returns while the deployment is
+        still ``IN_PROGRESS``; poll the deployment until it reaches a terminal state. The request fails with
+        RESOURCE_CONFLICT if another deployment of the same app is still pending and has not timed out.
 
         :param app_name: str
           The name of the app.
@@ -225,14 +227,15 @@
 
     .. py:method:: list_deployments(app_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[AppDeployment]
 
-        Lists all app deployments for the app with the supplied name.
+        Lists all app deployments for the app with the supplied name. The history holds only the app's most
+        recent deployments.
 
         :param app_name: str
           The name of the app.
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. The default is 100 and the maximum is 1000.
         :param page_token: str (optional)
-          Pagination token to go to the next page of apps. Requests first page if absent.
+          Pagination token to go to the next page of deployments. Requests first page if absent.
 
         :returns: Iterator over :class:`AppDeployment`
         
@@ -349,18 +352,12 @@
 
         :param name: str
           The name of the app space. The name must contain only lowercase alphanumeric characters and hyphens.
-          It must be unique within the workspace.
+          It must be unique within the workspace. It can't start or end with a hyphen, and it can't be changed
+          after the space is created.
         :param space: :class:`Space`
         :param update_mask: FieldMask
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
-          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
-          API changes in the future.
+          Comma-separated names of the ``space`` fields to update, such as ``description`` or ``resources``. A
+          field named in the mask but absent from ``space`` is cleared.
 
         :returns: :class:`Operation`
         

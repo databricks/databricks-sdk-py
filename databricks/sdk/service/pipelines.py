@@ -4938,7 +4938,7 @@ class SchemaSpec:
 
     destination_schema: str
     """Required. Destination schema to store tables in. Tables with the same name as the source tables
-    are created in this destination schema. The pipeline fails If a table with the same name already
+    are created in this destination schema. The pipeline fails if a table with the same name already
     exists."""
 
     connector_options: Optional[ConnectorOptions] = None
@@ -5791,12 +5791,13 @@ class TikTokAdsOptionsTikTokReportType(Enum):
 
 @dataclass
 class Transformer:
-    """Specifies how to transform binary data into structured data."""
+    """One step that transforms a column: either decodes data into structured data (``format``) or
+    reshapes an already-decoded column (``operation``)."""
 
     avro_options: Optional[AvroTransformerOptions] = None
 
     format: Optional[TransformerFormat] = None
-    """Required: the wire format of the data."""
+    """The format to decode the input column from."""
 
     input_column: Optional[str] = None
     """Optional input column to transform. When set, the transformer reads from this column instead of

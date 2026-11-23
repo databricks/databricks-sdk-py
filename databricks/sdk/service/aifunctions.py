@@ -154,8 +154,7 @@ class AiDecideOptions:
     """ai_decide"""
 
     version: Optional[str] = None
-    """The function API version to invoke. If unset, the version is inferred per row. Supported
-    versions: ["1.0"]."""
+    """The function API version to invoke. If unset, version 1.0 is used. Supported versions: ["1.0"]."""
 
     def as_dict(self) -> dict:
         """Serializes the AiDecideOptions into a dictionary suitable for use as a JSON request body."""
@@ -782,7 +781,12 @@ class AiParseDocumentResponseMetadata:
 class Batch:
     """The AI Functions Asynchronous API lets you process large volumes of requests as a batch in a
     single call. It is in Beta: a workspace admin must turn on the **AI Functions Asynchronous API**
-    preview on the workspace Previews page before you can call it."""
+    preview on the workspace Previews page before you can call it.
+
+    For examples, see
+    [``ai_parse_document``](/agents/agent-bricks/document-parsing#asynchronous-api),
+    [``ai_extract``](/agents/agent-bricks/info-extraction#asynchronous-api), and
+    [``ai_classify``](/agents/agent-bricks/classification#asynchronous-api)."""
 
     endpoint: str
     """The AI function, for example ``ai_parse_document``."""
@@ -796,13 +800,13 @@ class Batch:
     """Unity Catalog volume path to write the JSONL output file to. If the path is a directory, the
     file is ``<path>/<name>_output.jsonl``. Each line is the result of one request, in the form
     ``{"custom_id": ..., "response": ...}``, or ``{"custom_id": ..., "error": {"type": ...,
-    "message": ...}}`` for a request that failed."""
+    "message": ...}}`` for a request that failed or did not finish."""
 
     create_time: Optional[Timestamp] = None
     """Output only. The time when the batch was created."""
 
     name: Optional[str] = None
-    """Output only. Identifier. Resource name of the batch, returned by create. Format: ``batch_<id>``."""
+    """Output only. Unique identifier of the batch, returned by create. Format: ``batch_<id>``."""
 
     params: Optional[Dict[str, any]] = None
     """Parameters of the function other than its input, applied to every request in the batch, for
@@ -819,7 +823,10 @@ class Batch:
     when you list batches."""
 
     status: Optional[BatchStatus] = None
-    """Output only. The status of the batch."""
+    """Output only. The status of the batch. A batch starts as ``PENDING``, runs as ``IN_PROGRESS``, is
+    ``FINALIZING`` while the output file is written, and ends as ``COMPLETED``. A running batch that
+    is cancelled is ``CANCELLING``, then ``CANCELLED``. A ``COMPLETED`` batch can include requests
+    that failed, and a ``FAILED`` batch has no ``output_ref``."""
 
     def as_dict(self) -> dict:
         """Serializes the Batch into a dictionary suitable for use as a JSON request body."""
@@ -1005,7 +1012,7 @@ class AiFunctionsAPI:
         :param labels: any
           The label set to classify as. Either a JSON array of label strings (e.g. ["spam", "not_spam"]), or a
           JSON object mapping each label to a description (e.g. {"spam": "unsolicited bulk message",
-          "not_spam": "a legitimate message"}). Accepts 2 to 500 labels, each 1 to 100 characters. When
+          "not_spam": "a legitimate message"}). Accepts 2 to 5000 labels, each 1 to 100 characters. When
           multilabel is true, a single label is also accepted.
         :param options: :class:`AiClassifyOptions` (optional)
           Function options. Omitted fields fall back to their documented defaults.
@@ -1219,11 +1226,11 @@ class AiFunctionsAPI:
         return AiParseDocumentResponse.from_dict(res)
 
     def cancel_batch(self, name: str) -> CancelBatchResponse:
-        """Starts the asynchronous cancellation of a batch. Requests in progress are drained first. Cancellation
-        is best effort, so the batch can still complete.
+        """Starts the asynchronous cancellation of a batch. Requests in progress are stopped, and the results of
+        the requests that finished are kept. Cancellation is best effort, so the batch can still complete.
 
         :param name: str
-          Resource name of the batch. Format: ``batch_<id>``.
+          Unique identifier of the batch. Format: ``batch_<id>``.
 
         :returns: :class:`CancelBatchResponse`
         """
@@ -1269,7 +1276,7 @@ class AiFunctionsAPI:
         """Gets the latest status and progress of a batch.
 
         :param name: str
-          Resource name of the batch. Format: ``batch_<id>``.
+          Unique identifier of the batch. Format: ``batch_<id>``.
 
         :returns: :class:`Batch`
         """

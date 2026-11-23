@@ -165,6 +165,26 @@ class CatalogConfigSchemaNames:
         return cls(names=d.get("names", None))
 
 
+@dataclass
+class RescanCatalogResponse:
+    """Response for RescanCatalog. Empty for now; a named message lets later versions add fields."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RescanCatalogResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RescanCatalogResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RescanCatalogResponse:
+        """Deserializes the RescanCatalogResponse from a dictionary."""
+        return cls()
+
+
 class DataClassificationAPI:
     """Manage data classification for Unity Catalog catalogs. Data classification automatically identifies and
     tags sensitive data (PII) in Unity Catalog tables. Each catalog can have at most one configuration
@@ -244,6 +264,37 @@ class DataClassificationAPI:
 
         res = self._api.do("GET", f"/api/data-classification/v1/{name}", headers=headers)
         return CatalogConfig.from_dict(res)
+
+    def rescan_catalog(self, name: str) -> RescanCatalogResponse:
+        """Rescan the tables in a catalog's Data Classification scope that changed since their last scan.
+
+        The rescan uses the catalog's current classifiers and follows its config (schema selection) and SKIP
+        tags. Tables with no commits since their last scan are skipped. Views and tables without a Delta
+        commit history keep their regular rescan schedule. The call returns once the rescan is scheduled;
+        scanning runs in the background. If a scan of the catalog is running, the call cancels it and starts a
+        new run.
+
+        - Data Classification must be enabled for the catalog.
+        - The call must come from the workspace where Data Classification was enabled.
+
+        :param name: str
+          Resource name of the catalog, in the format: catalogs/{catalog_name}.
+
+        :returns: :class:`RescanCatalogResponse`
+        """
+
+        body = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/data-classification/v1/{name}/rescan", body=body, headers=headers)
+        return RescanCatalogResponse.from_dict(res)
 
     def update_catalog_config(self, name: str, catalog_config: CatalogConfig, update_mask: FieldMask) -> CatalogConfig:
         """Update the Data Classification configuration for a catalog.

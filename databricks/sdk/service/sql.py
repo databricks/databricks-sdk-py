@@ -90,49 +90,62 @@ class Aggregation(Enum):
 
 @dataclass
 class Alert:
+    """A legacy Databricks SQL alert. An alert runs a saved query, compares a column of the result
+    against a threshold, and notifies its subscribers when the condition is met. See
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy for details."""
+
     condition: Optional[AlertCondition] = None
-    """Trigger conditions of the alert."""
+    """Condition that triggers the alert: a column of the query result, a comparison operator, and a
+    threshold value. The value in the first row of the column is evaluated; aggregations are not
+    supported through this API."""
 
     create_time: Optional[str] = None
     """The timestamp indicating when the alert was created."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom body of the alert notification. It can use the template variables and HTML described at
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted, the default notification
+    body is used."""
 
     custom_subject: Optional[str] = None
-    """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom subject of the alert notification, used as the email subject or the Slack message header.
+    It can use the template variables described at
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted, the default subject is
+    used."""
 
     display_name: Optional[str] = None
-    """The display name of the alert."""
+    """Display name of the alert, shown in list views and notifications. It must not be empty."""
 
     id: Optional[str] = None
     """UUID identifying the alert."""
 
     lifecycle_state: Optional[LifecycleState] = None
-    """The workspace state of the alert. Used for tracking trashed status."""
+    """Lifecycle state of the alert: ``ACTIVE``, or ``TRASHED`` after it has been moved to the trash."""
 
     notify_on_ok: Optional[bool] = None
-    """Whether to notify alert subscribers when alert returns back to normal."""
+    """Whether to notify subscribers when the alert state changes from ``TRIGGERED`` back to ``OK``.
+    Defaults to true."""
 
     owner_user_name: Optional[str] = None
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
 
     parent_path: Optional[str] = None
-    """The workspace path of the folder containing the alert."""
+    """Workspace path of the folder containing the alert. Defaults to the creator's home folder when
+    omitted on create. It cannot be changed after creation."""
 
     query_id: Optional[str] = None
-    """UUID of the query attached to the alert."""
+    """UUID of the saved query whose result the alert evaluates. The caller must have permission to
+    view the query."""
 
     seconds_to_retrigger: Optional[int] = None
-    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
-    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+    """Number of seconds the alert waits after a notification before it can notify again while its
+    state stays ``TRIGGERED``. If 0 or not specified, the alert notifies once when its state changes
+    to ``TRIGGERED`` and does not notify again until its state has changed."""
 
     state: Optional[AlertState] = None
-    """Current state of the alert's trigger status. This field is set to UNKNOWN if the alert has not
-    yet been evaluated or ran into an error during the last evaluation."""
+    """Current state of the alert's trigger status: ``TRIGGERED`` if the condition was met on the last
+    evaluation, ``OK`` if it was not, and ``UNKNOWN`` if the alert has not yet been evaluated or ran
+    into an error during the last evaluation."""
 
     trigger_time: Optional[str] = None
     """Timestamp when the alert was last triggered, if the alert has been triggered before."""
@@ -235,16 +248,20 @@ class Alert:
 @dataclass
 class AlertCondition:
     empty_result_state: Optional[AlertState] = None
-    """Alert state if result is empty."""
+    """State the alert takes when the query returns no rows. Defaults to ``UNKNOWN`` when not set."""
 
     op: Optional[AlertOperator] = None
-    """Operator used for comparison in alert evaluation."""
+    """Comparison operator applied between the operand column value and the threshold. The alert is
+    triggered when the comparison is true. ``IS_NULL`` triggers when the column value is null; a
+    threshold must still be supplied but its value is ignored."""
 
     operand: Optional[AlertConditionOperand] = None
-    """Name of the column from the query result to use for comparison in alert evaluation."""
+    """Left-hand side of the comparison. Through this API it must be a ``column`` naming a column of
+    the query result; the value in the first row of that column is compared against the threshold."""
 
     threshold: Optional[AlertConditionThreshold] = None
-    """Threshold value used for comparison in alert evaluation."""
+    """Right-hand side of the comparison. Through this API it must be a fixed ``value`` whose type
+    matches the operand column."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertCondition into a dictionary suitable for use as a JSON request body."""
@@ -286,6 +303,7 @@ class AlertCondition:
 @dataclass
 class AlertConditionOperand:
     column: Optional[AlertOperandColumn] = None
+    """A column of the query result. Used for the ``operand`` of a condition."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertConditionOperand into a dictionary suitable for use as a JSON request body."""
@@ -310,6 +328,7 @@ class AlertConditionOperand:
 @dataclass
 class AlertConditionThreshold:
     value: Optional[AlertOperandValue] = None
+    """A fixed value. Used for the ``threshold`` of a condition."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertConditionThreshold into a dictionary suitable for use as a JSON request body."""
@@ -350,6 +369,7 @@ class AlertLifecycleState(Enum):
 @dataclass
 class AlertOperandColumn:
     name: Optional[str] = None
+    """Name of the column in the query result."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertOperandColumn into a dictionary suitable for use as a JSON request body."""
@@ -374,10 +394,13 @@ class AlertOperandColumn:
 @dataclass
 class AlertOperandValue:
     bool_value: Optional[bool] = None
+    """Boolean threshold, for boolean columns."""
 
     double_value: Optional[float] = None
+    """Numeric threshold, for numeric columns."""
 
     string_value: Optional[str] = None
+    """String threshold, for string or timestamp columns."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertOperandValue into a dictionary suitable for use as a JSON request body."""
@@ -1536,33 +1559,45 @@ class ComparisonOperator(Enum):
 
 @dataclass
 class CreateAlertRequestAlert:
+    """A legacy Databricks SQL alert. An alert runs a saved query, compares a column of the result
+    against a threshold, and notifies its subscribers when the condition is met. See
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy for details."""
+
     condition: Optional[AlertCondition] = None
-    """Trigger conditions of the alert."""
+    """Condition that triggers the alert: a column of the query result, a comparison operator, and a
+    threshold value. The value in the first row of the column is evaluated; aggregations are not
+    supported through this API."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom body of the alert notification. It can use the template variables and HTML described at
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted, the default notification
+    body is used."""
 
     custom_subject: Optional[str] = None
-    """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom subject of the alert notification, used as the email subject or the Slack message header.
+    It can use the template variables described at
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted, the default subject is
+    used."""
 
     display_name: Optional[str] = None
-    """The display name of the alert."""
+    """Display name of the alert, shown in list views and notifications. It must not be empty."""
 
     notify_on_ok: Optional[bool] = None
-    """Whether to notify alert subscribers when alert returns back to normal."""
+    """Whether to notify subscribers when the alert state changes from ``TRIGGERED`` back to ``OK``.
+    Defaults to true."""
 
     parent_path: Optional[str] = None
-    """The workspace path of the folder containing the alert."""
+    """Workspace path of the folder containing the alert. Defaults to the creator's home folder when
+    omitted on create. It cannot be changed after creation."""
 
     query_id: Optional[str] = None
-    """UUID of the query attached to the alert."""
+    """UUID of the saved query whose result the alert evaluates. The caller must have permission to
+    view the query."""
 
     seconds_to_retrigger: Optional[int] = None
-    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
-    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+    """Number of seconds the alert waits after a notification before it can notify again while its
+    state stays ``TRIGGERED``. If 0 or not specified, the alert notifies once when its state changes
+    to ``TRIGGERED`` and does not notify again until its state has changed."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateAlertRequestAlert into a dictionary suitable for use as a JSON request body."""
@@ -4090,8 +4125,10 @@ class LifecycleState(Enum):
 @dataclass
 class ListAlertsResponse:
     next_page_token: Optional[str] = None
+    """Token to pass as ``page_token`` to fetch the next page. Omitted when there are no more pages."""
 
     results: Optional[List[ListAlertsResponseAlert]] = None
+    """Alerts on this page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListAlertsResponse into a dictionary suitable for use as a JSON request body."""
@@ -4122,46 +4159,58 @@ class ListAlertsResponse:
 
 @dataclass
 class ListAlertsResponseAlert:
+    """A legacy Databricks SQL alert. An alert runs a saved query, compares a column of the result
+    against a threshold, and notifies its subscribers when the condition is met. See
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy for details."""
+
     condition: Optional[AlertCondition] = None
-    """Trigger conditions of the alert."""
+    """Condition that triggers the alert: a column of the query result, a comparison operator, and a
+    threshold value. The value in the first row of the column is evaluated; aggregations are not
+    supported through this API."""
 
     create_time: Optional[str] = None
     """The timestamp indicating when the alert was created."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom body of the alert notification. It can use the template variables and HTML described at
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted, the default notification
+    body is used."""
 
     custom_subject: Optional[str] = None
-    """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom subject of the alert notification, used as the email subject or the Slack message header.
+    It can use the template variables described at
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted, the default subject is
+    used."""
 
     display_name: Optional[str] = None
-    """The display name of the alert."""
+    """Display name of the alert, shown in list views and notifications. It must not be empty."""
 
     id: Optional[str] = None
     """UUID identifying the alert."""
 
     lifecycle_state: Optional[LifecycleState] = None
-    """The workspace state of the alert. Used for tracking trashed status."""
+    """Lifecycle state of the alert: ``ACTIVE``, or ``TRASHED`` after it has been moved to the trash."""
 
     notify_on_ok: Optional[bool] = None
-    """Whether to notify alert subscribers when alert returns back to normal."""
+    """Whether to notify subscribers when the alert state changes from ``TRIGGERED`` back to ``OK``.
+    Defaults to true."""
 
     owner_user_name: Optional[str] = None
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
 
     query_id: Optional[str] = None
-    """UUID of the query attached to the alert."""
+    """UUID of the saved query whose result the alert evaluates. The caller must have permission to
+    view the query."""
 
     seconds_to_retrigger: Optional[int] = None
-    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
-    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+    """Number of seconds the alert waits after a notification before it can notify again while its
+    state stays ``TRIGGERED``. If 0 or not specified, the alert notifies once when its state changes
+    to ``TRIGGERED`` and does not notify again until its state has changed."""
 
     state: Optional[AlertState] = None
-    """Current state of the alert's trigger status. This field is set to UNKNOWN if the alert has not
-    yet been evaluated or ran into an error during the last evaluation."""
+    """Current state of the alert's trigger status: ``TRIGGERED`` if the condition was met on the last
+    evaluation, ``OK`` if it was not, and ``UNKNOWN`` if the alert has not yet been evaluated or ran
+    into an error during the last evaluation."""
 
     trigger_time: Optional[str] = None
     """Timestamp when the alert was last triggered, if the alert has been triggered before."""
@@ -7011,33 +7060,44 @@ class TransferOwnershipObjectId:
 
 @dataclass
 class UpdateAlertRequestAlert:
+    """A legacy Databricks SQL alert. An alert runs a saved query, compares a column of the result
+    against a threshold, and notifies its subscribers when the condition is met. See
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy for details."""
+
     condition: Optional[AlertCondition] = None
-    """Trigger conditions of the alert."""
+    """Condition that triggers the alert: a column of the query result, a comparison operator, and a
+    threshold value. The value in the first row of the column is evaluated; aggregations are not
+    supported through this API."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom body of the alert notification. It can use the template variables and HTML described at
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted, the default notification
+    body is used."""
 
     custom_subject: Optional[str] = None
-    """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See `here
-    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
+    """Custom subject of the alert notification, used as the email subject or the Slack message header.
+    It can use the template variables described at
+    https://docs.databricks.com/aws/en/sql/user/alerts/legacy. If omitted, the default subject is
+    used."""
 
     display_name: Optional[str] = None
-    """The display name of the alert."""
+    """Display name of the alert, shown in list views and notifications. It must not be empty."""
 
     notify_on_ok: Optional[bool] = None
-    """Whether to notify alert subscribers when alert returns back to normal."""
+    """Whether to notify subscribers when the alert state changes from ``TRIGGERED`` back to ``OK``.
+    Defaults to true."""
 
     owner_user_name: Optional[str] = None
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
 
     query_id: Optional[str] = None
-    """UUID of the query attached to the alert."""
+    """UUID of the saved query whose result the alert evaluates. The caller must have permission to
+    view the query."""
 
     seconds_to_retrigger: Optional[int] = None
-    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
-    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+    """Number of seconds the alert waits after a notification before it can notify again while its
+    state stays ``TRIGGERED``. If 0 or not specified, the alert notifies once when its state changes
+    to ``TRIGGERED`` and does not notify again until its state has changed."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateAlertRequestAlert into a dictionary suitable for use as a JSON request body."""
@@ -7885,6 +7945,7 @@ class AlertsAPI:
         """Creates an alert.
 
         :param alert: :class:`CreateAlertRequestAlert` (optional)
+          The alert to create. A display name, a ``query_id``, and a ``condition`` are required.
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
           alert's display name conflicts with an existing alert's display name.
@@ -7915,6 +7976,7 @@ class AlertsAPI:
         deleted after 30 days.
 
         :param id: str
+          UUID of the alert to move to the trash.
 
 
         """
@@ -7933,6 +7995,7 @@ class AlertsAPI:
         """Gets an alert.
 
         :param id: str
+          UUID of the alert to fetch.
 
         :returns: :class:`Alert`
         """
@@ -7955,7 +8018,9 @@ class AlertsAPI:
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
 
         :param page_size: int (optional)
+          Maximum number of alerts to return per page.
         :param page_token: str (optional)
+          Token from the ``next_page_token`` of a previous response. Omit it to fetch the first page.
 
         :returns: Iterator over :class:`ListAlertsResponseAlert`
         """
@@ -7990,10 +8055,15 @@ class AlertsAPI:
         alert: Optional[UpdateAlertRequestAlert] = None,
         auto_resolve_display_name: Optional[bool] = None,
     ) -> Alert:
-        """Updates an alert.
+        """Updates the fields of an alert named in ``update_mask``. Changing ``owner_user_name`` requires
+        workspace admin privileges; changing any other field requires CAN MANAGE permission on the alert.
 
         :param id: str
+          UUID of the alert to update.
         :param update_mask: str
+          Comma-separated list of the alert fields to update, such as ``display_name`` or ``condition``.
+          Fields not listed keep their current values.
+
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
           ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
@@ -8004,6 +8074,7 @@ class AlertsAPI:
           fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
           API changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
+          Alert fields to update. Only the fields named in ``update_mask`` are changed.
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
           alert's display name conflicts with an existing alert's display name.

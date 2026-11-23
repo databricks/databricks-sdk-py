@@ -1974,6 +1974,40 @@ class DirectSchemas:
 
 
 @dataclass
+class EntityBinding:
+    """Binds one entity column of a Lookup's upstream Feature to the input that supplies its values."""
+
+    entity: str
+    """Specifies the entity column of the upstream Feature."""
+
+    input: InputReference
+    """Specifies where the column's values come from."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EntityBinding into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity is not None:
+            body["entity"] = self.entity
+        if self.input:
+            body["input"] = self.input.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EntityBinding into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity is not None:
+            body["entity"] = self.entity
+        if self.input:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EntityBinding:
+        """Deserializes the EntityBinding from a dictionary."""
+        return cls(entity=d.get("entity", None), input=_from_dict(d, "input", InputReference))
+
+
+@dataclass
 class EntityColumn:
     name: str
     """The name of the entity column. For Kafka sources, use dot-prefixed path notation to reference
@@ -3443,6 +3477,12 @@ class Function:
 
     function_type: Optional[FunctionFunctionType] = None
 
+    lookup: Optional[Lookup] = None
+    """Looks up an upstream Feature using entity values from other Features or the request."""
+
+    secondary_keys: Optional[SecondaryKeys] = None
+    """Selects the secondary key values an upstream Feature has stored for the request's entity."""
+
     def as_dict(self) -> dict:
         """Serializes the Function into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3456,6 +3496,10 @@ class Function:
             body["extra_parameters"] = [v.as_dict() for v in self.extra_parameters]
         if self.function_type is not None:
             body["function_type"] = self.function_type.value
+        if self.lookup:
+            body["lookup"] = self.lookup.as_dict()
+        if self.secondary_keys:
+            body["secondary_keys"] = self.secondary_keys.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3471,6 +3515,10 @@ class Function:
             body["extra_parameters"] = self.extra_parameters
         if self.function_type is not None:
             body["function_type"] = self.function_type
+        if self.lookup:
+            body["lookup"] = self.lookup
+        if self.secondary_keys:
+            body["secondary_keys"] = self.secondary_keys
         return body
 
     @classmethod
@@ -3482,6 +3530,8 @@ class Function:
             custom_udf=_from_dict(d, "custom_udf", CustomUdf),
             extra_parameters=_repeated_dict(d, "extra_parameters", FunctionExtraParameter),
             function_type=_enum(d, "function_type", FunctionFunctionType),
+            lookup=_from_dict(d, "lookup", Lookup),
+            secondary_keys=_from_dict(d, "secondary_keys", SecondaryKeys),
         )
 
 
@@ -4144,6 +4194,34 @@ class InputBinding:
 
 
 @dataclass
+class InputReference:
+    """The input that supplies a value. A value from the request comes from a Feature whose source is a
+    RequestSource."""
+
+    feature: Optional[FeatureReference] = None
+    """Specifies another Feature whose output supplies the value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the InputReference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature:
+            body["feature"] = self.feature.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InputReference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature:
+            body["feature"] = self.feature
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InputReference:
+        """Deserializes the InputReference from a dictionary."""
+        return cls(feature=_from_dict(d, "feature", FeatureReference))
+
+
+@dataclass
 class InputTag:
     """Tag for a dataset input."""
 
@@ -4214,7 +4292,8 @@ class Issue:
     metadata: Optional[Dict[str, str]] = None
     """Additional details about the Issue, such as how issue detection observed it. Not a stable
     contract: keys and values can change without notice, so clients must tolerate unknown and
-    missing keys. At most 20 entries, with keys of at most 64 UTF-8 bytes."""
+    missing keys. At most 20 entries, with keys of at most 64 UTF-8 bytes. Values are at most 256
+    UTF-8 bytes, except recent_affected_trace_ids (4 KiB) and suggested_fix (16 KiB)."""
 
     name: Optional[str] = None
     """The Issue's resource name, as ``experiments/{experiment}/issues/{issue}``, where
@@ -5782,6 +5861,51 @@ class LoggedModelTag:
     def from_dict(cls, d: Dict[str, Any]) -> LoggedModelTag:
         """Deserializes the LoggedModelTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class Lookup:
+    """Looks up an upstream Feature using entity values bound from other Features or from the request.
+    When a binding is an array, such as the output of a SecondaryKeys Feature, returns one value per
+    position as an array aligned with that binding. The Feature's source must be a FeatureViewSource
+    that includes ``feature`` and every Feature referenced in ``entities``. Currently, exactly one
+    entity must be bound to a Feature: a SecondaryKeys Feature whose key has the same name as that
+    entity. Its target can be ``feature`` or another Feature. Every other entity must be bound to a
+    request column of the same name. Names are compared without struct prefixes, so ``user_id``
+    matches ``value.user_id``. A FeatureSpec can't also look up ``feature`` with all of its entities
+    supplied."""
+
+    feature: FeatureReference
+    """The upstream Feature to look up."""
+
+    entities: List[EntityBinding]
+    """One binding per entity column of the upstream Feature. Every entity column must be bound exactly
+    once."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Lookup into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entities:
+            body["entities"] = [v.as_dict() for v in self.entities]
+        if self.feature:
+            body["feature"] = self.feature.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Lookup into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entities:
+            body["entities"] = self.entities
+        if self.feature:
+            body["feature"] = self.feature
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Lookup:
+        """Deserializes the Lookup from a dictionary."""
+        return cls(
+            entities=_repeated_dict(d, "entities", EntityBinding), feature=_from_dict(d, "feature", FeatureReference)
+        )
 
 
 @dataclass
@@ -9533,6 +9657,54 @@ class SearchRunsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> SearchRunsResponse:
         """Deserializes the SearchRunsResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), runs=_repeated_dict(d, "runs", Run))
+
+
+@dataclass
+class SecondaryKeys:
+    """Returns the values of one entity column that an upstream Feature has stored for the request's
+    other entity columns, as an array. For example, given a Feature with entities (user_id, ad_id),
+    returns the ad_ids stored for the requested user_id. The Feature's source must be a
+    FeatureViewSource that includes ``feature``."""
+
+    feature: FeatureReference
+    """The upstream Feature whose stored keys are selected."""
+
+    key: str
+    """The entity column of the upstream Feature to return values for. It is not supplied by the
+    request."""
+
+    max_keys: int
+    """Maximum number of keys to return per entity, in primary key order. Must not exceed the workspace
+    limit."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SecondaryKeys into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature:
+            body["feature"] = self.feature.as_dict()
+        if self.key is not None:
+            body["key"] = self.key
+        if self.max_keys is not None:
+            body["max_keys"] = self.max_keys
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SecondaryKeys into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature:
+            body["feature"] = self.feature
+        if self.key is not None:
+            body["key"] = self.key
+        if self.max_keys is not None:
+            body["max_keys"] = self.max_keys
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SecondaryKeys:
+        """Deserializes the SecondaryKeys from a dictionary."""
+        return cls(
+            feature=_from_dict(d, "feature", FeatureReference), key=d.get("key", None), max_keys=_int64(d, "max_keys")
+        )
 
 
 @dataclass

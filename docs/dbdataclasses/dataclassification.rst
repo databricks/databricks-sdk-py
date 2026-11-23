@@ -25,3 +25,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: CatalogConfigSchemaNames
    :members:
    :undoc-members:
+
+.. autoclass:: RescanCatalogResponse
+   :members:
+   :undoc-members:
