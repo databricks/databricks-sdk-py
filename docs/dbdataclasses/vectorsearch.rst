@@ -90,6 +90,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ESTIMATING
       :value: "ESTIMATING"
 
+   .. py:attribute:: FINALIZING
+      :value: "FINALIZING"
+
    .. py:attribute:: INITIALIZING_INDEX
       :value: "INITIALIZING_INDEX"
 

@@ -123,8 +123,9 @@
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param skill_id: str
-          Name for the skill, e.g. "basic-math". The server normalizes this identifier to lowercase. It is
-          independent of the bundle name read from SKILL.md.
+          Name of the skill within the parent schema. The name must not contain periods, spaces, forward
+          slashes, percent signs, or control characters, and it is stored in lowercase. It is independent of
+          the bundle name read from SKILL.md.
 
         :returns: :class:`Skill`
         
@@ -541,14 +542,14 @@
 
         :param name: str
           Resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}`` component
-          is capped at 255 characters individually. Server-derived on Create from ``parent`` + ``skill_id``;
-          required and immutable on Update/Get/Delete.
+          is capped at 255 characters individually. The server derives the name on Create from ``parent`` and
+          ``skill_id``; it is required and immutable on Update, Get, and Delete.
         :param skill: :class:`Skill`
           The skill with the updated field values. ``name`` identifies the resource
           (``skills/{catalog}.{schema}.{skill}``); only fields listed in ``update_mask`` are applied.
         :param update_mask: FieldMask
-          Fields to update; validated against ``skill``. REQUIRED, matching the sibling Update RPCs.
-          ``comment`` is the only mutable field.
+          Comma-separated list of ``skill`` fields to update. ``comment`` is the only field that can be
+          updated.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the

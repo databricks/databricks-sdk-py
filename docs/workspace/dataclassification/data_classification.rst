@@ -48,6 +48,25 @@
         :returns: :class:`CatalogConfig`
         
 
+    .. py:method:: rescan_catalog(name: str) -> RescanCatalogResponse
+
+        Rescan the tables in a catalog's Data Classification scope that changed since their last scan.
+
+        The rescan uses the catalog's current classifiers and follows its config (schema selection) and SKIP
+        tags. Tables with no commits since their last scan are skipped. Views and tables without a Delta
+        commit history keep their regular rescan schedule. The call returns once the rescan is scheduled;
+        scanning runs in the background. If a scan of the catalog is running, the call cancels it and starts a
+        new run.
+
+        - Data Classification must be enabled for the catalog.
+        - The call must come from the workspace where Data Classification was enabled.
+
+        :param name: str
+          Resource name of the catalog, in the format: catalogs/{catalog_name}.
+
+        :returns: :class:`RescanCatalogResponse`
+        
+
     .. py:method:: update_catalog_config(name: str, catalog_config: CatalogConfig, update_mask: FieldMask) -> CatalogConfig
 
         Update the Data Classification configuration for a catalog.

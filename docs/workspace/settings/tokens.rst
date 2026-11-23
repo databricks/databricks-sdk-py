@@ -31,7 +31,8 @@
 
         :param autoscope_enabled: bool (optional)
           Whether to enable autoscoping for this token. When true, the token will automatically collect
-          inferred API path scopes as it is used.
+          inferred API path scopes as it is used. ``disable_autoscoping`` supersedes this field and is the one
+          read when both are set.
         :param comment: str (optional)
           Optional description to attach to the token.
         :param lifetime_seconds: int (optional)

@@ -314,6 +314,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GLUE
       :value: "GLUE"
 
+   .. py:attribute:: GOOGLE_ADS
+      :value: "GOOGLE_ADS"
+
    .. py:attribute:: HIVE_METASTORE
       :value: "HIVE_METASTORE"
 
@@ -2424,6 +2427,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateWorkspaceBindingsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: UrlConfiguration
    :members:
    :undoc-members:
 

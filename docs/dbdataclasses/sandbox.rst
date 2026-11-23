@@ -61,6 +61,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: NetworkSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: RenamePathResponse
    :members:
    :undoc-members:

@@ -69,9 +69,11 @@
         absent, which is the only indication that the end of results has been reached.
 
         :param securable_type: str
-          Type of securable.
+          Type of the securable, such as ``catalog``, ``schema``, ``table`` or ``volume``. The value is
+          case-insensitive.
         :param full_name: str
-          Full name of securable.
+          Full name of the securable. Tables, views, volumes and functions use the three-level name
+          ``catalog.schema.object``; a metastore uses its metastore ID.
         :param max_results: int (optional)
           Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
           present in a single page response is guaranteed to contain all the privileges granted on the
@@ -295,13 +297,16 @@
         Updates the permissions for a securable.
 
         :param securable_type: str
-          Type of securable.
+          Type of the securable, such as ``catalog``, ``schema``, ``table`` or ``volume``. The value is
+          case-insensitive.
         :param full_name: str
-          Full name of securable.
+          Full name of the securable. Tables, views, volumes and functions use the three-level name
+          ``catalog.schema.object``; a metastore uses its metastore ID.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
         :param omit_permissions_in_response: bool (optional)
-          Optional, default false. Specifies whether all the permissions should be returned in the response.
+          Whether to omit the privilege assignments from the response. When false, the response lists all
+          direct privilege assignments on the securable after the update.
 
         :returns: :class:`UpdatePermissionsResponse`
         

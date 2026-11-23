@@ -113,9 +113,9 @@
         :param name: str
           The name of the catalog.
         :param assign_workspaces: List[int] (optional)
-          A list of workspace IDs.
+          The IDs of the workspaces to bind to the catalog.
         :param unassign_workspaces: List[int] (optional)
-          A list of workspace IDs.
+          The IDs of the workspaces to unbind from the catalog.
 
         :returns: :class:`UpdateCatalogWorkspaceBindingsResponse`
         

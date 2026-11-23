@@ -67,6 +67,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NORMAL
       :value: "NORMAL"
 
+   .. py:attribute:: PREEMPTABLE
+      :value: "PREEMPTABLE"
+
 .. py:class:: AlertEvaluationState
 
    Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto

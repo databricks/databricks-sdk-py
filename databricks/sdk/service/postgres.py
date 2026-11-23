@@ -3535,6 +3535,9 @@ class ProjectStatus:
     compute_last_active_time: Optional[Timestamp] = None
     """The most recent time when any endpoint of this project was active."""
 
+    compute_policy_id: Optional[str] = None
+    """The compute policy that is applied to the project."""
+
     custom_tags: Optional[List[ProjectCustomTag]] = None
     """The effective custom tags associated with the project."""
 
@@ -3574,6 +3577,8 @@ class ProjectStatus:
             body["budget_policy_id"] = self.budget_policy_id
         if self.compute_last_active_time is not None:
             body["compute_last_active_time"] = self.compute_last_active_time.ToJsonString()
+        if self.compute_policy_id is not None:
+            body["compute_policy_id"] = self.compute_policy_id
         if self.custom_tags:
             body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
         if self.default_branch is not None:
@@ -3605,6 +3610,8 @@ class ProjectStatus:
             body["budget_policy_id"] = self.budget_policy_id
         if self.compute_last_active_time is not None:
             body["compute_last_active_time"] = self.compute_last_active_time
+        if self.compute_policy_id is not None:
+            body["compute_policy_id"] = self.compute_policy_id
         if self.custom_tags:
             body["custom_tags"] = self.custom_tags
         if self.default_branch is not None:
@@ -3634,6 +3641,7 @@ class ProjectStatus:
             branch_logical_size_limit_bytes=_int64(d, "branch_logical_size_limit_bytes"),
             budget_policy_id=d.get("budget_policy_id", None),
             compute_last_active_time=_timestamp(d, "compute_last_active_time"),
+            compute_policy_id=d.get("compute_policy_id", None),
             custom_tags=_repeated_dict(d, "custom_tags", ProjectCustomTag),
             default_branch=d.get("default_branch", None),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),

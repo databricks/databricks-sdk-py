@@ -460,7 +460,8 @@ class CloudWatchLogsEnvelope:
 
     header_retention: Optional[bool] = None
     """Whether to keep the envelope's ``owner``, ``logGroup``, and ``logStream`` values in the
-    ``data.lw_header`` field of each unwrapped row. Must be set explicitly to ``true`` or ``false``."""
+    ``data.lw_header`` field of each unwrapped row whose message is a JSON object. A message that is
+    any other JSON value is kept without the field. Must be set explicitly to ``true`` or ``false``."""
 
     def as_dict(self) -> dict:
         """Serializes the CloudWatchLogsEnvelope into a dictionary suitable for use as a JSON request body."""
@@ -2068,9 +2069,6 @@ class Rule:
     fidelity: RuleFidelity
     """Signal quality for this rule."""
 
-    schedule: RuleSchedule
-    """When the rule executes."""
-
     output: RuleOutput
     """What to record in each signal."""
 
@@ -2171,8 +2169,16 @@ class Rule:
     characters. Requests exceeding this limit are rejected. Supports Markdown; analysts and the
     investigation agent follow it when triaging this rule's alerts."""
 
+    schedule: Optional[RuleSchedule] = None
+    """When the rule executes. Required for scheduled rules. A streaming rule accepts only ``enabled``,
+    and an omitted schedule means enabled."""
+
     status: Optional[ResourceStatus] = None
     """Read-only lifecycle status."""
+
+    streaming: Optional[RuleInputStreaming] = None
+    """Native streaming rule input: one source table filtered by one stateless row predicate. Permanent
+    field number; must not be renumbered."""
 
     suppress_until_time: Optional[Timestamp] = None
     """If set, this rule's signals do not open new alerts until the given time."""
@@ -2258,6 +2264,8 @@ class Rule:
             body["severity"] = self.severity
         if self.status:
             body["status"] = self.status.as_dict()
+        if self.streaming:
+            body["streaming"] = self.streaming.as_dict()
         if self.suppress_until_time is not None:
             body["suppress_until_time"] = self.suppress_until_time.ToJsonString()
         if self.timerange:
@@ -2337,6 +2345,8 @@ class Rule:
             body["severity"] = self.severity
         if self.status:
             body["status"] = self.status
+        if self.streaming:
+            body["streaming"] = self.streaming
         if self.suppress_until_time is not None:
             body["suppress_until_time"] = self.suppress_until_time
         if self.timerange:
@@ -2385,6 +2395,7 @@ class Rule:
             schema_name=d.get("schema_name", None),
             severity=d.get("severity", None),
             status=_from_dict(d, "status", ResourceStatus),
+            streaming=_from_dict(d, "streaming", RuleInputStreaming),
             suppress_until_time=_timestamp(d, "suppress_until_time"),
             timerange=_from_dict(d, "timerange", RuleTimeRange),
             update_time=_timestamp(d, "update_time"),
@@ -2653,6 +2664,43 @@ class RuleInputCustomNotebook:
     def from_dict(cls, d: Dict[str, Any]) -> RuleInputCustomNotebook:
         """Deserializes the RuleInputCustomNotebook from a dictionary."""
         return cls(notebook=d.get("notebook", None), options=d.get("options", None))
+
+
+@dataclass
+class RuleInputStreaming:
+    """Native V2 streaming input for a detection rule: one Delta table and one stateless row predicate.
+    The complete source row is preserved as event context."""
+
+    source: StreamingSource
+    """Source table whose rows are evaluated."""
+
+    predicate: StreamingPredicate
+    """Row predicate that selects matching rows."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RuleInputStreaming into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.predicate:
+            body["predicate"] = self.predicate.as_dict()
+        if self.source:
+            body["source"] = self.source.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RuleInputStreaming into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.predicate:
+            body["predicate"] = self.predicate
+        if self.source:
+            body["source"] = self.source
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RuleInputStreaming:
+        """Deserializes the RuleInputStreaming from a dictionary."""
+        return cls(
+            predicate=_from_dict(d, "predicate", StreamingPredicate), source=_from_dict(d, "source", StreamingSource)
+        )
 
 
 @dataclass
@@ -3023,6 +3071,61 @@ class SlackExportConfig:
     def from_dict(cls, d: Dict[str, Any]) -> SlackExportConfig:
         """Deserializes the SlackExportConfig from a dictionary."""
         return cls(bot_token_uc_secret=d.get("bot_token_uc_secret", None), channel=d.get("channel", None))
+
+
+@dataclass
+class StreamingPredicate:
+    """Stateless row predicate for a streaming detection rule."""
+
+    expression: str
+    """A SQL expression suitable for a WHERE clause, not a SELECT query. Evaluated per input row; only
+    stateless, row-local expressions are accepted."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamingPredicate into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.expression is not None:
+            body["expression"] = self.expression
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamingPredicate into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.expression is not None:
+            body["expression"] = self.expression
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamingPredicate:
+        """Deserializes the StreamingPredicate from a dictionary."""
+        return cls(expression=d.get("expression", None))
+
+
+@dataclass
+class StreamingSource:
+    """Source Delta table for a streaming detection rule."""
+
+    table: str
+    """Fully-qualified Unity Catalog table in ``catalog.schema.table`` form."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamingSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.table is not None:
+            body["table"] = self.table
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamingSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.table is not None:
+            body["table"] = self.table
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamingSource:
+        """Deserializes the StreamingSource from a dictionary."""
+        return cls(table=d.get("table", None))
 
 
 @dataclass

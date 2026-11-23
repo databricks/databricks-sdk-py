@@ -62,6 +62,19 @@ class AccessRequestDestinations:
     securable_type: Optional[str] = None
     """The type of the securable, repeated from **securable** as a plain string."""
 
+    url_configuration: Optional[UrlConfiguration] = None
+    """The access request URLs shared by every workspace in the metastore. Only set when the securable
+    is a metastore. These URLs are used when neither the requested securable nor its parents have an
+    explicit destination or a default owner email destination, and they take precedence over
+    metastore destinations.
+    
+    A **dynamic_url** and default owner email destinations cannot both be on: saving one turns the
+    other off. Saving a **dynamic_url** while they are on requires a metastore admin.
+    
+    Setting this field removes the metastore destinations in this workspace. The first save also
+    removes the metastore URL destinations of other workspaces. Once set, the configuration can be
+    cleared but not removed."""
+
     def as_dict(self) -> dict:
         """Serializes the AccessRequestDestinations into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -77,6 +90,8 @@ class AccessRequestDestinations:
             body["securable"] = self.securable.as_dict()
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type
+        if self.url_configuration:
+            body["url_configuration"] = self.url_configuration.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -94,6 +109,8 @@ class AccessRequestDestinations:
             body["securable"] = self.securable
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type
+        if self.url_configuration:
+            body["url_configuration"] = self.url_configuration
         return body
 
     @classmethod
@@ -106,6 +123,7 @@ class AccessRequestDestinations:
             full_name=d.get("full_name", None),
             securable=_from_dict(d, "securable", Securable),
             securable_type=d.get("securable_type", None),
+            url_configuration=_from_dict(d, "url_configuration", UrlConfiguration),
         )
 
 
@@ -1961,6 +1979,7 @@ class ConnectionType(Enum):
     GA4_RAW_DATA = "GA4_RAW_DATA"
     GITHUB = "GITHUB"
     GLUE = "GLUE"
+    GOOGLE_ADS = "GOOGLE_ADS"
     HIVE_METASTORE = "HIVE_METASTORE"
     HTTP = "HTTP"
     HUBSPOT = "HUBSPOT"
@@ -3218,12 +3237,16 @@ class Dependency:
     **function**, **connection**, **credential**, **volume**, or **secret**."""
 
     connection: Optional[ConnectionDependency] = None
+    """A dependency on a Unity Catalog connection."""
 
     credential: Optional[CredentialDependency] = None
+    """A dependency on a Unity Catalog credential."""
 
     function: Optional[FunctionDependency] = None
+    """A dependency on a Unity Catalog function."""
 
     table: Optional[TableDependency] = None
+    """A dependency on a Unity Catalog table."""
 
     def as_dict(self) -> dict:
         """Serializes the Dependency into a dictionary suitable for use as a JSON request body."""
@@ -5680,7 +5703,7 @@ class GenerateTemporaryVolumeCredentialResponse:
 @dataclass
 class GetCatalogWorkspaceBindingsResponse:
     workspaces: Optional[List[int]] = None
-    """A list of workspace IDs"""
+    """The IDs of the workspaces that are bound to the catalog."""
 
     def as_dict(self) -> dict:
         """Serializes the GetCatalogWorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
@@ -9317,6 +9340,10 @@ class ModelServiceConfigRoutingConfig:
 
 @dataclass
 class ModelVersionInfo:
+    """A numbered version of a registered model in Unity Catalog. A model version is identified by the
+    full name of its parent registered model and its version number, or by an alias that points to
+    it. See https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/."""
+
     aliases: Optional[List[RegisteredModelAlias]] = None
     """List of aliases associated with the model version"""
 
@@ -9327,6 +9354,7 @@ class ModelVersionInfo:
     """The comment attached to the model version"""
 
     created_at: Optional[int] = None
+    """Time at which the model version was created, in epoch milliseconds."""
 
     created_by: Optional[str] = None
     """The identifier of the user who created the model version"""
@@ -9366,6 +9394,7 @@ class ModelVersionInfo:
     """The storage location on the cloud under which model version data files are stored"""
 
     updated_at: Optional[int] = None
+    """Time at which the model version was last updated, in epoch milliseconds."""
 
     updated_by: Optional[str] = None
     """The identifier of the user who updated the model version last time"""
@@ -10658,8 +10687,7 @@ class PermissionsChange:
     """The set of privileges to add."""
 
     principal: Optional[str] = None
-    """The principal whose privileges we are changing. Only one of principal or principal_id should be
-    specified, never both at the same time."""
+    """The principal whose privileges we are changing."""
 
     remove: Optional[List[Privilege]] = None
     """The set of privileges to remove."""
@@ -11143,8 +11171,7 @@ class Privilege(Enum):
 @dataclass
 class PrivilegeAssignment:
     principal: Optional[str] = None
-    """The principal (user email address or group name). For deleted principals, ``principal`` is empty
-    while ``principal_id`` is populated."""
+    """The principal (user email address or group name)."""
 
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
@@ -11909,10 +11936,9 @@ class Secret:
     """The name of the schema where the secret resides."""
 
     value: str
-    """The secret value to store. This field is input-only and is not returned in responses — use the
-    **effective_value** field (via GetSecret with **include_value** set to true) to read the secret
-    value. The maximum size is 60 KiB (pre-encryption). Accepted content includes passwords, tokens,
-    keys, and other sensitive credential data."""
+    """The secret value to store, such as a password, token, or key. It is never returned in responses.
+    To read it, call GetSecret with **include_value** set to true and use the **effective_value**
+    field. The maximum size is 60 KiB before encryption."""
 
     comment: Optional[str] = None
     """User-provided free-form text description of the secret."""
@@ -11944,8 +11970,8 @@ class Secret:
     """Unique identifier of the metastore hosting the secret."""
 
     owner: Optional[str] = None
-    """The owner of the secret. Defaults to the creating principal on creation. Can be updated to
-    transfer ownership of the secret to another principal."""
+    """The owner of the secret. It cannot be set when creating a secret and defaults to the creating
+    principal. Set it in UpdateSecret to transfer ownership of the secret to another principal."""
 
     update_time: Optional[Timestamp] = None
     """The time at which this secret was last updated."""
@@ -12299,24 +12325,23 @@ class Skill:
     component of the Skill resource name. Unset until FinalizeSkill succeeds."""
 
     comment: Optional[str] = None
-    """User-provided comment for the skill. Free-text, user-editable via UpdateSkill (listed in its
-    ``update_mask``). DISTINCT from ``description``, which is the server-parsed, OUTPUT_ONLY
-    SKILL.md frontmatter value: ``comment`` is the customer's own annotation and is preserved across
-    bundle re-uploads. When ``comment`` is in the update mask, omitting it clears the field, while
-    an explicitly empty string is retained."""
+    """User-provided comment for the skill, which you can change with UpdateSkill. It is separate from
+    ``description``, which the server reads from the SKILL.md frontmatter, and it is preserved
+    across bundle re-uploads and FinalizeSkill. When ``comment`` is in the update mask, omitting it
+    clears the field, while an explicitly empty string is retained."""
 
     create_time: Optional[Timestamp] = None
     """Time the skill was created."""
 
     created_by: Optional[str] = None
-    """Creator identity."""
+    """Username or service principal application ID of the principal that created the skill."""
 
     description: Optional[str] = None
     """Description from the most recently successfully finalized SKILL.md. Unset until FinalizeSkill
     succeeds."""
 
     effective_owner: Optional[str] = None
-    """Owner of the skill."""
+    """Username, group name, or service principal application ID of the skill owner."""
 
     etag: Optional[str] = None
     """Optimistic concurrency token returned on every read. To make an Update or Delete conditional,
@@ -12327,19 +12352,19 @@ class Skill:
     """Time of the most recent successful FinalizeSkill. Unset until one succeeds."""
 
     metastore_id: Optional[str] = None
-    """Metastore hosting the skill."""
+    """Unique identifier of the metastore that contains the skill."""
 
     name: Optional[str] = None
     """Resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}``
-    component is capped at 255 characters individually. Server-derived on Create from ``parent`` +
-    ``skill_id``; required and immutable on Update/Get/Delete."""
+    component is capped at 255 characters individually. The server derives the name on Create from
+    ``parent`` and ``skill_id``; it is required and immutable on Update, Get, and Delete."""
 
     update_time: Optional[Timestamp] = None
     """Time of the most recent Skill metadata mutation. Uploading bundle files alone does not change
     this value."""
 
     updated_by: Optional[str] = None
-    """Identity of the last updater."""
+    """Username or service principal application ID of the principal that last updated the skill."""
 
     def as_dict(self) -> dict:
         """Serializes the Skill into a dictionary suitable for use as a JSON request body."""
@@ -12825,7 +12850,7 @@ class TableInfo:
     through the BROWSE privilege when include_browse is enabled in the request."""
 
     catalog_name: Optional[str] = None
-    """Name of parent catalog."""
+    """Name of parent catalog. Required for creation using catalog and schema names."""
 
     columns: Optional[List[ColumnInfo]] = None
     """The array of **ColumnInfo** definitions of the table's columns."""
@@ -12889,7 +12914,8 @@ class TableInfo:
     https://docs.databricks.com/aws/en/tables/row-and-column-filters for details."""
 
     schema_name: Optional[str] = None
-    """Name of parent schema relative to its parent catalog."""
+    """Name of parent schema relative to its parent catalog. Required for creation using catalog and
+    schema names."""
 
     securable_kind_manifest: Optional[SecurableKindManifest] = None
     """SecurableKindManifest of table, including capabilities the table has."""
@@ -13660,7 +13686,7 @@ class UpdateAssignmentResponse:
 @dataclass
 class UpdateCatalogWorkspaceBindingsResponse:
     workspaces: Optional[List[int]] = None
-    """A list of workspace IDs"""
+    """The IDs of the workspaces that are bound to the catalog."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateCatalogWorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
@@ -13861,6 +13887,70 @@ class UpdateWorkspaceBindingsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceBindingsResponse:
         """Deserializes the UpdateWorkspaceBindingsResponse from a dictionary."""
         return cls(bindings=_repeated_dict(d, "bindings", WorkspaceBinding))
+
+
+@dataclass
+class UrlConfiguration:
+    """Access request URLs shared by every workspace in a metastore."""
+
+    dynamic_url: Optional[str] = None
+    """The URL template for access requests on catalogs and the securables inside them, such as
+    schemas, tables, volumes, functions, and registered models. Placeholders are replaced with
+    percent-encoded values from the requested securable: ``{catalog}`` with the catalog name
+    (``main``), ``{catalog.schema}`` with the catalog and schema names (``main.sales``),
+    ``{catalog.schema.object}`` with the full name (``main.sales.orders``), ``{securable_type}``
+    with the securable type (``TABLE``), and ``{securable_id}`` with the securable ID. Name
+    placeholders leave out levels the securable does not have, so ``{catalog.schema.object}`` is
+    ``main.sales`` for a schema. When the deepest name placeholder stops above the requested
+    securable, such as ``{catalog.schema}`` for a table, ``{securable_type}`` and ``{securable_id}``
+    describe that parent. If the filled-in URL is longer than 4,096 characters, the **redirect_url**
+    is used instead.
+    
+    Must start with ``http://`` or ``https://``, contain only printable ASCII characters without
+    spaces or backslashes, and be at most 2,048 characters. Braces are only allowed around a
+    placeholder."""
+
+    redirect_url: Optional[str] = None
+    """The URL for access requests on the metastore and on securables outside catalogs, such as
+    external locations, connections, and credentials. Also used for catalogs and the securables
+    inside them when **dynamic_url** is not set or cannot produce a valid URL. Must start with
+    ``http://`` or ``https://``, contain only printable ASCII characters without spaces or
+    backslashes, and be at most 2,048 characters."""
+
+    syntax_version: Optional[int] = None
+    """The version of the placeholder syntax used in **dynamic_url**. The only supported version is
+    ``1``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UrlConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dynamic_url is not None:
+            body["dynamic_url"] = self.dynamic_url
+        if self.redirect_url is not None:
+            body["redirect_url"] = self.redirect_url
+        if self.syntax_version is not None:
+            body["syntax_version"] = self.syntax_version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UrlConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dynamic_url is not None:
+            body["dynamic_url"] = self.dynamic_url
+        if self.redirect_url is not None:
+            body["redirect_url"] = self.redirect_url
+        if self.syntax_version is not None:
+            body["syntax_version"] = self.syntax_version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UrlConfiguration:
+        """Deserializes the UrlConfiguration from a dictionary."""
+        return cls(
+            dynamic_url=d.get("dynamic_url", None),
+            redirect_url=d.get("redirect_url", None),
+            syntax_version=d.get("syntax_version", None),
+        )
 
 
 @dataclass
@@ -14172,11 +14262,15 @@ class VolumeType(Enum):
 
 @dataclass
 class WorkspaceBinding:
+    """A binding between a workspace and a securable. When the isolation mode of the securable is
+    ``ISOLATED``, only bound workspaces can access it."""
+
     workspace_id: int
-    """Required"""
+    """The ID of the workspace that the binding applies to."""
 
     binding_type: Optional[WorkspaceBindingBindingType] = None
-    """One of READ_WRITE/READ_ONLY. Default is READ_WRITE."""
+    """One of READ_WRITE/READ_ONLY. Default is READ_WRITE. Only catalogs support
+    ``BINDING_TYPE_READ_ONLY``; other securable types accept only ``BINDING_TYPE_READ_WRITE``."""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceBinding into a dictionary suitable for use as a JSON request body."""
@@ -14811,8 +14905,9 @@ class AiGatewayAPI:
           Name of the parent schema. Format: ``schemas/{catalog}.{schema}``. Each ``{...}`` component is
           capped at 255 characters individually.
         :param skill_id: str
-          Name for the skill, e.g. "basic-math". The server normalizes this identifier to lowercase. It is
-          independent of the bundle name read from SKILL.md.
+          Name of the skill within the parent schema. The name must not contain periods, spaces, forward
+          slashes, percent signs, or control characters, and it is stored in lowercase. It is independent of
+          the bundle name read from SKILL.md.
 
         :returns: :class:`Skill`
         """
@@ -15547,14 +15642,14 @@ class AiGatewayAPI:
 
         :param name: str
           Resource name of the skill. Format: ``skills/{catalog}.{schema}.{skill}``. Each ``{...}`` component
-          is capped at 255 characters individually. Server-derived on Create from ``parent`` + ``skill_id``;
-          required and immutable on Update/Get/Delete.
+          is capped at 255 characters individually. The server derives the name on Create from ``parent`` and
+          ``skill_id``; it is required and immutable on Update, Get, and Delete.
         :param skill: :class:`Skill`
           The skill with the updated field values. ``name`` identifies the resource
           (``skills/{catalog}.{schema}.{skill}``); only fields listed in ``update_mask`` are applied.
         :param update_mask: FieldMask
-          Fields to update; validated against ``skill``. REQUIRED, matching the sibling Update RPCs.
-          ``comment`` is the only mutable field.
+          Comma-separated list of ``skill`` fields to update. ``comment`` is the only field that can be
+          updated.
         :param etag: str (optional)
           Optimistic concurrency token from the most recent read. When set, the update succeeds only if the
           resource has not changed. Leave unset for an unconditional update. For REST requests, URL-encode the
@@ -17703,9 +17798,11 @@ class GrantsAPI:
         absent, which is the only indication that the end of results has been reached.
 
         :param securable_type: str
-          Type of securable.
+          Type of the securable, such as ``catalog``, ``schema``, ``table`` or ``volume``. The value is
+          case-insensitive.
         :param full_name: str
-          Full name of securable.
+          Full name of the securable. Tables, views, volumes and functions use the three-level name
+          ``catalog.schema.object``; a metastore uses its metastore ID.
         :param max_results: int (optional)
           Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
           present in a single page response is guaranteed to contain all the privileges granted on the
@@ -17961,13 +18058,16 @@ class GrantsAPI:
         """Updates the permissions for a securable.
 
         :param securable_type: str
-          Type of securable.
+          Type of the securable, such as ``catalog``, ``schema``, ``table`` or ``volume``. The value is
+          case-insensitive.
         :param full_name: str
-          Full name of securable.
+          Full name of the securable. Tables, views, volumes and functions use the three-level name
+          ``catalog.schema.object``; a metastore uses its metastore ID.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
         :param omit_permissions_in_response: bool (optional)
-          Optional, default false. Specifies whether all the permissions should be returned in the response.
+          Whether to omit the privilege assignments from the response. When false, the response lists all
+          direct privilege assignments on the securable after the update.
 
         :returns: :class:`UpdatePermissionsResponse`
         """
@@ -18398,7 +18498,8 @@ class ModelVersionsAPI:
         **USE_SCHEMA** privilege on the parent schema.
 
         :param full_name: str
-          The three-level (fully qualified) name of the model version
+          The three-level (fully qualified) name of the parent registered model, in the form
+          ``catalog_name.schema_name.model_name``.
         :param version: int
           The integer version number of the model version
 
@@ -18428,7 +18529,8 @@ class ModelVersionsAPI:
         privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 
         :param full_name: str
-          The three-level (fully qualified) name of the model version
+          The three-level (fully qualified) name of the parent registered model, in the form
+          ``catalog_name.schema_name.model_name``.
         :param version: int
           The integer version number of the model version
         :param include_aliases: bool (optional)
@@ -18593,7 +18695,8 @@ class ModelVersionsAPI:
         Currently only the comment of the model version can be updated.
 
         :param full_name: str
-          The three-level (fully qualified) name of the model version
+          The three-level (fully qualified) name of the parent registered model, in the form
+          ``catalog_name.schema_name.model_name``.
         :param version: int
           The integer version number of the model version
         :param aliases: List[:class:`RegisteredModelAlias`] (optional)
@@ -18603,6 +18706,7 @@ class ModelVersionsAPI:
         :param comment: str (optional)
           The comment attached to the model version
         :param created_at: int (optional)
+          Time at which the model version was created, in epoch milliseconds.
         :param created_by: str (optional)
           The identifier of the user who created the model version
         :param id: str (optional)
@@ -18630,6 +18734,7 @@ class ModelVersionsAPI:
         :param storage_location: str (optional)
           The storage location on the cloud under which model version data files are stored
         :param updated_at: int (optional)
+          Time at which the model version was last updated, in epoch milliseconds.
         :param updated_by: str (optional)
           The identifier of the user who updated the model version last time
 
@@ -20112,6 +20217,12 @@ class RfaAPI:
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".
 
+        On a metastore that has a **url_configuration**, its URLs are shared by every workspace, while emails
+        and webhooks are still saved per workspace. There, a URL destination replaces the configuration's
+        **redirect_url** and clears its **dynamic_url**, so requests that used the **dynamic_url** go to the
+        new URL. An update that has no URL destination and does not set **url_configuration** clears both
+        URLs, in every workspace.
+
         :param access_request_destinations: :class:`AccessRequestDestinations`
           The access request destinations to assign to the securable. For each destination, a
           **destination_id** and **destination_type** must be defined.
@@ -20456,11 +20567,14 @@ class SecretsUcAPI:
     def get_secret(self, full_name: str, *, include_value: Optional[bool] = None) -> Secret:
         """Gets a secret by its three-level (fully qualified) name.
 
-        You must be a metastore admin, the owner of the secret, or have the **MANAGE** privilege on the
-        secret.
+        You must be a metastore admin or the owner of the secret, or have the **MANAGE** privilege on the
+        secret (together with **USE CATALOG** on its catalog and **USE SCHEMA** on its schema), on its schema
+        (together with **USE CATALOG** on its catalog), or on its catalog. Alternatively, you can have the
+        **READ_SECRET**, **WRITE_SECRET**, or **REFERENCE_SECRET** privilege on the secret, its schema, or its
+        catalog, together with **USE CATALOG** on its catalog and **USE SCHEMA** on its schema.
 
-        The secret value isn't returned by default. To retrieve it, you must also have the **READ_SECRET**
-        privilege and set **include_value** to true in the request.
+        The secret value isn't returned by default. To retrieve it, set **include_value** to true in the
+        request; this requires ownership of the secret or the **READ_SECRET** privilege.
 
         :param full_name: str
           The three-level (fully qualified) name of the secret (for example,
@@ -20494,14 +20608,16 @@ class SecretsUcAPI:
         page_token: Optional[str] = None,
         schema_name: Optional[str] = None,
     ) -> Iterator[Secret]:
-        """Lists secrets in Unity Catalog.
+        """Lists the secrets in a schema.
 
-        You must be a metastore admin, the owner of the secret, or have the **MANAGE** privilege on the
-        secret.
+        With **USE CATALOG** on the catalog and **USE SCHEMA** on the schema, the response contains the
+        secrets that you own or hold a privilege on. Metastore admins, principals with the **MANAGE**
+        privilege on the catalog, and principals with the **MANAGE** privilege on the schema together with
+        **USE CATALOG** on the catalog see every secret in the schema.
 
-        Both **catalog_name** and **schema_name** must be specified together to filter secrets within a
-        specific schema. Results are paginated; use the **page_token** field from the response to retrieve
-        subsequent pages.
+        Secrets are listed within a single schema, so both **catalog_name** and **schema_name** must be
+        specified. Results are paginated; pass the **next_page_token** value from the response as
+        **page_token** to retrieve the next page.
 
         :param catalog_name: str (optional)
           The name of the catalog under which to list secrets. Both **catalog_name** and **schema_name** must
@@ -20514,8 +20630,8 @@ class SecretsUcAPI:
           - If set to 0, the page length is set to 1000.
           - If set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
-          Opaque pagination token to go to the next page based on previous query. The maximum page length is
-          determined by a server configured value.
+          Opaque pagination token for the next page of results. Set it to the **next_page_token** value from
+          the previous response.
         :param schema_name: str (optional)
           The name of the schema under which to list secrets. Both **catalog_name** and **schema_name** must
           be specified together.
@@ -20552,11 +20668,16 @@ class SecretsUcAPI:
     def update_secret(self, full_name: str, secret: Secret, update_mask: FieldMask) -> Secret:
         """Updates an existing secret in Unity Catalog.
 
-        You must be the owner of the secret or a metastore admin. If you are a metastore admin, only the
-        **owner** field can be changed.
+        To change **value**, you must be the owner of the secret, or have the **WRITE_SECRET** privilege on it
+        together with **USE CATALOG** on its catalog and **USE SCHEMA** on its schema. To change **comment**
+        or **expire_time**, you must be the owner or have the **MANAGE** privilege on the secret (together
+        with **USE CATALOG** on its catalog and **USE SCHEMA** on its schema), on its schema (together with
+        **USE CATALOG** on its catalog), or on its catalog. To change **owner**, you must be the owner, a
+        metastore admin, or have the **MANAGE** privilege on the secret (together with **USE CATALOG** on its
+        catalog and **USE SCHEMA** on its schema), on its schema (together with **USE CATALOG** on its
+        catalog), or on its catalog. A metastore admin can change only the **owner** field.
 
-        Use the **update_mask** field to specify which fields to update. Supported updatable fields include
-        **value**, **comment**, **owner**, and **expire_time**.
+        Use the **update_mask** field to specify which fields to update.
 
         :param full_name: str
           The three-level (fully qualified) name of the secret (for example,
@@ -21216,9 +21337,10 @@ class TablesAPI:
         :param name: str
           Name of table, relative to parent schema.
         :param catalog_name: str
-          Name of parent catalog.
+          Name of parent catalog. Required for creation using catalog and schema names.
         :param schema_name: str
-          Name of parent schema relative to its parent catalog.
+          Name of parent schema relative to its parent catalog. Required for creation using catalog and schema
+          names.
         :param table_type: :class:`TableType`
           The type of the table. MANAGED tables store their data in storage that Unity Catalog manages,
           EXTERNAL tables store it in a registered external location, FOREIGN tables mirror objects of an
@@ -22132,9 +22254,9 @@ class WorkspaceBindingsAPI:
         :param name: str
           The name of the catalog.
         :param assign_workspaces: List[int] (optional)
-          A list of workspace IDs.
+          The IDs of the workspaces to bind to the catalog.
         :param unassign_workspaces: List[int] (optional)
-          A list of workspace IDs.
+          The IDs of the workspaces to unbind from the catalog.
 
         :returns: :class:`UpdateCatalogWorkspaceBindingsResponse`
         """

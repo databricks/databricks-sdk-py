@@ -1365,7 +1365,10 @@ class AgentKitAPI:
 
     def delete_memory(self, name: str):
         """Deletes a memory entry by resource name. Returns ``NOT_FOUND`` when the entry does not exist in the
-        caller's workspace.
+        caller's workspace. The entry stops appearing in Get, List and Search. In a store that records memory
+        history, the versions written before the delete, including their content, stay readable through
+        ``ListMemoryChanges`` and ``GetMemoryChange`` to anyone who can read the store, until the store itself
+        is deleted.
 
         :param name: str
           Resource name in the form

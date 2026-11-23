@@ -53,6 +53,7 @@
         Creates an alert.
 
         :param alert: :class:`CreateAlertRequestAlert` (optional)
+          The alert to create. A display name, a ``query_id``, and a ``condition`` are required.
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
           alert's display name conflicts with an existing alert's display name.
@@ -67,6 +68,7 @@
         deleted after 30 days.
 
         :param id: str
+          UUID of the alert to move to the trash.
 
 
         
@@ -117,6 +119,7 @@
         Gets an alert.
 
         :param id: str
+          UUID of the alert to fetch.
 
         :returns: :class:`Alert`
         
@@ -139,7 +142,9 @@
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
 
         :param page_size: int (optional)
+          Maximum number of alerts to return per page.
         :param page_token: str (optional)
+          Token from the ``next_page_token`` of a previous response. Omit it to fetch the first page.
 
         :returns: Iterator over :class:`ListAlertsResponseAlert`
         
@@ -191,10 +196,15 @@
             w.queries.delete(id=query.id)
             w.alerts.delete(id=alert.id)
 
-        Updates an alert.
+        Updates the fields of an alert named in ``update_mask``. Changing ``owner_user_name`` requires
+        workspace admin privileges; changing any other field requires CAN MANAGE permission on the alert.
 
         :param id: str
+          UUID of the alert to update.
         :param update_mask: str
+          Comma-separated list of the alert fields to update, such as ``display_name`` or ``condition``.
+          Fields not listed keep their current values.
+
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
           ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
@@ -205,6 +215,7 @@
           fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
           API changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
+          Alert fields to update. Only the fields named in ``update_mask`` are changed.
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
           alert's display name conflicts with an existing alert's display name.
