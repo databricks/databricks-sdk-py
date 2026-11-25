@@ -792,6 +792,25 @@ class CliTokenSource(oauth.Refreshable):
         return self._exec_cli_command(self._cmd)
 
 
+# Characters that cmd.exe interprets when they appear outside double quotes.
+_WINDOWS_SHELL_SPECIAL_CHARS = frozenset("()&|<>^")
+
+
+def _quote_windows_shell_arg(arg: str) -> str:
+    """Quotes a single argument for a command line that is run through cmd.exe.
+
+    subprocess.list2cmdline only quotes arguments that contain whitespace, so an argument
+    such as a path with a "(" is passed to cmd.exe unquoted and gets split. Such
+    arguments are wrapped in double quotes, inside which cmd.exe treats them literally.
+    """
+    quoted = subprocess.list2cmdline([arg])
+    if quoted.startswith('"') or not _WINDOWS_SHELL_SPECIAL_CHARS.intersection(arg):
+        return quoted
+    # Double trailing backslashes so that they do not escape the closing quote.
+    trailing_backslashes = len(quoted) - len(quoted.rstrip("\\"))
+    return '"' + quoted + "\\" * trailing_backslashes + '"'
+
+
 def _run_subprocess(
     popenargs,
     input=None,
@@ -807,6 +826,8 @@ def _run_subprocess(
     # windows requires shell=True to be able to execute 'az login' or other commands
     # cannot use shell=True all the time, as it breaks macOS
     logging.debug(f"Running command: {' '.join(popenargs)}")
+    if kwargs["shell"]:
+        popenargs = " ".join(_quote_windows_shell_arg(arg) for arg in popenargs)
     return subprocess.run(
         popenargs,
         input=input,
