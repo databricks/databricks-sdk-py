@@ -28,7 +28,7 @@ jobs:
         run: git fetch --prune --unshallow
 
       - name: Install uv
-        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
           version: "0.6.5"
           python-version: ${{ inputs.pyVersion }}
