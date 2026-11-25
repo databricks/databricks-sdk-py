@@ -47,4 +47,9 @@ class _RetryAfterCustomizer(_ErrorCustomizer):
 
     def customize_error(self, response: requests.Response, kwargs: dict):
         if response.status_code in (429, 503):
+            # RESOURCE_EXHAUSTED means the resource is permanently exhausted
+            # (e.g. index storage full). It is not a transient rate-limit;
+            # retrying will never succeed.
+            if kwargs.get("error_code") == "RESOURCE_EXHAUSTED":
+                return
             kwargs["retry_after_secs"] = self._parse_retry_after(response)
