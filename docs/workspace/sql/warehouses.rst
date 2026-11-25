@@ -69,7 +69,7 @@
         :param creator_name: str (optional)
           Name of the user who created the warehouse. Set by the server and ignored in requests.
         :param customer_version_label: str (optional)
-          Compute version label for a REALTIME warehouse. This field is output only.
+          Compute version label for a Real-Time warehouse. This field is output only.
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
@@ -79,9 +79,9 @@
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
         :param max_dbu: int (optional)
-          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be at least the minimum
-          DBU for the selected warehouse size and no greater than the configured DBU limit. Actual capacity
-          may be below this ceiling.
+          Maximum autoscaling capacity of a Real-Time SQL warehouse, in DBU per hour. Must be at least the
+          minimum DBU for the selected warehouse size and no greater than the configured DBU limit. Actual
+          capacity may be below this ceiling.
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
@@ -134,8 +134,9 @@
 
           - Number of tags < 45.
         :param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)
-          Warehouse type: ``PRO`` or ``CLASSIC``. If you want to use serverless compute, you must set to
-          ``PRO`` and also set the field ``enable_serverless_compute`` to ``true``.
+          Warehouse type: ``PRO``, ``CLASSIC``, or ``REALTIME``. For serverless compute, use ``PRO`` or
+          ``REALTIME`` with ``enable_serverless_compute=true``. ``REALTIME`` requires serverless compute and
+          Photon; ``enable_photon`` defaults to ``true``.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -254,7 +255,7 @@
         :param creator_name: str (optional)
           Name of the user who created the warehouse. Set by the server and ignored in requests.
         :param customer_version_label: str (optional)
-          Compute version label for a REALTIME warehouse. This field is output only.
+          Compute version label for a Real-Time warehouse. This field is output only.
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
@@ -264,9 +265,9 @@
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
         :param max_dbu: int (optional)
-          Maximum compute capacity of a real-time SQL warehouse, in DBU per hour. Must be at least the minimum
-          DBU for the selected warehouse size and no greater than the configured DBU limit. Actual capacity
-          may be below this ceiling.
+          Maximum autoscaling capacity of a Real-Time SQL warehouse, in DBU per hour. Must be at least the
+          minimum DBU for the selected warehouse size and no greater than the configured DBU limit. Actual
+          capacity may be below this ceiling.
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
@@ -319,8 +320,9 @@
 
           - Number of tags < 45.
         :param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)
-          Warehouse type: ``PRO`` or ``CLASSIC``. If you want to use serverless compute, you must set to
-          ``PRO`` and also set the field ``enable_serverless_compute`` to ``true``.
+          Warehouse type: ``PRO``, ``CLASSIC``, or ``REALTIME``. For serverless compute, use ``PRO`` or
+          ``REALTIME`` with ``enable_serverless_compute=true``. ``REALTIME`` requires serverless compute and
+          Photon; ``enable_photon`` defaults to ``true``.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.

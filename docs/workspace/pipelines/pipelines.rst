@@ -114,7 +114,8 @@
           omitting this field uses classic compute configured through the ``clusters`` field. When ``true``,
           omit ``clusters``; Photon is always enabled.
         :param serverless_compute_id: str (optional)
-          Serverless compute ID specified by the user for serverless pipelines.
+          Serverless compute ID specified by the user for serverless pipelines. Use compute_policy_id instead.
+          Only one of these fields may be set.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
@@ -260,7 +261,8 @@
           omitting this field uses classic compute configured through the ``clusters`` field. When ``true``,
           omit ``clusters``; Photon is always enabled.
         :param serverless_compute_id: str (optional)
-          Serverless compute ID specified by the user for serverless pipelines.
+          Serverless compute ID specified by the user for serverless pipelines. Use compute_policy_id instead.
+          Only one of these fields may be set.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
@@ -720,7 +722,8 @@
           omitting this field uses classic compute configured through the ``clusters`` field. When ``true``,
           omit ``clusters``; Photon is always enabled.
         :param serverless_compute_id: str (optional)
-          Serverless compute ID specified by the user for serverless pipelines.
+          Serverless compute ID specified by the user for serverless pipelines. Use compute_policy_id instead.
+          Only one of these fields may be set.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)

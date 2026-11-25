@@ -2,7 +2,7 @@
 AI Functions
 ============
 
-Transform and enrich data with AI on Databricks.
+Transform and enrich data with AI.
 
 .. toctree::
    :maxdepth: 1

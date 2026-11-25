@@ -118,8 +118,8 @@
             w.experiments.delete_run(run_id=created.run.info.run_id)
 
         Creates a new run within an experiment. A run is usually a single execution of a machine learning or
-        data ETL pipeline. MLflow uses runs to track the ``mlflowParam``, ``mlflowMetric``, and
-        ``mlflowRunTag`` associated with a single execution.
+        data ETL pipeline. MLflow uses runs to track the params, metrics, and tags associated with a single
+        execution.
 
         :param experiment_id: str (optional)
           ID of the associated experiment.
@@ -692,7 +692,7 @@
 
         Searches for runs that satisfy expressions.
 
-        Search expressions can use ``mlflowMetric`` and ``mlflowParam`` keys.
+        Search expressions can use metric, param, and tag keys.
 
         :param experiment_ids: List[str] (optional)
           List of experiment IDs to search over.

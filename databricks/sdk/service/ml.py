@@ -6067,11 +6067,6 @@ class MaterializationSet:
     request with ``materialized_features`` or ``*`` in its update mask deletes omitted materialized
     features."""
 
-    notifications: Optional[MaterializationNotifications] = None
-    """Notification configuration around the materialization job or pipeline lifecycle. They are
-    applied to every job and pipeline that materializes a feature in this set. Features which are
-    materialized in the same pipeline will share the same notification."""
-
     def as_dict(self) -> dict:
         """Serializes the MaterializationSet into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6079,8 +6074,6 @@ class MaterializationSet:
             body["materialization_set_id"] = self.materialization_set_id
         if self.materialized_features:
             body["materialized_features"] = [v.as_dict() for v in self.materialized_features]
-        if self.notifications:
-            body["notifications"] = self.notifications.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6090,8 +6083,6 @@ class MaterializationSet:
             body["materialization_set_id"] = self.materialization_set_id
         if self.materialized_features:
             body["materialized_features"] = self.materialized_features
-        if self.notifications:
-            body["notifications"] = self.notifications
         return body
 
     @classmethod
@@ -6100,7 +6091,6 @@ class MaterializationSet:
         return cls(
             materialization_set_id=d.get("materialization_set_id", None),
             materialized_features=_repeated_dict(d, "materialized_features", MaterializedFeature),
-            notifications=_from_dict(d, "notifications", MaterializationNotifications),
         )
 
 
@@ -6684,7 +6674,7 @@ class Metric:
     """The step at which the metric was logged."""
 
     timestamp: Optional[int] = None
-    """The timestamp at which the metric was recorded."""
+    """Time at which the metric was recorded, as a Unix timestamp in milliseconds."""
 
     value: Optional[float] = None
     """The value of the metric."""
@@ -8839,18 +8829,18 @@ class RunInfo:
     """Metadata of a single run."""
 
     artifact_uri: Optional[str] = None
-    """URI of the directory where artifacts should be uploaded. This can be a local path (starting with
-    "/"), or a distributed file system (DFS) path, like ``s3://bucket/directory`` or
-    ``dbfs:/my/directory``. If not set, the local ``./mlruns`` directory is chosen."""
+    """URI of the directory where the run's artifacts are stored. MLflow sets it when the run is
+    created, as the ``artifact_location`` of the run's experiment followed by
+    ``/<run_id>/artifacts``."""
 
     end_time: Optional[int] = None
     """Unix timestamp of when the run ended in milliseconds."""
 
     experiment_id: Optional[str] = None
-    """The experiment ID."""
+    """ID of the experiment that the run belongs to."""
 
     lifecycle_stage: Optional[str] = None
-    """Current life cycle stage of the experiment : OneOf("active", "deleted")"""
+    """Current life cycle stage of the run: ``active`` or ``deleted``."""
 
     run_id: Optional[str] = None
     """Unique identifier for the run."""
@@ -8954,7 +8944,7 @@ class RunInputs:
     """Run inputs."""
 
     dataset_inputs: Optional[List[DatasetInput]] = None
-    """Run metrics."""
+    """Datasets used as inputs to the run."""
 
     model_inputs: Optional[List[ModelInput]] = None
     """Model inputs to the Run."""
@@ -11279,8 +11269,8 @@ class ExperimentsAPI:
         user_id: Optional[str] = None,
     ) -> CreateRunResponse:
         """Creates a new run within an experiment. A run is usually a single execution of a machine learning or
-        data ETL pipeline. MLflow uses runs to track the ``mlflowParam``, ``mlflowMetric``, and
-        ``mlflowRunTag`` associated with a single execution.
+        data ETL pipeline. MLflow uses runs to track the params, metrics, and tags associated with a single
+        execution.
 
         :param experiment_id: str (optional)
           ID of the associated experiment.
@@ -12439,7 +12429,7 @@ class ExperimentsAPI:
     ) -> Iterator[Run]:
         """Searches for runs that satisfy expressions.
 
-        Search expressions can use ``mlflowMetric`` and ``mlflowParam`` keys.
+        Search expressions can use metric, param, and tag keys.
 
         :param experiment_ids: List[str] (optional)
           List of experiment IDs to search over.

@@ -978,7 +978,8 @@ class BaseRun:
     """The canonical identifier of the job that contains this run."""
 
     job_parameters: Optional[List[JobParameter]] = None
-    """Job-level parameters used in the run"""
+    """Job-level parameters used in the run. Each entry carries the parameter's name, its default, and
+    the value used in this run."""
 
     job_run_id: Optional[int] = None
     """ID of the job run that this run belongs to. For legacy and single-task job runs the field is
@@ -1034,6 +1035,7 @@ class BaseRun:
     """Deprecated. Please use the ``status`` field instead."""
 
     status: Optional[RunStatus] = None
+    """The current status of the run. Use this field instead of the deprecated ``state`` field."""
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own ``run_id`` which you can use to
@@ -1044,6 +1046,8 @@ class BaseRun:
     trigger: Optional[TriggerType] = None
 
     trigger_info: Optional[TriggerInfo] = None
+    """Additional details about the trigger that fired the run. The fields that are populated depend on
+    the value of ``trigger``."""
 
     version_id: Optional[str] = None
     """ID of the deployment version that produced the job when this run was created. Identifies a
@@ -3814,6 +3818,8 @@ class JobCompletionTriggerRunInfoDetails:
     order"""
 
     completed_jobs: Optional[List[CompletedJob]] = None
+    """The upstream job completions that fired the trigger, in the order in which the jobs are
+    configured on the trigger."""
 
     def as_dict(self) -> dict:
         """Serializes the JobCompletionTriggerRunInfoDetails into a dictionary suitable for use as a JSON request body."""
@@ -3875,7 +3881,8 @@ class JobCompletionTriggerStateMonitoredJobState:
     evaluation cannot access the upstream job."""
 
     job_id: Optional[str] = None
-    """The ID of the upstream job."""
+    """The ID of the upstream job. For a job monitored by name, the ID of the job that the name last
+    resolved to. Omitted until the name resolves to a job."""
 
     last_seen_completion_time: Optional[Timestamp] = None
     """The completion time of the latest matching upstream run observed by the trigger."""
@@ -6247,18 +6254,22 @@ class RepairHistoryItem:
       duration time. Must provide a duration target."""
 
     end_time: Optional[int] = None
-    """The end time of the (repaired) run."""
+    """The end time of this repair history item in epoch milliseconds (milliseconds since 1/1/1970
+    UTC)."""
 
     id: Optional[int] = None
     """The ID of the repair. Only returned for the items that represent a repair in ``repair_history``."""
 
     start_time: Optional[int] = None
-    """The start time of the (repaired) run."""
+    """The start time of this repair history item in epoch milliseconds (milliseconds since 1/1/1970
+    UTC)."""
 
     state: Optional[RunState] = None
     """Deprecated. Please use the ``status`` field instead."""
 
     status: Optional[RunStatus] = None
+    """The status of the run at the end of this repair history item, or its current status for the
+    latest item. Use this field instead of the deprecated ``state`` field."""
 
     task_run_ids: Optional[List[int]] = None
     """The run IDs of the task runs that ran as part of this repair history item."""
@@ -6361,8 +6372,12 @@ class RepairRunResponse:
 @dataclass
 class ResolvedConditionTaskValues:
     left: Optional[str] = None
+    """The left operand of the condition with dynamic value references replaced by their concrete
+    values."""
 
     right: Optional[str] = None
+    """The right operand of the condition with dynamic value references replaced by their concrete
+    values."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolvedConditionTaskValues into a dictionary suitable for use as a JSON request body."""
@@ -6391,6 +6406,7 @@ class ResolvedConditionTaskValues:
 @dataclass
 class ResolvedDbtTaskValues:
     commands: Optional[List[str]] = None
+    """The dbt commands with dynamic value references replaced by their concrete values."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolvedDbtTaskValues into a dictionary suitable for use as a JSON request body."""
@@ -6415,6 +6431,7 @@ class ResolvedDbtTaskValues:
 @dataclass
 class ResolvedNotebookTaskValues:
     base_parameters: Optional[Dict[str, str]] = None
+    """The notebook parameters with dynamic value references replaced by their concrete values."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolvedNotebookTaskValues into a dictionary suitable for use as a JSON request body."""
@@ -6439,6 +6456,7 @@ class ResolvedNotebookTaskValues:
 @dataclass
 class ResolvedParamPairValues:
     parameters: Optional[Dict[str, str]] = None
+    """The query parameters with dynamic value references replaced by their concrete values."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolvedParamPairValues into a dictionary suitable for use as a JSON request body."""
@@ -6489,8 +6507,10 @@ class ResolvedPipelineTaskValues:
 @dataclass
 class ResolvedPythonWheelTaskValues:
     named_parameters: Optional[Dict[str, str]] = None
+    """The named parameters with dynamic value references replaced by their concrete values."""
 
     parameters: Optional[List[str]] = None
+    """The positional parameters with dynamic value references replaced by their concrete values."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolvedPythonWheelTaskValues into a dictionary suitable for use as a JSON request body."""
@@ -6519,6 +6539,8 @@ class ResolvedPythonWheelTaskValues:
 @dataclass
 class ResolvedRunJobTaskValues:
     job_parameters: Optional[Dict[str, str]] = None
+    """The job-level parameters passed to the triggered job with dynamic value references replaced by
+    their concrete values."""
 
     parameters: Optional[Dict[str, str]] = None
 
@@ -6549,6 +6571,8 @@ class ResolvedRunJobTaskValues:
 @dataclass
 class ResolvedStringParamsValues:
     parameters: Optional[List[str]] = None
+    """The parameters passed to the main class with dynamic value references replaced by their concrete
+    values."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolvedStringParamsValues into a dictionary suitable for use as a JSON request body."""
@@ -6581,26 +6605,36 @@ class ResolvedValues:
     references substituted to concrete values before submission to the training service."""
 
     condition_task: Optional[ResolvedConditionTaskValues] = None
+    """Resolved operands of a condition task."""
 
     dbt_task: Optional[ResolvedDbtTaskValues] = None
+    """Resolved commands of a dbt task."""
 
     notebook_task: Optional[ResolvedNotebookTaskValues] = None
+    """Resolved parameters of a notebook task."""
 
     pipeline_task: Optional[ResolvedPipelineTaskValues] = None
+    """Resolved parameters of a pipeline task."""
 
     python_wheel_task: Optional[ResolvedPythonWheelTaskValues] = None
+    """Resolved parameters of a Python wheel task."""
 
     run_job_task: Optional[ResolvedRunJobTaskValues] = None
+    """Resolved parameters of a Run Job task."""
 
     simulation_task: Optional[ResolvedParamPairValues] = None
 
     spark_jar_task: Optional[ResolvedStringParamsValues] = None
+    """Resolved parameters of a JAR task."""
 
     spark_python_task: Optional[ResolvedStringParamsValues] = None
+    """Resolved parameters of a Python script task."""
 
     spark_submit_task: Optional[ResolvedStringParamsValues] = None
+    """Resolved parameters of a spark-submit task."""
 
     sql_task: Optional[ResolvedParamPairValues] = None
+    """Resolved parameters of a SQL task."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolvedValues into a dictionary suitable for use as a JSON request body."""
@@ -6835,7 +6869,8 @@ class Run:
     """The canonical identifier of the job that contains this run."""
 
     job_parameters: Optional[List[JobParameter]] = None
-    """Job-level parameters used in the run"""
+    """Job-level parameters used in the run. Each entry carries the parameter's name, its default, and
+    the value used in this run."""
 
     job_run_id: Optional[int] = None
     """ID of the job run that this run belongs to. For legacy and single-task job runs the field is
@@ -6894,6 +6929,7 @@ class Run:
     """Deprecated. Please use the ``status`` field instead."""
 
     status: Optional[RunStatus] = None
+    """The current status of the run. Use this field instead of the deprecated ``state`` field."""
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own ``run_id`` which you can use to
@@ -6904,6 +6940,8 @@ class Run:
     trigger: Optional[TriggerType] = None
 
     trigger_info: Optional[TriggerInfo] = None
+    """Additional details about the trigger that fired the run. The fields that are populated depend on
+    the value of ``trigger``."""
 
     version_id: Optional[str] = None
     """ID of the deployment version that produced the job when this run was created. Identifies a
@@ -8169,6 +8207,7 @@ class RunTask:
     """The task triggers another job when the ``run_job_task`` field is present."""
 
     run_page_url: Optional[str] = None
+    """The URL to the detail page of the task run."""
 
     setup_duration: Optional[int] = None
     """The time in milliseconds it took to set up the cluster. For runs that run on new clusters this
@@ -8201,6 +8240,7 @@ class RunTask:
     """Deprecated. Please use the ``status`` field instead."""
 
     status: Optional[RunStatus] = None
+    """The current status of the task run. Use this field instead of the deprecated ``state`` field."""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job task. A value of ``0`` means no timeout."""
@@ -11952,7 +11992,7 @@ class JobsAPI:
         this request completes.
 
         :param run_id: int
-          This field is required.
+          The canonical identifier of the run to cancel.
 
         :returns:
           Long-running operation waiter for :class:`Run`.
@@ -12261,7 +12301,8 @@ class JobsAPI:
         self._api.do("POST", "/api/2.2/jobs/runs/delete", body=body, headers=headers)
 
     def export_run(self, run_id: int, *, views_to_export: Optional[ViewsToExport] = None) -> ExportRunOutput:
-        """Export and retrieve the job run task.
+        """Export and retrieve the job run task. Only notebook task runs can be exported. For a multi-task job
+        run, pass the ``run_id`` of the individual notebook task run rather than the ID of the job run.
 
         :param run_id: int
           The canonical identifier for the run. This field is required.
@@ -12534,8 +12575,8 @@ class JobsAPI:
         :param job_id: int (optional)
           The job for which to list runs. If omitted, the Jobs service lists runs from all jobs.
         :param limit: int (optional)
-          The number of runs to return. This value must be greater than 0 and less than 25. The default value
-          is 20. If a request specifies a limit of 0, the service instead uses the maximum limit.
+          The number of runs to return. This value must be greater than 0 and at most 25. The default value is
+          20. If a request specifies a limit of 0, the service instead uses the maximum limit.
         :param offset: int (optional)
           The offset of the first run to return, relative to the most recent run. Deprecated since June 2023.
           Use ``page_token`` to iterate through the pages instead.
@@ -12640,7 +12681,7 @@ class JobsAPI:
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
         :param job_parameters: Dict[str,str] (optional)
-          Job-level parameters used in the run. for example ``"param": "overriding_val"``
+          Job-level parameters used in the run, for example ``"param": "overriding_val"``.
         :param latest_repair_id: int (optional)
           The ID of the latest repair. This parameter is not required when repairing a run for the first time,
           but must be provided on subsequent requests to repair the same run.

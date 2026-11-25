@@ -1,5 +1,17 @@
 # Version changelog
 
+## Release v0.171.0 (2026-11-25)
+
+### API Changes
+* Add `databricks.sdk.service.geniemigrate` package.
+* Add [w.genie_migrate](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/geniemigrate/genie_migrate.html) workspace-level service.
+* Add `resources` field for `databricks.sdk.service.genieagents.GenieAgentDefinition`.
+* Add `text_instruction` field for `databricks.sdk.service.genieagents.GenieAgentInstructions`.
+* Add `asset_type_metric_view` and `asset_type_agent_skill` enum values for `databricks.sdk.service.marketplace.AssetType`.
+* [Breaking] Remove `data_sources` field for `databricks.sdk.service.genieagents.GenieAgentDefinition`.
+* [Breaking] Remove `sql_functions` and `text_instructions` fields for `databricks.sdk.service.genieagents.GenieAgentInstructions`.
+* [Breaking] Remove `notifications` field for `databricks.sdk.service.ml.MaterializationSet`.
+
 ## Release v0.170.0 (2026-11-23)
 
 ### API Changes

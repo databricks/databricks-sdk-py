@@ -1,5 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
-# ruff: noqa: F401, F403, F405, F811
+# ruff: noqa: E402, F401, F403, F405, F811
+
+# Other libraries can install packages under `databricks.sdk`, possibly into
+# another sys.path entry, so search them all.
+__path__ = __import__("pkgutil").extend_path(__path__, __name__)
 
 import json
 import logging
@@ -30,6 +34,7 @@ from databricks.sdk.service import domains as pkg_domains
 from databricks.sdk.service import environments as pkg_environments
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import genieagents as pkg_genieagents
+from databricks.sdk.service import geniemigrate as pkg_geniemigrate
 from databricks.sdk.service import iam as pkg_iam
 from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
@@ -146,6 +151,7 @@ from databricks.sdk.service.ml import ForecastingAPI
 from databricks.sdk.service.catalog import FunctionsAPI
 from databricks.sdk.service.dashboards import GenieAPI
 from databricks.sdk.service.genieagents import GenieAgentsAPI
+from databricks.sdk.service.geniemigrate import GenieMigrateAPI
 from databricks.sdk.service.workspace import GitCredentialsAPI
 from databricks.sdk.service.compute import GlobalInitScriptsAPI
 from databricks.sdk.service.catalog import GrantsAPI
@@ -437,6 +443,7 @@ class WorkspaceClient:
         self._functions = pkg_catalog.FunctionsAPI(self._api_client)
         self._genie = pkg_dashboards.GenieAPI(self._api_client)
         self._genie_agents = pkg_genieagents.GenieAgentsAPI(self._api_client)
+        self._genie_migrate = pkg_geniemigrate.GenieMigrateAPI(self._api_client)
         self._git_credentials = pkg_workspace.GitCredentialsAPI(self._api_client)
         self._global_init_scripts = pkg_compute.GlobalInitScriptsAPI(self._api_client)
         self._grants = pkg_catalog.GrantsAPI(self._api_client)
@@ -571,7 +578,7 @@ class WorkspaceClient:
 
     @property
     def ai_functions(self) -> pkg_aifunctions.AiFunctionsAPI:
-        """Transform and enrich data with AI on Databricks."""
+        """Transform and enrich data with AI."""
         return self._ai_functions
 
     @property
@@ -823,6 +830,11 @@ class WorkspaceClient:
     def genie_agents(self) -> pkg_genieagents.GenieAgentsAPI:
         """Genie provides a no-code experience for business users, powered by AI/BI."""
         return self._genie_agents
+
+    @property
+    def genie_migrate(self) -> pkg_geniemigrate.GenieMigrateAPI:
+        """Use the Genie Migrate API to create and manage migration projects and the source files to convert."""
+        return self._genie_migrate
 
     @property
     def git_credentials(self) -> pkg_workspace.GitCredentialsAPI:

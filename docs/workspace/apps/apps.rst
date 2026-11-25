@@ -42,7 +42,7 @@
         :param update_mask: str
           Comma-separated names of the ``app`` fields to update, such as ``description`` or ``resources``. A
           field named in the mask but absent from ``app`` is cleared, except ``compute_size``, which resets to
-          ``MEDIUM``.
+          ``MEDIUM``. Sent in the request body together with ``app``.
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
@@ -87,7 +87,8 @@
 
     .. py:method:: delete_space(name: str) -> DeleteSpaceOperation
 
-        Deletes an app space.
+        Deletes the app space with the supplied name. Spaces are identified by name, not by id. The
+        workspace's default space can't be deleted.
 
         :param name: str
           The name of the app space.
@@ -169,7 +170,8 @@
 
     .. py:method:: get_space(name: str) -> Space
 
-        Retrieves information for the app space with the supplied name.
+        Retrieves information for the app space with the supplied name. Spaces are identified by name, not by
+        id.
 
         :param name: str
           The name of the app space.
@@ -347,8 +349,9 @@
 
     .. py:method:: update_space(name: str, space: Space, update_mask: FieldMask) -> UpdateSpaceOperation
 
-        Updates an app space. The update process is asynchronous and the status of the update can be checked
-        with the GetSpaceOperation method.
+        Updates the app space with the supplied name. Spaces are identified by name, not by id. The
+        workspace's default space can't be updated. The update process is asynchronous and the status of the
+        update can be checked with the GetSpaceOperation method.
 
         :param name: str
           The name of the app space. The name must contain only lowercase alphanumeric characters and hyphens.
@@ -357,7 +360,8 @@
         :param space: :class:`Space`
         :param update_mask: FieldMask
           Comma-separated names of the ``space`` fields to update, such as ``description`` or ``resources``. A
-          field named in the mask but absent from ``space`` is cleared.
+          field named in the mask but absent from ``space`` is cleared. Sent as a query parameter, not in the
+          ``space`` body.
 
         :returns: :class:`Operation`
         

@@ -25,6 +25,7 @@ Dataclasses
    environments
    files
    genieagents
+   geniemigrate
    iam
    iamv2
    jobs

@@ -2159,10 +2159,13 @@ class Rule:
     requester's own identity is used. An update whose mask does not include ``run_as_principal``
     keeps the current identity, and the requester must still be authorized to delegate to it; an
     editor who is not must supply a run_as_principal they can delegate to (for example, their own
-    identity), or clear it, either of which reassigns the rule. An update whose mask includes
-    ``run_as_principal`` but supplies no value clears it: the rule then runs as the requester,
-    exactly as when it is omitted on create. Reads return the value as supplied; the identity the
-    rule runs as is reported in ``effective_run_as_principal``."""
+    identity), or clear it, either of which reassigns the rule. An update that only enables or
+    disables the rule (changes ``schedule.enabled`` and nothing else) does not require delegate
+    permission and keeps the current identity. Enabling the rule still requires the current identity
+    to have the access the rule needs to run, or the request is rejected. An update whose mask
+    includes ``run_as_principal`` but supplies no value clears it: the rule then runs as the
+    requester, exactly as when it is omitted on create. Reads return the value as supplied; the
+    identity the rule runs as is reported in ``effective_run_as_principal``."""
 
     runbook: Optional[str] = None
     """Long-form operational guidance carried from the authored rule metadata. Supports up to 4096
