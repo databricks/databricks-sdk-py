@@ -118,7 +118,7 @@ AUTO_PACKAGES = [
         "AgentKit",
         "APIs for managing agent memory and durable session state. This interface is under active development and may change.",
     ),
-    Package("aifunctions", "AI Functions", "Transform and enrich data with AI on Databricks."),
+    Package("aifunctions", "AI Functions", "Transform and enrich data with AI."),
     Package(
         "aisearch",
         "AISearch",
@@ -163,6 +163,11 @@ AUTO_PACKAGES = [
         "genieagents",
         "Genie Agents",
         "Genie provides a no-code experience for business users, powered by AI/BI. Analysts set up Genie Agents that business users can use to ask questions using natural language. Genie uses data registered to Unity Catalog and requires at least CAN USE permission on a Pro or Serverless SQL warehouse. Also, Databricks Assistant must be enabled.",
+    ),
+    Package(
+        "geniemigrate",
+        "Genie Migrate",
+        "Use the Genie Migrate API to create and manage migration projects and the source files to convert.",
     ),
     Package("iam", "", ""),
     Package("iamv2", "", ""),

@@ -25,6 +25,7 @@ These APIs are available from WorkspaceClient
    environments/index
    files/index
    genieagents/index
+   geniemigrate/index
    iam/index
    iamv2/index
    jobs/index

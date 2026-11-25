@@ -10,6 +10,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AssetType
 
+   .. py:attribute:: ASSET_TYPE_AGENT_SKILL
+      :value: "ASSET_TYPE_AGENT_SKILL"
+
    .. py:attribute:: ASSET_TYPE_APP
       :value: "ASSET_TYPE_APP"
 
@@ -24,6 +27,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ASSET_TYPE_MEDIA
       :value: "ASSET_TYPE_MEDIA"
+
+   .. py:attribute:: ASSET_TYPE_METRIC_VIEW
+      :value: "ASSET_TYPE_METRIC_VIEW"
 
    .. py:attribute:: ASSET_TYPE_MODEL
       :value: "ASSET_TYPE_MODEL"

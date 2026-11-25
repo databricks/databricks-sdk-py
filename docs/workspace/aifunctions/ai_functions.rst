@@ -4,13 +4,12 @@
 
 .. py:class:: AiFunctionsAPI
 
-    Transform and enrich data with AI on Databricks.
+    Transform and enrich data with AI.
 
     .. py:method:: ai_classify(content: any, labels: any [, options: Optional[AiClassifyOptions]]) -> AiClassifyResponse
 
-        Classifies content according to a set of provided labels. For REST API requests, the default rate
-        limit is 1,200 requests per minute per workspace. Contact your Databricks account team to request a
-        higher limit.
+        Classifies content according to a set of provided labels. The AI Classify REST API has a default rate
+        limit of 1,200 requests per minute per workspace. Contact your account team to request a higher limit.
 
         :param content: any
           The content to classify. It accepts a plain string or the response object of
@@ -29,30 +28,45 @@
     .. py:method:: ai_decide(state: any, questions: any [, options: Optional[AiDecideOptions]]) -> AiDecideResponse
 
         Turn text and structured data into decisions your application can use. Define questions and criteria
-        to choose an option, estimate a probability, or assign a score given a provided state. For REST API
-        requests, the default rate limit is 1,200 requests per minute per workspace. Contact your Databricks
-        account team to request a higher limit.
+        to choose an option, estimate a probability, or assign a score given a provided state. The AI Decide
+        REST API has a default rate limit of 1,200 requests per minute per workspace. Contact your account
+        team to request a higher limit.
+
+        .. note::
+
+           **Note:** The v1 AI Decide syntax supporting strings and objects in ``state`` and objects and
+           arrays in ``instructions`` will no longer be supported starting February 1, 2027. To use AI Decide,
+           you must set ``options.version`` to ``"2.0"``, pass an array of typed content objects to ``state``,
+           and a nonblank string to ``instructions``.
 
         :param state: any
-          A string, JSON object, or array containing the content, related context, and examples needed to
-          answer the provided questions. For example, provide a support message, a conversation, or records
-          describing the current state of an application. All questions receive this same state.
+          A nonempty array of typed content objects shared by all questions. Set ``options.version`` to
+          ``"2.0"`` to use this format. Text and JSON content plus questions must fit within 32 KiB as compact
+          UTF-8 JSON, excluding image parts.
+
+          | type | Content field | Value | | --- | --- | --- | | ``text`` | ``text`` | A nonblank string. | |
+          ``json`` | ``data`` | A JSON object or array. | | ``image`` | ``image_url`` | An inline base64 PNG
+          or JPEG data URL: ``data:image/png;base64,<base64-encoded image bytes>`` or
+          ``data:image/jpeg;base64,<base64-encoded image bytes>``. HTTP URLs and file paths are not supported.
+          Each image must be at most 4 MiB after base64 decoding, with a resolution up to 1,568 × 1,568
+          pixels (or an equivalent pixel count). A request supports up to five images. Images are only
+          supported in `select regions
+          <https://docs.databricks.com/aws/en/resources/feature-region-support#ai-function-availability>`__. |
         :param questions: any
-          A JSON object mapping question IDs to their definitions. Each ID must contain non-whitespace text;
-          its answer is returned with the same ID in ``response.answers``.
+          A JSON object mapping up to 256 question IDs to their definitions. Each ID must be nonblank; its
+          answer is returned with the same ID in ``response.answers``.
 
           Each definition is an object with the required fields ``type`` and ``instructions``. The
           ``criteria`` field is optional for the type ``noul`` but is required for the types ``choice`` and
           ``score``.
 
-          The ``instructions`` field describes the judgment to make and can be a string, object, or array. Use
-          an object or array to include supporting context alongside the instructions.
+          In AI Decide v2, ``instructions`` and each criteria description must be nonblank strings. Each
+          question may contain at most 20,000 characters across its ID, instructions, and criteria.
 
           The ``type`` can be one of:
 
           - ``choice``: Selects one option from a defined set. Requires ``criteria`` to be an object mapping 1
-            to 255 nonempty option names to descriptions. The criteria description can be a string, object,
-            array, or null when the name needs no additional detail. For example:
+            to 255 nonblank option names to nonblank string descriptions. For example:
 
           .. code-block:: json
 
@@ -62,16 +76,15 @@
              "instructions": "Which team should handle this ticket?",
              "criteria": {
              "billing": "Payments, charges, and refunds",
-             "technical_support": null
+             "technical_support": "Product errors and troubleshooting"
              }
              }
              }
 
           - ``noul``: Estimates the probability that the answer to a true-or-false question is true.
-            ``criteria`` can take the fields ``true`` or ``false``, or both, with descriptions that are
-            strings, objects, or arrays. Omit ``criteria`` to use the question alone. The instructions or at
-            least one criteria description must contain non-whitespace text, a nonempty object, or a nonempty
-            array. For example, both of the following are valid:
+            ``criteria`` can take the fields ``true`` or ``false``, or both, with nonblank string
+            descriptions. Omit ``criteria`` to use the question alone. For example, both of the following are
+            valid:
 
           .. code-block:: json
 
@@ -98,8 +111,8 @@
              }
 
           - ``score``: Rates the state on an ordered scale. Requires ``criteria`` to be an array of 2 to 10
-            level descriptions, ordered from low to high. Descriptions must contain non-whitespace text, a
-            nonempty object, or a nonempty array. Array positions define levels starting at 0. For example:
+            unique, nonblank string descriptions, ordered from low to high. Array positions define levels
+            starting at 0. For example:
 
           .. code-block:: json
 
@@ -122,9 +135,9 @@
 
     .. py:method:: ai_extract(content: any, schema: any [, options: Optional[AiExtractOptions]]) -> AiExtractResponse
 
-        Extracts structured data from text and documents according to a provided schema. For REST API
-        requests, the default rate limit is 120 requests per minute per workspace. Contact your Databricks
-        account team to request a higher limit.
+        Extracts structured data from text and documents according to a provided schema. The AI Extract REST
+        API has a default rate limit of 120 requests per minute per workspace. Contact your account team to
+        request a higher limit.
 
         :param content: any
           The text to extract from. It accepts a plain string or the response object of

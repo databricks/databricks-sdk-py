@@ -5258,9 +5258,8 @@ class NccAzureServiceEndpointRule:
 @dataclass
 class NccEgressConfig:
     default_rules: Optional[NccEgressDefaultRules] = None
-    """The network connectivity rules that are applied by default without resource specific
-    configurations. You can find the stable network information of your serverless compute resources
-    here."""
+    """Deprecated. This field is retained for compatibility with existing clients. Avoid using it in
+    new integrations."""
 
     target_rules: Optional[NccEgressTargetRules] = None
     """The network connectivity rules that configured for each destinations. These rules override
@@ -5333,9 +5332,10 @@ class NccEgressTargetRules:
     """Target rule controls the egress rules that are dedicated to specific resources."""
 
     aws_private_endpoint_rules: Optional[List[CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule]] = None
-    """AWS private endpoint rule controls the AWS private endpoint based egress rules."""
+    """Deprecated. This field is not supported anymore and kept purely for interface stability."""
 
     azure_private_endpoint_rules: Optional[List[NccAzurePrivateEndpointRule]] = None
+    """Deprecated. This field is not supported anymore and kept purely for interface stability."""
 
     def as_dict(self) -> dict:
         """Serializes the NccEgressTargetRules into a dictionary suitable for use as a JSON request body."""

@@ -1,3 +1,9 @@
+# ruff: noqa: E402
+
+# Other libraries can install packages under `databricks.sdk.environments`, possibly
+# into another sys.path entry, so search them all.
+__path__ = __import__("pkgutil").extend_path(__path__, __name__)
+
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional

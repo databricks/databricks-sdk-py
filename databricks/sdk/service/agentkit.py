@@ -181,7 +181,8 @@ class ListManagedMemoryEntriesResponse:
     """Response containing memory entries."""
 
     managed_memory_entries: Optional[List[ManagedMemoryEntry]] = None
-    """Memory entries matching the request and selected response view."""
+    """Memory entries matching the request and selected response view, ordered by creation time, oldest
+    first."""
 
     next_page_token: Optional[str] = None
     """Opaque pagination token. This field is omitted when there are no more results."""
@@ -434,7 +435,8 @@ class ListSessionsResponse:
 
 @dataclass
 class ManagedMemoryEntry:
-    """A workspace-scoped entry in a memory store."""
+    """A workspace-scoped entry in a memory store. Each entry belongs to one actor and, optionally, one
+    session, and its ``path`` is unique within that actor and session."""
 
     actor_id: str
     """Customer-provided identifier for the actor whose memory this entry represents."""
@@ -1251,7 +1253,9 @@ class AgentKitAPI:
         :param managed_memory_entry: :class:`ManagedMemoryEntry`
           The memory entry to create.
         :param managed_memory_entry_id: str (optional)
-          Optional caller-selected memory entry ID. The service generates an ID when omitted.
+          Caller-selected memory entry ID. It must contain 1-255 letters, digits, hyphens, or underscores, and
+          it becomes the last segment of the entry's ``name``. The service generates a UUID when it is
+          omitted.
 
         :returns: :class:`ManagedMemoryEntry`
         """
@@ -1550,8 +1554,8 @@ class AgentKitAPI:
         return ForkSessionResponse.from_dict(res)
 
     def get_memory(self, name: str, *, view: Optional[ManagedMemoryEntryView] = None) -> ManagedMemoryEntry:
-        """Retrieves a memory entry by resource name. ``view`` controls whether the response includes memory
-        content. Returns ``NOT_FOUND`` when the entry does not exist in the caller's workspace.
+        """Retrieves a memory entry by resource name. Returns ``NOT_FOUND`` when the entry does not exist in the
+        caller's workspace.
 
         :param name: str
           Resource name in the form
@@ -1770,7 +1774,8 @@ class AgentKitAPI:
           Maximum number of entries to return. The service may return fewer entries than requested. Defaults
           to 10; must be between 1 and 100.
         :param page_token: str (optional)
-          Opaque pagination token from a previous ListManagedMemoryEntries response.
+          Opaque pagination token, taken from the ``next_page_token`` of a previous response. The other
+          request parameters must match the request that returned the token.
         :param path_prefix: str (optional)
           Optional path prefix used to restrict entries within the actor partition.
         :param session_id: str (optional)
@@ -2157,14 +2162,15 @@ class AgentKitAPI:
         view: Optional[ManagedMemoryEntryView] = None,
     ) -> Iterator[ManagedMemoryEntrySearchResult]:
         """Searches memory entries by text query for one actor. Returns matching entries and scores ranked by
-        relevance; ``view`` controls whether each returned entry includes content.
+        relevance.
 
         :param parent: str
           Memory store whose entries are searched, in the form ``memory-stores/{managed_memory_store_id}``.
         :param actor_id: str
           Customer-provided identifier for the actor whose entries are searched.
         :param query: str
-          Free-form search query.
+          Free-form search query. Entries are ranked by how well their ``content`` and ``description`` match
+          it.
         :param limit: int (optional)
           Deprecated alias for ``page_size``. When both fields are set, their values must match.
         :param page_size: int (optional)

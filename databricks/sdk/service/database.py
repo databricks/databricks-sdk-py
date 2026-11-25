@@ -2458,9 +2458,9 @@ class DatabaseAPI:
         :param name: str
           Full three-part (catalog, schema, table) name of the table.
         :param synced_table: :class:`SyncedDatabaseTable`
-          Note that updating a synced database table is not yet supported.
+          The synced database table and requested spec values.
         :param update_mask: str
-          The list of fields to update. Setting this field is not yet supported.
+          The list of fields to update. Updatable paths include spec.accelerated_sync and *.
 
         :returns: :class:`SyncedDatabaseTable`
         """

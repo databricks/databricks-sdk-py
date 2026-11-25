@@ -213,21 +213,31 @@ server.close()
 ```
 
 `forward.url` is `http://127.0.0.1:<local_port>`. Any HTTP client, or a browser
-on the same machine, can use it while the forward is open. The forward stays
-open until you call `close()` or leave the `with` block. It uses a free local
-port unless you pass `local_port=`.
+on the same machine, can use it while the forward is open. That includes other
+users and processes on the machine, so open forwards only on machines you trust.
+The forward stays open until you call `close()` or leave the `with` block. It
+uses a free local port unless you pass `local_port=`.
 
 ### Requirements and limits
 
 - The app must listen on `0.0.0.0` inside the sandbox, not only on `127.0.0.1`.
-- You can forward ports 10000-65535, except 10101, 18767, and 19090.
+- The sandbox refuses a few reserved platform ports. A request to a refused
+  port gets a `403` response with a message saying why.
 - HTTP/1.1 and WebSocket traffic is supported. HTTP/2 and other protocols, such
   as database connections, are not.
 - Request paths can't contain `.` or `..` segments, `;`, backslashes, control
   characters, or an encoded `/`, `\`, `%`, `?`, or `#`. Such requests, and
   malformed ones, get a local `400` response and are never sent. Query strings
   aren't restricted.
+- The `Host` must be `127.0.0.1:<local_port>` or `localhost:<local_port>`.
+  Anything else gets a local `403`.
+- In a browser, only pages on `127.0.0.1` or `localhost` can call the forward.
+  Requests from pages on other sites get a local `403`. The exception is a link
+  or redirect that opens a page with `GET` or `HEAD`, so sign-in redirects back
+  to the app still work.
 - Requests are sent with your workspace credentials. `Authorization`,
   `X-Databricks-*`, and `S2S-*` headers that your client sets don't reach the
   app, so an app that expects a token in `Authorization` needs another way to
   sign in, such as a token in the URL.
+- Browsers share cookies across ports on the same host, so apps on different
+  forwards can read each other's cookies.

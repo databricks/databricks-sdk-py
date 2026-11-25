@@ -36,12 +36,14 @@
             # cleanup
             w.global_init_scripts.delete(script_id=created.script_id)
 
-        Creates a new global init script in this workspace.
+        Creates a new global init script in this workspace. The number of global init scripts per workspace is
+        limited.
 
         :param name: str
-          The name of the script
+          The name of the script. The name must be unique within the workspace.
         :param script: str
-          The Base64-encoded content of the script.
+          The Base64-encoded content of the script. The decoded content must not be empty and cannot exceed 64
+          KB.
         :param enabled: bool (optional)
           Specifies whether the script is enabled. The script runs only if enabled.
         :param position: int (optional)
@@ -159,9 +161,10 @@
         :param script_id: str
           The ID of the global init script.
         :param name: str
-          The name of the script
+          The name of the script. The name must be unique within the workspace.
         :param script: str
-          The Base64-encoded content of the script.
+          The Base64-encoded content of the script. The decoded content must not be empty and cannot exceed 64
+          KB.
         :param enabled: bool (optional)
           Specifies whether the script is enabled. The script runs only if enabled.
         :param position: int (optional)

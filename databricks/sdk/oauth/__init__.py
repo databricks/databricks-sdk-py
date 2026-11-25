@@ -1,3 +1,9 @@
+# ruff: noqa: E402
+
+# Other libraries can install packages under `databricks.sdk.oauth`, possibly
+# into another sys.path entry, so search them all.
+__path__ = __import__("pkgutil").extend_path(__path__, __name__)
+
 import base64
 import functools
 import hashlib
@@ -19,8 +25,8 @@ from typing import Any, Callable, Dict, List, Optional
 import requests
 import requests.auth
 
-from ._base_client import _BaseClient, _fix_host_if_needed
-from .environments import Cloud
+from .._base_client import _BaseClient, _fix_host_if_needed
+from ..environments import Cloud
 
 # Error code for PKCE flow in Azure Active Directory, that gets additional retry.
 # See https://stackoverflow.com/a/75466778/277035 for more info
@@ -787,8 +793,8 @@ class OAuthClient:
         scopes: List[str] = None,
         client_secret: str = None,
     ) -> "OAuthClient":
-        from .core import Config
-        from .credentials_provider import credentials_strategy
+        from ..core import Config
+        from ..credentials_provider import credentials_strategy
 
         @credentials_strategy("noop", [])
         def noop_credentials(_: any):

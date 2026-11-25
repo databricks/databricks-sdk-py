@@ -69,7 +69,8 @@ class App:
 
     compute_size: Optional[ComputeSize] = None
     """Size of the compute instances the app runs on. Defaults to MEDIUM. Larger sizes provide more CPU
-    and memory at a higher hourly cost. See
+    and memory at a higher hourly cost. Leave unset for an app in a space: apps in a space always
+    run on space compute and reject any other size. See
     https://docs.databricks.com/aws/en/dev-tools/databricks-apps/compute-size."""
 
     compute_status: Optional[ComputeStatus] = None
@@ -3449,7 +3450,7 @@ class AppsAPI:
         :param update_mask: str
           Comma-separated names of the ``app`` fields to update, such as ``description`` or ``resources``. A
           field named in the mask but absent from ``app`` is cleared, except ``compute_size``, which resets to
-          ``MEDIUM``.
+          ``MEDIUM``. Sent in the request body together with ``app``.
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
@@ -3531,7 +3532,8 @@ class AppsAPI:
         self._api.do("DELETE", f"/api/2.0/apps/{name}/thumbnail", headers=headers)
 
     def delete_space(self, name: str) -> DeleteSpaceOperation:
-        """Deletes an app space.
+        """Deletes the app space with the supplied name. Spaces are identified by name, not by id. The
+        workspace's default space can't be deleted.
 
         :param name: str
           The name of the app space.
@@ -3694,7 +3696,8 @@ class AppsAPI:
         return AppPermissions.from_dict(res)
 
     def get_space(self, name: str) -> Space:
-        """Retrieves information for the app space with the supplied name.
+        """Retrieves information for the app space with the supplied name. Spaces are identified by name, not by
+        id.
 
         :param name: str
           The name of the app space.
@@ -4094,8 +4097,9 @@ class AppsAPI:
         return AppPermissions.from_dict(res)
 
     def update_space(self, name: str, space: Space, update_mask: FieldMask) -> UpdateSpaceOperation:
-        """Updates an app space. The update process is asynchronous and the status of the update can be checked
-        with the GetSpaceOperation method.
+        """Updates the app space with the supplied name. Spaces are identified by name, not by id. The
+        workspace's default space can't be updated. The update process is asynchronous and the status of the
+        update can be checked with the GetSpaceOperation method.
 
         :param name: str
           The name of the app space. The name must contain only lowercase alphanumeric characters and hyphens.
@@ -4104,7 +4108,8 @@ class AppsAPI:
         :param space: :class:`Space`
         :param update_mask: FieldMask
           Comma-separated names of the ``space`` fields to update, such as ``description`` or ``resources``. A
-          field named in the mask but absent from ``space`` is cleared.
+          field named in the mask but absent from ``space`` is cleared. Sent as a query parameter, not in the
+          ``space`` body.
 
         :returns: :class:`Operation`
         """

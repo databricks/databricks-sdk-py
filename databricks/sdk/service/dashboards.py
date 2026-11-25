@@ -2887,9 +2887,10 @@ class GenieAPI:
           ID of the SQL warehouse that runs the queries Genie generates for the space, as a 16-character
           hexadecimal string.
         :param serialized_space: str
-          Configuration of the new space as a JSON string. To copy an existing space, use the value that [Get
-          Genie Space](:method:genie/getspace) returns when ``include_serialized_space`` is true. For the JSON
-          format and its validation rules, see
+          Configuration of the new space as a JSON string. The configuration must include at least one table,
+          metric view, volume, MCP connection, or sub-agent data source. To copy an existing space, use the
+          value that [Get Genie Space](:method:genie/getspace) returns when ``include_serialized_space`` is
+          true. For the JSON format and its validation rules, see
           https://docs.databricks.com/aws/en/genie-agents/conversation-api.
         :param description: str (optional)
           Description of the space, up to 16384 bytes.

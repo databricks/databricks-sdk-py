@@ -4773,25 +4773,29 @@ class GetInstancePool:
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances
-    and EBS volumes) with these tags in addition to ``default_tags``. Notes:
+    and EBS volumes) with these tags in addition to ``default_tags``, and clusters backed by the
+    pool inherit them. When editing a pool, omitting this field or passing an empty map keeps the
+    existing tags, and a non-empty map replaces them. Notes:
     
     - Currently, Databricks allows at most 45 custom tags"""
 
     default_tags: Optional[Dict[str, str]] = None
-    """Tags that are added by Databricks regardless of any ``custom_tags``, including:
+    """Tags that Databricks adds to every pool resource in addition to any ``custom_tags``:
     
     - Vendor: Databricks
     - DatabricksInstancePoolCreatorId: <user_id_of_creator>
     - DatabricksInstancePoolId: <id_of_pool>"""
 
     disk_spec: Optional[DiskSpec] = None
-    """Defines the specification of the disks that will be attached to all spark containers."""
+    """Defines the specification of the disks that will be attached to all spark containers. The disk
+    specification cannot be changed after the pool is created."""
 
     enable_elastic_disk: Optional[bool] = None
-    """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
-    additional disk space when its Spark workers are running low on disk space. In AWS, this feature
-    requires specific AWS permissions to function correctly - refer to the User Guide for more
-    details."""
+    """Autoscaling Local Storage: when enabled, the instances in this pool will dynamically acquire
+    additional disk space when their Spark workers are running low on disk space. In AWS, this
+    feature requires specific AWS permissions to function correctly; see
+    https://docs.databricks.com/aws/en/compute/pools#autoscaling-local-storage for details. This
+    setting cannot be changed after the pool is created."""
 
     gcp_attributes: Optional[InstancePoolGcpAttributes] = None
     """Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
@@ -4811,29 +4815,35 @@ class GetInstancePool:
     max_capacity: Optional[int] = None
     """Maximum number of outstanding instances to keep in the pool, including both instances used by
     clusters and idle instances. Clusters that require further instance provisioning will fail
-    during upsize requests."""
+    during upsize requests. If unset, the pool size is not capped."""
 
     min_idle_instances: Optional[int] = None
-    """Minimum number of idle instances to keep in the instance pool"""
+    """Minimum number of idle instances to keep in the instance pool. These instances do not terminate
+    regardless of ``idle_instance_autotermination_minutes``, and the pool provisions replacements
+    when clusters consume them. Defaults to 0."""
 
     node_type_flexibility: Optional[NodeTypeFlexibility] = None
     """Flexible node type configuration for the pool."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
-    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
-    compute intensive workloads. A list of available node types can be retrieved by using the
-    `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
-    API call. The node type cannot be changed after the pool is created."""
+    in clusters that use this pool. For example, the Spark nodes can be provisioned and optimized
+    for memory or compute intensive workloads. A list of available node types can be retrieved by
+    using the `clusters/listNodeTypes
+    <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API call. The node type
+    cannot be changed after the pool is created."""
 
     preloaded_docker_images: Optional[List[DockerImage]] = None
-    """Custom Docker Image BYOC"""
+    """A list containing at most one custom Docker image to preload on the pool's idle instances.
+    Clusters that use Databricks Container Services with the preloaded image start faster. The list
+    cannot be changed after the pool is created."""
 
     preloaded_spark_versions: Optional[List[str]] = None
     """A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
     started with the preloaded Spark version will start faster. A list of available Spark versions
     can be retrieved by using the `clusters/sparkVersions
-    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call."""
+    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call. The list cannot
+    be changed after the pool is created."""
 
     remote_disk_throughput: Optional[int] = None
     """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
@@ -5026,6 +5036,9 @@ class GetSparkVersionsResponse:
 
 @dataclass
 class GlobalInitScriptDetails:
+    """A global init script in the workspace. Only workspace admins can view and manage global init
+    scripts."""
+
     created_at: Optional[int] = None
     """Time when the script was created, represented as a Unix timestamp in milliseconds."""
 
@@ -5036,7 +5049,7 @@ class GlobalInitScriptDetails:
     """Specifies whether the script is enabled. The script runs only if enabled."""
 
     name: Optional[str] = None
-    """The name of the script"""
+    """The name of the script. The name must be unique within the workspace."""
 
     position: Optional[int] = None
     """The position of a script, where 0 represents the first script to run, 1 is the second script to
@@ -5049,7 +5062,7 @@ class GlobalInitScriptDetails:
     """Time when the script was updated, represented as a Unix timestamp in milliseconds."""
 
     updated_by: Optional[str] = None
-    """The username of the user who last updated the script"""
+    """The username of the user who last updated the script."""
 
     def as_dict(self) -> dict:
         """Serializes the GlobalInitScriptDetails into a dictionary suitable for use as a JSON request body."""
@@ -5110,6 +5123,9 @@ class GlobalInitScriptDetails:
 
 @dataclass
 class GlobalInitScriptDetailsWithContent:
+    """A global init script in the workspace. Only workspace admins can view and manage global init
+    scripts."""
+
     created_at: Optional[int] = None
     """Time when the script was created, represented as a Unix timestamp in milliseconds."""
 
@@ -5120,7 +5136,7 @@ class GlobalInitScriptDetailsWithContent:
     """Specifies whether the script is enabled. The script runs only if enabled."""
 
     name: Optional[str] = None
-    """The name of the script"""
+    """The name of the script. The name must be unique within the workspace."""
 
     position: Optional[int] = None
     """The position of a script, where 0 represents the first script to run, 1 is the second script to
@@ -5136,7 +5152,7 @@ class GlobalInitScriptDetailsWithContent:
     """Time when the script was updated, represented as a Unix timestamp in milliseconds."""
 
     updated_by: Optional[str] = None
-    """The username of the user who last updated the script"""
+    """The username of the user who last updated the script."""
 
     def as_dict(self) -> dict:
         """Serializes the GlobalInitScriptDetailsWithContent into a dictionary suitable for use as a JSON request body."""
@@ -5614,25 +5630,29 @@ class InstancePoolAndStats:
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances
-    and EBS volumes) with these tags in addition to ``default_tags``. Notes:
+    and EBS volumes) with these tags in addition to ``default_tags``, and clusters backed by the
+    pool inherit them. When editing a pool, omitting this field or passing an empty map keeps the
+    existing tags, and a non-empty map replaces them. Notes:
     
     - Currently, Databricks allows at most 45 custom tags"""
 
     default_tags: Optional[Dict[str, str]] = None
-    """Tags that are added by Databricks regardless of any ``custom_tags``, including:
+    """Tags that Databricks adds to every pool resource in addition to any ``custom_tags``:
     
     - Vendor: Databricks
     - DatabricksInstancePoolCreatorId: <user_id_of_creator>
     - DatabricksInstancePoolId: <id_of_pool>"""
 
     disk_spec: Optional[DiskSpec] = None
-    """Defines the specification of the disks that will be attached to all spark containers."""
+    """Defines the specification of the disks that will be attached to all spark containers. The disk
+    specification cannot be changed after the pool is created."""
 
     enable_elastic_disk: Optional[bool] = None
-    """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
-    additional disk space when its Spark workers are running low on disk space. In AWS, this feature
-    requires specific AWS permissions to function correctly - refer to the User Guide for more
-    details."""
+    """Autoscaling Local Storage: when enabled, the instances in this pool will dynamically acquire
+    additional disk space when their Spark workers are running low on disk space. In AWS, this
+    feature requires specific AWS permissions to function correctly; see
+    https://docs.databricks.com/aws/en/compute/pools#autoscaling-local-storage for details. This
+    setting cannot be changed after the pool is created."""
 
     gcp_attributes: Optional[InstancePoolGcpAttributes] = None
     """Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
@@ -5655,29 +5675,35 @@ class InstancePoolAndStats:
     max_capacity: Optional[int] = None
     """Maximum number of outstanding instances to keep in the pool, including both instances used by
     clusters and idle instances. Clusters that require further instance provisioning will fail
-    during upsize requests."""
+    during upsize requests. If unset, the pool size is not capped."""
 
     min_idle_instances: Optional[int] = None
-    """Minimum number of idle instances to keep in the instance pool"""
+    """Minimum number of idle instances to keep in the instance pool. These instances do not terminate
+    regardless of ``idle_instance_autotermination_minutes``, and the pool provisions replacements
+    when clusters consume them. Defaults to 0."""
 
     node_type_flexibility: Optional[NodeTypeFlexibility] = None
     """Flexible node type configuration for the pool."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
-    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
-    compute intensive workloads. A list of available node types can be retrieved by using the
-    `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__
-    API call. The node type cannot be changed after the pool is created."""
+    in clusters that use this pool. For example, the Spark nodes can be provisioned and optimized
+    for memory or compute intensive workloads. A list of available node types can be retrieved by
+    using the `clusters/listNodeTypes
+    <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API call. The node type
+    cannot be changed after the pool is created."""
 
     preloaded_docker_images: Optional[List[DockerImage]] = None
-    """Custom Docker Image BYOC"""
+    """A list containing at most one custom Docker image to preload on the pool's idle instances.
+    Clusters that use Databricks Container Services with the preloaded image start faster. The list
+    cannot be changed after the pool is created."""
 
     preloaded_spark_versions: Optional[List[str]] = None
     """A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
     started with the preloaded Spark version will start faster. A list of available Spark versions
     can be retrieved by using the `clusters/sparkVersions
-    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call."""
+    <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call. The list cannot
+    be changed after the pool is created."""
 
     remote_disk_throughput: Optional[int] = None
     """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
@@ -5856,9 +5882,9 @@ class InstancePoolAwsAttributes:
     """Identifier for the availability zone/datacenter in which the cluster resides. This string will
     be of a form like "us-west-2a". The provided availability zone must be in the same region as the
     Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
-    deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
-    if not specified, a default zone will be used. The list of available zones as well as the
-    default value can be found by using the ``List Zones`` method.
+    deployment resides in the "us-east-1" region. This is an optional field at pool creation, and if
+    not specified, a default zone will be used. The list of available zones as well as the default
+    value can be found by using the ``List Zones`` method.
     
     Set this field to "auto" to enable Auto-AZ, in which case Databricks selects the availability
     zone for each cluster independently when the cluster launches, and retries another zone if the
@@ -6185,7 +6211,7 @@ class InstancePoolPermissionsDescription:
 
 
 class InstancePoolState(Enum):
-    """The state of a Cluster. The current allowable state transitions are as follows:
+    """The state of an instance pool. The current allowable state transitions are as follows:
 
     - ``ACTIVE`` -> ``STOPPED``
     - ``ACTIVE`` -> ``DELETED``
@@ -6251,9 +6277,9 @@ class InstancePoolStats:
 @dataclass
 class InstancePoolStatus:
     pending_instance_errors: Optional[List[PendingInstanceError]] = None
-    """List of error messages for the failed pending instances. The pending_instance_errors follows
-    FIFO with maximum length of the min_idle of the pool. The pending_instance_errors is emptied
-    once the number of exiting available instances reaches the min_idle of the pool."""
+    """List of errors for pending instances that failed to launch, most recent first. The list holds at
+    most ``min_idle_instances`` entries, and never more than 20, and is emptied once the pool has at
+    least ``min_idle_instances`` available instances and no pending ones."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolStatus into a dictionary suitable for use as a JSON request body."""
@@ -6853,6 +6879,7 @@ class ListGlobalInitScriptsResponse:
 @dataclass
 class ListInstancePools:
     instance_pools: Optional[List[InstancePoolAndStats]] = None
+    """Instance pools in the workspace, each with its usage statistics and status."""
 
     def as_dict(self) -> dict:
         """Serializes the ListInstancePools into a dictionary suitable for use as a JSON request body."""
@@ -7537,11 +7564,14 @@ class PendingEnforcementEnforcementStatus(Enum):
 
 @dataclass
 class PendingInstanceError:
-    """Error message of a failed pending instances"""
+    """Error for an instance that failed to launch while the pool was provisioning it."""
 
     instance_id: Optional[str] = None
+    """Identifier of the pending instance that failed to launch."""
 
     message: Optional[str] = None
+    """Error message describing why the instance failed to launch. The message may be omitted, because
+    not all pool status reads include it."""
 
     def as_dict(self) -> dict:
         """Serializes the PendingInstanceError into a dictionary suitable for use as a JSON request body."""
@@ -11507,12 +11537,14 @@ class GlobalInitScriptsAPI:
     def create(
         self, name: str, script: str, *, enabled: Optional[bool] = None, position: Optional[int] = None
     ) -> CreateResponse:
-        """Creates a new global init script in this workspace.
+        """Creates a new global init script in this workspace. The number of global init scripts per workspace is
+        limited.
 
         :param name: str
-          The name of the script
+          The name of the script. The name must be unique within the workspace.
         :param script: str
-          The Base64-encoded content of the script.
+          The Base64-encoded content of the script. The decoded content must not be empty and cannot exceed 64
+          KB.
         :param enabled: bool (optional)
           Specifies whether the script is enabled. The script runs only if enabled.
         :param position: int (optional)
@@ -11619,9 +11651,10 @@ class GlobalInitScriptsAPI:
         :param script_id: str
           The ID of the global init script.
         :param name: str
-          The name of the script
+          The name of the script. The name must be unique within the workspace.
         :param script: str
-          The Base64-encoded content of the script.
+          The Base64-encoded content of the script. The decoded content must not be empty and cannot exceed 64
+          KB.
         :param enabled: bool (optional)
           Specifies whether the script is enabled. The script runs only if enabled.
         :param position: int (optional)
@@ -11705,8 +11738,8 @@ class InstancePoolsAPI:
           characters.
         :param node_type_id: str
           This field encodes, through a single value, the resources available to each of the Spark nodes in
-          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
-          intensive workloads. A list of available node types can be retrieved by using the
+          clusters that use this pool. For example, the Spark nodes can be provisioned and optimized for
+          memory or compute intensive workloads. A list of available node types can be retrieved by using the
           `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
           call. The node type cannot be changed after the pool is created.
         :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
@@ -11717,15 +11750,20 @@ class InstancePoolsAPI:
           default values will be used.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to ``default_tags``. Notes:
+          EBS volumes) with these tags in addition to ``default_tags``, and clusters backed by the pool
+          inherit them. When editing a pool, omitting this field or passing an empty map keeps the existing
+          tags, and a non-empty map replaces them. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
-          Defines the specification of the disks that will be attached to all spark containers.
+          Defines the specification of the disks that will be attached to all spark containers. The disk
+          specification cannot be changed after the pool is created.
         :param enable_elastic_disk: bool (optional)
-          Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
-          additional disk space when its Spark workers are running low on disk space. In AWS, this feature
-          requires specific AWS permissions to function correctly - refer to the User Guide for more details.
+          Autoscaling Local Storage: when enabled, the instances in this pool will dynamically acquire
+          additional disk space when their Spark workers are running low on disk space. In AWS, this feature
+          requires specific AWS permissions to function correctly; see
+          https://docs.databricks.com/aws/en/compute/pools#autoscaling-local-storage for details. This setting
+          cannot be changed after the pool is created.
         :param gcp_attributes: :class:`InstancePoolGcpAttributes` (optional)
           Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
           creation, a set of default values will be used.
@@ -11738,18 +11776,23 @@ class InstancePoolsAPI:
         :param max_capacity: int (optional)
           Maximum number of outstanding instances to keep in the pool, including both instances used by
           clusters and idle instances. Clusters that require further instance provisioning will fail during
-          upsize requests.
+          upsize requests. If unset, the pool size is not capped.
         :param min_idle_instances: int (optional)
-          Minimum number of idle instances to keep in the instance pool
+          Minimum number of idle instances to keep in the instance pool. These instances do not terminate
+          regardless of ``idle_instance_autotermination_minutes``, and the pool provisions replacements when
+          clusters consume them. Defaults to 0.
         :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for the pool.
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
-          Custom Docker Image BYOC
+          A list containing at most one custom Docker image to preload on the pool's idle instances. Clusters
+          that use Databricks Container Services with the preloaded image start faster. The list cannot be
+          changed after the pool is created.
         :param preloaded_spark_versions: List[str] (optional)
           A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
           started with the preloaded Spark version will start faster. A list of available Spark versions can
           be retrieved by using the `clusters/sparkVersions
-          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call.
+          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call. The list cannot be
+          changed after the pool is created.
         :param remote_disk_throughput: int (optional)
           If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
           for GCP HYPERDISK_BALANCED types.
@@ -11841,22 +11884,28 @@ class InstancePoolsAPI:
         remote_disk_throughput: Optional[int] = None,
         total_initial_remote_disk_size: Optional[int] = None,
     ):
-        """Modifies the configuration of an existing instance pool.
+        """Modifies the configuration of an existing instance pool. Settings that are fixed at creation, such as
+        the node type, cannot be changed and the request fails if it attempts to change one. Omitted
+        ``min_idle_instances``, ``max_capacity`` and ``idle_instance_autotermination_minutes`` are reset to
+        their defaults; omitted ``custom_tags`` keep their current value. On Azure, an omitted
+        ``azure_attributes.capacity_reservation_group`` is removed.
 
         :param instance_pool_id: str
-          Instance pool ID
+          Identifier of the instance pool to edit.
         :param instance_pool_name: str
           Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
           characters.
         :param node_type_id: str
           This field encodes, through a single value, the resources available to each of the Spark nodes in
-          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
-          intensive workloads. A list of available node types can be retrieved by using the
+          clusters that use this pool. For example, the Spark nodes can be provisioned and optimized for
+          memory or compute intensive workloads. A list of available node types can be retrieved by using the
           `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
           call. The node type cannot be changed after the pool is created.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to ``default_tags``. Notes:
+          EBS volumes) with these tags in addition to ``default_tags``, and clusters backed by the pool
+          inherit them. When editing a pool, omitting this field or passing an empty map keeps the existing
+          tags, and a non-empty map replaces them. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
         :param idle_instance_autotermination_minutes: int (optional)
@@ -11868,9 +11917,11 @@ class InstancePoolsAPI:
         :param max_capacity: int (optional)
           Maximum number of outstanding instances to keep in the pool, including both instances used by
           clusters and idle instances. Clusters that require further instance provisioning will fail during
-          upsize requests.
+          upsize requests. If unset, the pool size is not capped.
         :param min_idle_instances: int (optional)
-          Minimum number of idle instances to keep in the instance pool
+          Minimum number of idle instances to keep in the instance pool. These instances do not terminate
+          regardless of ``idle_instance_autotermination_minutes``, and the pool provisions replacements when
+          clusters consume them. Defaults to 0.
         :param remote_disk_throughput: int (optional)
           If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
           for GCP HYPERDISK_BALANCED types.

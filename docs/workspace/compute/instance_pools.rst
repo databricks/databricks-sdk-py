@@ -46,8 +46,8 @@
           characters.
         :param node_type_id: str
           This field encodes, through a single value, the resources available to each of the Spark nodes in
-          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
-          intensive workloads. A list of available node types can be retrieved by using the
+          clusters that use this pool. For example, the Spark nodes can be provisioned and optimized for
+          memory or compute intensive workloads. A list of available node types can be retrieved by using the
           `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
           call. The node type cannot be changed after the pool is created.
         :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
@@ -58,15 +58,20 @@
           default values will be used.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to ``default_tags``. Notes:
+          EBS volumes) with these tags in addition to ``default_tags``, and clusters backed by the pool
+          inherit them. When editing a pool, omitting this field or passing an empty map keeps the existing
+          tags, and a non-empty map replaces them. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
-          Defines the specification of the disks that will be attached to all spark containers.
+          Defines the specification of the disks that will be attached to all spark containers. The disk
+          specification cannot be changed after the pool is created.
         :param enable_elastic_disk: bool (optional)
-          Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
-          additional disk space when its Spark workers are running low on disk space. In AWS, this feature
-          requires specific AWS permissions to function correctly - refer to the User Guide for more details.
+          Autoscaling Local Storage: when enabled, the instances in this pool will dynamically acquire
+          additional disk space when their Spark workers are running low on disk space. In AWS, this feature
+          requires specific AWS permissions to function correctly; see
+          https://docs.databricks.com/aws/en/compute/pools#autoscaling-local-storage for details. This setting
+          cannot be changed after the pool is created.
         :param gcp_attributes: :class:`InstancePoolGcpAttributes` (optional)
           Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
           creation, a set of default values will be used.
@@ -79,18 +84,23 @@
         :param max_capacity: int (optional)
           Maximum number of outstanding instances to keep in the pool, including both instances used by
           clusters and idle instances. Clusters that require further instance provisioning will fail during
-          upsize requests.
+          upsize requests. If unset, the pool size is not capped.
         :param min_idle_instances: int (optional)
-          Minimum number of idle instances to keep in the instance pool
+          Minimum number of idle instances to keep in the instance pool. These instances do not terminate
+          regardless of ``idle_instance_autotermination_minutes``, and the pool provisions replacements when
+          clusters consume them. Defaults to 0.
         :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for the pool.
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
-          Custom Docker Image BYOC
+          A list containing at most one custom Docker image to preload on the pool's idle instances. Clusters
+          that use Databricks Container Services with the preloaded image start faster. The list cannot be
+          changed after the pool is created.
         :param preloaded_spark_versions: List[str] (optional)
           A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
           started with the preloaded Spark version will start faster. A list of available Spark versions can
           be retrieved by using the `clusters/sparkVersions
-          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call.
+          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call. The list cannot be
+          changed after the pool is created.
         :param remote_disk_throughput: int (optional)
           If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
           for GCP HYPERDISK_BALANCED types.
@@ -137,22 +147,28 @@
             # cleanup
             w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
 
-        Modifies the configuration of an existing instance pool.
+        Modifies the configuration of an existing instance pool. Settings that are fixed at creation, such as
+        the node type, cannot be changed and the request fails if it attempts to change one. Omitted
+        ``min_idle_instances``, ``max_capacity`` and ``idle_instance_autotermination_minutes`` are reset to
+        their defaults; omitted ``custom_tags`` keep their current value. On Azure, an omitted
+        ``azure_attributes.capacity_reservation_group`` is removed.
 
         :param instance_pool_id: str
-          Instance pool ID
+          Identifier of the instance pool to edit.
         :param instance_pool_name: str
           Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
           characters.
         :param node_type_id: str
           This field encodes, through a single value, the resources available to each of the Spark nodes in
-          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
-          intensive workloads. A list of available node types can be retrieved by using the
+          clusters that use this pool. For example, the Spark nodes can be provisioned and optimized for
+          memory or compute intensive workloads. A list of available node types can be retrieved by using the
           `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
           call. The node type cannot be changed after the pool is created.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to ``default_tags``. Notes:
+          EBS volumes) with these tags in addition to ``default_tags``, and clusters backed by the pool
+          inherit them. When editing a pool, omitting this field or passing an empty map keeps the existing
+          tags, and a non-empty map replaces them. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
         :param idle_instance_autotermination_minutes: int (optional)
@@ -164,9 +180,11 @@
         :param max_capacity: int (optional)
           Maximum number of outstanding instances to keep in the pool, including both instances used by
           clusters and idle instances. Clusters that require further instance provisioning will fail during
-          upsize requests.
+          upsize requests. If unset, the pool size is not capped.
         :param min_idle_instances: int (optional)
-          Minimum number of idle instances to keep in the instance pool
+          Minimum number of idle instances to keep in the instance pool. These instances do not terminate
+          regardless of ``idle_instance_autotermination_minutes``, and the pool provisions replacements when
+          clusters consume them. Defaults to 0.
         :param remote_disk_throughput: int (optional)
           If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
           for GCP HYPERDISK_BALANCED types.

@@ -35,10 +35,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: GenieAgentDataSources
-   :members:
-   :undoc-members:
-
 .. autoclass:: GenieAgentDefinition
    :members:
    :undoc-members:
@@ -76,6 +72,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieAgentMcpConnection
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieAgentResources
    :members:
    :undoc-members:
 
