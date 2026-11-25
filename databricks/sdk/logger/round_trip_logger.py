@@ -44,7 +44,9 @@ class RoundTrip:
             for k, v in request.headers.items():
                 sb.append(f"> * {k}: {self._only_n_bytes(v, self._debug_truncate_bytes)}")
         if request.body:
-            sb.append("> [raw stream]" if self._raw else self._redacted_dump("> ", request.body))
+            sb.append(
+                "> [raw stream]" if self._raw else self._redacted_dump("> ", self._request_body_str(request.body))
+            )
         sb.append(f"< {self._response.status_code} {self._response.reason}")
         if self._raw and self._response.headers.get("Content-Type", None) != "application/json":
             # Raw streams with `Transfer-Encoding: chunked` do not have `Content-Type` header
@@ -53,6 +55,22 @@ class RoundTrip:
             decoded = self._response.content.decode("utf-8", errors="replace")
             sb.append(self._redacted_dump("< ", decoded))
         return "\n".join(sb)
+
+    @staticmethod
+    def _request_body_str(body: Any) -> str:
+        """Normalize a `requests.PreparedRequest.body` into a string safe to hand to `_redacted_dump`.
+
+        The body is usually `str` or `bytes`, but for a streamed upload (e.g. a file object passed as
+        `data=`) `requests` leaves it as the original file-like object. Reading it here for logging
+        purposes would consume the stream (which may already be at an unknown position after the actual
+        send) and isn't guaranteed to be UTF-8, so it's represented with a fixed placeholder instead of
+        being read.
+        """
+        if isinstance(body, str):
+            return body
+        if isinstance(body, (bytes, bytearray)):
+            return bytes(body).decode("utf-8", errors="replace")
+        return "[stream body]"
 
     @staticmethod
     def _mask(m: Dict[str, any]):
