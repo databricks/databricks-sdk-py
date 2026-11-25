@@ -15595,9 +15595,9 @@ class AiGatewayAPI:
           (``model-services/{catalog}.{schema}.{model_service}``); only fields listed in ``update_mask`` are
           applied.
         :param update_mask: FieldMask
-          Fields to update. Use ``config`` to replace the entire configuration. The replacement must include
-          every required field; any optional field you omit is cleared. To preserve sibling fields, use one or
-          more granular paths: ``comment``, ``config.routing.destinations``,
+          Fields to update. Use ``config`` for a broad configuration replacement. The replacement must include
+          every required field; optional fields in its replacement scope are cleared when omitted. To preserve
+          sibling fields, use one or more granular paths: ``comment``, ``config.routing.destinations``,
           ``config.routing.fallback.destinations``, ``config.rate_limits``, or ``config.inference_table``.
           Intermediate paths such as ``config.routing`` and ``config.routing.fallback`` are not supported.
         :param etag: str (optional)

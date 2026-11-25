@@ -745,6 +745,12 @@ class _FakeWorkspace(socketserver.ThreadingTCPServer):
         return f"http://127.0.0.1:{self.server_address[1]}"
 
 
+_WORKSPACE_RESPONSE = (
+    b"HTTP/1.1 201 Created\r\nSet-Cookie: app=1\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello"
+)
+_CROSS_SITE_REFUSAL = sandbox_mod._error_response(403, "Forbidden", "requests must come from the forward's own URL")
+
+
 class _FakeWorkspaceHandler(socketserver.StreamRequestHandler):
     server: _FakeWorkspace
 
@@ -765,9 +771,7 @@ class _FakeWorkspaceHandler(socketserver.StreamRequestHandler):
             self.wfile.flush()
             self.wfile.write(self.rfile.read(4))
             return
-        self.wfile.write(
-            b"HTTP/1.1 201 Created\r\nSet-Cookie: app=1\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello"
-        )
+        self.wfile.write(_WORKSPACE_RESPONSE)
 
 
 @pytest.fixture
@@ -792,6 +796,10 @@ def forward(workspace):
 
 def _connect(port: int) -> socket.socket:
     return socket.create_connection(("127.0.0.1", port), timeout=_WAIT_SECONDS)
+
+
+def _host(forward: Forward) -> bytes:
+    return f"Host: 127.0.0.1:{forward.local_port}".encode()
 
 
 @pytest.mark.parametrize("name", [f"sandboxes/{_SANDBOX_ID}", _SANDBOX_ID])
@@ -831,7 +839,9 @@ def test_relays_requests_with_the_token_and_the_apps_path(forward, workspace):
 
 def test_relays_upgraded_connections_in_both_directions(forward, workspace):
     with _connect(forward.local_port) as client:
-        client.sendall(b"GET /ws HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: Upgrade\r\nUpgrade: websocket\r\n\r\n")
+        client.sendall(
+            b"GET /ws HTTP/1.1\r\n" + _host(forward) + b"\r\nConnection: Upgrade\r\nUpgrade: websocket\r\n\r\n"
+        )
         reader = client.makefile("rb")
         assert reader.readline().startswith(b"HTTP/1.1 101")
         while reader.readline() != b"\r\n":
@@ -846,7 +856,7 @@ def test_relays_upgraded_connections_in_both_directions(forward, workspace):
 
 def test_answers_after_the_client_half_closes(forward):
     with _connect(forward.local_port) as client:
-        client.sendall(b"GET /half HTTP/1.1\r\nHost: 127.0.0.1\r\n\r\n")
+        client.sendall(b"GET /half HTTP/1.1\r\n" + _host(forward) + b"\r\n\r\n")
         client.shutdown(socket.SHUT_WR)
 
         response = client.makefile("rb").read()
@@ -876,6 +886,78 @@ def test_answers_400_without_reaching_the_workspace(forward, workspace, head):
     assert workspace.received.empty()
 
 
+@pytest.mark.parametrize(
+    "host, extra",
+    [
+        (b"Host: other.example", b""),
+        (b"Host: 127.0.0.1:1", b""),
+        (None, b"\r\nOrigin: https://other.example"),
+        (None, b"\r\nOrigin: null"),
+        (None, b"\r\nOrigin: https://localhost:5173\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: cors"),
+        (None, b"\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: cors\r\nSec-Fetch-Dest: empty"),
+        (None, b"\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Dest: iframe"),
+        # Only the first of a repeated header would be checked, so repeats are refused.
+        (None, b"\r\nHost: other.example"),
+        (None, b"\r\nSec-Fetch-Site: same-origin\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: cors"),
+        (
+            None,
+            b"\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Mode: cors"
+            b"\r\nSec-Fetch-Dest: document",
+        ),
+        (
+            None,
+            b"\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Dest: document"
+            b"\r\nSec-Fetch-Dest: empty",
+        ),
+    ],
+)
+def test_answers_403_to_requests_for_pages_on_other_sites(forward, workspace, host, extra):
+    with _connect(forward.local_port) as client:
+        client.sendall(b"GET /page HTTP/1.1\r\n" + (host or _host(forward)) + extra + b"\r\n\r\n")
+        response = client.makefile("rb").read()
+
+    assert response == _CROSS_SITE_REFUSAL, response
+    assert workspace.received.empty()
+
+
+@pytest.mark.parametrize("method", [b"POST", b"PUT", b"DELETE"])
+def test_answers_403_to_navigations_from_other_sites_that_are_not_page_loads(forward, workspace, method):
+    # A cross-site form POST is sent as a document navigation, so only the method separates it
+    # from a link click.
+    with _connect(forward.local_port) as client:
+        client.sendall(
+            method
+            + b" /form HTTP/1.1\r\n"
+            + _host(forward)
+            + b"\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Dest: document"
+            + b"\r\nContent-Length: 0\r\n\r\n"
+        )
+        response = client.makefile("rb").read()
+
+    assert response == _CROSS_SITE_REFUSAL, response
+    assert workspace.received.empty()
+
+
+@pytest.mark.parametrize(
+    "host, extra",
+    [
+        (None, b"\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Dest: document"),
+        # Browsers treat localhost and 127.0.0.1 as different sites.
+        (None, b"\r\nOrigin: http://localhost:5173\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: cors"),
+        (None, b"\r\nSec-Fetch-Site: none\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Dest: document"),
+        ("localhost", b""),
+        ("localhost", b"\r\nOrigin: http://localhost:5173\r\nSec-Fetch-Site: same-site\r\nSec-Fetch-Mode: cors"),
+    ],
+)
+def test_relays_page_loads_and_requests_from_local_pages(forward, workspace, host, extra):
+    host_line = f"Host: localhost:{forward.local_port}".encode() if host else _host(forward)
+    with _connect(forward.local_port) as client:
+        client.sendall(b"GET /page HTTP/1.1\r\n" + host_line + extra + b"\r\n\r\n")
+        response = client.makefile("rb").read()
+
+    assert response == _WORKSPACE_RESPONSE, response
+
+
 def test_refuses_requests_without_fetching_credentials(workspace):
     calls = []
 
@@ -884,9 +966,10 @@ def test_refuses_requests_without_fetching_credentials(workspace):
         return {"Authorization": "Bearer t"}
 
     with Forward(host=workspace.url, authenticate=authenticate, name=_SANDBOX_ID, remote_port=10080) as forward:
-        with _connect(forward.local_port) as client:
-            client.sendall(b"GET /..;/x HTTP/1.1\r\nHost: x\r\n\r\n")
-            client.makefile("rb").read()
+        for head in (b"GET /..;/x HTTP/1.1\r\n" + _host(forward), b"GET /x HTTP/1.1\r\nHost: other.example"):
+            with _connect(forward.local_port) as client:
+                client.sendall(head + b"\r\n\r\n")
+                client.makefile("rb").read()
 
     assert calls == []
     assert workspace.received.empty()
@@ -945,9 +1028,10 @@ def test_resolves_credentials_for_each_connection(workspace):
 
 def test_forwards_one_request_per_connection(forward, workspace):
     with _connect(forward.local_port) as client:
+        host = _host(forward)
         client.sendall(
-            b"POST /first HTTP/1.1\r\nHost: x\r\nContent-Length: 3\r\n\r\nabc"
-            b"GET /second HTTP/1.1\r\nHost: x\r\n\r\n"
+            b"POST /first HTTP/1.1\r\n" + host + b"\r\nContent-Length: 3\r\n\r\nabc"
+            b"GET /second HTTP/1.1\r\n" + host + b"\r\n\r\n"
         )
         response = client.makefile("rb").read()
 
@@ -960,7 +1044,7 @@ def test_forwards_one_request_per_connection(forward, workspace):
 
 def test_aborts_when_the_client_stops_before_the_body_ends(forward, workspace):
     with _connect(forward.local_port) as client:
-        client.sendall(b"POST /upload HTTP/1.1\r\nHost: x\r\nContent-Length: 10\r\n\r\nabc")
+        client.sendall(b"POST /upload HTTP/1.1\r\n" + _host(forward) + b"\r\nContent-Length: 10\r\n\r\nabc")
         client.shutdown(socket.SHUT_WR)
 
         # The workspace sees the upload end early instead of waiting for the other 7 bytes.

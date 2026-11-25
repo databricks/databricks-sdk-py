@@ -798,7 +798,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: InstancePoolState
 
-   The state of a Cluster. The current allowable state transitions are as follows:
+   The state of an instance pool. The current allowable state transitions are as follows:
    - ``ACTIVE`` -> ``STOPPED`` - ``ACTIVE`` -> ``DELETED`` - ``STOPPED`` -> ``ACTIVE`` - ``STOPPED`` -> ``DELETED``
 
    .. py:attribute:: ACTIVE

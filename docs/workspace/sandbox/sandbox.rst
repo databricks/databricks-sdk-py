@@ -169,14 +169,18 @@
         ``{sandbox_id}`` is also accepted. :attr:`Forward.url` is the local URL
         to send requests to.
 
-        The app must listen on ``0.0.0.0`` inside the sandbox. Ports 10000-65535
-        are forwardable except 10101, 18767, and 19090. Clients speak HTTP/1.1 to
+        The app must listen on ``0.0.0.0`` inside the sandbox. The sandbox refuses
+        a few reserved platform ports; a request to a refused port gets a 403
+        response with a message saying why. Clients speak HTTP/1.1 to
         the local port, including WebSocket upgrades; each local connection carries
         one request. Requests whose path has a ``.`` or ``..`` segment, a ``;``, a
         backslash, a control character, or an encoded ``/``, ``\``, ``%``, ``?``,
         or ``#`` get a local 400 response and are never sent, as do malformed
-        heads. The caller's ``Authorization``, ``X-Databricks-*``, and ``S2S-*``
-        headers are not forwarded, and the SDK's credentials are added.
+        heads. Requests must name ``127.0.0.1:<local_port>`` or
+        ``localhost:<local_port>`` as ``Host``; requests that a page on another site
+        makes a browser send get a 403, except top-level page loads. The caller's
+        ``Authorization``, ``X-Databricks-*``, and ``S2S-*`` headers are not
+        forwarded, and the SDK's credentials are added.
         
 
     .. py:method:: get_metadata(parent: str, path: str) -> GetMetadataResponse

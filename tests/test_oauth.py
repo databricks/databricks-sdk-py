@@ -353,3 +353,22 @@ def test_get_endpoints_from_url(requests_mock):
         authorization_endpoint=f"{_DUMMY_HOST}/oidc/v1/authorize",
         token_endpoint=f"{_DUMMY_HOST}/oidc/v1/token",
     )
+
+
+def test_oauth_client_from_host(requests_mock, monkeypatch):
+    # from_host imports Config and credentials_strategy only when called, so only a call checks those imports.
+    discovery_url = f"{_DUMMY_HOST}/oidc/.well-known/oauth-authorization-server"
+    monkeypatch.setenv("DATABRICKS_DISCOVERY_URL", discovery_url)
+    requests_mock.get(
+        discovery_url,
+        json={
+            "authorization_endpoint": f"{_DUMMY_HOST}/oidc/v1/authorize",
+            "token_endpoint": f"{_DUMMY_HOST}/oidc/v1/token",
+        },
+    )
+
+    oauth_client = OAuthClient.from_host(_DUMMY_HOST, "client-id", "http://localhost:8020")
+
+    authorization_url = oauth_client.initiate_consent().authorization_url
+    assert authorization_url.startswith(f"{_DUMMY_HOST}/oidc/v1/authorize?")
+    assert parse_qs(urlparse(authorization_url).query)["client_id"] == ["client-id"]

@@ -1012,7 +1012,8 @@ class GetPipelineResponse:
     """Publishing mode of the pipeline"""
 
     effective_serverless_compute_id: Optional[str] = None
-    """Serverless compute ID resolved for the pipeline."""
+    """Serverless compute ID resolved for the pipeline. For the equivalent compute policy ID, use
+    effective_compute_policy_id."""
 
     health: Optional[GetPipelineResponseHealth] = None
     """The health of a pipeline."""
@@ -3838,7 +3839,8 @@ class PipelineSpec:
     When ``true``, omit ``clusters``; Photon is always enabled."""
 
     serverless_compute_id: Optional[str] = None
-    """Serverless compute ID specified by the user for serverless pipelines."""
+    """Serverless compute ID specified by the user for serverless pipelines. Use compute_policy_id
+    instead. Only one of these fields may be set."""
 
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
@@ -6386,7 +6388,8 @@ class PipelinesAPI:
           omitting this field uses classic compute configured through the ``clusters`` field. When ``true``,
           omit ``clusters``; Photon is always enabled.
         :param serverless_compute_id: str (optional)
-          Serverless compute ID specified by the user for serverless pipelines.
+          Serverless compute ID specified by the user for serverless pipelines. Use compute_policy_id instead.
+          Only one of these fields may be set.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
@@ -6616,7 +6619,8 @@ class PipelinesAPI:
           omitting this field uses classic compute configured through the ``clusters`` field. When ``true``,
           omit ``clusters``; Photon is always enabled.
         :param serverless_compute_id: str (optional)
-          Serverless compute ID specified by the user for serverless pipelines.
+          Serverless compute ID specified by the user for serverless pipelines. Use compute_policy_id instead.
+          Only one of these fields may be set.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
@@ -7290,7 +7294,8 @@ class PipelinesAPI:
           omitting this field uses classic compute configured through the ``clusters`` field. When ``true``,
           omit ``clusters``; Photon is always enabled.
         :param serverless_compute_id: str (optional)
-          Serverless compute ID specified by the user for serverless pipelines.
+          Serverless compute ID specified by the user for serverless pipelines. Use compute_policy_id instead.
+          Only one of these fields may be set.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)

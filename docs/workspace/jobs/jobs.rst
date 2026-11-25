@@ -115,7 +115,7 @@
         this request completes.
 
         :param run_id: int
-          This field is required.
+          The canonical identifier of the run to cancel.
 
         :returns:
           Long-running operation waiter for :class:`Run`.
@@ -356,7 +356,8 @@
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
 
-        Export and retrieve the job run task.
+        Export and retrieve the job run task. Only notebook task runs can be exported. For a multi-task job
+        run, pass the ``run_id`` of the individual notebook task run rather than the ID of the job run.
 
         :param run_id: int
           The canonical identifier for the run. This field is required.
@@ -734,7 +735,7 @@
           <https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown>`__ to pass information
           down to tasks.
         :param job_parameters: Dict[str,str] (optional)
-          Job-level parameters used in the run. for example ``"param": "overriding_val"``
+          Job-level parameters used in the run, for example ``"param": "overriding_val"``.
         :param latest_repair_id: int (optional)
           The ID of the latest repair. This parameter is not required when repairing a run for the first time,
           but must be provided on subsequent requests to repair the same run.

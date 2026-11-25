@@ -526,6 +526,7 @@ _TOKEN_CHARS = frozenset("!#$%&'*+-.^_`|~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabc
 _FRAMING_HEADERS = frozenset({"content-length", "transfer-encoding"})
 # Workspace gateways read identity and routing from these, so only the SDK's credentials may set them.
 _GATEWAY_HEADER_PREFIXES = ("x-databricks-", "s2s-")
+_LOOPBACK_HOSTS = ("127.0.0.1", "localhost")
 
 
 class Forward:
@@ -679,6 +680,9 @@ class _RelayHandler(socketserver.BaseRequestHandler):
         if request is None:
             client.sendall(_error_response(400, "Bad Request", "malformed request, or an unsupported path"))
             return
+        if _is_cross_site(request, self.server.server_address[1]):
+            client.sendall(_error_response(403, "Forbidden", "requests must come from the forward's own URL"))
+            return
         target = self.server.target
         try:
             auth_headers = target.authenticate()
@@ -793,6 +797,55 @@ def _parse_request(head: bytes) -> Optional[_Request]:
     if body_length is None:
         return None
     return _Request(method, request_target, version, headers, connection_tokens, upgrade, body_length)
+
+
+def _is_cross_site(request: _Request, local_port: int) -> bool:
+    """Whether a browser sent the request for a page that is neither the forward nor a local app.
+
+    The relay attaches the SDK's credentials to every request, so a page on another site must
+    not be able to make the user's browser send one. A ``Host`` other than the loopback address
+    the relay listens on means the browser reached it through another name. A loopback ``Origin``
+    passes whatever ``Sec-Fetch-Site`` says. Top-level GET navigations from other sites stay
+    allowed, so links and sign-in redirects to the app work.
+    Clients other than browsers send no ``Origin`` or ``Sec-Fetch-*`` headers and pass.
+    """
+    values: Dict[str, List[str]] = {}
+    for name, value in request.headers:
+        values.setdefault(name.lower(), []).append(value)
+    if any(len(values.get(name, [])) > 1 for name in ("host", "sec-fetch-site", "sec-fetch-mode", "sec-fetch-dest")):
+        return True
+    if not _is_loopback_authority(values.get("host", [""])[0], local_port):
+        return True
+    origins = values.get("origin", [])
+    if not all(_is_loopback_origin(origin) for origin in origins):
+        return True
+    # A page on the other loopback name, such as localhost:5173 calling 127.0.0.1, is cross-site
+    # to the browser; its Origin, which pages can't set, still shows the page is local.
+    if origins or values.get("sec-fetch-site", ["none"])[0].lower() in ("same-origin", "same-site", "none"):
+        return False
+    navigation = (
+        request.method in ("GET", "HEAD")
+        and values.get("sec-fetch-mode", [""])[0].lower() == "navigate"
+        and values.get("sec-fetch-dest", [""])[0].lower() == "document"
+    )
+    return not navigation
+
+
+def _is_loopback_authority(authority: str, port: int) -> bool:
+    allowed = {f"{host}:{port}" for host in _LOOPBACK_HOSTS}
+    if port == 80:
+        allowed.update(_LOOPBACK_HOSTS)
+    return authority.lower() in allowed
+
+
+def _is_loopback_origin(origin: str) -> bool:
+    """Whether ``origin`` is an ``http`` origin on a loopback name, such as a local frontend
+    calling the forwarded app. Any port is allowed."""
+    try:
+        parsed = urlsplit(origin)
+    except ValueError:
+        return False
+    return parsed.scheme == "http" and parsed.hostname in _LOOPBACK_HOSTS and parsed.path == ""
 
 
 def _rewrite_head(request: _Request, target: _Target, auth_headers: Dict[str, str]) -> bytes:
@@ -1085,14 +1138,18 @@ class SandboxExt(SandboxAPI):
         ``{sandbox_id}`` is also accepted. :attr:`Forward.url` is the local URL
         to send requests to.
 
-        The app must listen on ``0.0.0.0`` inside the sandbox. Ports 10000-65535
-        are forwardable except 10101, 18767, and 19090. Clients speak HTTP/1.1 to
+        The app must listen on ``0.0.0.0`` inside the sandbox. The sandbox refuses
+        a few reserved platform ports; a request to a refused port gets a 403
+        response with a message saying why. Clients speak HTTP/1.1 to
         the local port, including WebSocket upgrades; each local connection carries
         one request. Requests whose path has a ``.`` or ``..`` segment, a ``;``, a
         backslash, a control character, or an encoded ``/``, ``\\``, ``%``, ``?``,
         or ``#`` get a local 400 response and are never sent, as do malformed
-        heads. The caller's ``Authorization``, ``X-Databricks-*``, and ``S2S-*``
-        headers are not forwarded, and the SDK's credentials are added.
+        heads. Requests must name ``127.0.0.1:<local_port>`` or
+        ``localhost:<local_port>`` as ``Host``; requests that a page on another site
+        makes a browser send get a 403, except top-level page loads. The caller's
+        ``Authorization``, ``X-Databricks-*``, and ``S2S-*`` headers are not
+        forwarded, and the SDK's credentials are added.
         """
         cfg = self._api._cfg
         if not cfg.host:

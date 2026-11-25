@@ -41,10 +41,11 @@ class GenieAgent:
 
     definition: GenieAgentDefinition
     """The definition of the Genie Agent: its sample questions, data sources, instructions, and
-    benchmarks. Must set at least one field. Returned on get and on list with
-    ``GENIE_AGENT_VIEW_FULL``. Create and update return a submitted definition unchanged; one the
-    service would store differently, or with a column config the workspace can't keep (unknown
-    column, or a display name while those are disabled), is rejected with INVALID_PARAMETER_VALUE."""
+    benchmarks. Create requires at least one table, volume, MCP connection, or sub-agent in
+    ``data_sources``. Returned on get and on list with ``GENIE_AGENT_VIEW_FULL``. Create and update
+    return a submitted definition unchanged; one the service would store differently, or with a
+    column config the workspace can't keep (unknown column, or a display name while those are
+    disabled), is rejected with INVALID_PARAMETER_VALUE."""
 
     warehouse_id: str
     """Warehouse associated with the Genie Agent."""
@@ -372,51 +373,6 @@ class GenieAgentConfig:
 
 
 @dataclass
-class GenieAgentDataSources:
-    """The data a Genie Agent can access."""
-
-    mcp_connections: Optional[List[GenieAgentMcpConnection]] = None
-    """Unity Catalog MCP connections, sorted by ``mcp_connection``."""
-
-    tables: Optional[List[GenieAgentTable]] = None
-    """Unity Catalog tables, views, and metric views, sorted by ``identifier``."""
-
-    volumes: Optional[List[GenieAgentVolume]] = None
-    """Unity Catalog volumes, sorted by ``path``."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieAgentDataSources into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.mcp_connections:
-            body["mcp_connections"] = [v.as_dict() for v in self.mcp_connections]
-        if self.tables:
-            body["tables"] = [v.as_dict() for v in self.tables]
-        if self.volumes:
-            body["volumes"] = [v.as_dict() for v in self.volumes]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieAgentDataSources into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.mcp_connections:
-            body["mcp_connections"] = self.mcp_connections
-        if self.tables:
-            body["tables"] = self.tables
-        if self.volumes:
-            body["volumes"] = self.volumes
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieAgentDataSources:
-        """Deserializes the GenieAgentDataSources from a dictionary."""
-        return cls(
-            mcp_connections=_repeated_dict(d, "mcp_connections", GenieAgentMcpConnection),
-            tables=_repeated_dict(d, "tables", GenieAgentTable),
-            volumes=_repeated_dict(d, "volumes", GenieAgentVolume),
-        )
-
-
-@dataclass
 class GenieAgentDefinition:
     """The definition of a Genie Agent."""
 
@@ -426,11 +382,11 @@ class GenieAgentDefinition:
     config: Optional[GenieAgentConfig] = None
     """General settings of the Genie Agent."""
 
-    data_sources: Optional[GenieAgentDataSources] = None
-    """The data the Genie Agent can access."""
-
     instructions: Optional[GenieAgentInstructions] = None
     """Instructions and SQL that guide how the Genie Agent answers questions."""
+
+    resources: Optional[GenieAgentResources] = None
+    """The resources the Genie Agent can use: data, SQL functions, connections, and sub-agents."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieAgentDefinition into a dictionary suitable for use as a JSON request body."""
@@ -439,10 +395,10 @@ class GenieAgentDefinition:
             body["benchmarks"] = self.benchmarks.as_dict()
         if self.config:
             body["config"] = self.config.as_dict()
-        if self.data_sources:
-            body["data_sources"] = self.data_sources.as_dict()
         if self.instructions:
             body["instructions"] = self.instructions.as_dict()
+        if self.resources:
+            body["resources"] = self.resources.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -452,10 +408,10 @@ class GenieAgentDefinition:
             body["benchmarks"] = self.benchmarks
         if self.config:
             body["config"] = self.config
-        if self.data_sources:
-            body["data_sources"] = self.data_sources
         if self.instructions:
             body["instructions"] = self.instructions
+        if self.resources:
+            body["resources"] = self.resources
         return body
 
     @classmethod
@@ -464,8 +420,8 @@ class GenieAgentDefinition:
         return cls(
             benchmarks=_from_dict(d, "benchmarks", GenieAgentBenchmarks),
             config=_from_dict(d, "config", GenieAgentConfig),
-            data_sources=_from_dict(d, "data_sources", GenieAgentDataSources),
             instructions=_from_dict(d, "instructions", GenieAgentInstructions),
+            resources=_from_dict(d, "resources", GenieAgentResources),
         )
 
 
@@ -540,14 +496,11 @@ class GenieAgentInstructions:
     join_specs: Optional[List[GenieAgentJoinSpec]] = None
     """Predefined joins between tables or metric views."""
 
-    sql_functions: Optional[List[GenieAgentSqlFunction]] = None
-    """Unity Catalog SQL functions the generated SQL may call."""
-
     sql_snippets: Optional[GenieAgentSqlSnippets] = None
     """Reusable SQL filters, expressions, and measures."""
 
-    text_instructions: Optional[List[GenieAgentTextInstruction]] = None
-    """General text instructions. At most one text instruction is supported."""
+    text_instruction: Optional[GenieAgentTextInstruction] = None
+    """The general text instruction."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieAgentInstructions into a dictionary suitable for use as a JSON request body."""
@@ -556,12 +509,10 @@ class GenieAgentInstructions:
             body["example_question_sqls"] = [v.as_dict() for v in self.example_question_sqls]
         if self.join_specs:
             body["join_specs"] = [v.as_dict() for v in self.join_specs]
-        if self.sql_functions:
-            body["sql_functions"] = [v.as_dict() for v in self.sql_functions]
         if self.sql_snippets:
             body["sql_snippets"] = self.sql_snippets.as_dict()
-        if self.text_instructions:
-            body["text_instructions"] = [v.as_dict() for v in self.text_instructions]
+        if self.text_instruction:
+            body["text_instruction"] = self.text_instruction.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -571,12 +522,10 @@ class GenieAgentInstructions:
             body["example_question_sqls"] = self.example_question_sqls
         if self.join_specs:
             body["join_specs"] = self.join_specs
-        if self.sql_functions:
-            body["sql_functions"] = self.sql_functions
         if self.sql_snippets:
             body["sql_snippets"] = self.sql_snippets
-        if self.text_instructions:
-            body["text_instructions"] = self.text_instructions
+        if self.text_instruction:
+            body["text_instruction"] = self.text_instruction
         return body
 
     @classmethod
@@ -585,9 +534,8 @@ class GenieAgentInstructions:
         return cls(
             example_question_sqls=_repeated_dict(d, "example_question_sqls", GenieAgentExampleQuestionSql),
             join_specs=_repeated_dict(d, "join_specs", GenieAgentJoinSpec),
-            sql_functions=_repeated_dict(d, "sql_functions", GenieAgentSqlFunction),
             sql_snippets=_from_dict(d, "sql_snippets", GenieAgentSqlSnippets),
-            text_instructions=_repeated_dict(d, "text_instructions", GenieAgentTextInstruction),
+            text_instruction=_from_dict(d, "text_instruction", GenieAgentTextInstruction),
         )
 
 
@@ -736,6 +684,59 @@ class GenieAgentMcpConnection:
     def from_dict(cls, d: Dict[str, Any]) -> GenieAgentMcpConnection:
         """Deserializes the GenieAgentMcpConnection from a dictionary."""
         return cls(mcp_connection=d.get("mcp_connection", None))
+
+
+@dataclass
+class GenieAgentResources:
+    """The resources a Genie Agent can use."""
+
+    mcp_connections: Optional[List[GenieAgentMcpConnection]] = None
+    """Unity Catalog MCP connections, sorted by ``mcp_connection``."""
+
+    sql_functions: Optional[List[GenieAgentSqlFunction]] = None
+    """Unity Catalog SQL functions the generated SQL may call, sorted by ``id``, then ``identifier``."""
+
+    tables: Optional[List[GenieAgentTable]] = None
+    """Unity Catalog tables, views, and metric views, sorted by ``identifier``."""
+
+    volumes: Optional[List[GenieAgentVolume]] = None
+    """Unity Catalog volumes, sorted by ``path``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieAgentResources into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.mcp_connections:
+            body["mcp_connections"] = [v.as_dict() for v in self.mcp_connections]
+        if self.sql_functions:
+            body["sql_functions"] = [v.as_dict() for v in self.sql_functions]
+        if self.tables:
+            body["tables"] = [v.as_dict() for v in self.tables]
+        if self.volumes:
+            body["volumes"] = [v.as_dict() for v in self.volumes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieAgentResources into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.mcp_connections:
+            body["mcp_connections"] = self.mcp_connections
+        if self.sql_functions:
+            body["sql_functions"] = self.sql_functions
+        if self.tables:
+            body["tables"] = self.tables
+        if self.volumes:
+            body["volumes"] = self.volumes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieAgentResources:
+        """Deserializes the GenieAgentResources from a dictionary."""
+        return cls(
+            mcp_connections=_repeated_dict(d, "mcp_connections", GenieAgentMcpConnection),
+            sql_functions=_repeated_dict(d, "sql_functions", GenieAgentSqlFunction),
+            tables=_repeated_dict(d, "tables", GenieAgentTable),
+            volumes=_repeated_dict(d, "volumes", GenieAgentVolume),
+        )
 
 
 @dataclass
@@ -1495,7 +1496,7 @@ class GenieAgentsAPI:
           rejected with INVALID_PARAMETER_VALUE; an unset ``parent_path`` is cleared without moving the Genie
           Agent. ``definition`` is replaced as a whole.
 
-          The one supported path inside ``definition`` is ``definition.data_sources.sub_agents``, and only
+          The one supported path inside ``definition`` is ``definition.resources.sub_agents``, and only
           alongside ``definition``. Naming it makes the sub-agent list exact, so an empty list detaches every
           sub-agent. Without it, including with ``*``, an empty list keeps them.
 
