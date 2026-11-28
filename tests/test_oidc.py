@@ -28,13 +28,13 @@ _env_id_test_cases = [
         name="missing_env_var",
         env_name="OIDC_TEST_TOKEN_MISSING",
         env_value="",
-        wantException=ValueError,
+        wantException=oidc.IdTokenSourceUnavailableError,
     ),
     EnvTestCase(
         name="empty_env_var",
         env_name="OIDC_TEST_TOKEN_EMPTY",
         env_value="",
-        wantException=ValueError,
+        wantException=oidc.IdTokenSourceUnavailableError,
     ),
     EnvTestCase(
         name="different_variable_name",
@@ -71,18 +71,18 @@ _file_id_test_cases = [
         name="missing_filepath",
         file=("token", "content"),
         filepath="",
-        wantException=ValueError,
+        wantException=oidc.IdTokenSourceUnavailableError,
     ),
     FileTestCase(
         name="empty_file",
         file=("token", ""),
         filepath="token",
-        wantException=ValueError,
+        wantException=oidc.IdTokenSourceUnavailableError,
     ),
     FileTestCase(
         name="file_does_not_exist",
         filepath="nonexistent-file",
-        wantException=ValueError,
+        wantException=oidc.IdTokenSourceUnavailableError,
     ),
     FileTestCase(
         name="file_exists",

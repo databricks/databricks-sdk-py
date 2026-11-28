@@ -444,9 +444,12 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
 
     try:
         id_token_source.id_token()  # validate the id_token_source
+    except oidc.IdTokenSourceUnavailableError as e:
+        logger.debug(f"OIDC token source not available: {e}")
+        return None
     except Exception as e:
         logger.debug(f"Failed to get OIDC token: {e}")
-        return None
+        raise ValueError(f"failed to get OIDC token: {e}") from e
 
     token_source = oidc.DatabricksOidcTokenSource(
         host=cfg.host,
