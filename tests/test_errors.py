@@ -1,4 +1,5 @@
 import http.client
+import io
 import json
 from dataclasses import dataclass, field
 from typing import Any, List, Optional
@@ -415,3 +416,22 @@ def test_debug_headers_enabled_shows_headers():
     assert "debug-token-12345" in error_message
     assert "X-Databricks-Azure-SP-Management-Token" in error_message
     assert "debug-azure-token-67890" in error_message
+
+
+def fake_stream_request_response() -> requests.Response:
+    resp = requests.Response()
+    resp.status_code = 500
+    resp.reason = http.client.responses.get(500, "")
+    resp._content = b"Internal Server Error"
+    resp.request = requests.Request(
+        "PUT", "https://databricks.com/api/2.0/service", data=io.BytesIO(b"stream-bytes")
+    ).prepare()
+    return resp
+
+
+def test_stream_request_body_does_not_break_error_parsing():
+    # https://github.com/databricks/databricks-sdk-py/issues/1489
+    parser = errors._Parser()
+    error = parser.get_api_error(fake_stream_request_response())
+    assert error is not None
+    assert "[raw stream]" in str(error)
