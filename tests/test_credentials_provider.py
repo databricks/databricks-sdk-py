@@ -606,7 +606,25 @@ def test_default_credentials_group_exhaustion_keeps_generic_error():
         credentials_provider.DefaultCredentials()(cfg)
 
 
-def test_oidc_credentials_provider_invalid_id_token_source():
+def test_oidc_credentials_provider_unavailable_id_token_source():
+    # Use a mock config object to avoid initializing the auth initialization.
+    mock_cfg = Mock()
+    mock_cfg.host = "https://test-workspace.cloud.databricks.com"
+    mock_cfg.databricks_oidc_endpoints = Mock()
+    mock_cfg.databricks_oidc_endpoints.token_endpoint = "https://test-workspace.cloud.databricks.com/oidc/v1/token"
+    mock_cfg.client_id = "test-client-id"
+    mock_cfg.account_id = "test-account-id"
+    mock_cfg.disable_async_token_refresh = True
+
+    # An IdTokenSource that raises IdTokenSourceUnavailableError when id_token() is called.
+    id_token_source = Mock()
+    id_token_source.id_token.side_effect = oidc.IdTokenSourceUnavailableError("ID token source unavailable")
+
+    cp = credentials_provider.oidc_credentials_provider(mock_cfg, id_token_source)
+    assert cp is None
+
+
+def test_oidc_credentials_provider_failing_id_token_source_raises_error():
     # Use a mock config object to avoid initializing the auth initialization.
     mock_cfg = Mock()
     mock_cfg.host = "https://test-workspace.cloud.databricks.com"
@@ -618,10 +636,11 @@ def test_oidc_credentials_provider_invalid_id_token_source():
 
     # An IdTokenSource that raises an error when id_token() is called.
     id_token_source = Mock()
-    id_token_source.id_token.side_effect = ValueError("Invalid ID token source")
+    id_token_source.id_token.side_effect = PermissionError("AccessDenied: not authorized")
 
-    cp = credentials_provider.oidc_credentials_provider(mock_cfg, id_token_source)
-    assert cp is None
+    with pytest.raises(ValueError, match="failed to get OIDC token: AccessDenied: not authorized") as exc_info:
+        credentials_provider.oidc_credentials_provider(mock_cfg, id_token_source)
+    assert isinstance(exc_info.value.__cause__, PermissionError)
 
 
 def test_oidc_credentials_provider_valid_id_token_source(mocker):

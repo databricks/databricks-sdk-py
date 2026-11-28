@@ -28,6 +28,10 @@ class IdToken:
     jwt: str
 
 
+class IdTokenSourceUnavailableError(ValueError):
+    """Raised when an ID token source is not configured or not available in the current environment."""
+
+
 class IdTokenSource(ABC):
     """Abstract base class representing anything that returns an IDToken.
 
@@ -72,12 +76,12 @@ class EnvIdTokenSource(IdTokenSource):
 
         Raises
         ------
-        ValueError
+        IdTokenSourceUnavailableError
             If the environment variable is not set.
         """
         token = os.getenv(self.env_var)
         if not token:
-            raise ValueError(f"Missing env var {self.env_var!r}")
+            raise IdTokenSourceUnavailableError(f"Missing env var {self.env_var!r}")
         return IdToken(jwt=token)
 
 
@@ -103,23 +107,25 @@ class FileIdTokenSource(IdTokenSource):
 
         Raises
         ------
+        IdTokenSourceUnavailableError
+            If the file path is missing, does not exist, or the file is empty.
         ValueError
-            If the file is empty, does not exist, or cannot be read.
+            If the file cannot be read.
         """
         if not self.path:
-            raise ValueError("Missing path")
+            raise IdTokenSourceUnavailableError("Missing path")
 
         token = None
         try:
             with open(self.path, "r") as f:
                 token = f.read().strip()
         except FileNotFoundError:
-            raise ValueError(f"File {self.path!r} does not exist")
+            raise IdTokenSourceUnavailableError(f"File {self.path!r} does not exist")
         except Exception as e:
-            raise ValueError(f"Error reading token file: {str(e)}")
+            raise ValueError(f"Error reading token file: {str(e)}") from e
 
         if not token:
-            raise ValueError(f"File {self.path!r} is empty")
+            raise IdTokenSourceUnavailableError(f"File {self.path!r} is empty")
         return IdToken(jwt=token)
 
 
